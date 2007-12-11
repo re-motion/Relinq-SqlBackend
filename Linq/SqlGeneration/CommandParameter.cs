@@ -2,12 +2,12 @@ using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration
 {
-  public struct QueryParameter
+  public struct CommandParameter
   {
     public readonly string Name;
     public readonly object Value;
 
-    public QueryParameter (string name, object value)
+    public CommandParameter (string name, object value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("value", value);

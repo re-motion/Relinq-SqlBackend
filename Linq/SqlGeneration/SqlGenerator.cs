@@ -13,7 +13,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     private readonly IDatabaseInfo _databaseInfo;
     private readonly QueryExpression _query;
     private readonly StringBuilder _commandText = new StringBuilder ();
-    private readonly List<QueryParameter> _commandParameters = new List<QueryParameter> ();
+    private readonly List<CommandParameter> _commandParameters = new List<CommandParameter> ();
 
     public SqlGenerator (QueryExpression query, IDatabaseInfo databaseInfo)
     {
@@ -31,7 +31,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       return _commandText.ToString();
     }
 
-    public QueryParameter[] GetCommandParameters ()
+    public CommandParameter[] GetCommandParameters ()
     {
       return _commandParameters.ToArray ();
     }
@@ -131,7 +131,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       if (value is Constant)
       {
         Constant constant = (Constant) value;
-        QueryParameter parameter = AddParameter (constant.Value);
+        CommandParameter parameter = AddParameter (constant.Value);
         _commandText.Append (parameter.Name);
       }
       else
@@ -159,9 +159,9 @@ namespace Rubicon.Data.Linq.SqlGeneration
       throw new NotImplementedException ();
     }
 
-    private QueryParameter AddParameter (object value)
+    private CommandParameter AddParameter (object value)
     {
-      QueryParameter parameter = new QueryParameter ("@" + (_commandParameters.Count + 1), value);
+      CommandParameter parameter = new CommandParameter ("@" + (_commandParameters.Count + 1), value);
       _commandParameters.Add (parameter);
       return parameter;
     }

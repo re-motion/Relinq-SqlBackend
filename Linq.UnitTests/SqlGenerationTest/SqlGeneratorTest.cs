@@ -63,8 +63,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE [s].[LastColumn] = @1", sqlGenerator.GetCommandString ());
 
-      QueryParameter[] parameters = sqlGenerator.GetCommandParameters();
-      Assert.That (parameters, Is.EqualTo (new object[] {new QueryParameter("@1", "Garcia")}));
+      CommandParameter[] parameters = sqlGenerator.GetCommandParameters();
+      Assert.That (parameters, Is.EqualTo (new object[] {new CommandParameter("@1", "Garcia")}));
     }
   }
 }

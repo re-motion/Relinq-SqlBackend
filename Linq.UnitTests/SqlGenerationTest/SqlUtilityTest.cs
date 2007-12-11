@@ -33,7 +33,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void CreateCommand_WithoutParameters()
     {
-      IDbCommand command = SqlUtility.CreateCommand ("SELECT [s].* FROM [sourceTable] [s]", new QueryParameter[0], _databaseInfo, _connection);
+      IDbCommand command = SqlUtility.CreateCommand ("SELECT [s].* FROM [sourceTable] [s]", new CommandParameter[0], _databaseInfo, _connection);
       Assert.IsNotNull (command);
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s]", command.CommandText);
       Assert.AreEqual (CommandType.Text, command.CommandType);
@@ -44,7 +44,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void CreateCommand_WithParameters ()
     {
       IDbCommand command = SqlUtility.CreateCommand ("SELECT [s].* FROM [sourceTable] [s] WHERE @foo=@1",
-          new QueryParameter[] { new QueryParameter("@1", "Garcia"), new QueryParameter("@foo", "bla")}, _databaseInfo, _connection);
+          new CommandParameter[] { new CommandParameter("@1", "Garcia"), new CommandParameter("@foo", "bla")}, _databaseInfo, _connection);
       
       Assert.IsNotNull (command);
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE @foo=@1", command.CommandText);

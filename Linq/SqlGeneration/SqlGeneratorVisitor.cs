@@ -60,7 +60,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     {
       BinaryExpression binaryExpression = whereClause.BoolExpression.Body as BinaryExpression;
       Assertion.IsNotNull (binaryExpression);
-      Assertion.IsTrue (binaryExpression.Method.Name == "op_Equality");
+      Assertion.IsTrue (binaryExpression.NodeType == ExpressionType.Equal);
 
       MemberExpression leftSide = binaryExpression.Left as MemberExpression;
       Assertion.IsNotNull (leftSide);

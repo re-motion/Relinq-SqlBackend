@@ -5,7 +5,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public static class SqlUtility
   {
-    public static IDbCommand CreateCommand (string commandText, QueryParameter[] parameters, IDatabaseInfo databaseInfo, IDbConnection connection)
+    public static IDbCommand CreateCommand (string commandText, CommandParameter[] parameters, IDatabaseInfo databaseInfo, IDbConnection connection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
@@ -16,7 +16,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       command.CommandText = commandText;
       command.CommandType = CommandType.Text;
 
-      foreach (QueryParameter parameter in parameters)
+      foreach (CommandParameter parameter in parameters)
         command.Parameters.Add (parameter.Value);
 
       return command;
