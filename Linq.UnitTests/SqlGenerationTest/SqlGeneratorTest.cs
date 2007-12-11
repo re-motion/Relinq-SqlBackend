@@ -5,32 +5,20 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.SqlGeneration;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 {
   [TestFixture]
   public class SqlGeneratorTest
   {
-    private IDbConnection _connection;
     private IDatabaseInfo _databaseInfo;
     private IQueryable<Student> _source;
 
     [SetUp]
     public void SetUp()
     {
-      MockRepository repository = new MockRepository();
-      _connection = repository.CreateMock<IDbConnection>();
-
-      IDataParameterCollection parameterCollection = new StubParameterCollection();
-      
-      IDbCommand command = repository.Stub<IDbCommand>();
-      SetupResult.For (command.Parameters).Return (parameterCollection);
-
-      Expect.Call (_connection.CreateCommand()).Return (command);
-      repository.ReplayAll();
-
       _databaseInfo = new StubDatabaseInfo();
-
       _source = ExpressionHelper.CreateQuerySource();
     }
 
@@ -40,7 +28,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleQueryWithNonDBProjection (_source);
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      new SqlGenerator (parsedQuery).GetCommandString(_databaseInfo);
+      new SqlGenerator (parsedQuery, _databaseInfo).GetCommandString ();
     }
 
     [Test]
@@ -48,14 +36,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleQuery (_source);
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlGenerator sqlGenerator = new SqlGenerator(parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s]", sqlGenerator.GetCommandString(_databaseInfo));
-      
-      IDbCommand command = sqlGenerator.GetCommand (_databaseInfo, _connection);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s]", sqlGenerator.GetCommandString());
 
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s]", command.CommandText);
-      Assert.AreEqual (CommandType.Text, command.CommandType);
-      Assert.IsEmpty (command.Parameters);
+      Assert.IsEmpty (sqlGenerator.GetCommandParameters ());
     }
 
     [Test]
@@ -63,16 +47,24 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Tuple<string, string, int>> query = TestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
       Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [sourceTable] [s1], [sourceTable] [s2], [sourceTable] [s3]",
-          sqlGenerator.GetCommandString(_databaseInfo));
+          sqlGenerator.GetCommandString());
+      
+      Assert.IsEmpty (sqlGenerator.GetCommandParameters());
+    }
 
-      IDbCommand command = sqlGenerator.GetCommand (_databaseInfo, _connection);
+    [Test]
+    public void SimpleWhereQuery()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateSimpleWhereQuery (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
 
-      Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [sourceTable] [s1], [sourceTable] [s2], [sourceTable] [s3]",
-          command.CommandText);
-      Assert.AreEqual (CommandType.Text, command.CommandType);
-      Assert.IsEmpty (command.Parameters);
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE [s].[LastColumn] = @1", sqlGenerator.GetCommandString ());
+
+      QueryParameter[] parameters = sqlGenerator.GetCommandParameters();
+      Assert.That (parameters, Is.EqualTo (new object[] {new QueryParameter("@1", "Garcia")}));
     }
   }
 }
