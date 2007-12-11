@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Rubicon.Collections;
-using Rubicon.Data.Linq.SqlGeneration.ObjectModel;
+using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Text;
 using Rubicon.Utilities;
 
@@ -69,7 +69,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     private IEnumerable<string> JoinColumnItems (IEnumerable<Column> columns)
     {
       foreach (Column column in columns)
-        yield return WrapSqlIdentifier (column.TableAlias) + "." + WrapSqlIdentifier (column.Name);
+        yield return WrapSqlIdentifier (column.Table.Alias) + "." + WrapSqlIdentifier (column.Name);
     }
     
     private string WrapSqlIdentifier (string identifier)

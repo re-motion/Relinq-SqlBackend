@@ -4,8 +4,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.SqlGeneration;
-using Rubicon.Data.Linq.SqlGeneration.ObjectModel;
+using Rubicon.Data.Linq.DataObjectModel;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 {
@@ -27,7 +28,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
       _sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] {new Column("s", "*")}));
+      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] {new Column(new Table ("sourceTable", "s"), "*")}));
     }
 
     [Test]
@@ -37,10 +38,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
       _sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column ("s", "FirstColumn"), new Column ("s", "LastColumn") }));
+      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("sourceTable", "s"), "FirstColumn"),
+          new Column (new Table ("sourceTable", "s"), "LastColumn") }));
     }
 
     [Test]
+    [ExpectedException (typeof (QueryParserException), ExpectedMessage = "The select clause contains an expression that cannot be parsed",
+        MatchType = MessageMatch.Contains)]
     public void VisitSelectClause_SpecialProjection()
     {
       IQueryable<Tuple<Student, string, string, string>> query = TestQueryGenerator.CreateSimpleQueryWithSpecialProjection (ExpressionHelper.CreateQuerySource ());
@@ -49,7 +53,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       _sqlGeneratorVisitor.VisitSelectClause (selectClause);
       Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[]
           {
-              new Column("s", "*"), new Column("s", "LastColumn")
+              new Column(new Table ("sourceTable", "s"), "*"), new Column(new Table ("sourceTable", "s"), "LastColumn")
           }));
     }
 
@@ -71,6 +75,20 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       AdditionalFromClause fromClause = (AdditionalFromClause)parsedQuery.QueryBody.FromLetWhereClauses.First();
       _sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
       Assert.That (_sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s2") }));
+    }
+
+    [Test]
+    public void VisitWhereClause()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      WhereClause whereClause = (WhereClause)parsedQuery.QueryBody.FromLetWhereClauses.First();
+      _sqlGeneratorVisitor.VisitWhereClause (whereClause);
+
+      Assert.AreEqual (new BinaryCondition (new Column (new Table ("sourceTable", "s"), "LastColumn"),
+          new Constant ("Garcia"), BinaryCondition.ConditionKind.Equal),
+          _sqlGeneratorVisitor.Criterion);
     }
 
 
