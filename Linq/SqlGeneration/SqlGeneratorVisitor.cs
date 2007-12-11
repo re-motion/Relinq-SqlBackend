@@ -67,7 +67,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       ParameterExpression tableParameter = leftSide.Expression as ParameterExpression;
       Assertion.IsNotNull (tableParameter);
 
-      FromClauseBase fromClause = FromClauseFinder.FindFromClauseForExpression (whereClause, tableParameter);
+      FromClauseBase fromClause = ClauseFinder.FindFromClauseForExpression (whereClause, tableParameter);
       Table table = GetTableForFromClause (fromClause);
       MemberInfo columnMember = leftSide.Member;
       Column leftColumn = GetColumn (table, columnMember);
