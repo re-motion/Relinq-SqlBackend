@@ -4,8 +4,9 @@ using System.Linq;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Rubicon.Collections;
+using Rubicon.Data.Linq.SqlGeneration;
 
-namespace Rubicon.Data.Linq.UnitTests
+namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 {
   [TestFixture]
   public class SqlGeneratorTest
@@ -64,12 +65,12 @@ namespace Rubicon.Data.Linq.UnitTests
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery);
       Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [sourceTable] [s1], [sourceTable] [s2], [sourceTable] [s3]",
-        sqlGenerator.GetCommandString(_databaseInfo));
+          sqlGenerator.GetCommandString(_databaseInfo));
 
       IDbCommand command = sqlGenerator.GetCommand (_databaseInfo, _connection);
 
       Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [sourceTable] [s1], [sourceTable] [s2], [sourceTable] [s3]",
-        command.CommandText);
+          command.CommandText);
       Assert.AreEqual (CommandType.Text, command.CommandType);
       Assert.IsEmpty (command.Parameters);
     }

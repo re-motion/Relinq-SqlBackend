@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Rubicon.Collections;
-using Rubicon.Data.Linq.Visitor;
+using Rubicon.Data.Linq.SqlGeneration.ObjectModel;
 using Rubicon.Text;
 using Rubicon.Utilities;
 
-namespace Rubicon.Data.Linq
+namespace Rubicon.Data.Linq.SqlGeneration
 {
   public class SqlGenerator
   {
@@ -33,14 +33,18 @@ namespace Rubicon.Data.Linq
         throw new InvalidOperationException ("The query does not select any fields from the data source.");
       else
       {
-        IEnumerable<string> columnEntries = JoinTupleItems (visitor.Columns, ".");
+        IEnumerable<string> columnEntries = JoinColumnItems (visitor.Columns);
         sb.Append (SeparatedStringBuilder.Build (", ", columnEntries)).Append (" ");
       }
 
       sb.Append ("FROM ");
 
-      IEnumerable<string> tableEntries = JoinTupleItems (visitor.Tables, " ");
+      IEnumerable<string> tableEntries = JoinTableItems (visitor.Tables);
       sb.Append (SeparatedStringBuilder.Build (", ", tableEntries));
+
+      //WHERE
+
+
 
       return sb.ToString();
     }
@@ -56,12 +60,18 @@ namespace Rubicon.Data.Linq
       return command;
     }
 
-    private IEnumerable<string> JoinTupleItems (IEnumerable<Tuple<string, string>> tuples, string joinString)
+    private IEnumerable<string> JoinTableItems (IEnumerable<Table> tables)
     {
-      foreach (Tuple<string, string> tuple in tuples)
-        yield return WrapSqlIdentifier (tuple.A) + joinString + WrapSqlIdentifier (tuple.B);
+      foreach (Table table in tables)
+        yield return WrapSqlIdentifier (table.Name) + " " + WrapSqlIdentifier (table.Alias);
     }
 
+    private IEnumerable<string> JoinColumnItems (IEnumerable<Column> columns)
+    {
+      foreach (Column column in columns)
+        yield return WrapSqlIdentifier (column.TableAlias) + "." + WrapSqlIdentifier (column.Name);
+    }
+    
     private string WrapSqlIdentifier (string identifier)
     {
       if (identifier != "*")
