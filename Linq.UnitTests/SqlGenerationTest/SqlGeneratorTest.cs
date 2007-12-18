@@ -98,5 +98,47 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
           new CommandParameter ("@2", 5), new CommandParameter ("@3", 6), new CommandParameter ("@4", 7),
           new CommandParameter ("@5", 6), new CommandParameter ("@6", 6)}));
     }
+
+    [Test]
+    public void WhereQueryWithNullChecks ()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryNullChecks (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ([s].[FirstColumn] IS NULL) OR ([s].[LastColumn] IS NOT NULL)",
+        sqlGenerator.GetCommandString ());
+
+      CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
+      Assert.That (parameters, Is.Empty);
+    }
+
+    [Test]
+    public void WhereQueryWithBooleanConstantTrue ()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryBooleanConstantTrue (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE 1=1",
+        sqlGenerator.GetCommandString ());
+
+      CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
+      Assert.That (parameters, Is.Empty);
+    }
+
+    [Test]
+    public void WhereQueryWithBooleanConstantFalse ()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryBooleanConstantFalse (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE 1!=1",
+        sqlGenerator.GetCommandString ());
+
+      CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
+      Assert.That (parameters, Is.Empty);
+    }
   }
 }

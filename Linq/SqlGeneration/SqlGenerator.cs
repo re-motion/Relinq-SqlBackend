@@ -112,6 +112,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
         AppendComplexCriterion ((ComplexCriterion) criterion);
       else if (criterion is NotCriterion)
         AppendNotCriterion ((NotCriterion) criterion);
+      else if (criterion is Constant)
+        AppendValue (criterion);
       else
         throw new NotSupportedException ("The criterion kind " + criterion.GetType().Name + " is not supported.");
     }
@@ -121,14 +123,41 @@ namespace Rubicon.Data.Linq.SqlGeneration
       if (condition is BinaryCondition)
       {
         BinaryCondition binaryCondition = (BinaryCondition) condition;
+        AppendBinaryCondition(binaryCondition);
+      }
+      else
+        throw new NotSupportedException ("The condition kind " + condition.GetType ().Name + " is not supported.");
+    }
+
+    private void AppendBinaryCondition (BinaryCondition binaryCondition)
+    {
+      if (binaryCondition.Left.Equals (new Constant (null)))
+        AppendNullCondition (binaryCondition.Right, binaryCondition.Kind);
+      else if (binaryCondition.Right.Equals (new Constant (null)))
+        AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
+      else
+      {
         AppendValue (binaryCondition.Left);
         _commandText.Append (" ");
         AppendBinaryConditionKind (binaryCondition.Kind);
         _commandText.Append (" ");
         AppendValue (binaryCondition.Right);
       }
-      else
-        throw new NotSupportedException ("The condition kind " + condition.GetType ().Name + " is not supported.");
+    }
+
+    private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
+    {
+      AppendValue (value);
+      switch (kind)
+      {
+        case BinaryCondition.ConditionKind.Equal:
+          _commandText.Append (" IS NULL");
+          break;
+        default:
+          Assertion.IsTrue (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
+          _commandText.Append (" IS NOT NULL");
+          break;
+      }
     }
 
     private void AppendValue (IValue value)
@@ -136,8 +165,17 @@ namespace Rubicon.Data.Linq.SqlGeneration
       if (value is Constant)
       {
         Constant constant = (Constant) value;
-        CommandParameter parameter = AddParameter (constant.Value);
-        _commandText.Append (parameter.Name);
+        if (constant.Value == null)
+          _commandText.Append ("NULL");
+        else if (constant.Value.Equals (true))
+          _commandText.Append ("1=1");
+        else if (constant.Value.Equals (false))
+          _commandText.Append ("1!=1");
+        else
+        {
+          CommandParameter parameter = AddParameter (constant.Value);
+          _commandText.Append (parameter.Name);
+        }
       }
       else
       {
