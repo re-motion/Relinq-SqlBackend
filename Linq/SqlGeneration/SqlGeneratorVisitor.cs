@@ -53,7 +53,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitWhereClause (WhereClause whereClause)
     {
-      WhereConditionParser conditionParser = new WhereConditionParser (whereClause, _databaseInfo);
+      WhereConditionParser conditionParser = new WhereConditionParser (whereClause, _databaseInfo, true);
       Criterion = conditionParser.GetCriterion();
     }
 
