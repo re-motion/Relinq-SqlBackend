@@ -33,18 +33,13 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitMainFromClause (MainFromClause fromClause)
     {
-      Table tableEntry = GetTableForFromClause(fromClause);
+      Table tableEntry = DatabaseInfoUtility.GetTableForFromClause(_databaseInfo, fromClause);
       Tables.Add (tableEntry);
-    }
-
-    private Table GetTableForFromClause (FromClauseBase fromClause)
-    {
-      return new Table(_databaseInfo.GetTableName (fromClause.GetQuerySourceType()), fromClause.Identifier.Name);
     }
 
     public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
-      Table tableEntry = GetTableForFromClause (fromClause);
+      Table tableEntry = DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, fromClause);
       Tables.Add (tableEntry);
     }
 
@@ -58,25 +53,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitWhereClause (WhereClause whereClause)
     {
-      BinaryExpression binaryExpression = whereClause.BoolExpression.Body as BinaryExpression;
-      Assertion.IsNotNull (binaryExpression);
-      Assertion.IsTrue (binaryExpression.NodeType == ExpressionType.Equal);
-
-      MemberExpression leftSide = binaryExpression.Left as MemberExpression;
-      Assertion.IsNotNull (leftSide);
-      ParameterExpression tableParameter = leftSide.Expression as ParameterExpression;
-      Assertion.IsNotNull (tableParameter);
-
-      FromClauseBase fromClause = ClauseFinder.FindFromClauseForExpression (whereClause, tableParameter);
-      Table table = GetTableForFromClause (fromClause);
-      MemberInfo columnMember = leftSide.Member;
-      Column leftColumn = GetColumn (table, columnMember);
-
-      ConstantExpression rightSide = binaryExpression.Right as ConstantExpression;
-      Assertion.IsNotNull (rightSide);
-      Constant rightConstant = new Constant(rightSide.Value);
-
-      Criterion = new BinaryCondition (leftColumn, rightConstant, BinaryCondition.ConditionKind.Equal);
+      WhereConditionParser conditionParser = new WhereConditionParser (whereClause, _databaseInfo);
+      Criterion = conditionParser.GetCriterion();
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
@@ -94,15 +72,10 @@ namespace Rubicon.Data.Linq.SqlGeneration
       
       IEnumerable<Column> columns =
           from field in selectedFields
-          let table = GetTableForFromClause (field.A)
-          select GetColumn (table, field.B);
+          let table = DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, field.A)
+          select DatabaseInfoUtility.GetColumn (_databaseInfo, table, field.B);
 
       Columns.AddRange (columns);
-    }
-
-    private Column GetColumn (Table table, MemberInfo member)
-    {
-      return new Column (table, member == null ? "*" : _databaseInfo.GetColumnName (member));
     }
 
     public void VisitGroupClause (GroupClause groupClause)

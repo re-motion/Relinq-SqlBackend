@@ -105,12 +105,11 @@ namespace Rubicon.Data.Linq.SqlGeneration
     private void AppendCriterion (ICriterion criterion)
     {
       ICondition condition;
-      ComplexCriterion complexCriterion;
 
       if ((condition = criterion as ICondition) != null)
         AppendCondition (condition);
-      else if ((complexCriterion = criterion as ComplexCriterion) != null)
-        AppendComplexCriterion (complexCriterion);
+      else if (criterion is ComplexCriterion)
+        AppendComplexCriterion ((ComplexCriterion) criterion);
     }
 
     private void AppendCondition (ICondition condition)
