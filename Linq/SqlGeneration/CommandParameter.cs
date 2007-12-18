@@ -10,7 +10,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public CommandParameter (string name, object value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("value", value);
 
       Name = name;
       Value = value;

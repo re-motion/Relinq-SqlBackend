@@ -110,6 +110,10 @@ namespace Rubicon.Data.Linq.SqlGeneration
         AppendCondition (condition);
       else if (criterion is ComplexCriterion)
         AppendComplexCriterion ((ComplexCriterion) criterion);
+      else if (criterion is NotCriterion)
+        AppendNotCriterion ((NotCriterion) criterion);
+      else
+        throw new NotSupportedException ("The criterion kind " + criterion.GetType().Name + " is not supported.");
     }
 
     private void AppendCondition (ICondition condition)
@@ -123,6 +127,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
         _commandText.Append (" ");
         AppendValue (binaryCondition.Right);
       }
+      else
+        throw new NotSupportedException ("The condition kind " + condition.GetType ().Name + " is not supported.");
     }
 
     private void AppendValue (IValue value)
@@ -148,14 +154,46 @@ namespace Rubicon.Data.Linq.SqlGeneration
         case BinaryCondition.ConditionKind.Equal:
           commandString = "=";
           break;
+        case BinaryCondition.ConditionKind.NotEqual:
+          commandString = "!=";
+          break;
+        case BinaryCondition.ConditionKind.LessThan:
+          commandString = "<";
+          break;
+        case BinaryCondition.ConditionKind.LessThanOrEqual:
+          commandString = "<=";
+          break;
+        case BinaryCondition.ConditionKind.GreaterThan:
+          commandString = ">";
+          break;
+        case BinaryCondition.ConditionKind.GreaterThanOrEqual:
+          commandString = ">=";
+          break;
+        default:
+          throw new NotSupportedException ("The binary condition kind " + kind + " is not supported.");
       }
-      Assertion.IsNotNull (commandString);
       _commandText.Append (commandString);
     }
 
     private void AppendComplexCriterion (ComplexCriterion criterion)
     {
-      throw new NotImplementedException ();
+      _commandText.Append ("(");
+      AppendCriterion (criterion.Left);
+      _commandText.Append (")");
+      if (criterion.Kind == ComplexCriterion.JunctionKind.And)
+        _commandText.Append (" AND ");
+      else if (criterion.Kind == ComplexCriterion.JunctionKind.Or)
+        _commandText.Append (" OR ");
+      _commandText.Append ("(");
+      AppendCriterion (criterion.Right);
+      _commandText.Append (")");
+    }
+
+    private void AppendNotCriterion (NotCriterion criterion)
+    {
+      _commandText.Append ("NOT (");
+      AppendCriterion (criterion.NegatedCriterion);
+      _commandText.Append (")");
     }
 
     private CommandParameter AddParameter (object value)

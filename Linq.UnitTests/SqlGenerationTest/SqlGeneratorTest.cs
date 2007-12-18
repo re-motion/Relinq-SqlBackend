@@ -66,5 +66,37 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       CommandParameter[] parameters = sqlGenerator.GetCommandParameters();
       Assert.That (parameters, Is.EqualTo (new object[] {new CommandParameter("@1", "Garcia")}));
     }
+
+    [Test]
+    public void WhereQueryWithOrAndNot ()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryWithOrAndNot (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ((NOT ([s].[FirstColumn] = @1)) OR ([s].[FirstColumn] = @2)) AND ([s].[FirstColumn] = @3)",
+          sqlGenerator.GetCommandString ());
+
+      CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
+      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia"),
+          new CommandParameter ("@2", "Garcia"), new CommandParameter ("@3", "Garcia") }));
+    }
+
+    [Test]
+    public void WhereQueryWithComparisons ()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryWithDifferentComparisons (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+
+      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ((((([s].[FirstColumn] != @1) AND ([s].[IDColumn] > @2)) "
+        + "AND ([s].[IDColumn] >= @3)) AND ([s].[IDColumn] < @4)) AND ([s].[IDColumn] <= @5)) AND ([s].[IDColumn] = @6)",
+          sqlGenerator.GetCommandString ());
+
+      CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
+      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia"),
+          new CommandParameter ("@2", 5), new CommandParameter ("@3", 6), new CommandParameter ("@4", 7),
+          new CommandParameter ("@5", 6), new CommandParameter ("@6", 6)}));
+    }
   }
 }
