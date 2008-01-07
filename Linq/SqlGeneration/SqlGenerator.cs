@@ -207,6 +207,9 @@ namespace Rubicon.Data.Linq.SqlGeneration
         case BinaryCondition.ConditionKind.GreaterThanOrEqual:
           commandString = ">=";
           break;
+        case BinaryCondition.ConditionKind.Like:
+          commandString = "LIKE";
+          break;
         default:
           throw new NotSupportedException ("The binary condition kind " + kind + " is not supported.");
       }
