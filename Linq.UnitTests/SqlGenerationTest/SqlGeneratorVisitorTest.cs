@@ -72,7 +72,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> query = TestQueryGenerator.CreateMultiFromWhereQuery (ExpressionHelper.CreateQuerySource (), ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      AdditionalFromClause fromClause = (AdditionalFromClause)parsedQuery.QueryBody.FromLetWhereClauses.First();
+      AdditionalFromClause fromClause = (AdditionalFromClause)parsedQuery.QueryBody.BodyClauses.First();
       _sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
       Assert.That (_sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s2") }));
     }
@@ -83,7 +83,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      WhereClause whereClause = (WhereClause)parsedQuery.QueryBody.FromLetWhereClauses.First();
+      WhereClause whereClause = (WhereClause)parsedQuery.QueryBody.BodyClauses.First();
       _sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       Assert.AreEqual (new BinaryCondition (new Column (new Table ("sourceTable", "s"), "LastColumn"),

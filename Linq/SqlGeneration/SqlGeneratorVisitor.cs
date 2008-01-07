@@ -84,10 +84,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitQueryBody (QueryBody queryBody)
     {
-      foreach (IFromLetWhereClause fromLetWhereClause in queryBody.FromLetWhereClauses)
-        fromLetWhereClause.Accept (this);
-      if (queryBody.OrderByClause != null)
-        queryBody.OrderByClause.Accept (this);
+      foreach (IBodyClause bodyClause in queryBody.BodyClauses)
+        bodyClause.Accept (this);
       queryBody.SelectOrGroupClause.Accept (this);
     }
   }
