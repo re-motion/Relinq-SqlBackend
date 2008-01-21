@@ -91,6 +91,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
           _sqlGeneratorVisitor.Criterion);
     }
 
+    [Test]
+    [Ignore]
+    public void VisitOrderingClause()
+    {
+      
+    }
+
 
     
   }
