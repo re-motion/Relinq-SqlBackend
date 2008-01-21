@@ -14,16 +14,19 @@ namespace Rubicon.Data.Linq.SqlGeneration
   {
     private readonly IDatabaseInfo _databaseInfo;
     
+
     public SqlGeneratorVisitor (IDatabaseInfo databaseInfo)
     {
       _databaseInfo = databaseInfo;
       Tables = new List<Table>();
       Columns = new List<Column>();
+      OrderingFields = new List<OrderingField>();
     }
 
     public List<Table> Tables { get; private set; }
     public List<Column> Columns { get; private set; }
     public ICriterion Criterion{ get; private set; }
+    public List<OrderingField> OrderingFields { get; private set; }
 
     public void VisitQueryExpression (QueryExpression queryExpression)
     {
@@ -63,6 +66,9 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
+      OrderingFieldParser fieldParser = new OrderingFieldParser (orderingClause, _databaseInfo);
+      OrderingField orderingField = fieldParser.GetField();
+      OrderingFields.Add (orderingField);
     }
 
     public void VisitSelectClause (SelectClause selectClause)

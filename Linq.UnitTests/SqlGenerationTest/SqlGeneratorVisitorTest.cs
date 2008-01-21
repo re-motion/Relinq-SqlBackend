@@ -81,6 +81,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitWhereClause()
     {
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
+      
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
       WhereClause whereClause = (WhereClause)parsedQuery.QueryBody.BodyClauses.First();
@@ -92,12 +93,19 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore]
     public void VisitOrderingClause()
     {
-      
-    }
+      IQueryable<Student> query = TestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderingClause orderingClause = orderBy.OrderingList.First ();
+      _sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
+      Assert.That (_sqlGeneratorVisitor.OrderingFields,
+          Is.EqualTo (new object[] { new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc) }));
+
+    }
+ 
 
     
   }
