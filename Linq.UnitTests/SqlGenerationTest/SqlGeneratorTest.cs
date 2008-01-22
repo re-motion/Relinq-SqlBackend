@@ -164,5 +164,26 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "%Garcia") }));
     }
+
+    [Test]
+    public void SimpleOrderByQuery()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateSimpleOrderByQuery (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+      
+      Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] ORDER BY [s1].[FirstColumn] ASC",
+          sqlGenerator.GetCommandString());
+    }
+
+    [Test]
+    public void ComplexOrderByQuery()
+    {
+      IQueryable<Student> query = TestQueryGenerator.CreateTwoOrderByQuery (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+      Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC", 
+        sqlGenerator.GetCommandString ());
+    }
   }
 }

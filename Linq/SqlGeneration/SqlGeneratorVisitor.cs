@@ -62,6 +62,10 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitOrderByClause (OrderByClause orderByClause)
     {
+      foreach (OrderingClause clause in orderByClause.OrderingList)
+      {
+        clause.Accept (this);
+      }
     }
 
     public void VisitOrderingClause (OrderingClause orderingClause)
@@ -93,6 +97,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       foreach (IBodyClause bodyClause in queryBody.BodyClauses)
         bodyClause.Accept (this);
       queryBody.SelectOrGroupClause.Accept (this);
+
     }
   }
 }

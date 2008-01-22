@@ -44,6 +44,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       BuildSelectPart(visitor);
       BuildFromPart(visitor);
       BuildWherePart(visitor);
+      BuildOrderByPart (visitor);
     }
 
     private void BuildSelectPart (SqlGeneratorVisitor visitor)
@@ -76,6 +77,36 @@ namespace Rubicon.Data.Linq.SqlGeneration
         AppendCriterion (criterion);
       }
     }
+
+    private void BuildOrderByPart (SqlGeneratorVisitor visitor)
+    {
+      if (visitor.OrderingFields.Count != 0)
+      {
+        _commandText.Append (" ORDER BY ");
+        IEnumerable<string> orderingFields = JoinOrderedFields (visitor.OrderingFields);
+        _commandText.Append (SeparatedStringBuilder.Build (", ", orderingFields));
+      }
+    }
+
+    private IEnumerable<string> JoinOrderedFields(IEnumerable<OrderingField> orderingFields)
+    {
+      foreach (OrderingField orderingField in orderingFields)
+        yield return GetColumnString (orderingField.Column) + " " + GetOrderedDirectionString(orderingField.Direction);
+    }
+
+    private string GetOrderedDirectionString (OrderDirection direction)
+    {
+      switch(direction)
+      {
+        case OrderDirection.Asc:
+          return "ASC";
+        case OrderDirection.Desc:
+          return "DESC";
+        default:
+          return "";
+      }   
+    }
+
 
     private IEnumerable<string> JoinTableItems (IEnumerable<Table> tables)
     {
