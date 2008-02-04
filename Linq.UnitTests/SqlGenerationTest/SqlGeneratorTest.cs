@@ -185,5 +185,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC", 
         sqlGenerator.GetCommandString ());
     }
+
+    
+
+    
   }
 }

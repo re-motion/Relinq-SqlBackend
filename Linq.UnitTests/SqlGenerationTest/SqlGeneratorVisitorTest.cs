@@ -105,6 +105,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
           Is.EqualTo (new object[] { new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc) }));
 
     }
+
+
  
 
     
