@@ -4,7 +4,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
-using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.DataObjectModel;
 
@@ -18,7 +17,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [SetUp]
     public void SetUp()
     {
-      _sqlGeneratorVisitor = new SqlGeneratorVisitor (new StubDatabaseInfo());
+      _sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance);
     }
 
     [Test]
@@ -43,7 +42,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [ExpectedException (typeof (QueryParserException), ExpectedMessage = "The select clause contains an expression that cannot be parsed",
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "The select clause contains an expression that cannot be parsed",
         MatchType = MessageMatch.Contains)]
     public void VisitSelectClause_SpecialProjection()
     {

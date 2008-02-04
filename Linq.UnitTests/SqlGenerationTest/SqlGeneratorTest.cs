@@ -18,7 +18,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [SetUp]
     public void SetUp()
     {
-      _databaseInfo = new StubDatabaseInfo();
+      _databaseInfo = StubDatabaseInfo.Instance;
       _source = ExpressionHelper.CreateQuerySource();
     }
 

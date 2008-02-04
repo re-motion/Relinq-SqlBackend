@@ -16,7 +16,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [SetUp]
     public void SetUp()
     {
-      _databaseInfo = new StubDatabaseInfo ();
+      _databaseInfo = StubDatabaseInfo.Instance;
 
       MockRepository repository = new MockRepository ();
       _connection = repository.CreateMock<IDbConnection> ();
