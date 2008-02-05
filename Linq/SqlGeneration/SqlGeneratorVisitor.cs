@@ -83,7 +83,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       IEnumerable<Column> columns =
           from field in selectedFields
           let table = DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, field.A)
-          select DatabaseInfoUtility.GetColumn (_databaseInfo, table, field.B);
+          select DatabaseInfoUtility.GetColumn (_databaseInfo, table, field.B).Value;
 
       Columns.AddRange (columns);
     }
