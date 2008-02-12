@@ -60,7 +60,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      MainFromClause fromClause = parsedQuery.FromClause;
+      MainFromClause fromClause = parsedQuery.MainFromClause;
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause);

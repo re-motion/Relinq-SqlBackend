@@ -35,7 +35,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitQueryExpression (QueryExpression queryExpression)
     {
-      queryExpression.FromClause.Accept (this);
+      queryExpression.MainFromClause.Accept (this);
       queryExpression.QueryBody.Accept (this);
     }
 
