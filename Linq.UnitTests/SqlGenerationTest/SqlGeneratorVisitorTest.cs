@@ -12,22 +12,16 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
   [TestFixture]
   public class SqlGeneratorVisitorTest
   {
-    private SqlGeneratorVisitor _sqlGeneratorVisitor;
-
-    [SetUp]
-    public void SetUp()
-    {
-      _sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance);
-    }
-
     [Test]
     public void VisitSelectClause_IdentityProjection()
     {    
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
-      _sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] {new Column(new Table ("sourceTable", "s"), "*")}));
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] {new Column(new Table ("sourceTable", "s"), "*")}));
     }
 
     [Test]
@@ -36,8 +30,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       IQueryable<Tuple<string, string>> query = TestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
-      _sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("sourceTable", "s"), "FirstColumn"),
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("sourceTable", "s"), "FirstColumn"),
           new Column (new Table ("sourceTable", "s"), "LastColumn") }));
     }
 
@@ -49,8 +45,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       IQueryable<Tuple<Student, string, string, string>> query = TestQueryGenerator.CreateSimpleQueryWithSpecialProjection (ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
-      _sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (_sqlGeneratorVisitor.Columns, Is.EqualTo (new object[]
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[]
           {
               new Column(new Table ("sourceTable", "s"), "*"), new Column(new Table ("sourceTable", "s"), "LastColumn")
           }));
@@ -62,8 +60,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       IQueryable<Student> query = TestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       MainFromClause fromClause = parsedQuery.FromClause;
-      _sqlGeneratorVisitor.VisitMainFromClause (fromClause);
-      Assert.That (_sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s") }));
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitMainFromClause (fromClause);
+      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s") }));
     }
 
     [Test]
@@ -72,8 +72,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       IQueryable<Student> query = TestQueryGenerator.CreateMultiFromWhereQuery (ExpressionHelper.CreateQuerySource (), ExpressionHelper.CreateQuerySource ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       AdditionalFromClause fromClause = (AdditionalFromClause)parsedQuery.QueryBody.BodyClauses.First();
-      _sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
-      Assert.That (_sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s2") }));
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
+      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s2") }));
     }
 
     [Test]
@@ -84,11 +86,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
       WhereClause whereClause = (WhereClause)parsedQuery.QueryBody.BodyClauses.First();
-      _sqlGeneratorVisitor.VisitWhereClause (whereClause);
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       Assert.AreEqual (new BinaryCondition (new Column (new Table ("sourceTable", "s"), "LastColumn"),
           new Constant ("Garcia"), BinaryCondition.ConditionKind.Equal),
-          _sqlGeneratorVisitor.Criterion);
+          sqlGeneratorVisitor.Criterion);
     }
 
     [Test]
@@ -98,14 +102,61 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
-      _sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
-      Assert.That (_sqlGeneratorVisitor.OrderingFields,
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
+
+      Assert.That (sqlGeneratorVisitor.OrderingFields,
           Is.EqualTo (new object[] { new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc) }));
 
     }
 
+    [Test]
+    public void VisitTwoOrderingClause ()
+    {
+      IQueryable<Student> query =
+          TestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateQuerySource());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      OrderByClause orderBy1 = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First();
+      OrderByClause orderBy2 = (OrderByClause) parsedQuery.QueryBody.BodyClauses.Last();
+      OrderingClause orderingClause1 = orderBy1.OrderingList.First();
 
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
+      OrderingClause orderingClause2 = orderBy2.OrderingList.Last();
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
+      Assert.That (sqlGeneratorVisitor.OrderingFields,
+          Is.EqualTo (new object[]
+              {
+                  new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc),
+                  new OrderingField (new Column (new Table ("sourceTable", "s1"), "LastColumn"), OrderDirection.Desc)
+              }));
+    }
+
+    [Test]
+    public void VisitMixedOrderingClause ()
+    {
+      IQueryable<Student> query =
+        TestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      OrderByClause orderBy1 = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderByClause orderBy2 = (OrderByClause) parsedQuery.QueryBody.BodyClauses.Last ();
+      OrderingClause orderingClause1 = orderBy1.OrderingList.First ();
+      OrderingClause orderingClause2 = orderBy1.OrderingList.Last ();
+      OrderingClause orderingClause3 = orderBy2.OrderingList.Last ();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause3);
+      Assert.That (sqlGeneratorVisitor.OrderingFields,
+          Is.EqualTo (new object[]
+              {
+                new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc),
+                new OrderingField (new Column (new Table ("sourceTable", "s1"), "LastColumn"), OrderDirection.Asc),
+                new OrderingField (new Column (new Table ("sourceTable", "s1"), "LastColumn"), OrderDirection.Desc)
+              }));
+    }
  
 
     

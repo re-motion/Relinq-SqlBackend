@@ -38,7 +38,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
  
     private void BuildCommandString ()
     {
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_databaseInfo);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_databaseInfo, _query);
       _query.Accept (visitor);
 
       BuildSelectPart(visitor);
