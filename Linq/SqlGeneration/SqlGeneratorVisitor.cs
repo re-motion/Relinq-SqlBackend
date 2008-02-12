@@ -82,13 +82,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitSelectClause (SelectClause selectClause)
     {
-      SelectProjectionParser projectionParser = new SelectProjectionParser (selectClause, _databaseInfo);
-      IEnumerable<Tuple<FromClauseBase, MemberInfo>> selectedFields = projectionParser.SelectedFields;
+      SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo);
+      IEnumerable<FieldDescriptor> selectedFields = projectionParser.SelectedFields;
       
       IEnumerable<Column> columns =
           from field in selectedFields
-          let table = DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, field.A)
-          select DatabaseInfoUtility.GetColumn (_databaseInfo, table, field.B).Value;
+          select field.GetMandatoryColumn ();
 
       Columns.AddRange (columns);
     }
