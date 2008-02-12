@@ -4,6 +4,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.DataObjectModel;
 
