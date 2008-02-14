@@ -63,6 +63,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     {
       WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, true);
       Criterion = conditionParser.GetCriterion();
+      // TODO: add joins
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
@@ -78,6 +79,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo);
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
+      // TODO: add joins
     }
 
     public void VisitSelectClause (SelectClause selectClause)
@@ -90,6 +92,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
           select field.GetMandatoryColumn ();
 
       Columns.AddRange (columns);
+      // TODO: add joins
     }
 
     public void VisitGroupClause (GroupClause groupClause)

@@ -107,8 +107,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
+      FieldDescriptor fieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
       Assert.That (sqlGeneratorVisitor.OrderingFields,
-          Is.EqualTo (new object[] { new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc) }));
+          Is.EqualTo (new object[] { new OrderingField (fieldDescriptor, OrderDirection.Asc) }));
 
     }
 
@@ -126,11 +127,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       OrderingClause orderingClause2 = orderBy2.OrderingList.Last();
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
+
+      FieldDescriptor fieldDescriptor1 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      FieldDescriptor fieldDescriptor2 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
+
       Assert.That (sqlGeneratorVisitor.OrderingFields,
           Is.EqualTo (new object[]
               {
-                  new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc),
-                  new OrderingField (new Column (new Table ("sourceTable", "s1"), "LastColumn"), OrderDirection.Desc)
+                  new OrderingField (fieldDescriptor1, OrderDirection.Asc),
+                  new OrderingField (fieldDescriptor2, OrderDirection.Desc)
               }));
     }
 
@@ -146,6 +151,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause2 = orderBy1.OrderingList.Last ();
       OrderingClause orderingClause3 = orderBy2.OrderingList.Last ();
 
+      FieldDescriptor fieldDescriptor1 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      FieldDescriptor fieldDescriptor2 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
+
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -153,13 +161,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Assert.That (sqlGeneratorVisitor.OrderingFields,
           Is.EqualTo (new object[]
               {
-                new OrderingField (new Column (new Table ("sourceTable", "s1"), "FirstColumn"), OrderDirection.Asc),
-                new OrderingField (new Column (new Table ("sourceTable", "s1"), "LastColumn"), OrderDirection.Asc),
-                new OrderingField (new Column (new Table ("sourceTable", "s1"), "LastColumn"), OrderDirection.Desc)
+                new OrderingField (fieldDescriptor1, OrderDirection.Asc),
+                new OrderingField (fieldDescriptor2, OrderDirection.Asc),
+                new OrderingField (fieldDescriptor2, OrderDirection.Desc)
               }));
     }
- 
-
-    
   }
 }
