@@ -217,6 +217,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Ignore ("TODO")]
     public void MultipleJoinsForSameTable()
     {
+
+
       // 1)
       // order by sdd.Student_Detail.Student.First
       // order by sdd.IndustrialSector.ID
