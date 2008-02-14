@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
@@ -166,5 +167,53 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
                 new OrderingField (fieldDescriptor2, OrderDirection.Desc)
               }));
     }
+
+    [Test]
+    public void VisitOrderingClause_WithJoins()
+    {
+      IQueryable<Student_Detail> query = TestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderingClause orderingClause = orderBy.OrderingList.First ();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
+
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      Table table = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      Join join = CreateJoin(relationMember, table, table);
+
+      Assert.That (sqlGeneratorVisitor.Joins, Is.EqualTo (new object[] { join }));
+    }
+
+    private Join CreateJoin (MemberInfo relationMember, IFieldSourcePath rightSide, Table rightSideTable)
+    {
+      Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      return new Join (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSideTable, columns.A));
+    }
+
+    [Test]
+    public void VisitOrderingClause_WithNestedJoins ()
+    {
+      IQueryable<Student_Detail_Detail> query = TestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderingClause orderingClause = orderBy.OrderingList.First ();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
+
+      PropertyInfo relationMember1 = typeof (Student_Detail).GetProperty ("Student");
+      Table studentTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      Join join1 = CreateJoin (relationMember1, studentTable, studentTable);
+
+      PropertyInfo relationMember2 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
+      Table studentDetailTable = join1.LeftSide;
+      Join join2 = CreateJoin (relationMember2, join1, studentDetailTable);
+
+      Assert.That (sqlGeneratorVisitor.Joins, Is.EqualTo (new object[] { join2 }));
+    }
+
   }
 }

@@ -26,12 +26,14 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Tables = new List<Table>();
       Columns = new List<Column>();
       OrderingFields = new List<OrderingField>();
+      Joins = new List<Join>();
     }
 
     public List<Table> Tables { get; private set; }
     public List<Column> Columns { get; private set; }
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
+    public List<Join> Joins { get; private set; }
 
     public void VisitQueryExpression (QueryExpression queryExpression)
     {
@@ -80,6 +82,16 @@ namespace Rubicon.Data.Linq.SqlGeneration
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
       // TODO: add joins
+      AddJoinsForFieldAccess (orderingField.FieldDescriptor.SourcePath);
+    }
+
+    private void AddJoinsForFieldAccess (IFieldSourcePath fieldSourcePath)
+    {
+      if (fieldSourcePath is Join)
+      {
+        Join join = (Join) fieldSourcePath;
+        Joins.Add (join);
+      }
     }
 
     public void VisitSelectClause (SelectClause selectClause)
