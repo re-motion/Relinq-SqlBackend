@@ -26,14 +26,14 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Tables = new List<Table>();
       Columns = new List<Column>();
       OrderingFields = new List<OrderingField>();
-      Joins = new List<Join>();
+      Joins = new MultiDictionary<Table, Join>(); 
     }
 
     public List<Table> Tables { get; private set; }
     public List<Column> Columns { get; private set; }
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
-    public List<Join> Joins { get; private set; }
+    public MultiDictionary<Table, Join> Joins { get; private set; }
 
     public void VisitQueryExpression (QueryExpression queryExpression)
     {
@@ -87,10 +87,11 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     private void AddJoinsForFieldAccess (IFieldSourcePath fieldSourcePath)
     {
+      Table startingTable = fieldSourcePath.GetStartingTable();
       if (fieldSourcePath is Join)
       {
         Join join = (Join) fieldSourcePath;
-        Joins.Add (join);
+        Joins.Add (startingTable, join);
       }
     }
 

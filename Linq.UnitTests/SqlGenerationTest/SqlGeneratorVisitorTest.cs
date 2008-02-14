@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -183,14 +184,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Table table = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
       Join join = CreateJoin(relationMember, table, table);
 
-      Assert.That (sqlGeneratorVisitor.Joins, Is.EqualTo (new object[] { join }));
-    }
-
-    private Join CreateJoin (MemberInfo relationMember, IFieldSourcePath rightSide, Table rightSideTable)
-    {
-      Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
-      return new Join (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSideTable, columns.A));
+      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
+      List<Join> actualJoins = sqlGeneratorVisitor.Joins[table];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
     [Test]
@@ -204,15 +200,52 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
-      PropertyInfo relationMember1 = typeof (Student_Detail).GetProperty ("Student");
-      Table studentTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Join join1 = CreateJoin (relationMember1, studentTable, studentTable);
+      PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
+      Table studentDetailDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      Join join1 = CreateJoin (relationMember1, studentDetailDetailTable, studentDetailDetailTable);
 
-      PropertyInfo relationMember2 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
+      PropertyInfo relationMember2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable = join1.LeftSide;
       Join join2 = CreateJoin (relationMember2, join1, studentDetailTable);
 
-      Assert.That (sqlGeneratorVisitor.Joins, Is.EqualTo (new object[] { join2 }));
+      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
+      List<Join> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join2 }));
+    }
+
+    [Test]
+    [Ignore ("TODO")]
+    public void MultipleJoinsForSameTable()
+    {
+      // 1)
+      // order by sdd.Student_Detail.Student.First
+      // order by sdd.IndustrialSector.ID
+      // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> IndustrialSector) }
+
+      // 2)
+      // order by sdd.Student_Detail.Student.First
+      // order by sdd.Student_Detail.Student.Last
+      // Joins[sdd] = { (sdd -> Student_Detail -> Student) }
+
+      // 3)
+      // order by sdd.Student_Detail.Student.First
+      // order by sdd.Student_Detail.IndustrialSector.ID
+      // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> Student_Detail -> IndustrialSector) }
+
+      // 4)
+      // order by sdd1.Student_Detail.Student.First
+      // order by sdd2.Student_Detail.Student.First
+      // Joins[sdd1] = { (sdd1 -> Student_Detail -> Student) }
+      // Joins[sdd2] = { (sdd2 -> Student_Detail -> Student) }
+      Assert.Fail ("Implement");
+    }
+
+
+    private Join CreateJoin (MemberInfo relationMember, IFieldSourcePath rightSide, Table rightSideTable)
+    {
+      Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      return new Join (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSideTable, columns.A));
     }
 
   }

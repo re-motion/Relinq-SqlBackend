@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Text;
@@ -55,7 +56,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
         throw new InvalidOperationException ("The query does not select any fields from the data source.");
       else
       {
-        IEnumerable<string> columnEntries = JoinColumnItems (visitor.Columns);
+        IEnumerable<string> columnEntries = CombineColumnItems (visitor.Columns);
         _commandText.Append (SeparatedStringBuilder.Build (", ", columnEntries)).Append (" ");
       }
     }
@@ -64,7 +65,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     {
       _commandText.Append ("FROM ");
 
-      IEnumerable<string> tableEntries = JoinTableItems (visitor.Tables);
+      IEnumerable<string> tableEntries = CombineTables (visitor.Tables, visitor.Joins);
       _commandText.Append (SeparatedStringBuilder.Build (", ", tableEntries));
     }
 
@@ -83,12 +84,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
       if (visitor.OrderingFields.Count != 0)
       {
         _commandText.Append (" ORDER BY ");
-        IEnumerable<string> orderingFields = JoinOrderedFields (visitor.OrderingFields);
+        IEnumerable<string> orderingFields = CombineOrderedFields (visitor.OrderingFields);
         _commandText.Append (SeparatedStringBuilder.Build (", ", orderingFields));
       }
     }
 
-    private IEnumerable<string> JoinOrderedFields(IEnumerable<OrderingField> orderingFields)
+    private IEnumerable<string> CombineOrderedFields(IEnumerable<OrderingField> orderingFields)
     {
       foreach (OrderingField orderingField in orderingFields)
         yield return GetColumnString (orderingField.Column) + " " + GetOrderedDirectionString(orderingField.Direction);
@@ -108,13 +109,45 @@ namespace Rubicon.Data.Linq.SqlGeneration
     }
 
 
-    private IEnumerable<string> JoinTableItems (IEnumerable<Table> tables)
+    private IEnumerable<string> CombineTables (IEnumerable<Table> tables, MultiDictionary<Table, Join> joins)
     {
       foreach (Table table in tables)
-        yield return WrapSqlIdentifier (table.Name) + " " + WrapSqlIdentifier (table.Alias);
+        yield return GetTableDeclaration(table) + BuildJoinPart (joins[table]);
     }
 
-    private IEnumerable<string> JoinColumnItems (IEnumerable<Column> columns)
+    private string GetTableDeclaration (Table table)
+    {
+      return WrapSqlIdentifier (table.Name) + " " + WrapSqlIdentifier (table.Alias);
+    }
+
+    private string BuildJoinPart (IEnumerable<Join> joins)
+    {
+      //StringBuilder joinStatement = new StringBuilder();
+      //foreach (Join join in joins)
+      //  AppendJoinExpression(joinStatement, join);
+      //return joinStatement.ToString();
+      return null;
+    }
+
+    private void AppendJoinExpression (StringBuilder joinStatement, Join join)
+    {
+      //if (join.RightSide is Join)
+      //{
+      //  Join rightSide = (Join) join.RightSide;
+      //  AppendJoinExpression (joinStatement, rightSide);
+      //}
+
+      //// assign table aliases if required
+
+      //joinStatement.Append (" INNER JOIN ")
+      //  .Append (GetTableDeclaration (join.LeftSide))
+      //  .Append (" ON ")
+      //  .Append (GetColumnString (join.LeftColumn))
+      //  .Append (" = ")
+      //  .Append (GetColumnString (join.RightColumn));
+    }
+
+    private IEnumerable<string> CombineColumnItems (IEnumerable<Column> columns)
     {
       foreach (Column column in columns)
         yield return GetColumnString (column);
