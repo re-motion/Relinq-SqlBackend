@@ -91,7 +91,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitSelectClause (SelectClause selectClause)
     {
-      SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo);
+      JoinedTableContext context = new JoinedTableContext ();
+      SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, context);
       IEnumerable<FieldDescriptor> selectedFields = projectionParser.SelectedFields;
       
       IEnumerable<Column> columns =
