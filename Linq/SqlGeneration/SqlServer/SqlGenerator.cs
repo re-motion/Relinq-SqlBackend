@@ -8,7 +8,7 @@ using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Text;
 using Rubicon.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class SqlGenerator
   {
@@ -140,11 +140,11 @@ namespace Rubicon.Data.Linq.SqlGeneration
       }
 
       joinStatement.Append (" INNER JOIN ")
-        .Append (GetTableDeclaration (join.LeftSide))
-        .Append (" ON ")
-        .Append (GetColumnString (join.RightColumn))
-        .Append (" = ")
-        .Append (GetColumnString (join.LeftColumn));
+          .Append (GetTableDeclaration (join.LeftSide))
+          .Append (" ON ")
+          .Append (GetColumnString (join.RightColumn))
+          .Append (" = ")
+          .Append (GetColumnString (join.LeftColumn));
     }
 
     private IEnumerable<string> CombineColumnItems (IEnumerable<Column> columns)
@@ -307,5 +307,5 @@ namespace Rubicon.Data.Linq.SqlGeneration
       _commandParameters.Add (parameter);
       return parameter;
     }
- }
+  }
 }

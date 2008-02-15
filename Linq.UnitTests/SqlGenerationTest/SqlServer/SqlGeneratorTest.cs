@@ -6,8 +6,9 @@ using Rhino.Mocks;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
+using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
+namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
   public class SqlGeneratorTest
@@ -90,7 +91,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
 
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ((((([s].[FirstColumn] != @1) AND ([s].[IDColumn] > @2)) "
-        + "AND ([s].[IDColumn] >= @3)) AND ([s].[IDColumn] < @4)) AND ([s].[IDColumn] <= @5)) AND ([s].[IDColumn] = @6)",
+          + "AND ([s].[IDColumn] >= @3)) AND ([s].[IDColumn] < @4)) AND ([s].[IDColumn] <= @5)) AND ([s].[IDColumn] = @6)",
           sqlGenerator.GetCommandString ());
 
       CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
@@ -107,7 +108,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
 
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ([s].[FirstColumn] IS NULL) OR ([s].[LastColumn] IS NOT NULL)",
-        sqlGenerator.GetCommandString ());
+          sqlGenerator.GetCommandString ());
 
       CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
       Assert.That (parameters, Is.Empty);
@@ -121,7 +122,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
 
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE 1=1",
-        sqlGenerator.GetCommandString ());
+          sqlGenerator.GetCommandString ());
 
       CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
       Assert.That (parameters, Is.Empty);
@@ -135,7 +136,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
 
       Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE 1!=1",
-        sqlGenerator.GetCommandString ());
+          sqlGenerator.GetCommandString ());
 
       CommandParameter[] parameters = sqlGenerator.GetCommandParameters ();
       Assert.That (parameters, Is.Empty);
@@ -183,7 +184,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
       Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC", 
-        sqlGenerator.GetCommandString ());
+          sqlGenerator.GetCommandString ());
     }
 
     [Test]
@@ -194,8 +195,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
       Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [sourceTable] [j0] "
-        + "ON [sd].[Student_Detail_PK] = [j0].[Student_FK] ORDER BY [j0].[FirstColumn] ASC",
-        sqlGenerator.GetCommandString ());
+          + "ON [sd].[Student_Detail_PK] = [j0].[Student_FK] ORDER BY [j0].[FirstColumn] ASC",
+          sqlGenerator.GetCommandString ());
     }
 
     [Test]

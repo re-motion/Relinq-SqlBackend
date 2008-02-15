@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Rubicon.Data.Linq.SqlGeneration;
+using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
+namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
   public class SqlGeneratorIntegrationTest
