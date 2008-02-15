@@ -187,19 +187,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore ("TODO")]
+    [Ignore ("TODO - Implement aliases")]
     public void SimpleImplicitJoin()
     {
       IQueryable<Student_Detail> query = TestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
-      Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] INNER JOIN [detailTable] [join1] "
-        +"ON [s1].[Student_FK] = [join1].[Student_Detail_PK] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC",
+      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [sourceTable] [join1] "
+        +"ON [sd].[Student_Detail_PK] = [join1].[Student_FK] ORDER BY [join1].[FirstColumn] ASC",
         sqlGenerator.GetCommandString ());
     }
-
-    
-
-    
   }
 }

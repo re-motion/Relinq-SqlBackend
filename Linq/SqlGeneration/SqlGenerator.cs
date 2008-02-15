@@ -122,10 +122,10 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     private string BuildJoinPart (IEnumerable<Join> joins)
     {
-      //StringBuilder joinStatement = new StringBuilder();
+      //StringBuilder joinStatement = new StringBuilder ();
       //foreach (Join join in joins)
-      //  AppendJoinExpression(joinStatement, join);
-      //return joinStatement.ToString();
+      //  AppendJoinExpression (joinStatement, join);
+      //return joinStatement.ToString ();
       return null;
     }
 
@@ -136,8 +136,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
       //  Join rightSide = (Join) join.RightSide;
       //  AppendJoinExpression (joinStatement, rightSide);
       //}
-
-      //// assign table aliases if required
 
       //joinStatement.Append (" INNER JOIN ")
       //  .Append (GetTableDeclaration (join.LeftSide))
