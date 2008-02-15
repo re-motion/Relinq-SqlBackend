@@ -61,7 +61,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitWhereClause (WhereClause whereClause)
     {
-      WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, true);
+      JoinedTableContext context = new JoinedTableContext();
+      WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, context, true);
       Criterion = conditionParser.GetCriterion();
       // TODO: add joins
     }
