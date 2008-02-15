@@ -9,7 +9,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
   public class SqlGeneratorIntegrationTest
   {
     [Test]
-    [Ignore ("Integration test for current story")]
     public void JoinReuse()
     {
       // from sdd1 in ...
@@ -28,14 +27,12 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       string expectedString = "SELECT [sdd1].* "
           + "FROM "
           + "[detailDetailTable] [sdd1] "
-          + "INNER JOIN [detailTable] [join1] ON [sdd1].[Student_Detail_Detail_PK] = [join1].[Student_Detail_FK]) "
-          + "INNER JOIN [sourceTable] [join2] on [join1].[Student_Detail_PK] = [join2].[Student_FK], "
+          + "INNER JOIN [detailTable] [j0] ON [sdd1].[Student_Detail_Detail_PK] = [j0].[Student_Detail_FK] "
+          + "INNER JOIN [sourceTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_FK], "
           + "[detailDetailTable] [sdd2] "
-          + "INNER JOIN [detailTable] [join3] ON [sdd2].[Student_Detail_Detail_PK] = [join3].[Student_Detail_FK]) "
-          + "INNER JOIN [sourceTable] [join4] on [join3].[Student_Detail_PK] = [join4].[Student_FK], "
-          + "ORDER BY [join2].[First] "
-          + "ORDER BY [join4].[First] "
-          + "ORDER BY [join2].[First] ";
+          + "INNER JOIN [detailTable] [j2] ON [sdd2].[Student_Detail_Detail_PK] = [j2].[Student_Detail_FK] "
+          + "INNER JOIN [sourceTable] [j3] ON [j2].[Student_Detail_PK] = [j3].[Student_FK] "
+          + "ORDER BY [j1].[FirstColumn] ASC, [j3].[FirstColumn] ASC, [j1].[FirstColumn] ASC";
 
       Assert.AreEqual (expectedString, sqlGenerator.GetCommandString ());
     }

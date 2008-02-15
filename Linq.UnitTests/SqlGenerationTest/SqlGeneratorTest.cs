@@ -187,15 +187,29 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore ("TODO - Implement aliases")]
     public void SimpleImplicitJoin()
     {
+      // from sd in source orderby sd.Student.First select sd
       IQueryable<Student_Detail> query = TestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
-      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [sourceTable] [join1] "
-        +"ON [sd].[Student_Detail_PK] = [join1].[Student_FK] ORDER BY [join1].[FirstColumn] ASC",
+      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [sourceTable] [j0] "
+        + "ON [sd].[Student_Detail_PK] = [j0].[Student_FK] ORDER BY [j0].[FirstColumn] ASC",
         sqlGenerator.GetCommandString ());
+    }
+
+    [Test]
+    public void NestedImplicitJoin ()
+    {
+      // from sdd in source orderby sdd.Student_Detail.Student.First select sdd
+      IQueryable<Student_Detail_Detail> query = TestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, _databaseInfo);
+      string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
+          + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_FK] "
+          + "INNER JOIN [sourceTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_FK] "
+          + "ORDER BY [j1].[FirstColumn] ASC";
+      Assert.AreEqual (expectedString, sqlGenerator.GetCommandString());
     }
   }
 }

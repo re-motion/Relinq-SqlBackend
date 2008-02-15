@@ -43,7 +43,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       JoinedTableContext context = new JoinedTableContext();
       SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_query, _databaseInfo, context);
       _query.Accept (visitor);
-      // TODO: assign aliases to context's tables
+      context.CreateAliases();
 
       BuildSelectPart(visitor);
       BuildFromPart(visitor);
@@ -125,27 +125,26 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     private string BuildJoinPart (IEnumerable<Join> joins)
     {
-      //StringBuilder joinStatement = new StringBuilder ();
-      //foreach (Join join in joins)
-      //  AppendJoinExpression (joinStatement, join);
-      //return joinStatement.ToString ();
-      return null;
+      StringBuilder joinStatement = new StringBuilder ();
+      foreach (Join join in joins)
+        AppendJoinExpression (joinStatement, join);
+      return joinStatement.ToString ();
     }
 
     private void AppendJoinExpression (StringBuilder joinStatement, Join join)
     {
-      //if (join.RightSide is Join)
-      //{
-      //  Join rightSide = (Join) join.RightSide;
-      //  AppendJoinExpression (joinStatement, rightSide);
-      //}
+      if (join.RightSide is Join)
+      {
+        Join rightSide = (Join) join.RightSide;
+        AppendJoinExpression (joinStatement, rightSide);
+      }
 
-      //joinStatement.Append (" INNER JOIN ")
-      //  .Append (GetTableDeclaration (join.LeftSide))
-      //  .Append (" ON ")
-      //  .Append (GetColumnString (join.LeftColumn))
-      //  .Append (" = ")
-      //  .Append (GetColumnString (join.RightColumn));
+      joinStatement.Append (" INNER JOIN ")
+        .Append (GetTableDeclaration (join.LeftSide))
+        .Append (" ON ")
+        .Append (GetColumnString (join.RightColumn))
+        .Append (" = ")
+        .Append (GetColumnString (join.LeftColumn));
     }
 
     private IEnumerable<string> CombineColumnItems (IEnumerable<Column> columns)
