@@ -4,8 +4,8 @@ using System.Reflection;
 using System.Linq;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
-using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing.Details;
 using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration
