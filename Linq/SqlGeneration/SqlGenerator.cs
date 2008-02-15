@@ -4,6 +4,7 @@ using System.Text;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Text;
 using Rubicon.Utilities;
 
@@ -39,8 +40,10 @@ namespace Rubicon.Data.Linq.SqlGeneration
  
     private void BuildCommandString ()
     {
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_databaseInfo, _query);
+      JoinedTableContext context = new JoinedTableContext();
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_query, _databaseInfo, context);
       _query.Accept (visitor);
+      // TODO: assign aliases to context's tables
 
       BuildSelectPart(visitor);
       BuildFromPart(visitor);

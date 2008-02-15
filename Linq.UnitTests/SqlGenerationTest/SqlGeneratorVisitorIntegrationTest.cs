@@ -7,6 +7,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Data.Linq.SqlGeneration;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
@@ -14,6 +15,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
   [TestFixture]
   public class SqlGeneratorVisitorIntegrationTest
   {
+    private JoinedTableContext _context;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _context = new JoinedTableContext ();
+    }
+
     [Test]
     public void VisitOrderingClause_WithNestedJoins ()
     {
@@ -22,7 +31,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
@@ -55,7 +64,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
 
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -94,7 +103,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
 
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -130,7 +139,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
 
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -172,7 +181,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy1.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy2.OrderingList.First ();
 
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, parsedQuery);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);

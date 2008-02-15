@@ -11,14 +11,17 @@ namespace Rubicon.Data.Linq.SqlGeneration
   public class SqlGeneratorVisitor : IQueryVisitor
   {
     private readonly IDatabaseInfo _databaseInfo;
+    private readonly JoinedTableContext _context;
     private readonly QueryExpression _queryExpression;
 
-    public SqlGeneratorVisitor (IDatabaseInfo databaseInfo, QueryExpression queryExpression)
+    public SqlGeneratorVisitor (QueryExpression queryExpression, IDatabaseInfo databaseInfo, JoinedTableContext context)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("queryExpression", queryExpression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _databaseInfo = databaseInfo;
+      _context = context;
       _queryExpression = queryExpression;
 
       Tables = new List<Table>();
@@ -75,8 +78,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
-      JoinedTableContext context = new JoinedTableContext();
-      OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, context);
+      OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, _context);
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
       // TODO: add joins
