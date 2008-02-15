@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Linq;
-using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.Parsing.Details;
+using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration
@@ -76,7 +74,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
-      OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo);
+      JoinedTableContext context = new JoinedTableContext();
+      OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, context);
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
       // TODO: add joins
