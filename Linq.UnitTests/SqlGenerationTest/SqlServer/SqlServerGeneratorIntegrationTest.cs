@@ -1,12 +1,14 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Rubicon.Collections;
+using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
-  public class SqlGeneratorIntegrationTest
+  public class SqlServerGeneratorIntegrationTest
   {
     [Test]
     public void JoinReuse()
@@ -22,7 +24,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail_Detail> source2 = ExpressionHelper.CreateQuerySource_Detail_Detail ();
       IQueryable<Student_Detail_Detail> query = TestQueryGenerator.CreateImplicitOrderByJoinWithJoinReuse (source1, source2);
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlGenerator sqlGenerator = new SqlGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       string expectedString = "SELECT [sdd1].* "
           + "FROM "
@@ -34,7 +36,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
           + "INNER JOIN [sourceTable] [j3] ON [j2].[Student_Detail_PK] = [j3].[Student_FK] "
           + "ORDER BY [j1].[FirstColumn] ASC, [j3].[FirstColumn] ASC, [j1].[FirstColumn] ASC";
 
-      Assert.AreEqual (expectedString, sqlGenerator.GetCommandString ());
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString();
+      Assert.AreEqual (expectedString, result.A);
     }
   }
 }
