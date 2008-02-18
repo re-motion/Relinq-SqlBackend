@@ -39,5 +39,28 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString();
       Assert.AreEqual (expectedString, result.A);
     }
+
+    [Test]
+    public void SelectJoin()
+    {
+      // from sdd in source 
+      // select new Tuple<string,int>{sdd.Student_Detail.Student.First,sdd.IndustrialSector.ID}
+
+      IQueryable<Student_Detail_Detail> source = ExpressionHelper.CreateQuerySource_Detail_Detail ();
+
+      IQueryable<Tuple<string, int>> query = TestQueryGenerator.CreateComplexImplicitSelectJoin (source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+
+      string expectedString = "SELECT [j1].[FirstColumn], [j2].[IDColumn] "
+          + "FROM "
+          + "[detailDetailTable] [sdd] "
+          + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_FK] "
+          + "INNER JOIN [sourceTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_FK] "
+          + "INNER JOIN [industrialTable] [j2] ON [sdd].[Student_Detail_Detail_PK] = [j2].[IndustrialSector_FK]";
+
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      Assert.AreEqual (expectedString, result.A);
+    }
   }
 }

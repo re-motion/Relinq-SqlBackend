@@ -94,16 +94,14 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitSelectClause (SelectClause selectClause)
     {
-      JoinedTableContext context = new JoinedTableContext ();
-      SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, context);
-      IEnumerable<FieldDescriptor> selectedFields = projectionParser.SelectedFields;
+      SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, _context);
+      IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
       
-      IEnumerable<Column> columns =
-          from field in selectedFields
-          select field.GetMandatoryColumn ();
-
-      Columns.AddRange (columns);
-      // TODO: add joins
+      foreach (var selectedField in selectedFields)
+      {
+        Columns.Add (selectedField.GetMandatoryColumn());
+        AddJoinsForFieldAccess (selectedField.SourcePath);
+      }
     }
 
     public void VisitGroupClause (GroupClause groupClause)

@@ -38,14 +38,29 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore ("TODO: Implement joins in SelectProjectionParser")]
     public void VisitSelectClause_WithJoins ()
     {
-      Assert.Fail ();
+      IQueryable<string> query = TestQueryGenerator.CreateSimpleImplicitSelectJoin (ExpressionHelper.CreateQuerySource_Detail ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
+      SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      Table studentDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
+      Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      Join join = new Join (studentTable, studentDetailTable, new Column (studentTable, joinColumns.B),
+          new Column (studentDetailTable, joinColumns.A));
+     
+
+      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
+      List<Join> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
     [Test]
-    [Ignore ("TODO: Implement joins in WhereConditionParser")]
     public void VisitSelectClause_UsesContext ()
     {
       Assert.AreEqual (0, _context.Count);
