@@ -26,7 +26,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [sourceTable] [s1], [sourceTable] [s2], [sourceTable] [s3]",
+      Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [studentTable] [s1], [studentTable] [s2], [studentTable] [s3]",
           result.A);
 
       Assert.IsEmpty (result.B);

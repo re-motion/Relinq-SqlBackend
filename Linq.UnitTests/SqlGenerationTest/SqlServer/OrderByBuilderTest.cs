@@ -29,7 +29,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
 
-      Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] ORDER BY [s1].[FirstColumn] ASC",
+      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[FirstColumn] ASC",
           result.A);
     }
 
@@ -40,7 +40,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s1].* FROM [sourceTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC",
+      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC",
           result.A);
     }
 
@@ -52,7 +52,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [sourceTable] [j0] "
+      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [studentTable] [j0] "
           + "ON [sd].[Student_Detail_PK] = [j0].[Student_FK] ORDER BY [j0].[FirstColumn] ASC",
           result.A);
     }
@@ -67,7 +67,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
           + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_FK] "
-          + "INNER JOIN [sourceTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_FK] "
+          + "INNER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_FK] "
           + "ORDER BY [j1].[FirstColumn] ASC";
       Assert.AreEqual (expectedString, result.A);
     }

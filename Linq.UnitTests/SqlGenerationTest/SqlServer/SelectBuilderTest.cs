@@ -36,7 +36,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s]", result.A);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.A);
 
       Assert.IsEmpty (result.B);
     }

@@ -33,8 +33,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("sourceTable", "s"), "FirstColumn"),
-          new Column (new Table ("sourceTable", "s"), "LastColumn") }));
+      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
+          new Column (new Table ("studentTable", "s"), "LastColumn") }));
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause);
-      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s") }));
+      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
-      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("sourceTable", "s2") }));
+      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
-      Assert.AreEqual (new BinaryCondition (new Column (new Table ("sourceTable", "s"), "LastColumn"),
+      Assert.AreEqual (new BinaryCondition (new Column (new Table ("studentTable", "s"), "LastColumn"),
           new Constant ("Garcia"), BinaryCondition.ConditionKind.Equal),
           sqlGeneratorVisitor.Criterion);
     }

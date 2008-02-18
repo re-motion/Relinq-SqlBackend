@@ -33,7 +33,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE [s].[LastColumn] = @1", result.A);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[LastColumn] = @1", result.A);
 
       CommandParameter[] parameters = result.B;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia") }));
@@ -47,7 +47,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ((NOT ([s].[FirstColumn] = @1)) OR ([s].[FirstColumn] = @2)) AND ([s].[FirstColumn] = @3)",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((NOT ([s].[FirstColumn] = @1)) OR ([s].[FirstColumn] = @2)) AND ([s].[FirstColumn] = @3)",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -63,7 +63,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ((((([s].[FirstColumn] != @1) AND ([s].[IDColumn] > @2)) "
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((((([s].[FirstColumn] != @1) AND ([s].[IDColumn] > @2)) "
           + "AND ([s].[IDColumn] >= @3)) AND ([s].[IDColumn] < @4)) AND ([s].[IDColumn] <= @5)) AND ([s].[IDColumn] = @6)",
           result.A);
 
@@ -81,7 +81,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE ([s].[FirstColumn] IS NULL) OR ([s].[LastColumn] IS NOT NULL)",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] IS NULL) OR ([s].[LastColumn] IS NOT NULL)",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -96,7 +96,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE 1=1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE 1=1",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -111,7 +111,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE 1!=1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE 1!=1",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -125,7 +125,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE [s].[FirstColumn] LIKE @1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[FirstColumn] LIKE @1",
           result.A);
       CommandParameter[] parameters = result.B;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia%") }));
@@ -138,7 +138,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [sourceTable] [s] WHERE [s].[FirstColumn] LIKE @1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[FirstColumn] LIKE @1",
           result.A);
       CommandParameter[] parameters = result.B;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "%Garcia") }));
