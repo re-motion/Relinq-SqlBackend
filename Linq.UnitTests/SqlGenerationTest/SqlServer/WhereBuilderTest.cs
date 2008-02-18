@@ -163,6 +163,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Like), "LIKE");
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The binary condition kind 2147483647 is not supported.")]
+    public void AppendCriterion_InvalidBinaryConditionKind ()
+    {
+      CheckAppendCriterion_BinaryCondition (
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), (BinaryCondition.ConditionKind)int.MaxValue), "=");
+    }
+
     private void CheckAppendCriterion_BinaryCondition (BinaryCondition binaryCondition, string expectedOperator)
     {
       StringBuilder commandText = new StringBuilder ();
@@ -269,7 +277,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The criterion kind Column is not supported.")]
-    public void NotSupportedException()
+    public void InvalidCriterionKind_NotSupportedException()
     {
       StringBuilder commandText = new StringBuilder ();
       List<CommandParameter> parameters = new List<CommandParameter> ();
@@ -279,6 +287,22 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       whereBuilder.BuildWherePart (colum);
 
       Assert.Fail();
+    }
+
+    class PseudoCondition : ICondition { }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The condition kind PseudoCondition is not supported.")]
+    public void InvalidConditionKind_NotSupportedException ()
+    {
+      StringBuilder commandText = new StringBuilder ();
+      List<CommandParameter> parameters = new List<CommandParameter> ();
+      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+      ICondition condition = new PseudoCondition();
+
+      whereBuilder.BuildWherePart (condition);
+
+      Assert.Fail ();
     }
 
     
