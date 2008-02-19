@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.Parsing.Details;
@@ -64,10 +65,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitWhereClause (WhereClause whereClause)
     {
-      JoinedTableContext context = new JoinedTableContext();
-      WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, context, true);
-      Criterion = conditionParser.GetCriterion();
-      // TODO: add joins
+      WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, _context, true);
+      Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
+      Criterion = criterions.B;
+
+      foreach (var fieldDescriptor in criterions.A)
+        AddJoinsForFieldAccess (fieldDescriptor.SourcePath);
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)

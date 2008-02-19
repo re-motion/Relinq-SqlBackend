@@ -109,22 +109,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
           sqlGeneratorVisitor.Criterion);
     }
 
-    [Test]
-    [Ignore ("TODO: Implement joins in WhereConditionParser")]
-    public void VisitWhereClause_WithJoins()
-    {
-      Assert.Fail();
-    }
-
-    [Test]
-    [Ignore ("TODO: Implement joins in WhereConditionParser")]
-    public void VisitWhereClause_UsesContext ()
-    {
-      Assert.AreEqual (0, _context.Count);
-      VisitWhereClause_WithJoins();
-      Assert.AreEqual (1, _context.Count);
-    }
-
+    
     [Test]
     public void VisitOrderingClause()
     {
@@ -192,5 +177,40 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
                 new OrderingField (fieldDescriptor2, OrderDirection.Asc),
               }));
     }
+
+    [Test]
+    public void VisitWhereClause_WithJoins ()
+    {
+      IQueryable<Student_Detail> query = TestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateQuerySource_Detail ());
+      
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      WhereClause whereClause = ClauseFinder.FindClause<WhereClause> (parsedQuery.QueryBody.SelectOrGroupClause);
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause);
+
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance); // Student_Detail
+      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      Join join = new Join (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSide, columns.A));
+
+      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
+
+      List<Join> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
+
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
+
+    }
+
+    [Test]
+    public void VisitWhereClause_UsesContext ()
+    {
+      Assert.AreEqual (0, _context.Count);
+      VisitWhereClause_WithJoins ();
+      Assert.AreEqual (1, _context.Count);
+    }
+
+    
   }
 }
