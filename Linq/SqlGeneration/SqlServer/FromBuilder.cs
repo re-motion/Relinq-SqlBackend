@@ -16,8 +16,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _commandText = commandText;
     }
 
-
-    public void BuildFromPart (List<Table> tables, IDictionary<Table, List<Join>> joins)
+    public void BuildFromPart (List<Table> tables, JoinCollection joins)
     {
       _commandText.Append ("FROM ");
 
@@ -25,7 +24,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _commandText.Append (SeparatedStringBuilder.Build (", ", tableEntries));
     }
 
-    private IEnumerable<string> CombineTables (IEnumerable<Table> tables, IDictionary<Table, List<Join>> joins)
+    private IEnumerable<string> CombineTables (IEnumerable<Table> tables, JoinCollection joins)
     {
       foreach (Table table in tables)
         yield return GetTableDeclaration (table) + BuildJoinPart (joins[table]);

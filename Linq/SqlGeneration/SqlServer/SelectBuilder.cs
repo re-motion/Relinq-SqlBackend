@@ -35,5 +35,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         yield return SqlServerUtility.GetColumnString (column);
     }
 
+
+
   }
 }

@@ -1,10 +1,7 @@
 using System;
-using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Rhino.Mocks;
-using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.SqlGeneration.SqlServer;
@@ -15,133 +12,28 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
   [TestFixture]
   public class WhereBuilderTest
   {
-    private IDatabaseInfo _databaseInfo;
-    private IQueryable<Student> _source;
-
-    [SetUp]
-    public void SetUp ()
+    [Test]
+    public void AppendCriterion_TrueValue()
     {
-      _databaseInfo = StubDatabaseInfo.Instance;
-      _source = ExpressionHelper.CreateQuerySource ();
+      ICriterion value = new Constant (true);
+      const string expectedString = "1=1";
+      CheckAppendCriterion_Value(value, expectedString);
     }
 
     [Test]
-    public void SimpleWhereQuery ()
+    public void AppendCriterion_FalseValue ()
     {
-      IQueryable<Student> query = TestQueryGenerator.CreateSimpleWhereQuery (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[LastColumn] = @1", result.A);
-
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia") }));
+      ICriterion value = new Constant (false);
+      const string expectedString = "1!=1";
+      CheckAppendCriterion_Value (value, expectedString);
     }
 
     [Test]
-    public void WhereQueryWithOrAndNot ()
+    public void AppendCriterion_Column ()
     {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryWithOrAndNot (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((NOT ([s].[FirstColumn] = @1)) OR ([s].[FirstColumn] = @2)) AND ([s].[FirstColumn] = @3)",
-          result.A);
-
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia"),
-          new CommandParameter ("@2", "Garcia"), new CommandParameter ("@3", "Garcia") }));
-    }
-
-    [Test]
-    public void WhereQueryWithComparisons ()
-    {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryWithDifferentComparisons (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((((([s].[FirstColumn] != @1) AND ([s].[IDColumn] > @2)) "
-          + "AND ([s].[IDColumn] >= @3)) AND ([s].[IDColumn] < @4)) AND ([s].[IDColumn] <= @5)) AND ([s].[IDColumn] = @6)",
-          result.A);
-
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia"),
-          new CommandParameter ("@2", 5), new CommandParameter ("@3", 6), new CommandParameter ("@4", 7),
-          new CommandParameter ("@5", 6), new CommandParameter ("@6", 6)}));
-    }
-
-    [Test]
-    public void WhereQueryWithNullChecks ()
-    {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryNullChecks (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] IS NULL) OR ([s].[LastColumn] IS NOT NULL)",
-          result.A);
-
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.Empty);
-    }
-
-    [Test]
-    public void WhereQueryWithBooleanConstantTrue ()
-    {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryBooleanConstantTrue (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE 1=1",
-          result.A);
-
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.Empty);
-    }
-
-    [Test]
-    public void WhereQueryWithBooleanConstantFalse ()
-    {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryBooleanConstantFalse (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE 1!=1",
-          result.A);
-
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.Empty);
-    }
-
-    [Test]
-    public void WhereQueryWithStartsWith ()
-    {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryWithStartsWith (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[FirstColumn] LIKE @1",
-          result.A);
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia%") }));
-    }
-
-    [Test]
-    public void WhereQueryWithEndsWith ()
-    {
-      IQueryable<Student> query = TestQueryGenerator.CreateWhereQueryWithEndsWith (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, _databaseInfo);
-      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[FirstColumn] LIKE @1",
-          result.A);
-      CommandParameter[] parameters = result.B;
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "%Garcia") }));
+      ICriterion value = new Column (new Table ("foo", "foo_alias"), "col");
+      const string expectedString = "[foo_alias].[col]=1";
+      CheckAppendCriterion_Value (value, expectedString);
     }
 
     [Test]
@@ -164,24 +56,29 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
+    public void AppendCriterion_BinaryCondition_WithValue ()
+    {
+      StringBuilder commandText = new StringBuilder ();
+      List<CommandParameter> parameters = new List<CommandParameter> ();
+      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+
+      ICriterion binaryCondition = new BinaryCondition (
+          new Column (new Table("a", "b"), "foo"),
+          new Column (new Table ("c", "d"), "bar"),
+          BinaryCondition.ConditionKind.Equal);
+      
+      whereBuilder.BuildWherePart (binaryCondition);
+
+      Assert.AreEqual (" WHERE [b].[foo] = [d].[bar]", commandText.ToString ());
+      Assert.AreEqual (0, parameters.Count);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The binary condition kind 2147483647 is not supported.")]
     public void AppendCriterion_InvalidBinaryConditionKind ()
     {
       CheckAppendCriterion_BinaryCondition (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), (BinaryCondition.ConditionKind)int.MaxValue), "=");
-    }
-
-    private void CheckAppendCriterion_BinaryCondition (BinaryCondition binaryCondition, string expectedOperator)
-    {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter>();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-
-      whereBuilder.BuildWherePart (binaryCondition);
-
-      Assert.AreEqual (" WHERE @1 " + expectedOperator + " @2", commandText.ToString());
-      Assert.AreEqual (2, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo") }));
     }
 
     [Test]
@@ -212,7 +109,35 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual (" WHERE @1 IS NULL", commandText.ToString ());
       Assert.AreEqual (1, parameters.Count);
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo") }));
+    }
 
+    [Test]
+    public void AppendCriterion_BinaryConditionIsNotNull ()
+    {
+      StringBuilder commandText = new StringBuilder ();
+      List<CommandParameter> parameters = new List<CommandParameter> ();
+      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+      BinaryCondition binaryConditionEqual = new BinaryCondition (new Constant (null), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual);
+
+      whereBuilder.BuildWherePart (binaryConditionEqual);
+
+      Assert.AreEqual (" WHERE @1 IS NOT NULL", commandText.ToString ());
+      Assert.AreEqual (1, parameters.Count);
+      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo") }));
+    }
+
+    [Test]
+    public void AppendCriterion_BinaryConditionNullIsNotNull ()
+    {
+      StringBuilder commandText = new StringBuilder ();
+      List<CommandParameter> parameters = new List<CommandParameter> ();
+      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+      BinaryCondition binaryConditionEqual = new BinaryCondition (new Constant (null), new Constant (null), BinaryCondition.ConditionKind.NotEqual);
+
+      whereBuilder.BuildWherePart (binaryConditionEqual);
+
+      Assert.AreEqual (" WHERE NULL IS NOT NULL", commandText.ToString ());
+      Assert.AreEqual (0, parameters.Count);
     }
 
     [Test]
@@ -228,7 +153,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       
     }
 
-    private void CheckAppendCriterion_ComplexCriterion (ComplexCriterion criterion, string expectedOperator)
+    private void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
     {
       StringBuilder commandText = new StringBuilder ();
       List<CommandParameter> parameters = new List<CommandParameter> ();
@@ -262,6 +187,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "NULL constants are not supported as WHERE conditions.")]
     public void AppendCriterion_NULL ()
     {
       StringBuilder commandText = new StringBuilder ();
@@ -270,23 +196,20 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Constant constant = new Constant(null);
 
       whereBuilder.BuildWherePart (constant);
-
-      Assert.AreEqual (" WHERE NULL", commandText.ToString ());
-
     }
 
+    class PseudoCriterion : ICriterion { }
+
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The criterion kind Column is not supported.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The criterion kind PseudoCriterion is not supported.")]
     public void InvalidCriterionKind_NotSupportedException()
     {
       StringBuilder commandText = new StringBuilder ();
       List<CommandParameter> parameters = new List<CommandParameter> ();
       WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      Column colum = new Column (new Table ("a", "b"), "c");
+      PseudoCriterion criterion = new PseudoCriterion ();
 
-      whereBuilder.BuildWherePart (colum);
-
-      Assert.Fail();
+      whereBuilder.BuildWherePart (criterion);
     }
 
     class PseudoCondition : ICondition { }
@@ -305,6 +228,29 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.Fail ();
     }
 
-    
+    private void CheckAppendCriterion_Value (ICriterion value, string expectedString)
+    {
+      StringBuilder commandText = new StringBuilder ();
+      List<CommandParameter> parameters = new List<CommandParameter> ();
+      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+
+      whereBuilder.BuildWherePart (value);
+
+      Assert.AreEqual (" WHERE " + expectedString, commandText.ToString ());
+      Assert.AreEqual (0, parameters.Count);
+    }
+
+    private void CheckAppendCriterion_BinaryCondition (ICriterion binaryCondition, string expectedOperator)
+    {
+      StringBuilder commandText = new StringBuilder ();
+      List<CommandParameter> parameters = new List<CommandParameter> ();
+      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+
+      whereBuilder.BuildWherePart (binaryCondition);
+
+      Assert.AreEqual (" WHERE @1 " + expectedOperator + " @2", commandText.ToString ());
+      Assert.AreEqual (2, parameters.Count);
+      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo") }));
+    }
   }
 }

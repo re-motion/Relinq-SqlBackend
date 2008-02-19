@@ -38,8 +38,8 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         AppendComplexCriterion ((ComplexCriterion) criterion);
       else if (criterion is NotCriterion)
         AppendNotCriterion ((NotCriterion) criterion);
-      else if (criterion is Constant)
-        AppendValue (criterion);
+      else if (criterion is Constant || criterion is Column) // cannot use "as" operator here because Constant/Column are value types
+        AppendTopLevelValue (criterion);
       else
         throw new NotSupportedException ("The criterion kind " + criterion.GetType ().Name + " is not supported.");
     }
@@ -63,17 +63,17 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
       else
       {
-        AppendValue (binaryCondition.Left);
+        AppendValueInCondition (binaryCondition.Left);
         _commandText.Append (" ");
         AppendBinaryConditionKind (binaryCondition.Kind);
         _commandText.Append (" ");
-        AppendValue (binaryCondition.Right);
+        AppendValueInCondition (binaryCondition.Right);
       }
     }
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
     {
-      AppendValue (value);
+      AppendValueInCondition (value);
       switch (kind)
       {
         case BinaryCondition.ConditionKind.Equal:
@@ -86,28 +86,49 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    private void AppendValue (IValue value)
+    private void AppendTopLevelValue (IValue value)
     {
       if (value is Constant)
       {
         Constant constant = (Constant) value;
         if (constant.Value == null)
-          _commandText.Append ("NULL");
-        else if (constant.Value.Equals (true))
-          _commandText.Append ("1=1");
-        else if (constant.Value.Equals (false))
-          _commandText.Append ("1!=1");
+          throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
         else
-        {
-          CommandParameter parameter = AddParameter (constant.Value);
-          _commandText.Append (parameter.Name);
-        }
+          AppendConstant (constant);
       }
       else
       {
-        Column column = (Column) value;
-        _commandText.Append (SqlServerUtility.GetColumnString (column));
+        AppendColumn ((Column) value);
+        _commandText.Append ("=1");
       }
+    }
+
+    private void AppendValueInCondition (IValue value)
+    {
+      if (value is Constant)
+        AppendConstant ((Constant) value);
+      else
+        AppendColumn((Column) value);
+    }
+
+    private void AppendConstant (Constant constant)
+    {
+      if (constant.Value == null)
+        _commandText.Append ("NULL");
+      else if (constant.Value.Equals (true))
+        _commandText.Append ("1=1");
+      else if (constant.Value.Equals (false))
+        _commandText.Append ("1!=1");
+      else
+      {
+        CommandParameter parameter = AddParameter (constant.Value);
+        _commandText.Append (parameter.Name);
+      }
+    }
+
+    private void AppendColumn (Column column)
+    {
+      _commandText.Append (SqlServerUtility.GetColumnString (column));
     }
 
     private void AppendBinaryConditionKind (BinaryCondition.ConditionKind kind)

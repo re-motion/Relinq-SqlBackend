@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Rubicon.Data.Linq.Clauses;
@@ -42,7 +43,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         case OrderDirection.Desc:
           return "DESC";
         default:
-          return "";
+          throw new NotSupportedException ("OrderDirection " + direction + " is not supported.");
       }
     }
   }
