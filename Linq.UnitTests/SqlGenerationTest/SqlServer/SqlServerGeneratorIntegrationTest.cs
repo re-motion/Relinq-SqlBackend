@@ -254,6 +254,31 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
+    public void JoinPartReuse ()
+    {
+      //from sdd in ...
+      //orderby sdd.Student_Detail.Student.First
+      //orderby sdd.Student_Detail.ID
+      //select sdd;
+
+      IQueryable<Student_Detail_Detail> source1 = ExpressionHelper.CreateQuerySource_Detail_Detail ();
+      IQueryable<Student_Detail_Detail> query = TestQueryGenerator.CreateImplicitOrderByJoinWithJoinPartReuse (source1);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+
+      string expectedString = "SELECT [sdd].* "
+          + "FROM "
+          + "[detailDetailTable] [sdd] "
+          + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_FK] "
+          + "INNER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_FK] "
+          + "ORDER BY [j1].[FirstColumn] ASC, [j0].[IDColumn] ASC";
+
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      Assert.AreEqual (expectedString, result.A);
+    }
+
+    [Test]
+    [Ignore ("TODO: Ensure correct ordering of single join items.")]
     public void SelectJoin()
     {
       // from sdd in source 

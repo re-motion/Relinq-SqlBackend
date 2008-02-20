@@ -24,7 +24,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column2 = new Column (table2, "c2");
 
       List<Table> tables = new List<Table> { table1 }; // this table does not have a join associated with it
-      JoinCollection joins = new JoinCollection {new JoinTree (table1, table2, column1, column2)};
+      JoinCollection joins = new JoinCollection ();
+      joins.AddTree (new JoinTree (table1, table2, column1, column2));
       fromBuilder.BuildFromPart (tables, joins);
 
       Assert.AreEqual ("FROM [s1] [s1_alias]", commandText.ToString ());
@@ -42,7 +43,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column2 = new Column (table2, "c2");
 
       List<Table> tables = new List<Table> { table2 };
-      JoinCollection joins = new JoinCollection { new JoinTree (table1, table2, column1, column2) };
+      JoinCollection joins = new JoinCollection();
+      joins.AddTree (new JoinTree (table1, table2, column1, column2));
       fromBuilder.BuildFromPart (tables, joins);
 
       Assert.AreEqual ("FROM [s2] [s2_alias] INNER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1]", commandText.ToString ());
@@ -66,7 +68,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       JoinTree join1 = new JoinTree (table1, table2, column1, column2);
       JoinTree join2 = new JoinTree (table3, join1, column4, column3);
-      JoinCollection joins = new JoinCollection { join2 };
+      JoinCollection joins = new JoinCollection();
+      joins.AddTree (join2);
 
       fromBuilder.BuildFromPart (tables, joins);
 

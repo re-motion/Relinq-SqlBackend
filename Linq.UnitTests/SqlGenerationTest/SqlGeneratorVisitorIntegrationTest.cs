@@ -43,8 +43,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree join2 = CreateJoin (relationMember2, join1, studentDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2 }));
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join2.GetSingleJoinForRoot(), join1.GetSingleJoinForRoot() }));
     }
 
     [Test]
@@ -81,8 +81,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree join3 = CreateJoin (relationalMemberForLastOrdering, studentDetailDetailTable, studentDetailDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join3 }));
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join2.GetSingleJoinForRoot (), join1.GetSingleJoinForRoot (), join3.GetSingleJoinForRoot () }));
 
     }
 
@@ -117,8 +117,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2 }));
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join2.GetSingleJoinForRoot (), join1.GetSingleJoinForRoot () }));
 
     }
 
@@ -156,8 +156,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree join3 = CreateJoin (relationalMemberForLastOrdering, join1, studentDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join3 }));
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join2.GetSingleJoinForRoot (), join1.GetSingleJoinForRoot (), join3.GetSingleJoinForRoot () }));
     }
 
     [Test]
@@ -203,11 +203,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree join4 = CreateJoin (relationalMemberSecondOrderBy2, join3, studentDetailTable2);
 
       Assert.AreEqual (2, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins1 = sqlGeneratorVisitor.Joins[studentDetailDetailTable1];
-      Assert.That (actualJoins1, Is.EqualTo (new object[] { join2 }));
+      List<SingleJoin> actualJoins1 = sqlGeneratorVisitor.Joins[studentDetailDetailTable1];
+      Assert.That (actualJoins1, Is.EqualTo (new object[] { join2.GetSingleJoinForRoot (), join1.GetSingleJoinForRoot() }));
 
-      List<JoinTree> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
-      Assert.That (actualJoins2, Is.EqualTo (new object[] { join4 }));
+      List<SingleJoin> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
+      Assert.That (actualJoins2, Is.EqualTo (new object[] { join4.GetSingleJoinForRoot (), join3.GetSingleJoinForRoot() }));
     }
 
     private JoinTree CreateJoin (MemberInfo relationMember, IFieldSourcePath rightSide, Table rightSideTable)

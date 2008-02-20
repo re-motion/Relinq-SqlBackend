@@ -45,7 +45,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         Assert.That (visitor2.Criterion, Is.EqualTo (Visitor.Criterion));
         
         Assert.AreEqual (Visitor.Joins.Count, visitor2.Joins.Count);
-        foreach (KeyValuePair<Table, List<JoinTree>> joinEntry in Visitor.Joins)
+        foreach (KeyValuePair<Table, List<SingleJoin>> joinEntry in Visitor.Joins)
           Assert.That (visitor2.Joins[joinEntry.Key], Is.EqualTo (joinEntry.Value));
 
         Assert.That (visitor2.OrderingFields, Is.EqualTo (Visitor.OrderingFields));

@@ -3,13 +3,20 @@ using Rubicon.Data.Linq.DataObjectModel;
 
 namespace Rubicon.Data.Linq.SqlGeneration
 {
-  public class JoinCollection : MultiDictionary<Table, JoinTree>
+#warning TODO: Refactor to use composition instead of inheritance
+  public class JoinCollection : MultiDictionary<Table, SingleJoin>
   {
-    public void Add (JoinTree joinTree)
+    public void AddTree (JoinTree joinTree)
     {
         Table startingTable = joinTree.GetStartingTable ();
-        if (!this[startingTable].Contains (joinTree))
-          Add (startingTable, joinTree);
+        foreach (SingleJoin singleJoin in joinTree.GetAllSingleJoins ())
+          AddSingleJoin (startingTable, singleJoin);
+    }
+
+    private void AddSingleJoin (Table startingTable, SingleJoin join)
+    {
+      if (!this[startingTable].Contains (join))
+        Add (startingTable, join);
     }
   }
 }

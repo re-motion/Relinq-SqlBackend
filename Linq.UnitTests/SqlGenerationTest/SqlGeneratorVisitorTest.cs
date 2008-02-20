@@ -54,10 +54,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree joinTree = new JoinTree (studentTable, studentDetailTable, new Column (studentTable, joinColumns.B),
           new Column (studentDetailTable, joinColumns.A));
      
-
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree }));
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree.GetSingleJoinForRoot() }));
     }
 
     [Test]
@@ -145,8 +144,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       JoinTree joinTree = new JoinTree (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSide, columns.A));
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree }));
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
+      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree.GetSingleJoinForRoot() }));
     }
 
     [Test]
@@ -197,9 +196,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
 
-      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
 
-      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree.GetSingleJoinForRoot() }));
 
     }
 

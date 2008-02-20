@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Text;
@@ -30,28 +31,22 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         yield return GetTableDeclaration (table) + BuildJoinPart (joins[table]);
     }
 
-    private string BuildJoinPart (IEnumerable<JoinTree> joins)
+    private string BuildJoinPart (IEnumerable<SingleJoin> joins)
     {
       StringBuilder joinStatement = new StringBuilder ();
-      foreach (JoinTree join in joins)
+      foreach (SingleJoin join in joins.Reverse()) // reverse joins to get a natural order in the SQL statement
         AppendJoinExpression (joinStatement, join);
       return joinStatement.ToString ();
     }
 
-    private void AppendJoinExpression (StringBuilder joinStatement, JoinTree joinTree)
+    private void AppendJoinExpression (StringBuilder joinStatement, SingleJoin join)
     {
-      if (joinTree.RightSide is JoinTree)
-      {
-        JoinTree rightSide = (JoinTree) joinTree.RightSide;
-        AppendJoinExpression (joinStatement, rightSide);
-      }
-
       joinStatement.Append (" INNER JOIN ")
-          .Append (GetTableDeclaration (joinTree.LeftSide))
+          .Append (GetTableDeclaration (join.LeftSide))
           .Append (" ON ")
-          .Append (SqlServerUtility.GetColumnString (joinTree.RightColumn))
+          .Append (SqlServerUtility.GetColumnString (join.RightColumn))
           .Append (" = ")
-          .Append (SqlServerUtility.GetColumnString (joinTree.LeftColumn));
+          .Append (SqlServerUtility.GetColumnString (join.LeftColumn));
     }
 
     private string GetTableDeclaration (Table table)
