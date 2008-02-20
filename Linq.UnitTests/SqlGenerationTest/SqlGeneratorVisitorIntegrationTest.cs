@@ -36,14 +36,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       Table studentDetailDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Join join1 = CreateJoin (relationMember1, studentDetailDetailTable, studentDetailDetailTable);
+      JoinTree join1 = CreateJoin (relationMember1, studentDetailDetailTable, studentDetailDetailTable);
 
       PropertyInfo relationMember2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable = join1.LeftSide;
-      Join join2 = CreateJoin (relationMember2, join1, studentDetailTable);
+      JoinTree join2 = CreateJoin (relationMember2, join1, studentDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<Join> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join2 }));
     }
 
@@ -71,17 +71,17 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       Table studentDetailDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Join join1 = CreateJoin (relationalMemberForFirstOrdering1, studentDetailDetailTable, studentDetailDetailTable);
+      JoinTree join1 = CreateJoin (relationalMemberForFirstOrdering1, studentDetailDetailTable, studentDetailDetailTable);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable = join1.LeftSide;
-      Join join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
+      JoinTree join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
 
       PropertyInfo relationalMemberForLastOrdering = typeof (Student_Detail_Detail).GetProperty ("IndustrialSector");
-      Join join3 = CreateJoin (relationalMemberForLastOrdering, studentDetailDetailTable, studentDetailDetailTable);
+      JoinTree join3 = CreateJoin (relationalMemberForLastOrdering, studentDetailDetailTable, studentDetailDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<Join> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join3 }));
 
     }
@@ -110,14 +110,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       Table studentDetailDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Join join1 = CreateJoin (relationalMemberForFirstOrdering1, studentDetailDetailTable, studentDetailDetailTable);
+      JoinTree join1 = CreateJoin (relationalMemberForFirstOrdering1, studentDetailDetailTable, studentDetailDetailTable);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable = join1.LeftSide;
-      Join join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
+      JoinTree join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<Join> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join2 }));
 
     }
@@ -146,17 +146,17 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       Table studentDetailDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Join join1 = CreateJoin (relationalMemberForFirstOrdering1, studentDetailDetailTable, studentDetailDetailTable);
+      JoinTree join1 = CreateJoin (relationalMemberForFirstOrdering1, studentDetailDetailTable, studentDetailDetailTable);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable = join1.LeftSide;
-      Join join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
+      JoinTree join2 = CreateJoin (relationalMemberForFirstOrdering2, join1, studentDetailTable);
 
       PropertyInfo relationalMemberForLastOrdering = typeof (Student_Detail).GetProperty ("IndustrialSector");
-      Join join3 = CreateJoin (relationalMemberForLastOrdering, join1, studentDetailTable);
+      JoinTree join3 = CreateJoin (relationalMemberForLastOrdering, join1, studentDetailTable);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<Join> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      List<JoinTree> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join3 }));
     }
 
@@ -188,33 +188,33 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       PropertyInfo relationalMemberFirstOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       Table studentDetailDetailTable1 = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Join join1 = CreateJoin (relationalMemberFirstOrderBy1, studentDetailDetailTable1, studentDetailDetailTable1);
+      JoinTree join1 = CreateJoin (relationalMemberFirstOrderBy1, studentDetailDetailTable1, studentDetailDetailTable1);
 
       PropertyInfo relationalMemberFirstOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable1 = join1.LeftSide;
-      Join join2 = CreateJoin (relationalMemberFirstOrderBy2, join1, studentDetailTable1);
+      JoinTree join2 = CreateJoin (relationalMemberFirstOrderBy2, join1, studentDetailTable1);
 
       PropertyInfo relationalMemberSecondOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       Table studentDetailDetailTable2 = ((AdditionalFromClause) parsedQuery.QueryBody.BodyClauses[0]).GetTable (StubDatabaseInfo.Instance);
-      Join join3 = CreateJoin (relationalMemberSecondOrderBy1, studentDetailDetailTable2, studentDetailDetailTable2);
+      JoinTree join3 = CreateJoin (relationalMemberSecondOrderBy1, studentDetailDetailTable2, studentDetailDetailTable2);
 
       PropertyInfo relationalMemberSecondOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable2 = join3.LeftSide;
-      Join join4 = CreateJoin (relationalMemberSecondOrderBy2, join3, studentDetailTable2);
+      JoinTree join4 = CreateJoin (relationalMemberSecondOrderBy2, join3, studentDetailTable2);
 
       Assert.AreEqual (2, sqlGeneratorVisitor.Joins.Count);
-      List<Join> actualJoins1 = sqlGeneratorVisitor.Joins[studentDetailDetailTable1];
+      List<JoinTree> actualJoins1 = sqlGeneratorVisitor.Joins[studentDetailDetailTable1];
       Assert.That (actualJoins1, Is.EqualTo (new object[] { join2 }));
 
-      List<Join> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
+      List<JoinTree> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
       Assert.That (actualJoins2, Is.EqualTo (new object[] { join4 }));
     }
 
-    private Join CreateJoin (MemberInfo relationMember, IFieldSourcePath rightSide, Table rightSideTable)
+    private JoinTree CreateJoin (MemberInfo relationMember, IFieldSourcePath rightSide, Table rightSideTable)
     {
       Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
-      return new Join (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSideTable, columns.A));
+      return new JoinTree (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSideTable, columns.A));
     }
   }
 }

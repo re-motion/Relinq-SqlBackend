@@ -3,13 +3,13 @@ using Rubicon.Data.Linq.DataObjectModel;
 
 namespace Rubicon.Data.Linq.SqlGeneration
 {
-  public class JoinCollection : MultiDictionary<Table, Join>
+  public class JoinCollection : MultiDictionary<Table, JoinTree>
   {
-    public void Add (Join join)
+    public void Add (JoinTree joinTree)
     {
-        Table startingTable = join.GetStartingTable ();
-        if (!this[startingTable].Contains (join))
-          Add (startingTable, join);
+        Table startingTable = joinTree.GetStartingTable ();
+        if (!this[startingTable].Contains (joinTree))
+          Add (startingTable, joinTree);
     }
   }
 }

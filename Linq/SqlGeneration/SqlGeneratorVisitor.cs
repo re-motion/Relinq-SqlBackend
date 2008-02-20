@@ -90,8 +90,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     private void AddJoinsForFieldAccess (IFieldSourcePath fieldSourcePath)
     {
-      if (fieldSourcePath is Join)
-        Joins.Add ((Join) fieldSourcePath);
+      if (fieldSourcePath is JoinTree)
+        Joins.Add ((JoinTree) fieldSourcePath);
     }
 
 

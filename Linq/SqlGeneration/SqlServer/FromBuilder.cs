@@ -30,28 +30,28 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         yield return GetTableDeclaration (table) + BuildJoinPart (joins[table]);
     }
 
-    private string BuildJoinPart (IEnumerable<Join> joins)
+    private string BuildJoinPart (IEnumerable<JoinTree> joins)
     {
       StringBuilder joinStatement = new StringBuilder ();
-      foreach (Join join in joins)
+      foreach (JoinTree join in joins)
         AppendJoinExpression (joinStatement, join);
       return joinStatement.ToString ();
     }
 
-    private void AppendJoinExpression (StringBuilder joinStatement, Join join)
+    private void AppendJoinExpression (StringBuilder joinStatement, JoinTree joinTree)
     {
-      if (join.RightSide is Join)
+      if (joinTree.RightSide is JoinTree)
       {
-        Join rightSide = (Join) join.RightSide;
+        JoinTree rightSide = (JoinTree) joinTree.RightSide;
         AppendJoinExpression (joinStatement, rightSide);
       }
 
       joinStatement.Append (" INNER JOIN ")
-          .Append (GetTableDeclaration (join.LeftSide))
+          .Append (GetTableDeclaration (joinTree.LeftSide))
           .Append (" ON ")
-          .Append (SqlServerUtility.GetColumnString (join.RightColumn))
+          .Append (SqlServerUtility.GetColumnString (joinTree.RightColumn))
           .Append (" = ")
-          .Append (SqlServerUtility.GetColumnString (join.LeftColumn));
+          .Append (SqlServerUtility.GetColumnString (joinTree.LeftColumn));
     }
 
     private string GetTableDeclaration (Table table)

@@ -14,13 +14,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       Table leftSide = new Table ("left", null);
       Table rightSide = new Table ("right", null);
-      Join join = new Join(leftSide, rightSide, new Column(), new Column());
+      JoinTree joinTree = new JoinTree(leftSide, rightSide, new Column(), new Column());
 
       JoinCollection collection = new JoinCollection();
-      collection.Add (join);
+      collection.Add (joinTree);
 
       Assert.AreEqual (1, collection.Count);
-      Assert.That (collection[rightSide], Is.EqualTo(new object[] { join }));
+      Assert.That (collection[rightSide], Is.EqualTo(new object[] { joinTree }));
     }
 
     [Test]
@@ -28,16 +28,16 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       Table leftSide = new Table ("left", null);
       Table rightSide = new Table ("right", null);
-      Join innerJoin = new Join (leftSide, rightSide, new Column (), new Column ());
+      JoinTree innerJoinTree = new JoinTree (leftSide, rightSide, new Column (), new Column ());
 
       Table outerLeftSide = new Table ("outerLeft", null);
-      Join outerJoin = new Join(outerLeftSide, innerJoin, new Column(), new Column());
+      JoinTree outerJoinTree = new JoinTree(outerLeftSide, innerJoinTree, new Column(), new Column());
 
       JoinCollection collection = new JoinCollection ();
-      collection.Add (outerJoin);
+      collection.Add (outerJoinTree);
 
       Assert.AreEqual (1, collection.Count);
-      Assert.That (collection[rightSide], Is.EqualTo (new object[] { outerJoin }));
+      Assert.That (collection[rightSide], Is.EqualTo (new object[] { outerJoinTree }));
     }
 
     [Test]
@@ -45,14 +45,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       Table leftSide = new Table ("left", null);
       Table rightSide = new Table ("right", null);
-      Join join = new Join (leftSide, rightSide, new Column (), new Column ());
+      JoinTree joinTree = new JoinTree (leftSide, rightSide, new Column (), new Column ());
 
       JoinCollection collection = new JoinCollection ();
-      collection.Add (join);
-      collection.Add (join);
+      collection.Add (joinTree);
+      collection.Add (joinTree);
 
       Assert.AreEqual (1, collection.Count);
-      Assert.That (collection[rightSide], Is.EqualTo (new object[] { join }));
+      Assert.That (collection[rightSide], Is.EqualTo (new object[] { joinTree }));
     }
 
     [Test]
@@ -60,10 +60,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       Table leftSide1 = new Table ("left", null);
       Table rightSide = new Table ("right", null);
-      Join join1 = new Join (leftSide1, rightSide, new Column (), new Column ());
+      JoinTree join1 = new JoinTree (leftSide1, rightSide, new Column (), new Column ());
 
       Table leftSide2 = new Table ("left2", null);
-      Join join2 = new Join (leftSide2, rightSide, new Column (), new Column ());
+      JoinTree join2 = new JoinTree (leftSide2, rightSide, new Column (), new Column ());
 
       JoinCollection collection = new JoinCollection ();
       collection.Add (join1);
@@ -78,11 +78,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       Table leftSide1 = new Table ("left", null);
       Table rightSide1 = new Table ("right", null);
-      Join join1 = new Join (leftSide1, rightSide1, new Column (), new Column ());
+      JoinTree join1 = new JoinTree (leftSide1, rightSide1, new Column (), new Column ());
 
       Table leftSide2 = new Table ("left2", null);
       Table rightSide2 = new Table ("right2", null);
-      Join join2 = new Join (leftSide2, rightSide2, new Column (), new Column ());
+      JoinTree join2 = new JoinTree (leftSide2, rightSide2, new Column (), new Column ());
 
       JoinCollection collection = new JoinCollection ();
       collection.Add (join1);

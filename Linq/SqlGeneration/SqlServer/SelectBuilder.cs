@@ -34,8 +34,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       foreach (Column column in columns)
         yield return SqlServerUtility.GetColumnString (column);
     }
-
-
+    
 
   }
 }
