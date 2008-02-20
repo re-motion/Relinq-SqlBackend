@@ -275,5 +275,26 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual (expectedString, result.A);
     }
+
+    [Test]
+    public void SelectJoin_WithRelationMember()
+    {
+      //querying related object, the foreign key is selected, not the object data
+      //from sd in source select sd.Student
+
+      IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
+
+      IQueryable<Student> query = TestQueryGenerator.CreateObjectImplicitSelectJoin (source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+
+      const string expectedString = "SELECT [j0].* FROM [detailTable] [sd] INNER JOIN "
+          + "[studentTable] [j0] ON [sd].[Student_Detail_PK] = [j0].[Student_FK]";
+
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      Assert.AreEqual (expectedString, result.A);
+    }
+
   }
 }
