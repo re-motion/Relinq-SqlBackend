@@ -51,12 +51,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Table studentDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
       Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
-      JoinTree joinTree = new JoinTree (studentTable, studentDetailTable, new Column (studentTable, joinColumns.B),
-          new Column (studentDetailTable, joinColumns.A));
+      SingleJoin join = new SingleJoin (new Column (studentTable, joinColumns.B), new Column (studentDetailTable, joinColumns.A));
      
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree.GetSingleJoinForRoot() }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
     [Test]
@@ -141,11 +140,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
 
-      JoinTree joinTree = new JoinTree (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSide, columns.A));
+      SingleJoin join = new SingleJoin (new Column (leftSide, columns.B), new Column (rightSide, columns.A));
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree.GetSingleJoinForRoot() }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
     [Test]
@@ -192,14 +191,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance); // Student_Detail
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
-      JoinTree joinTree = new JoinTree (leftSide, rightSide, new Column (leftSide, columns.B), new Column (rightSide, columns.A));
+      SingleJoin join = new SingleJoin (new Column (leftSide, columns.B), new Column (rightSide, columns.A));
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
 
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
 
-      Assert.That (actualJoins, Is.EqualTo (new object[] { joinTree.GetSingleJoinForRoot() }));
-
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
     [Test]
