@@ -21,7 +21,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void AddPath_SimpleJoin ()
     {
       Table table1 = new Table ("left", null);
-      SingleJoin join = new SingleJoin (new Column (table1, "a"), new Column (_initialTable, "b"));
+      SingleJoin join = new SingleJoin (new Column (_initialTable, "b"), new Column (table1, "a"));
       FieldSourcePath path = new FieldSourcePath(_initialTable, new[] { join });
 
       JoinCollection collection = new JoinCollection ();
@@ -35,10 +35,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void AddPath_NestedJoin ()
     {
       Table table1 = new Table ("left", null);
-      SingleJoin join1 = new SingleJoin (new Column (table1, "a"), new Column (_initialTable, "b"));
+      SingleJoin join1 = new SingleJoin (new Column (_initialTable, "b"), new Column (table1, "a"));
 
       Table table2 = new Table ("outerLeft", null);
-      SingleJoin join2 = new SingleJoin (new Column (table2, "c"), new Column (table1, "d"));
+      SingleJoin join2 = new SingleJoin (new Column (table1, "d"), new Column (table2, "c"));
 
       FieldSourcePath path = new FieldSourcePath (_initialTable, new[] { join1, join2 });
 
@@ -52,10 +52,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void AddPath_PathTwice ()
     {
       Table table1 = new Table ("left", null);
-      SingleJoin join1 = new SingleJoin (new Column (table1, "a"), new Column (_initialTable, "b"));
+      SingleJoin join1 = new SingleJoin (new Column (_initialTable, "b"), new Column (table1, "a"));
 
       Table table2 = new Table ("right", null);
-      SingleJoin join2 = new SingleJoin (new Column (table2, "a"), new Column (table1, "a"));
+      SingleJoin join2 = new SingleJoin (new Column (table1, "a"), new Column (table2, "a"));
 
       FieldSourcePath path = new FieldSourcePath(_initialTable, new[] { join1, join2});
 
@@ -70,11 +70,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void AddPath_TwoJoinsSameTable ()
     {
-      Table leftSide1 = new Table ("left", null);
-      SingleJoin join1 = new SingleJoin (new Column (leftSide1, "a"), new Column (_initialTable, "b"));
+      Table relatedTable1 = new Table ("related1", null);
+      SingleJoin join1 = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable1, "a"));
 
-      Table leftSide2 = new Table ("left2", null);
-      SingleJoin join2 = new SingleJoin (new Column (leftSide2, "a"), new Column (_initialTable, "b"));
+      Table relatedTable2 = new Table ("related2", null);
+      SingleJoin join2 = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable2, "a"));
 
       FieldSourcePath path1 = new FieldSourcePath (_initialTable, new[] { join1 });
       FieldSourcePath path2 = new FieldSourcePath (_initialTable, new[] { join2 });
@@ -90,12 +90,12 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void AddPath_TwoPathsDifferentSourceTables ()
     {
-      Table leftSide1 = new Table ("left", null);
-      SingleJoin join1 = new SingleJoin (new Column (leftSide1, "a"), new Column (_initialTable, "b"));
+      Table relatedTable1 = new Table ("related1", null);
+      SingleJoin join1 = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable1, "a"));
       
       Table initialTable2 = new Table ("initialTable2", "i2");
-      Table leftSide2 = new Table ("left2", null);
-      SingleJoin join2 = new SingleJoin (new Column (leftSide2, "a"), new Column (initialTable2, "b"));
+      Table relatedTable2 = new Table ("related2", null);
+      SingleJoin join2 = new SingleJoin (new Column (initialTable2, "b"), new Column (relatedTable2, "a"));
 
       FieldSourcePath path1 = new FieldSourcePath (_initialTable, new[] { join1 });
       FieldSourcePath path2 = new FieldSourcePath (initialTable2, new[] { join2 });
@@ -112,13 +112,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void AddPath_DifferentPaths_EqualJoins ()
     {
-      Table leftSide1 = new Table ("left", null);
-      SingleJoin join1 = new SingleJoin (new Column (leftSide1, "a"), new Column (_initialTable, "b"));
+      Table relatedTable1 = new Table ("related1", null);
+      SingleJoin join1 = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable1, "a"));
 
-      Table leftSide2a = new Table ("left2a", null);
-      Table leftSide2b = new Table ("left2b", null);
-      SingleJoin join2A = new SingleJoin (new Column (leftSide2a, "c"), new Column (leftSide1, "d"));
-      SingleJoin join2B = new SingleJoin (new Column (leftSide2b, "e"), new Column (leftSide1, "f"));
+      Table relatedTable2a = new Table ("related2a", null);
+      Table relatedTable2b = new Table ("related2b", null);
+      SingleJoin join2A = new SingleJoin (new Column (relatedTable1, "d"), new Column (relatedTable2a, "c"));
+      SingleJoin join2B = new SingleJoin (new Column (relatedTable1, "f"), new Column (relatedTable2b, "e"));
 
       FieldSourcePath path1 = new FieldSourcePath(_initialTable, new[] {join1,join2A});
       FieldSourcePath path2 = new FieldSourcePath (_initialTable, new[] { join1, join2B });

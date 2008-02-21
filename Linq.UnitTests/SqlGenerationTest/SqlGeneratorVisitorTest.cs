@@ -51,7 +51,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Table studentDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
       Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      SingleJoin join = new SingleJoin (new Column (studentTable, joinColumns.B), new Column (studentDetailTable, joinColumns.A));
+      SingleJoin join = new SingleJoin (new Column (studentDetailTable, joinColumns.A), new Column (studentTable, joinColumns.B));
      
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];
@@ -136,14 +136,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      Table sourceTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
-      SingleJoin join = new SingleJoin (new Column (leftSide, columns.B), new Column (rightSide, columns.A));
+      SingleJoin join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[sourceTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
@@ -188,14 +188,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance); // Student_Detail
+      Table sourceTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance); // Student_Detail
+      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      SingleJoin join = new SingleJoin (new Column (leftSide, columns.B), new Column (rightSide, columns.A));
+      SingleJoin join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
 
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[rightSide];
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[sourceTable];
 
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }

@@ -42,11 +42,11 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private void AppendJoinExpression (StringBuilder joinStatement, SingleJoin join)
     {
       joinStatement.Append (" INNER JOIN ")
-          .Append (GetTableDeclaration (join.LeftSide))
+          .Append (GetTableDeclaration (join.RightSide))
           .Append (" ON ")
-          .Append (SqlServerUtility.GetColumnString (join.RightColumn))
+          .Append (SqlServerUtility.GetColumnString (join.LeftColumn))
           .Append (" = ")
-          .Append (SqlServerUtility.GetColumnString (join.LeftColumn));
+          .Append (SqlServerUtility.GetColumnString (join.RightColumn));
     }
 
     private string GetTableDeclaration (Table table)

@@ -25,7 +25,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       List<Table> tables = new List<Table> { table1 }; // this table does not have a join associated with it
       JoinCollection joins = new JoinCollection ();
-      SingleJoin join = new SingleJoin (column1, column2);
+      SingleJoin join = new SingleJoin (column2, column1);
       joins.AddPath (new FieldSourcePath(table2, new [] { join }));
       fromBuilder.BuildFromPart (tables, joins);
 
@@ -45,7 +45,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       List<Table> tables = new List<Table> { table2 };
       JoinCollection joins = new JoinCollection();
-      SingleJoin join = new SingleJoin (column1, column2);
+      SingleJoin join = new SingleJoin (column2, column1);
       joins.AddPath (new FieldSourcePath (table2, new[] { join }));
       fromBuilder.BuildFromPart (tables, joins);
 
@@ -72,8 +72,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       JoinCollection joins = new JoinCollection();
 
-      SingleJoin join1 = new SingleJoin (column1, column2);
-      SingleJoin join2 = new SingleJoin (column4, column3);
+      SingleJoin join1 = new SingleJoin (column2, column1);
+      SingleJoin join2 = new SingleJoin (column3, column4);
       joins.AddPath (new FieldSourcePath (table2, new[] { join1, join2 }));
 
       fromBuilder.BuildFromPart (tables, joins);
@@ -103,8 +103,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       JoinCollection joins = new JoinCollection ();
 
-      SingleJoin join1 = new SingleJoin (column1, column2);
-      SingleJoin join2 = new SingleJoin (column4, column3);
+      SingleJoin join1 = new SingleJoin (column2, column1);
+      SingleJoin join2 = new SingleJoin (column3, column4);
       joins.AddPath (new FieldSourcePath (table2, new[] { join1, join2 }));
 
       fromBuilder.BuildFromPart (tables, joins);
