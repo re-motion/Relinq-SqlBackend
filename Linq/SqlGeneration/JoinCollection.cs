@@ -1,3 +1,4 @@
+using System;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
 
@@ -17,6 +18,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
     {
       if (!this[startingTable].Contains (join))
         Add (startingTable, join);
+    }
+
+    public void AddPath (FieldSourcePath fieldSourcePath)
+    {
+      foreach (var join in fieldSourcePath.Joins)
+        AddSingleJoin (fieldSourcePath.SourceTable, join);
     }
   }
 }
