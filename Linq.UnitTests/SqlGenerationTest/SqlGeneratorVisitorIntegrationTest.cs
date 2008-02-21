@@ -44,7 +44,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join1 }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2 }));
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join1, join3 }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2, join3 }));
 
     }
 
@@ -118,7 +118,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join1 }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2 }));
 
     }
 
@@ -157,7 +157,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
-      Assert.That (actualJoins, Is.EqualTo (new object[] { join2, join1, join3 }));
+      Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2, join3 }));
     }
 
     [Test]
@@ -204,16 +204,16 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (2, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins1 = sqlGeneratorVisitor.Joins[studentDetailDetailTable1];
-      Assert.That (actualJoins1, Is.EqualTo (new object[] { join2, join1 }));
+      Assert.That (actualJoins1, Is.EqualTo (new object[] { join1, join2 }));
 
       List<SingleJoin> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
-      Assert.That (actualJoins2, Is.EqualTo (new object[] { join4, join3 }));
+      Assert.That (actualJoins2, Is.EqualTo (new object[] { join3, join4 }));
     }
 
     private SingleJoin CreateJoin (MemberInfo relationMember, Table rightSideTable)
     {
       Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       return new SingleJoin (new Column (leftSide, columns.B), new Column (rightSideTable, columns.A));
     }
   }

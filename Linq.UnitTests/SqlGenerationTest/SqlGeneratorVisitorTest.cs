@@ -50,7 +50,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       Table studentDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
-      Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (studentTable, joinColumns.B), new Column (studentDetailTable, joinColumns.A));
      
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
@@ -138,7 +138,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
       SingleJoin join = new SingleJoin (new Column (leftSide, columns.B), new Column (rightSide, columns.A));
 
@@ -190,7 +190,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       Table leftSide = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Table rightSide = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance); // Student_Detail
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumns (StubDatabaseInfo.Instance, relationMember);
+      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (leftSide, columns.B), new Column (rightSide, columns.A));
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);

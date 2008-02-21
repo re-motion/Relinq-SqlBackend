@@ -53,7 +53,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO")]
     public void CombineTables_WithNestedJoin ()
     {
       StringBuilder commandText = new StringBuilder ();
@@ -106,7 +105,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       SingleJoin join1 = new SingleJoin (column1, column2);
       SingleJoin join2 = new SingleJoin (column4, column3);
-      joins.AddPath (new FieldSourcePath (table2, new[] { join2, join1 }));
+      joins.AddPath (new FieldSourcePath (table2, new[] { join1, join2 }));
 
       fromBuilder.BuildFromPart (tables, joins);
 
@@ -114,9 +113,5 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
         + "INNER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
         + "INNER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
     }
-
-
-
-
   }
 }

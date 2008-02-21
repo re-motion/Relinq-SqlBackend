@@ -45,13 +45,13 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitMainFromClause (MainFromClause fromClause)
     {
-      Table tableEntry = DatabaseInfoUtility.GetTableForFromClause(_databaseInfo, fromClause);
+      Table tableEntry = fromClause.GetTable (_databaseInfo);
       Tables.Add (tableEntry);
     }
 
     public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
-      Table tableEntry = DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, fromClause);
+      Table tableEntry = fromClause.GetTable (_databaseInfo);
       Tables.Add (tableEntry);
     }
 
@@ -70,7 +70,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Criterion = criterions.B;
 
       foreach (var fieldDescriptor in criterions.A)
-        AddJoinsForFieldAccess (fieldDescriptor.SourcePath);
+        Joins.AddPath ((FieldSourcePath) fieldDescriptor.SourcePath);
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
@@ -84,16 +84,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
       OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, _context);
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
-      // TODO: add joins
-      AddJoinsForFieldAccess (orderingField.FieldDescriptor.SourcePath);
+      Joins.AddPath ((FieldSourcePath) orderingField.FieldDescriptor.SourcePath);
     }
-
-    private void AddJoinsForFieldAccess (IFieldSourcePath fieldSourcePath)
-    {
-      if (fieldSourcePath is JoinTree)
-        Joins.AddTree ((JoinTree) fieldSourcePath);
-    }
-
 
     public void VisitSelectClause (SelectClause selectClause)
     {
@@ -103,7 +95,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       foreach (var selectedField in selectedFields)
       {
         Columns.Add (selectedField.GetMandatoryColumn());
-        AddJoinsForFieldAccess (selectedField.SourcePath);
+        Joins.AddPath ((FieldSourcePath) selectedField.SourcePath);
       }
     }
 

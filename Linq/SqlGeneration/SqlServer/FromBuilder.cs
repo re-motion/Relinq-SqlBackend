@@ -34,7 +34,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private string BuildJoinPart (IEnumerable<SingleJoin> joins)
     {
       StringBuilder joinStatement = new StringBuilder ();
-      foreach (SingleJoin join in joins.Reverse()) // reverse joins to get a natural order in the SQL statement
+      foreach (SingleJoin join in joins)
         AppendJoinExpression (joinStatement, join);
       return joinStatement.ToString ();
     }

@@ -278,7 +278,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Ensure correct ordering of single join items.")]
     public void SelectJoin()
     {
       // from sdd in source 
