@@ -23,10 +23,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       OrderByBuilder orderByBuilder = new OrderByBuilder (commandText);
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
-      Table table = new Table ("s1","s1");
+      FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
       MemberInfo member = typeof (Student).GetProperty ("First");
-      Column column = new Column (table,"c1");
-      FieldDescriptor descriptor = new FieldDescriptor (member, fromClause, table, column);
+      Column column = new Column (path.SourceTable,"c1");
+      FieldDescriptor descriptor = new FieldDescriptor (member, fromClause, path, column);
 
       OrderingField field1 = new OrderingField (descriptor,OrderDirection.Asc);
       OrderingField field2 = new OrderingField (descriptor, OrderDirection.Desc);
@@ -45,10 +45,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       OrderByBuilder orderByBuilder = new OrderByBuilder (commandText);
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
-      Table table = new Table ("s1", "s1");
+      FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
       MemberInfo member = typeof (Student).GetProperty ("First");
-      Column column = new Column (table, "c1");
-      FieldDescriptor descriptor = new FieldDescriptor (member, fromClause, table, column);
+      Column column = new Column (path.SourceTable, "c1");
+      FieldDescriptor descriptor = new FieldDescriptor (member, fromClause, path, column);
 
       OrderingField field1 = new OrderingField (descriptor, (OrderDirection) int.MaxValue);
       List<OrderingField> orderingFields = new List<OrderingField> { field1 };
