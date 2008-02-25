@@ -25,7 +25,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
         new Column (new Table ("s3", "s3"), "c3")
       };
 
-      selectBuilder.BuildSelectPart (columns);
+      selectBuilder.BuildSelectPart (columns,false);
       Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", commandText.ToString ());
     }
 
@@ -37,7 +37,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SelectBuilder selectBuilder = new SelectBuilder (commandText);
       List<Column> columns = new List<Column>();
 
-      selectBuilder.BuildSelectPart (columns);
+      selectBuilder.BuildSelectPart (columns,false);
     }
   }
 }

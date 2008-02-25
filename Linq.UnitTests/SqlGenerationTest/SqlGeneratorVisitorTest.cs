@@ -38,6 +38,16 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    public void VisitSelectClause_DistinctTrue ()
+    {
+      IQueryable<string> query = TestQueryGenerator.CreateSimpleDisinctQuery (ExpressionHelper.CreateQuerySource ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
+
+      Assert.IsTrue (selectClause.Distinct);
+    }
+
+    [Test]
     public void VisitSelectClause_WithJoins ()
     {
       IQueryable<string> query = TestQueryGenerator.CreateSimpleImplicitSelectJoin (ExpressionHelper.CreateQuerySource_Detail ());
@@ -207,6 +217,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       VisitWhereClause_WithJoins ();
       Assert.AreEqual (1, _context.Count);
     }
+
 
     
   }

@@ -320,5 +320,20 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual (expectedString, result.A);
     }
 
+    [Test]
+    public void Select_WithDistinct ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource();
+      IQueryable<string> query = TestQueryGenerator.CreateSimpleDisinctQuery (source);
+
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+
+      const string expectedString = "SELECT DISTINCT [s].[FirstColumn] FROM [studentTable] [s]";
+
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      Assert.AreEqual (expectedString, result.A);
+    }
   }
 }

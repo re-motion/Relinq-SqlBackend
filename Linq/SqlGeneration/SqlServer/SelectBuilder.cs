@@ -17,10 +17,15 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _commandText = commandText;
     }
 
-    public void BuildSelectPart (List<Column> columns)
+    public void BuildSelectPart (List<Column> columns,bool distinct)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
-      _commandText.Append ("SELECT ");
+      ArgumentUtility.CheckNotNull ("distinct", distinct);
+
+      if (distinct)
+        _commandText.Append ("SELECT DISTINCT ");
+      else 
+        _commandText.Append ("SELECT ");
 
       if (columns.Count == 0)
         throw new InvalidOperationException ("The query does not select any fields from the data source.");

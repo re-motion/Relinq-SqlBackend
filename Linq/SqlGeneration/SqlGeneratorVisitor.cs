@@ -91,7 +91,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     {
       SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, _context);
       IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
-      
+      Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)
       {
         Columns.Add (selectedField.GetMandatoryColumn());
@@ -108,7 +108,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
       foreach (IBodyClause bodyClause in queryBody.BodyClauses)
         bodyClause.Accept (this);
       queryBody.SelectOrGroupClause.Accept (this);
-
     }
+
+    public bool Distinct { get; private set; }
   }
 }
