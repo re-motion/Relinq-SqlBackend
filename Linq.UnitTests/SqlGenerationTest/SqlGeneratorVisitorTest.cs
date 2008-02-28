@@ -38,6 +38,19 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    public void VisitSelectClause_DistinctFalse ()
+    {
+      IQueryable<Tuple<string, string>> query = TestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SelectClause selectClause = (SelectClause) parsedQuery.QueryBody.SelectOrGroupClause;
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+
+      Assert.IsFalse (selectClause.Distinct);
+    }
+
+    [Test]
     public void VisitSelectClause_DistinctTrue ()
     {
       IQueryable<string> query = TestQueryGenerator.CreateSimpleDisinctQuery (ExpressionHelper.CreateQuerySource ());
