@@ -123,5 +123,25 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       generator.CheckBaseProcessQueryMethod = true;
       generator.BuildCommandString ();
     }
+
+    [Test]
+    public void CreateDistinct ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      QueryExpression query = ExpressionHelper.ParseQuery (TestQueryGenerator.CreateSimpleDisinctQuery (source));
+      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
+
+      //Expect
+      _selectBuilder.BuildSelectPart (generator.Visitor.Columns, true);
+      _fromBuilder.BuildFromPart (generator.Visitor.Tables, generator.Visitor.Joins);
+      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+
+      _mockRepository.ReplayAll ();
+
+      generator.CheckBaseProcessQueryMethod = true;
+      generator.BuildCommandString ();
+
+    }
   }
 }
