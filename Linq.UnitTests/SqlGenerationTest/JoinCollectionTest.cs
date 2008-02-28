@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.SqlGeneration;
@@ -128,6 +129,84 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       collection.AddPath (path2);
       
       Assert.That (collection[_initialTable], Is.EqualTo (new object[] { join1,join2A,join2B }));
+    }
+
+    [Test]
+    public void Count()
+    {
+      Table relatedTable1 = new Table ("related1", null);
+      SingleJoin join1a = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable1, "a"));
+      SingleJoin join1b = new SingleJoin (new Column (_initialTable, "c"), new Column (relatedTable1, "d"));
+
+      Table initialTable2 = new Table ("initial2", null);
+      Table relatedTable2 = new Table ("related2", null);
+      SingleJoin join2 = new SingleJoin (new Column (initialTable2, "b"), new Column (relatedTable2, "a"));
+
+      JoinCollection joins = new JoinCollection();
+      Assert.AreEqual (0, joins.Count);
+
+      joins.AddPath (new FieldSourcePath(_initialTable, new[] {join1a}));
+      Assert.AreEqual (1, joins.Count);
+
+      joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1b }));
+      Assert.AreEqual (1, joins.Count);
+
+      joins.AddPath (new FieldSourcePath (initialTable2, new[] { join2 }));
+      Assert.AreEqual (2, joins.Count);
+    }
+
+    [Test]
+    public void Item ()
+    {
+      Table relatedTable1 = new Table ("related1", null);
+      SingleJoin join1a = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable1, "a"));
+      SingleJoin join1b = new SingleJoin (new Column (_initialTable, "c"), new Column (relatedTable1, "d"));
+
+      Table initialTable2 = new Table ("initial2", null);
+      Table relatedTable2 = new Table ("related2", null);
+      SingleJoin join2 = new SingleJoin (new Column (initialTable2, "b"), new Column (relatedTable2, "a"));
+
+      JoinCollection joins = new JoinCollection ();
+      joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1a }));
+      joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1b }));
+      joins.AddPath (new FieldSourcePath (initialTable2, new[] { join2 }));
+
+      List<SingleJoin> item1 = joins[_initialTable];
+      Assert.That (item1, Is.EqualTo (new[] {join1a, join1b}));
+
+      List<SingleJoin> item2 = joins[initialTable2];
+      Assert.That (item2, Is.EqualTo (new[] { join2 }));
+    }
+
+    [Test]
+    public void GetEnumerator_Generic ()
+    {
+      Table relatedTable1 = new Table ("related1", null);
+      SingleJoin join1a = new SingleJoin (new Column (_initialTable, "b"), new Column (relatedTable1, "a"));
+      SingleJoin join1b = new SingleJoin (new Column (_initialTable, "c"), new Column (relatedTable1, "d"));
+
+      Table initialTable2 = new Table ("initial2", null);
+      Table relatedTable2 = new Table ("related2", null);
+      SingleJoin join2 = new SingleJoin (new Column (initialTable2, "b"), new Column (relatedTable2, "a"));
+
+      JoinCollection joins = new JoinCollection ();
+      joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1a }));
+      joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1b }));
+      joins.AddPath (new FieldSourcePath (initialTable2, new[] { join2 }));
+
+      List<KeyValuePair<Table, List<SingleJoin>>> list = new List<KeyValuePair<Table, List<SingleJoin>>>();
+      foreach (KeyValuePair<Table, List<SingleJoin>> item in joins)
+        list.Add (item);
+
+      Assert.AreEqual (2, list.Count);
+      Assert.IsTrue (list[0].Key == _initialTable || list[1].Key == _initialTable);
+      Assert.IsTrue (list[0].Key == initialTable2 || list[1].Key == initialTable2);
+
+      List<SingleJoin> itemsForInitialTable = list[0].Key == _initialTable ? list[0].Value : list[1].Value;
+      List<SingleJoin> itemsForInitialTable2 = list[0].Key == initialTable2 ? list[0].Value : list[1].Value;
+
+      Assert.That (itemsForInitialTable, Is.EqualTo (new[] { join1a, join1b }));
+      Assert.That (itemsForInitialTable2, Is.EqualTo (new[] { join2 }));
     }
   }
 }
