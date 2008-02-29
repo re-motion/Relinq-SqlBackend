@@ -28,7 +28,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private IEnumerable<string> CombineTables (IEnumerable<Table> tables, JoinCollection joins)
     {
       foreach (Table table in tables)
-        yield return GetTableDeclaration (table) + BuildJoinPart (joins[table]);
+        yield return SqlServerUtility.GetTableDeclaration (table) + BuildJoinPart (joins[table]);
     }
 
     private string BuildJoinPart (IEnumerable<SingleJoin> joins)
@@ -42,16 +42,11 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private void AppendJoinExpression (StringBuilder joinStatement, SingleJoin join)
     {
       joinStatement.Append (" LEFT OUTER JOIN ")
-          .Append (GetTableDeclaration (join.RightSide))
+          .Append (SqlServerUtility.GetTableDeclaration (join.RightSide))
           .Append (" ON ")
           .Append (SqlServerUtility.GetColumnString (join.LeftColumn))
           .Append (" = ")
           .Append (SqlServerUtility.GetColumnString (join.RightColumn));
-    }
-
-    private string GetTableDeclaration (Table table)
-    {
-      return SqlServerUtility.WrapSqlIdentifier (table.Name) + " " + SqlServerUtility.WrapSqlIdentifier (table.Alias);
     }
   }
 }

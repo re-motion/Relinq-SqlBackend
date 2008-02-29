@@ -16,5 +16,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       else
         return "*";
     }
+
+    public static string GetTableDeclaration (Table table)
+    {
+      return SqlServerUtility.WrapSqlIdentifier (table.Name) + " " + SqlServerUtility.WrapSqlIdentifier (table.Alias);
+    }
   }
 }

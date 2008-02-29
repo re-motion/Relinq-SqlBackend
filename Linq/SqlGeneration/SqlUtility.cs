@@ -1,4 +1,6 @@
 using System.Data;
+using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration
@@ -21,6 +23,5 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
       return command;
     }
-
   }
 }

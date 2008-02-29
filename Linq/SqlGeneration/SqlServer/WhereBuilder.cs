@@ -73,6 +73,28 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
     {
+      if (value is VirtualColumn)
+        AppendVirtualNullCondition ((VirtualColumn) value, kind);
+      else
+        AppendNonVirtualNullCondition (value, kind);
+    }
+
+    private void AppendVirtualNullCondition (VirtualColumn virtualColumn, BinaryCondition.ConditionKind kind)
+    {
+      if (kind == BinaryCondition.ConditionKind.Equal)
+        _commandText.Append ("NOT ");
+
+      _commandText.Append ("EXISTS (SELECT 1 FROM ");
+      _commandText.Append (SqlServerUtility.GetTableDeclaration (virtualColumn.OppositeForeignKeyColumn.Table));
+      _commandText.Append (" WHERE ");
+      _commandText.Append (SqlServerUtility.GetColumnString (virtualColumn.OppositeForeignKeyColumn));
+      _commandText.Append (" = ");
+      _commandText.Append (SqlServerUtility.GetColumnString (virtualColumn.PrimaryKeyColumn));
+      _commandText.Append (")");
+    }
+
+    private void AppendNonVirtualNullCondition (IValue value, BinaryCondition.ConditionKind kind)
+    {
       AppendValueInCondition (value);
       switch (kind)
       {
@@ -107,8 +129,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     {
       if (value is Constant)
         AppendConstant ((Constant) value);
+      else if (value is Column)
+        AppendColumn ((Column) value);
       else
-        AppendColumn((Column) value);
+        throw new NotSupportedException ("Value type " + value.GetType().Name + " is not supported.");
     }
 
     private void AppendConstant (Constant constant)
