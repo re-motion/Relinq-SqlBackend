@@ -203,7 +203,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] INNER JOIN [studentTable] [j0] "
+      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] "
           + "ON [sd].[Student_Detail_PK] = [j0].[Student_Detail_to_Student_FK] ORDER BY [j0].[FirstColumn] ASC",
           result.A);
     }
@@ -217,8 +217,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
-          + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "INNER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
+          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
           + "ORDER BY [j1].[FirstColumn] ASC";
       Assert.AreEqual (expectedString, result.A);
     }
@@ -242,11 +242,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       string expectedString = "SELECT [sdd1].* "
           + "FROM "
           + "[detailDetailTable] [sdd1] "
-          + "INNER JOIN [detailTable] [j0] ON [sdd1].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "INNER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK], "
+          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd1].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK], "
           + "[detailDetailTable] [sdd2] "
-          + "INNER JOIN [detailTable] [j2] ON [sdd2].[Student_Detail_Detail_PK] = [j2].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "INNER JOIN [studentTable] [j3] ON [j2].[Student_Detail_PK] = [j3].[Student_Detail_to_Student_FK] "
+          + "LEFT OUTER JOIN [detailTable] [j2] ON [sdd2].[Student_Detail_Detail_PK] = [j2].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [j3] ON [j2].[Student_Detail_PK] = [j3].[Student_Detail_to_Student_FK] "
           + "ORDER BY [j1].[FirstColumn] ASC, [j3].[FirstColumn] ASC, [j1].[FirstColumn] ASC";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString();
@@ -269,8 +269,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       string expectedString = "SELECT [sdd].* "
           + "FROM "
           + "[detailDetailTable] [sdd] "
-          + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "INNER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
+          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
           + "ORDER BY [j1].[FirstColumn] ASC, [j0].[IDColumn] ASC";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -292,9 +292,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       string expectedString = "SELECT [j1].[FirstColumn], [j2].[IDColumn] "
           + "FROM "
           + "[detailDetailTable] [sdd] "
-          + "INNER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "INNER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
-          + "INNER JOIN [industrialTable] [j2] ON [sdd].[Student_Detail_Detail_PK] = [j2].[Student_Detail_Detail_to_IndustrialSector_FK]";
+          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
+          + "LEFT OUTER JOIN [industrialTable] [j2] ON [sdd].[Student_Detail_Detail_PK] = [j2].[Student_Detail_Detail_to_IndustrialSector_FK]";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual (expectedString, result.A);
@@ -310,7 +310,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
-      const string expectedString = "SELECT [j0].* FROM [detailTable] [sd] INNER JOIN "
+      const string expectedString = "SELECT [j0].* FROM [detailTable] [sd] LEFT OUTER JOIN "
           + "[studentTable] [j0] ON [sd].[Student_Detail_PK] = [j0].[Student_Detail_to_Student_FK]";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();

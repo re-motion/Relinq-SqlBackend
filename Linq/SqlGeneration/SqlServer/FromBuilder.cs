@@ -41,7 +41,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendJoinExpression (StringBuilder joinStatement, SingleJoin join)
     {
-      joinStatement.Append (" INNER JOIN ")
+      joinStatement.Append (" LEFT OUTER JOIN ")
           .Append (GetTableDeclaration (join.RightSide))
           .Append (" ON ")
           .Append (SqlServerUtility.GetColumnString (join.LeftColumn))

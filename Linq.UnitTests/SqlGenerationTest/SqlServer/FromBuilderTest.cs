@@ -49,7 +49,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       joins.AddPath (new FieldSourcePath (table2, new[] { join }));
       fromBuilder.BuildFromPart (tables, joins);
 
-      Assert.AreEqual ("FROM [s2] [s2_alias] INNER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1]", commandText.ToString ());
+      Assert.AreEqual ("FROM [s2] [s2_alias] LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1]", commandText.ToString ());
     }
 
     [Test]
@@ -79,8 +79,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       fromBuilder.BuildFromPart (tables, joins);
 
       Assert.AreEqual ("FROM [s2] [s2_alias] "
-        + "INNER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
-        + "INNER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
+        + "LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
+        + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
     }
 
     [Test]
@@ -110,8 +110,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       fromBuilder.BuildFromPart (tables, joins);
 
       Assert.AreEqual ("FROM [s2] [s2_alias] "
-        + "INNER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
-        + "INNER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
+        + "LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
+        + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
     }
   }
 }
