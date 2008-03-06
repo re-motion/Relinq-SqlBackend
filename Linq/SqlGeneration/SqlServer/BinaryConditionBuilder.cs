@@ -21,22 +21,12 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       else if (binaryCondition.Right.Equals (new Constant (null)))
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
       else
-      {
-        _commandBuilder.Append ("(");
-        AppendNullChecksForBinaryConditions (binaryCondition.Left, binaryCondition.Right, binaryCondition.Kind);
-
-        AppendValueInCondition (binaryCondition.Left);
-        _commandBuilder.Append (" ");
-        AppendBinaryConditionKind (binaryCondition.Kind);
-        _commandBuilder.Append (" ");
-        AppendValueInCondition (binaryCondition.Right);
-        _commandBuilder.Append (")");
-      }
+        AppendCondition (binaryCondition);
     }
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
     {
-      AppendValueInCondition (value);
+      AppendValue (value);
       switch (kind)
       {
         case BinaryCondition.ConditionKind.Equal:
@@ -49,7 +39,20 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    private void AppendNullChecksForBinaryConditions (IValue left, IValue right, BinaryCondition.ConditionKind conditionKind)
+    private void AppendCondition (BinaryCondition binaryCondition)
+    {
+      _commandBuilder.Append ("(");
+      AppendNullChecks (binaryCondition.Left, binaryCondition.Right, binaryCondition.Kind);
+
+      AppendValue (binaryCondition.Left);
+      _commandBuilder.Append (" ");
+      AppendConditionKind (binaryCondition.Kind);
+      _commandBuilder.Append (" ");
+      AppendValue (binaryCondition.Right);
+      _commandBuilder.Append (")");
+    }
+
+    private void AppendNullChecks (IValue left, IValue right, BinaryCondition.ConditionKind conditionKind)
     {
       if (left is Column || right is Column)
       {
@@ -58,45 +61,56 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
           case BinaryCondition.ConditionKind.Equal:
           case BinaryCondition.ConditionKind.LessThanOrEqual:
           case BinaryCondition.ConditionKind.GreaterThanOrEqual:
-            if (left is Column && right is Column)
-            {
-              _commandBuilder.Append ("(");
-              AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
-              _commandBuilder.Append (" AND ");
-              AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
-              _commandBuilder.Append (") OR ");
-            }
+            AppendNullChecksForEqualKinds(left, right);
             break;
           case BinaryCondition.ConditionKind.NotEqual:
-            if (left is Column && right is Column)
-            {
-              _commandBuilder.Append ("(");
-              AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
-              _commandBuilder.Append (" AND ");
-              AppendNullCondition (right, BinaryCondition.ConditionKind.NotEqual);
-              _commandBuilder.Append (") OR ");
-              _commandBuilder.Append ("(");
-              AppendNullCondition (left, BinaryCondition.ConditionKind.NotEqual);
-              _commandBuilder.Append (" AND ");
-              AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
-              _commandBuilder.Append (") OR ");
-            }
-            else if (left is Column)
-            {
-              AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
-              _commandBuilder.Append (" OR ");
-            }
-            else
-            {
-              AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
-              _commandBuilder.Append (" OR ");
-            }
+            AppendNullChecksForNotEqualKind(left, right);
             break;
         }
       }
     }
 
-    private void AppendValueInCondition (IValue value)
+    private void AppendNullChecksForEqualKinds (IValue left, IValue right)
+    {
+      if (left is Column && right is Column)
+      {
+        _commandBuilder.Append ("(");
+        AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
+        _commandBuilder.Append (" AND ");
+        AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
+        _commandBuilder.Append (") OR ");
+      }
+    }
+
+    private void AppendNullChecksForNotEqualKind (IValue left, IValue right)
+    {
+      if (left is Column && right is Column)
+      {
+        _commandBuilder.Append ("(");
+        AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
+        _commandBuilder.Append (" AND ");
+        AppendNullCondition (right, BinaryCondition.ConditionKind.NotEqual);
+        _commandBuilder.Append (") OR ");
+        _commandBuilder.Append ("(");
+        AppendNullCondition (left, BinaryCondition.ConditionKind.NotEqual);
+        _commandBuilder.Append (" AND ");
+        AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
+        _commandBuilder.Append (") OR ");
+      }
+      else if (left is Column)
+      {
+        AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
+        _commandBuilder.Append (" OR ");
+      }
+      else
+      {
+        AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
+        _commandBuilder.Append (" OR ");
+      }
+    }
+
+
+    private void AppendValue (IValue value)
     {
       if (value is Constant)
         _commandBuilder.AppendConstant ((Constant) value);
@@ -106,7 +120,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         throw new NotSupportedException ("Value type " + value.GetType ().Name + " is not supported.");
     }
 
-    private void AppendBinaryConditionKind (BinaryCondition.ConditionKind kind)
+    private void AppendConditionKind (BinaryCondition.ConditionKind kind)
     {
       string commandString;
       switch (kind)
