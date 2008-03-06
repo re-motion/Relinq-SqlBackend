@@ -15,8 +15,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineTables_SelectsJoinsPerTable()
     {
-      StringBuilder commandText = new StringBuilder ();
-      FromBuilder fromBuilder = new FromBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder);
 
       Table table1 = new Table ("s1", "s1_alias");
       Table table2 = new Table ("s2", "s2_alias");
@@ -29,14 +29,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       joins.AddPath (new FieldSourcePath(table2, new [] { join }));
       fromBuilder.BuildFromPart (tables, joins);
 
-      Assert.AreEqual ("FROM [s1] [s1_alias]", commandText.ToString ());
+      Assert.AreEqual ("FROM [s1] [s1_alias]", commandBuilder.GetCommandText());
     }
 
     [Test]
     public void CombineTables_WithJoin ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      FromBuilder fromBuilder = new FromBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder);
 
       Table table1 = new Table ("s1", "s1_alias");
       Table table2 = new Table ("s2", "s2_alias");
@@ -49,14 +49,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       joins.AddPath (new FieldSourcePath (table2, new[] { join }));
       fromBuilder.BuildFromPart (tables, joins);
 
-      Assert.AreEqual ("FROM [s2] [s2_alias] LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1]", commandText.ToString ());
+      Assert.AreEqual ("FROM [s2] [s2_alias] LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1]", commandBuilder.GetCommandText ());
     }
 
     [Test]
     public void CombineTables_WithNestedJoin ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      FromBuilder fromBuilder = new FromBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder);
 
       // table2.table1.table3
 
@@ -80,14 +80,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Assert.AreEqual ("FROM [s2] [s2_alias] "
         + "LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
-        + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
+        + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandBuilder.GetCommandText());
     }
 
     [Test]
     public void CombineTables_WithNestedJoin_Wrong () // remove after fixing previous test
     {
-      StringBuilder commandText = new StringBuilder ();
-      FromBuilder fromBuilder = new FromBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder);
 
       // table2.table1.table3
 
@@ -111,7 +111,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Assert.AreEqual ("FROM [s2] [s2_alias] "
         + "LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
-        + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandText.ToString ());
+        + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]", commandBuilder.GetCommandText());
     }
   }
 }

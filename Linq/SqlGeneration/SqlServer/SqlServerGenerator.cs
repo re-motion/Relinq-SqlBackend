@@ -26,7 +26,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected override IFromBuilder CreateFromBuilder (StringBuilder commandText)
     {
-      return new FromBuilder (commandText);
+      return new FromBuilder (_commandBuilder);
     }
 
     protected override ISelectBuilder CreateSelectBuilder (StringBuilder commandText)

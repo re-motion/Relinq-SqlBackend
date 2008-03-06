@@ -9,20 +9,20 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class FromBuilder : IFromBuilder
   {
-    private readonly StringBuilder _commandText;
+    private readonly CommandBuilder _commandBuilder;
 
-    public FromBuilder (StringBuilder commandText)
+    public FromBuilder (CommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("commandText", commandText);
-      _commandText = commandText;
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      _commandBuilder = commandBuilder;
     }
 
     public void BuildFromPart (List<Table> tables, JoinCollection joins)
     {
-      _commandText.Append ("FROM ");
+      _commandBuilder.Append ("FROM ");
 
       IEnumerable<string> tableEntries = CombineTables (tables, joins);
-      _commandText.Append (SeparatedStringBuilder.Build (", ", tableEntries));
+      _commandBuilder.Append (SeparatedStringBuilder.Build (", ", tableEntries));
     }
 
     private IEnumerable<string> CombineTables (IEnumerable<Table> tables, JoinCollection joins)
