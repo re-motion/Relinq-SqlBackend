@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Rubicon.Text;
 using Rubicon.Utilities;
 using Rubicon.Data.Linq.DataObjectModel;
 
@@ -9,9 +7,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class SelectBuilder : ISelectBuilder
   {
-    private readonly CommandBuilder _commandBuilder;
+    private readonly ICommandBuilder _commandBuilder;
 
-    public SelectBuilder (CommandBuilder commandBuilder)
+    public SelectBuilder (ICommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;
@@ -30,17 +28,8 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       if (columns.Count == 0)
         throw new InvalidOperationException ("The query does not select any fields from the data source.");
 
-      IEnumerable<string> columnEntries = CombineColumnItems (columns);
-      _commandBuilder.Append (SeparatedStringBuilder.Build (", ", columnEntries));
+      _commandBuilder.AppendColumns (columns);
       _commandBuilder.Append(" ");
     }
-
-    private IEnumerable<string> CombineColumnItems (IEnumerable<Column> columns)
-    {
-      foreach (Column column in columns)
-        yield return SqlServerUtility.GetColumnString (column);
-    }
-    
-
   }
 }

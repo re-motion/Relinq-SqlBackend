@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Rubicon.Data.Linq.DataObjectModel;
@@ -5,7 +6,7 @@ using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
-  public class CommandBuilder
+  public class CommandBuilder : ICommandBuilder
   {
     private readonly StringBuilder _commandText;
     private readonly List<CommandParameter> _commandParameters;
@@ -37,6 +38,23 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     public void AppendColumn (Column column)
     {
       _commandText.Append (SqlServerUtility.GetColumnString (column));
+    }
+
+    public void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction)
+    {
+      bool first = true;
+      foreach (T item in items)
+      {
+        if (!first)
+          Append (", ");
+        appendAction (item);
+        first = false;
+      }
+    }
+
+    public void AppendColumns (IEnumerable<Column> columns)
+    {
+      AppendSeparatedItems (columns, AppendColumn);
     }
 
     public void AppendConstant (Constant constant)

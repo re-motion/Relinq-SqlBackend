@@ -8,10 +8,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class WhereBuilder : IWhereBuilder
   {
-    private readonly CommandBuilder _commandBuilder;
+    private readonly ICommandBuilder _commandBuilder;
     private readonly BinaryConditionBuilder _builder;
 
-    public WhereBuilder (CommandBuilder commandBuilder)
+    public WhereBuilder (ICommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;

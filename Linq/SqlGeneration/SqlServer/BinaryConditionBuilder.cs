@@ -6,9 +6,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class BinaryConditionBuilder
   {
-    private readonly CommandBuilder _commandBuilder;
+    private readonly ICommandBuilder _commandBuilder;
 
-    public BinaryConditionBuilder (CommandBuilder commandBuilder)
+    public BinaryConditionBuilder (ICommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("command", commandBuilder);
       _commandBuilder = commandBuilder;

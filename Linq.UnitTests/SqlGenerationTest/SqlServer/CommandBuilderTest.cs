@@ -103,6 +103,20 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual (_commandBuilder.GetCommandText(), _commandText.ToString());
       Assert.That (_commandParameters, Is.EqualTo (_commandBuilder.GetCommandParameters()));
     }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    public void AppendColumns()
+    {
+      
+    }
+
+    [Test]
+    [Ignore ("TODO Test")]
+    public void AppendSeparatedItems ()
+    {
+      
+    }
     
     private void CheckTextUnchanged ()
     {

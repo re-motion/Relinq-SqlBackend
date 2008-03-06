@@ -32,8 +32,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
     public bool CheckBaseProcessQueryMethod { get; set; }
     public SqlGeneratorVisitor Visitor { get; private set; }
-    public StringBuilder CommandText { get; private set; }
-    public List<CommandParameter> CommandParameters { get; private set; }
+    public new StringBuilder CommandText 
+    {
+      get { return base.CommandText; } 
+    }
+
+    public new List<CommandParameter> CommandParameters
+    {
+      get { return base.CommandParameters; }
+    }
 
     protected override SqlGeneratorVisitor ProcessQuery ()
     {
@@ -56,26 +63,21 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
     protected override IOrderByBuilder CreateOrderByBuilder (StringBuilder commandText)
     {
-      CommandText = commandText;
       return _orderByBuilder;
     }
 
     protected override IWhereBuilder CreateWhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
     {
-      CommandText = commandText;
-      CommandParameters = commandParameters;
       return _whereBuilder;
     }
 
     protected override IFromBuilder CreateFromBuilder (StringBuilder commandText)
     {
-      CommandText = commandText;
       return _fromBuilder;
     }
 
     protected override ISelectBuilder CreateSelectBuilder (StringBuilder commandText)
     {
-      CommandText = commandText;
       return _selectBuilder;
     }
   }

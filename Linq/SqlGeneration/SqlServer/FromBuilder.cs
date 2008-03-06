@@ -9,9 +9,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class FromBuilder : IFromBuilder
   {
-    private readonly CommandBuilder _commandBuilder;
+    private readonly ICommandBuilder _commandBuilder;
 
-    public FromBuilder (CommandBuilder commandBuilder)
+    public FromBuilder (ICommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;
