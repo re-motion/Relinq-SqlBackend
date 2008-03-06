@@ -17,7 +17,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void AppendCriterion_TrueValue()
     {
       ICriterion value = new Constant (true);
-      const string expectedString = "1=1";
+      const string expectedString = "(1=1)";
       CheckAppendCriterion_Value(value, expectedString);
     }
 
@@ -25,7 +25,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void AppendCriterion_FalseValue ()
     {
       ICriterion value = new Constant (false);
-      const string expectedString = "1!=1";
+      const string expectedString = "(1<>1)";
       CheckAppendCriterion_Value (value, expectedString);
     }
 
@@ -41,38 +41,115 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void AppendCriterion_BinaryConditions()
     {
       CheckAppendCriterion_BinaryCondition_Constants(
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal), "=");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal),
+          "(@1 = @2)");
       CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThan), "<");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual),
+          "(@1 <> @2)");
       CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThanOrEqual), "<=");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThan),
+          "(@1 < @2)");
       CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThan), ">");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThan),
+          "(@1 > @2)");
       CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThanOrEqual), ">=");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThanOrEqual),
+          "(@1 <= @2)");
       CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual), "!=");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThanOrEqual),
+          "(@1 >= @2)");
       CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Like), "LIKE");
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Like), 
+          "(@1 LIKE @2)");
     }
 
     [Test]
-    public void AppendCriterion_BinaryCondition_WithColumns ()
+    public void AppendCriterion_BinaryConditions_WithColumns ()
     {
-      BinaryCondition binaryCondition = new BinaryCondition (
-          new Column (new Table("a", "b"), "foo"),
-          new Column (new Table ("c", "d"), "bar"),
-          BinaryCondition.ConditionKind.Equal);
-      
-      CheckAppendCriterion (binaryCondition, "[b].[foo] = [d].[bar]");
+      Column c1 = new Column (new Table ("a", "b"), "foo");
+      Column c2 = new Column (new Table ("c", "d"), "bar");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.Equal),
+          "(([b].[foo] IS NULL AND [d].[bar] IS NULL) OR [b].[foo] = [d].[bar])");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.NotEqual),
+          "(([b].[foo] IS NULL AND [d].[bar] IS NOT NULL) OR ([b].[foo] IS NOT NULL AND [d].[bar] IS NULL) OR [b].[foo] <> [d].[bar])");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.LessThan),
+          "([b].[foo] < [d].[bar])");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.GreaterThan),
+          "([b].[foo] > [d].[bar])");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.LessThanOrEqual),
+          "(([b].[foo] IS NULL AND [d].[bar] IS NULL) OR [b].[foo] <= [d].[bar])");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.GreaterThanOrEqual),
+          "(([b].[foo] IS NULL AND [d].[bar] IS NULL) OR [b].[foo] >= [d].[bar])");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.Like),
+          "([b].[foo] LIKE [d].[bar])");
+    }
+
+    [Test]
+    public void AppendCriterion_BinaryConditions_WithColumn_LeftSide ()
+    {
+      Column c1 = new Column (new Table ("a", "b"), "foo");
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.Equal),
+          "([b].[foo] = @1)", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.NotEqual),
+          "([b].[foo] IS NULL OR [b].[foo] <> @1)", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.LessThan),
+          "([b].[foo] < @1)", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.GreaterThan),
+          "([b].[foo] > @1)", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.LessThanOrEqual),
+          "([b].[foo] <= @1)", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.GreaterThanOrEqual),
+          "([b].[foo] >= @1)", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.Like),
+          "([b].[foo] LIKE @1)", new CommandParameter("@1", "const"));
+    }
+
+    [Test]
+    public void AppendCriterion_BinaryConditions_WithColumn_RightSide ()
+    {
+      Column c1 = new Column (new Table ("a", "b"), "foo");
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.Equal),
+          "(@1 = [b].[foo])", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.NotEqual),
+          "([b].[foo] IS NULL OR @1 <> [b].[foo])", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.LessThan),
+          "(@1 < [b].[foo])", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.GreaterThan),
+          "(@1 > [b].[foo])", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.LessThanOrEqual),
+          "(@1 <= [b].[foo])", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.GreaterThanOrEqual),
+          "(@1 >= [b].[foo])", new CommandParameter("@1", "const"));
+      CheckAppendCriterion (
+          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.Like),
+          "(@1 LIKE [b].[foo])", new CommandParameter("@1", "const"));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The binary condition kind 2147483647 is not supported.")]
     public void AppendCriterion_InvalidBinaryConditionKind ()
     {
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), (BinaryCondition.ConditionKind)int.MaxValue), "=");
+      CheckAppendCriterion (new BinaryCondition (new Constant ("foo"), new Constant ("foo"), (BinaryCondition.ConditionKind)int.MaxValue), null);
     }
 
     [Test]
@@ -119,7 +196,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void AppendCriterion_NotCriterion()
     {
       NotCriterion notCriterion = new NotCriterion(new Constant("foo"));
-      CheckAppendCriterion (notCriterion, "NOT (@1)", new CommandParameter ("@1", "foo"));
+      CheckAppendCriterion (notCriterion, "NOT @1", new CommandParameter ("@1", "foo"));
     }
 
     [Test]
@@ -165,20 +242,23 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckAppendCriterion (value, expectedString);
     }
 
-    private void CheckAppendCriterion_BinaryCondition_Constants (BinaryCondition binaryCondition, string expectedOperator)
+    private void CheckAppendCriterion_BinaryCondition_Constants (BinaryCondition binaryCondition, string expectedString)
     {
-      CheckAppendCriterion (binaryCondition, "@1 " + expectedOperator + " @2",
+      CheckAppendCriterion (binaryCondition, expectedString,
           new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo"));
     }
 
     private void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
     {
-      CheckAppendCriterion (criterion, "(@1 = @2) " + expectedOperator + " (@3 = @4)",
+      CheckAppendCriterion (criterion, "((@1 = @2) " + expectedOperator + " (@3 = @4))",
           new CommandParameter ("@1", "foo"),
           new CommandParameter ("@2", "foo"),
           new CommandParameter ("@3", "foo"),
           new CommandParameter ("@4", "foo")
           );
     }
+
+    
+
   }
 }

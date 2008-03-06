@@ -61,7 +61,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[LastColumn] = @1", result.A);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[LastColumn] = @1)", result.A);
 
       CommandParameter[] parameters = result.B;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia") }));
@@ -75,7 +75,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((NOT ([s].[FirstColumn] = @1)) OR ([s].[FirstColumn] = @2)) AND ([s].[FirstColumn] = @3)",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] "
+          + "WHERE ((NOT ([s].[FirstColumn] = @1) OR ([s].[FirstColumn] = @2)) AND ([s].[FirstColumn] = @3))",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -91,8 +92,14 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((((([s].[FirstColumn] != @1) AND ([s].[IDColumn] > @2)) "
-          + "AND ([s].[IDColumn] >= @3)) AND ([s].[IDColumn] < @4)) AND ([s].[IDColumn] <= @5)) AND ([s].[IDColumn] = @6)",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ("
+          + "((((([s].[FirstColumn] IS NULL OR [s].[FirstColumn] <> @1) "
+          + "AND ([s].[IDColumn] > @2)) "
+          + "AND ([s].[IDColumn] >= @3)) "
+          + "AND ([s].[IDColumn] < @4)) "
+          + "AND ([s].[IDColumn] <= @5)) "
+          + "AND ([s].[IDColumn] = @6)"
+          + ")",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -109,7 +116,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] IS NULL) OR ([s].[LastColumn] IS NOT NULL)",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] IS NULL OR [s].[LastColumn] IS NOT NULL)",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -124,7 +131,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE 1=1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE (1=1)",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -139,7 +146,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE 1!=1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE (1<>1)",
           result.A);
 
       CommandParameter[] parameters = result.B;
@@ -153,7 +160,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[FirstColumn] LIKE @1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] LIKE @1)",
           result.A);
       CommandParameter[] parameters = result.B;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia%") }));
@@ -166,7 +173,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[FirstColumn] LIKE @1",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] LIKE @1)",
           result.A);
       CommandParameter[] parameters = result.B;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "%Garcia") }));
@@ -343,7 +350,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
-      const string expectedString = "SELECT DISTINCT [s].[FirstColumn] FROM [studentTable] [s] WHERE [s].[FirstColumn] = @1";
+      const string expectedString = "SELECT DISTINCT [s].[FirstColumn] FROM [studentTable] [s] WHERE ([s].[FirstColumn] = @1)";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual (expectedString, result.A);
@@ -366,7 +373,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Implement querying of virtual side")]
     public void WhereJoin_WithRelationMember_VirtualSide ()
     {
       IQueryable<IndustrialSector> source = ExpressionHelper.CreateQuerySource_IndustrialSector ();
@@ -377,9 +383,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       const string expectedString = "SELECT [industrial].* FROM [industrialTable] [industrial] "
-        + "WHERE EXISTS ("
-        + "SELECT [j0].* FROM [detailTable] [j0] WHERE [j0].[Student_Detail_to_IndustrialSector_FK] = [industrial].[IndustrialSector_PK]"
-        + ")";
+          + "LEFT OUTER JOIN [detailTable] [j0] ON [industrial].[IndustrialSector_PK] = [j0].[Student_Detail_to_IndustrialSector_FK] "
+          + "WHERE [j0].[IDColumn] IS NOT NULL";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual (expectedString, result.A);

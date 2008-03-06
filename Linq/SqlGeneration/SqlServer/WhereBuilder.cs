@@ -8,22 +8,23 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class WhereBuilder : IWhereBuilder
   {
-    private readonly StringBuilder _commandText;
-    private readonly List<CommandParameter> _commandParameters;
+    private readonly SqlCommand _command;
+    private readonly BinaryConditionBuilder _builder;
 
     public WhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
-      _commandText = commandText;
-      _commandParameters = commandParameters;
+
+      _command = new SqlCommand (commandText, commandParameters);
+      _builder = new BinaryConditionBuilder (_command);
     }
 
     public void BuildWherePart (ICriterion criterion)
     {
       if (criterion != null)
       {
-        _commandText.Append (" WHERE ");
+        _command.Append (" WHERE ");
         AppendCriterion (criterion);
       }
     }
@@ -49,41 +50,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       if (condition is BinaryCondition)
       {
         BinaryCondition binaryCondition = (BinaryCondition) condition;
-        AppendBinaryCondition (binaryCondition);
+        _builder.BuildBinaryConditionPart (binaryCondition);
       }
       else
         throw new NotSupportedException ("The condition kind " + condition.GetType ().Name + " is not supported.");
-    }
-
-    private void AppendBinaryCondition (BinaryCondition binaryCondition)
-    {
-      if (binaryCondition.Left.Equals (new Constant (null)))
-        AppendNullCondition (binaryCondition.Right, binaryCondition.Kind);
-      else if (binaryCondition.Right.Equals (new Constant (null)))
-        AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
-      else
-      {
-        AppendValueInCondition (binaryCondition.Left);
-        _commandText.Append (" ");
-        AppendBinaryConditionKind (binaryCondition.Kind);
-        _commandText.Append (" ");
-        AppendValueInCondition (binaryCondition.Right);
-      }
-    }
-
-    private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
-    {
-      AppendValueInCondition (value);
-      switch (kind)
-      {
-        case BinaryCondition.ConditionKind.Equal:
-          _commandText.Append (" IS NULL");
-          break;
-        default:
-          Assertion.IsTrue (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
-          _commandText.Append (" IS NOT NULL");
-          break;
-      }
     }
 
     private void AppendTopLevelValue (IValue value)
@@ -94,110 +64,38 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         if (constant.Value == null)
           throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
         else
-          AppendConstant (constant);
+          _command.AppendConstant (constant);
       }
       else
       {
-        AppendColumn ((Column) value);
-        _commandText.Append ("=1");
+        _command.AppendColumn ((Column) value);
+        _command.Append ("=1");
       }
-    }
-
-    private void AppendValueInCondition (IValue value)
-    {
-      if (value is Constant)
-        AppendConstant ((Constant) value);
-      else if (value is Column)
-        AppendColumn ((Column) value);
-      else
-        throw new NotSupportedException ("Value type " + value.GetType().Name + " is not supported.");
-    }
-
-    private void AppendConstant (Constant constant)
-    {
-      if (constant.Value == null)
-        _commandText.Append ("NULL");
-      else if (constant.Value.Equals (true))
-        _commandText.Append ("1=1");
-      else if (constant.Value.Equals (false))
-        _commandText.Append ("1!=1");
-      else
-      {
-        CommandParameter parameter = AddParameter (constant.Value);
-        _commandText.Append (parameter.Name);
-      }
-    }
-
-    private void AppendColumn (Column column)
-    {
-      _commandText.Append (SqlServerUtility.GetColumnString (column));
-    }
-
-    private void AppendBinaryConditionKind (BinaryCondition.ConditionKind kind)
-    {
-      string commandString;
-      switch (kind)
-      {
-        case BinaryCondition.ConditionKind.Equal:
-          commandString = "=";
-          break;
-        case BinaryCondition.ConditionKind.NotEqual:
-          commandString = "!=";
-          break;
-        case BinaryCondition.ConditionKind.LessThan:
-          commandString = "<";
-          break;
-        case BinaryCondition.ConditionKind.LessThanOrEqual:
-          commandString = "<=";
-          break;
-        case BinaryCondition.ConditionKind.GreaterThan:
-          commandString = ">";
-          break;
-        case BinaryCondition.ConditionKind.GreaterThanOrEqual:
-          commandString = ">=";
-          break;
-        case BinaryCondition.ConditionKind.Like:
-          commandString = "LIKE";
-          break;
-        default:
-          throw new NotSupportedException ("The binary condition kind " + kind + " is not supported.");
-      }
-      _commandText.Append (commandString);
     }
 
     private void AppendComplexCriterion (ComplexCriterion criterion)
     {
-      _commandText.Append ("(");
+      _command.Append ("(");
       AppendCriterion (criterion.Left);
-      _commandText.Append (")");
 
       switch (criterion.Kind)
       {
         case ComplexCriterion.JunctionKind.And:
-          _commandText.Append (" AND ");
+          _command.Append (" AND ");
           break;
         case ComplexCriterion.JunctionKind.Or:
-          _commandText.Append (" OR ");
+          _command.Append (" OR ");
           break;
       }
 
-      _commandText.Append ("(");
       AppendCriterion (criterion.Right);
-      _commandText.Append (")");
+      _command.Append (")");
     }
 
     private void AppendNotCriterion (NotCriterion criterion)
     {
-      _commandText.Append ("NOT (");
+      _command.Append ("NOT ");
       AppendCriterion (criterion.NegatedCriterion);
-      _commandText.Append (")");
-    }
-
-    private CommandParameter AddParameter (object value)
-    {
-      CommandParameter parameter = new CommandParameter ("@" + (_commandParameters.Count + 1), value);
-      _commandParameters.Add (parameter);
-      return parameter;
     }
   }
 }
