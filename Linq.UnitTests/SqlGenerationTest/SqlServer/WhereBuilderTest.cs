@@ -38,149 +38,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    public void AppendCriterion_BinaryConditions()
-    {
-      CheckAppendCriterion_BinaryCondition_Constants(
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal),
-          "(@1 = @2)");
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual),
-          "(@1 <> @2)");
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThan),
-          "(@1 < @2)");
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThan),
-          "(@1 > @2)");
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThanOrEqual),
-          "(@1 <= @2)");
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThanOrEqual),
-          "(@1 >= @2)");
-      CheckAppendCriterion_BinaryCondition_Constants (
-          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Like), 
-          "(@1 LIKE @2)");
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditions_WithColumns ()
-    {
-      Column c1 = new Column (new Table ("a", "b"), "foo");
-      Column c2 = new Column (new Table ("c", "d"), "bar");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.Equal),
-          "(([b].[foo] IS NULL AND [d].[bar] IS NULL) OR [b].[foo] = [d].[bar])");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.NotEqual),
-          "(([b].[foo] IS NULL AND [d].[bar] IS NOT NULL) OR ([b].[foo] IS NOT NULL AND [d].[bar] IS NULL) OR [b].[foo] <> [d].[bar])");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.LessThan),
-          "([b].[foo] < [d].[bar])");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.GreaterThan),
-          "([b].[foo] > [d].[bar])");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.LessThanOrEqual),
-          "(([b].[foo] IS NULL AND [d].[bar] IS NULL) OR [b].[foo] <= [d].[bar])");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.GreaterThanOrEqual),
-          "(([b].[foo] IS NULL AND [d].[bar] IS NULL) OR [b].[foo] >= [d].[bar])");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.Like),
-          "([b].[foo] LIKE [d].[bar])");
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditions_WithColumn_LeftSide ()
-    {
-      Column c1 = new Column (new Table ("a", "b"), "foo");
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.Equal),
-          "([b].[foo] = @1)", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.NotEqual),
-          "([b].[foo] IS NULL OR [b].[foo] <> @1)", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.LessThan),
-          "([b].[foo] < @1)", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.GreaterThan),
-          "([b].[foo] > @1)", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.LessThanOrEqual),
-          "([b].[foo] <= @1)", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.GreaterThanOrEqual),
-          "([b].[foo] >= @1)", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (c1, new Constant ("const"), BinaryCondition.ConditionKind.Like),
-          "([b].[foo] LIKE @1)", new CommandParameter("@1", "const"));
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditions_WithColumn_RightSide ()
-    {
-      Column c1 = new Column (new Table ("a", "b"), "foo");
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.Equal),
-          "(@1 = [b].[foo])", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.NotEqual),
-          "([b].[foo] IS NULL OR @1 <> [b].[foo])", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.LessThan),
-          "(@1 < [b].[foo])", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.GreaterThan),
-          "(@1 > [b].[foo])", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.LessThanOrEqual),
-          "(@1 <= [b].[foo])", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.GreaterThanOrEqual),
-          "(@1 >= [b].[foo])", new CommandParameter("@1", "const"));
-      CheckAppendCriterion (
-          new BinaryCondition (new Constant ("const"), c1, BinaryCondition.ConditionKind.Like),
-          "(@1 LIKE [b].[foo])", new CommandParameter("@1", "const"));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The binary condition kind 2147483647 is not supported.")]
-    public void AppendCriterion_InvalidBinaryConditionKind ()
-    {
-      CheckAppendCriterion (new BinaryCondition (new Constant ("foo"), new Constant ("foo"), (BinaryCondition.ConditionKind)int.MaxValue), null);
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditionLeftNull ()
-    {
-      BinaryCondition binaryCondition = new BinaryCondition (new Constant(null), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
-      CheckAppendCriterion (binaryCondition, "@1 IS NULL", new CommandParameter ("@1", "foo"));
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditionRightNull ()
-    {
-      BinaryCondition binaryCondition = new BinaryCondition (new Constant ("foo"), new Constant (null), BinaryCondition.ConditionKind.Equal);
-      CheckAppendCriterion (binaryCondition, "@1 IS NULL", new CommandParameter ("@1", "foo"));
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditionIsNotNull ()
-    {
-      BinaryCondition binaryCondition = new BinaryCondition (new Constant (null), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual);
-      CheckAppendCriterion (binaryCondition, "@1 IS NOT NULL", new CommandParameter ("@1", "foo"));
-    }
-
-    [Test]
-    public void AppendCriterion_BinaryConditionNullIsNotNull ()
-    {
-      BinaryCondition binaryCondition = new BinaryCondition (new Constant (null), new Constant (null), BinaryCondition.ConditionKind.NotEqual);
-      CheckAppendCriterion (binaryCondition, "NULL IS NOT NULL");
-    }
-
-    [Test]
     public void AppendCriterion_ComplexCriterion ()
     {
       BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
@@ -224,7 +81,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckAppendCriterion (new PseudoCondition(), null);
     }
 
-    private void CheckAppendCriterion (ICriterion criterion, string expectedString,
+    private static void CheckAppendCriterion (ICriterion criterion, string expectedString,
         params CommandParameter[] expectedParameters)
     {
       StringBuilder commandText = new StringBuilder ();
@@ -237,18 +94,12 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.That (parameters, Is.EqualTo (expectedParameters));
     }
 
-    private void CheckAppendCriterion_Value (ICriterion value, string expectedString)
+    private static void CheckAppendCriterion_Value (ICriterion value, string expectedString)
     {
       CheckAppendCriterion (value, expectedString);
     }
-
-    private void CheckAppendCriterion_BinaryCondition_Constants (BinaryCondition binaryCondition, string expectedString)
-    {
-      CheckAppendCriterion (binaryCondition, expectedString,
-          new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo"));
-    }
-
-    private void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
+    
+    private static void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
     {
       CheckAppendCriterion (criterion, "((@1 = @2) " + expectedOperator + " (@3 = @4))",
           new CommandParameter ("@1", "foo"),
