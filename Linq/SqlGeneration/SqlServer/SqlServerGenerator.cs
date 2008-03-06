@@ -31,7 +31,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected override ISelectBuilder CreateSelectBuilder (StringBuilder commandText)
     {
-      return new SelectBuilder (commandText);
+      return new SelectBuilder (_commandBuilder);
     }
   }
 }

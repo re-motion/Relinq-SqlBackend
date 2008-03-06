@@ -16,8 +16,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineColumnItems()
     {
-      StringBuilder commandText = new StringBuilder ();
-      SelectBuilder selectBuilder = new SelectBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      SelectBuilder selectBuilder = new SelectBuilder (commandBuilder);
 
       List<Column> columns = new List<Column> {
         new Column (new Table ("s1", "s1"), "c1"),
@@ -26,15 +26,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       };
 
       selectBuilder.BuildSelectPart (columns,false);
-      Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", commandText.ToString ());
+      Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", commandBuilder.GetCommandText());
     }
 
     [Test]
     [ExpectedException (typeof (System.InvalidOperationException), ExpectedMessage = "The query does not select any fields from the data source.")]
     public void NoColumns()
     {
-      StringBuilder commandText = new StringBuilder ();
-      SelectBuilder selectBuilder = new SelectBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      SelectBuilder selectBuilder = new SelectBuilder (commandBuilder);
       List<Column> columns = new List<Column>();
 
       selectBuilder.BuildSelectPart (columns,false);
@@ -43,8 +43,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void DistinctSelect ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      SelectBuilder selectBuilder = new SelectBuilder(commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      SelectBuilder selectBuilder = new SelectBuilder (commandBuilder);
 
       List<Column> columns = new List<Column> {
         new Column (new Table ("s1", "s1"), "c1"),
@@ -53,7 +53,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       selectBuilder.BuildSelectPart (columns, true);
 
-      Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", commandText.ToString());
+      Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", commandBuilder.GetCommandText ());
 
     }
   }
