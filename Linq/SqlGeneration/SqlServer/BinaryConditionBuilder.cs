@@ -6,12 +6,12 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class BinaryConditionBuilder
   {
-    private readonly SqlCommand _command;
+    private readonly CommandBuilder _commandBuilder;
 
-    public BinaryConditionBuilder (SqlCommand command)
+    public BinaryConditionBuilder (CommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("command", command);
-      _command = command;
+      ArgumentUtility.CheckNotNull ("command", commandBuilder);
+      _commandBuilder = commandBuilder;
     }
 
     public void BuildBinaryConditionPart (BinaryCondition binaryCondition)
@@ -22,15 +22,15 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
       else
       {
-        _command.Append ("(");
+        _commandBuilder.Append ("(");
         AppendNullChecksForBinaryConditions (binaryCondition.Left, binaryCondition.Right, binaryCondition.Kind);
 
         AppendValueInCondition (binaryCondition.Left);
-        _command.Append (" ");
+        _commandBuilder.Append (" ");
         AppendBinaryConditionKind (binaryCondition.Kind);
-        _command.Append (" ");
+        _commandBuilder.Append (" ");
         AppendValueInCondition (binaryCondition.Right);
-        _command.Append (")");
+        _commandBuilder.Append (")");
       }
     }
 
@@ -40,11 +40,11 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       switch (kind)
       {
         case BinaryCondition.ConditionKind.Equal:
-          _command.Append (" IS NULL");
+          _commandBuilder.Append (" IS NULL");
           break;
         default:
           Assertion.IsTrue (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
-          _command.Append (" IS NOT NULL");
+          _commandBuilder.Append (" IS NOT NULL");
           break;
       }
     }
@@ -60,36 +60,36 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
           case BinaryCondition.ConditionKind.GreaterThanOrEqual:
             if (left is Column && right is Column)
             {
-              _command.Append ("(");
+              _commandBuilder.Append ("(");
               AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
-              _command.Append (" AND ");
+              _commandBuilder.Append (" AND ");
               AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
-              _command.Append (") OR ");
+              _commandBuilder.Append (") OR ");
             }
             break;
           case BinaryCondition.ConditionKind.NotEqual:
             if (left is Column && right is Column)
             {
-              _command.Append ("(");
+              _commandBuilder.Append ("(");
               AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
-              _command.Append (" AND ");
+              _commandBuilder.Append (" AND ");
               AppendNullCondition (right, BinaryCondition.ConditionKind.NotEqual);
-              _command.Append (") OR ");
-              _command.Append ("(");
+              _commandBuilder.Append (") OR ");
+              _commandBuilder.Append ("(");
               AppendNullCondition (left, BinaryCondition.ConditionKind.NotEqual);
-              _command.Append (" AND ");
+              _commandBuilder.Append (" AND ");
               AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
-              _command.Append (") OR ");
+              _commandBuilder.Append (") OR ");
             }
             else if (left is Column)
             {
               AppendNullCondition (left, BinaryCondition.ConditionKind.Equal);
-              _command.Append (" OR ");
+              _commandBuilder.Append (" OR ");
             }
             else
             {
               AppendNullCondition (right, BinaryCondition.ConditionKind.Equal);
-              _command.Append (" OR ");
+              _commandBuilder.Append (" OR ");
             }
             break;
         }
@@ -99,9 +99,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private void AppendValueInCondition (IValue value)
     {
       if (value is Constant)
-        _command.AppendConstant ((Constant) value);
+        _commandBuilder.AppendConstant ((Constant) value);
       else if (value is Column)
-        _command.AppendColumn ((Column) value);
+        _commandBuilder.AppendColumn ((Column) value);
       else
         throw new NotSupportedException ("Value type " + value.GetType ().Name + " is not supported.");
     }
@@ -135,7 +135,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         default:
           throw new NotSupportedException ("The binary condition kind " + kind + " is not supported.");
       }
-      _command.Append (commandString);
+      _commandBuilder.Append (commandString);
     }
   }
 }

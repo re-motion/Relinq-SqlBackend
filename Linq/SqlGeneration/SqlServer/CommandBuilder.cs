@@ -5,12 +5,12 @@ using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
-  public class SqlCommand
+  public class CommandBuilder
   {
     private readonly StringBuilder _commandText;
     private readonly List<CommandParameter> _commandParameters;
 
-    public SqlCommand (StringBuilder commandText, List<CommandParameter> commandParameters)
+    public CommandBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);

@@ -8,7 +8,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class WhereBuilder : IWhereBuilder
   {
-    private readonly SqlCommand _command;
+    private readonly CommandBuilder _commandBuilder;
     private readonly BinaryConditionBuilder _builder;
 
     public WhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
@@ -16,15 +16,15 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
 
-      _command = new SqlCommand (commandText, commandParameters);
-      _builder = new BinaryConditionBuilder (_command);
+      _commandBuilder = new CommandBuilder (commandText, commandParameters);
+      _builder = new BinaryConditionBuilder (_commandBuilder);
     }
 
     public void BuildWherePart (ICriterion criterion)
     {
       if (criterion != null)
       {
-        _command.Append (" WHERE ");
+        _commandBuilder.Append (" WHERE ");
         AppendCriterion (criterion);
       }
     }
@@ -64,37 +64,37 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         if (constant.Value == null)
           throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
         else
-          _command.AppendConstant (constant);
+          _commandBuilder.AppendConstant (constant);
       }
       else
       {
-        _command.AppendColumn ((Column) value);
-        _command.Append ("=1");
+        _commandBuilder.AppendColumn ((Column) value);
+        _commandBuilder.Append ("=1");
       }
     }
 
     private void AppendComplexCriterion (ComplexCriterion criterion)
     {
-      _command.Append ("(");
+      _commandBuilder.Append ("(");
       AppendCriterion (criterion.Left);
 
       switch (criterion.Kind)
       {
         case ComplexCriterion.JunctionKind.And:
-          _command.Append (" AND ");
+          _commandBuilder.Append (" AND ");
           break;
         case ComplexCriterion.JunctionKind.Or:
-          _command.Append (" OR ");
+          _commandBuilder.Append (" OR ");
           break;
       }
 
       AppendCriterion (criterion.Right);
-      _command.Append (")");
+      _commandBuilder.Append (")");
     }
 
     private void AppendNotCriterion (NotCriterion criterion)
     {
-      _command.Append ("NOT ");
+      _commandBuilder.Append ("NOT ");
       AppendCriterion (criterion.NegatedCriterion);
     }
   }
