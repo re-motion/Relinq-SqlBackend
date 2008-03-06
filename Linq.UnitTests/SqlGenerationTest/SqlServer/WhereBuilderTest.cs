@@ -40,105 +40,67 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void AppendCriterion_BinaryConditions()
     {
-      CheckAppendCriterion_BinaryCondition(
+      CheckAppendCriterion_BinaryCondition_Constants(
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal), "=");
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThan), "<");
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.LessThanOrEqual), "<=");
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThan), ">");
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.GreaterThanOrEqual), ">=");
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual), "!=");
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Like), "LIKE");
     }
 
     [Test]
-    public void AppendCriterion_BinaryCondition_WithValue ()
+    public void AppendCriterion_BinaryCondition_WithColumns ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-
-      ICriterion binaryCondition = new BinaryCondition (
+      BinaryCondition binaryCondition = new BinaryCondition (
           new Column (new Table("a", "b"), "foo"),
           new Column (new Table ("c", "d"), "bar"),
           BinaryCondition.ConditionKind.Equal);
       
-      whereBuilder.BuildWherePart (binaryCondition);
-
-      Assert.AreEqual (" WHERE [b].[foo] = [d].[bar]", commandText.ToString ());
-      Assert.AreEqual (0, parameters.Count);
+      CheckAppendCriterion (binaryCondition, "[b].[foo] = [d].[bar]");
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The binary condition kind 2147483647 is not supported.")]
     public void AppendCriterion_InvalidBinaryConditionKind ()
     {
-      CheckAppendCriterion_BinaryCondition (
+      CheckAppendCriterion_BinaryCondition_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), (BinaryCondition.ConditionKind)int.MaxValue), "=");
     }
 
     [Test]
     public void AppendCriterion_BinaryConditionLeftNull ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      BinaryCondition binaryConditionEqual = new BinaryCondition (new Constant(null), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
-
-      whereBuilder.BuildWherePart (binaryConditionEqual);
-
-      Assert.AreEqual (" WHERE @1 IS NULL", commandText.ToString ());
-      Assert.AreEqual (1, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo") }));
+      BinaryCondition binaryCondition = new BinaryCondition (new Constant(null), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
+      CheckAppendCriterion (binaryCondition, "@1 IS NULL", new CommandParameter ("@1", "foo"));
     }
 
     [Test]
     public void AppendCriterion_BinaryConditionRightNull ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      BinaryCondition binaryConditionEqual = new BinaryCondition (new Constant ("foo"), new Constant (null), BinaryCondition.ConditionKind.Equal);
-
-      whereBuilder.BuildWherePart (binaryConditionEqual);
-
-      Assert.AreEqual (" WHERE @1 IS NULL", commandText.ToString ());
-      Assert.AreEqual (1, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo") }));
+      BinaryCondition binaryCondition = new BinaryCondition (new Constant ("foo"), new Constant (null), BinaryCondition.ConditionKind.Equal);
+      CheckAppendCriterion (binaryCondition, "@1 IS NULL", new CommandParameter ("@1", "foo"));
     }
 
     [Test]
     public void AppendCriterion_BinaryConditionIsNotNull ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      BinaryCondition binaryConditionEqual = new BinaryCondition (new Constant (null), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual);
-
-      whereBuilder.BuildWherePart (binaryConditionEqual);
-
-      Assert.AreEqual (" WHERE @1 IS NOT NULL", commandText.ToString ());
-      Assert.AreEqual (1, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo") }));
+      BinaryCondition binaryCondition = new BinaryCondition (new Constant (null), new Constant ("foo"), BinaryCondition.ConditionKind.NotEqual);
+      CheckAppendCriterion (binaryCondition, "@1 IS NOT NULL", new CommandParameter ("@1", "foo"));
     }
 
     [Test]
     public void AppendCriterion_BinaryConditionNullIsNotNull ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      BinaryCondition binaryConditionEqual = new BinaryCondition (new Constant (null), new Constant (null), BinaryCondition.ConditionKind.NotEqual);
-
-      whereBuilder.BuildWherePart (binaryConditionEqual);
-
-      Assert.AreEqual (" WHERE NULL IS NOT NULL", commandText.ToString ());
-      Assert.AreEqual (0, parameters.Count);
+      BinaryCondition binaryCondition = new BinaryCondition (new Constant (null), new Constant (null), BinaryCondition.ConditionKind.NotEqual);
+      CheckAppendCriterion (binaryCondition, "NULL IS NOT NULL");
     }
 
     [Test]
@@ -146,57 +108,25 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
       BinaryCondition binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
+      
       CheckAppendCriterion_ComplexCriterion
         (new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.And), "AND");
-
       CheckAppendCriterion_ComplexCriterion
         (new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.Or), "OR");
-      
     }
-
-    private void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
-    {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      whereBuilder.BuildWherePart (criterion);
-
-      Assert.AreEqual (" WHERE (@1 = @2) "+ expectedOperator + " (@3 = @4)", commandText.ToString ());
-      Assert.AreEqual (4, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[]
-                                             {
-                                                  new CommandParameter ("@1", "foo"), 
-                                                  new CommandParameter ("@2", "foo"), 
-                                                  new CommandParameter ("@3", "foo"), 
-                                                  new CommandParameter ("@4", "foo")
-                                              }));
-   }
 
     [Test]
     public void AppendCriterion_NotCriterion()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
       NotCriterion notCriterion = new NotCriterion(new Constant("foo"));
-
-      whereBuilder.BuildWherePart (notCriterion);
-
-      Assert.AreEqual (" WHERE NOT (@1)", commandText.ToString ());
-      Assert.AreEqual (1, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo") }));
+      CheckAppendCriterion (notCriterion, "NOT (@1)", new CommandParameter ("@1", "foo"));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "NULL constants are not supported as WHERE conditions.")]
     public void AppendCriterion_NULL ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      Constant constant = new Constant(null);
-
-      whereBuilder.BuildWherePart (constant);
+      CheckAppendCriterion (new Constant (null), null);
     }
 
     class PseudoCriterion : ICriterion { }
@@ -205,12 +135,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The criterion kind PseudoCriterion is not supported.")]
     public void InvalidCriterionKind_NotSupportedException()
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      PseudoCriterion criterion = new PseudoCriterion ();
-
-      whereBuilder.BuildWherePart (criterion);
+      CheckAppendCriterion (new PseudoCriterion(), null);
     }
 
     class PseudoCondition : ICondition { }
@@ -219,39 +144,41 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The condition kind PseudoCondition is not supported.")]
     public void InvalidConditionKind_NotSupportedException ()
     {
+      CheckAppendCriterion (new PseudoCondition(), null);
+    }
+
+    private void CheckAppendCriterion (ICriterion criterion, string expectedString,
+        params CommandParameter[] expectedParameters)
+    {
       StringBuilder commandText = new StringBuilder ();
       List<CommandParameter> parameters = new List<CommandParameter> ();
       WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-      ICondition condition = new PseudoCondition();
 
-      whereBuilder.BuildWherePart (condition);
+      whereBuilder.BuildWherePart (criterion);
 
-      Assert.Fail ();
+      Assert.AreEqual (" WHERE " + expectedString, commandText.ToString ());
+      Assert.That (parameters, Is.EqualTo (expectedParameters));
     }
 
     private void CheckAppendCriterion_Value (ICriterion value, string expectedString)
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
-
-      whereBuilder.BuildWherePart (value);
-
-      Assert.AreEqual (" WHERE " + expectedString, commandText.ToString ());
-      Assert.AreEqual (0, parameters.Count);
+      CheckAppendCriterion (value, expectedString);
     }
 
-    private void CheckAppendCriterion_BinaryCondition (ICriterion binaryCondition, string expectedOperator)
+    private void CheckAppendCriterion_BinaryCondition_Constants (BinaryCondition binaryCondition, string expectedOperator)
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+      CheckAppendCriterion (binaryCondition, "@1 " + expectedOperator + " @2",
+          new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo"));
+    }
 
-      whereBuilder.BuildWherePart (binaryCondition);
-
-      Assert.AreEqual (" WHERE @1 " + expectedOperator + " @2", commandText.ToString ());
-      Assert.AreEqual (2, parameters.Count);
-      Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo") }));
+    private void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
+    {
+      CheckAppendCriterion (criterion, "(@1 = @2) " + expectedOperator + " (@3 = @4)",
+          new CommandParameter ("@1", "foo"),
+          new CommandParameter ("@2", "foo"),
+          new CommandParameter ("@3", "foo"),
+          new CommandParameter ("@4", "foo")
+          );
     }
   }
 }
