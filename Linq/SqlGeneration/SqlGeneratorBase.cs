@@ -11,8 +11,9 @@ namespace Rubicon.Data.Linq.SqlGeneration
   {
     private readonly IDatabaseInfo _databaseInfo;
     private readonly QueryExpression _query;
-    private readonly StringBuilder _commandText = new StringBuilder ();
-    private readonly List<CommandParameter> _commandParameters = new List<CommandParameter> ();
+
+    protected StringBuilder CommandText { get; private set; }
+    protected List<CommandParameter> CommandParameters { get; private set; }
 
     protected SqlGeneratorBase (QueryExpression query, IDatabaseInfo databaseInfo)
     {
@@ -21,18 +22,21 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
       _query = query;
       _databaseInfo = databaseInfo;
+
+      CommandText = new StringBuilder();
+      CommandParameters = new List<CommandParameter>();
     }
 
-    public Tuple<string, CommandParameter[]> BuildCommandString ()
+    public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
     {
       SqlGeneratorVisitor visitor = ProcessQuery();
 
-      CreateSelectBuilder(_commandText).BuildSelectPart (visitor.Columns, visitor.Distinct);
-      CreateFromBuilder (_commandText).BuildFromPart (visitor.Tables, visitor.Joins);
-      CreateWhereBuilder (_commandText, _commandParameters).BuildWherePart (visitor.Criterion);
-      CreateOrderByBuilder (_commandText).BuildOrderByPart (visitor.OrderingFields);
+      CreateSelectBuilder(CommandText).BuildSelectPart (visitor.Columns, visitor.Distinct);
+      CreateFromBuilder (CommandText).BuildFromPart (visitor.Tables, visitor.Joins);
+      CreateWhereBuilder (CommandText, CommandParameters).BuildWherePart (visitor.Criterion);
+      CreateOrderByBuilder (CommandText).BuildOrderByPart (visitor.OrderingFields);
 
-      return new Tuple<string, CommandParameter[]> (_commandText.ToString(), _commandParameters.ToArray());
+      return new Tuple<string, CommandParameter[]> (CommandText.ToString(), CommandParameters.ToArray());
     }
 
     protected virtual SqlGeneratorVisitor ProcessQuery ()

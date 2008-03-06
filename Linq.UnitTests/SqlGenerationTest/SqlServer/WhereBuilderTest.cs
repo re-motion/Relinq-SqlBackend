@@ -84,14 +84,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     private static void CheckAppendCriterion (ICriterion criterion, string expectedString,
         params CommandParameter[] expectedParameters)
     {
-      StringBuilder commandText = new StringBuilder ();
-      List<CommandParameter> parameters = new List<CommandParameter> ();
-      WhereBuilder whereBuilder = new WhereBuilder (commandText, parameters);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      WhereBuilder whereBuilder = new WhereBuilder (commandBuilder);
 
       whereBuilder.BuildWherePart (criterion);
 
-      Assert.AreEqual (" WHERE " + expectedString, commandText.ToString ());
-      Assert.That (parameters, Is.EqualTo (expectedParameters));
+      Assert.AreEqual (" WHERE " + expectedString, commandBuilder.GetCommandText());
+      Assert.That (commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
     }
 
     private static void CheckAppendCriterion_Value (ICriterion value, string expectedString)

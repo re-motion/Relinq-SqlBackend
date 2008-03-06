@@ -11,12 +11,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private readonly CommandBuilder _commandBuilder;
     private readonly BinaryConditionBuilder _builder;
 
-    public WhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
+    public WhereBuilder (CommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("commandText", commandText);
-      ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
-
-      _commandBuilder = new CommandBuilder (commandText, commandParameters);
+      _commandBuilder = commandBuilder;
       _builder = new BinaryConditionBuilder (_commandBuilder);
     }
 
