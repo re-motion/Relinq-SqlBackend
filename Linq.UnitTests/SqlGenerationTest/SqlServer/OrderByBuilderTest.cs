@@ -19,8 +19,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineOrderedFields()
     {
-      StringBuilder commandText = new StringBuilder ();
-      OrderByBuilder orderByBuilder = new OrderByBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
@@ -34,15 +34,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       orderByBuilder.BuildOrderByPart (orderingFields);
 
-      Assert.AreEqual (" ORDER BY [s1].[c1] ASC, [s1].[c1] DESC", commandText.ToString ());
+      Assert.AreEqual (" ORDER BY [s1].[c1] ASC, [s1].[c1] DESC", commandBuilder.GetCommandText());
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "OrderDirection 2147483647 is not supported.")]
     public void CombineOrderedFields_InvalidDirection ()
     {
-      StringBuilder commandText = new StringBuilder ();
-      OrderByBuilder orderByBuilder = new OrderByBuilder (commandText);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");

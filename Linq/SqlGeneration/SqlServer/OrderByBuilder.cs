@@ -10,21 +10,21 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class OrderByBuilder : IOrderByBuilder
   {
-    private readonly StringBuilder _commandText;
+    private readonly CommandBuilder _commandBuilder;
 
-    public OrderByBuilder (StringBuilder commandText)
+    public OrderByBuilder (CommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("commandText", commandText);
-      _commandText = commandText;
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      _commandBuilder = commandBuilder;
     }
 
     public void BuildOrderByPart (List<OrderingField> orderingFields)
     {
       if (orderingFields.Count != 0)
       {
-        _commandText.Append (" ORDER BY ");
+        _commandBuilder.Append (" ORDER BY ");
         IEnumerable<string> orderingFieldStrings = CombineOrderedFields (orderingFields);
-        _commandText.Append (SeparatedStringBuilder.Build (", ", orderingFieldStrings));
+        _commandBuilder.Append (SeparatedStringBuilder.Build (", ", orderingFieldStrings));
       }
     }
 

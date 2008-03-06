@@ -16,7 +16,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected override IOrderByBuilder CreateOrderByBuilder (StringBuilder commandText)
     {
-      return new OrderByBuilder (commandText);
+      return new OrderByBuilder (_commandBuilder);
     }
 
     protected override IWhereBuilder CreateWhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)

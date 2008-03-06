@@ -13,6 +13,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     public WhereBuilder (CommandBuilder commandBuilder)
     {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;
       _builder = new BinaryConditionBuilder (_commandBuilder);
     }
