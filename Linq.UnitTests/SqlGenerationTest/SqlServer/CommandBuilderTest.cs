@@ -5,6 +5,7 @@ using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 using System.Text;
 using Rubicon.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
+using System;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
@@ -105,17 +106,20 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Test")]
     public void AppendColumns()
     {
-      
+      Column column = new Column(new Table(),"abc");
+      _commandBuilder.AppendColumn (column);
+      Assert.AreEqual (_commandBuilder.GetCommandText(), _commandText.ToString());
+      Assert.AreEqual ("WHERE [].[abc]", _commandText.ToString());
     }
 
     [Test]
-    [Ignore ("TODO Test")]
-    public void AppendSeparatedItems ()
+    public void AppendSeparatedItems_WithAppendColumn ()
     {
-      
+      var items = new List<string> { "a", "b", "c" };
+      _commandBuilder.AppendSeparatedItems (items, _commandBuilder.Append);
+      Assert.AreEqual ("WHERE a, b, c", _commandText.ToString ());
     }
     
     private void CheckTextUnchanged ()
