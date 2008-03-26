@@ -29,7 +29,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
@@ -60,7 +60,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
 
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
@@ -99,7 +99,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
 
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
@@ -135,7 +135,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
+      OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
 
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
@@ -176,8 +176,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      OrderByClause orderBy1 = (OrderByClause) parsedQuery.QueryBody.BodyClauses.Skip (1).First ();
-      OrderByClause orderBy2 = (OrderByClause) parsedQuery.QueryBody.BodyClauses.Last ();
+      OrderByClause orderBy1 = (OrderByClause) parsedQuery.BodyClauses.Skip (1).First ();
+      OrderByClause orderBy2 = (OrderByClause) parsedQuery.BodyClauses.Last ();
 
       OrderingClause orderingClause1 = orderBy1.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy2.OrderingList.First ();
@@ -196,7 +196,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SingleJoin join2 = CreateJoin (studentDetailTable1, relationalMemberFirstOrderBy2);
 
       PropertyInfo relationalMemberSecondOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      Table studentDetailDetailTable2 = ((AdditionalFromClause) parsedQuery.QueryBody.BodyClauses[0]).GetTable (StubDatabaseInfo.Instance);
+      Table studentDetailDetailTable2 = ((AdditionalFromClause) parsedQuery.BodyClauses[0]).GetTable (StubDatabaseInfo.Instance);
       SingleJoin join3 = CreateJoin (studentDetailDetailTable2, relationalMemberSecondOrderBy1);
 
       PropertyInfo relationalMemberSecondOrderBy2 = typeof (Student_Detail).GetProperty ("Student");

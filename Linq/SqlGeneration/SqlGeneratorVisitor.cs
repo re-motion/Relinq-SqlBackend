@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubicon.Collections;
@@ -39,33 +40,42 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitQueryExpression (QueryExpression queryExpression)
     {
+      ArgumentUtility.CheckNotNull ("queryExpression", queryExpression);
       queryExpression.MainFromClause.Accept (this);
-      queryExpression.QueryBody.Accept (this);
+      foreach (IBodyClause bodyClause in queryExpression.BodyClauses)
+        bodyClause.Accept (this);
+
+      queryExpression.SelectOrGroupClause.Accept (this);
     }
 
     public void VisitMainFromClause (MainFromClause fromClause)
     {
+      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       Table tableEntry = fromClause.GetTable (_databaseInfo);
       Tables.Add (tableEntry);
     }
 
     public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
+      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       Table tableEntry = fromClause.GetTable (_databaseInfo);
       Tables.Add (tableEntry);
     }
 
     public void VisitJoinClause (JoinClause joinClause)
     {
+      throw new NotImplementedException();
     }
 
     public void VisitLetClause (LetClause letClause)
     {
+      throw new NotImplementedException ();
     }
 
     public void VisitWhereClause (WhereClause whereClause)
     {
-      WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, _context, true);
+      ArgumentUtility.CheckNotNull ("whereClause", whereClause);
+      var conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, _context, true);
       Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
       if (Criterion == null)
         Criterion = criterions.B;
@@ -74,44 +84,41 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
 
       foreach (var fieldDescriptor in criterions.A)
-        Joins.AddPath ((FieldSourcePath) fieldDescriptor.SourcePath);
+        Joins.AddPath (fieldDescriptor.SourcePath);
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
     {
+      ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
       foreach (OrderingClause clause in orderByClause.OrderingList)
         clause.Accept (this);
     }
 
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
-      OrderingFieldParser fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, _context);
+      ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
+      var fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, _context);
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
-      Joins.AddPath ((FieldSourcePath) orderingField.FieldDescriptor.SourcePath);
+      Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
     }
 
     public void VisitSelectClause (SelectClause selectClause)
     {
-      SelectProjectionParser projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, _context);
+      ArgumentUtility.CheckNotNull ("selectClause", selectClause);
+      var projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, _context);
       IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
       Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)
       {
         Columns.Add (selectedField.GetMandatoryColumn());
-        Joins.AddPath ((FieldSourcePath) selectedField.SourcePath);
+        Joins.AddPath (selectedField.SourcePath);
       }
     }
 
     public void VisitGroupClause (GroupClause groupClause)
     {
-    }
-
-    public void VisitQueryBody (QueryBody queryBody)
-    {
-      foreach (IBodyClause bodyClause in queryBody.BodyClauses)
-        bodyClause.Accept (this);
-      queryBody.SelectOrGroupClause.Accept (this);
+      throw new NotImplementedException ();
     }
 
     public bool Distinct { get; private set; }

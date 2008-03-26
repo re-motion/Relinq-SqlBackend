@@ -32,7 +32,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void BuildCommandString_CallsPartBuilders()
     {
-      QueryExpression query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateQueryBody ());
+      var query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateSelectClause ());
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
       
       // Expect
@@ -52,8 +52,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void BuildCommandString_ReturnsCommandAndParameters ()
     {
-      QueryExpression query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateQueryBody ());
-      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
+      var query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateSelectClause ());
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
@@ -68,7 +68,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         generator.CommandText.Append ("From");
       });
 
-      CommandParameter parameter = new CommandParameter("fritz", "foo");
+      var parameter = new CommandParameter("fritz", "foo");
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       LastCall.Do ((Proc<ICriterion>) delegate { generator.CommandText.Append ("Where");
                                                  generator.CommandParameters.Add (parameter); });
@@ -91,8 +91,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void ProcessQuery_PassesQueryToVisitor()
     {
-      QueryExpression query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateQueryBody ());
-      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
+      var query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateSelectClause ());
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
@@ -111,7 +111,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail();
       QueryExpression query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
-      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
@@ -130,7 +130,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
       QueryExpression query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
-      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       //Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns, true);
