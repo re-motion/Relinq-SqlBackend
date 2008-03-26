@@ -62,6 +62,11 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Tables.Add (tableEntry);
     }
 
+    public void VisitSubQueryFromClause (SubQueryFromClause clause)
+    {
+      throw new NotImplementedException();
+    }
+
     public void VisitJoinClause (JoinClause joinClause)
     {
       throw new NotImplementedException();

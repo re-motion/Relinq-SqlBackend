@@ -32,7 +32,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void BuildCommandString_CallsPartBuilders()
     {
-      var query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateSelectClause ());
+      var query = ExpressionHelper.CreateQueryExpression ();
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
       
       // Expect
@@ -52,7 +52,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void BuildCommandString_ReturnsCommandAndParameters ()
     {
-      var query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateSelectClause ());
+      var query = ExpressionHelper.CreateQueryExpression ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       // Expect
@@ -91,7 +91,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void ProcessQuery_PassesQueryToVisitor()
     {
-      var query = new QueryExpression (ExpressionHelper.CreateMainFromClause (), ExpressionHelper.CreateSelectClause ());
+      var query = ExpressionHelper.CreateQueryExpression ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       // Expect
