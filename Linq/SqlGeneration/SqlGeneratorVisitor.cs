@@ -67,7 +67,11 @@ namespace Rubicon.Data.Linq.SqlGeneration
     {
       WhereConditionParser conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, _context, true);
       Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
-      Criterion = criterions.B;
+      if (Criterion == null)
+        Criterion = criterions.B;
+      else
+        Criterion = new ComplexCriterion (Criterion, criterions.B, ComplexCriterion.JunctionKind.And);
+
 
       foreach (var fieldDescriptor in criterions.A)
         Joins.AddPath ((FieldSourcePath) fieldDescriptor.SourcePath);

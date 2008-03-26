@@ -131,6 +131,35 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
           sqlGeneratorVisitor.Criterion);
     }
 
+    [Test]
+    public void VisitWhereClause_MultipleTimes ()
+    {
+      IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (ExpressionHelper.CreateQuerySource ());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      WhereClause whereClause1 = (WhereClause) parsedQuery.QueryBody.BodyClauses[0];
+      WhereClause whereClause2 = (WhereClause) parsedQuery.QueryBody.BodyClauses[1];
+      WhereClause whereClause3 = (WhereClause) parsedQuery.QueryBody.BodyClauses[2];
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause1);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause2);
+
+      var condition1 = new BinaryCondition (new Column (new Table ("studentTable", "s"), "LastColumn"), new Constant ("Garcia"), 
+          BinaryCondition.ConditionKind.Equal);
+      var condition2 = new BinaryCondition (new Column (new Table ("studentTable", "s"), "FirstColumn"), new Constant ("Hugo"),
+          BinaryCondition.ConditionKind.Equal);
+      var combination12 = new ComplexCriterion (condition1, condition2, ComplexCriterion.JunctionKind.And);
+      Assert.AreEqual (combination12, sqlGeneratorVisitor.Criterion);
+
+      sqlGeneratorVisitor.VisitWhereClause (whereClause3);
+
+      var condition3 = new BinaryCondition (new Column (new Table ("studentTable", "s"), "IDColumn"), new Constant (100),
+          BinaryCondition.ConditionKind.GreaterThan);
+      var combination123 = new ComplexCriterion (combination12, condition3, ComplexCriterion.JunctionKind.And);
+      Assert.AreEqual (combination123, sqlGeneratorVisitor.Criterion);
+    }
+
     
     [Test]
     public void VisitOrderingClause()

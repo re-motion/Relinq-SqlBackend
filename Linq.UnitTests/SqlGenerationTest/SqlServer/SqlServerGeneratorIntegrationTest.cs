@@ -69,6 +69,22 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
+    public void MultiWhereQuery ()
+    {
+      IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (_source);
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((([s].[LastColumn] = @1) AND ([s].[FirstColumn] = @2)) AND ([s].[IDColumn] > @3))",
+          result.A);
+
+      CommandParameter[] parameters = result.B;
+      Assert.That (parameters,
+          Is.EqualTo (new object[] {new CommandParameter ("@1", "Garcia"), new CommandParameter ("@2", "Hugo"), new CommandParameter ("@3", 100)}));
+    }
+
+    [Test]
     public void WhereQueryWithOrAndNot ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithOrAndNot (_source);
