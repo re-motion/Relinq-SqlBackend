@@ -6,6 +6,7 @@ using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
+using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 {
@@ -109,7 +110,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void ProcessQuery_CreatesAliases()
     {
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail();
-      QueryExpression query = ExpressionHelper.ParseQuery (TestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
+      QueryExpression query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       // Expect
@@ -128,7 +129,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void CreateDistinct ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
-      QueryExpression query = ExpressionHelper.ParseQuery (TestQueryGenerator.CreateSimpleDisinctQuery (source));
+      QueryExpression query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder);
 
       //Expect

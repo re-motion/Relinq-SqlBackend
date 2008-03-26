@@ -9,6 +9,7 @@ using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Data.Linq.SqlGeneration;
+using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 {
@@ -26,7 +27,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     [Test]
     public void VisitOrderingClause_WithNestedJoins ()
     {
-      IQueryable<Student_Detail_Detail> query = TestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
+      IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
@@ -56,7 +57,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> IndustrialSector) }
 
       IQueryable<Student_Detail_Detail> query =
-        TestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateQuerySource_Detail_Detail ());
+        JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
@@ -95,7 +96,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       // Joins[sdd] = { (sdd -> Student_Detail -> Student) }
 
       IQueryable<Student_Detail_Detail> query =
-        TestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateQuerySource_Detail_Detail ());
+        JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
@@ -131,7 +132,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> Student_Detail -> IndustrialSector) }
 
       IQueryable<Student_Detail_Detail> query =
-        TestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateQuerySource_Detail_Detail ());
+        JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateQuerySource_Detail_Detail ());
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy = (OrderByClause) parsedQuery.QueryBody.BodyClauses.First ();
@@ -170,7 +171,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       // Joins[sdd2] = { (sdd2 -> Student_Detail -> Student) }
 
       IQueryable<Student_Detail_Detail> query =
-        TestQueryGenerator.CreateImplicitOrderByJoinWithMultipleKeys
+        JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleKeys
         (ExpressionHelper.CreateQuerySource_Detail_Detail (), ExpressionHelper.CreateQuerySource_Detail_Detail ());
 
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
