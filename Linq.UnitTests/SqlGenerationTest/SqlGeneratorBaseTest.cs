@@ -37,7 +37,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
-      _fromBuilder.BuildFromPart (generator.Visitor.Tables, generator.Visitor.Joins);
+      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
 
@@ -62,8 +62,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         generator.CommandText.Append ("Select");
       });
 
-      _fromBuilder.BuildFromPart (generator.Visitor.Tables, generator.Visitor.Joins);
-      LastCall.Do ((Proc<List<Table>, JoinCollection>) delegate
+      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
+      LastCall.Do ((Proc<List<IFromSource>, JoinCollection>) delegate
       {
         generator.CommandText.Append ("From");
       });
@@ -96,7 +96,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
-      _fromBuilder.BuildFromPart (generator.Visitor.Tables, generator.Visitor.Joins);
+      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
 
@@ -115,7 +115,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
-      _fromBuilder.BuildFromPart (generator.Visitor.Tables, generator.Visitor.Joins);
+      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
 
@@ -134,7 +134,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       //Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.Columns, true);
-      _fromBuilder.BuildFromPart (generator.Visitor.Tables, generator.Visitor.Joins);
+      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
 

@@ -5,6 +5,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public interface IFromBuilder
   {
-    void BuildFromPart (List<Table> tables, JoinCollection joins);
+    void BuildFromPart (List<IFromSource> fromSources, JoinCollection joins);
   }
 }

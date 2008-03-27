@@ -194,8 +194,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1b }));
       joins.AddPath (new FieldSourcePath (initialTable2, new[] { join2 }));
 
-      List<KeyValuePair<Table, List<SingleJoin>>> list = new List<KeyValuePair<Table, List<SingleJoin>>>();
-      foreach (KeyValuePair<Table, List<SingleJoin>> item in joins)
+      List<KeyValuePair<IFromSource, List<SingleJoin>>> list = new List<KeyValuePair<IFromSource, List<SingleJoin>>> ();
+      foreach (KeyValuePair<IFromSource, List<SingleJoin>> item in joins)
         list.Add (item);
 
       Assert.AreEqual (2, list.Count);

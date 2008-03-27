@@ -72,7 +72,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      Table studentDetailTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      IFromSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
       Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (studentDetailTable, joinColumns.A), new Column (studentTable, joinColumns.B));
@@ -99,7 +99,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause);
-      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
+      Assert.That (sqlGeneratorVisitor.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
-      Assert.That (sqlGeneratorVisitor.Tables, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
+      Assert.That (sqlGeneratorVisitor.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
     }
 
     [Test]
@@ -203,7 +203,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      Table sourceTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance);
+      IFromSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
@@ -254,7 +254,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      Table sourceTable = parsedQuery.MainFromClause.GetTable (StubDatabaseInfo.Instance); // Student_Detail
+      IFromSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance); // Student_Detail
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));

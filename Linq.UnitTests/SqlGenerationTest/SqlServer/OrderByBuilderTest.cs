@@ -25,7 +25,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
       MemberInfo member = typeof (Student).GetProperty ("First");
-      Column column = new Column (path.SourceTable,"c1");
+      Column column = new Column (path.FirstSource,"c1");
       FieldDescriptor descriptor = new FieldDescriptor (member, fromClause, path, column);
 
       OrderingField field1 = new OrderingField (descriptor,OrderDirection.Asc);
@@ -47,7 +47,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
       MemberInfo member = typeof (Student).GetProperty ("First");
-      Column column = new Column (path.SourceTable, "c1");
+      Column column = new Column (path.FirstSource, "c1");
       FieldDescriptor descriptor = new FieldDescriptor (member, fromClause, path, column);
 
       OrderingField field1 = new OrderingField (descriptor, (OrderDirection) int.MaxValue);

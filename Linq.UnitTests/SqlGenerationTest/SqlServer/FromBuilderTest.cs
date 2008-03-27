@@ -23,7 +23,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column1 = new Column (table1, "c1");
       Column column2 = new Column (table2, "c2");
 
-      List<Table> tables = new List<Table> { table1 }; // this table does not have a join associated with it
+      List<IFromSource> tables = new List<IFromSource> { table1 }; // this table does not have a join associated with it
       JoinCollection joins = new JoinCollection ();
       SingleJoin join = new SingleJoin (column2, column1);
       joins.AddPath (new FieldSourcePath(table2, new [] { join }));
@@ -43,7 +43,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column1 = new Column (table1, "c1");
       Column column2 = new Column (table2, "c2");
 
-      List<Table> tables = new List<Table> { table2 };
+      List<IFromSource> tables = new List<IFromSource> { table2 };
       JoinCollection joins = new JoinCollection();
       SingleJoin join = new SingleJoin (column2, column1);
       joins.AddPath (new FieldSourcePath (table2, new[] { join }));
@@ -68,7 +68,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column3 = new Column (table1, "c1'");
       Column column4 = new Column (table3, "c3");
 
-      List<Table> tables = new List<Table> { table2 };
+      List<IFromSource> tables = new List<IFromSource> { table2 };
 
       JoinCollection joins = new JoinCollection();
 
@@ -99,7 +99,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column3 = new Column (table1, "c1'");
       Column column4 = new Column (table3, "c3");
 
-      List<Table> tables = new List<Table> { table2 };
+      List<IFromSource> tables = new List<IFromSource> { table2 };
 
       JoinCollection joins = new JoinCollection ();
 

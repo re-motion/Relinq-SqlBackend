@@ -32,7 +32,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       SqlGeneratorVisitor visitor = ProcessQuery();
 
       CreateSelectBuilder(CommandText).BuildSelectPart (visitor.Columns, visitor.Distinct);
-      CreateFromBuilder (CommandText).BuildFromPart (visitor.Tables, visitor.Joins);
+      CreateFromBuilder (CommandText).BuildFromPart (visitor.FromSources, visitor.Joins);
       CreateWhereBuilder (CommandText, CommandParameters).BuildWherePart (visitor.Criterion);
       CreateOrderByBuilder (CommandText).BuildOrderByPart (visitor.OrderingFields);
 

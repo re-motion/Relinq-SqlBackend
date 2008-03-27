@@ -17,17 +17,17 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildFromPart (List<Table> tables, JoinCollection joins)
+    public void BuildFromPart (List<IFromSource> fromSources, JoinCollection joins)
     {
       _commandBuilder.Append ("FROM ");
 
-      IEnumerable<string> tableEntries = CombineTables (tables, joins);
+      IEnumerable<string> tableEntries = CombineTables (fromSources, joins);
       _commandBuilder.Append (SeparatedStringBuilder.Build (", ", tableEntries));
     }
 
-    private IEnumerable<string> CombineTables (IEnumerable<Table> tables, JoinCollection joins)
+    private IEnumerable<string> CombineTables (IEnumerable<IFromSource> fromSources, JoinCollection joins)
     {
-      foreach (Table table in tables)
+      foreach (Table table in fromSources)
         yield return SqlServerUtility.GetTableDeclaration (table) + BuildJoinPart (joins[table]);
     }
 
@@ -42,7 +42,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private void AppendJoinExpression (StringBuilder joinStatement, SingleJoin join)
     {
       joinStatement.Append (" LEFT OUTER JOIN ")
-          .Append (SqlServerUtility.GetTableDeclaration (join.RightSide))
+          .Append (SqlServerUtility.GetTableDeclaration ((Table) join.RightSide))
           .Append (" ON ")
           .Append (SqlServerUtility.GetColumnString (join.LeftColumn))
           .Append (" = ")

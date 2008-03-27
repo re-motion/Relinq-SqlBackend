@@ -26,13 +26,13 @@ namespace Rubicon.Data.Linq.SqlGeneration
       _context = context;
       _queryExpression = queryExpression;
 
-      Tables = new List<Table>();
+      FromSources = new List<IFromSource>();
       Columns = new List<Column>();
       OrderingFields = new List<OrderingField>();
       Joins = new JoinCollection (); 
     }
 
-    public List<Table> Tables { get; private set; }
+    public List<IFromSource> FromSources { get; private set; }
     public List<Column> Columns { get; private set; }
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
@@ -51,15 +51,15 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitMainFromClause (MainFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      Table tableEntry = fromClause.GetTable (_databaseInfo);
-      Tables.Add (tableEntry);
+      IFromSource fromSource = fromClause.GetFromSource (_databaseInfo);
+      FromSources.Add (fromSource);
     }
 
     public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      Table tableEntry = fromClause.GetTable (_databaseInfo);
-      Tables.Add (tableEntry);
+      IFromSource fromSource = fromClause.GetFromSource (_databaseInfo);
+      FromSources.Add (fromSource);
     }
 
     public void VisitSubQueryFromClause (SubQueryFromClause clause)
