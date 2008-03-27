@@ -9,32 +9,30 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public abstract class SqlGeneratorBase
   {
-    private readonly IDatabaseInfo _databaseInfo;
     private readonly QueryExpression _query;
 
-    protected StringBuilder CommandText { get; private set; }
-    protected List<CommandParameter> CommandParameters { get; private set; }
+    public IDatabaseInfo DatabaseInfo { get; private set; }
 
-    protected SqlGeneratorBase (QueryExpression query, IDatabaseInfo databaseInfo)
+    public abstract StringBuilder CommandText { get; }
+    public abstract List<CommandParameter> CommandParameters { get; }
+
+    public SqlGeneratorBase (QueryExpression query, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
 
       _query = query;
-      _databaseInfo = databaseInfo;
-
-      CommandText = new StringBuilder();
-      CommandParameters = new List<CommandParameter>();
+      DatabaseInfo = databaseInfo;
     }
 
     public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
     {
       SqlGeneratorVisitor visitor = ProcessQuery();
 
-      CreateSelectBuilder(CommandText).BuildSelectPart (visitor.Columns, visitor.Distinct);
-      CreateFromBuilder (CommandText).BuildFromPart (visitor.FromSources, visitor.Joins);
-      CreateWhereBuilder (CommandText, CommandParameters).BuildWherePart (visitor.Criterion);
-      CreateOrderByBuilder (CommandText).BuildOrderByPart (visitor.OrderingFields);
+      CreateSelectBuilder().BuildSelectPart (visitor.Columns, visitor.Distinct);
+      CreateFromBuilder ().BuildFromPart (visitor.FromSources, visitor.Joins);
+      CreateWhereBuilder ().BuildWherePart (visitor.Criterion);
+      CreateOrderByBuilder ().BuildOrderByPart (visitor.OrderingFields);
 
       return new Tuple<string, CommandParameter[]> (CommandText.ToString(), CommandParameters.ToArray());
     }
@@ -42,15 +40,15 @@ namespace Rubicon.Data.Linq.SqlGeneration
     protected virtual SqlGeneratorVisitor ProcessQuery ()
     {
       JoinedTableContext context = new JoinedTableContext();
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_query, _databaseInfo, context);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_query, DatabaseInfo, context);
       _query.Accept (visitor);
       context.CreateAliases();
       return visitor;
     }
 
-    protected abstract IOrderByBuilder CreateOrderByBuilder (StringBuilder commandText);
-    protected abstract IWhereBuilder CreateWhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters);
-    protected abstract IFromBuilder CreateFromBuilder (StringBuilder commandText);
-    protected abstract ISelectBuilder CreateSelectBuilder (StringBuilder commandText);
+    protected abstract IOrderByBuilder CreateOrderByBuilder ();
+    protected abstract IWhereBuilder CreateWhereBuilder ();
+    protected abstract IFromBuilder CreateFromBuilder ();
+    protected abstract ISelectBuilder CreateSelectBuilder ();
   }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.SqlGeneration;
 
@@ -15,5 +16,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     void AppendColumns (IEnumerable<Column> columns);
     void AppendConstant (Constant constant);
     CommandParameter AddParameter (object value);
+    StringBuilder CommandText { get; }
+    List<CommandParameter> CommandParameters { get; }
   }
 }

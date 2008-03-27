@@ -10,43 +10,65 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
   public class FromBuilder : IFromBuilder
   {
     private readonly ICommandBuilder _commandBuilder;
+    private readonly IDatabaseInfo _databaseInfo;
 
-    public FromBuilder (ICommandBuilder commandBuilder)
+    public FromBuilder (ICommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;
+      _databaseInfo = databaseInfo;
     }
 
     public void BuildFromPart (List<IFromSource> fromSources, JoinCollection joins)
     {
       _commandBuilder.Append ("FROM ");
 
-      IEnumerable<string> tableEntries = CombineTables (fromSources, joins);
-      _commandBuilder.Append (SeparatedStringBuilder.Build (", ", tableEntries));
+      bool first = true;
+      foreach (IFromSource fromSource in fromSources)
+      {
+        Table table = fromSource as Table;
+        if (table != null)
+        {
+          if (!first)
+            _commandBuilder.Append (", ");
+          _commandBuilder.Append (SqlServerUtility.GetTableDeclaration (table));
+        }
+        else
+          AppendCrossApply ((SubQuery) fromSource);
+
+        AppendJoinPart (joins[fromSource]);
+        first = false;
+      }
     }
 
-    private IEnumerable<string> CombineTables (IEnumerable<IFromSource> fromSources, JoinCollection joins)
+    private void AppendCrossApply (SubQuery subQuery)
     {
-      foreach (Table table in fromSources)
-        yield return SqlServerUtility.GetTableDeclaration (table) + BuildJoinPart (joins[table]);
+      _commandBuilder.Append (" CROSS APPLY (");
+      SqlGeneratorBase subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
+      subQueryGenerator.BuildCommandString ();
+      _commandBuilder.Append (") ");
+      _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));
     }
 
-    private string BuildJoinPart (IEnumerable<SingleJoin> joins)
+    protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
-      StringBuilder joinStatement = new StringBuilder ();
+      return new SqlServerGenerator (subQuery.QueryExpression, databaseInfo, commandBuilder);
+    }
+
+    private void AppendJoinPart (IEnumerable<SingleJoin> joins)
+    {
       foreach (SingleJoin join in joins)
-        AppendJoinExpression (joinStatement, join);
-      return joinStatement.ToString ();
+        AppendJoinExpression (join);
     }
 
-    private void AppendJoinExpression (StringBuilder joinStatement, SingleJoin join)
+    private void AppendJoinExpression (SingleJoin join)
     {
-      joinStatement.Append (" LEFT OUTER JOIN ")
-          .Append (SqlServerUtility.GetTableDeclaration ((Table) join.RightSide))
-          .Append (" ON ")
-          .Append (SqlServerUtility.GetColumnString (join.LeftColumn))
-          .Append (" = ")
-          .Append (SqlServerUtility.GetColumnString (join.RightColumn));
+      _commandBuilder.Append (" LEFT OUTER JOIN ");
+      _commandBuilder.Append (SqlServerUtility.GetTableDeclaration ((Table) join.RightSide));
+      _commandBuilder.Append (" ON ");
+      _commandBuilder.Append (SqlServerUtility.GetColumnString (join.LeftColumn));
+      _commandBuilder.Append (" = ");
+      _commandBuilder.Append (SqlServerUtility.GetColumnString (join.RightColumn));
     }
   }
 }

@@ -14,6 +14,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     private readonly IWhereBuilder _whereBuilder;
     private readonly IFromBuilder _fromBuilder;
     private readonly ISelectBuilder _selectBuilder;
+    private readonly StringBuilder _commandText = new StringBuilder();
+    private readonly List<CommandParameter> _commandParameters = new List<CommandParameter>();
 
     public SqlGeneratorMock (QueryExpression query, IDatabaseInfo databaseInfo,
         ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder)
@@ -32,14 +34,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
     public bool CheckBaseProcessQueryMethod { get; set; }
     public SqlGeneratorVisitor Visitor { get; private set; }
-    public new StringBuilder CommandText 
+
+    public override StringBuilder CommandText
     {
-      get { return base.CommandText; } 
+      get { return _commandText; }
     }
 
-    public new List<CommandParameter> CommandParameters
+    public override List<CommandParameter> CommandParameters
     {
-      get { return base.CommandParameters; }
+      get { return _commandParameters; }
     }
 
     protected override SqlGeneratorVisitor ProcessQuery ()
@@ -61,22 +64,22 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       return Visitor;
     }
 
-    protected override IOrderByBuilder CreateOrderByBuilder (StringBuilder commandText)
+    protected override IOrderByBuilder CreateOrderByBuilder ()
     {
       return _orderByBuilder;
     }
 
-    protected override IWhereBuilder CreateWhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
+    protected override IWhereBuilder CreateWhereBuilder ()
     {
       return _whereBuilder;
     }
 
-    protected override IFromBuilder CreateFromBuilder (StringBuilder commandText)
+    protected override IFromBuilder CreateFromBuilder ()
     {
       return _fromBuilder;
     }
 
-    protected override ISelectBuilder CreateSelectBuilder (StringBuilder commandText)
+    protected override ISelectBuilder CreateSelectBuilder ()
     {
       return _selectBuilder;
     }

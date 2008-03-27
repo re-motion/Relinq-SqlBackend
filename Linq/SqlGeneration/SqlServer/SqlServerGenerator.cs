@@ -6,30 +6,45 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class SqlServerGenerator : SqlGeneratorBase
   {
-    private readonly CommandBuilder _commandBuilder;
+    private readonly ICommandBuilder _commandBuilder;
 
     public SqlServerGenerator (QueryExpression query, IDatabaseInfo databaseInfo)
-        : base (query, databaseInfo)
+        : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>()))
     {
-      _commandBuilder = new CommandBuilder (CommandText, CommandParameters);
     }
 
-    protected override IOrderByBuilder CreateOrderByBuilder (StringBuilder commandText)
+    public SqlServerGenerator (QueryExpression query, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
+      : base (query, databaseInfo)
+    {
+      _commandBuilder = commandBuilder;
+    }
+
+    public override StringBuilder CommandText
+    {
+      get { return _commandBuilder.CommandText; }
+    }
+
+    public override List<CommandParameter> CommandParameters
+    {
+      get { return _commandBuilder.CommandParameters; }
+    }
+
+    protected override IOrderByBuilder CreateOrderByBuilder ()
     {
       return new OrderByBuilder (_commandBuilder);
     }
 
-    protected override IWhereBuilder CreateWhereBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
+    protected override IWhereBuilder CreateWhereBuilder ()
     {
       return new WhereBuilder (_commandBuilder);
     }
 
-    protected override IFromBuilder CreateFromBuilder (StringBuilder commandText)
+    protected override IFromBuilder CreateFromBuilder ()
     {
-      return new FromBuilder (_commandBuilder);
+      return new FromBuilder (_commandBuilder, DatabaseInfo);
     }
 
-    protected override ISelectBuilder CreateSelectBuilder (StringBuilder commandText)
+    protected override ISelectBuilder CreateSelectBuilder ()
     {
       return new SelectBuilder (_commandBuilder);
     }
