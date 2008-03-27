@@ -115,6 +115,20 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    [Ignore ("TODO: Implement IFromSource")]
+    public void VisitSubQueryFromClause ()
+    {
+      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      SubQueryFromClause subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses.First();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
+      sqlGeneratorVisitor.VisitSubQueryFromClause (subQueryFromClause);
+
+      Assert.Fail ("TODO: Define expected outcome");
+    }
+
+    [Test]
     public void VisitWhereClause()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
