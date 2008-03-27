@@ -51,20 +51,25 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitMainFromClause (MainFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      IFromSource fromSource = fromClause.GetFromSource (_databaseInfo);
-      FromSources.Add (fromSource);
+      VisitFromClause (fromClause);
     }
 
     public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      IFromSource fromSource = fromClause.GetFromSource (_databaseInfo);
-      FromSources.Add (fromSource);
+      VisitFromClause(fromClause);
     }
 
-    public void VisitSubQueryFromClause (SubQueryFromClause clause)
+    public void VisitSubQueryFromClause (SubQueryFromClause fromClause)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
+      VisitFromClause (fromClause);
+    }
+
+    private void VisitFromClause (FromClauseBase fromClause)
+    {
+      IFromSource fromSource = fromClause.GetFromSource (_databaseInfo);
+      FromSources.Add (fromSource);
     }
 
     public void VisitJoinClause (JoinClause joinClause)
