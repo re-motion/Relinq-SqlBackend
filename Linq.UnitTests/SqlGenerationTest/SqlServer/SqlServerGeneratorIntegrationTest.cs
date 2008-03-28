@@ -436,7 +436,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Make PartialTreeEvaluator compatible with variable access to parent query")]
     public void ComplexSubQueryInAdditionalFromClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
@@ -444,11 +443,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateComplexSubQueryInAdditionalFromClause (source);
       QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
 
+
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
 
-      Assert.AreEqual ("SELECT [s2].* FROM [studentTable] [s] " 
-          + "CROSS APPLY (SELECT [s3].* FROM [studentTable] [s3] WHERE ([s3].[IDColumn] = [s].[IDColumn]) AND ([s3].[IDColumn] > @1)) [s2]", result.A);
+      Assert.AreEqual ("SELECT [s2].* FROM [studentTable] [s] CROSS APPLY (SELECT [s3].* FROM [studentTable] [s3] " 
+          + "WHERE ((([s3].[IDColumn] IS NULL AND [s].[IDColumn] IS NULL) OR [s3].[IDColumn] = [s].[IDColumn]) AND ([s3].[IDColumn] > @1))) [s2]",
+          result.A);
       Assert.That (result.B, Is.EqualTo (new[] {new CommandParameter ("@1", 3)}));
     }
   }
