@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
@@ -209,6 +211,24 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       List<SingleJoin> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
       Assert.That (actualJoins2, Is.EqualTo (new object[] { join3, join4 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "The expression 'value(Rubicon.Data.Linq.UnitTests.SqlGenerationTest." 
+        + "SqlGeneratorVisitorIntegrationTest).GetNullSource()' could not be evaluated as a query source because it cannot be compiled: Query "
+        + "sources cannot be null.")]
+    public void InvalidQuerySource ()
+    {
+      var query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;
+      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryExpression subQueryExpression = ((SubQueryFromClause)parsedQuery.BodyClauses[0]).SubQueryExpression;
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (subQueryExpression, StubDatabaseInfo.Instance, _context);
+      sqlGeneratorVisitor.VisitQueryExpression (subQueryExpression);
+    }
+
+    private IQueryable<Student> GetNullSource ()
+    {
+      return null;
     }
 
     private SingleJoin CreateJoin (IFromSource sourceTable, MemberInfo relationMember)
