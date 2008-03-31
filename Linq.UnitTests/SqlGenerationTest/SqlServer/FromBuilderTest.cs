@@ -123,7 +123,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       MockRepository mockRepository = new MockRepository ();
 
-      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryExpression (), "sub_alias");
+      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), "sub_alias");
       Table table1 = new Table ("s1", "s1_alias");
       List<IFromSource> tables = new List<IFromSource> { table1, subQuery };
 
@@ -131,7 +131,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       commandBuilder.AddParameter (1);
 
       FromBuilder fromBuilderMock = mockRepository.CreateMock<FromBuilder> (commandBuilder, StubDatabaseInfo.Instance);
-      SqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<SqlGeneratorBase> (subQuery.QueryExpression, StubDatabaseInfo.Instance);
+      SqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<SqlGeneratorBase> (subQuery.QueryModel, StubDatabaseInfo.Instance);
 
       Expect.Call (PrivateInvoke.InvokeNonPublicMethod (fromBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
           commandBuilder)).Return (subQueryGeneratorMock);

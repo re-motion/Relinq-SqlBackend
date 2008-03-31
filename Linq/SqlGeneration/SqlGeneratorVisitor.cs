@@ -14,17 +14,17 @@ namespace Rubicon.Data.Linq.SqlGeneration
   {
     private readonly IDatabaseInfo _databaseInfo;
     private readonly JoinedTableContext _context;
-    private readonly QueryExpression _queryExpression;
+    private readonly QueryModel _queryModel;
 
-    public SqlGeneratorVisitor (QueryExpression queryExpression, IDatabaseInfo databaseInfo, JoinedTableContext context)
+    public SqlGeneratorVisitor (QueryModel queryModel, IDatabaseInfo databaseInfo, JoinedTableContext context)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      ArgumentUtility.CheckNotNull ("queryExpression", queryExpression);
+      ArgumentUtility.CheckNotNull ("queryExpression", queryModel);
       ArgumentUtility.CheckNotNull ("context", context);
 
       _databaseInfo = databaseInfo;
       _context = context;
-      _queryExpression = queryExpression;
+      _queryModel = queryModel;
 
       FromSources = new List<IFromSource>();
       Columns = new List<Column>();
@@ -38,14 +38,14 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
 
-    public void VisitQueryExpression (QueryExpression queryExpression)
+    public void VisitQueryExpression (QueryModel queryModel)
     {
-      ArgumentUtility.CheckNotNull ("queryExpression", queryExpression);
-      queryExpression.MainFromClause.Accept (this);
-      foreach (IBodyClause bodyClause in queryExpression.BodyClauses)
+      ArgumentUtility.CheckNotNull ("queryExpression", queryModel);
+      queryModel.MainFromClause.Accept (this);
+      foreach (IBodyClause bodyClause in queryModel.BodyClauses)
         bodyClause.Accept (this);
 
-      queryExpression.SelectOrGroupClause.Accept (this);
+      queryModel.SelectOrGroupClause.Accept (this);
     }
 
     public void VisitMainFromClause (MainFromClause fromClause)
@@ -85,7 +85,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitWhereClause (WhereClause whereClause)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
-      var conditionParser = new WhereConditionParser (_queryExpression, whereClause, _databaseInfo, _context, true);
+      var conditionParser = new WhereConditionParser (_queryModel, whereClause, _databaseInfo, _context, true);
       Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
       if (Criterion == null)
         Criterion = criterions.B;
@@ -107,7 +107,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
       ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
-      var fieldParser = new OrderingFieldParser (_queryExpression, orderingClause, _databaseInfo, _context);
+      var fieldParser = new OrderingFieldParser (_queryModel, orderingClause, _databaseInfo, _context);
       OrderingField orderingField = fieldParser.GetField();
       OrderingFields.Add (orderingField);
       Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
@@ -116,7 +116,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      var projectionParser = new SelectProjectionParser (_queryExpression, selectClause, _databaseInfo, _context);
+      var projectionParser = new SelectProjectionParser (_queryModel, selectClause, _databaseInfo, _context);
       IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
       Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)

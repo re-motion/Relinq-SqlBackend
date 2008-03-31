@@ -30,7 +30,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitOrderingClause_WithNestedJoins ()
     {
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
@@ -60,7 +60,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       IQueryable<Student_Detail_Detail> query =
         JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateQuerySource_Detail_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
 
@@ -99,7 +99,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       IQueryable<Student_Detail_Detail> query =
         JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateQuerySource_Detail_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
 
@@ -135,7 +135,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       IQueryable<Student_Detail_Detail> query =
         JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateQuerySource_Detail_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
 
@@ -176,7 +176,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
         JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleKeys
         (ExpressionHelper.CreateQuerySource_Detail_Detail (), ExpressionHelper.CreateQuerySource_Detail_Detail ());
 
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       OrderByClause orderBy1 = (OrderByClause) parsedQuery.BodyClauses.Skip (1).First ();
       OrderByClause orderBy2 = (OrderByClause) parsedQuery.BodyClauses.Last ();
@@ -220,10 +220,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void InvalidQuerySource ()
     {
       var query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
-      QueryExpression subQueryExpression = ((SubQueryFromClause)parsedQuery.BodyClauses[0]).SubQueryExpression;
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (subQueryExpression, StubDatabaseInfo.Instance, _context);
-      sqlGeneratorVisitor.VisitQueryExpression (subQueryExpression);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel subQueryModel = ((SubQueryFromClause)parsedQuery.BodyClauses[0]).SubQueryModel;
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (subQueryModel, StubDatabaseInfo.Instance, _context);
+      sqlGeneratorVisitor.VisitQueryExpression (subQueryModel);
     }
 
     private IQueryable<Student> GetNullSource ()

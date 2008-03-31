@@ -8,12 +8,12 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
   {
     private readonly ICommandBuilder _commandBuilder;
 
-    public SqlServerGenerator (QueryExpression query, IDatabaseInfo databaseInfo)
+    public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo)
         : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>()))
     {
     }
 
-    public SqlServerGenerator (QueryExpression query, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
+    public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
       : base (query, databaseInfo)
     {
       _commandBuilder = commandBuilder;

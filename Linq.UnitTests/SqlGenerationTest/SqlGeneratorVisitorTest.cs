@@ -29,7 +29,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitSelectClause ()
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
@@ -42,7 +42,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitSelectClause_DistinctFalse ()
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
@@ -55,7 +55,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitSelectClause_DistinctTrue ()
     {
       IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
 
       Assert.IsTrue (selectClause.Distinct);
@@ -65,7 +65,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitSelectClause_WithJoins ()
     {
       IQueryable<string> query = JoinTestQueryGenerator.CreateSimpleImplicitSelectJoin (ExpressionHelper.CreateQuerySource_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
@@ -94,7 +94,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitMainFromClause()
     {
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       MainFromClause fromClause = parsedQuery.MainFromClause;
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
@@ -106,7 +106,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitAdditionalFromClause ()
     {
       IQueryable<Student> query = MixedTestQueryGenerator.CreateMultiFromWhereQuery (ExpressionHelper.CreateQuerySource (), ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       AdditionalFromClause fromClause = (AdditionalFromClause)parsedQuery.BodyClauses.First();
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
@@ -118,7 +118,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitSubQueryFromClause ()
     {
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SubQueryFromClause subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses.First();
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);
@@ -132,7 +132,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
       
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       WhereClause whereClause = (WhereClause)parsedQuery.BodyClauses.First();
 
@@ -148,7 +148,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitWhereClause_MultipleTimes ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       WhereClause whereClause1 = (WhereClause) parsedQuery.BodyClauses[0];
       WhereClause whereClause2 = (WhereClause) parsedQuery.BodyClauses[1];
@@ -178,7 +178,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitOrderingClause()
     {
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
@@ -194,7 +194,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitOrderingClause_WithJoins ()
     {
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
@@ -225,7 +225,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     public void VisitOrderByClause ()
     {
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateQuerySource ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy1 = (OrderByClause) parsedQuery.BodyClauses.First ();
 
       FieldDescriptor fieldDescriptor1 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
@@ -246,7 +246,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateQuerySource_Detail ());
       
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       WhereClause whereClause = ClauseFinder.FindClause<WhereClause> (parsedQuery.SelectOrGroupClause);
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context);

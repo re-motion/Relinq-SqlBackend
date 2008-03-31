@@ -17,7 +17,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     private readonly StringBuilder _commandText = new StringBuilder();
     private readonly List<CommandParameter> _commandParameters = new List<CommandParameter>();
 
-    public SqlGeneratorMock (QueryExpression query, IDatabaseInfo databaseInfo,
+    public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
         ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder)
         : base (query, databaseInfo)
     {

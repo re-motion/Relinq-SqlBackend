@@ -52,7 +52,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (subQuery.QueryExpression, databaseInfo, commandBuilder);
+      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder);
     }
 
     private void AppendJoinPart (IEnumerable<SingleJoin> joins)

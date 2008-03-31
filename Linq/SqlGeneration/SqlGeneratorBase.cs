@@ -9,14 +9,14 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public abstract class SqlGeneratorBase
   {
-    private readonly QueryExpression _query;
+    private readonly QueryModel _query;
 
     public IDatabaseInfo DatabaseInfo { get; private set; }
 
     public abstract StringBuilder CommandText { get; }
     public abstract List<CommandParameter> CommandParameters { get; }
 
-    public SqlGeneratorBase (QueryExpression query, IDatabaseInfo databaseInfo)
+    public SqlGeneratorBase (QueryModel query, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);

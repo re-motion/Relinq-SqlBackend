@@ -25,7 +25,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void SimpleQuery_WithNonDBFieldProjection ()
     {
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQueryWithNonDBProjection (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance).BuildCommandString ();
     }
 
@@ -33,7 +33,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void SimpleQuery ()
     {
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.A);
@@ -45,7 +45,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void MultiFromQueryWithProjection ()
     {
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual ("SELECT [s1].[FirstColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [studentTable] [s1], [studentTable] [s2], [studentTable] [s3]",
@@ -58,7 +58,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void SimpleWhereQuery ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -72,7 +72,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void MultiWhereQuery ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -88,7 +88,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithOrAndNot ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithOrAndNot (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -105,7 +105,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithComparisons ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithDifferentComparisons (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -129,7 +129,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithNullChecks ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryNullChecks (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -144,7 +144,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithBooleanConstantTrue ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryBooleanConstantTrue (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -159,7 +159,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithBooleanConstantFalse ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryBooleanConstantFalse (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -174,7 +174,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithStartsWith ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithStartsWith (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] LIKE @1)",
@@ -187,7 +187,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void WhereQueryWithEndsWith ()
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithEndsWith (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstColumn] LIKE @1)",
@@ -200,7 +200,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void SimpleOrderByQuery ()
     {
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
 
@@ -212,7 +212,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void ComplexOrderByQuery ()
     {
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (_source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC",
@@ -224,7 +224,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       // from sd in source orderby sd.Student.First select sd
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] "
@@ -237,7 +237,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       // from sdd in source orderby sdd.Student_Detail.Student.First select sdd
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail ());
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
       string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
@@ -260,7 +260,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail_Detail> source1 = ExpressionHelper.CreateQuerySource_Detail_Detail ();
       IQueryable<Student_Detail_Detail> source2 = ExpressionHelper.CreateQuerySource_Detail_Detail ();
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateImplicitOrderByJoinWithJoinReuse (source1, source2);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       string expectedString = "SELECT [sdd1].* "
@@ -287,7 +287,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       IQueryable<Student_Detail_Detail> source1 = ExpressionHelper.CreateQuerySource_Detail_Detail ();
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateImplicitOrderByJoinWithJoinPartReuse (source1);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       string expectedString = "SELECT [sdd].* "
@@ -310,7 +310,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail_Detail> source = ExpressionHelper.CreateQuerySource_Detail_Detail ();
 
       IQueryable<Tuple<string, int>> query = JoinTestQueryGenerator.CreateComplexImplicitSelectJoin (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
       string expectedString = "SELECT [j1].[FirstColumn], [j2].[IDColumn] "
@@ -330,7 +330,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
 
       IQueryable<Student> query = SelectTestQueryGenerator.CreateRelationMemberSelectQuery (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
@@ -347,7 +347,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source);
 
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
@@ -363,7 +363,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateDisinctWithWhereQuery (source);
 
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
@@ -379,7 +379,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
 
       IQueryable<Student_Detail> query = WhereTestQueryGenerator.CreateRelationMemberWhereQuery (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
@@ -395,7 +395,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<IndustrialSector> source = ExpressionHelper.CreateQuerySource_IndustrialSector ();
 
       IQueryable<IndustrialSector> query = WhereTestQueryGenerator.CreateRelationMemberVirtualSideWhereQuery (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
 
@@ -415,7 +415,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
 
       IQueryable<Student_Detail> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       sqlGenerator.BuildCommandString ();
@@ -427,7 +427,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
@@ -441,7 +441,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateComplexSubQueryInAdditionalFromClause (source);
-      QueryExpression parsedQuery = ExpressionHelper.ParseQuery (query);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
