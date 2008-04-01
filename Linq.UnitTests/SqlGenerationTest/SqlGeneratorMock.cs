@@ -19,8 +19,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     private readonly List<CommandParameter> _commandParameters = new List<CommandParameter>();
 
     public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
-        ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder)
-        : base (query, databaseInfo, ParseContext.TopLevelQuery)
+        ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder, ParseContext parseContext)
+        : base (query, databaseInfo, parseContext)
     {
       _selectBuilder = selectBuilder;
       _fromBuilder = fromBuilder;
@@ -28,7 +28,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       _orderByBuilder = orderByBuilder;
 
       JoinedTableContext joinedTableContext = new JoinedTableContext();
-      Visitor = new SqlGeneratorVisitor (query, databaseInfo, joinedTableContext);
+      Visitor = new SqlGeneratorVisitor (query, databaseInfo, joinedTableContext, parseContext);
       query.Accept (Visitor);
       joinedTableContext.CreateAliases();
     }
@@ -51,6 +51,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       if (CheckBaseProcessQueryMethod)
       {
         SqlGeneratorVisitor visitor2 = base.ProcessQuery();
+
+        Assert.AreEqual (ParseContext, visitor2.ParseContext);
 
         Assert.That (visitor2.Columns, Is.EqualTo (Visitor.Columns));
         Assert.That (visitor2.Criterion, Is.EqualTo (Visitor.Criterion));

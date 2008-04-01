@@ -4,6 +4,7 @@ using System.Linq;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.Parsing.Details;
 using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Utilities;
@@ -12,11 +13,13 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public class SqlGeneratorVisitor : IQueryVisitor
   {
+    public ParseContext ParseContext { get; private set; }
+
     private readonly IDatabaseInfo _databaseInfo;
     private readonly JoinedTableContext _context;
     private readonly QueryModel _queryModel;
 
-    public SqlGeneratorVisitor (QueryModel queryModel, IDatabaseInfo databaseInfo, JoinedTableContext context)
+    public SqlGeneratorVisitor (QueryModel queryModel, IDatabaseInfo databaseInfo, JoinedTableContext context, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("queryExpression", queryModel);
@@ -25,6 +28,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
       _databaseInfo = databaseInfo;
       _context = context;
       _queryModel = queryModel;
+
+      ParseContext = parseContext;
 
       FromSources = new List<IFromSource>();
       Columns = new List<Column>();

@@ -42,7 +42,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     protected virtual SqlGeneratorVisitor ProcessQuery ()
     {
       JoinedTableContext context = new JoinedTableContext();
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context, ParseContext);
       QueryModel.Accept (visitor);
       context.CreateAliases();
       return visitor;
