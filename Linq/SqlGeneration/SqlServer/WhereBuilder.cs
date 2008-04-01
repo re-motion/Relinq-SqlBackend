@@ -29,10 +29,8 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendCriterion (ICriterion criterion)
     {
-      ICondition condition;
-
-      if ((condition = criterion as ICondition) != null)
-        AppendCondition (condition);
+      if (criterion is BinaryCondition)
+        AppendBinaryCondition ((BinaryCondition) criterion);
       else if (criterion is ComplexCriterion)
         AppendComplexCriterion ((ComplexCriterion) criterion);
       else if (criterion is NotCriterion)
@@ -43,15 +41,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         throw new NotSupportedException ("The criterion kind " + criterion.GetType ().Name + " is not supported.");
     }
 
-    private void AppendCondition (ICondition condition)
+    private void AppendBinaryCondition (BinaryCondition condition)
     {
-      if (condition is BinaryCondition)
-      {
-        BinaryCondition binaryCondition = (BinaryCondition) condition;
-        _builder.BuildBinaryConditionPart (binaryCondition);
-      }
-      else
-        throw new NotSupportedException ("The condition kind " + condition.GetType ().Name + " is not supported.");
+      _builder.BuildBinaryConditionPart (condition);
     }
 
     private void AppendTopLevelValue (IValue value)

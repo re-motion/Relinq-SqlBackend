@@ -72,15 +72,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckAppendCriterion (new PseudoCriterion(), null);
     }
 
-    class PseudoCondition : ICondition { }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The condition kind PseudoCondition is not supported.")]
-    public void InvalidConditionKind_NotSupportedException ()
-    {
-      CheckAppendCriterion (new PseudoCondition(), null);
-    }
-
     private static void CheckAppendCriterion (ICriterion criterion, string expectedString,
         params CommandParameter[] expectedParameters)
     {
