@@ -462,7 +462,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO")]
     public void SimpleSubQueryInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
@@ -474,11 +473,10 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
 
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.A);
-      Assert.That (result.B, Is.EqualTo (new[] { new CommandParameter ("@1", 3) }));
+      Assert.That (result.B, Is.Empty);
     }
 
     [Test]
-    [Ignore ("TODO")]
     public void SubQueryWithConstantInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
