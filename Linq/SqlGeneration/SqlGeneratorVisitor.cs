@@ -121,7 +121,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      var projectionParser = new SelectProjectionParser (_queryModel, selectClause, _databaseInfo, _context);
+      var projectionParser = new SelectProjectionParser (_queryModel, selectClause, _databaseInfo, _context, ParseContext.TopLevelQuery);
       IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
       Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)
