@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Rhino.Mocks;
+using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.SqlGeneration.SqlServer;
+using Rubicon.Development.UnitTesting;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
@@ -163,6 +166,39 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckBuildBinaryConditionPart (binaryCondition, null);
     }
 
+    [Test]
+    public void BuildBinaryConditionPart_ContainsCondition ()
+    {
+      MockRepository mockRepository = new MockRepository ();
+
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel ();
+      SubQuery subQuery = new SubQuery (queryModel, null);
+      
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      commandBuilder.AddParameter (1);
+
+      BinaryConditionBuilder binaryConditionBuilderMock = mockRepository.CreateMock<BinaryConditionBuilder> (commandBuilder, StubDatabaseInfo.Instance);
+      SqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<SqlGeneratorBase> (queryModel, StubDatabaseInfo.Instance);
+
+      Expect.Call (PrivateInvoke.InvokeNonPublicMethod (binaryConditionBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
+          commandBuilder)).Return (subQueryGeneratorMock);
+      Expect.Call (subQueryGeneratorMock.BuildCommandString ()).Do ((Func<Tuple<string, CommandParameter[]>>) delegate
+      {
+        commandBuilder.Append ("x");
+        commandBuilder.AddParameter (0);
+        return null;
+      });
+
+      mockRepository.ReplayAll ();
+      BinaryCondition binaryCondition = new BinaryCondition(subQuery, new Constant ("foo"), BinaryCondition.ConditionKind.Contains);
+      binaryConditionBuilderMock.BuildBinaryConditionPart (binaryCondition);
+      mockRepository.VerifyAll ();
+
+      Assert.AreEqual ("@2 IN (x)", commandBuilder.GetCommandText ());
+      Assert.That (commandBuilder.GetCommandParameters (),
+          Is.EqualTo (new[] { new CommandParameter ("@1", 1), new CommandParameter ("@2", "foo"), new CommandParameter ("@3", 0) }));
+    }
+
     public class PseudoValue : IValue { }
 
 
@@ -176,7 +212,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
        params CommandParameter[] expectedParameters)
     {
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
-      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       binaryConditionBuilder.BuildBinaryConditionPart (condition);
 

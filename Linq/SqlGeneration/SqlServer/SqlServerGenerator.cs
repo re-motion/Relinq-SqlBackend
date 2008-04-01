@@ -36,7 +36,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected override IWhereBuilder CreateWhereBuilder ()
     {
-      return new WhereBuilder (_commandBuilder);
+      return new WhereBuilder (_commandBuilder, DatabaseInfo);
     }
 
     protected override IFromBuilder CreateFromBuilder ()

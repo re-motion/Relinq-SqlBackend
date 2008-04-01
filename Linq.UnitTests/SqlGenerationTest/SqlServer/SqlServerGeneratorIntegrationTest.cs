@@ -452,5 +452,21 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
           result.A);
       Assert.That (result.B, Is.EqualTo (new[] {new CommandParameter ("@1", 3)}));
     }
+
+    [Test]
+    [Ignore]
+    public void SimpleSubQueryInWhereClause ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+
+      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInWhereClause (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.A);
+      Assert.That (result.B, Is.EqualTo (new[] { new CommandParameter ("@1", 3) }));
+    }
   }
 }

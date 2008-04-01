@@ -7,11 +7,15 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
   public class BinaryConditionBuilder
   {
     private readonly ICommandBuilder _commandBuilder;
+    private readonly IDatabaseInfo _databaseInfo;
 
-    public BinaryConditionBuilder (ICommandBuilder commandBuilder)
+    public BinaryConditionBuilder (ICommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("command", commandBuilder);
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+
       _commandBuilder = commandBuilder;
+      _databaseInfo = databaseInfo;
     }
 
     public void BuildBinaryConditionPart (BinaryCondition binaryCondition)
@@ -20,8 +24,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         AppendNullCondition (binaryCondition.Right, binaryCondition.Kind);
       else if (binaryCondition.Right.Equals (new Constant (null)))
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
+      else if (binaryCondition.Kind == BinaryCondition.ConditionKind.Contains)
+        AppendContainsCondition ((SubQuery) binaryCondition.Left, binaryCondition.Right);
       else
-        AppendCondition (binaryCondition);
+        AppendGeneralCondition (binaryCondition);
     }
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
@@ -39,7 +45,20 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    private void AppendCondition (BinaryCondition binaryCondition)
+    private void AppendContainsCondition (SubQuery left, IValue right)
+    {
+      AppendValue (right);
+      _commandBuilder.Append (" IN (");
+      CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommandString ();
+      _commandBuilder.Append (")");
+    }
+
+    protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
+    {
+      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder);
+    }
+
+    private void AppendGeneralCondition (BinaryCondition binaryCondition)
     {
       _commandBuilder.Append ("(");
       AppendNullChecks (binaryCondition.Left, binaryCondition.Right, binaryCondition.Kind);

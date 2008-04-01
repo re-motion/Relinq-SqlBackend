@@ -76,7 +76,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
         params CommandParameter[] expectedParameters)
     {
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
-      WhereBuilder whereBuilder = new WhereBuilder (commandBuilder);
+      WhereBuilder whereBuilder = new WhereBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       whereBuilder.BuildWherePart (criterion);
 

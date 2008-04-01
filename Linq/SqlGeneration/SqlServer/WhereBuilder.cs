@@ -9,13 +9,16 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
   public class WhereBuilder : IWhereBuilder
   {
     private readonly ICommandBuilder _commandBuilder;
+    private readonly IDatabaseInfo _databaseInfo;
     private readonly BinaryConditionBuilder _builder;
 
-    public WhereBuilder (ICommandBuilder commandBuilder)
+    public WhereBuilder (ICommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       _commandBuilder = commandBuilder;
-      _builder = new BinaryConditionBuilder (_commandBuilder);
+      _databaseInfo = databaseInfo;
+      _builder = new BinaryConditionBuilder (_commandBuilder, _databaseInfo);
     }
 
     public void BuildWherePart (ICriterion criterion)
