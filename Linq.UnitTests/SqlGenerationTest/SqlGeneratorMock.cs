@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Data.Linq.SqlGeneration;
 using NUnit.Framework;
@@ -19,7 +20,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
     public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
         ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder)
-        : base (query, databaseInfo)
+        : base (query, databaseInfo, ParseContext.TopLevelQuery)
     {
       _selectBuilder = selectBuilder;
       _fromBuilder = fromBuilder;

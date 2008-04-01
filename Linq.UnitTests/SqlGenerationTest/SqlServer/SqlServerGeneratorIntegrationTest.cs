@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rubicon.Collections;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
@@ -18,6 +19,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void SetUp ()
     {
       _source = ExpressionHelper.CreateQuerySource ();
+    }
+
+    [Test]
+    public void DefaultParseContext ()
+    {
+      SqlServerGenerator generator = new SqlServerGenerator (ExpressionHelper.CreateQueryModel (), StubDatabaseInfo.Instance);
+      Assert.AreEqual (ParseContext.TopLevelQuery, generator.ParseContext);
     }
 
     [Test]
@@ -454,7 +462,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO")]
     public void SimpleSubQueryInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
@@ -467,6 +475,37 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.A);
       Assert.That (result.B, Is.EqualTo (new[] { new CommandParameter ("@1", 3) }));
+    }
+
+    [Test]
+    [Ignore ("TODO")]
+    public void SubQueryWithConstantInWhereClause ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+
+      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSubQueryWithConstantInWhereClause (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.A);
+      Assert.That (result.B, Is.EqualTo (new[] { new CommandParameter ("@1", 5) }));
+    }
+
+    [Test]
+    public void SubQuerySelectingColumnsWithConstantInWhereClause ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+
+      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSubQuerySelectingColumnsWithConstantInWhereClause (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[FirstColumn] FROM [studentTable] [s2])", result.A);
+      Assert.That (result.B, Is.EqualTo (new[] { new CommandParameter ("@1", "Hugo") }));
     }
   }
 }

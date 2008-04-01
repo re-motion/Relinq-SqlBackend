@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Text;
 using Rubicon.Utilities;
 
@@ -52,7 +53,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder);
+      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder, ParseContext.SubQueryInFrom);
     }
 
     private void AppendJoinPart (IEnumerable<SingleJoin> joins)

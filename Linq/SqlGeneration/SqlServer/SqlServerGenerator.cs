@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Rubicon.Data.Linq.Parsing;
 
 namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
@@ -9,12 +10,12 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private readonly ICommandBuilder _commandBuilder;
 
     public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo)
-        : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>()))
+        : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>()), ParseContext.TopLevelQuery)
     {
     }
 
-    public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
-      : base (query, databaseInfo)
+    public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder, ParseContext parseContext)
+      : base (query, databaseInfo, parseContext)
     {
       _commandBuilder = commandBuilder;
     }

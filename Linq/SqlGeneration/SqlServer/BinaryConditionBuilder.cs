@@ -1,5 +1,6 @@
 using System;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
@@ -55,7 +56,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder);
+      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder, ParseContext.SubQueryInWhere);
     }
 
     private void AppendGeneralCondition (BinaryCondition binaryCondition)

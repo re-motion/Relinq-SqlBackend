@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Rubicon.Collections;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.Parsing.FieldResolving;
 using Rubicon.Utilities;
 
@@ -9,20 +10,21 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public abstract class SqlGeneratorBase
   {
-    private readonly QueryModel _query;
-
+    public QueryModel QueryModel { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }
+    public ParseContext ParseContext { get; private set; }
 
     public abstract StringBuilder CommandText { get; }
     public abstract List<CommandParameter> CommandParameters { get; }
 
-    public SqlGeneratorBase (QueryModel query, IDatabaseInfo databaseInfo)
+    public SqlGeneratorBase (QueryModel query, IDatabaseInfo databaseInfo, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
 
-      _query = query;
+      QueryModel = query;
       DatabaseInfo = databaseInfo;
+      ParseContext = parseContext;
     }
 
     public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
@@ -40,8 +42,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
     protected virtual SqlGeneratorVisitor ProcessQuery ()
     {
       JoinedTableContext context = new JoinedTableContext();
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (_query, DatabaseInfo, context);
-      _query.Accept (visitor);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context);
+      QueryModel.Accept (visitor);
       context.CreateAliases();
       return visitor;
     }

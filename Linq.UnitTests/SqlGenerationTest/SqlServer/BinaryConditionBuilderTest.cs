@@ -6,6 +6,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.SqlGeneration.SqlServer;
 using Rubicon.Development.UnitTesting;
@@ -178,7 +179,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       commandBuilder.AddParameter (1);
 
       BinaryConditionBuilder binaryConditionBuilderMock = mockRepository.CreateMock<BinaryConditionBuilder> (commandBuilder, StubDatabaseInfo.Instance);
-      SqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<SqlGeneratorBase> (queryModel, StubDatabaseInfo.Instance);
+      SqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<SqlGeneratorBase> (queryModel, StubDatabaseInfo.Instance, ParseContext.SubQueryInWhere);
 
       Expect.Call (PrivateInvoke.InvokeNonPublicMethod (binaryConditionBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
           commandBuilder)).Return (subQueryGeneratorMock);
@@ -197,6 +198,19 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual ("@2 IN (x)", commandBuilder.GetCommandText ());
       Assert.That (commandBuilder.GetCommandParameters (),
           Is.EqualTo (new[] { new CommandParameter ("@1", 1), new CommandParameter ("@2", "foo"), new CommandParameter ("@3", 0) }));
+    }
+
+    [Test]
+    public void CreateSqlGeneratorForSubQuery ()
+    {
+      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), null);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      BinaryConditionBuilder conditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      SqlGeneratorBase subQueryGenerator = (SqlGeneratorBase) PrivateInvoke.InvokeNonPublicMethod (conditionBuilder, "CreateSqlGeneratorForSubQuery",
+          subQuery, StubDatabaseInfo.Instance, commandBuilder);
+      Assert.AreSame (subQuery.QueryModel, subQueryGenerator.QueryModel);
+      Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
+      Assert.AreEqual (ParseContext.SubQueryInWhere, subQueryGenerator.ParseContext);
     }
 
     public class PseudoValue : IValue { }
