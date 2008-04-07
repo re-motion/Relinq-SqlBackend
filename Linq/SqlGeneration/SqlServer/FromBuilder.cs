@@ -20,12 +20,12 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _databaseInfo = databaseInfo;
     }
 
-    public void BuildFromPart (List<IFromSource> fromSources, JoinCollection joins)
+    public void BuildFromPart (List<IColumnSource> fromSources, JoinCollection joins)
     {
       _commandBuilder.Append ("FROM ");
 
       bool first = true;
-      foreach (IFromSource fromSource in fromSources)
+      foreach (IColumnSource fromSource in fromSources)
       {
         Table table = fromSource as Table;
         if (table != null)

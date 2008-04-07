@@ -72,7 +72,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
       Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (studentDetailTable, joinColumns.A), new Column (studentTable, joinColumns.B));
@@ -202,7 +202,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
@@ -253,7 +253,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance); // Student_Detail
+      IColumnSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance); // Student_Detail
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
@@ -273,7 +273,18 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Assert.AreEqual (1, _context.Count);
     }
 
+    [Test]
+    [Ignore]
+    public void VisitLetClause ()
+    {
+      IQueryable<string> query = LetTestQueryGenerator.CreateSimpleLetClause (ExpressionHelper.CreateQuerySource ());
 
-    
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      LetClause letClause = (LetClause)parsedQuery.BodyClauses.First();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
+      sqlGeneratorVisitor.VisitLetClause (letClause);
+      
+    }
   }
 }

@@ -64,7 +64,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       });
 
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      LastCall.Do ((Proc<List<IFromSource>, JoinCollection>) delegate
+      LastCall.Do ((Proc<List<IColumnSource>, JoinCollection>) delegate
       {
         generator.CommandText.Append ("From");
       });

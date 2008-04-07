@@ -6,9 +6,9 @@ using Rubicon.Data.Linq.DataObjectModel;
 
 namespace Rubicon.Data.Linq.SqlGeneration
 {
-  public class JoinCollection : IEnumerable<KeyValuePair<IFromSource, List<SingleJoin>>>
+  public class JoinCollection : IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>
   {
-    private readonly MultiDictionary<IFromSource, SingleJoin> _innerDictionary = new MultiDictionary<IFromSource, SingleJoin>();
+    private readonly MultiDictionary<IColumnSource, SingleJoin> _innerDictionary = new MultiDictionary<IColumnSource, SingleJoin>();
 
     public void AddPath (FieldSourcePath fieldSourcePath)
     {
@@ -16,9 +16,9 @@ namespace Rubicon.Data.Linq.SqlGeneration
         AddSingleJoin (fieldSourcePath.FirstSource, join);
     }
 
-    public List<SingleJoin> this[IFromSource fromSource]
+    public List<SingleJoin> this[IColumnSource columnSource]
     {
-      get { return _innerDictionary[fromSource]; }
+      get { return _innerDictionary[columnSource]; }
     }
 
     public int Count
@@ -26,15 +26,15 @@ namespace Rubicon.Data.Linq.SqlGeneration
       get { return _innerDictionary.Count; }
     }
 
-    private void AddSingleJoin (IFromSource firstSource, SingleJoin join)
+    private void AddSingleJoin (IColumnSource firstSource, SingleJoin join)
     {
       if (!this[firstSource].Contains (join))
         _innerDictionary.Add (firstSource, join);
     }
 
-    public IEnumerator<KeyValuePair<IFromSource, List<SingleJoin>>> GetEnumerator ()
+    public IEnumerator<KeyValuePair<IColumnSource, List<SingleJoin>>> GetEnumerator ()
     {
-      return ((IEnumerable<KeyValuePair<IFromSource, List<SingleJoin>>>)_innerDictionary).GetEnumerator();
+      return ((IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>)_innerDictionary).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

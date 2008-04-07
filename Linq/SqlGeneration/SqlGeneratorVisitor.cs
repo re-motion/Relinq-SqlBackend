@@ -31,13 +31,13 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
       ParseContext = parseContext;
 
-      FromSources = new List<IFromSource>();
+      FromSources = new List<IColumnSource>();
       Columns = new List<Column>();
       OrderingFields = new List<OrderingField>();
       Joins = new JoinCollection (); 
     }
 
-    public List<IFromSource> FromSources { get; private set; }
+    public List<IColumnSource> FromSources { get; private set; }
     public List<Column> Columns { get; private set; }
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
@@ -73,8 +73,8 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     private void VisitFromClause (FromClauseBase fromClause)
     {
-      IFromSource fromSource = fromClause.GetFromSource (_databaseInfo);
-      FromSources.Add (fromSource);
+      IColumnSource columnSource = fromClause.GetFromSource (_databaseInfo);
+      FromSources.Add (columnSource);
     }
 
     public void VisitJoinClause (JoinClause joinClause)

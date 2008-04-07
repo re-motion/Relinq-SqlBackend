@@ -38,11 +38,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IFromSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationMember1);
 
       PropertyInfo relationMember2 = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable = join1.RightSide;
+      IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationMember2);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
@@ -73,11 +73,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IFromSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable = join1.RightSide;
+      IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
       PropertyInfo relationalMemberForLastOrdering = typeof (Student_Detail_Detail).GetProperty ("IndustrialSector");
@@ -112,11 +112,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IFromSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable = join1.RightSide;
+      IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
@@ -148,11 +148,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IFromSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable = join1.RightSide;
+      IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
       PropertyInfo relationalMemberForLastOrdering = typeof (Student_Detail).GetProperty ("IndustrialSector");
@@ -190,19 +190,19 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
 
       PropertyInfo relationalMemberFirstOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IFromSource studentDetailDetailTable1 = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable1 = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable1, relationalMemberFirstOrderBy1);
 
       PropertyInfo relationalMemberFirstOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable1 = join1.RightSide;
+      IColumnSource studentDetailTable1 = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable1, relationalMemberFirstOrderBy2);
 
       PropertyInfo relationalMemberSecondOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IFromSource studentDetailDetailTable2 = ((AdditionalFromClause) parsedQuery.BodyClauses[0]).GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable2 = ((AdditionalFromClause) parsedQuery.BodyClauses[0]).GetFromSource (StubDatabaseInfo.Instance);
       SingleJoin join3 = CreateJoin (studentDetailDetailTable2, relationalMemberSecondOrderBy1);
 
       PropertyInfo relationalMemberSecondOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
-      IFromSource studentDetailTable2 = join3.RightSide;
+      IColumnSource studentDetailTable2 = join3.RightSide;
       SingleJoin join4 = CreateJoin (studentDetailTable2, relationalMemberSecondOrderBy2);
 
       Assert.AreEqual (2, sqlGeneratorVisitor.Joins.Count);
@@ -231,7 +231,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       return null;
     }
 
-    private SingleJoin CreateJoin (IFromSource sourceTable, MemberInfo relationMember)
+    private SingleJoin CreateJoin (IColumnSource sourceTable, MemberInfo relationMember)
     {
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);

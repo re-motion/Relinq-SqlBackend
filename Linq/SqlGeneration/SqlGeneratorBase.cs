@@ -33,6 +33,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
       CreateSelectBuilder().BuildSelectPart (visitor.Columns, visitor.Distinct);
       CreateFromBuilder ().BuildFromPart (visitor.FromSources, visitor.Joins);
+      //CreateFromBuilder ().BuildLetPart (visitor.LetExpressions);
       CreateWhereBuilder ().BuildWherePart (visitor.Criterion);
       CreateOrderByBuilder ().BuildOrderByPart (visitor.OrderingFields);
 
