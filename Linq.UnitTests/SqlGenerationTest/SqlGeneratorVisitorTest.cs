@@ -26,6 +26,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    [Ignore]
     public void VisitSelectClause ()
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
@@ -39,6 +40,37 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    public void VisitSelectClause_WithNullProjection ()
+    {
+      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource ());
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "*")}));
+    }
+
+    [Test]
+    [Ignore]
+    public void VisitLetClause ()
+    {
+      IQueryable<string> query = LetTestQueryGenerator.CreateSimpleLetClause (ExpressionHelper.CreateQuerySource ());
+
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      LetClause letClause = (LetClause) parsedQuery.BodyClauses.First ();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
+      sqlGeneratorVisitor.VisitLetClause (letClause);
+
+      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
+          new Column (new Table ("studentTable", "s"), "LastColumn") }));
+
+      //new Column with NamedEvaluation - no new table
+    }
+
+    [Test]
+    [Ignore]
     public void VisitSelectClause_DistinctFalse ()
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
@@ -50,7 +82,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.IsFalse (selectClause.Distinct);
     }
-
+    
     [Test]
     public void VisitSelectClause_DistinctTrue ()
     {
@@ -172,7 +204,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       var combination123 = new ComplexCriterion (combination12, condition3, ComplexCriterion.JunctionKind.And);
       Assert.AreEqual (combination123, sqlGeneratorVisitor.Criterion);
     }
-
     
     [Test]
     public void VisitOrderingClause()
@@ -273,18 +304,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Assert.AreEqual (1, _context.Count);
     }
 
-    [Test]
-    [Ignore]
-    public void VisitLetClause ()
-    {
-      IQueryable<string> query = LetTestQueryGenerator.CreateSimpleLetClause (ExpressionHelper.CreateQuerySource ());
-
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      LetClause letClause = (LetClause)parsedQuery.BodyClauses.First();
-
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
-      sqlGeneratorVisitor.VisitLetClause (letClause);
-      
-    }
+   
   }
 }

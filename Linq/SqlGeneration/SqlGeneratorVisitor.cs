@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Rubicon.Collections;
 using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
@@ -82,11 +83,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
       throw new NotImplementedException();
     }
 
-    public void VisitLetClause (LetClause letClause)
-    {
-      throw new NotImplementedException ();
-    }
-
     public void VisitWhereClause (WhereClause whereClause)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
@@ -121,14 +117,35 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      var projectionParser = new SelectProjectionParser (_queryModel, selectClause, _databaseInfo, _context, ParseContext);
-      IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
+      Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _queryModel.MainFromClause.Identifier;
+      var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
+
+      //new mechanism to get fields
+      //IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
+      Tuple<List<FieldDescriptor>, IEvaluation> evaluations = projectionParser.GetParseResult ();
+      IEnumerable<FieldDescriptor> selectedFields = evaluations.A;
       Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)
       {
         Columns.Add (selectedField.GetMandatoryColumn());
         Joins.AddPath (selectedField.SourcePath);
       }
+    }
+
+    public void VisitLetClause (LetClause letClause)
+    {
+      //ArgumentUtility.CheckNotNull ("letClause", letClause);
+      ////var projectionParser = new SelectProjectionParser (_queryModel, letClause, _databaseInfo, _context, ParseContext);
+      //Expression projectionBody = letClause.Expression;
+
+      //var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
+      //IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields ();
+
+      //foreach (var selectedField in selectedFields)
+      //{
+      //  Columns.Add (selectedField.GetMandatoryColumn ());
+      //}
+      throw new NotImplementedException ();
     }
 
     public void VisitGroupClause (GroupClause groupClause)

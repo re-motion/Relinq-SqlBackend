@@ -31,6 +31,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    [Ignore]
     public void BuildCommandString_CallsPartBuilders()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -51,6 +52,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    [Ignore]
     public void BuildCommandString_ReturnsCommandAndParameters ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -90,6 +92,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    [Ignore]
     public void ProcessQuery_PassesQueryToVisitor()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -108,6 +111,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
+    [Ignore]
     public void ProcessQuery_WithDifferentParseContext ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
