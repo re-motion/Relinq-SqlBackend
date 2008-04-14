@@ -120,7 +120,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _queryModel.MainFromClause.Identifier;
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
 
-      Tuple<List<FieldDescriptor>, IEvaluation> evaluations = projectionParser.GetParseResult ();
+      Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
       IEnumerable<FieldDescriptor> selectedFields = evaluations.A;
       Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)
