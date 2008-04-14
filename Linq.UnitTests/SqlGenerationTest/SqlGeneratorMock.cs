@@ -54,7 +54,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
         Assert.AreEqual (ParseContext, visitor2.ParseContext);
 
-        Assert.That (visitor2.Columns, Is.EqualTo (Visitor.Columns));
+        Assert.That (visitor2.SelectEvaluations, Is.EqualTo (Visitor.SelectEvaluations));
         Assert.That (visitor2.Criterion, Is.EqualTo (Visitor.Criterion));
         
         Assert.AreEqual (Visitor.Joins.Count, visitor2.Joins.Count);

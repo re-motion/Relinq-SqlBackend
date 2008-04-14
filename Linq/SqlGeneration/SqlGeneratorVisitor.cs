@@ -33,14 +33,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
       ParseContext = parseContext;
 
       FromSources = new List<IColumnSource>();
-      Columns = new List<Column>();
       SelectEvaluations = new List<IEvaluation> ();
       OrderingFields = new List<OrderingField>();
       Joins = new JoinCollection (); 
     }
 
     public List<IColumnSource> FromSources { get; private set; }
-    public List<Column> Columns { get; private set; }
     public List<IEvaluation> SelectEvaluations { get; private set; }
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
@@ -122,14 +120,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _queryModel.MainFromClause.Identifier;
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
 
-      //IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields();
       Tuple<List<FieldDescriptor>, IEvaluation> evaluations = projectionParser.GetParseResult ();
       IEnumerable<FieldDescriptor> selectedFields = evaluations.A;
       Distinct = selectClause.Distinct;
       foreach (var selectedField in selectedFields)
       {
         SelectEvaluations.Add (selectedField.GetMandatoryColumn ());
-        //Columns.Add (selectedField.GetMandatoryColumn());
         Joins.AddPath (selectedField.SourcePath);
       }
     }
