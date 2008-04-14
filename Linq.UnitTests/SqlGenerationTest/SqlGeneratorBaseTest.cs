@@ -38,7 +38,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
       
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
@@ -59,7 +59,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
       LastCall.Do ((Proc<List<Column>,bool>) delegate
       {
         generator.CommandText.Append ("Select");
@@ -99,7 +99,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
@@ -118,7 +118,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.SubQueryInWhere);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.Columns, false);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations, false);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
@@ -137,7 +137,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.Columns,false);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
@@ -156,7 +156,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       //Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.Columns, true);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations, true);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);

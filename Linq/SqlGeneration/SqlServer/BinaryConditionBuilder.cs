@@ -135,7 +135,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       if (value is Constant)
         _commandBuilder.AppendConstant ((Constant) value);
       else if (value is Column)
-        _commandBuilder.AppendColumn ((Column) value);
+        _commandBuilder.AppendEvaluation((Column) value);
       else
         throw new NotSupportedException ("Value type " + value.GetType ().Name + " is not supported.");
     }

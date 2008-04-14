@@ -35,7 +35,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
+      Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
           new Column (new Table ("studentTable", "s"), "LastColumn") }));
     }
 
@@ -48,7 +48,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "*")}));
+      Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "*")}));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitLetClause (letClause);
 
-      Assert.That (sqlGeneratorVisitor.Columns, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
+      Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
           new Column (new Table ("studentTable", "s"), "LastColumn") }));
 
       //new Column with NamedEvaluation - no new table
@@ -106,8 +106,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
-      Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      SingleJoin join = new SingleJoin (new Column (studentDetailTable, joinColumns.A), new Column (studentTable, joinColumns.B));
+      Tuple<string, string> joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      SingleJoin join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.A), new Column (studentTable, joinSelectEvaluations.B));
      
       Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];

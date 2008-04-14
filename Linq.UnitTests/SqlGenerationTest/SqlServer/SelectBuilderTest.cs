@@ -19,13 +19,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
       SelectBuilder selectBuilder = new SelectBuilder (commandBuilder);
 
-      List<Column> columns = new List<Column> {
+      List<IEvaluation> evaluations = new List<IEvaluation> {
         new Column (new Table ("s1", "s1"), "c1"),
         new Column (new Table ("s2", "s2"), "c2"),
         new Column (new Table ("s3", "s3"), "c3")
       };
 
-      selectBuilder.BuildSelectPart (columns,false);
+      selectBuilder.BuildSelectPart (evaluations, false);
       Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", commandBuilder.GetCommandText());
     }
 
@@ -35,9 +35,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
       SelectBuilder selectBuilder = new SelectBuilder (commandBuilder);
-      List<Column> columns = new List<Column>();
+      List<IEvaluation> evaluations = new List<IEvaluation>();
 
-      selectBuilder.BuildSelectPart (columns,false);
+      selectBuilder.BuildSelectPart (evaluations,false);
     }
 
     [Test]
@@ -46,12 +46,12 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
       SelectBuilder selectBuilder = new SelectBuilder (commandBuilder);
 
-      List<Column> columns = new List<Column> {
+      List<IEvaluation> evaluations = new List<IEvaluation> {
         new Column (new Table ("s1", "s1"), "c1"),
         new Column (new Table ("s2", "s2"), "c2")
       };
 
-      selectBuilder.BuildSelectPart (columns, true);
+      selectBuilder.BuildSelectPart (evaluations, true);
 
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", commandBuilder.GetCommandText ());
 

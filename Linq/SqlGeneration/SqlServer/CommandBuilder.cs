@@ -35,9 +35,14 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       CommandText.Append (text);
     }
 
-    public void AppendColumn (Column column)
+    public void AppendEvaluation (IEvaluation evaluation)
     {
-      CommandText.Append (SqlServerUtility.GetColumnString (column));
+      if (evaluation.GetType() == typeof(Column))
+        CommandText.Append(SqlServerUtility.GetColumnString ((Column) evaluation));
+      else
+      {
+        throw new NotSupportedException("The Evaluation of type '" + evaluation.GetType().Name + "' is not supported.");
+      }
     }
 
     public void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction)
@@ -52,9 +57,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    public void AppendColumns (IEnumerable<Column> columns)
+    public void AppendEvaluations (IEnumerable<IEvaluation> evaluations)
     {
-      AppendSeparatedItems (columns, AppendColumn);
+      AppendSeparatedItems (evaluations, AppendEvaluation);
     }
 
     public void AppendConstant (Constant constant)

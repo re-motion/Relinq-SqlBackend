@@ -5,6 +5,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
 {
   public interface ISelectBuilder
   {
-    void BuildSelectPart (List<Column> columns,bool distinct);
+    void BuildSelectPart (List<IEvaluation> selectEvaluations, bool distinct);
   }
 }

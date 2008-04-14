@@ -30,8 +30,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
     {
       SqlGeneratorVisitor visitor = ProcessQuery();
-
-      CreateSelectBuilder().BuildSelectPart (visitor.Columns, visitor.Distinct);
+      CreateSelectBuilder ().BuildSelectPart (visitor.SelectEvaluations, visitor.Distinct);
       CreateFromBuilder ().BuildFromPart (visitor.FromSources, visitor.Joins);
       //CreateFromBuilder ().BuildLetPart (visitor.LetExpressions);
       CreateWhereBuilder ().BuildWherePart (visitor.Criterion);

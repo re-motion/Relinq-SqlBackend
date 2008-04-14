@@ -42,13 +42,21 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckParametersUnchanged();
     }
 
+    
     [Test]
-    public void AppendColumn()
+    public void AppendEvaluation ()
     {
-      Column column = new Column (new Table("table","alias"),"name");
-      _commandBuilder.AppendColumn (column);
+      IEvaluation evaluation = new Column (new Table ("table", "alias"), "name");
+      _commandBuilder.AppendEvaluation (evaluation);
       Assert.AreEqual ("WHERE [alias].[name]", _commandBuilder.GetCommandText ());
-      CheckParametersUnchanged ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The Evaluation of type 'DummyEvaluation' is not supported.")]
+    public void AppendEvaluation_Exception ()
+    {
+      IEvaluation evaluation = new DummyEvaluation ();
+      _commandBuilder.AppendEvaluation (evaluation);
     }
 
     [Test]
@@ -106,12 +114,17 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    public void AppendColumns()
+    public void AppendEvaluations ()
     {
-      Column column = new Column(new Table(),"abc");
-      _commandBuilder.AppendColumn (column);
-      Assert.AreEqual (_commandBuilder.GetCommandText(), _commandText.ToString());
-      Assert.AreEqual ("WHERE [].[abc]", _commandText.ToString());
+      IEvaluation evaluation1 = new Column (new Table ("table1", "alias1"), "name1");
+      IEvaluation evaluation2 = new Column (new Table ("table2", "alias2"), "name2");
+      IEvaluation evaluation3 = new Column (new Table ("table3", "alias3"), "name3");
+
+      List<IEvaluation> evaluations = new List<IEvaluation> {evaluation1, evaluation2, evaluation3};
+      _commandBuilder.AppendEvaluations (evaluations);
+
+      Assert.AreEqual (_commandBuilder.GetCommandText (), _commandText.ToString ());
+      Assert.AreEqual ("WHERE [alias1].[name1], [alias2].[name2], [alias3].[name3]", _commandText.ToString ());
     }
 
     [Test]

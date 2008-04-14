@@ -11,9 +11,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     string GetCommandText();
     CommandParameter[] GetCommandParameters();
     void Append (string text);
-    void AppendColumn (Column column);
+    void AppendEvaluation (IEvaluation evaluation);
     void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction);
-    void AppendColumns (IEnumerable<Column> columns);
+    void AppendEvaluations (IEnumerable<IEvaluation> evaluations);
     void AppendConstant (Constant constant);
     CommandParameter AddParameter (object value);
     StringBuilder CommandText { get; }

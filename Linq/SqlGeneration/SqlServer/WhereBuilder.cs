@@ -61,7 +61,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       }
       else
       {
-        _commandBuilder.AppendColumn ((Column) value);
+        _commandBuilder.AppendEvaluation ((Column) value);
         _commandBuilder.Append ("=1");
       }
     }

@@ -15,9 +15,9 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildSelectPart (List<Column> columns,bool distinct)
+    public void BuildSelectPart (List<IEvaluation> selectEvaluations,bool distinct)
     {
-      ArgumentUtility.CheckNotNull ("columns", columns);
+      ArgumentUtility.CheckNotNull ("selectEvaluations", selectEvaluations);
       ArgumentUtility.CheckNotNull ("distinct", distinct);
 
       if (distinct)
@@ -25,10 +25,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       else
         _commandBuilder.Append ("SELECT ");
 
-      if (columns.Count == 0)
+      if (selectEvaluations.Count == 0)
         throw new InvalidOperationException ("The query does not select any fields from the data source.");
 
-      _commandBuilder.AppendColumns (columns);
+      _commandBuilder.AppendEvaluations (selectEvaluations);
       _commandBuilder.Append(" ");
     }
   }

@@ -42,7 +42,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendOrderingField (OrderingField orderingField)
     {
-      _commandBuilder.AppendColumn (orderingField.Column);
+      _commandBuilder.AppendEvaluation (orderingField.Column);
       _commandBuilder.Append (" ");
       _commandBuilder.Append (GetOrderedDirectionString (orderingField.Direction));
     }
