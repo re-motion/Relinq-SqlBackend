@@ -26,7 +26,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore]
     public void VisitSelectClause ()
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
@@ -38,6 +37,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
           new Column (new Table ("studentTable", "s"), "LastColumn") }));
     }
+
 
     [Test]
     public void VisitSelectClause_WithNullProjection ()

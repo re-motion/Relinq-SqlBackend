@@ -54,7 +54,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       selectBuilder.BuildSelectPart (evaluations, true);
 
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", commandBuilder.GetCommandText ());
-
     }
+    
   }
 }
