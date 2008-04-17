@@ -52,6 +52,23 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
+    [Ignore]
+    public void AppendEvaluation_BinaryEvaluationAdd ()
+    {
+      _commandText = new StringBuilder ();
+      _commandText.Append ("SELECT ");
+      Column c1 = new Column (new Table ("s1", "s1"), "c1");
+      Column c2 = new Column (new Table ("s2", "s2"), "c2");
+
+      BinaryEvaluation binaryEvaluation = new BinaryEvaluation (c1, c2, BinaryEvaluation.EvaluationKind.Add);
+
+      _commandBuilder.AppendEvaluation (binaryEvaluation);
+
+      Assert.AreEqual ("SELECT ([s1].[c1]+[s2].[c2])" ,_commandBuilder.GetCommandText ());
+
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The Evaluation of type 'DummyEvaluation' is not supported.")]
     public void AppendEvaluation_Exception ()
     {
@@ -126,6 +143,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual (_commandBuilder.GetCommandText (), _commandText.ToString ());
       Assert.AreEqual ("WHERE [alias1].[name1], [alias2].[name2], [alias3].[name3]", _commandText.ToString ());
     }
+
+    
 
     [Test]
     public void AppendSeparatedItems_WithAppendColumn ()

@@ -213,7 +213,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual (ParseContext.SubQueryInWhere, subQueryGenerator.ParseContext);
     }
 
-    public class PseudoValue : IValue { }
+    public class PseudoValue : IValue
+    {
+      public void Accept (IEvaluationVisitor visitor)
+      {
+        throw new NotImplementedException();
+      }
+    }
 
 
     private static void CheckBuildBinaryConditionPart_Constants (BinaryCondition binaryCondition, string expectedString)

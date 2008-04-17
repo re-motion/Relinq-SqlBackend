@@ -63,7 +63,13 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckAppendCriterion (new Constant (null), null);
     }
 
-    class PseudoCriterion : ICriterion { }
+    class PseudoCriterion : ICriterion
+    {
+      public void Accept (IEvaluationVisitor visitor)
+      {
+        throw new NotImplementedException();
+      }
+    }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The criterion kind PseudoCriterion is not supported.")]
