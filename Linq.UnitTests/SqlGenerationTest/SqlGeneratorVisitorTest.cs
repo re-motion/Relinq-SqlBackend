@@ -34,6 +34,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
+
       Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
           new Column (new Table ("studentTable", "s"), "LastColumn") }));
     }
@@ -50,6 +51,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
       Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "*")}));
     }
+
+
 
     [Test]
     [Ignore]

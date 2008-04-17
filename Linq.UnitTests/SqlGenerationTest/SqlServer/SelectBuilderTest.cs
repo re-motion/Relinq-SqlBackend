@@ -55,6 +55,11 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", commandBuilder.GetCommandText ());
     }
-    
+
+    [Test]
+    [Ignore]
+    public void ComplexEvaluation ()
+    {
+    }
   }
 }

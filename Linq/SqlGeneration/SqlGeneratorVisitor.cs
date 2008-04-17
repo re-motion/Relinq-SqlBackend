@@ -121,13 +121,12 @@ namespace Rubicon.Data.Linq.SqlGeneration
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
-      IEnumerable<FieldDescriptor> selectedFields = evaluations.A;
+
       Distinct = selectClause.Distinct;
-      foreach (var selectedField in selectedFields)
-      {
-        SelectEvaluations.Add (selectedField.GetMandatoryColumn ());
+      
+      SelectEvaluations.AddRange (evaluations.B);
+      foreach (var selectedField in evaluations.A)
         Joins.AddPath (selectedField.SourcePath);
-      }
     }
 
     public void VisitLetClause (LetClause letClause)
