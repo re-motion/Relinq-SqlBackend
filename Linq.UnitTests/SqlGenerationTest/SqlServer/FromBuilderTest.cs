@@ -20,7 +20,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineTables_SelectsJoinsPerTable()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       Table table1 = new Table ("s1", "s1_alias");
@@ -40,7 +40,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineTables_WithJoin ()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       Table table1 = new Table ("s1", "s1_alias");
@@ -60,7 +60,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineTables_WithNestedJoin ()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       // table2.table1.table3
@@ -97,7 +97,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Table table1 = new Table ("s1", "s1_alias");
       List<IColumnSource> tables = new List<IColumnSource> { table1, subQuery };
 
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       commandBuilder.AddParameter (1);
 
       FromBuilder fromBuilderMock = mockRepository.CreateMock<FromBuilder> (commandBuilder, StubDatabaseInfo.Instance);
@@ -124,7 +124,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void CreateSqlGeneratorForSubQuery ()
     {
       SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), "sub_alias");
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
       SqlGeneratorBase subQueryGenerator = (SqlGeneratorBase) PrivateInvoke.InvokeNonPublicMethod (fromBuilder, "CreateSqlGeneratorForSubQuery", 
           subQuery, StubDatabaseInfo.Instance, commandBuilder);

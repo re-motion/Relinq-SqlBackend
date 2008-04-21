@@ -10,7 +10,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     private readonly ICommandBuilder _commandBuilder;
 
     public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo)
-        : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>()), ParseContext.TopLevelQuery)
+        : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>(),databaseInfo), ParseContext.TopLevelQuery)
     {
     }
 

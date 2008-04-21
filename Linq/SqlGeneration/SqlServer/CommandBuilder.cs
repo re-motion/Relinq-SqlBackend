@@ -8,17 +8,20 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 {
   public class CommandBuilder : ICommandBuilder
   {
-    public CommandBuilder (StringBuilder commandText, List<CommandParameter> commandParameters)
+    public CommandBuilder (StringBuilder commandText, List<CommandParameter> commandParameters, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
 
       CommandText = commandText;
       CommandParameters = commandParameters;
+      DatabaseInfo = databaseInfo;
     }
 
     public StringBuilder CommandText { get; private set; }
     public List<CommandParameter> CommandParameters { get; private set; }
+    public IDatabaseInfo DatabaseInfo { get; private set; }
     
     public string GetCommandText()
     {
@@ -37,12 +40,15 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     public void AppendEvaluation (IEvaluation evaluation)
     {
-      if (evaluation.GetType() == typeof(Column))
-        CommandText.Append(SqlServerUtility.GetColumnString ((Column) evaluation));
-      else
-      {
-        throw new NotSupportedException("The Evaluation of type '" + evaluation.GetType().Name + "' is not supported.");
-      }
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo);
+      evaluation.Accept (visitor);
+      
+      //if (evaluation.GetType() == typeof(Column))
+      //  CommandText.Append(SqlServerUtility.GetColumnString ((Column) evaluation));
+      //else
+      //{
+      //  throw new NotSupportedException("The Evaluation of type '" + evaluation.GetType().Name + "' is not supported.");
+      //}
     }
 
     public void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction)

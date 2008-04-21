@@ -19,7 +19,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void CombineOrderedFields()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
@@ -41,7 +41,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "OrderDirection 2147483647 is not supported.")]
     public void CombineOrderedFields_InvalidDirection ()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();

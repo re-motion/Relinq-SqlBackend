@@ -174,8 +174,8 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       QueryModel queryModel = ExpressionHelper.CreateQueryModel ();
       SubQuery subQuery = new SubQuery (queryModel, null);
-      
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       commandBuilder.AddParameter (1);
 
       BinaryConditionBuilder binaryConditionBuilderMock = mockRepository.CreateMock<BinaryConditionBuilder> (commandBuilder, StubDatabaseInfo.Instance);
@@ -204,7 +204,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void CreateSqlGeneratorForSubQuery ()
     {
       SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), null);
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       BinaryConditionBuilder conditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
       SqlGeneratorBase subQueryGenerator = (SqlGeneratorBase) PrivateInvoke.InvokeNonPublicMethod (conditionBuilder, "CreateSqlGeneratorForSubQuery",
           subQuery, StubDatabaseInfo.Instance, commandBuilder);
@@ -231,7 +231,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     private static void CheckBuildBinaryConditionPart (BinaryCondition condition, string expectedString,
        params CommandParameter[] expectedParameters)
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       binaryConditionBuilder.BuildBinaryConditionPart (condition);

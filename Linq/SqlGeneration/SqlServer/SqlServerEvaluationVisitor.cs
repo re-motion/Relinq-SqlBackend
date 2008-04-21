@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing;
 using Rubicon.Utilities;
 
 namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
@@ -21,6 +24,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     public void VisitBinaryEvaluation (BinaryEvaluation binaryEvaluation)
     {
+      ArgumentUtility.CheckNotNull ("binaryEvaluation", binaryEvaluation);
       CommandBuilder.Append ("(");
       binaryEvaluation.Left.Accept (this);
       switch (binaryEvaluation.Kind)
@@ -48,20 +52,30 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     public void VisitComplexCriterion (ComplexCriterion complexCriterion)
     {
-      throw new System.NotImplementedException();
+      ArgumentUtility.CheckNotNull ("complexCriterion", complexCriterion);
+      CommandBuilder.Append ("(");
+      complexCriterion.Left.Accept (this);
+      switch (complexCriterion.Kind)
+      {
+        case ComplexCriterion.JunctionKind.And:
+          CommandBuilder.Append (" AND ");
+          break;
+        case ComplexCriterion.JunctionKind.Or:
+          CommandBuilder.Append (" OR ");
+          break;
+      }
+      complexCriterion.Right.Accept(this);
+      CommandBuilder.Append(")");
     }
 
     public void VisitNotCriterion (NotCriterion notCriterion)
     {
-      throw new System.NotImplementedException();
+      ArgumentUtility.CheckNotNull ("notCriterion", notCriterion);
+      CommandBuilder.Append (" NOT ");
+      notCriterion.NegatedCriterion.Accept (this);
     }
 
-    public void VisitOrderingField (OrderingField orderingField)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public void VisitConstant (Constant constant)
+   public void VisitConstant (Constant constant)
     {
       ArgumentUtility.CheckNotNull ("constant", constant);
       if (constant.Value == null)
@@ -72,7 +86,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         CommandBuilder.Append ("(1<>1)");
       else
       {
-        CommandBuilder commandBuilder = new CommandBuilder (CommandBuilder.CommandText,CommandBuilder.CommandParameters);
+        CommandBuilder commandBuilder = new CommandBuilder (CommandBuilder.CommandText,CommandBuilder.CommandParameters, DatabaseInfo);
         CommandParameter parameter = commandBuilder.AddParameter (constant.Value);
         CommandBuilder.CommandText.Append (parameter.Name);
       }
@@ -92,19 +106,36 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
 
     public void VisitSubQuery (SubQuery subQuery)
     {
-      throw new System.NotImplementedException();
+      CommandBuilder.Append ("((");
+      new SqlServerGenerator (subQuery.QueryModel, DatabaseInfo,CommandBuilder,ParseContext.SubQueryInSelect).BuildCommandString();
+      CommandBuilder.Append (") ");
+      CommandBuilder.Append (subQuery.Alias);
+      CommandBuilder.Append (")");
     }
 
     public void VisitMethodCallEvaluation (MethodCallEvaluation methodCallEvaluation)
     {
-      throw new System.NotImplementedException();
-    }
-
-    private CommandParameter AddParameter (object value)
-    {
-      CommandParameter parameter = new CommandParameter ("@" + (CommandBuilder.CommandParameters.Count + 1), value);
-      CommandBuilder.CommandParameters.Add (parameter);
-      return parameter;
+      switch (methodCallEvaluation.EvaluationMethodInfo.Name)
+      {
+        case "ToUpper":
+          CommandBuilder.Append ("UPPER(");
+          methodCallEvaluation.EvaluationParameter.Accept (this);
+          CommandBuilder.Append (")");
+          break;
+        case "Remove":
+          CommandBuilder.Append ("STUFF(");
+          methodCallEvaluation.EvaluationParameter.Accept (this);
+          CommandBuilder.Append (",");
+          foreach (var argument in methodCallEvaluation.EvaluationArguments)
+          {
+            argument.Accept(this);
+          }
+          CommandBuilder.Append (",CONVERT(Int,DATALENGTH(");
+          methodCallEvaluation.EvaluationParameter.Accept (this);
+          CommandBuilder.Append(") / 2), \"");
+          CommandBuilder.Append (")");
+          break;
+      }
     }
   }
 }

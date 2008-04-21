@@ -19,7 +19,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     {
       ArgumentUtility.CheckNotNull ("selectEvaluations", selectEvaluations);
       ArgumentUtility.CheckNotNull ("distinct", distinct);
-
+      
       if (distinct)
         _commandBuilder.Append ("SELECT DISTINCT ");
       else

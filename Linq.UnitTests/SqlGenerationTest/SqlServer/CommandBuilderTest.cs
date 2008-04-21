@@ -24,7 +24,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       _commandText.Append ("WHERE ");
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters);
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance);
     }
 
     [Test]
@@ -66,14 +66,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Assert.AreEqual ("SELECT ([s1].[c1]+[s2].[c2])" ,_commandBuilder.GetCommandText ());
 
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The Evaluation of type 'DummyEvaluation' is not supported.")]
-    public void AppendEvaluation_Exception ()
-    {
-      IEvaluation evaluation = new DummyEvaluation ();
-      _commandBuilder.AppendEvaluation (evaluation);
     }
 
     [Test]

@@ -1,9 +1,16 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using NUnit.Framework;
+using Rubicon.Data.Linq.Clauses;
 using Rubicon.Data.Linq.DataObjectModel;
+using Rubicon.Data.Linq.Parsing.Structure;
 using Rubicon.Data.Linq.SqlGeneration;
 using Rubicon.Data.Linq.SqlGeneration.SqlServer;
+using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
@@ -23,9 +30,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       _commandText.Append ("xyz ");
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters);
       _databaseInfo = StubDatabaseInfo.Instance;
-    }
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo);
+      }
 
     [Test]
     public void VisitColumn ()
@@ -99,7 +106,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    public void VisitBinaryEvaluation_Add ()
+    public void VisitBinaryEvaluation ()
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
 
@@ -117,6 +124,125 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CheckBinaryEvaluation (binaryEvaluation3);
       CheckBinaryEvaluation (binaryEvaluation4);
       CheckBinaryEvaluation (binaryEvaluation5);
+    }
+
+    [Test]
+    public void VisitBinaryEvaluation_Encapsulated ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+
+      Column column1 = new Column (new Table ("table1", "alias1"), "id1");
+      Column column2 = new Column (new Table ("table2", "alias2"), "id2");
+
+      BinaryEvaluation binaryEvaluation1 = new BinaryEvaluation (column1, column2, BinaryEvaluation.EvaluationKind.Add);
+      BinaryEvaluation binaryEvaluation2 = new BinaryEvaluation (binaryEvaluation1, column2, BinaryEvaluation.EvaluationKind.Divide);
+
+      visitor.VisitBinaryEvaluation (binaryEvaluation2);
+
+      Assert.AreEqual ("xyz (([alias1].[id1] + [alias2].[id2]) / [alias2].[id2])", _commandBuilder.GetCommandText ());
+    }
+
+    [Test]
+    public void VisitComplexCriterion_And ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+
+      BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
+      BinaryCondition binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
+
+      ComplexCriterion complexCriterion = new ComplexCriterion(binaryCondition1,binaryCondition2,ComplexCriterion.JunctionKind.And);
+
+      visitor.VisitComplexCriterion (complexCriterion);
+
+      Assert.AreEqual ("xyz ((@2 = @3) AND (@4 = @5))",_commandBuilder.GetCommandText());
+      Assert.AreEqual ("foo", _commandBuilder.GetCommandParameters ()[1].Value);
+    }
+
+    [Test]
+    public void VisitComplexCriterion_Or ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+
+      BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
+      BinaryCondition binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
+
+      ComplexCriterion complexCriterion = new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.Or);
+
+      visitor.VisitComplexCriterion (complexCriterion);
+
+      Assert.AreEqual ("xyz ((@2 = @3) OR (@4 = @5))", _commandBuilder.GetCommandText ());
+      Assert.AreEqual ("foo", _commandBuilder.GetCommandParameters ()[1].Value);
+    }
+
+    [Test]
+    public void VisitNotCriterion ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+
+      NotCriterion notCriterion = new NotCriterion (new Constant ("foo"));
+
+      visitor.VisitNotCriterion (notCriterion);
+
+      Assert.AreEqual ("xyz  NOT @2", _commandBuilder.GetCommandText ());
+      Assert.AreEqual ("foo", _commandBuilder.GetCommandParameters ()[1].Value);
+    }
+
+    [Test]
+    public void VisitSubQuery ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      PropertyInfo member = typeof (Student).GetProperty ("s");
+      ParameterExpression identifier = Expression.Parameter (typeof (Student), "s");
+      IQueryable<string> query = SelectTestQueryGenerator.CreateSimpleQuery_WithProjection (source);
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (identifier, query);
+      QueryParser parser = new QueryParser (query.Expression);
+      QueryModel model = parser.GetParsedQuery ();
+
+      SubQuery subQuery = new SubQuery (model, "sub_alias");
+
+      visitor.VisitSubQuery (subQuery);
+
+      Assert.AreEqual ("xyz ((SELECT [s].[FirstColumn] FROM [studentTable] [s]) sub_alias)",_commandBuilder.GetCommandText());
+    }
+
+    [Test]
+    public void VisitMethodCall_ToUpper ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+      MemberExpression memberExpression = Expression.MakeMemberAccess (parameter, typeof (Student).GetProperty ("First"));
+      MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] {  });
+      Column column = new Column (fromSource, "FirstColumn");
+      List<IEvaluation> arguments = new List<IEvaluation>();
+      MethodCallEvaluation methodCallEvaluation = new MethodCallEvaluation (methodInfo, column, arguments);
+
+      visitor.VisitMethodCallEvaluation (methodCallEvaluation);
+
+      Assert.AreEqual ("xyz UPPER([s].[FirstColumn])", _commandBuilder.GetCommandText ());
+    }
+
+    [Test]
+    public void VisitMethodCall_WithArguments ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+      MemberExpression memberExpression = Expression.MakeMemberAccess (parameter, typeof (Student).GetProperty ("First"));
+      MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
+      Column column = new Column (fromSource, "FirstColumn");
+      Constant item = new Constant (5);
+      List<IEvaluation> arguments = new List<IEvaluation> { item };
+      MethodCallEvaluation methodCallEvaluation = new MethodCallEvaluation (methodInfo, column, arguments);
+
+      visitor.VisitMethodCallEvaluation (methodCallEvaluation);
+
+      Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,CONVERT(Int,DATALENGTH([s].[FirstColumn]) / 2), \")", _commandBuilder.GetCommandText ());
+      Assert.AreEqual(5,_commandBuilder.GetCommandParameters ()[1].Value);
     }
 
     private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
@@ -145,7 +271,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual ("xyz ([alias1].[id1]" + aoperator + "[alias2].[id2])", _commandBuilder.GetCommandText ());
       _commandText = new StringBuilder ();
       _commandText.Append ("xyz ");
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters);
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance);
     }
+
+    
   }
 }

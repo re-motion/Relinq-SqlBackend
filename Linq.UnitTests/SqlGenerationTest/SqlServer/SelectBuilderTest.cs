@@ -19,7 +19,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> ());
+      _commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       _selectBuilder = new SelectBuilder (_commandBuilder);
     }
 
