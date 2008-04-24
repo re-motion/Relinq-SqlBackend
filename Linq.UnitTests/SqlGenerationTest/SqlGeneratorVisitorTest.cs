@@ -55,7 +55,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
 
 
     [Test]
-    [Ignore]
     public void VisitLetClause ()
     {
       IQueryable<string> query = LetTestQueryGenerator.CreateSimpleLetClause (ExpressionHelper.CreateQuerySource ());
@@ -66,12 +65,39 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitLetClause (letClause);
 
-      Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
-          new Column (new Table ("studentTable", "s"), "LastColumn") }));
-
-      //new Column with NamedEvaluation - no new table
+      BinaryEvaluation expectedResult = 
+        new BinaryEvaluation(new Column (new Table ("studentTable", "s"), "FirstColumn"),new Column (new Table ("studentTable", "s"), "LastColumn"),
+          BinaryEvaluation.EvaluationKind.Add);
+      Assert.That(sqlGeneratorVisitor.LetEvaluations.A, Is.EqualTo (new object[] {expectedResult }));
+      Assert.AreEqual (letClause.Identifier, sqlGeneratorVisitor.LetEvaluations.B);
     }
 
+    [Test]
+    public void VisitLetClause_WithJoin ()
+    {
+      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin (ExpressionHelper.CreateQuerySource_Detail ());
+
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      LetClause letClause = (LetClause) parsedQuery.BodyClauses.First ();
+      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
+      sqlGeneratorVisitor.VisitLetClause (letClause);
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
+
+
+      Column expectedResult = new Column (new Table ("studentTable", "s"), "FirstColumn");
+
+      Column c1 = new Column (studentDetailTable, "Student_Detail_PK");
+      Column c2 = new Column (studentTable, "Student_Detail_to_Student_FK");
+
+      SingleJoin expectedJoin = new SingleJoin (c1, c2);
+      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
+      SingleJoin actualJoin = sqlGeneratorVisitor.Joins[studentDetailTable].First();
+      Assert.AreEqual (expectedJoin, actualJoin);
+    }
+    
     [Test]
     [Ignore]
     public void VisitSelectClause_DistinctFalse ()

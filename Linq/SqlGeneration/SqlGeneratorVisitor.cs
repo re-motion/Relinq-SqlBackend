@@ -35,7 +35,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       FromSources = new List<IColumnSource>();
       SelectEvaluations = new List<IEvaluation> ();
       OrderingFields = new List<OrderingField>();
-      Joins = new JoinCollection (); 
+      Joins = new JoinCollection ();
     }
 
     public List<IColumnSource> FromSources { get; private set; }
@@ -43,6 +43,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
+    public Tuple<List<IEvaluation>,ParameterExpression> LetEvaluations { get; private set; }
 
     public void VisitQueryExpression (QueryModel queryModel)
     {
@@ -131,18 +132,20 @@ namespace Rubicon.Data.Linq.SqlGeneration
 
     public void VisitLetClause (LetClause letClause)
     {
-      //ArgumentUtility.CheckNotNull ("letClause", letClause);
-      ////var projectionParser = new SelectProjectionParser (_queryModel, letClause, _databaseInfo, _context, ParseContext);
-      //Expression projectionBody = letClause.Expression;
+      ArgumentUtility.CheckNotNull ("letClause", letClause);
+      Expression projectionBody = letClause.Expression ?? _queryModel.MainFromClause.Identifier;
+      var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
+      Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
-      //var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
-      //IEnumerable<FieldDescriptor> selectedFields = projectionParser.GetSelectedFields ();
+      LetEvaluations = new Tuple<List<IEvaluation>, ParameterExpression> (evaluations.B, letClause.Identifier);
 
-      //foreach (var selectedField in selectedFields)
-      //{
-      //  Columns.Add (selectedField.GetMandatoryColumn ());
-      //}
-      throw new NotImplementedException ();
+      //LetEvaluations.A.AddRange (evaluations.B);
+      //LetEvaluations.B = letClause.Identifier;
+
+      foreach (var selectedField in evaluations.A)
+      {
+        Joins.AddPath (selectedField.SourcePath);
+      }   
     }
 
     public void VisitGroupClause (GroupClause groupClause)

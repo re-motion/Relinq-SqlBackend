@@ -136,7 +136,18 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual ("WHERE [alias1].[name1], [alias2].[name2], [alias3].[name3]", _commandText.ToString ());
     }
 
-    
+    [Test]
+    public void AppendBinaryEvaluation ()
+    {
+      IEvaluation evaluation1 = new Column (new Table ("table1", "alias1"), "name1");
+      IEvaluation evaluation2 = new Column (new Table ("table2", "alias2"), "name2");
+      IEvaluation evaluation = new BinaryEvaluation (evaluation1, evaluation2, BinaryEvaluation.EvaluationKind.Add);
+
+      _commandBuilder.AppendEvaluation (evaluation);
+
+      Assert.AreEqual (_commandBuilder.GetCommandText (), _commandText.ToString ());
+      Assert.AreEqual ("WHERE ([alias1].[name1] + [alias2].[name2])", _commandText.ToString ());
+    }
 
     [Test]
     public void AppendSeparatedItems_WithAppendColumn ()
