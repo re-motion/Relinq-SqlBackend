@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -131,6 +132,39 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreSame (subQuery.QueryModel, subQueryGenerator.QueryModel);
       Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
       Assert.AreEqual (ParseContext.SubQueryInFrom, subQueryGenerator.ParseContext);
+    }
+
+    [Test]
+    public void BuildLetPart ()
+    {
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
+
+      //let with BinaryEvaluation
+      Table table = new Table ("studentTabele", "s");
+      Column c1 = new Column(table,"FirstColumn");
+      Column c2 = new Column(table,"LastColumn");
+
+      BinaryEvaluation binaryEvaluation = new BinaryEvaluation(c1,c2,BinaryEvaluation.EvaluationKind.Add);
+      ParameterExpression identifier = Expression.Parameter(typeof(string),"x");
+
+      Tuple<List<IEvaluation>, ParameterExpression> lets = 
+        new Tuple<List<IEvaluation>, ParameterExpression> (new List<IEvaluation>{binaryEvaluation}, identifier);
+
+
+      fromBuilder.BuilderLetPart (lets);
+
+      Assert.AreEqual (" CROSS APPLY (([s].[FirstColumn] + [s].[LastColumn])) x", commandBuilder.GetCommandText ());
+    }
+
+    [Test]
+    [Ignore]
+    public void BuildLetPart_WithJoin ()
+    {
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
+
+
     }
   }
 }

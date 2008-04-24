@@ -138,10 +138,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
       LetEvaluations = new Tuple<List<IEvaluation>, ParameterExpression> (evaluations.B, letClause.Identifier);
-
-      //LetEvaluations.A.AddRange (evaluations.B);
-      //LetEvaluations.B = letClause.Identifier;
-
       foreach (var selectedField in evaluations.A)
       {
         Joins.AddPath (selectedField.SourcePath);

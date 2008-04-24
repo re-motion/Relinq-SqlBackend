@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using Rubicon.Collections;
 using Rubicon.Data.Linq.DataObjectModel;
 using Rubicon.Data.Linq.Parsing;
 using Rubicon.Text;
@@ -70,6 +73,19 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder.Append (SqlServerUtility.GetColumnString (join.LeftColumn));
       _commandBuilder.Append (" = ");
       _commandBuilder.Append (SqlServerUtility.GetColumnString (join.RightColumn));
+    }
+
+
+    public void BuilderLetPart (Tuple<List<IEvaluation>, ParameterExpression> lets)
+    {
+      _commandBuilder.Append (" CROSS APPLY (");
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor ((CommandBuilder) _commandBuilder, _databaseInfo);
+      foreach (var let in lets.A)
+      {
+        let.Accept (visitor);
+      }
+      _commandBuilder.Append (") ");
+      _commandBuilder.Append (lets.B.Name);
     }
   }
 }
