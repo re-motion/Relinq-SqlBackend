@@ -508,5 +508,19 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[FirstColumn] FROM [studentTable] [s2])", result.A);
       Assert.That (result.B, Is.EqualTo (new[] { new CommandParameter ("@1", "Hugo") }));
     }
+
+    [Test]
+    public void QueryWithLetAndJoin ()
+    {
+      IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
+      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+
+      Assert.AreEqual ("SELECT [x].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = "+
+        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].[FirstColumn]) x", result.A);
+    }
   }
 }

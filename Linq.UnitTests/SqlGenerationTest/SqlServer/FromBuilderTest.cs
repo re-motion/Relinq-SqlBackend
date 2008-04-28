@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -141,7 +142,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       //let with BinaryEvaluation
-      Table table = new Table ("studentTabele", "s");
+      Table table = new Table ("studentTable", "s");
       Column c1 = new Column(table,"FirstColumn");
       Column c2 = new Column(table,"LastColumn");
 
@@ -152,19 +153,9 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
         new Tuple<List<IEvaluation>, ParameterExpression> (new List<IEvaluation>{binaryEvaluation}, identifier);
 
 
-      fromBuilder.BuilderLetPart (lets);
+      fromBuilder.BuildLetPart (lets);
 
-      Assert.AreEqual (" CROSS APPLY (([s].[FirstColumn] + [s].[LastColumn])) x", commandBuilder.GetCommandText ());
-    }
-
-    [Test]
-    [Ignore]
-    public void BuildLetPart_WithJoin ()
-    {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
-      FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
-
-
+      Assert.AreEqual (" CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn])) x", commandBuilder.GetCommandText ());
     }
   }
 }

@@ -139,6 +139,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
 
@@ -158,6 +159,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       //Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations, true);
       _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
 

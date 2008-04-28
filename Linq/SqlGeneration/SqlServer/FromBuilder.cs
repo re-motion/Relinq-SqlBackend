@@ -45,6 +45,8 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
+   
+
     private void AppendCrossApply (SubQuery subQuery)
     {
       _commandBuilder.Append (" CROSS APPLY (");
@@ -76,16 +78,20 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     }
 
 
-    public void BuilderLetPart (Tuple<List<IEvaluation>, ParameterExpression> lets)
+    public void BuildLetPart (Tuple<List<IEvaluation>, ParameterExpression> lets)
     {
-      _commandBuilder.Append (" CROSS APPLY (");
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor ((CommandBuilder) _commandBuilder, _databaseInfo);
-      foreach (var let in lets.A)
+      if (lets != null)
       {
-        let.Accept (visitor);
+        _commandBuilder.Append (" CROSS APPLY (SELECT ");
+        SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor ((CommandBuilder) _commandBuilder, _databaseInfo);
+
+        foreach (var let in lets.A)
+        {
+          let.Accept (visitor);
+        }
+        _commandBuilder.Append (") ");
+        _commandBuilder.Append (lets.B.Name);
       }
-      _commandBuilder.Append (") ");
-      _commandBuilder.Append (lets.B.Name);
     }
   }
 }
