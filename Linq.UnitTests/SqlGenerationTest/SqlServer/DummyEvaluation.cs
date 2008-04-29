@@ -1,3 +1,4 @@
+using System;
 using Rubicon.Data.Linq.DataObjectModel;
 
 namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
@@ -8,5 +9,6 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       throw new System.NotImplementedException();
     }
+
   }
 }

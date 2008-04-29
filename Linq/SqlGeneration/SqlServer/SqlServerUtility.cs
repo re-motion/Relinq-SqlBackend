@@ -6,7 +6,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
   {
     public static string GetColumnString (Column column)
     {
-      return WrapSqlIdentifier (column._columnSource.Alias) + "." + WrapSqlIdentifier (column.Name);
+      if (column.Name != null)
+        return WrapSqlIdentifier (column._columnSource.Alias) + "." + WrapSqlIdentifier (column.Name);
+      else
+        return WrapSqlIdentifier (column._columnSource.Alias);
     }
 
     public static string WrapSqlIdentifier (string identifier)

@@ -68,14 +68,15 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
       BinaryEvaluation expectedResult = 
         new BinaryEvaluation(new Column (new Table ("studentTable", "s"), "FirstColumn"),new Column (new Table ("studentTable", "s"), "LastColumn"),
           BinaryEvaluation.EvaluationKind.Add);
-      Assert.That(sqlGeneratorVisitor.LetEvaluations.A, Is.EqualTo (new object[] {expectedResult }));
-      Assert.AreEqual (letClause.Identifier, sqlGeneratorVisitor.LetEvaluations.B);
+
+      Assert.That(sqlGeneratorVisitor.LetEvaluations.First().Evaluations, Is.EqualTo (new object[] {expectedResult }));
+      Assert.AreEqual (letClause.Identifier.Name, sqlGeneratorVisitor.LetEvaluations.First().Name);
     }
 
     [Test]
     public void VisitLetClause_WithJoin ()
     {
-      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin (ExpressionHelper.CreateQuerySource_Detail ());
+      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin_NoTable (ExpressionHelper.CreateQuerySource_Detail ());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       LetClause letClause = (LetClause) parsedQuery.BodyClauses.First ();

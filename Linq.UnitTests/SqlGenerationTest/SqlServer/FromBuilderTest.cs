@@ -149,13 +149,34 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       BinaryEvaluation binaryEvaluation = new BinaryEvaluation(c1,c2,BinaryEvaluation.EvaluationKind.Add);
       ParameterExpression identifier = Expression.Parameter(typeof(string),"x");
 
-      Tuple<List<IEvaluation>, ParameterExpression> lets = 
-        new Tuple<List<IEvaluation>, ParameterExpression> (new List<IEvaluation>{binaryEvaluation}, identifier);
+      LetData letData = new LetData (new List<IEvaluation> { binaryEvaluation }, identifier.Name);
+      List<LetData> letDatas = new List<LetData> {letData};
+      fromBuilder.BuildLetPart (letDatas);
 
+      Assert.AreEqual (" CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn])) [x]", commandBuilder.GetCommandText ());
+    }
 
-      fromBuilder.BuildLetPart (lets);
+    [Test]
+    public void BuildLetPart_SeveralEvaluations ()
+    {
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
-      Assert.AreEqual (" CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn])) x", commandBuilder.GetCommandText ());
+      //let with BinaryEvaluation
+      Table table = new Table ("studentTable", "s");
+      Column c1 = new Column (table, "FirstColumn");
+      Column c2 = new Column (table, "LastColumn");
+
+      BinaryEvaluation binaryEvaluation1 = new BinaryEvaluation (c1, c2, BinaryEvaluation.EvaluationKind.Add);
+      BinaryEvaluation binaryEvaluation2 = new BinaryEvaluation (c1, c2, BinaryEvaluation.EvaluationKind.Add);
+      ParameterExpression identifier = Expression.Parameter (typeof (string), "x");
+
+      LetData letData = new LetData (new List<IEvaluation> { binaryEvaluation1, binaryEvaluation2 }, identifier.Name);
+      List<LetData> letDatas = new List<LetData> { letData };
+      fromBuilder.BuildLetPart (letDatas);
+
+      Assert.AreEqual (" CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn]), ([s].[FirstColumn] + [s].[LastColumn])) [x]", 
+        commandBuilder.GetCommandText ());
     }
   }
 }

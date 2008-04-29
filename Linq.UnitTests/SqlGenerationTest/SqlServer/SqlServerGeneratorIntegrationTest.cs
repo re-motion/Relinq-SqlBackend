@@ -510,17 +510,71 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    public void QueryWithLetAndJoin ()
+    public void QueryWithLet_Binary ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<string > query = LetTestQueryGenerator.CreateSimpleLetClause (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      Assert.AreEqual ("SELECT [x].* FROM [studentTable] [s] CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn])) [x]", result.A);    
+    }
+
+    [Test]
+    public void QueryWithLetAndJoin_WithTable ()
     {
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
-      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin (source);
+      IQueryable<Student> query = LetTestQueryGenerator.CreateLet_WithJoin_WithTable (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+
+      Assert.AreEqual ("SELECT [x].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = " +
+        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].*) [x]", result.A);
+    }
+
+    [Test]
+    public void QueryWithLetAndJoin_NoTable ()
+    {
+      IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail ();
+      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin_NoTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
 
       Assert.AreEqual ("SELECT [x].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = "+
-        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].[FirstColumn]) x", result.A);
+        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].[FirstColumn]) [x]", result.A);
+    }
+
+    [Test]
+    public void QueryWithLet_WithTable ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> query = LetTestQueryGenerator.CreateLet_WithTable (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+
+      Assert.AreEqual ("SELECT [x].* FROM [studentTable] [s] CROSS APPLY (SELECT [s].*) [x]", result.A);
+    }
+
+    [Test]
+    [Ignore]
+    public void QueryWithMultiLet_Where ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<string> query = LetTestQueryGenerator.CreateMultiLet_WithWhere (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (parsedQuery, StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString ();
+      const string sql = "SELECT [x].* FROM [studentTable] [s] CROSS APPLY (SELECT [s].[FirstColumn]) [x] "+ 
+        "CROSS APPLY (SELECT [s].[IDColumn]) [y] WHERE ([y] > @1)";
+      Assert.AreEqual (sql, result.A);
     }
   }
 }

@@ -36,6 +36,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       SelectEvaluations = new List<IEvaluation> ();
       OrderingFields = new List<OrderingField>();
       Joins = new JoinCollection ();
+      LetEvaluations = new List<LetData> ();
     }
 
     public List<IColumnSource> FromSources { get; private set; }
@@ -43,7 +44,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public ICriterion Criterion{ get; private set; }
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
-    public Tuple<List<IEvaluation>,ParameterExpression> LetEvaluations { get; private set; }
+    public List<LetData> LetEvaluations { get; private set; }
 
     public void VisitQueryExpression (QueryModel queryModel)
     {
@@ -133,11 +134,13 @@ namespace Rubicon.Data.Linq.SqlGeneration
     public void VisitLetClause (LetClause letClause)
     {
       ArgumentUtility.CheckNotNull ("letClause", letClause);
-      Expression projectionBody = letClause.Expression ?? _queryModel.MainFromClause.Identifier;
+      Expression projectionBody = letClause.Expression;
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
-      LetEvaluations = new Tuple<List<IEvaluation>, ParameterExpression> (evaluations.B, letClause.Identifier);
+      LetData letData = new LetData(evaluations.B, letClause.Identifier.Name);
+      LetEvaluations.Add (letData);
+      
       foreach (var selectedField in evaluations.A)
       {
         Joins.AddPath (selectedField.SourcePath);

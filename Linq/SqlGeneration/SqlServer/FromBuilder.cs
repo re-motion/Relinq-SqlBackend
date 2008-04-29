@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -78,19 +79,28 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     }
 
 
-    public void BuildLetPart (Tuple<List<IEvaluation>, ParameterExpression> lets)
+    public void BuildLetPart (List<LetData> letData)
     {
-      if (lets != null)
+      ArgumentUtility.CheckNotNull ("letData", letData);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor ((CommandBuilder) _commandBuilder, _databaseInfo);
+      foreach (var evaluations in letData)
       {
         _commandBuilder.Append (" CROSS APPLY (SELECT ");
-        SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor ((CommandBuilder) _commandBuilder, _databaseInfo);
-
-        foreach (var let in lets.A)
+        bool first = true;
+        foreach (var let in evaluations.Evaluations)
         {
+          if (!first)
+            _commandBuilder.Append (", ");
+
           let.Accept (visitor);
+          first = false;
         }
-        _commandBuilder.Append (") ");
-        _commandBuilder.Append (lets.B.Name);
+        //if (!evaluations.CorrespondingColumnSource.IsTable)
+        //  _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (evaluations.Name));
+
+        _commandBuilder.Append (") [");
+        _commandBuilder.Append (evaluations.Name);
+        _commandBuilder.Append ("]");
       }
     }
   }

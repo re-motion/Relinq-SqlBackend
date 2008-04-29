@@ -8,6 +8,6 @@ namespace Rubicon.Data.Linq.SqlGeneration
   public interface IFromBuilder
   {
     void BuildFromPart (List<IColumnSource> fromSources, JoinCollection joins);
-    void BuildLetPart (Tuple<List<IEvaluation>, ParameterExpression> lets);
+    void BuildLetPart (List<LetData> lets);
   }
 }
