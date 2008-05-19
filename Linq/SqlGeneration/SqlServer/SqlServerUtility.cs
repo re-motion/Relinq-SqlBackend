@@ -7,9 +7,10 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
     public static string GetColumnString (Column column)
     {
       if (column.Name != null)
-        return WrapSqlIdentifier (column._columnSource.Alias) + "." + WrapSqlIdentifier (column.Name);
-      else
-        return WrapSqlIdentifier (column._columnSource.Alias);
+        return WrapSqlIdentifier (column.ColumnSource.Alias) + "." + WrapSqlIdentifier (column.Name);
+      if (column.ColumnSource.IsTable)
+        return WrapSqlIdentifier (column.ColumnSource.Alias);
+      return WrapSqlIdentifier (column.ColumnSource.Alias) + "." + WrapSqlIdentifier (column.ColumnSource.Alias);
     }
 
     public static string WrapSqlIdentifier (string identifier)

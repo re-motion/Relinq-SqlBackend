@@ -46,6 +46,18 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
+    public void VisitColumn_ColumnSource_NoTable()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      Column column = new Column (new LetColumnSource("test",false), null);
+      
+      visitor.VisitColumn (column);
+
+      Assert.AreEqual("xyz [test].[test]",_commandBuilder.GetCommandText());
+      
+    }
+
+    [Test]
     public void VisitConstant ()
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);

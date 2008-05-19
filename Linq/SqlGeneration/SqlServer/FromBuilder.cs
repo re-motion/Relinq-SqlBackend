@@ -45,9 +45,7 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
         first = false;
       }
     }
-
-   
-
+    
     private void AppendCrossApply (SubQuery subQuery)
     {
       _commandBuilder.Append (" CROSS APPLY (");
@@ -95,8 +93,8 @@ namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
           let.Accept (visitor);
           first = false;
         }
-        //if (!evaluations.CorrespondingColumnSource.IsTable)
-        //  _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (evaluations.Name));
+        if (!evaluations.CorrespondingColumnSource.IsTable)
+          _commandBuilder.Append (" " + SqlServerUtility.WrapSqlIdentifier (evaluations.Name));
 
         _commandBuilder.Append (") [");
         _commandBuilder.Append (evaluations.Name);

@@ -138,7 +138,7 @@ namespace Rubicon.Data.Linq.SqlGeneration
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
-      LetData letData = new LetData(evaluations.B, letClause.Identifier.Name);
+      LetData letData = new LetData(evaluations.B, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
       LetEvaluations.Add (letData);
       
       foreach (var selectedField in evaluations.A)
