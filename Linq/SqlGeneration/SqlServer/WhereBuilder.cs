@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Utilities;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class WhereBuilder : IWhereBuilder
   {

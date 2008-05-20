@@ -1,6 +1,6 @@
-using Rubicon.Utilities;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public struct CommandParameter
   {

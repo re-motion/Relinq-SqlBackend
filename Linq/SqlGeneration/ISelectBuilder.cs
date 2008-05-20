@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Rubicon.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.DataObjectModel;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public interface ISelectBuilder
   {

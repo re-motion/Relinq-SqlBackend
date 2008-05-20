@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Rubicon.Utilities;
-using Rubicon.Data.Linq.DataObjectModel;
+using Remotion.Utilities;
+using Remotion.Data.Linq.DataObjectModel;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class SelectBuilder : ISelectBuilder
   {

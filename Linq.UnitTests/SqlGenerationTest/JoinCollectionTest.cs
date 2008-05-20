@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 {
   [TestFixture]
   public class JoinCollectionTest

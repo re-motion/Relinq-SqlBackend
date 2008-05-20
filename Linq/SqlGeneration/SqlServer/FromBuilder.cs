@@ -1,16 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Text;
-using Rubicon.Utilities;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class FromBuilder : IFromBuilder
   {

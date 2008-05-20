@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Data.Linq.Parsing.FieldResolving;
-using Rubicon.Utilities;
+using Remotion.Collections;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public abstract class SqlGeneratorBase
   {

@@ -1,7 +1,7 @@
 using System;
-using Rubicon.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.DataObjectModel;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   public class DummyEvaluation : IEvaluation
   {

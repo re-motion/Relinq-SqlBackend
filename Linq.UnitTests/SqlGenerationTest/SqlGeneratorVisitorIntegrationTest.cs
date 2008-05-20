@@ -5,15 +5,15 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.Clauses;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Data.Linq.Parsing.FieldResolving;
-using Rubicon.Data.Linq.SqlGeneration;
-using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
+using Remotion.Collections;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 {
   [TestFixture]
   public class SqlGeneratorVisitorIntegrationTest
@@ -214,7 +214,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "The expression 'value(Rubicon.Data.Linq.UnitTests.SqlGenerationTest." 
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "The expression 'value(Remotion.Data.Linq.UnitTests.SqlGenerationTest." 
         + "SqlGeneratorVisitorIntegrationTest).GetNullSource()' could not be evaluated as a query source because it cannot be compiled: Query "
         + "sources cannot be null.")]
     public void InvalidQuerySource ()

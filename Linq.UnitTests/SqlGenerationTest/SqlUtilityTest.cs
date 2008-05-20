@@ -3,9 +3,9 @@ using System.Data;
 using System.Data.Common;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Rubicon.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.SqlGeneration;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 {
   [TestFixture]
   public class SqlUtilityTest

@@ -5,14 +5,14 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
-using Rubicon.Data.Linq.Clauses;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.Parsing.Structure;
-using Rubicon.Data.Linq.SqlGeneration;
-using Rubicon.Data.Linq.SqlGeneration.SqlServer;
-using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
   public class SqlServerEvaluationVisitorTest

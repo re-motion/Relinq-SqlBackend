@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.SqlGeneration;
-using Rubicon.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Collections;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
   public class SelectBuilderTest

@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Data.Linq.SqlGeneration;
+using Remotion.Collections;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
-using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 {
   [TestFixture]
   public class SqlGeneratorBaseTest

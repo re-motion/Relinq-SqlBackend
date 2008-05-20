@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Utilities;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public class LetData
   {

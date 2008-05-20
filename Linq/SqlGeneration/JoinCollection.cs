@@ -1,10 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.DataObjectModel;
+using Remotion.Collections;
+using Remotion.Data.Linq.DataObjectModel;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public class JoinCollection : IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>
   {

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.SqlGeneration;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public interface ICommandBuilder
   {

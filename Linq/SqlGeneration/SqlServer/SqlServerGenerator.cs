@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
-using Rubicon.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class SqlServerGenerator : SqlGeneratorBase
   {

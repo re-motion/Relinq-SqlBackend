@@ -1,6 +1,6 @@
-using Rubicon.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.DataObjectModel;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public static class SqlServerUtility
   {

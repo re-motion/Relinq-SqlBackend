@@ -1,9 +1,7 @@
 using System.Data;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.SqlGeneration.SqlServer;
-using Rubicon.Utilities;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public static class SqlUtility
   {

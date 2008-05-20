@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Data.Linq.SqlGeneration;
-using Rubicon.Data.Linq.SqlGeneration.SqlServer;
-using Rubicon.Data.Linq.UnitTests.TestQueryGenerators;
+using Remotion.Collections;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
   public class SqlServerGeneratorIntegrationTest
@@ -419,7 +419,7 @@ namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Rubicon.Data.Linq.UnitTests.Student_Detail.Student' is not "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.Student_Detail.Student' is not "
         + "supported because it is a relation member.")]
     public void OrderingJoin_WithRelationMember ()
     {

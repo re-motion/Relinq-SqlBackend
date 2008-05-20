@@ -1,9 +1,9 @@
 using System;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Utilities;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Utilities;
 
-namespace Rubicon.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class BinaryConditionBuilder
   {

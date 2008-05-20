@@ -4,14 +4,14 @@ using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
-using Rubicon.Collections;
-using Rubicon.Data.Linq.DataObjectModel;
-using Rubicon.Data.Linq.Parsing;
-using Rubicon.Data.Linq.SqlGeneration;
-using Rubicon.Data.Linq.SqlGeneration.SqlServer;
-using Rubicon.Development.UnitTesting;
+using Remotion.Collections;
+using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Development.UnitTesting;
 
-namespace Rubicon.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
+namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 {
   [TestFixture]
   public class BinaryConditionBuilderTest
