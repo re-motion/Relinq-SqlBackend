@@ -45,8 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationMember2);
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2 }));
     }
 
@@ -83,8 +83,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       PropertyInfo relationalMemberForLastOrdering = typeof (Student_Detail_Detail).GetProperty ("IndustrialSector");
       SingleJoin join3 = CreateJoin (studentDetailDetailTable, relationalMemberForLastOrdering);
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2, join3 }));
 
     }
@@ -119,8 +119,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2 }));
 
     }
@@ -158,8 +158,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       PropertyInfo relationalMemberForLastOrdering = typeof (Student_Detail).GetProperty ("IndustrialSector");
       SingleJoin join3 = CreateJoin (studentDetailTable, relationalMemberForLastOrdering);
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailDetailTable];
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join1, join2, join3 }));
     }
 
@@ -205,11 +205,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       IColumnSource studentDetailTable2 = join3.RightSide;
       SingleJoin join4 = CreateJoin (studentDetailTable2, relationalMemberSecondOrderBy2);
 
-      Assert.AreEqual (2, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins1 = sqlGeneratorVisitor.Joins[studentDetailDetailTable1];
+      Assert.AreEqual (2, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      List<SingleJoin> actualJoins1 = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable1];
       Assert.That (actualJoins1, Is.EqualTo (new object[] { join1, join2 }));
 
-      List<SingleJoin> actualJoins2 = sqlGeneratorVisitor.Joins[studentDetailDetailTable2];
+      List<SingleJoin> actualJoins2 = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable2];
       Assert.That (actualJoins2, Is.EqualTo (new object[] { join3, join4 }));
     }
 

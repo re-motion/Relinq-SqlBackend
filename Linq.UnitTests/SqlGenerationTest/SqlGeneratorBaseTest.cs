@@ -38,10 +38,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
       
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
-      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
-      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+      //_selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
+      //_fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
+      //_whereBuilder.BuildWherePart (generator.Visitor.Criterion);
+      //_orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
       _mockRepository.ReplayAll();
 
@@ -59,24 +64,24 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
       LastCall.Do ((Proc<List<Column>,bool>) delegate
       {
         generator.CommandText.Append ("Select");
       });
 
-      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       LastCall.Do ((Proc<List<IColumnSource>, JoinCollection>) delegate
       {
         generator.CommandText.Append ("From");
       });
 
       var parameter = new CommandParameter("fritz", "foo");
-      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
       LastCall.Do ((Proc<ICriterion>) delegate { generator.CommandText.Append ("Where");
                                                  generator.CommandParameters.Add (parameter); });
 
-      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
       LastCall.Do ((Proc<List<OrderingField>>) delegate
       {
         generator.CommandText.Append ("OrderBy");
@@ -99,10 +104,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
-      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
-      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
       _mockRepository.ReplayAll ();
 
@@ -118,10 +123,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.SubQueryInWhere);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations, false);
-      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
-      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
       _mockRepository.ReplayAll ();
 
@@ -137,11 +142,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
-      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      _fromBuilder.BuildLetPart (generator.Visitor.LetEvaluations);
-      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
-      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
       _mockRepository.ReplayAll ();
 
@@ -157,11 +162,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
 
       //Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations, true);
-      _fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      _fromBuilder.BuildLetPart (generator.Visitor.LetEvaluations);
-      _whereBuilder.BuildWherePart (generator.Visitor.Criterion);
-      _orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, true);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
       _mockRepository.ReplayAll ();
 

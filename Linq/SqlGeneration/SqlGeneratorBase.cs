@@ -29,11 +29,11 @@ namespace Remotion.Data.Linq.SqlGeneration
     public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
     {
       SqlGeneratorVisitor visitor = ProcessQuery();
-      CreateSelectBuilder ().BuildSelectPart (visitor.SelectEvaluations, visitor.Distinct);
-      CreateFromBuilder ().BuildFromPart (visitor.FromSources, visitor.Joins);
-      CreateFromBuilder ().BuildLetPart (visitor.LetEvaluations);
-      CreateWhereBuilder ().BuildWherePart (visitor.Criterion);
-      CreateOrderByBuilder ().BuildOrderByPart (visitor.OrderingFields);
+      CreateSelectBuilder ().BuildSelectPart (visitor.SqlGenerationData.SelectEvaluations, visitor.Distinct);
+      CreateFromBuilder ().BuildFromPart (visitor.SqlGenerationData.FromSources, visitor.SqlGenerationData.Joins);
+      CreateFromBuilder ().BuildLetPart (visitor.SqlGenerationData.LetEvaluations);
+      CreateWhereBuilder ().BuildWherePart (visitor.SqlGenerationData.Criterion);
+      CreateOrderByBuilder ().BuildOrderByPart (visitor.SqlGenerationData.OrderingFields);
 
       return new Tuple<string, CommandParameter[]> (CommandText.ToString(), CommandParameters.ToArray());
     }

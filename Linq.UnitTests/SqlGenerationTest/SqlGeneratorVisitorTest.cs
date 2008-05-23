@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
-      Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
           new Column (new Table ("studentTable", "s"), "LastColumn") }));
     }
 
@@ -48,11 +48,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
-      sqlGeneratorVisitor.VisitSelectClause (selectClause);
-      Assert.That (sqlGeneratorVisitor.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "*")}));
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);    
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "*") }));
     }
-
-
+    
 
     [Test]
     public void VisitLetClause ()
@@ -68,9 +67,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       BinaryEvaluation expectedResult = 
         new BinaryEvaluation(new Column (new Table ("studentTable", "s"), "FirstColumn"),new Column (new Table ("studentTable", "s"), "LastColumn"),
           BinaryEvaluation.EvaluationKind.Add);
-
-      Assert.That(sqlGeneratorVisitor.LetEvaluations.First().Evaluations, Is.EqualTo (new object[] {expectedResult }));
-      Assert.AreEqual (letClause.Identifier.Name, sqlGeneratorVisitor.LetEvaluations.First().Name);
+      
+      Assert.That(sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First().Evaluations, Is.EqualTo (new object[] {expectedResult }));
+      Assert.AreEqual (letClause.Identifier.Name, sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First ().Name);
     }
 
     [Test]
@@ -94,8 +93,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       Column c2 = new Column (studentTable, "Student_Detail_to_Student_FK");
 
       SingleJoin expectedJoin = new SingleJoin (c1, c2);
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      SingleJoin actualJoin = sqlGeneratorVisitor.Joins[studentDetailTable].First();
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      
+      SingleJoin actualJoin = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailTable].First ();
       Assert.AreEqual (expectedJoin, actualJoin);
     }
     
@@ -139,8 +139,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       Tuple<string, string> joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.A), new Column (studentTable, joinSelectEvaluations.B));
      
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[studentDetailTable];
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
@@ -161,7 +162,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause);
-      Assert.That (sqlGeneratorVisitor.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
+
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
     }
 
     [Test]
@@ -173,7 +175,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
-      Assert.That (sqlGeneratorVisitor.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
+
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
     }
 
     [Test]
@@ -186,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitSubQueryFromClause (subQueryFromClause);
 
-      Assert.That (sqlGeneratorVisitor.FromSources, Is.EqualTo (new object[] { subQueryFromClause.GetFromSource (StubDatabaseInfo.Instance) }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { subQueryFromClause.GetFromSource (StubDatabaseInfo.Instance) }));
     }
 
     [Test]
@@ -203,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       Assert.AreEqual (new BinaryCondition (new Column (new Table ("studentTable", "s"), "LastColumn"),
           new Constant ("Garcia"), BinaryCondition.ConditionKind.Equal),
-          sqlGeneratorVisitor.Criterion);
+          sqlGeneratorVisitor.SqlGenerationData.Criterion);
     }
 
     [Test]
@@ -225,14 +228,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var condition2 = new BinaryCondition (new Column (new Table ("studentTable", "s"), "FirstColumn"), new Constant ("Hugo"),
           BinaryCondition.ConditionKind.Equal);
       var combination12 = new ComplexCriterion (condition1, condition2, ComplexCriterion.JunctionKind.And);
-      Assert.AreEqual (combination12, sqlGeneratorVisitor.Criterion);
-
+      Assert.AreEqual (combination12, sqlGeneratorVisitor.SqlGenerationData.Criterion);
+      
       sqlGeneratorVisitor.VisitWhereClause (whereClause3);
 
       var condition3 = new BinaryCondition (new Column (new Table ("studentTable", "s"), "IDColumn"), new Constant (100),
           BinaryCondition.ConditionKind.GreaterThan);
       var combination123 = new ComplexCriterion (combination12, condition3, ComplexCriterion.JunctionKind.And);
-      Assert.AreEqual (combination123, sqlGeneratorVisitor.Criterion);
+      Assert.AreEqual (combination123, sqlGeneratorVisitor.SqlGenerationData.Criterion);
     }
     
     [Test]
@@ -247,7 +250,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       FieldDescriptor fieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
-      Assert.That (sqlGeneratorVisitor.OrderingFields,
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
           Is.EqualTo (new object[] { new OrderingField (fieldDescriptor, OrderDirection.Asc) }));
     }
 
@@ -269,8 +272,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       SingleJoin join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[sourceTable];
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[sourceTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
@@ -294,7 +297,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
       sqlGeneratorVisitor.VisitOrderByClause (orderBy1);
-      Assert.That (sqlGeneratorVisitor.OrderingFields,
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
           Is.EqualTo (new object[]
               {
                 new OrderingField (fieldDescriptor1, OrderDirection.Asc),
@@ -319,9 +322,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       SingleJoin join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.Joins.Count);
+      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
 
-      List<SingleJoin> actualJoins = sqlGeneratorVisitor.Joins[sourceTable];
+      List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[sourceTable];
 
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
@@ -334,6 +337,5 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       Assert.AreEqual (1, _context.Count);
     }
 
-   
   }
 }

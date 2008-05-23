@@ -18,7 +18,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     private readonly IDatabaseInfo _databaseInfo;
     private readonly JoinedTableContext _context;
     private readonly QueryModel _queryModel;
-
+    
     public SqlGeneratorVisitor (QueryModel queryModel, IDatabaseInfo databaseInfo, JoinedTableContext context, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
@@ -31,19 +31,10 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       ParseContext = parseContext;
 
-      FromSources = new List<IColumnSource>();
-      SelectEvaluations = new List<IEvaluation> ();
-      OrderingFields = new List<OrderingField>();
-      Joins = new JoinCollection ();
-      LetEvaluations = new List<LetData> ();
+      SqlGenerationData = new SqlGenerationData();  
     }
 
-    public List<IColumnSource> FromSources { get; private set; }
-    public List<IEvaluation> SelectEvaluations { get; private set; }
-    public ICriterion Criterion{ get; private set; }
-    public List<OrderingField> OrderingFields { get; private set; }
-    public JoinCollection Joins { get; private set; }
-    public List<LetData> LetEvaluations { get; private set; }
+    public SqlGenerationData SqlGenerationData { get; private set; }
 
     public void VisitQueryExpression (QueryModel queryModel)
     {
@@ -76,7 +67,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     private void VisitFromClause (FromClauseBase fromClause)
     {
       IColumnSource columnSource = fromClause.GetFromSource (_databaseInfo);
-      FromSources.Add (columnSource);
+      SqlGenerationData.FromSources.Add(columnSource);
     }
 
     public void VisitJoinClause (JoinClause joinClause)
@@ -89,14 +80,13 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
       var conditionParser = new WhereConditionParser (_queryModel, whereClause, _databaseInfo, _context, true);
       Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
-      if (Criterion == null)
-        Criterion = criterions.B;
+      if (SqlGenerationData.Criterion == null)
+        SqlGenerationData.SetCriterion(criterions.B);
       else
-        Criterion = new ComplexCriterion (Criterion, criterions.B, ComplexCriterion.JunctionKind.And);
-
+        SqlGenerationData.SetCriterion (new ComplexCriterion (SqlGenerationData.Criterion, criterions.B, ComplexCriterion.JunctionKind.And));
 
       foreach (var fieldDescriptor in criterions.A)
-        Joins.AddPath (fieldDescriptor.SourcePath);
+        SqlGenerationData.Joins.AddPath (fieldDescriptor.SourcePath);
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
@@ -111,8 +101,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
       var fieldParser = new OrderingFieldParser (_queryModel, orderingClause, _databaseInfo, _context);
       OrderingField orderingField = fieldParser.GetField();
-      OrderingFields.Add (orderingField);
-      Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
+      SqlGenerationData.OrderingFields.Add(orderingField);
+      SqlGenerationData.Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
     }
 
     public void VisitSelectClause (SelectClause selectClause)
@@ -125,9 +115,9 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       Distinct = selectClause.Distinct;
       
-      SelectEvaluations.AddRange (evaluations.B);
+      SqlGenerationData.SelectEvaluations.AddRange(evaluations.B);
       foreach (var selectedField in evaluations.A)
-        Joins.AddPath (selectedField.SourcePath);
+        SqlGenerationData.Joins.AddPath(selectedField.SourcePath);
     }
 
     public void VisitLetClause (LetClause letClause)
@@ -138,11 +128,11 @@ namespace Remotion.Data.Linq.SqlGeneration
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
       LetData letData = new LetData(evaluations.B, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
-      LetEvaluations.Add (letData);
+      SqlGenerationData.LetEvaluations.Add(letData);
       
       foreach (var selectedField in evaluations.A)
       {
-        Joins.AddPath (selectedField.SourcePath);
+        SqlGenerationData.Joins.AddPath(selectedField.SourcePath);
       }   
     }
 
