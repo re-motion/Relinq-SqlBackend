@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       return new Tuple<string, CommandParameter[]> (CommandText.ToString(), CommandParameters.ToArray());
     }
 
+    //... SqlGenerationData ProcessQuery()
     protected virtual SqlGeneratorVisitor ProcessQuery ()
     {
       JoinedTableContext context = new JoinedTableContext();

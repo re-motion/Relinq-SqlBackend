@@ -223,7 +223,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       QueryModel subQueryModel = ((SubQueryFromClause)parsedQuery.BodyClauses[0]).SubQueryModel;
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (subQueryModel, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery);
-      sqlGeneratorVisitor.VisitQueryExpression (subQueryModel);
+      sqlGeneratorVisitor.VisitQueryModel (subQueryModel);
     }
 
     private IQueryable<Student> GetNullSource ()

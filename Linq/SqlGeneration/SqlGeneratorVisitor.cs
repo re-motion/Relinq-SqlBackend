@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     public SqlGenerationData SqlGenerationData { get; private set; }
 
-    public void VisitQueryExpression (QueryModel queryModel)
+    public void VisitQueryModel (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryExpression", queryModel);
       queryModel.MainFromClause.Accept (this);
