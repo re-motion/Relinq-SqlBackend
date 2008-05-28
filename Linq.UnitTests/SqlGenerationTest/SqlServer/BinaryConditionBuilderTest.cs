@@ -213,6 +213,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual (ParseContext.SubQueryInWhere, subQueryGenerator.ParseContext);
     }
 
+    [Test]
+    public void BuildBinaryCondition_ContainsFulltext ()
+    {
+      Column column = new Column (new Table ("Student", "s"), "First");
+      Constant constant = new Constant("Test");
+      BinaryCondition binaryCondition = new BinaryCondition (column, constant, BinaryCondition.ConditionKind.ContainsFulltext);
+
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+
+      binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
+
+      Assert.AreEqual("CONTAINS ([s].[First],@1)", commandBuilder.GetCommandText());
+      Assert.That (commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
+    }
+
     public class PseudoValue : IValue
     {
       public void Accept (IEvaluationVisitor visitor)

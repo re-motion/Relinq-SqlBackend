@@ -27,8 +27,20 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.Contains)
         AppendContainsCondition ((SubQuery) binaryCondition.Left, binaryCondition.Right);
+      else if (binaryCondition.Kind == BinaryCondition.ConditionKind.ContainsFulltext)
+        AppendContainsFulltext (binaryCondition.Left,binaryCondition.Right);
       else
         AppendGeneralCondition (binaryCondition);
+    }
+
+    private void AppendContainsFulltext(IValue left, IValue right)
+    {
+      _commandBuilder.Append ("CONTAINS (");
+      AppendValue (left);
+      _commandBuilder.Append (",");
+      AppendValue (right);
+      _commandBuilder.Append(")");
+      
     }
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
@@ -53,7 +65,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommandString ();
       _commandBuilder.Append (")");
     }
-
+    
     protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
       return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder, ParseContext.SubQueryInWhere);
@@ -128,8 +140,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         _commandBuilder.Append (" OR ");
       }
     }
-
-
+    
     private void AppendValue (IValue value)
     {
       if (value is Constant)
