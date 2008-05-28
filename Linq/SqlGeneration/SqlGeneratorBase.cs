@@ -28,24 +28,24 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
     {
-      SqlGeneratorVisitor visitor = ProcessQuery();
-      CreateSelectBuilder ().BuildSelectPart (visitor.SqlGenerationData.SelectEvaluations, visitor.Distinct);
-      CreateFromBuilder ().BuildFromPart (visitor.SqlGenerationData.FromSources, visitor.SqlGenerationData.Joins);
-      CreateFromBuilder ().BuildLetPart (visitor.SqlGenerationData.LetEvaluations);
-      CreateWhereBuilder ().BuildWherePart (visitor.SqlGenerationData.Criterion);
-      CreateOrderByBuilder ().BuildOrderByPart (visitor.SqlGenerationData.OrderingFields);
+      SqlGenerationData sqlGenerationData = ProcessQuery ();
+      CreateSelectBuilder ().BuildSelectPart (sqlGenerationData.SelectEvaluations, sqlGenerationData.Distinct);
+      CreateFromBuilder ().BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
+      CreateFromBuilder ().BuildLetPart (sqlGenerationData.LetEvaluations);
+      CreateWhereBuilder ().BuildWherePart (sqlGenerationData.Criterion);
+      CreateOrderByBuilder ().BuildOrderByPart (sqlGenerationData.OrderingFields);
 
       return new Tuple<string, CommandParameter[]> (CommandText.ToString(), CommandParameters.ToArray());
     }
 
-    //... SqlGenerationData ProcessQuery()
-    protected virtual SqlGeneratorVisitor ProcessQuery ()
+
+    protected virtual SqlGenerationData ProcessQuery ()
     {
       JoinedTableContext context = new JoinedTableContext();
       SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context, ParseContext);
       QueryModel.Accept (visitor);
       context.CreateAliases();
-      return visitor;
+      return visitor.SqlGenerationData;
     }
 
     protected abstract IOrderByBuilder CreateOrderByBuilder ();

@@ -46,25 +46,26 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       get { return _commandParameters; }
     }
 
-    protected override SqlGeneratorVisitor ProcessQuery ()
+    protected override SqlGenerationData ProcessQuery ()
     {
       if (CheckBaseProcessQueryMethod)
       {
-        SqlGeneratorVisitor visitor2 = base.ProcessQuery();
+        SqlGenerationData sqlGenerationData = base.ProcessQuery();
+        //SqlGeneratorVisitor visitor2 = base.ProcessQuery();
 
-        Assert.AreEqual (ParseContext, visitor2.ParseContext);
+        Assert.AreEqual (ParseContext, sqlGenerationData.ParseContext);
 
-        Assert.That (visitor2.SqlGenerationData.SelectEvaluations, Is.EqualTo (Visitor.SqlGenerationData.SelectEvaluations));
-        Assert.That (visitor2.SqlGenerationData.Criterion, Is.EqualTo (Visitor.SqlGenerationData.Criterion));
+        Assert.That (sqlGenerationData.SelectEvaluations, Is.EqualTo (Visitor.SqlGenerationData.SelectEvaluations));
+        Assert.That (sqlGenerationData.Criterion, Is.EqualTo (Visitor.SqlGenerationData.Criterion));
 
-        Assert.AreEqual (Visitor.SqlGenerationData.Joins.Count, visitor2.SqlGenerationData.Joins.Count);
+        Assert.AreEqual (Visitor.SqlGenerationData.Joins.Count, sqlGenerationData.Joins.Count);
         foreach (KeyValuePair<IColumnSource, List<SingleJoin>> joinEntry in Visitor.SqlGenerationData.Joins)
-          Assert.That (visitor2.SqlGenerationData.Joins[joinEntry.Key], Is.EqualTo (joinEntry.Value));
+          Assert.That (sqlGenerationData.Joins[joinEntry.Key], Is.EqualTo (joinEntry.Value));
 
-        Assert.That (visitor2.SqlGenerationData.OrderingFields, Is.EqualTo (Visitor.SqlGenerationData.OrderingFields));
-        Assert.That (visitor2.SqlGenerationData.FromSources, Is.EqualTo (Visitor.SqlGenerationData.FromSources));
+        Assert.That (sqlGenerationData.OrderingFields, Is.EqualTo (Visitor.SqlGenerationData.OrderingFields));
+        Assert.That (sqlGenerationData.FromSources, Is.EqualTo (Visitor.SqlGenerationData.FromSources));
       }
-      return Visitor;
+      return Visitor.SqlGenerationData;
     }
 
     protected override IOrderByBuilder CreateOrderByBuilder ()

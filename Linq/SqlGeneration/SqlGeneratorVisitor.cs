@@ -13,8 +13,6 @@ namespace Remotion.Data.Linq.SqlGeneration
 {
   public class SqlGeneratorVisitor : IQueryVisitor
   {
-    public ParseContext ParseContext { get; private set; }
-
     private readonly IDatabaseInfo _databaseInfo;
     private readonly JoinedTableContext _context;
     private readonly QueryModel _queryModel;
@@ -29,9 +27,10 @@ namespace Remotion.Data.Linq.SqlGeneration
       _context = context;
       _queryModel = queryModel;
 
-      ParseContext = parseContext;
+      //ParseContext = parseContext;
 
-      SqlGenerationData = new SqlGenerationData();  
+      SqlGenerationData = new SqlGenerationData();
+      SqlGenerationData.ParseContext = parseContext;
     }
 
     public SqlGenerationData SqlGenerationData { get; private set; }
@@ -81,9 +80,9 @@ namespace Remotion.Data.Linq.SqlGeneration
       var conditionParser = new WhereConditionParser (_queryModel, whereClause, _databaseInfo, _context, true);
       Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
       if (SqlGenerationData.Criterion == null)
-        SqlGenerationData.SetCriterion(criterions.B);
+        SqlGenerationData.Criterion = criterions.B;
       else
-        SqlGenerationData.SetCriterion (new ComplexCriterion (SqlGenerationData.Criterion, criterions.B, ComplexCriterion.JunctionKind.And));
+        SqlGenerationData.Criterion = new ComplexCriterion (SqlGenerationData.Criterion, criterions.B, ComplexCriterion.JunctionKind.And);
 
       foreach (var fieldDescriptor in criterions.A)
         SqlGenerationData.Joins.AddPath (fieldDescriptor.SourcePath);
@@ -109,11 +108,11 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _queryModel.MainFromClause.Identifier;
-      var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
+      var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, SqlGenerationData.ParseContext);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
-      Distinct = selectClause.Distinct;
+      SqlGenerationData.Distinct = selectClause.Distinct;
       
       SqlGenerationData.SelectEvaluations.AddRange(evaluations.B);
       foreach (var selectedField in evaluations.A)
@@ -124,7 +123,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("letClause", letClause);
       Expression projectionBody = letClause.Expression;
-      var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, ParseContext);
+      var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, SqlGenerationData.ParseContext);
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
 
       LetData letData = new LetData(evaluations.B, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
@@ -141,6 +140,5 @@ namespace Remotion.Data.Linq.SqlGeneration
       throw new NotImplementedException ();
     }
 
-    public bool Distinct { get; private set; }
   }
 }
