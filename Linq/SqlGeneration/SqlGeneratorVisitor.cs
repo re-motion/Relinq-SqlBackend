@@ -66,7 +66,8 @@ namespace Remotion.Data.Linq.SqlGeneration
     private void VisitFromClause (FromClauseBase fromClause)
     {
       IColumnSource columnSource = fromClause.GetFromSource (_databaseInfo);
-      SqlGenerationData.FromSources.Add(columnSource);
+      
+      SqlGenerationData.AddFromClause (columnSource);
     }
 
     public void VisitJoinClause (JoinClause joinClause)
@@ -79,13 +80,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
       var conditionParser = new WhereConditionParser (_queryModel, whereClause, _databaseInfo, _context, true);
       Tuple<List<FieldDescriptor>, ICriterion> criterions = conditionParser.GetParseResult();
-      if (SqlGenerationData.Criterion == null)
-        SqlGenerationData.Criterion = criterions.B;
-      else
-        SqlGenerationData.Criterion = new ComplexCriterion (SqlGenerationData.Criterion, criterions.B, ComplexCriterion.JunctionKind.And);
-
-      foreach (var fieldDescriptor in criterions.A)
-        SqlGenerationData.Joins.AddPath (fieldDescriptor.SourcePath);
+      
+      SqlGenerationData.AddWhereClause (criterions);
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
@@ -100,8 +96,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
       var fieldParser = new OrderingFieldParser (_queryModel, orderingClause, _databaseInfo, _context);
       OrderingField orderingField = fieldParser.GetField();
-      SqlGenerationData.OrderingFields.Add(orderingField);
-      SqlGenerationData.Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
+
+      SqlGenerationData.AddOrderingFields(orderingField);
     }
 
     public void VisitSelectClause (SelectClause selectClause)
@@ -111,12 +107,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, SqlGenerationData.ParseContext);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
-
-      SqlGenerationData.Distinct = selectClause.Distinct;
       
-      SqlGenerationData.SelectEvaluations.AddRange(evaluations.B);
-      foreach (var selectedField in evaluations.A)
-        SqlGenerationData.Joins.AddPath(selectedField.SourcePath);
+      SqlGenerationData.AddSelectClause (selectClause, evaluations);
     }
 
     public void VisitLetClause (LetClause letClause)
@@ -125,14 +117,9 @@ namespace Remotion.Data.Linq.SqlGeneration
       Expression projectionBody = letClause.Expression;
       var projectionParser = new SelectProjectionParser (_queryModel, projectionBody, _databaseInfo, _context, SqlGenerationData.ParseContext);
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations = projectionParser.GetParseResult ();
-
       LetData letData = new LetData(evaluations.B, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
-      SqlGenerationData.LetEvaluations.Add(letData);
-      
-      foreach (var selectedField in evaluations.A)
-      {
-        SqlGenerationData.Joins.AddPath(selectedField.SourcePath);
-      }   
+
+      SqlGenerationData.AddLetClauses (letData, evaluations);
     }
 
     public void VisitGroupClause (GroupClause groupClause)
