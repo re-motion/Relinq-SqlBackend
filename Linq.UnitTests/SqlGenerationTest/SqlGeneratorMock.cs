@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework;
@@ -28,7 +29,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _orderByBuilder = orderByBuilder;
 
       JoinedTableContext joinedTableContext = new JoinedTableContext();
-      Visitor = new SqlGeneratorVisitor (query, databaseInfo, joinedTableContext, parseContext);
+      DetailParser detailParser = new DetailParser (query, databaseInfo, joinedTableContext, parseContext);
+      Visitor = new SqlGeneratorVisitor (query, databaseInfo, joinedTableContext, parseContext, detailParser);
       query.Accept (Visitor);
       joinedTableContext.CreateAliases();
     }

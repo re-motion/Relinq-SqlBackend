@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Collections;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
@@ -42,7 +43,8 @@ namespace Remotion.Data.Linq.SqlGeneration
     protected virtual SqlGenerationData ProcessQuery ()
     {
       JoinedTableContext context = new JoinedTableContext();
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context, ParseContext);
+      DetailParser detailParser = new DetailParser (QueryModel, DatabaseInfo, context,ParseContext);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context, ParseContext, detailParser);
       QueryModel.Accept (visitor);
       context.CreateAliases();
       return visitor.SqlGenerationData;
