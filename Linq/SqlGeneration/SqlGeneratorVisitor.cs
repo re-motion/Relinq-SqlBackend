@@ -85,8 +85,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
       LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression ();
-      ICriterion criterion = 
-        _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _fieldDescriptor);
+      ICriterion criterion = _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _fieldDescriptor);
 
       Tuple<List<FieldDescriptor>, ICriterion> criterions = new Tuple<List<FieldDescriptor>, ICriterion> (_fieldDescriptor, criterion);
       SqlGenerationData.AddWhereClause (criterions);

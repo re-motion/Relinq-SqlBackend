@@ -62,13 +62,13 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     {
       AppendValue (right);
       _commandBuilder.Append (" IN (");
-      CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommandString ();
+      CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommandString (left.QueryModel);
       _commandBuilder.Append (")");
     }
     
     protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder, ParseContext.SubQueryInWhere);
+      return new SqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInWhere);
     }
 
     private void AppendGeneralCondition (BinaryCondition binaryCondition)

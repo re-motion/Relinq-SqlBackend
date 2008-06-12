@@ -44,14 +44,14 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     {
       _commandBuilder.Append (" CROSS APPLY (");
       SqlGeneratorBase subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
-      subQueryGenerator.BuildCommandString ();
+      subQueryGenerator.BuildCommandString (subQuery.QueryModel);
       _commandBuilder.Append (") ");
       _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));
     }
 
     protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (subQuery.QueryModel, databaseInfo, commandBuilder, ParseContext.SubQueryInFrom);
+      return new SqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInFrom);
     }
 
     private void AppendJoinPart (IEnumerable<SingleJoin> joins)

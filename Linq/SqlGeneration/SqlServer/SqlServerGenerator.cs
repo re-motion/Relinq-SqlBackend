@@ -8,13 +8,13 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
   {
     private readonly ICommandBuilder _commandBuilder;
 
-    public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo)
-        : this (query, databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>(),databaseInfo), ParseContext.TopLevelQuery)
+    public SqlServerGenerator (IDatabaseInfo databaseInfo)
+        : this (databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>(),databaseInfo), ParseContext.TopLevelQuery)
     {
     }
 
-    public SqlServerGenerator (QueryModel query, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder, ParseContext parseContext)
-      : base (query, databaseInfo, parseContext)
+    public SqlServerGenerator (IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder, ParseContext parseContext)
+      : base (databaseInfo, parseContext)
     {
       _commandBuilder = commandBuilder;
     }

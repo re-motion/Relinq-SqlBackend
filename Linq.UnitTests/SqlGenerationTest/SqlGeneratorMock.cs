@@ -21,7 +21,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
     public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
         ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder, ParseContext parseContext)
-        : base (query, databaseInfo, parseContext)
+        : base (databaseInfo, parseContext)
     {
       _selectBuilder = selectBuilder;
       _fromBuilder = fromBuilder;
@@ -48,11 +48,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       get { return _commandParameters; }
     }
 
-    protected override SqlGenerationData ProcessQuery ()
+    protected override SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
       if (CheckBaseProcessQueryMethod)
       {
-        SqlGenerationData sqlGenerationData = base.ProcessQuery();
+        SqlGenerationData sqlGenerationData = base.ProcessQuery(queryModel);
         //SqlGeneratorVisitor visitor2 = base.ProcessQuery();
 
         Assert.AreEqual (ParseContext, sqlGenerationData.ParseContext);

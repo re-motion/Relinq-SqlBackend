@@ -10,26 +10,23 @@ namespace Remotion.Data.Linq.SqlGeneration
 {
   public abstract class SqlGeneratorBase
   {
-    public QueryModel QueryModel { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public ParseContext ParseContext { get; private set; }
 
     public abstract StringBuilder CommandText { get; }
     public abstract List<CommandParameter> CommandParameters { get; }
 
-    public SqlGeneratorBase (QueryModel query, IDatabaseInfo databaseInfo, ParseContext parseContext)
+    public SqlGeneratorBase (IDatabaseInfo databaseInfo, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
 
-      QueryModel = query;
       DatabaseInfo = databaseInfo;
       ParseContext = parseContext;
     }
 
-    public virtual Tuple<string, CommandParameter[]> BuildCommandString ()
+    public virtual Tuple<string, CommandParameter[]> BuildCommandString (QueryModel queryModel)
     {
-      SqlGenerationData sqlGenerationData = ProcessQuery ();
+      SqlGenerationData sqlGenerationData = ProcessQuery (queryModel);
       CreateSelectBuilder ().BuildSelectPart (sqlGenerationData.SelectEvaluations, sqlGenerationData.Distinct);
       CreateFromBuilder ().BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
       CreateFromBuilder ().BuildLetPart (sqlGenerationData.LetEvaluations);
@@ -40,12 +37,12 @@ namespace Remotion.Data.Linq.SqlGeneration
     }
 
 
-    protected virtual SqlGenerationData ProcessQuery ()
+    protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
       JoinedTableContext context = new JoinedTableContext();
-      DetailParser detailParser = new DetailParser (QueryModel, DatabaseInfo, context,ParseContext);
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (QueryModel, DatabaseInfo, context, ParseContext, detailParser);
-      QueryModel.Accept (visitor);
+      DetailParser detailParser = new DetailParser (queryModel, DatabaseInfo, context, ParseContext);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (queryModel, DatabaseInfo, context, ParseContext, detailParser);
+      queryModel.Accept (visitor);
       context.CreateAliases();
       return visitor.SqlGenerationData;
     }
