@@ -10,14 +10,14 @@ using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 {
-  public class SqlGeneratorMock : SqlGeneratorBase
+  public class SqlGeneratorMock : SqlGeneratorBase<SqlGeneratorMockContext>
   {
+    private SqlGeneratorMockContext _context = new SqlGeneratorMockContext();
+
     private readonly IOrderByBuilder _orderByBuilder;
     private readonly IWhereBuilder _whereBuilder;
     private readonly IFromBuilder _fromBuilder;
     private readonly ISelectBuilder _selectBuilder;
-    private readonly StringBuilder _commandText = new StringBuilder();
-    private readonly List<CommandParameter> _commandParameters = new List<CommandParameter>();
 
     public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
         ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder, ParseContext parseContext)
@@ -38,14 +38,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     public bool CheckBaseProcessQueryMethod { get; set; }
     public SqlGeneratorVisitor Visitor { get; private set; }
 
-    public override StringBuilder CommandText
+    public SqlGeneratorMockContext Context
     {
-      get { return _commandText; }
+      get { return _context; }
+      set { _context = value; }
     }
 
-    public override List<CommandParameter> CommandParameters
+    protected override SqlGeneratorMockContext CreateContext ()
     {
-      get { return _commandParameters; }
+      return _context;
     }
 
     protected override SqlGenerationData ProcessQuery (QueryModel queryModel)
@@ -70,23 +71,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       return Visitor.SqlGenerationData;
     }
 
-    protected override IOrderByBuilder CreateOrderByBuilder ()
+    protected override IOrderByBuilder CreateOrderByBuilder (SqlGeneratorMockContext context)
     {
+      Assert.That (context, Is.SameAs (_context));
       return _orderByBuilder;
     }
 
-    protected override IWhereBuilder CreateWhereBuilder ()
+    protected override IWhereBuilder CreateWhereBuilder (SqlGeneratorMockContext context)
     {
+      Assert.That (context, Is.SameAs (_context));
       return _whereBuilder;
     }
 
-    protected override IFromBuilder CreateFromBuilder ()
+    protected override IFromBuilder CreateFromBuilder (SqlGeneratorMockContext context)
     {
+      Assert.That (context, Is.SameAs (_context));
       return _fromBuilder;
     }
 
-    protected override ISelectBuilder CreateSelectBuilder ()
+    protected override ISelectBuilder CreateSelectBuilder (SqlGeneratorMockContext context)
     {
+      Assert.That (context, Is.SameAs (_context));
       return _selectBuilder;
     }
   }

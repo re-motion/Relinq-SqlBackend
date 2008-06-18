@@ -21,9 +21,9 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    private readonly ICommandBuilder _commandBuilder;
+    private readonly CommandBuilder _commandBuilder;
 
-    public OrderByBuilder (ICommandBuilder commandBuilder)
+    public OrderByBuilder (CommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;

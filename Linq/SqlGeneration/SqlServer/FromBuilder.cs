@@ -8,10 +8,10 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class FromBuilder : IFromBuilder
   {
-    private readonly ICommandBuilder _commandBuilder;
+    private readonly CommandBuilder _commandBuilder;
     private readonly IDatabaseInfo _databaseInfo;
 
-    public FromBuilder (ICommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public FromBuilder (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;
@@ -43,15 +43,15 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     private void AppendCrossApply (SubQuery subQuery)
     {
       _commandBuilder.Append (" CROSS APPLY (");
-      SqlGeneratorBase subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
+      ISqlGeneratorBase subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
       subQueryGenerator.BuildCommandString (subQuery.QueryModel);
       _commandBuilder.Append (") ");
       _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));
     }
 
-    protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
+    protected virtual ISqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInFrom);
+      return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInFrom);
     }
 
     private void AppendJoinPart (IEnumerable<SingleJoin> joins)
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void BuildLetPart (List<LetData> letData)
     {
       ArgumentUtility.CheckNotNull ("letData", letData);
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor ((CommandBuilder) _commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
       foreach (var evaluations in letData)
       {
         _commandBuilder.Append (" CROSS APPLY (SELECT ");

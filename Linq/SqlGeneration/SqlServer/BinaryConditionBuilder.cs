@@ -7,10 +7,10 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class BinaryConditionBuilder
   {
-    private readonly ICommandBuilder _commandBuilder;
+    private readonly CommandBuilder _commandBuilder;
     private readonly IDatabaseInfo _databaseInfo;
 
-    public BinaryConditionBuilder (ICommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public BinaryConditionBuilder (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("command", commandBuilder);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
@@ -66,9 +66,9 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder.Append (")");
     }
     
-    protected virtual SqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder)
+    protected virtual ISqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
     {
-      return new SqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInWhere);
+      return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInWhere);
     }
 
     private void AppendGeneralCondition (BinaryCondition binaryCondition)

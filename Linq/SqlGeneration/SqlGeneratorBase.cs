@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Collections;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
@@ -8,15 +6,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public abstract class SqlGeneratorBase
+  public abstract class SqlGeneratorBase<TContext> : ISqlGeneratorBase where TContext : ISqlGenerationContext
   {
-    public IDatabaseInfo DatabaseInfo { get; private set; }
-    public ParseContext ParseContext { get; private set; }
-
-    public abstract StringBuilder CommandText { get; }
-    public abstract List<CommandParameter> CommandParameters { get; }
-
-    public SqlGeneratorBase (IDatabaseInfo databaseInfo, ParseContext parseContext)
+    protected SqlGeneratorBase (IDatabaseInfo databaseInfo, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
 
@@ -24,18 +16,24 @@ namespace Remotion.Data.Linq.SqlGeneration
       ParseContext = parseContext;
     }
 
+    public IDatabaseInfo DatabaseInfo { get; private set; }
+    public ParseContext ParseContext { get; private set; }
+
+    protected abstract TContext CreateContext ();
+
     public virtual Tuple<string, CommandParameter[]> BuildCommandString (QueryModel queryModel)
     {
       SqlGenerationData sqlGenerationData = ProcessQuery (queryModel);
-      CreateSelectBuilder ().BuildSelectPart (sqlGenerationData.SelectEvaluations, sqlGenerationData.Distinct);
-      CreateFromBuilder ().BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
-      CreateFromBuilder ().BuildLetPart (sqlGenerationData.LetEvaluations);
-      CreateWhereBuilder ().BuildWherePart (sqlGenerationData.Criterion);
-      CreateOrderByBuilder ().BuildOrderByPart (sqlGenerationData.OrderingFields);
 
-      return new Tuple<string, CommandParameter[]> (CommandText.ToString(), CommandParameters.ToArray());
+      TContext context = CreateContext ();
+      CreateSelectBuilder (context).BuildSelectPart (sqlGenerationData.SelectEvaluations, sqlGenerationData.Distinct);
+      CreateFromBuilder (context).BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
+      CreateFromBuilder (context).BuildLetPart (sqlGenerationData.LetEvaluations);
+      CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);
+      CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData.OrderingFields);
+
+      return new Tuple<string, CommandParameter[]> (context.CommandText, context.CommandParameters);
     }
-
 
     protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
@@ -47,9 +45,9 @@ namespace Remotion.Data.Linq.SqlGeneration
       return visitor.SqlGenerationData;
     }
 
-    protected abstract IOrderByBuilder CreateOrderByBuilder ();
-    protected abstract IWhereBuilder CreateWhereBuilder ();
-    protected abstract IFromBuilder CreateFromBuilder ();
-    protected abstract ISelectBuilder CreateSelectBuilder ();
+    protected abstract IOrderByBuilder CreateOrderByBuilder (TContext context);
+    protected abstract IWhereBuilder CreateWhereBuilder (TContext context);
+    protected abstract IFromBuilder CreateFromBuilder (TContext context);
+    protected abstract ISelectBuilder CreateSelectBuilder (TContext context);
   }
 }

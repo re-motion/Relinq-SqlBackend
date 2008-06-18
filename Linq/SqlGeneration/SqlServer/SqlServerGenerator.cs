@@ -1,52 +1,44 @@
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.Linq.Parsing;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
-  public class SqlServerGenerator : SqlGeneratorBase
+  // If a fixedCommandBuilder is specified, the SqlServerGenerator can only be used to create one query from one thread. Otherwise, it is
+  // stateless and can be used for multiple queries from multiple threads.
+  public class SqlServerGenerator : SqlGeneratorBase<SqlServerGenerationContext>
   {
-    private readonly ICommandBuilder _commandBuilder;
-
     public SqlServerGenerator (IDatabaseInfo databaseInfo)
-        : this (databaseInfo, new CommandBuilder (new StringBuilder(), new List<CommandParameter>(),databaseInfo), ParseContext.TopLevelQuery)
+      : this (databaseInfo, Parsing.ParseContext.TopLevelQuery)
     {
     }
 
-    public SqlServerGenerator (IDatabaseInfo databaseInfo, ICommandBuilder commandBuilder, ParseContext parseContext)
+    protected SqlServerGenerator (IDatabaseInfo databaseInfo, ParseContext parseContext)
       : base (databaseInfo, parseContext)
     {
-      _commandBuilder = commandBuilder;
     }
 
-    public override StringBuilder CommandText
+    protected override SqlServerGenerationContext CreateContext ()
     {
-      get { return _commandBuilder.CommandText; }
+      return new SqlServerGenerationContext (DatabaseInfo);
     }
 
-    public override List<CommandParameter> CommandParameters
+    protected override IOrderByBuilder CreateOrderByBuilder (SqlServerGenerationContext context)
     {
-      get { return _commandBuilder.CommandParameters; }
+      return new OrderByBuilder (context.CommandBuilder);
     }
 
-    protected override IOrderByBuilder CreateOrderByBuilder ()
+    protected override IWhereBuilder CreateWhereBuilder (SqlServerGenerationContext context)
     {
-      return new OrderByBuilder (_commandBuilder);
+      return new WhereBuilder (context.CommandBuilder, DatabaseInfo);
     }
 
-    protected override IWhereBuilder CreateWhereBuilder ()
+    protected override IFromBuilder CreateFromBuilder (SqlServerGenerationContext context)
     {
-      return new WhereBuilder (_commandBuilder, DatabaseInfo);
+      return new FromBuilder (context.CommandBuilder, DatabaseInfo);
     }
 
-    protected override IFromBuilder CreateFromBuilder ()
+    protected override ISelectBuilder CreateSelectBuilder (SqlServerGenerationContext context)
     {
-      return new FromBuilder (_commandBuilder, DatabaseInfo);
-    }
-
-    protected override ISelectBuilder CreateSelectBuilder ()
-    {
-      return new SelectBuilder (_commandBuilder);
+      return new SelectBuilder (context.CommandBuilder);
     }
   }
 }

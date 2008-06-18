@@ -6,7 +6,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
-  public class CommandBuilder : ICommandBuilder
+  public class CommandBuilder
   {
     public CommandBuilder (StringBuilder commandText, List<CommandParameter> commandParameters, IDatabaseInfo databaseInfo)
     {
@@ -42,13 +42,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo);
       evaluation.Accept (visitor);
-      
-      //if (evaluation.GetType() == typeof(Column))
-      //  CommandText.Append(SqlServerUtility.GetColumnString ((Column) evaluation));
-      //else
-      //{
-      //  throw new NotSupportedException("The Evaluation of type '" + evaluation.GetType().Name + "' is not supported.");
-      //}
     }
 
     public void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction)

@@ -67,24 +67,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
       LastCall.Do ((Proc<List<Column>,bool>) delegate
       {
-        generator.CommandText.Append ("Select");
+        generator.Context.CommandText.Append ("Select");
       });
 
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       LastCall.Do ((Proc<List<IColumnSource>, JoinCollection>) delegate
       {
-        generator.CommandText.Append ("From");
+        generator.Context.CommandText.Append ("From");
       });
 
       var parameter = new CommandParameter("fritz", "foo");
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
-      LastCall.Do ((Proc<ICriterion>) delegate { generator.CommandText.Append ("Where");
-                                                 generator.CommandParameters.Add (parameter); });
+      LastCall.Do ((Proc<ICriterion>) delegate
+      {
+        generator.Context.CommandText.Append ("Where");
+        generator.Context.CommandParameters.Add (parameter);
+      });
 
       _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
       LastCall.Do ((Proc<List<OrderingField>>) delegate
       {
-        generator.CommandText.Append ("OrderBy");
+        generator.Context.CommandText.Append ("OrderBy");
       });
 
       _mockRepository.ReplayAll ();

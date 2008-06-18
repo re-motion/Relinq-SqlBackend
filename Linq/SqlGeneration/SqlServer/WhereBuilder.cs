@@ -6,11 +6,11 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class WhereBuilder : IWhereBuilder
   {
-    private readonly ICommandBuilder _commandBuilder;
+    private readonly CommandBuilder _commandBuilder;
     private readonly IDatabaseInfo _databaseInfo;
     private readonly BinaryConditionBuilder _builder;
 
-    public WhereBuilder (ICommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public WhereBuilder (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);

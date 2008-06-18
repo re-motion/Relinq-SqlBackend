@@ -7,9 +7,9 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class SelectBuilder : ISelectBuilder
   {
-    private readonly ICommandBuilder _commandBuilder;
+    private readonly CommandBuilder _commandBuilder;
 
-    public SelectBuilder (ICommandBuilder commandBuilder)
+    public SelectBuilder (CommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;

@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       commandBuilder.AddParameter (1);
 
       FromBuilder fromBuilderMock = mockRepository.CreateMock<FromBuilder> (commandBuilder, StubDatabaseInfo.Instance);
-      SqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<SqlGeneratorBase> (StubDatabaseInfo.Instance, ParseContext.SubQueryInFrom);
+      ISqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<ISqlGeneratorBase> ();
 
       Expect.Call (PrivateInvoke.InvokeNonPublicMethod (fromBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
           commandBuilder)).Return (subQueryGeneratorMock);
@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), "sub_alias");
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
-      SqlGeneratorBase subQueryGenerator = (SqlGeneratorBase) PrivateInvoke.InvokeNonPublicMethod (fromBuilder, "CreateSqlGeneratorForSubQuery", 
+      InlineSqlServerGenerator subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (fromBuilder, "CreateSqlGeneratorForSubQuery", 
           subQuery, StubDatabaseInfo.Instance, commandBuilder);
       //Assert.AreSame (subQuery.QueryModel, subQueryGenerator.QueryModel);
       Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
