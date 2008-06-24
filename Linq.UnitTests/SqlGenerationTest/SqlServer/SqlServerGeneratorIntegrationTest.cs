@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The query does not select any fields from the data source.")]
     public void SimpleQuery_WithNonDBFieldProjection ()
     {
@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void MultiFromQueryWithProjection ()
     {
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
@@ -312,7 +312,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void SelectJoin()
     {
       // from sdd in source 
@@ -563,7 +563,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void QueryWithMultiLet_Where ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();

@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void BuildCommandString_CallsPartBuilders()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void BuildCommandString_ReturnsCommandAndParameters ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void ProcessQuery_PassesQueryToVisitor()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void ProcessQuery_WithDifferentParseContext ()
     {
       var query = ExpressionHelper.CreateQueryModel ();

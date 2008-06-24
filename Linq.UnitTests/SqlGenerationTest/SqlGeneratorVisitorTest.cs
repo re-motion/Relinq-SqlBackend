@@ -107,7 +107,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
     
     [Test]
-    [Ignore]
     public void VisitSelectClause_DistinctFalse ()
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());

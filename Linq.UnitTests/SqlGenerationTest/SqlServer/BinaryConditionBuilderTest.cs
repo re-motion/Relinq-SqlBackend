@@ -168,7 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
+    //[Ignore]
     public void BuildBinaryConditionPart_ContainsCondition ()
     {
       MockRepository mockRepository = new MockRepository ();
@@ -184,7 +184,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Expect.Call (PrivateInvoke.InvokeNonPublicMethod (binaryConditionBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
           commandBuilder)).Return (subQueryGeneratorMock);
-      Expect.Call (subQueryGeneratorMock.BuildCommandString (subQuery.QueryModel)).Do ((Func<Tuple<string, CommandParameter[]>>) delegate
+      Expect.Call (subQueryGeneratorMock.BuildCommandString (subQuery.QueryModel)).Do ((Func<QueryModel, Tuple<string, CommandParameter[]>>) delegate
       {
         commandBuilder.Append ("x");
         commandBuilder.AddParameter (0);

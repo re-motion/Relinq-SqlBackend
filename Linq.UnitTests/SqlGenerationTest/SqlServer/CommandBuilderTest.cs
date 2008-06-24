@@ -52,11 +52,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore]
     public void AppendEvaluation_BinaryEvaluationAdd ()
     {
-      _commandText = new StringBuilder ();
-      _commandText.Append ("SELECT ");
       Column c1 = new Column (new Table ("s1", "s1"), "c1");
       Column c2 = new Column (new Table ("s2", "s2"), "c2");
 
@@ -64,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       _commandBuilder.AppendEvaluation (binaryEvaluation);
 
-      Assert.AreEqual ("SELECT ([s1].[c1]+[s2].[c2])" ,_commandBuilder.GetCommandText ());
+      Assert.AreEqual ("WHERE ([s1].[c1] + [s2].[c2])" ,_commandBuilder.GetCommandText ());
 
     }
 
