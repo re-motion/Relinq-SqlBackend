@@ -29,13 +29,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The query does not select any fields from the data source.")]
-    public void SimpleQuery_WithNonDBFieldProjection ()
+    public void SimpleQuery_WithNullProjection ()
     {
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQueryWithNonDBProjection (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      new SqlServerGenerator (StubDatabaseInfo.Instance).BuildCommandString (parsedQuery);
+      Tuple<string, CommandParameter[]> result = new SqlServerGenerator (StubDatabaseInfo.Instance).BuildCommandString (parsedQuery);
+      Assert.That (result.A, Is.EqualTo ("SELECT NULL FROM [studentTable] [s]"));
     }
 
     [Test]
@@ -51,7 +50,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
+    [ExpectedException (typeof (SqlGenerationException),
+      ExpectedMessage = "The method Remotion.Collections.Tuple.NewTuple is not supported by the SQL Server code generator.")]
     public void MultiFromQueryWithProjection ()
     {
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
@@ -312,7 +312,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void SelectJoin()
     {
       // from sdd in source 
@@ -518,7 +517,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString (parsedQuery);
-      Assert.AreEqual ("SELECT [x].* FROM [studentTable] [s] CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn])) [x]", result.A);    
+      Assert.AreEqual ("SELECT [x].[x] FROM [studentTable] [s] CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn]) [x]) [x]", result.A);    
     }
 
     [Test]
@@ -545,8 +544,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString (parsedQuery);
 
-      Assert.AreEqual ("SELECT [x].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = "+
-        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].[FirstColumn]) [x]", result.A);
+      Assert.AreEqual ("SELECT [x].[x] FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = "+
+        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].[FirstColumn] [x]) [x]", result.A);
     }
 
     [Test]
@@ -563,17 +562,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void QueryWithMultiLet_Where ()
     {
+      // from s in source let x = s.First let y = s.ID where y > 1 select x
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
       IQueryable<string> query = LetTestQueryGenerator.CreateMultiLet_WithWhere (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString (parsedQuery);
-      const string sql = "SELECT [x].* FROM [studentTable] [s] CROSS APPLY (SELECT [s].[FirstColumn]) [x] "+ 
-        "CROSS APPLY (SELECT [s].[IDColumn]) [y] WHERE ([y] > @1)";
+      const string sql = "SELECT [x].[x] FROM [studentTable] [s] CROSS APPLY (SELECT [s].[FirstColumn] [x]) [x] "+ 
+        "CROSS APPLY (SELECT [s].[IDColumn] [y]) [y] WHERE ([y].[y] > @1)";
       Assert.AreEqual (sql, result.A);
     }
   }

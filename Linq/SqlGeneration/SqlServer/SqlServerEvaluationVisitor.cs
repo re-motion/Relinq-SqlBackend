@@ -6,12 +6,11 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class SqlServerEvaluationVisitor : IEvaluationVisitor
   {
-
     public SqlServerEvaluationVisitor (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      
+
       CommandBuilder = commandBuilder;
       DatabaseInfo = databaseInfo;
     }
@@ -45,7 +44,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       }
       binaryEvaluation.Right.Accept (this);
       CommandBuilder.Append (")");
-
     }
 
     public void VisitComplexCriterion (ComplexCriterion complexCriterion)
@@ -62,8 +60,8 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
           CommandBuilder.Append (" OR ");
           break;
       }
-      complexCriterion.Right.Accept(this);
-      CommandBuilder.Append(")");
+      complexCriterion.Right.Accept (this);
+      CommandBuilder.Append (")");
     }
 
     public void VisitNotCriterion (NotCriterion notCriterion)
@@ -73,7 +71,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       notCriterion.NegatedCriterion.Accept (this);
     }
 
-   public void VisitConstant (Constant constant)
+    public void VisitConstant (Constant constant)
     {
       ArgumentUtility.CheckNotNull ("constant", constant);
       if (constant.Value == null)
@@ -84,7 +82,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         CommandBuilder.Append ("(1<>1)");
       else
       {
-        CommandBuilder commandBuilder = new CommandBuilder (CommandBuilder.CommandText,CommandBuilder.CommandParameters, DatabaseInfo);
+        CommandBuilder commandBuilder = new CommandBuilder (CommandBuilder.CommandText, CommandBuilder.CommandParameters, DatabaseInfo);
         CommandParameter parameter = commandBuilder.AddParameter (constant.Value);
         CommandBuilder.CommandText.Append (parameter.Name);
       }
@@ -105,7 +103,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void VisitSubQuery (SubQuery subQuery)
     {
       CommandBuilder.Append ("((");
-      new InlineSqlServerGenerator (DatabaseInfo,CommandBuilder,ParseContext.SubQueryInSelect).BuildCommandString(subQuery.QueryModel);
+      new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, ParseContext.SubQueryInSelect).BuildCommandString (subQuery.QueryModel);
       CommandBuilder.Append (") ");
       CommandBuilder.Append (subQuery.Alias);
       CommandBuilder.Append (")");
@@ -120,19 +118,27 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
           methodCallEvaluation.EvaluationParameter.Accept (this);
           CommandBuilder.Append (")");
           break;
+
         case "Remove":
           CommandBuilder.Append ("STUFF(");
           methodCallEvaluation.EvaluationParameter.Accept (this);
           CommandBuilder.Append (",");
+
           foreach (var argument in methodCallEvaluation.EvaluationArguments)
-          {
-            argument.Accept(this);
-          }
+            argument.Accept (this);
+
           CommandBuilder.Append (",CONVERT(Int,DATALENGTH(");
           methodCallEvaluation.EvaluationParameter.Accept (this);
-          CommandBuilder.Append(") / 2), \"");
+          CommandBuilder.Append (") / 2), \"");
           CommandBuilder.Append (")");
           break;
+
+        default:
+          string message = string.Format (
+              "The method {0}.{1} is not supported by the SQL Server code generator.",
+              methodCallEvaluation.EvaluationMethodInfo.DeclaringType.FullName,
+              methodCallEvaluation.EvaluationMethodInfo.Name);
+          throw new SqlGenerationException (message);
       }
     }
   }

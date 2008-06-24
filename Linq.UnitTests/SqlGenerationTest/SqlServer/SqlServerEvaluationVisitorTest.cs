@@ -257,6 +257,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual(5,_commandBuilder.GetCommandParameters ()[1].Value);
     }
 
+    [Test]
+    [ExpectedException (typeof (SqlGenerationException), 
+        ExpectedMessage = "The method System.DateTime.get_Now is not supported by the SQL Server code generator.")]
+    public void VisitUnknownMethodCall ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      MethodInfo methodInfo = typeof (DateTime).GetMethod ("get_Now");
+      MethodCallEvaluation methodCallEvaluation = new MethodCallEvaluation (methodInfo, null, new List<IEvaluation>());
+
+      visitor.VisitMethodCallEvaluation (methodCallEvaluation);
+    }
+
     private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);

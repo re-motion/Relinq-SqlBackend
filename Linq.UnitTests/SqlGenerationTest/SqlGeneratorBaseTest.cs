@@ -28,23 +28,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _fromBuilder = _mockRepository.CreateMock<IFromBuilder> ();
       _whereBuilder = _mockRepository.CreateMock<IWhereBuilder> ();
       _orderByBuilder = _mockRepository.CreateMock<IOrderByBuilder> ();
+      
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void BuildCommandString_CallsPartBuilders()
     {
       var query = ExpressionHelper.CreateQueryModel ();
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
       
       // Expect
-      //_selectBuilder.BuildSelectPart (generator.Visitor.SelectEvaluations,false);
-      //_fromBuilder.BuildFromPart (generator.Visitor.FromSources, generator.Visitor.Joins);
-      //_whereBuilder.BuildWherePart (generator.Visitor.Criterion);
-      //_orderByBuilder.BuildOrderByPart (generator.Visitor.OrderingFields);
-
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
@@ -57,7 +53,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void BuildCommandString_ReturnsCommandAndParameters ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -65,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
-      LastCall.Do ((Proc<List<Column>,bool>) delegate
+      LastCall.Do ((Proc<List<IEvaluation>,bool>) delegate
       {
         generator.Context.CommandText.Append ("Select");
       });
@@ -75,6 +70,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       {
         generator.Context.CommandText.Append ("From");
       });
+
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
+      LastCall.Do ((Proc<List<LetData>>) delegate
+      {
+         generator.Context.CommandText.Append ("Let");
+       });
 
       var parameter = new CommandParameter("fritz", "foo");
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
@@ -93,14 +94,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _mockRepository.ReplayAll ();
 
       Tuple<string, CommandParameter[]> result = generator.BuildCommandString (query);
-      Assert.AreEqual ("SelectFromWhereOrderBy", result.A);
+      Assert.AreEqual ("SelectFromLetWhereOrderBy", result.A);
       Assert.That (result.B, Is.EqualTo (new object[] {parameter}));
 
       _mockRepository.VerifyAll ();
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void ProcessQuery_PassesQueryToVisitor()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -109,6 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
@@ -119,7 +120,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     }
 
     [Test]
-    [Ignore ("TODO: Adapt to new Select projection parsing")]
     public void ProcessQuery_WithDifferentParseContext ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
@@ -128,6 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
       _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
 
