@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _orderByBuilder = orderByBuilder;
 
       JoinedTableContext joinedTableContext = new JoinedTableContext();
-      DetailParser detailParser = new DetailParser (query, databaseInfo, joinedTableContext, parseMode);
+      DetailParser detailParser = new DetailParser (databaseInfo, parseMode);
       Visitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParser, new ParseContext (query, query.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext));
       query.Accept (Visitor);
       joinedTableContext.CreateAliases();

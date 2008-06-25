@@ -16,10 +16,12 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       DatabaseInfo = databaseInfo;
       ParseMode = parseMode;
+      DetailParser = new DetailParser (DatabaseInfo, ParseMode);
     }
 
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public ParseMode ParseMode { get; private set; }
+    public DetailParser DetailParser { get; private set; }
 
     protected abstract TContext CreateContext ();
 
@@ -41,8 +43,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       JoinedTableContext joinedTableContext = new JoinedTableContext();
       ParseContext parseContext = new ParseContext (queryModel, queryModel.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext);
-      DetailParser detailParser = new DetailParser (queryModel, DatabaseInfo, joinedTableContext, ParseMode);
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, detailParser, parseContext);
+      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParser, parseContext);
       queryModel.Accept (visitor);
       joinedTableContext.CreateAliases();
       return visitor.SqlGenerationData;
