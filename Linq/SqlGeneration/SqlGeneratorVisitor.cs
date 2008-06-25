@@ -93,8 +93,8 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
       ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
-      var fieldParser = new OrderingFieldParser (_parseContext.QueryModel, orderingClause, _databaseInfo, _parseContext.JoinedTableContext);
-      OrderingField orderingField = fieldParser.GetField();
+      var fieldParser = new OrderingFieldParser (_databaseInfo);
+      OrderingField orderingField = fieldParser.Parse(orderingClause.Expression.Body, _parseContext, orderingClause.OrderDirection);
 
       SqlGenerationData.AddOrderingFields(orderingField);
     }
