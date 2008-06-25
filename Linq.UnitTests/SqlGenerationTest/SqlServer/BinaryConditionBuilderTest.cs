@@ -210,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       InlineSqlServerGenerator subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (conditionBuilder, "CreateSqlGeneratorForSubQuery",
           subQuery, StubDatabaseInfo.Instance, commandBuilder);
       Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
-      Assert.AreEqual (ParseContext.SubQueryInWhere, subQueryGenerator.ParseContext);
+      Assert.AreEqual (ParseMode.SubQueryInWhere, subQueryGenerator.ParseMode);
     }
 
     [Test]

@@ -11,8 +11,8 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
   {
     private readonly CommandBuilder _fixedCommandBuilder;
 
-    public InlineSqlServerGenerator (IDatabaseInfo databaseInfo, CommandBuilder fixedCommandBuilder, ParseContext parseContext)
-      : base (databaseInfo, parseContext)
+    public InlineSqlServerGenerator (IDatabaseInfo databaseInfo, CommandBuilder fixedCommandBuilder, ParseMode parseMode)
+      : base (databaseInfo, parseMode)
     {
       ArgumentUtility.CheckNotNull ("fixedCommandBuilder", fixedCommandBuilder);
       _fixedCommandBuilder = fixedCommandBuilder;

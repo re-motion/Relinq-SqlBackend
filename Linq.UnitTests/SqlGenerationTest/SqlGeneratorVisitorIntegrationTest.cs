@@ -20,13 +20,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
   public class SqlGeneratorVisitorIntegrationTest
   {
     private JoinedTableContext _context;
-    private ParseContext _parseContext;
+    private ParseMode _parseMode;
 
     [SetUp]
     public void SetUp ()
     {
       _context = new JoinedTableContext ();
-      _parseContext = new ParseContext ();
+      _parseMode = new ParseMode ();
     }
 
     [Test]
@@ -37,9 +37,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
-      
-      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context, _parseContext);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery,detailParser);
+      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context, _parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParser, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
@@ -72,8 +71,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
 
-      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseContext);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery,detailParser);
+      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParser, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -112,8 +111,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
 
-      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseContext);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery,detailParser);
+      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParser, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -149,8 +148,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy.OrderingList.Last ();
 
-      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseContext);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery,detailParser);
+      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParser, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -192,8 +191,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       OrderingClause orderingClause1 = orderBy1.OrderingList.First ();
       OrderingClause orderingClause2 = orderBy2.OrderingList.First ();
 
-      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseContext);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (parsedQuery, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery, detailParser);
+      DetailParser detailParser = new DetailParser (parsedQuery, StubDatabaseInfo.Instance, _context,_parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, detailParser, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
 
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause1);
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause2);
@@ -231,8 +230,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       var query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       QueryModel subQueryModel = ((SubQueryFromClause)parsedQuery.BodyClauses[0]).SubQueryModel;
-      DetailParser detailParser = new DetailParser (subQueryModel, StubDatabaseInfo.Instance, _context,_parseContext);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (subQueryModel, StubDatabaseInfo.Instance, _context, ParseContext.TopLevelQuery, detailParser);
+      DetailParser detailParser = new DetailParser (subQueryModel, StubDatabaseInfo.Instance, _context,_parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, detailParser, new ParseContext (subQueryModel, subQueryModel.GetExpressionTree (), new List<FieldDescriptor> (), _context));
       sqlGeneratorVisitor.VisitQueryModel (subQueryModel);
     }
 

@@ -14,28 +14,21 @@ namespace Remotion.Data.Linq.SqlGeneration
   public class SqlGeneratorVisitor : IQueryVisitor
   {
     private readonly IDatabaseInfo _databaseInfo;
-    private readonly JoinedTableContext _context;
-    private readonly QueryModel _queryModel;
     private readonly DetailParser _detailParser;
-    private readonly List<FieldDescriptor> _fieldDescriptor;
+    private readonly ParseContext _parseContext;
     
-    public SqlGeneratorVisitor (QueryModel queryModel, IDatabaseInfo databaseInfo, JoinedTableContext context, ParseContext parseContext, DetailParser detailParser)
+    public SqlGeneratorVisitor (IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParser detailParser, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
+      ArgumentUtility.CheckNotNull ("parseContext", parseMode);
       ArgumentUtility.CheckNotNull ("detailParser", detailParser);
+      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
       
-
       _databaseInfo = databaseInfo;
-      _context = context;
-      _queryModel = queryModel;
       _detailParser = detailParser;
-      //ParseContext = parseContext;
-      _fieldDescriptor = new List<FieldDescriptor> ();
+      _parseContext = parseContext;
 
-      SqlGenerationData = new SqlGenerationData {ParseContext = parseContext};
+      SqlGenerationData = new SqlGenerationData {ParseMode = parseMode};
     }
 
     public SqlGenerationData SqlGenerationData { get; private set; }
@@ -85,10 +78,9 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
       LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression ();
-      ICriterion criterion = _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _fieldDescriptor);
+      ICriterion criterion = _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext.FieldDescriptors);
 
-      Tuple<List<FieldDescriptor>, ICriterion> criterions = new Tuple<List<FieldDescriptor>, ICriterion> (_fieldDescriptor, criterion);
-      SqlGenerationData.AddWhereClause (criterions);
+      SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
     }
 
     public void VisitOrderByClause (OrderByClause orderByClause)
@@ -101,7 +93,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitOrderingClause (OrderingClause orderingClause)
     {
       ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
-      var fieldParser = new OrderingFieldParser (_queryModel, orderingClause, _databaseInfo, _context);
+      var fieldParser = new OrderingFieldParser (_parseContext.QueryModel, orderingClause, _databaseInfo, _parseContext.JoinedTableContext);
       OrderingField orderingField = fieldParser.GetField();
 
       SqlGenerationData.AddOrderingFields(orderingField);
@@ -110,13 +102,13 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _queryModel.MainFromClause.Identifier;
+      Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
       
       List<IEvaluation> listEvaluations = 
-        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _fieldDescriptor);
+        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext.FieldDescriptors);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations =
-        new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_fieldDescriptor, listEvaluations);
+        new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_parseContext.FieldDescriptors, listEvaluations);
       
       SqlGenerationData.AddSelectClause (selectClause, evaluations);
     }
@@ -127,13 +119,12 @@ namespace Remotion.Data.Linq.SqlGeneration
       Expression projectionBody = letClause.Expression;
       
       List<IEvaluation> listEvaluations =
-        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _fieldDescriptor);
+        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext.FieldDescriptors);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations =
-        new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_fieldDescriptor, listEvaluations);
+        new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_parseContext.FieldDescriptors, listEvaluations);
 
       LetData letData = new LetData(evaluations.B, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
-
       SqlGenerationData.AddLetClauses (letData, evaluations);
     }
 

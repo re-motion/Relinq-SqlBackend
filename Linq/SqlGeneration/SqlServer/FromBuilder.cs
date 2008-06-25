@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     protected virtual ISqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
     {
-      return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseContext.SubQueryInFrom);
+      return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseMode.SubQueryInFrom);
     }
 
     private void AppendJoinPart (IEnumerable<SingleJoin> joins)

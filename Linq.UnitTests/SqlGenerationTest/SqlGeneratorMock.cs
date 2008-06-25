@@ -20,8 +20,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     private readonly ISelectBuilder _selectBuilder;
 
     public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
-        ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder, ParseContext parseContext)
-        : base (databaseInfo, parseContext)
+        ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder, ParseMode parseMode)
+        : base (databaseInfo, parseMode)
     {
       _selectBuilder = selectBuilder;
       _fromBuilder = fromBuilder;
@@ -29,8 +29,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _orderByBuilder = orderByBuilder;
 
       JoinedTableContext joinedTableContext = new JoinedTableContext();
-      DetailParser detailParser = new DetailParser (query, databaseInfo, joinedTableContext, parseContext);
-      Visitor = new SqlGeneratorVisitor (query, databaseInfo, joinedTableContext, parseContext, detailParser);
+      DetailParser detailParser = new DetailParser (query, databaseInfo, joinedTableContext, parseMode);
+      Visitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParser, new ParseContext (query, query.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext));
       query.Accept (Visitor);
       joinedTableContext.CreateAliases();
     }
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
         SqlGenerationData sqlGenerationData = base.ProcessQuery(queryModel);
         //SqlGeneratorVisitor visitor2 = base.ProcessQuery();
 
-        Assert.AreEqual (ParseContext, sqlGenerationData.ParseContext);
+        Assert.AreEqual (ParseMode, sqlGenerationData.ParseMode);
 
         Assert.That (sqlGenerationData.SelectEvaluations, Is.EqualTo (Visitor.SqlGenerationData.SelectEvaluations));
         Assert.That (sqlGenerationData.Criterion, Is.EqualTo (Visitor.SqlGenerationData.Criterion));

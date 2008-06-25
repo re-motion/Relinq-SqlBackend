@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
     public List<LetData> LetEvaluations { get; private set; }
-    public ParseContext ParseContext { get; set; }
+    public ParseMode ParseMode { get; set; }
     
     public void AddSelectClause (SelectClause selectClause, Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations)
     {
@@ -50,14 +50,14 @@ namespace Remotion.Data.Linq.SqlGeneration
       FromSources.Add (columnSource);
     }
 
-    public void AddWhereClause (Tuple<List<FieldDescriptor>, ICriterion> criterions)
+    public void AddWhereClause (ICriterion criterion, List<FieldDescriptor> fieldDescriptors)
     {
       if (Criterion == null)
-        Criterion = criterions.B;
+        Criterion = criterion;
       else
-        Criterion = new ComplexCriterion (Criterion, criterions.B, ComplexCriterion.JunctionKind.And);
+        Criterion = new ComplexCriterion (Criterion, criterion, ComplexCriterion.JunctionKind.And);
 
-      foreach (var fieldDescriptor in criterions.A)
+      foreach (var fieldDescriptor in fieldDescriptors)
         Joins.AddPath (fieldDescriptor.SourcePath);
     }
 

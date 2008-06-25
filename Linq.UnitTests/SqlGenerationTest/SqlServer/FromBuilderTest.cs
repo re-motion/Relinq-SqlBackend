@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
           subQuery, StubDatabaseInfo.Instance, commandBuilder);
       //Assert.AreSame (subQuery.QueryModel, subQueryGenerator.QueryModel);
       Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
-      Assert.AreEqual (ParseContext.SubQueryInFrom, subQueryGenerator.ParseContext);
+      Assert.AreEqual (ParseMode.SubQueryInFrom, subQueryGenerator.ParseMode);
     }
 
     [Test]

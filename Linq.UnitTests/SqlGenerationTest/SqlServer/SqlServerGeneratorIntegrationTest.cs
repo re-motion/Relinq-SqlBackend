@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void DefaultParseContext ()
     {
       SqlServerGenerator generator = new SqlServerGenerator (StubDatabaseInfo.Instance);
-      Assert.AreEqual (ParseContext.TopLevelQuery, generator.ParseContext);
+      Assert.AreEqual (ParseMode.TopLevelQuery, generator.ParseMode);
     }
 
     [Test]

@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     public void BuildCommandString_CallsPartBuilders()
     {
       var query = ExpressionHelper.CreateQueryModel ();
-      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
+      SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
       
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     public void BuildCommandString_ReturnsCommandAndParameters ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
-      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     public void ProcessQuery_PassesQueryToVisitor()
     {
       var query = ExpressionHelper.CreateQueryModel ();
-      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     public void ProcessQuery_WithDifferentParseContext ()
     {
       var query = ExpressionHelper.CreateQueryModel ();
-      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.SubQueryInWhere);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.SubQueryInWhere);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail();
       QueryModel query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
-      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
       // Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, false);
@@ -163,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
-      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseContext.TopLevelQuery);
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
       //Expect
       _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, true);

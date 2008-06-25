@@ -7,12 +7,12 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
   public class SqlServerGenerator : SqlGeneratorBase<SqlServerGenerationContext>
   {
     public SqlServerGenerator (IDatabaseInfo databaseInfo)
-      : this (databaseInfo, Parsing.ParseContext.TopLevelQuery)
+      : this (databaseInfo, Parsing.ParseMode.TopLevelQuery)
     {
     }
 
-    protected SqlServerGenerator (IDatabaseInfo databaseInfo, ParseContext parseContext)
-      : base (databaseInfo, parseContext)
+    protected SqlServerGenerator (IDatabaseInfo databaseInfo, ParseMode parseMode)
+      : base (databaseInfo, parseMode)
     {
     }
 
