@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
       LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression ();
-      ICriterion criterion = _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext.FieldDescriptors);
+      ICriterion criterion = _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext);
 
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
     }
@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
       
       List<IEvaluation> listEvaluations = 
-        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext.FieldDescriptors);
+        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations =
         new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_parseContext.FieldDescriptors, listEvaluations);
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       Expression projectionBody = letClause.Expression;
       
       List<IEvaluation> listEvaluations =
-        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext.FieldDescriptors);
+        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
 
       Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations =
         new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_parseContext.FieldDescriptors, listEvaluations);
