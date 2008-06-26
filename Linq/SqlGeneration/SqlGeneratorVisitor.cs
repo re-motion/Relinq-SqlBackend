@@ -16,6 +16,8 @@ namespace Remotion.Data.Linq.SqlGeneration
     private readonly IDatabaseInfo _databaseInfo;
     private readonly DetailParser _detailParser;
     private readonly ParseContext _parseContext;
+
+    private bool _secondOrderByClause;
     
     public SqlGeneratorVisitor (IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParser detailParser, ParseContext parseContext)
     {
@@ -27,6 +29,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       _databaseInfo = databaseInfo;
       _detailParser = detailParser;
       _parseContext = parseContext;
+
+      _secondOrderByClause = false;
 
       SqlGenerationData = new SqlGenerationData {ParseMode = parseMode};
     }
@@ -86,8 +90,14 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitOrderByClause (OrderByClause orderByClause)
     {
       ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
-      foreach (OrderingClause clause in orderByClause.OrderingList)
+      
+      for (int i = 0; i < orderByClause.OrderingList.Count; i++)
+      {
+        OrderingClause clause = orderByClause.OrderingList[i];
         clause.Accept (this);
+        if (i == (orderByClause.OrderingList.Count-1))
+          _secondOrderByClause = true;
+      }
     }
 
     public void VisitOrderingClause (OrderingClause orderingClause)
@@ -96,7 +106,10 @@ namespace Remotion.Data.Linq.SqlGeneration
       var fieldParser = new OrderingFieldParser (_databaseInfo);
       OrderingField orderingField = fieldParser.Parse(orderingClause.Expression.Body, _parseContext, orderingClause.OrderDirection);
 
-      SqlGenerationData.AddOrderingFields(orderingField);
+      if (!_secondOrderByClause)
+        SqlGenerationData.AddOrderingFields (orderingField);
+      else
+        SqlGenerationData.AddFirstOrderingFields (orderingField);
     }
 
     public void VisitSelectClause (SelectClause selectClause)

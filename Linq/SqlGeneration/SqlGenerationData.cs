@@ -66,5 +66,18 @@ namespace Remotion.Data.Linq.SqlGeneration
       OrderingFields.Add (orderingField);
       Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
     }
+
+    public void AddFirstOrderingFields (OrderingField orderingField)
+    {
+      List<OrderingField> newOrderingFields = new List<OrderingField> ();
+      newOrderingFields.Add (orderingField);
+      foreach (OrderingField field in OrderingFields)
+      {
+        newOrderingFields.Add (field);
+      }
+      OrderingFields.Clear();
+      OrderingFields.AddRange (newOrderingFields);
+      Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
+    }
   }
 }

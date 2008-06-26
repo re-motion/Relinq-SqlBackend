@@ -225,8 +225,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString (parsedQuery);
-      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[FirstColumn] ASC, [s1].[LastColumn] DESC",
+      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[LastColumn] DESC, [s1].[FirstColumn] ASC",
           result.A);
+    }
+
+    [Test]
+    public void MultipleOrderBys ()
+    {
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateOrderByQueryWithMultipleOrderBys (_source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
+      Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString (parsedQuery);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] ORDER BY [s].[LastColumn] ASC, "+
+        "[s].[FirstColumn] ASC, [s].[LastColumn] DESC, [s].[ScoresColumn] ASC", result.A);
     }
 
     [Test]
@@ -305,7 +316,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
           + "[detailDetailTable] [sdd] "
           + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
           + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
-          + "ORDER BY [j1].[FirstColumn] ASC, [j0].[IDColumn] ASC";
+          + "ORDER BY [j0].[IDColumn] ASC, [j1].[FirstColumn] ASC";
 
       Tuple<string, CommandParameter[]> result = sqlGenerator.BuildCommandString (parsedQuery);
       Assert.AreEqual (expectedString, result.A);

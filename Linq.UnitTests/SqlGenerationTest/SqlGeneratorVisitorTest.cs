@@ -320,7 +320,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
                 new OrderingField (fieldDescriptor2, OrderDirection.Asc),
               }));
     }
-
+    
     [Test]
     public void VisitWhereClause_WithJoins ()
     {
