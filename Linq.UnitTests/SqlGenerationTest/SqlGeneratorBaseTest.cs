@@ -177,5 +177,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       generator.CheckBaseProcessQueryMethod = true;
       generator.BuildCommand (query);
     }
+
+    [Test]
+    public void ProcessQuery_ReturnsSqlGenerationData ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
+      var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
+
+      //Expect
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluations, true);
+      _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
+      _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
+      _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
+      _orderByBuilder.BuildOrderByPart (generator.Visitor.SqlGenerationData.OrderingFields);
+
+      _mockRepository.ReplayAll ();
+
+      generator.CheckBaseProcessQueryMethod = true;
+      CommandData command = generator.BuildCommand (query);
+      Assert.That (command.SqlGenerationData, Is.Not.Null);
+      Assert.That (command.SqlGenerationData, Is.SameAs (generator.Visitor.SqlGenerationData));
+    }
   }
 }

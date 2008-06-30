@@ -157,7 +157,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Implement SQL generation for NewObject")]
     public void BuildLetPart_SeveralEvaluations ()
     {
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);

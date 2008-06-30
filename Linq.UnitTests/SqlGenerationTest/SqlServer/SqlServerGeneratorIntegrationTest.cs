@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
+using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -45,6 +46,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       CommandData result = sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.Statement);
+      Assert.That (result.SqlGenerationData, Is.Not.Null);
+      Assert.That (result.SqlGenerationData.SelectEvaluations[0], Is.InstanceOfType (typeof (Column)));
 
       Assert.IsEmpty (result.Parameters);
     }
@@ -323,7 +326,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Implement SQL generation for NewObject")]
     public void SelectJoin()
     {
       // from sdd in source 
@@ -345,7 +347,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       CommandData result = sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
     }
-
+    
     [Test]
     public void SelectJoin_WithRelationMember()
     {
@@ -586,6 +588,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       const string sql = "SELECT [x].[x] FROM [studentTable] [s] CROSS APPLY (SELECT [s].[FirstColumn] [x]) [x] "+ 
         "CROSS APPLY (SELECT [s].[IDColumn] [y]) [y] WHERE ([y].[y] > @1)";
       Assert.AreEqual (sql, result.Statement);
+    }
+
+    [Test]
+    public void QueryWithNewExpression ()
+    {
+      IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (_source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      CommandData result = new SqlServerGenerator (StubDatabaseInfo.Instance).BuildCommand (parsedQuery);
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstColumn], [s].[LastColumn] FROM [studentTable] [s]"));
+      Assert.That (result.SqlGenerationData.SelectEvaluations[0], Is.InstanceOfType (typeof (NewObject)));
     }
   }
 }

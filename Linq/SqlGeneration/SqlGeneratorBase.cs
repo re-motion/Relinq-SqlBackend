@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);
       CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData.OrderingFields);
 
-      return new CommandData (context.CommandText, context.CommandParameters, null);
+      return new CommandData (context.CommandText, context.CommandParameters, sqlGenerationData);
     }
 
     protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)

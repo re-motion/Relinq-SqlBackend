@@ -144,7 +144,14 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     public void VisitNewObjectEvaluation (NewObject newObject)
     {
-      throw new System.NotImplementedException();
+      bool first = true;
+      foreach (var argument in newObject.ConstructorArguments)
+      {
+        if (!first)
+          CommandBuilder.Append (", ");
+        argument.Accept (this);
+        first = false;
+      }
     }
   }
 }

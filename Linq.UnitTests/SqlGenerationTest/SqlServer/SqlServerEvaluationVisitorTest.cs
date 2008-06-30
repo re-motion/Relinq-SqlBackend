@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
@@ -271,7 +272,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO: Implement SQL generation for new objects")]
     public void VisitNewObjectEvaluation ()
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
@@ -279,6 +279,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
           new IEvaluation[] {new Constant(1), new Constant("2")});
 
       visitor.VisitNewObjectEvaluation (newObject);
+
+      Assert.That (_commandBuilder.CommandParameters.Count, Is.EqualTo (3));
+      Assert.That (_commandBuilder.CommandParameters[1].Value, Is.EqualTo (1));
+      Assert.That (_commandBuilder.CommandParameters[2].Value, Is.EqualTo ("2"));
+
+      Assert.That (_commandBuilder.CommandText.ToString(), Is.EqualTo("xyz @2, @3"));
+
     }
 
     private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
