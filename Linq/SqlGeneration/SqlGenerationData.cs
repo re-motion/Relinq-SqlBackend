@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Utilities;
+using Remotion.Mixins;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
@@ -77,6 +77,11 @@ namespace Remotion.Data.Linq.SqlGeneration
       OrderingFields.Clear();
       OrderingFields.AddRange (newOrderingFields);
       Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
+    }
+
+    public SelectedObjectActivator GetSelectedObjectActivator ()
+    {
+      return ObjectFactory.Create<SelectedObjectActivator>().With (SelectEvaluations);
     }
   }
 }
