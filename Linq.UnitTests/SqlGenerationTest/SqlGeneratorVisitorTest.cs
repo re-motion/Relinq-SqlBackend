@@ -39,8 +39,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParser, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluations, Is.EqualTo (new object[] { new Column (new Table ("studentTable", "s"), "FirstColumn"),
-          new Column (new Table ("studentTable", "s"), "LastColumn") }));
+      NewObject expectedNewObject = new NewObject (typeof (Tuple<string, string>).GetConstructors()[0], new IEvaluation[] {
+          new Column (new Table ("studentTable", "s"), "FirstColumn"),
+          new Column (new Table ("studentTable", "s"), "LastColumn")});
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluations, Is.EqualTo (new object[] { expectedNewObject}));
     }
 
 

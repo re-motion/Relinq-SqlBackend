@@ -109,26 +109,26 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       CommandBuilder.Append (")");
     }
 
-    public void VisitMethodCallEvaluation (MethodCallEvaluation methodCallEvaluation)
+    public void VisitMethodCallEvaluation (MethodCall methodCall)
     {
-      switch (methodCallEvaluation.EvaluationMethodInfo.Name)
+      switch (methodCall.EvaluationMethodInfo.Name)
       {
         case "ToUpper":
           CommandBuilder.Append ("UPPER(");
-          methodCallEvaluation.EvaluationParameter.Accept (this);
+          methodCall.EvaluationParameter.Accept (this);
           CommandBuilder.Append (")");
           break;
 
         case "Remove":
           CommandBuilder.Append ("STUFF(");
-          methodCallEvaluation.EvaluationParameter.Accept (this);
+          methodCall.EvaluationParameter.Accept (this);
           CommandBuilder.Append (",");
 
-          foreach (var argument in methodCallEvaluation.EvaluationArguments)
+          foreach (var argument in methodCall.EvaluationArguments)
             argument.Accept (this);
 
           CommandBuilder.Append (",CONVERT(Int,DATALENGTH(");
-          methodCallEvaluation.EvaluationParameter.Accept (this);
+          methodCall.EvaluationParameter.Accept (this);
           CommandBuilder.Append (") / 2), \"");
           CommandBuilder.Append (")");
           break;
@@ -136,10 +136,15 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         default:
           string message = string.Format (
               "The method {0}.{1} is not supported by the SQL Server code generator.",
-              methodCallEvaluation.EvaluationMethodInfo.DeclaringType.FullName,
-              methodCallEvaluation.EvaluationMethodInfo.Name);
+              methodCall.EvaluationMethodInfo.DeclaringType.FullName,
+              methodCall.EvaluationMethodInfo.Name);
           throw new SqlGenerationException (message);
       }
+    }
+
+    public void VisitNewObjectEvaluation (NewObject newObject)
+    {
+      throw new System.NotImplementedException();
     }
   }
 }

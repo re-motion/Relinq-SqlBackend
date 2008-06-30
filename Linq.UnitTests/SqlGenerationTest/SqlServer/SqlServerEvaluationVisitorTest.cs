@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing.Structure;
@@ -230,9 +231,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] {  });
       Column column = new Column (fromSource, "FirstColumn");
       List<IEvaluation> arguments = new List<IEvaluation>();
-      MethodCallEvaluation methodCallEvaluation = new MethodCallEvaluation (methodInfo, column, arguments);
+      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
 
-      visitor.VisitMethodCallEvaluation (methodCallEvaluation);
+      visitor.VisitMethodCallEvaluation (methodCall);
 
       Assert.AreEqual ("xyz UPPER([s].[FirstColumn])", _commandBuilder.GetCommandText ());
     }
@@ -249,9 +250,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Column column = new Column (fromSource, "FirstColumn");
       Constant item = new Constant (5);
       List<IEvaluation> arguments = new List<IEvaluation> { item };
-      MethodCallEvaluation methodCallEvaluation = new MethodCallEvaluation (methodInfo, column, arguments);
+      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
 
-      visitor.VisitMethodCallEvaluation (methodCallEvaluation);
+      visitor.VisitMethodCallEvaluation (methodCall);
 
       Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,CONVERT(Int,DATALENGTH([s].[FirstColumn]) / 2), \")", _commandBuilder.GetCommandText ());
       Assert.AreEqual(5,_commandBuilder.GetCommandParameters ()[1].Value);
@@ -264,9 +265,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
       MethodInfo methodInfo = typeof (DateTime).GetMethod ("get_Now");
-      MethodCallEvaluation methodCallEvaluation = new MethodCallEvaluation (methodInfo, null, new List<IEvaluation>());
+      MethodCall methodCall = new MethodCall (methodInfo, null, new List<IEvaluation>());
 
-      visitor.VisitMethodCallEvaluation (methodCallEvaluation);
+      visitor.VisitMethodCallEvaluation (methodCall);
+    }
+
+    [Test]
+    [Ignore ("TODO: Implement SQL generation for new objects")]
+    public void VisitNewObjectEvaluation ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      NewObject newObject = new NewObject (typeof (Tuple<int, string>).GetConstructors()[0],
+          new IEvaluation[] {new Constant(1), new Constant("2")});
+
+      visitor.VisitNewObjectEvaluation (newObject);
     }
 
     private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
@@ -297,7 +309,5 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       _commandText.Append ("xyz ");
       _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance);
     }
-
-    
   }
 }
