@@ -117,13 +117,9 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
       
-      List<IEvaluation> listEvaluations = 
+      IEvaluation evaluation = 
         _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
-
-      Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations =
-        new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_parseContext.FieldDescriptors, listEvaluations);
-      
-      SqlGenerationData.AddSelectClause (selectClause, evaluations);
+      SqlGenerationData.AddSelectClause (selectClause, _parseContext.FieldDescriptors, evaluation);
     }
 
     public void VisitLetClause (LetClause letClause)
@@ -131,14 +127,12 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("letClause", letClause);
       Expression projectionBody = letClause.Expression;
       
-      List<IEvaluation> listEvaluations =
+      IEvaluation evaluation =
         _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
 
-      Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations =
-        new Tuple<List<FieldDescriptor>, List<IEvaluation>> (_parseContext.FieldDescriptors, listEvaluations);
-
-      LetData letData = new LetData(evaluations.B, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
-      SqlGenerationData.AddLetClauses (letData, evaluations);
+    
+      LetData letData = new LetData(evaluation, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
+      SqlGenerationData.AddLetClause (letData,_parseContext.FieldDescriptors);
     }
 
     public void VisitGroupClause (GroupClause groupClause)

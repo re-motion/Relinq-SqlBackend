@@ -8,18 +8,18 @@ namespace Remotion.Data.Linq.SqlGeneration
   {
     public LetColumnSource CorrespondingColumnSource;
 
-    public LetData (List<IEvaluation> evaluations, string name,LetColumnSource columnSource)
+    public LetData (IEvaluation evaluation, string name,LetColumnSource columnSource)
     {
-      ArgumentUtility.CheckNotNull ("evaluations", evaluations);
+      ArgumentUtility.CheckNotNull ("evaluation", evaluation);
       ArgumentUtility.CheckNotNull ("name", name);
       ArgumentUtility.CheckNotNull ("columnSource", columnSource);
       
-      Evaluations = evaluations;
+      Evaluation = evaluation;
       Name = name;
       CorrespondingColumnSource = columnSource;
     }
 
-    public List<IEvaluation> Evaluations { get; private set; }
+    public IEvaluation Evaluation { get; private set; }
     public string Name { get; private set; }
   }
 }

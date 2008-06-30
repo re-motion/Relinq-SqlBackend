@@ -27,22 +27,21 @@ namespace Remotion.Data.Linq.SqlGeneration
     public List<LetData> LetEvaluations { get; private set; }
     public ParseMode ParseMode { get; set; }
     
-    public void AddSelectClause (SelectClause selectClause, Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations)
+    public void AddSelectClause (SelectClause selectClause, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
     {
       Distinct = selectClause.Distinct;
-      SelectEvaluations.AddRange(evaluations.B);
-      foreach (var selectedField in evaluations.A)
+      SelectEvaluations.Add(evaluation);
+
+      foreach (var selectedField in fieldDescriptors)
         Joins.AddPath (selectedField.SourcePath);
     }
 
-    public void AddLetClauses (LetData letData, Tuple<List<FieldDescriptor>, List<IEvaluation>> evaluations)
+    public void AddLetClause (LetData letData, List<FieldDescriptor> fieldDescriptors)
     {
       LetEvaluations.Add (letData);
 
-      foreach (var selectedField in evaluations.A)
-      {
+      foreach (var selectedField in fieldDescriptors)
         Joins.AddPath (selectedField.SourcePath);
-      }   
     }
 
     public void AddFromClause(IColumnSource columnSource)

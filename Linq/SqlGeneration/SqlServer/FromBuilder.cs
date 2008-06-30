@@ -71,27 +71,22 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     }
 
 
-    public void BuildLetPart (List<LetData> letData)
+    public void BuildLetPart (List<LetData> letDataCollection)
     {
-      ArgumentUtility.CheckNotNull ("letData", letData);
+      ArgumentUtility.CheckNotNull ("letData", letDataCollection);
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
-      foreach (var evaluations in letData)
+      foreach (var letData in letDataCollection)
       {
         _commandBuilder.Append (" CROSS APPLY (SELECT ");
-        bool first = true;
-        foreach (var let in evaluations.Evaluations)
-        {
-          if (!first)
-            _commandBuilder.Append (", ");
-
-          let.Accept (visitor);
-          first = false;
-        }
-        if (!evaluations.CorrespondingColumnSource.IsTable)
-          _commandBuilder.Append (" " + SqlServerUtility.WrapSqlIdentifier (evaluations.Name));
+        
+        var let = letData.Evaluation;
+        let.Accept (visitor);
+        
+        if (!letData.CorrespondingColumnSource.IsTable)
+          _commandBuilder.Append (" " + SqlServerUtility.WrapSqlIdentifier (letData.Name));
 
         _commandBuilder.Append (") [");
-        _commandBuilder.Append (evaluations.Name);
+        _commandBuilder.Append (letData.Name);
         _commandBuilder.Append ("]");
       }
     }

@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
         new BinaryEvaluation(new Column (new Table ("studentTable", "s"), "FirstColumn"),new Column (new Table ("studentTable", "s"), "LastColumn"),
           BinaryEvaluation.EvaluationKind.Add);
       
-      Assert.That(sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First().Evaluations, Is.EqualTo (new object[] {expectedResult }));
+      Assert.That(sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First().Evaluation, Is.EqualTo (expectedResult));
       Assert.AreEqual (letClause.Identifier.Name, sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First ().Name);
     }
 
