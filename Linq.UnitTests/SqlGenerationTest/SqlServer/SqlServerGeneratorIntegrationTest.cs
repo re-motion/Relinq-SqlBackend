@@ -599,5 +599,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstColumn], [s].[LastColumn] FROM [studentTable] [s]"));
       Assert.That (result.SqlGenerationData.SelectEvaluations[0], Is.InstanceOfType (typeof (NewObject)));
     }
+
+    [Test]
+    public void QueryWithNewExpression_AndActivator ()
+    {
+      IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (_source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      CommandData result = new SqlServerGenerator (StubDatabaseInfo.Instance).BuildCommand (parsedQuery);
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstColumn], [s].[LastColumn] FROM [studentTable] [s]"));
+
+      object[] values = new[] { "Hugo", "Boss" };
+      object selectedObject = result.SqlGenerationData.GetSelectedObjectActivator().CreateSelectedObject (values);
+      Assert.That (selectedObject, Is.EqualTo (new Tuple<string, string> ("Hugo", "Boss")));
+    }
   }
 }
