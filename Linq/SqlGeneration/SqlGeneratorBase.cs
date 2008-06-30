@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     protected abstract TContext CreateContext ();
 
-    public virtual Tuple<string, CommandParameter[]> BuildCommandString (QueryModel queryModel)
+    public virtual CommandData BuildCommand (QueryModel queryModel)
     {
       SqlGenerationData sqlGenerationData = ProcessQuery (queryModel);
 
@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);
       CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData.OrderingFields);
 
-      return new Tuple<string, CommandParameter[]> (context.CommandText, context.CommandParameters);
+      return new CommandData (context.CommandText, context.CommandParameters, null);
     }
 
     protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)

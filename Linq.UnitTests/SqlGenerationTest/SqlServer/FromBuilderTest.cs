@@ -107,11 +107,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Expect.Call (PrivateInvoke.InvokeNonPublicMethod (fromBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
           commandBuilder)).Return (subQueryGeneratorMock);
-      Expect.Call (subQueryGeneratorMock.BuildCommandString (subQuery.QueryModel)).Do ((Func<QueryModel, Tuple<string, CommandParameter[]>>) delegate
+      Expect.Call (subQueryGeneratorMock.BuildCommand (subQuery.QueryModel)).Do ((Func<QueryModel, CommandData>) delegate
       {
         commandBuilder.Append ("x");
         commandBuilder.AddParameter (0);
-        return null;
+        return new CommandData();
       });
 
       mockRepository.ReplayAll ();

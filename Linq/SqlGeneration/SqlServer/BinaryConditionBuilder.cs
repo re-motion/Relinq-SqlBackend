@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     {
       AppendValue (right);
       _commandBuilder.Append (" IN (");
-      CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommandString (left.QueryModel);
+      CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommand (left.QueryModel);
       _commandBuilder.Append (")");
     }
     

@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       _mockRepository.ReplayAll();
 
-      Tuple<string, CommandParameter[]> result = generator.BuildCommandString (query);
+      CommandData result = generator.BuildCommand (query);
       Assert.IsNotNull (result);
 
       _mockRepository.VerifyAll();
@@ -93,9 +93,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
 
       _mockRepository.ReplayAll ();
 
-      Tuple<string, CommandParameter[]> result = generator.BuildCommandString (query);
-      Assert.AreEqual ("SelectFromLetWhereOrderBy", result.A);
-      Assert.That (result.B, Is.EqualTo (new object[] {parameter}));
+      CommandData result = generator.BuildCommand (query);
+      Assert.AreEqual ("SelectFromLetWhereOrderBy", result.Statement);
+      Assert.That (result.Parameters, Is.EqualTo (new object[] {parameter}));
 
       _mockRepository.VerifyAll ();
     }
@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _mockRepository.ReplayAll ();
 
       generator.CheckBaseProcessQueryMethod = true;
-      generator.BuildCommandString (query);
+      generator.BuildCommand (query);
     }
 
     [Test]
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _mockRepository.ReplayAll ();
 
       generator.CheckBaseProcessQueryMethod = true;
-      generator.BuildCommandString (query);
+      generator.BuildCommand (query);
     }
 
     [Test]
@@ -155,7 +155,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _mockRepository.ReplayAll ();
 
       generator.CheckBaseProcessQueryMethod = true;
-      generator.BuildCommandString (query);
+      generator.BuildCommand (query);
     }
 
     [Test]
@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest
       _mockRepository.ReplayAll ();
 
       generator.CheckBaseProcessQueryMethod = true;
-      generator.BuildCommandString (query);
+      generator.BuildCommand (query);
     }
   }
 }

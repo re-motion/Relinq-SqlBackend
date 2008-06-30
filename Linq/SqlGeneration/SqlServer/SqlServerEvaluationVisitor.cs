@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void VisitSubQuery (SubQuery subQuery)
     {
       CommandBuilder.Append ("((");
-      new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, ParseMode.SubQueryInSelect).BuildCommandString (subQuery.QueryModel);
+      new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, ParseMode.SubQueryInSelect).BuildCommand (subQuery.QueryModel);
       CommandBuilder.Append (") ");
       CommandBuilder.Append (subQuery.Alias);
       CommandBuilder.Append (")");

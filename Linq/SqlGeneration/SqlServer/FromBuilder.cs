@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     {
       _commandBuilder.Append (" CROSS APPLY (");
       ISqlGeneratorBase subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
-      subQueryGenerator.BuildCommandString (subQuery.QueryModel);
+      subQueryGenerator.BuildCommand (subQuery.QueryModel);
       _commandBuilder.Append (") ");
       _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));
     }
