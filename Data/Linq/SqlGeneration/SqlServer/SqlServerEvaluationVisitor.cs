@@ -8,9 +8,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using System.Collections.Generic;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
+using System.Text;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
@@ -92,8 +96,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         CommandBuilder.Append ("(1<>1)");
       else
       {
-        CommandBuilder commandBuilder = new CommandBuilder (CommandBuilder.CommandText, CommandBuilder.CommandParameters, DatabaseInfo);
-        CommandParameter parameter = commandBuilder.AddParameter (constant.Value);
+        CommandParameter parameter = CommandBuilder.AddParameter (constant.Value);
         CommandBuilder.CommandText.Append (parameter.Name);
       }
     }
@@ -119,7 +122,32 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       CommandBuilder.Append (")");
     }
 
-    public void VisitMethodCallEvaluation (MethodCall methodCall)
+    //public class MethodCallSqlGeneratorRegistry
+    //{
+    //  private Dictionary<MethodInfo, IMethodCallSqlGenerator> _generators = new Dictionary<MethodInfo, IMethodCallSqlGenerator> ();
+
+    //  public void Register (MethodInfo methodInfo, IMethodCallSqlGenerator generator)
+    //  {
+    //    throw new NotImplementedException ();
+    //  }
+
+    //  public IMethodCallSqlGenerator GetGenerator (MethodInfo methodInfo)
+    //  {
+    //    throw new NotImplementedException ();
+    //    string message = string.Format (
+    //          "The method {0}.{1} is not supported by the SQL Server code generator, and no custom generator has been registered.",
+    //          methodInfo.DeclaringType.FullName,
+    //          methodInfo.Name);
+    //    throw new SqlGenerationException (message);
+    //  }
+    //}
+
+    //public interface IMethodCallSqlGenerator
+    //{
+    //  void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder);
+    //}
+
+    public void VisitMethodCall (MethodCall methodCall)
     {
       switch (methodCall.EvaluationMethodInfo.Name)
       {

@@ -16,7 +16,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
-  public class CommandBuilder
+  public class CommandBuilder : ICommandBuilder
   {
     public CommandBuilder (StringBuilder commandText, List<CommandParameter> commandParameters, IDatabaseInfo databaseInfo)
     {

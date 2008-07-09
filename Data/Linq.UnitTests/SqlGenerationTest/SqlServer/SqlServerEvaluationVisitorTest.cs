@@ -244,7 +244,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       List<IEvaluation> arguments = new List<IEvaluation>();
       MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
 
-      visitor.VisitMethodCallEvaluation (methodCall);
+      visitor.VisitMethodCall (methodCall);
 
       Assert.AreEqual ("xyz UPPER([s].[FirstColumn])", _commandBuilder.GetCommandText ());
     }
@@ -263,7 +263,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       List<IEvaluation> arguments = new List<IEvaluation> { item };
       MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
 
-      visitor.VisitMethodCallEvaluation (methodCall);
+      visitor.VisitMethodCall (methodCall);
 
       Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,CONVERT(Int,DATALENGTH([s].[FirstColumn]) / 2), \")", _commandBuilder.GetCommandText ());
       Assert.AreEqual(5,_commandBuilder.GetCommandParameters ()[1].Value);
@@ -278,7 +278,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       MethodInfo methodInfo = typeof (DateTime).GetMethod ("get_Now");
       MethodCall methodCall = new MethodCall (methodInfo, null, new List<IEvaluation>());
 
-      visitor.VisitMethodCallEvaluation (methodCall);
+      visitor.VisitMethodCall (methodCall);
     }
 
     [Test]

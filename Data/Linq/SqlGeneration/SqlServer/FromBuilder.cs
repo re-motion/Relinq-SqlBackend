@@ -84,13 +84,10 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void BuildLetPart (List<LetData> letDataCollection)
     {
       ArgumentUtility.CheckNotNull ("letData", letDataCollection);
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
       foreach (var letData in letDataCollection)
       {
         _commandBuilder.Append (" CROSS APPLY (SELECT ");
-        
-        var let = letData.Evaluation;
-        let.Accept (visitor);
+        _commandBuilder.AppendEvaluation (letData.Evaluation);
         
         if (!letData.CorrespondingColumnSource.IsTable)
           _commandBuilder.Append (" " + SqlServerUtility.WrapSqlIdentifier (letData.Name));

@@ -7,15 +7,19 @@
  * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
-
-using Remotion.Collections;
-using Remotion.Data.Linq.Parsing.Details;
+using System;
+using System.Collections.Generic;
+using Remotion.Data.Linq.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public interface ISqlGeneratorBase
+  public interface ICommandBuilder
   {
-    CommandData BuildCommand (QueryModel queryModel);
-    DetailParserRegistries DetailParserRegistries { get; }
+    void Append (string text);
+    void AppendEvaluation (IEvaluation evaluation);
+    void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction);
+    void AppendEvaluations (IEnumerable<IEvaluation> evaluations);
+    void AppendConstant (Constant constant);
+    CommandParameter AddParameter (object value);
   }
 }

@@ -9,14 +9,11 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
-using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
@@ -24,20 +21,20 @@ namespace Remotion.Data.Linq.SqlGeneration
   public class SqlGeneratorVisitor : IQueryVisitor
   {
     private readonly IDatabaseInfo _databaseInfo;
-    private readonly DetailParser _detailParser;
+    private readonly DetailParserRegistries _detailParserRegistries;
     private readonly ParseContext _parseContext;
 
     private bool _secondOrderByClause;
     
-    public SqlGeneratorVisitor (IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParser detailParser, ParseContext parseContext)
+    public SqlGeneratorVisitor (IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParserRegistries detailParserRegistries, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("parseContext", parseMode);
-      ArgumentUtility.CheckNotNull ("detailParser", detailParser);
+      ArgumentUtility.CheckNotNull ("detailParser", detailParserRegistries);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
       
       _databaseInfo = databaseInfo;
-      _detailParser = detailParser;
+      _detailParserRegistries = detailParserRegistries;
       _parseContext = parseContext;
 
       _secondOrderByClause = false;
@@ -92,7 +89,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
       LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression ();
-      ICriterion criterion = _detailParser.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext);
+      ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext);
 
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
     }
@@ -128,7 +125,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
       
       IEvaluation evaluation = 
-        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
+        _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
       SqlGenerationData.AddSelectClause (selectClause, _parseContext.FieldDescriptors, evaluation);
     }
 
@@ -138,7 +135,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       Expression projectionBody = letClause.Expression;
       
       IEvaluation evaluation =
-        _detailParser.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
+        _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
 
     
       LetData letData = new LetData(evaluation, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
