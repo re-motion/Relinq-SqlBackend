@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       _commandText.Append ("WHERE ");
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance);
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
     }
 
     [Test]

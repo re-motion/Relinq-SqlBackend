@@ -7,6 +7,7 @@
  * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
+
 using System;
 using System.Collections.Generic;
 using Remotion.Data.Linq.DataObjectModel;

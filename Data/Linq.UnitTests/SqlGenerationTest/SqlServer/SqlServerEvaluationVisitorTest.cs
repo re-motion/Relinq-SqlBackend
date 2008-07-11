@@ -43,13 +43,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
       _databaseInfo = StubDatabaseInfo.Instance;
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo);
-      }
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
+    }
 
     [Test]
     public void VisitColumn ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       Column column = new Column (new Table ("table", "alias"), "name");
 
       visitor.VisitColumn (column);
@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitColumn_ColumnSource_NoTable()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       Column column = new Column (new LetColumnSource("test",false), null);
       
       visitor.VisitColumn (column);
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitConstant ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       Constant constant = new Constant(5);
 
       visitor.VisitConstant (constant);
@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitConstant_Null ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       Constant constant = new Constant (null);
 
       visitor.VisitConstant (constant);
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitConstant_True ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       Constant constant = new Constant (true);
 
       visitor.VisitConstant (constant);
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitConstant_False ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       Constant constant = new Constant (false);
 
       visitor.VisitConstant (constant);
@@ -118,7 +118,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitBinaryCondition ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       BinaryCondition binaryCondition = new BinaryCondition (new Column (new Table ("studentTable", "s"), "LastColumn"),
           new Constant ("Garcia"), BinaryCondition.ConditionKind.Equal);
@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitBinaryEvaluation ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       Column column1 = new Column (new Table ("table1", "alias1"), "id1");
       Column column2 = new Column (new Table ("table2", "alias2"), "id2");
@@ -153,7 +153,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitBinaryEvaluation_Encapsulated ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       Column column1 = new Column (new Table ("table1", "alias1"), "id1");
       Column column2 = new Column (new Table ("table2", "alias2"), "id2");
@@ -169,7 +169,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitComplexCriterion_And ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
       BinaryCondition binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
@@ -185,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitComplexCriterion_Or ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
       BinaryCondition binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
@@ -201,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitNotCriterion ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       NotCriterion notCriterion = new NotCriterion (new Constant ("foo"));
 
@@ -214,7 +214,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitSubQuery ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
       PropertyInfo member = typeof (Student).GetProperty ("s");
@@ -234,7 +234,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitMethodCall_ToUpper ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
       IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
@@ -252,7 +252,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitMethodCall_WithArguments ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
       IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
@@ -270,11 +270,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (SqlGenerationException), 
-        ExpectedMessage = "The method System.DateTime.get_Now is not supported by the SQL Server code generator.")]
+    [ExpectedException (typeof (SqlGenerationException),
+        ExpectedMessage = "The method System.DateTime.get_Now is not supported by the SQL Server code generator, " 
+        + "and no custom generator has been registered.")]
     public void VisitUnknownMethodCall ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       MethodInfo methodInfo = typeof (DateTime).GetMethod ("get_Now");
       MethodCall methodCall = new MethodCall (methodInfo, null, new List<IEvaluation>());
 
@@ -284,7 +285,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void VisitNewObjectEvaluation ()
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       NewObject newObject = new NewObject (typeof (Tuple<int, string>).GetConstructors()[0],
           new IEvaluation[] {new Constant(1), new Constant("2")});
 
@@ -300,7 +301,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
     private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo);
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       visitor.VisitBinaryEvaluation (binaryEvaluation);
       string aoperator = "";
       switch (binaryEvaluation.Kind)
@@ -324,7 +325,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Assert.AreEqual ("xyz ([alias1].[id1]" + aoperator + "[alias2].[id2])", _commandBuilder.GetCommandText ());
       _commandText = new StringBuilder ();
       _commandText.Append ("xyz ");
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance);
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
     }
   }
 }

@@ -186,7 +186,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       QueryModel queryModel = ExpressionHelper.CreateQueryModel ();
       SubQuery subQuery = new SubQuery (queryModel, null);
 
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       commandBuilder.AddParameter (1);
 
       BinaryConditionBuilder binaryConditionBuilderMock = mockRepository.CreateMock<BinaryConditionBuilder> (commandBuilder, StubDatabaseInfo.Instance);
@@ -215,7 +215,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     public void CreateSqlGeneratorForSubQuery ()
     {
       SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), null);
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       BinaryConditionBuilder conditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
       InlineSqlServerGenerator subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (conditionBuilder, "CreateSqlGeneratorForSubQuery",
           subQuery, StubDatabaseInfo.Instance, commandBuilder);
@@ -230,7 +230,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       Constant constant = new Constant("Test");
       BinaryCondition binaryCondition = new BinaryCondition (column, constant, BinaryCondition.ConditionKind.ContainsFulltext);
 
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
@@ -257,7 +257,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     private static void CheckBuildBinaryConditionPart (BinaryCondition condition, string expectedString,
        params CommandParameter[] expectedParameters)
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       binaryConditionBuilder.BuildBinaryConditionPart (condition);

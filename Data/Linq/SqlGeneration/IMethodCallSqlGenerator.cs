@@ -8,15 +8,12 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using Remotion.Data.Linq.Parsing.Details;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public interface ISqlGeneratorBase
+  public interface IMethodCallSqlGenerator
   {
-    CommandData BuildCommand (QueryModel queryModel);
-    DetailParserRegistries DetailParserRegistries { get; }
-    MethodCallSqlGeneratorRegistry MethodCallRegistry { get; }
+    void GenerateSql(MethodCall methodCall, ICommandBuilder commandBuilder);
   }
 }

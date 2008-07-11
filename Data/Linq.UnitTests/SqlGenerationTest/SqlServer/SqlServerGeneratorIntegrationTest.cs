@@ -64,7 +64,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
     [Test]
     [ExpectedException (typeof (SqlGenerationException),
-      ExpectedMessage = "The method Remotion.Collections.Tuple.NewTuple is not supported by the SQL Server code generator.")]
+      ExpectedMessage = "The method Remotion.Collections.Tuple.NewTuple is not supported by the SQL Server code generator, " + 
+      "and no custom generator has been registered.")]
     public void MultiFromQueryWithProjection ()
     {
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);

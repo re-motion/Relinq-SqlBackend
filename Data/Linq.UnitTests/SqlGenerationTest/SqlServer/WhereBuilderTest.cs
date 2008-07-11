@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     private static void CheckAppendCriterion (ICriterion criterion, string expectedString,
         params CommandParameter[] expectedParameters)
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
       WhereBuilder whereBuilder = new WhereBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       whereBuilder.BuildWherePart (criterion);

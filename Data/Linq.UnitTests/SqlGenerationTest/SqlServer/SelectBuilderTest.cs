@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance);
+      _commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       _selectBuilder = new SelectBuilder (_commandBuilder);
     }
 

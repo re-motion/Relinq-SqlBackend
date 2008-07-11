@@ -20,17 +20,20 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class SqlServerEvaluationVisitor : IEvaluationVisitor
   {
-    public SqlServerEvaluationVisitor (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public SqlServerEvaluationVisitor (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo, MethodCallSqlGeneratorRegistry methodCallRegistry)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+      ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
 
       CommandBuilder = commandBuilder;
       DatabaseInfo = databaseInfo;
+      MethodCallRegistry = methodCallRegistry;
     }
 
     public CommandBuilder CommandBuilder { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }
+    public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
 
 
     public void VisitBinaryEvaluation (BinaryEvaluation binaryEvaluation)
@@ -149,35 +152,38 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     public void VisitMethodCall (MethodCall methodCall)
     {
-      switch (methodCall.EvaluationMethodInfo.Name)
-      {
-        case "ToUpper":
-          CommandBuilder.Append ("UPPER(");
-          methodCall.EvaluationParameter.Accept (this);
-          CommandBuilder.Append (")");
-          break;
+      ArgumentUtility.CheckNotNull ("methodCall", methodCall);
 
-        case "Remove":
-          CommandBuilder.Append ("STUFF(");
-          methodCall.EvaluationParameter.Accept (this);
-          CommandBuilder.Append (",");
+      MethodCallRegistry.GetGenerator (methodCall.EvaluationMethodInfo).GenerateSql (methodCall, CommandBuilder);
+      //switch (methodCall.EvaluationMethodInfo.Name)
+      //{
+      //  case "ToUpper":
+      //    CommandBuilder.Append ("UPPER(");
+      //    methodCall.EvaluationParameter.Accept (this);
+      //    CommandBuilder.Append (")");
+      //    break;
 
-          foreach (var argument in methodCall.EvaluationArguments)
-            argument.Accept (this);
+      //  case "Remove":
+      //    CommandBuilder.Append ("STUFF(");
+      //    methodCall.EvaluationParameter.Accept (this);
+      //    CommandBuilder.Append (",");
 
-          CommandBuilder.Append (",CONVERT(Int,DATALENGTH(");
-          methodCall.EvaluationParameter.Accept (this);
-          CommandBuilder.Append (") / 2), \"");
-          CommandBuilder.Append (")");
-          break;
+      //    foreach (var argument in methodCall.EvaluationArguments)
+      //      argument.Accept (this);
 
-        default:
-          string message = string.Format (
-              "The method {0}.{1} is not supported by the SQL Server code generator.",
-              methodCall.EvaluationMethodInfo.DeclaringType.FullName,
-              methodCall.EvaluationMethodInfo.Name);
-          throw new SqlGenerationException (message);
-      }
+      //    CommandBuilder.Append (",CONVERT(Int,DATALENGTH(");
+      //    methodCall.EvaluationParameter.Accept (this);
+      //    CommandBuilder.Append (") / 2), \"");
+      //    CommandBuilder.Append (")");
+      //    break;
+
+      //  default:
+      //    string message = string.Format (
+      //        "The method {0}.{1} is not supported by the SQL Server code generator.",
+      //        methodCall.EvaluationMethodInfo.DeclaringType.FullName,
+      //        methodCall.EvaluationMethodInfo.Name);
+      //    throw new SqlGenerationException (message);
+      //}
     }
 
     public void VisitNewObjectEvaluation (NewObject newObject)

@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     protected override SqlServerGenerationContext CreateContext ()
     {
-      return new SqlServerGenerationContext (DatabaseInfo);
+      return new SqlServerGenerationContext (DatabaseInfo, MethodCallRegistry);
     }
 
     protected override IOrderByBuilder CreateOrderByBuilder (SqlServerGenerationContext context)

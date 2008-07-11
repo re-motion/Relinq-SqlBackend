@@ -14,6 +14,7 @@ using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
@@ -27,12 +28,15 @@ namespace Remotion.Data.Linq.SqlGeneration
       DatabaseInfo = databaseInfo;
       ParseMode = parseMode;
       DetailParserRegistries = new DetailParserRegistries (DatabaseInfo, ParseMode);
+      MethodCallRegistry = new MethodCallSqlGeneratorRegistry ();
     }
 
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public ParseMode ParseMode { get; private set; }
     
     public DetailParserRegistries DetailParserRegistries { get; private set; }
+    public MethodCallSqlGeneratorRegistry MethodCallRegistry {get; private set; }
+    
 
     protected abstract TContext CreateContext ();
 
