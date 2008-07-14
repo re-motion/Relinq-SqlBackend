@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void AppendConstant_Null()
     {
-      _commandBuilder.AppendConstant(new Constant(null));
+      _commandBuilder.AppendEvaluation(new Constant(null));
       Assert.AreEqual ("WHERE NULL", _commandBuilder.GetCommandText ());
       CheckParametersUnchanged ();
     }
@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void AppendConstant_True ()
     {
-      _commandBuilder.AppendConstant (new Constant (true));
+      _commandBuilder.AppendEvaluation (new Constant (true));
       Assert.AreEqual ("WHERE (1=1)", _commandBuilder.GetCommandText ());
       CheckParametersUnchanged ();
     }
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void AppendConstant_False ()
     {
-      _commandBuilder.AppendConstant (new Constant (false));
+      _commandBuilder.AppendEvaluation (new Constant (false));
       Assert.AreEqual ("WHERE (1<>1)", _commandBuilder.GetCommandText ());
       CheckParametersUnchanged ();
     }
@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     [Test]
     public void AppendConstant_Parameter ()
     {
-      _commandBuilder.AppendConstant (new Constant (5));
+      _commandBuilder.AppendEvaluation (new Constant (5));
       Assert.AreEqual ("WHERE @2", _commandBuilder.GetCommandText ());
       Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (new[] { _defaultParameter, new CommandParameter("@2", 5)}));
     }

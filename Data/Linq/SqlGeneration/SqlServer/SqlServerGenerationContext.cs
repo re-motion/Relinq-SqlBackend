@@ -21,7 +21,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
 
-      CommandBuilder = new CommandBuilder (new StringBuilder(), new List<CommandParameter>(), databaseInfo, new MethodCallSqlGeneratorRegistry());
+      CommandBuilder = new CommandBuilder (new StringBuilder(), new List<CommandParameter>(), databaseInfo, methodCallRegistry);
     }
 
     public SqlServerGenerationContext (CommandBuilder commandBuilder)

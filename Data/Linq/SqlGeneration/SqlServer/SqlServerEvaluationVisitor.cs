@@ -125,65 +125,11 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       CommandBuilder.Append (")");
     }
 
-    //public class MethodCallSqlGeneratorRegistry
-    //{
-    //  private Dictionary<MethodInfo, IMethodCallSqlGenerator> _generators = new Dictionary<MethodInfo, IMethodCallSqlGenerator> ();
-
-    //  public void Register (MethodInfo methodInfo, IMethodCallSqlGenerator generator)
-    //  {
-    //    throw new NotImplementedException ();
-    //  }
-
-    //  public IMethodCallSqlGenerator GetGenerator (MethodInfo methodInfo)
-    //  {
-    //    throw new NotImplementedException ();
-    //    string message = string.Format (
-    //          "The method {0}.{1} is not supported by the SQL Server code generator, and no custom generator has been registered.",
-    //          methodInfo.DeclaringType.FullName,
-    //          methodInfo.Name);
-    //    throw new SqlGenerationException (message);
-    //  }
-    //}
-
-    //public interface IMethodCallSqlGenerator
-    //{
-    //  void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder);
-    //}
-
     public void VisitMethodCall (MethodCall methodCall)
     {
       ArgumentUtility.CheckNotNull ("methodCall", methodCall);
 
       MethodCallRegistry.GetGenerator (methodCall.EvaluationMethodInfo).GenerateSql (methodCall, CommandBuilder);
-      //switch (methodCall.EvaluationMethodInfo.Name)
-      //{
-      //  case "ToUpper":
-      //    CommandBuilder.Append ("UPPER(");
-      //    methodCall.EvaluationParameter.Accept (this);
-      //    CommandBuilder.Append (")");
-      //    break;
-
-      //  case "Remove":
-      //    CommandBuilder.Append ("STUFF(");
-      //    methodCall.EvaluationParameter.Accept (this);
-      //    CommandBuilder.Append (",");
-
-      //    foreach (var argument in methodCall.EvaluationArguments)
-      //      argument.Accept (this);
-
-      //    CommandBuilder.Append (",CONVERT(Int,DATALENGTH(");
-      //    methodCall.EvaluationParameter.Accept (this);
-      //    CommandBuilder.Append (") / 2), \"");
-      //    CommandBuilder.Append (")");
-      //    break;
-
-      //  default:
-      //    string message = string.Format (
-      //        "The method {0}.{1} is not supported by the SQL Server code generator.",
-      //        methodCall.EvaluationMethodInfo.DeclaringType.FullName,
-      //        methodCall.EvaluationMethodInfo.Name);
-      //    throw new SqlGenerationException (message);
-      //}
     }
 
     public void VisitNewObjectEvaluation (NewObject newObject)

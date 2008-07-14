@@ -38,10 +38,13 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.Contains)
         AppendContainsCondition ((SubQuery) binaryCondition.Left, binaryCondition.Right);
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.ContainsFulltext)
-        AppendContainsFulltext (binaryCondition.Left,binaryCondition.Right);
+        AppendContainsFulltext (binaryCondition.Left, binaryCondition.Right);
       else
         AppendGeneralCondition (binaryCondition);
     }
+
+    
+
 
     private void AppendContainsFulltext(IValue left, IValue right)
     {
@@ -153,12 +156,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     
     private void AppendValue (IValue value)
     {
-      if (value is Constant)
-        _commandBuilder.AppendConstant ((Constant) value);
-      else if (value is Column)
-        _commandBuilder.AppendEvaluation((Column) value);
-      else
-        throw new NotSupportedException ("Value type " + value.GetType ().Name + " is not supported.");
+      _commandBuilder.AppendEvaluation (value);
     }
 
     private void AppendConditionKind (BinaryCondition.ConditionKind kind)

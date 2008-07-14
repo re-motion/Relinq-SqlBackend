@@ -65,7 +65,8 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         if (constant.Value == null)
           throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
         else
-          _commandBuilder.AppendConstant (constant);
+          _commandBuilder.AppendEvaluation (constant);
+          //_commandBuilder.AppendConstant (constant);
       }
       else
       {

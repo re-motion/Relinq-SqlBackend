@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     public void AppendEvaluation (IEvaluation evaluation)
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo, new MethodCallSqlGeneratorRegistry());
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo, MethodCallRegistry);
       evaluation.Accept (visitor);
     }
 
@@ -72,21 +72,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void AppendEvaluations (IEnumerable<IEvaluation> evaluations)
     {
       AppendSeparatedItems (evaluations, AppendEvaluation);
-    }
-
-    public void AppendConstant (Constant constant)
-    {
-      if (constant.Value == null)
-        CommandText.Append ("NULL");
-      else if (constant.Value.Equals (true))
-        CommandText.Append ("(1=1)");
-      else if (constant.Value.Equals (false))
-        CommandText.Append ("(1<>1)");
-      else
-      {
-        CommandParameter parameter = AddParameter (constant.Value);
-        CommandText.Append (parameter.Name);
-      }
     }
 
     public CommandParameter AddParameter (object value)

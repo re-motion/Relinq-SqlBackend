@@ -26,6 +26,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
       Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper());
       Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove ());
+      Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower());
     }
 
     public void Register (MethodInfo methodInfo, IMethodCallSqlGenerator generator)

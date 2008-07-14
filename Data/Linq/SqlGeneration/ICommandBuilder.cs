@@ -20,7 +20,6 @@ namespace Remotion.Data.Linq.SqlGeneration
     void AppendEvaluation (IEvaluation evaluation);
     void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction);
     void AppendEvaluations (IEnumerable<IEvaluation> evaluations);
-    void AppendConstant (Constant constant);
     CommandParameter AddParameter (object value);
   }
 }

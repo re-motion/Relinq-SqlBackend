@@ -10,9 +10,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Rhino.Mocks;
 using Remotion.Collections;
 using Remotion.Data.Linq.DataObjectModel;
@@ -170,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Value type PseudoValue is not supported.")]
+    [ExpectedException (typeof (NotImplementedException), ExpectedMessage = "The method or operation is not implemented.")]
     public void BuildBinaryConditionPart_InvalidValue ()
     {
       BinaryCondition binaryCondition = new BinaryCondition (new PseudoValue(), new Constant (null), BinaryCondition.ConditionKind.NotEqual);
@@ -178,7 +181,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    //[Ignore]
     public void BuildBinaryConditionPart_ContainsCondition ()
     {
       MockRepository mockRepository = new MockRepository ();
@@ -236,6 +238,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
       Assert.AreEqual("CONTAINS ([s].[First],@1)", commandBuilder.GetCommandText());
+      Assert.That (commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
+    }
+
+    [Test]
+    public void BuildBinaryCondition_MethodCall ()
+    {
+      ParameterExpression parameter = parameter = Expression.Parameter (typeof (Student), "s");
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      IColumnSource fromSource = fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+
+      MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      Column column = new Column (fromSource, "FirstColumn");
+      MethodCall methodCall = new MethodCall (methodInfo, column, null);
+
+      BinaryCondition binaryCondition = new BinaryCondition(methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);
+
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+
+      binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
+
+      Assert.AreEqual ("(UPPER([s].[FirstColumn]) = @1)", commandBuilder.GetCommandText ());
       Assert.That (commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
     }
 

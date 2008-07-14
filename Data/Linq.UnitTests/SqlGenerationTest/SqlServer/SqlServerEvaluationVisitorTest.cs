@@ -230,45 +230,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlGenerationTest.SqlServer
 
       Assert.AreEqual ("xyz ((SELECT [s].[FirstColumn] FROM [studentTable] [s]) sub_alias)",_commandBuilder.GetCommandText());
     }
-
-    [Test]
-    public void VisitMethodCall_ToUpper ()
-    {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
-      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
-      MemberExpression memberExpression = Expression.MakeMemberAccess (parameter, typeof (Student).GetProperty ("First"));
-      MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] {  });
-      Column column = new Column (fromSource, "FirstColumn");
-      List<IEvaluation> arguments = new List<IEvaluation>();
-      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
-
-      visitor.VisitMethodCall (methodCall);
-
-      Assert.AreEqual ("xyz UPPER([s].[FirstColumn])", _commandBuilder.GetCommandText ());
-    }
-
-    [Test]
-    public void VisitMethodCall_WithArguments ()
-    {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
-      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
-      MemberExpression memberExpression = Expression.MakeMemberAccess (parameter, typeof (Student).GetProperty ("First"));
-      MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
-      Column column = new Column (fromSource, "FirstColumn");
-      Constant item = new Constant (5);
-      List<IEvaluation> arguments = new List<IEvaluation> { item };
-      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
-
-      visitor.VisitMethodCall (methodCall);
-
-      Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,CONVERT(Int,DATALENGTH([s].[FirstColumn]) / 2), \")", _commandBuilder.GetCommandText ());
-      Assert.AreEqual(5,_commandBuilder.GetCommandParameters ()[1].Value);
-    }
-
+    
     [Test]
     [ExpectedException (typeof (SqlGenerationException),
         ExpectedMessage = "The method System.DateTime.get_Now is not supported by the SQL Server code generator, " 
