@@ -9,7 +9,6 @@
  */
 
 using Remotion.Data.Linq.DataObjectModel;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {

@@ -8,7 +8,9 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
@@ -24,6 +26,9 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     protected SqlServerGenerator (IDatabaseInfo databaseInfo, ParseMode parseMode)
       : base (databaseInfo, parseMode)
     {
+      MethodCallRegistry.Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper ());
+      MethodCallRegistry.Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove ());
+      MethodCallRegistry.Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower ());
     }
 
     protected override SqlServerGenerationContext CreateContext ()

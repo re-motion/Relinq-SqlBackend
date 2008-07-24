@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     
     [Test]
     [ExpectedException (typeof (SqlGenerationException),
-        ExpectedMessage = "The method System.DateTime.get_Now is not supported by the SQL Server code generator, " 
+        ExpectedMessage = "The method System.DateTime.get_Now is not supported by this code generator, " 
         + "and no custom generator has been registered.")]
     public void VisitUnknownMethodCall ()
     {

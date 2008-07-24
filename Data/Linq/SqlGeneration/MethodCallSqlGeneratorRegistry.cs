@@ -11,10 +11,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.SqlGeneration
 {
   public class MethodCallSqlGeneratorRegistry
   {
@@ -23,10 +22,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public MethodCallSqlGeneratorRegistry ()
     {
       _generators = new Dictionary<MethodInfo, IMethodCallSqlGenerator>();
-
-      Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper());
-      Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove ());
-      Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower());
     }
 
     public void Register (MethodInfo methodInfo, IMethodCallSqlGenerator generator)
@@ -45,7 +40,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
       string message = string.Format (
-          "The method {0}.{1} is not supported by the SQL Server code generator, and no custom generator has been registered.",
+          "The method {0}.{1} is not supported by this code generator, and no custom generator has been registered.",
           methodInfo.DeclaringType.FullName,
           methodInfo.Name);
 

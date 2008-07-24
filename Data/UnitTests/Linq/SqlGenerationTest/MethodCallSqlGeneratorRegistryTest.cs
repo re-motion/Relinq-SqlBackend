@@ -13,10 +13,9 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
+namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
 {
   [TestFixture]
   public class MethodCallSqlGeneratorRegistryTest
@@ -56,8 +55,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (SqlGenerationException), ExpectedMessage = "The method System.String.Concat is not supported by the SQL Server code "+
-      "generator, and no custom generator has been registered.")]
+    [ExpectedException (typeof (SqlGenerationException), ExpectedMessage = "The method System.String.Concat is not supported by this code "
+      + "generator, and no custom generator has been registered.")]
     public void DontFindGenerator_Exception ()
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
@@ -65,21 +64,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry ();
 
       methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
-    }
-
-    [Test]
-    public void DefaultRegistration ()
-    {
-      MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
-
-      IMethodCallSqlGenerator removeGenerator =
-        methodCallSqlGeneratorRegistry.GetGenerator (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }));
-
-      IMethodCallSqlGenerator upperGenerator =
-        methodCallSqlGeneratorRegistry.GetGenerator (typeof (string).GetMethod ("ToUpper", new Type[] { }));
-
-      Assert.IsNotNull (removeGenerator);
-      Assert.IsNotNull (upperGenerator);
     }
   }
 

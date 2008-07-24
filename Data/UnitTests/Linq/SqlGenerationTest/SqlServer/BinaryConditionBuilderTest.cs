@@ -255,7 +255,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
       BinaryCondition binaryCondition = new BinaryCondition(methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);
 
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
+      SqlServerGenerator sqlServerGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
+      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, sqlServerGenerator.MethodCallRegistry);
       BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
 
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
