@@ -233,9 +233,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "The expression 'value(Remotion.Data.UnitTests.Linq.SqlGenerationTest." 
-        + "SqlGeneratorVisitorIntegrationTest).GetNullSource()' could not be evaluated as a query source because it cannot be compiled: Query "
-        + "sources cannot be null.")]
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "Query sources cannot be null.")]
     public void InvalidQuerySource ()
     {
       var query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;
