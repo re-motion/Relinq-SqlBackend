@@ -624,5 +624,14 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       object selectedObject = result.SqlGenerationData.GetSelectedObjectActivator().CreateSelectedObject (values);
       Assert.That (selectedObject, Is.EqualTo (new Tuple<string, string> ("Hugo", "Boss")));
     }
+
+    [Test]
+    public void QueryWithMultiFromClauses_WithMethodCalls ()
+    {
+      IQueryable<Student> query = FromTestQueryGenerator.CreateMultiFromQuery_WithCalls (_source, _source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      CommandData result = new SqlServerGenerator (StubDatabaseInfo.Instance).BuildCommand (parsedQuery);
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [studentTable] [s1], [studentTable] [s2]"));
+    }
   }
 }
