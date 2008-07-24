@@ -9,11 +9,21 @@
  */
 
 using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
+  /// <summary>
+  /// This interface has to be implemented, when a new MethodCallGenerator is generated. This generator has to handle method calls which are not
+  /// supported as default by the framework. This generator has to be registered to <see cref="MethodCallSqlGeneratorRegistry"/>.
+  /// </summary>
   public interface IMethodCallSqlGenerator
   {
+    /// <summary>
+    /// The method has to contain the logic for generating sql code for the method call. 
+    /// </summary>
+    /// <param name="methodCall"><see cref="MethodCall"/></param>
+    /// <param name="commandBuilder"><see cref="ICommandBuilder"/></param>
     void GenerateSql(MethodCall methodCall, ICommandBuilder commandBuilder);
   }
 }

@@ -14,6 +14,9 @@ using Remotion.Data.Linq.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
+  /// <summary>
+  /// This interface has to be implemented for each sql code generation mechanism. It holds the information to generate the sql query.
+  /// </summary>
   public interface ICommandBuilder
   {
     void Append (string text);
