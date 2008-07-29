@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       CommandData result = sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.Statement);
       Assert.That (result.SqlGenerationData, Is.Not.Null);
-      Assert.That (result.SqlGenerationData.SelectEvaluations[0], Is.InstanceOfType (typeof (Column)));
+      Assert.That (result.SqlGenerationData.SelectEvaluation, Is.InstanceOfType (typeof (Column)));
 
       Assert.IsEmpty (result.Parameters);
     }
@@ -609,7 +609,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = new SqlServerGenerator (StubDatabaseInfo.Instance).BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstColumn], [s].[LastColumn] FROM [studentTable] [s]"));
-      Assert.That (result.SqlGenerationData.SelectEvaluations[0], Is.InstanceOfType (typeof (NewObject)));
+      Assert.That (result.SqlGenerationData.SelectEvaluation, Is.InstanceOfType (typeof (NewObject)));
     }
 
     [Test]

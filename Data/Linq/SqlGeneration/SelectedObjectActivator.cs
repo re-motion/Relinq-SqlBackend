@@ -16,20 +16,20 @@ namespace Remotion.Data.Linq.SqlGeneration
 {
   public class SelectedObjectActivator
   {
-    private readonly List<IEvaluation> _selectEvaluations;
+    private readonly IEvaluation _selectEvaluation;
     
     private object[] _values;
     private int _valueIndex;
 
-    public SelectedObjectActivator (List<IEvaluation> selectEvaluations)
+    public SelectedObjectActivator (IEvaluation selectEvaluation)
     {
-      _selectEvaluations = selectEvaluations;
+      _selectEvaluation = selectEvaluation;
     }
 
     public virtual object CreateSelectedObject (object[] values)
     {
       _values = values;
-      object result = InterpretSelectedData (_selectEvaluations[0]);
+      object result = InterpretSelectedData (_selectEvaluation);
       if (values.Length > _valueIndex)
         throw new ArgumentException ("Too many values.", "values");
       return result;

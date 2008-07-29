@@ -27,10 +27,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void GetValue_ForColumn ()
     {
       Column column = new Column(new Table(),"column");
-      List<IEvaluation> evaluations = new List<IEvaluation> { column };
+      IEvaluation evaluation = column;
       object[] values = new object[] { 1 };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       object result = selectedObjectActivator.CreateSelectedObject (values);
 
       Assert.That (result, Is.EqualTo (1));
@@ -40,10 +40,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void GetConstant_ForConstant ()
     {
       Constant constant = new Constant("test");
-      List<IEvaluation> evaluations = new List<IEvaluation> { constant };
+      IEvaluation evaluation = constant;
       object[] values = new object[] {};
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       object result = selectedObjectActivator.CreateSelectedObject (values);
 
       Assert.That (result, Is.EqualTo ("test"));
@@ -53,10 +53,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void NewObject ()
     {
       NewObject newObject = new NewObject (typeof (object).GetConstructors()[0]);
-      List<IEvaluation> evaluations = new List<IEvaluation> { newObject };
+      IEvaluation evaluation = newObject;
       object[] values = new object[] { };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       object result = selectedObjectActivator.CreateSelectedObject (values);
 
       Assert.That (result, Is.Not.Null);
@@ -70,10 +70,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       Column column = new Column (new Table (), "column");
       NewObject newObject = new NewObject (typeof (Tuple<string,string>).GetConstructors ()[0], constant, column);
 
-      List<IEvaluation> evaluations = new List<IEvaluation> { newObject };
+      IEvaluation evaluation = newObject;
       object[] values = new object[] { "test" };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       object result = selectedObjectActivator.CreateSelectedObject (values);
 
       Assert.That (result, Is.Not.Null);
@@ -89,10 +89,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       NewObject innerNewObject = new NewObject (typeof (DateTime).GetConstructor (new[] { typeof (long) }), innerColumn);
       NewObject newObject = new NewObject (typeof (Tuple<string, string, DateTime>).GetConstructors()[0], constant, column, innerNewObject);
 
-      List<IEvaluation> evaluations = new List<IEvaluation> { newObject };
+      IEvaluation evaluation = newObject;
       object[] values = new object[] { "test", 1234L };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       object result = selectedObjectActivator.CreateSelectedObject (values);
 
       Assert.That (result, Is.Not.Null);
@@ -104,10 +104,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void TooFewValues ()
     {
       Column column = new Column ();
-      List<IEvaluation> evaluations = new List<IEvaluation> { column };
+      IEvaluation evaluation = column;
       object[] values = new object[] { };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       selectedObjectActivator.CreateSelectedObject (values);
     }
 
@@ -116,10 +116,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void TooManyValues ()
     {
       Constant constant = new Constant ("test");
-      List<IEvaluation> evaluations = new List<IEvaluation> { constant };
+      IEvaluation evaluation = constant;
       object[] values = new object[] { 1 };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       selectedObjectActivator.CreateSelectedObject (values);
     }
 
@@ -128,10 +128,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void NonSupportedEvaluations ()
     {
       var mockEvaluation = new DummyEvaluation ();
-      List<IEvaluation> evaluations = new List<IEvaluation> { mockEvaluation };
+      IEvaluation evaluation = mockEvaluation;
       object[] values = new object[] { };
 
-      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluations);
+      SelectedObjectActivator selectedObjectActivator = new SelectedObjectActivator (evaluation);
       selectedObjectActivator.CreateSelectedObject (values);
     }
   }

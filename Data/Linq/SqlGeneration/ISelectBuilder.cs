@@ -15,6 +15,6 @@ namespace Remotion.Data.Linq.SqlGeneration
 {
   public interface ISelectBuilder
   {
-    void BuildSelectPart (List<IEvaluation> selectEvaluations, bool distinct);
+    void BuildSelectPart (IEvaluation selectEvaluation, bool distinct);
   }
 }

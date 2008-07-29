@@ -22,25 +22,28 @@ namespace Remotion.Data.Linq.SqlGeneration
     public SqlGenerationData()
     {
       FromSources = new List<IColumnSource> ();
-      SelectEvaluations = new List<IEvaluation> ();
+      SelectEvaluation = null;
       OrderingFields = new List<OrderingField> ();
       Joins = new JoinCollection ();
       LetEvaluations = new List<LetData> ();
     }
 
-    public List<IColumnSource> FromSources { get; private set; }
-    public List<IEvaluation> SelectEvaluations { get; private set; }
-    public ICriterion Criterion { get; set; }
     public bool Distinct { get; set; }
+    public IEvaluation SelectEvaluation { get; private set; }
+    public List<IColumnSource> FromSources { get; private set; }
+    public ICriterion Criterion { get; set; }
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
     public List<LetData> LetEvaluations { get; private set; }
     public ParseMode ParseMode { get; set; }
     
-    public void AddSelectClause (SelectClause selectClause, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
+    public void SetSelectClause (bool distinct, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
     {
-      Distinct = selectClause.Distinct;
-      SelectEvaluations.Add(evaluation);
+      if (SelectEvaluation != null)
+        throw new InvalidOperationException ("There can only be one select clause.");
+
+      Distinct = distinct;
+      SelectEvaluation = evaluation;
 
       foreach (var selectedField in fieldDescriptors)
         Joins.AddPath (selectedField.SourcePath);
@@ -91,7 +94,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     public SelectedObjectActivator GetSelectedObjectActivator ()
     {
-      return ObjectFactory.Create<SelectedObjectActivator>().With (SelectEvaluations);
+      return ObjectFactory.Create<SelectedObjectActivator>().With (SelectEvaluation);
     }
   }
 }

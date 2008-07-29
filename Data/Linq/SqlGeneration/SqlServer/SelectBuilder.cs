@@ -25,20 +25,16 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildSelectPart (List<IEvaluation> selectEvaluations,bool distinct)
+    public void BuildSelectPart (IEvaluation selectEvaluation, bool distinct)
     {
-      ArgumentUtility.CheckNotNull ("selectEvaluations", selectEvaluations);
-      ArgumentUtility.CheckNotNull ("distinct", distinct);
+      ArgumentUtility.CheckNotNull ("selectEvaluation", selectEvaluation);
       
       if (distinct)
         _commandBuilder.Append ("SELECT DISTINCT ");
       else
         _commandBuilder.Append ("SELECT ");
 
-      if (selectEvaluations.Count == 0)
-        throw new InvalidOperationException ("The query does not select any fields from the data source.");
-
-      _commandBuilder.AppendEvaluations (selectEvaluations);
+      _commandBuilder.AppendEvaluation (selectEvaluation);
       _commandBuilder.Append(" ");
     }
   }

@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.Linq.DataObjectModel;
@@ -44,7 +45,11 @@ namespace Remotion.Data.Linq.SqlGeneration
       SqlGenerationData sqlGenerationData = ProcessQuery (queryModel);
 
       TContext context = CreateContext ();
-      CreateSelectBuilder (context).BuildSelectPart (sqlGenerationData.SelectEvaluations, sqlGenerationData.Distinct);
+      IEvaluation selectEvaluation = sqlGenerationData.SelectEvaluation;
+      if (selectEvaluation == null)
+        throw new InvalidOperationException ("The concrete subclass did not set a select evaluation.");
+
+      CreateSelectBuilder (context).BuildSelectPart (selectEvaluation, sqlGenerationData.Distinct);
       CreateFromBuilder (context).BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
       CreateFromBuilder (context).BuildLetPart (sqlGenerationData.LetEvaluations);
       CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);

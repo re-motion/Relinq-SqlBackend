@@ -36,37 +36,25 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     [Test]
     public void CombineColumnItems()
     {
-      
-      List<IEvaluation> evaluations = new List<IEvaluation> {
+      IEvaluation evaluation = new NewObject (typeof (Student).GetConstructor(Type.EmptyTypes), 
         new Column (new Table ("s1", "s1"), "c1"),
         new Column (new Table ("s2", "s2"), "c2"),
         new Column (new Table ("s3", "s3"), "c3")
-      };
+      );
 
-      _selectBuilder.BuildSelectPart (evaluations, false);
+      _selectBuilder.BuildSelectPart (evaluation, false);
       Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", _commandBuilder.GetCommandText());
-    }
-
-    [Test]
-    [ExpectedException (typeof (System.InvalidOperationException), ExpectedMessage = "The query does not select any fields from the data source.")]
-    public void NoColumns()
-    {
-
-      List<IEvaluation> evaluations = new List<IEvaluation>();
-
-      _selectBuilder.BuildSelectPart (evaluations,false);
     }
 
     [Test]
     public void DistinctSelect ()
     {
-
-      List<IEvaluation> evaluations = new List<IEvaluation> {
+      IEvaluation evaluation = new NewObject (typeof (Student).GetConstructor (Type.EmptyTypes),
         new Column (new Table ("s1", "s1"), "c1"),
         new Column (new Table ("s2", "s2"), "c2")
-      };
+      );
 
-      _selectBuilder.BuildSelectPart (evaluations, true);
+      _selectBuilder.BuildSelectPart (evaluation, true);
 
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", _commandBuilder.GetCommandText ());
     }
@@ -78,9 +66,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       Column c2 = new Column (new Table ("s2", "s2"), "c2");
       
       BinaryEvaluation binaryEvaluation = new BinaryEvaluation(c1,c2,BinaryEvaluation.EvaluationKind.Add);
-      List<IEvaluation> evaluations = new List<IEvaluation> { binaryEvaluation };
 
-      _selectBuilder.BuildSelectPart (evaluations, false);
+      _selectBuilder.BuildSelectPart (binaryEvaluation, false);
       Assert.AreEqual ("SELECT ([s1].[c1] + [s2].[c2]) ", _commandBuilder.GetCommandText ());
     }
   }

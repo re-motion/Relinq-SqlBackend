@@ -126,7 +126,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       
       IEvaluation evaluation = 
         _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
-      SqlGenerationData.AddSelectClause (selectClause, _parseContext.FieldDescriptors, evaluation);
+      SqlGenerationData.SetSelectClause (selectClause.Distinct, _parseContext.FieldDescriptors, evaluation);
     }
 
     public void VisitLetClause (LetClause letClause)

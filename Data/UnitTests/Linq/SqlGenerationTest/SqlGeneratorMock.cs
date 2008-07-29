@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
 
         Assert.AreEqual (ParseMode, sqlGenerationData.ParseMode);
 
-        Assert.That (sqlGenerationData.SelectEvaluations, Is.EqualTo (Visitor.SqlGenerationData.SelectEvaluations));
+        Assert.That (sqlGenerationData.SelectEvaluation, Is.EqualTo (Visitor.SqlGenerationData.SelectEvaluation));
         Assert.That (sqlGenerationData.Criterion, Is.EqualTo (Visitor.SqlGenerationData.Criterion));
 
         Assert.AreEqual (Visitor.SqlGenerationData.Joins.Count, sqlGenerationData.Joins.Count);
