@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       evaluation.Accept (visitor);
     }
 
-    public void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction)
+    public void AppendSeparatedItems<T> (IEnumerable<T> items, System.Action<T> appendAction)
     {
       bool first = true;
       foreach (T item in items)
