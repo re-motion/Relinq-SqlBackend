@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
@@ -72,14 +73,35 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendContainsCondition (IEvaluation left, IValue right)
     {
+      bool possibleConstant = left is Constant;
+      if (possibleConstant)
+      {
+        Constant constant = ((Constant) ((IValue) left));
+        bool possibleCollection = constant.Value is ICollection;
+        if (possibleCollection)
+        {
+          ICollection possibleEmptyCollection = ((ICollection) (((Constant) (left)).Value));
+          if (possibleEmptyCollection.Count == 0)
+            _commandBuilder.Append ("(0 = 1)");
+          else
+            AppendContainsForSubQuery (left, right);
+        }
+      }
+      else
+      {
+        AppendContainsForSubQuery (left, right);
+      }
+    }
+
+    private void AppendContainsForSubQuery (IEvaluation left, IValue right)
+    {
       AppendValue (right);
       _commandBuilder.Append (" IN (");
       _commandBuilder.AppendEvaluation (left);
       //CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommand (left.QueryModel);
-      
       _commandBuilder.Append (")");
     }
-    
+
     protected virtual ISqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
     {
       return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseMode.SubQueryInWhere);

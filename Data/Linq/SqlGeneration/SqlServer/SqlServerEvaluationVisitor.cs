@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         VisitConstant (new Constant (cons));
         counter++;
         if (counter != enumerable.Count)
-          CommandBuilder.Append (", ");
+         CommandBuilder.Append (", ");
       }
     }
     
