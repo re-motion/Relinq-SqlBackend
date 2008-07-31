@@ -20,6 +20,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -114,6 +115,19 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       visitor.VisitConstant (constant);
 
       Assert.AreEqual ("xyz (1<>1)", _commandBuilder.GetCommandText ());
+    }
+
+    [Test]
+    public void VisitConstant_WithCollection ()
+    {
+      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
+
+      List<int> ls = new List<int> { 1, 2, 3, 4 };
+      Constant constant = new Constant(ls);
+
+      visitor.VisitConstant (constant);
+
+      Assert.AreEqual ("xyz @2, @3, @4, @5", _commandBuilder.GetCommandText());
     }
 
     [Test]
@@ -225,11 +239,11 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       QueryParser parser = new QueryParser (query.Expression);
       QueryModel model = parser.GetParsedQuery ();
 
-      SubQuery subQuery = new SubQuery (model, "sub_alias");
+      SubQuery subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, "sub_alias");
 
       visitor.VisitSubQuery (subQuery);
 
-      Assert.AreEqual ("xyz ((SELECT [s].[FirstColumn] FROM [studentTable] [s]) sub_alias)",_commandBuilder.GetCommandText());
+      Assert.AreEqual ("xyz (SELECT [s].[FirstColumn] FROM [studentTable] [s]) [sub_alias]",_commandBuilder.GetCommandText());
     }
     
     [Test]
@@ -262,6 +276,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
     }
 
+    
     private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
     {
       SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());

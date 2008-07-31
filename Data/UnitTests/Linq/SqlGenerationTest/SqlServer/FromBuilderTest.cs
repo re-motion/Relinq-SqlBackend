@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     {
       MockRepository mockRepository = new MockRepository ();
 
-      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), "sub_alias");
+      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInFrom, "sub_alias");
       Table table1 = new Table ("s1", "s1_alias");
       List<IColumnSource> tables = new List<IColumnSource> { table1, subQuery };
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     [Test]
     public void CreateSqlGeneratorForSubQuery ()
     {
-      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), "sub_alias");
+      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (),ParseMode.SubQueryInFrom, "sub_alias");
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       FromBuilder fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
       InlineSqlServerGenerator subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (fromBuilder, "CreateSqlGeneratorForSubQuery", 

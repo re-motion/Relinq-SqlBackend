@@ -500,7 +500,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       CommandData result = sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN ((SELECT [s2].[IDColumn] FROM [studentTable] [s2]))", result.Statement);
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       CommandData result = sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN ((SELECT [s2].[IDColumn] FROM [studentTable] [s2]))", result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", 5) }));
     }
 
@@ -530,7 +530,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       SqlServerGenerator sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       CommandData result = sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[FirstColumn] FROM [studentTable] [s2])", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN ((SELECT [s2].[FirstColumn] FROM [studentTable] [s2]))", result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", "Hugo") }));
     }
 

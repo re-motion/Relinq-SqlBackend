@@ -9,12 +9,12 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
-using System.Text;
-using System.Reflection;
+
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
@@ -91,8 +91,11 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void VisitConstant (Constant constant)
     {
       ArgumentUtility.CheckNotNull ("constant", constant);
+      
       if (constant.Value == null)
         CommandBuilder.CommandText.Append ("NULL");
+      else if (constant.Value is ICollection)
+        AddConstantCollection ((ICollection) constant.Value);
       else if (constant.Value.Equals (true))
         CommandBuilder.Append ("(1=1)");
       else if (constant.Value.Equals (false))
@@ -104,6 +107,18 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
+    private void AddConstantCollection (ICollection enumerable)
+    {
+      int counter = 0;
+      foreach (var cons in enumerable)
+      {
+        VisitConstant (new Constant (cons));
+        counter++;
+        if (counter != enumerable.Count)
+          CommandBuilder.Append (", ");
+      }
+    }
+    
     public void VisitColumn (Column column)
     {
       ArgumentUtility.CheckNotNull ("column", column);
@@ -118,11 +133,16 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     public void VisitSubQuery (SubQuery subQuery)
     {
-      CommandBuilder.Append ("((");
-      new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, ParseMode.SubQueryInSelect).BuildCommand (subQuery.QueryModel);
-      CommandBuilder.Append (") ");
-      CommandBuilder.Append (subQuery.Alias);
+      CommandBuilder.Append ("(");
+      //new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, ParseMode.SubQueryInSelect).BuildCommand (subQuery.QueryModel);
+      new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, subQuery.ParseMode).BuildCommand (subQuery.QueryModel);
       CommandBuilder.Append (")");
+      if (subQuery.Alias != null)
+      {
+        CommandBuilder.Append (" [");
+        CommandBuilder.Append (subQuery.Alias);
+        CommandBuilder.Append ("]");
+      }
     }
 
     public void VisitMethodCall (MethodCall methodCall)

@@ -36,7 +36,8 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       else if (binaryCondition.Right.Equals (new Constant (null)))
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.Contains)
-        AppendContainsCondition ((SubQuery) binaryCondition.Left, binaryCondition.Right);
+        AppendContainsCondition (binaryCondition.Left, binaryCondition.Right);
+        //AppendContainsCondition ((SubQuery) binaryCondition.Left, binaryCondition.Right);
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.ContainsFulltext)
         AppendContainsFulltext (binaryCondition.Left, binaryCondition.Right);
       else
@@ -44,8 +45,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     }
 
     
-
-
     private void AppendContainsFulltext(IValue left, IValue right)
     {
       _commandBuilder.Append ("CONTAINS (");
@@ -71,11 +70,13 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    private void AppendContainsCondition (SubQuery left, IValue right)
+    private void AppendContainsCondition (IEvaluation left, IValue right)
     {
       AppendValue (right);
       _commandBuilder.Append (" IN (");
-      CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommand (left.QueryModel);
+      _commandBuilder.AppendEvaluation (left);
+      //CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommand (left.QueryModel);
+      
       _commandBuilder.Append (")");
     }
     
