@@ -9,11 +9,13 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
+using Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
@@ -25,21 +27,22 @@ namespace Remotion.Data.Linq.SqlGeneration
     private readonly ParseContext _parseContext;
 
     private bool _secondOrderByClause;
-    
-    public SqlGeneratorVisitor (IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParserRegistries detailParserRegistries, ParseContext parseContext)
+
+    public SqlGeneratorVisitor (
+        IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParserRegistries detailParserRegistries, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("parseContext", parseMode);
       ArgumentUtility.CheckNotNull ("detailParser", detailParserRegistries);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-      
+
       _databaseInfo = databaseInfo;
       _detailParserRegistries = detailParserRegistries;
       _parseContext = parseContext;
 
       _secondOrderByClause = false;
 
-      SqlGenerationData = new SqlGenerationData {ParseMode = parseMode};
+      SqlGenerationData = new SqlGenerationData { ParseMode = parseMode };
     }
 
     public SqlGenerationData SqlGenerationData { get; private set; }
@@ -63,7 +66,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      VisitFromClause(fromClause);
+      VisitFromClause (fromClause);
     }
 
     public void VisitSubQueryFromClause (SubQueryFromClause fromClause)
@@ -75,7 +78,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     private void VisitFromClause (FromClauseBase fromClause)
     {
       IColumnSource columnSource = fromClause.GetFromSource (_databaseInfo);
-      
+
       SqlGenerationData.AddFromClause (columnSource);
     }
 
@@ -88,7 +91,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
-      LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression ();
+      LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression();
       ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext);
 
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
@@ -97,12 +100,12 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitOrderByClause (OrderByClause orderByClause)
     {
       ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
-      
+
       for (int i = 0; i < orderByClause.OrderingList.Count; i++)
       {
         OrderingClause clause = orderByClause.OrderingList[i];
         clause.Accept (this);
-        if (i == (orderByClause.OrderingList.Count-1))
+        if (i == (orderByClause.OrderingList.Count - 1))
           _secondOrderByClause = true;
       }
     }
@@ -111,7 +114,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
       var fieldParser = new OrderingFieldParser (_databaseInfo);
-      OrderingField orderingField = fieldParser.Parse(orderingClause.Expression.Body, _parseContext, orderingClause.OrderDirection);
+      OrderingField orderingField = fieldParser.Parse (orderingClause.Expression.Body, _parseContext, orderingClause.OrderDirection);
 
       if (!_secondOrderByClause)
         SqlGenerationData.AddOrderingFields (orderingField);
@@ -122,31 +125,53 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      Expression projectionBody = selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
-      
-      IEvaluation evaluation = 
-        _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
-      SqlGenerationData.SetSelectClause (selectClause.Distinct, _parseContext.FieldDescriptors, evaluation);
+      Expression projectionBody =
+          selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
+
+      List<MethodCall> methodCalls = GetMethodCalls(selectClause);
+
+      IEvaluation evaluation =
+          _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
+
+      SetSelectClause (methodCalls, evaluation);
+    }
+
+    private List<MethodCall> GetMethodCalls (SelectClause selectClause)
+    {
+      List<MethodCall> methodCalls = new List<MethodCall>();
+      ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser);
+      if (selectClause.ResultModifiers != null)
+      {
+        foreach (var method in selectClause.ResultModifiers)
+          methodCalls.Add (parser.Parse (method, _parseContext));
+      }
+      return methodCalls;
+    }
+
+    private void SetSelectClause (List<MethodCall> methodCalls, IEvaluation evaluation)
+    {
+      if (methodCalls.Count != 0)
+        SqlGenerationData.SetSelectClause (methodCalls, _parseContext.FieldDescriptors, evaluation);
+      else
+        SqlGenerationData.SetSelectClause (null, _parseContext.FieldDescriptors, evaluation);
     }
 
     public void VisitLetClause (LetClause letClause)
     {
       ArgumentUtility.CheckNotNull ("letClause", letClause);
       Expression projectionBody = letClause.Expression;
-      
-      IEvaluation evaluation =
-        _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
 
-    
-      LetData letData = new LetData(evaluation, letClause.Identifier.Name,letClause.GetColumnSource(_databaseInfo));
-      SqlGenerationData.AddLetClause (letData,_parseContext.FieldDescriptors);
+      IEvaluation evaluation =
+          _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
+
+
+      LetData letData = new LetData (evaluation, letClause.Identifier.Name, letClause.GetColumnSource (_databaseInfo));
+      SqlGenerationData.AddLetClause (letData, _parseContext.FieldDescriptors);
     }
 
     public void VisitGroupClause (GroupClause groupClause)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
-
-    
   }
 }

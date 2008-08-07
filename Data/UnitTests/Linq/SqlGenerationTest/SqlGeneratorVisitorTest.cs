@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -54,6 +55,26 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
           new Column (new Table ("studentTable", "s"), "FirstColumn"),
           new Column (new Table ("studentTable", "s"), "LastColumn")});
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (expectedNewObject));
+    }
+
+    [Test]
+    public void VisitSelectClause_MethodCall ()
+    {
+      LambdaExpression expression = ExpressionHelper.CreateLambdaExpression ();
+      IClause clause = ExpressionHelper.CreateClause ();
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
+      MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression);
+      List<MethodCallExpression> methodCallExpressions = new List<MethodCallExpression>();
+      methodCallExpressions.Add (methodCallExpression);
+      SelectClause selectClause = new SelectClause (clause, expression, methodCallExpressions);
+
+      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+
+      Assert.AreEqual (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, new Constant(0));
     }
 
 
@@ -119,30 +140,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       Assert.AreEqual (expectedJoin, actualJoin);
     }
     
-    [Test]
-    public void VisitSelectClause_DistinctFalse ()
-    {
-      IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource ());
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
-
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitSelectClause (selectClause);
-
-      Assert.IsFalse (selectClause.Distinct);
-    }
-    
-    [Test]
-    public void VisitSelectClause_DistinctTrue ()
-    {
-      IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (ExpressionHelper.CreateQuerySource ());
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
-
-      Assert.IsTrue (selectClause.Distinct);
-    }
-
     [Test]
     public void VisitSelectClause_WithJoins ()
     {

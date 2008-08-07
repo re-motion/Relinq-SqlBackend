@@ -13,10 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 {
@@ -42,23 +43,73 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
         new Column (new Table ("s3", "s3"), "c3")
       );
 
-      _selectBuilder.BuildSelectPart (evaluation, false);
+      _selectBuilder.BuildSelectPart (evaluation, null);
       Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", _commandBuilder.GetCommandText());
+    }
+    
+    [Test]
+    public void SelectWithCount ()
+    {
+      IEvaluation evaluation = new Constant();
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
+      List<MethodCall> methodCalls = new List<MethodCall>();
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      methodCalls.Add (methodCall);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+
+      Assert.AreEqual ("SELECT COUNT (*) ", _commandBuilder.GetCommandText());
     }
 
     [Test]
-    public void DistinctSelect ()
+    public void SelectWithDistinct ()
     {
       IEvaluation evaluation = new NewObject (typeof (Student).GetConstructor (Type.EmptyTypes),
         new Column (new Table ("s1", "s1"), "c1"),
         new Column (new Table ("s2", "s2"), "c2")
       );
 
-      _selectBuilder.BuildSelectPart (evaluation, true);
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Distinct (query));
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      methodCalls.Add (methodCall);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
 
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", _commandBuilder.GetCommandText ());
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Method 'ElementAt' is not supported.")]
+    public void Select_UnknownMethod ()
+    {
+      IEvaluation evaluation = new Constant ();
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.ElementAt (query, 5));
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      methodCalls.Add (methodCall);
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+    }
+
+    [Test]
+    public void SelectWithFirst ()
+    {
+      IEvaluation evaluation = new Column (new Table ("o", "o"), "*");
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.First (query));
+
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      methodCalls.Add (methodCall);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+
+      Assert.AreEqual ("SELECT TOP 1 [o].* ", _commandBuilder.GetCommandText ());
+    }
+   
     [Test]
     public void BinaryEvaluations_Add ()
     {
@@ -67,7 +118,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       
       BinaryEvaluation binaryEvaluation = new BinaryEvaluation(c1,c2,BinaryEvaluation.EvaluationKind.Add);
 
-      _selectBuilder.BuildSelectPart (binaryEvaluation, false);
+      _selectBuilder.BuildSelectPart (binaryEvaluation, null);
       Assert.AreEqual ("SELECT ([s1].[c1] + [s2].[c2]) ", _commandBuilder.GetCommandText ());
     }
   }

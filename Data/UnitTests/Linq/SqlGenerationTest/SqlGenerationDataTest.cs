@@ -13,8 +13,10 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
 using System.Linq;
+using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
 {
@@ -22,25 +24,20 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
   public class SqlGenerationDataTest
   {
     [Test]
-    public void SetSelectClause_DistinctTrue ()
+    public void SetSelectClause_MethodCall ()
     {
-      var data = new SqlGenerationData ();
+      var data = new SqlGenerationData();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      data.SetSelectClause (true, fieldDescriptors, evaluation);
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      List<MethodCall> methodCalls = new List<MethodCall>();
+      methodCalls.Add (methodCall);
 
-      Assert.That (data.Distinct, Is.True);
-    }
+      data.SetSelectClause (methodCalls, fieldDescriptors, evaluation);
 
-    [Test]
-    public void SetSelectClause_DistinctFalse ()
-    {
-      var data = new SqlGenerationData ();
-      var fieldDescriptors = new List<FieldDescriptor> ();
-      var evaluation = new Constant (0);
-      data.SetSelectClause (false, fieldDescriptors, evaluation);
-
-      Assert.That (data.Distinct, Is.False);
+      Assert.That (data.ResultModifiers, Is.EqualTo (methodCalls));
     }
 
     [Test]
@@ -49,7 +46,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var data = new SqlGenerationData ();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      data.SetSelectClause (true, fieldDescriptors, evaluation);
+      data.SetSelectClause (null, fieldDescriptors, evaluation);
 
       Assert.That (data.SelectEvaluation, Is.EqualTo (evaluation));
     }
@@ -63,7 +60,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var fieldDescriptor = new FieldDescriptor (typeof (string).GetProperty ("Length"), sourcePath, null);
       var fieldDescriptors = new List<FieldDescriptor> { fieldDescriptor };
       var evaluation = new Constant (0);
-      data.SetSelectClause (true, fieldDescriptors, evaluation);
+      data.SetSelectClause (null, fieldDescriptors, evaluation);
 
       Assert.That (data.Joins[sourcePath.FirstSource], Is.EqualTo (new[] {join}));
     }
@@ -75,8 +72,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var data = new SqlGenerationData ();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      data.SetSelectClause (true, fieldDescriptors, evaluation);
-      data.SetSelectClause (true, fieldDescriptors, evaluation);
+      data.SetSelectClause (null, fieldDescriptors, evaluation);
+      data.SetSelectClause (null, fieldDescriptors, evaluation);
     }
   }
 }

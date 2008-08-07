@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var query = ExpressionHelper.CreateQueryModel ();
       SqlGeneratorMock generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
       
-      // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, false);
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, null);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
@@ -71,9 +71,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
-      // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, false);
-      LastCall.Do ((Action<IEvaluation,bool>) delegate
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, null);
+      LastCall.Do ((Action<IEvaluation, List<MethodCall>>) delegate
       {
         generator.Context.CommandText.Append ("Select");
       });
@@ -133,8 +133,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
-      // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, false);
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, null);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
@@ -152,8 +152,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.SubQueryInWhere);
 
-      // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, false);
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, null);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
@@ -172,8 +172,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
-      // Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, false);
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, null);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
@@ -192,8 +192,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
-      //Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, true);
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, generator.Visitor.SqlGenerationData.ResultModifiers);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);
@@ -212,8 +212,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
-      //Expect
-      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, true);
+      // expected
+      _selectBuilder.BuildSelectPart (generator.Visitor.SqlGenerationData.SelectEvaluation, generator.Visitor.SqlGenerationData.ResultModifiers);
       _fromBuilder.BuildFromPart (generator.Visitor.SqlGenerationData.FromSources, generator.Visitor.SqlGenerationData.Joins);
       _fromBuilder.BuildLetPart (generator.Visitor.SqlGenerationData.LetEvaluations);
       _whereBuilder.BuildWherePart (generator.Visitor.SqlGenerationData.Criterion);

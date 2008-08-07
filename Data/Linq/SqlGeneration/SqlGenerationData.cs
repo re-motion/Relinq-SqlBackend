@@ -28,7 +28,6 @@ namespace Remotion.Data.Linq.SqlGeneration
       LetEvaluations = new List<LetData> ();
     }
 
-    public bool Distinct { get; set; }
     public IEvaluation SelectEvaluation { get; private set; }
     public List<IColumnSource> FromSources { get; private set; }
     public ICriterion Criterion { get; set; }
@@ -36,19 +35,20 @@ namespace Remotion.Data.Linq.SqlGeneration
     public JoinCollection Joins { get; private set; }
     public List<LetData> LetEvaluations { get; private set; }
     public ParseMode ParseMode { get; set; }
+    public List<MethodCall> ResultModifiers { get; set; }
     
-    public void SetSelectClause (bool distinct, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
+    public void SetSelectClause (List<MethodCall> resultModifiers, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
     {
       if (SelectEvaluation != null)
         throw new InvalidOperationException ("There can only be one select clause.");
 
-      Distinct = distinct;
+      ResultModifiers = resultModifiers;
       SelectEvaluation = evaluation;
 
       foreach (var selectedField in fieldDescriptors)
         Joins.AddPath (selectedField.SourcePath);
     }
-
+    
     public void AddLetClause (LetData letData, List<FieldDescriptor> fieldDescriptors)
     {
       LetEvaluations.Add (letData);
