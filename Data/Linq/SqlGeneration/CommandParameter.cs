@@ -14,15 +14,25 @@ namespace Remotion.Data.Linq.SqlGeneration
 {
   public struct CommandParameter
   {
-    public readonly string Name;
-    public readonly object Value;
+    private readonly string _name;
+    private readonly object _value;
 
     public CommandParameter (string name, object value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      Name = name;
-      Value = value;
+      _name = name;
+      _value = value;
+    }
+
+    public string Name
+    {
+      get { return _name; }
+    }
+
+    public object Value
+    {
+      get { return _value; }
     }
   }
 }

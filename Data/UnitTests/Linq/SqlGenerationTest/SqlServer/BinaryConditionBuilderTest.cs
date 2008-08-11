@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     {
       SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInWhere, null);
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      BinaryConditionBuilder conditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      BinaryConditionBuilder conditionBuilder = new BinaryConditionBuilder (commandBuilder);
       InlineSqlServerGenerator subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (conditionBuilder, "CreateSqlGeneratorForSubQuery",
           subQuery, StubDatabaseInfo.Instance, commandBuilder);
       Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       BinaryCondition binaryCondition = new BinaryCondition (column, constant, BinaryCondition.ConditionKind.ContainsFulltext);
 
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
 
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       BinaryCondition binaryCondition = new BinaryCondition(constantCollection, column, BinaryCondition.ConditionKind.Contains);
 
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
-      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
 
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       BinaryCondition binaryCondition = new BinaryCondition (constantCollection, column, BinaryCondition.ConditionKind.Contains);
 
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
-      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
 
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
       SqlServerGenerator sqlServerGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, sqlServerGenerator.MethodCallRegistry);
-      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
 
       binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
        params CommandParameter[] expectedParameters)
     {
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      BinaryConditionBuilder binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
 
       binaryConditionBuilder.BuildBinaryConditionPart (condition);
 

@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void VisitBinaryCondition (BinaryCondition binaryCondition)
     {
       ArgumentUtility.CheckNotNull ("binaryCondition", binaryCondition);
-      new BinaryConditionBuilder (CommandBuilder, DatabaseInfo).BuildBinaryConditionPart (binaryCondition);
+      new BinaryConditionBuilder (CommandBuilder).BuildBinaryConditionPart (binaryCondition);
     }
 
     public void VisitSubQuery (SubQuery subQuery)

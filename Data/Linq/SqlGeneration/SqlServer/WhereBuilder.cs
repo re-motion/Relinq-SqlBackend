@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       _commandBuilder = commandBuilder;
       _databaseInfo = databaseInfo;
-      _builder = new BinaryConditionBuilder (_commandBuilder, _databaseInfo);
+      _builder = new BinaryConditionBuilder (_commandBuilder);
     }
 
     public void BuildWherePart (ICriterion criterion)

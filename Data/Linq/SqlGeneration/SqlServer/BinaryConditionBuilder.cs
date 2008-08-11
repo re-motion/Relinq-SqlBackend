@@ -19,15 +19,11 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
   public class BinaryConditionBuilder
   {
     private readonly CommandBuilder _commandBuilder;
-    private readonly IDatabaseInfo _databaseInfo;
 
-    public BinaryConditionBuilder (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public BinaryConditionBuilder (CommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("command", commandBuilder);
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-
       _commandBuilder = commandBuilder;
-      _databaseInfo = databaseInfo;
     }
 
     public void BuildBinaryConditionPart (BinaryCondition binaryCondition)
@@ -73,14 +69,12 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendContainsCondition (IEvaluation left, IValue right)
     {
-      bool possibleConstant = left is Constant;
-      if (possibleConstant)
+      if (left is Constant)
       {
-        Constant constant = ((Constant) ((IValue) left));
-        bool possibleCollection = constant.Value is ICollection;
-        if (possibleCollection)
+        var constant = (Constant) left;
+        if (constant.Value is ICollection)
         {
-          ICollection possibleEmptyCollection = ((ICollection) (((Constant) (left)).Value));
+          var possibleEmptyCollection = (ICollection) constant.Value;
           if (possibleEmptyCollection.Count == 0)
             _commandBuilder.Append ("(0 = 1)");
           else
@@ -88,9 +82,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         }
       }
       else
-      {
         AppendContainsForSubQuery (left, right);
-      }
     }
 
     private void AppendContainsForSubQuery (IEvaluation left, IValue right)
@@ -98,7 +90,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       AppendValue (right);
       _commandBuilder.Append (" IN (");
       _commandBuilder.AppendEvaluation (left);
-      //CreateSqlGeneratorForSubQuery (left, _databaseInfo, _commandBuilder).BuildCommand (left.QueryModel);
       _commandBuilder.Append (")");
     }
 
