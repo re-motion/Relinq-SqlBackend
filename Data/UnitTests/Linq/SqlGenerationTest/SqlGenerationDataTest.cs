@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var evaluation = new Constant (0);
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
-      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
       List<MethodCall> methodCalls = new List<MethodCall>();
       methodCalls.Add (methodCall);
 

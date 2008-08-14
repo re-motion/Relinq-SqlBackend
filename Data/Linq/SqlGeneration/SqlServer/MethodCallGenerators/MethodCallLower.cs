@@ -21,7 +21,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
       commandBuilder.Append ("LOWER(");
-      commandBuilder.AppendEvaluation (methodCall.EvaluationParameter);
+      commandBuilder.AppendEvaluation (methodCall.EvaluationObject);
       commandBuilder.Append (")");
     }
   }

@@ -28,37 +28,40 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     public void BuildSelectPart (IEvaluation selectEvaluation, List<MethodCall> resultModifiers)
     {
       ArgumentUtility.CheckNotNull ("selectEvaluation", selectEvaluation);
-      
+      bool evaluation = true;
       _commandBuilder.Append ("SELECT ");
-      //at the moment list may only has one method (select rausziehen)
+      //at the moment list may only has one method
       if (resultModifiers != null)
       {
         foreach (var methodCall in resultModifiers)
         {
           string method = methodCall.EvaluationMethodInfo.Name;
-
+          
           if (method == "Count")
+          {
             _commandBuilder.Append ("COUNT (*) ");
-          else if (method == "Distinct")
-          {
-            _commandBuilder.Append ("DISTINCT ");
-            AppendEvaluation (selectEvaluation);
-          }
-          else if (method == "First")
-          {
-            _commandBuilder.Append ("TOP 1 ");
-            AppendEvaluation (selectEvaluation);
+            evaluation = false;
           }
           else
           {
-            string message = string.Format ("Method '{0}' is not supported.", method);
-            throw new NotSupportedException (message);
+            if (method == "Distinct")
+              _commandBuilder.Append ("DISTINCT ");
+            else if ((method == "First") || (method == "Single"))
+              _commandBuilder.Append ("TOP 1 ");
+          else
+            {
+              string message = string.Format ("Method '{0}' is not supported.", method);
+              throw new NotSupportedException (message);
+            }
           }
         }
       }
-      else
+
+      if (evaluation)
       {
+        //_commandBuilder.Append ("( ");
         AppendEvaluation (selectEvaluation);
+        //_commandBuilder.Append (") ");
       }
     }
     

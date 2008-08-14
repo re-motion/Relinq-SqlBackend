@@ -17,12 +17,12 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
     public void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder)
     {
       commandBuilder.Append ("STUFF(");
-      commandBuilder.AppendEvaluation (methodCall.EvaluationParameter);
+      commandBuilder.AppendEvaluation (methodCall.EvaluationObject);
       commandBuilder.Append (",");
       foreach (var argument in methodCall.EvaluationArguments)
         commandBuilder.AppendEvaluation (argument);
       commandBuilder.Append (",CONVERT(Int,DATALENGTH(");
-      commandBuilder.AppendEvaluation (methodCall.EvaluationParameter);
+      commandBuilder.AppendEvaluation (methodCall.EvaluationObject);
       commandBuilder.Append (") / 2), \"");
       commandBuilder.Append (")");
     }

@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -32,12 +33,14 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
   {
     private JoinedTableContext _context;
     private ParseMode _parseMode;
+    private DetailParserRegistries _detailParserRegistries;
 
     [SetUp]
     public void SetUp()
     {
       _context = new JoinedTableContext();
       _parseMode = new ParseMode();
+      _detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
     }
 
     [Test]
@@ -47,8 +50,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
       NewObject expectedNewObject = new NewObject (typeof (Tuple<string, string>).GetConstructors()[0], new IEvaluation[] {
@@ -70,11 +72,66 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       methodCallExpressions.Add (methodCallExpression);
       SelectClause selectClause = new SelectClause (clause, expression, methodCallExpressions);
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
       Assert.AreEqual (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, new Constant(0));
+    }
+
+    [Test]
+    public void VisitSelectClause_ResultModifier ()
+    {
+      var query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery(ExpressionHelper.CreateQuerySource ());
+
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      sqlGeneratorVisitor.VisitSelectClause ((SelectClause) parsedQuery.SelectOrGroupClause);
+
+      var distinctMethod = ParserUtility.GetMethod (() => query.Distinct());
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers, Is.EqualTo (new[] { new MethodCall (distinctMethod, null, new List<IEvaluation> { SourceMarkerEvaluation.Instance }) }));
+    }
+
+    [Test]
+    [Ignore ("TODO: Implement VisitResultModifierClause")]
+    public void VisitSelectClause_SingleComplex ()
+    {
+      LambdaExpression expression = ExpressionHelper.CreateLambdaExpression ();
+      IClause clause = ExpressionHelper.CreateClause ();
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Single (query, (i => i.First == "Test")));
+      MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression);
+
+      List<MethodCallExpression> methodCallExpressions = new List<MethodCallExpression> ();
+      methodCallExpressions.Add (methodCallExpression);
+      SelectClause selectClause = new SelectClause (clause, expression, methodCallExpressions);
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      sqlGeneratorVisitor.VisitSelectClause (selectClause);
+    }
+
+    [Test]
+    [Ignore ("TODO: Implement VisitResultModifierClause")]
+    public void VisitResultModifierClause ()
+    {
+      LambdaExpression expression = ExpressionHelper.CreateLambdaExpression ();
+      IClause clause = ExpressionHelper.CreateClause ();
+      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      Func<Student, bool> predicate = (i => i.First == "Test");
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Single (query, predicate));
+      Expression boolExpression = ExpressionHelper.MakeExpression<Student, Func<Student, bool>> (x => (i => i.First == "Test"));
+      MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression, boolExpression);
+
+      // methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression<IQueryable<Student>, Student> (q => q.Single ((i => i.First == "Test")));
+
+      SelectClause selectClause = new SelectClause (clause, expression);
+      
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      
+      //VisitSelectClause
+      var expressionTree = selectClause.ResultModifierData.First().ResultModifier;
+
     }
 
 
@@ -85,8 +142,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);    
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (new Column (new Table ("studentTable", "s"), "*")));
     }
@@ -100,8 +156,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       LetClause letClause = (LetClause) parsedQuery.BodyClauses.First ();
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitLetClause (letClause);
 
       BinaryEvaluation expectedResult = 
@@ -121,8 +176,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       LetClause letClause = (LetClause) parsedQuery.BodyClauses.First ();
       IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitLetClause (letClause);
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
@@ -146,8 +200,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       IQueryable<string> query = JoinTestQueryGenerator.CreateSimpleImplicitSelectJoin (ExpressionHelper.CreateQuerySource_Detail ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
@@ -178,8 +231,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       MainFromClause fromClause = parsedQuery.MainFromClause;
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitMainFromClause (fromClause);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
@@ -192,8 +244,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       AdditionalFromClause fromClause = (AdditionalFromClause)parsedQuery.BodyClauses.First();
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
@@ -206,8 +257,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       SubQueryFromClause subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses.First();
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitSubQueryFromClause (subQueryFromClause);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { subQueryFromClause.GetFromSource (StubDatabaseInfo.Instance) }));
@@ -222,8 +272,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
 
       WhereClause whereClause = (WhereClause)parsedQuery.BodyClauses.First();
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       Assert.AreEqual (new BinaryCondition (new Column (new Table ("studentTable", "s"), "LastColumn"),
@@ -241,8 +290,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       WhereClause whereClause2 = (WhereClause) parsedQuery.BodyClauses[1];
       WhereClause whereClause3 = (WhereClause) parsedQuery.BodyClauses[2];
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitWhereClause (whereClause1);
       sqlGeneratorVisitor.VisitWhereClause (whereClause2);
 
@@ -269,8 +317,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       FieldDescriptor fieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
@@ -286,8 +333,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       OrderingClause orderingClause = orderBy.OrderingList.First ();
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
@@ -320,8 +366,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       FieldDescriptor fieldDescriptor1 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
       FieldDescriptor fieldDescriptor2 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitOrderByClause (orderBy1);
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
           Is.EqualTo (new object[]
@@ -339,8 +384,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       WhereClause whereClause = ClauseFinder.FindClause<WhereClause> (parsedQuery.SelectOrGroupClause);
 
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");

@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
       List<MethodCall> methodCalls = new List<MethodCall>();
-      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
       methodCalls.Add (methodCall);
 
       _selectBuilder.BuildSelectPart (evaluation, methodCalls);
@@ -73,12 +73,87 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.Distinct (query));
       List<MethodCall> methodCalls = new List<MethodCall> ();
-      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
       methodCalls.Add (methodCall);
 
       _selectBuilder.BuildSelectPart (evaluation, methodCalls);
 
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1], [s2].[c2] ", _commandBuilder.GetCommandText ());
+    }
+
+    [Test]
+    [Ignore]
+    public void SelectWithAverage ()
+    {
+      IEvaluation evaluation = new NewObject (typeof (Student).GetConstructor (Type.EmptyTypes),
+        new Column (new Table ("s1", "s1"), "c1")
+      );
+
+      var query = SelectTestQueryGenerator.CreateSimpleQueryOnID (ExpressionHelper.CreateQuerySource ());
+      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Average (query));
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
+      methodCalls.Add (methodCall);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+
+      Assert.AreEqual ("SELECT AVG [s1].[c1] ", _commandBuilder.GetCommandText ());
+    }
+
+    [Test]
+    public void SelectWithDistinctAndFirst ()
+    {
+      IEvaluation evaluation = new NewObject (typeof (Student).GetConstructor (Type.EmptyTypes),
+       new Column (new Table ("o", "o"), "c")
+     );
+
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var distinctMethod = ParserUtility.GetMethod (() => Enumerable.Distinct (query));
+      var firstMethod = ParserUtility.GetMethod(() => Enumerable.First(query));
+      MethodCall methodCallDistinct = new MethodCall (distinctMethod, evaluation, new List<IEvaluation> ());
+      MethodCall methodCallFirst = new MethodCall (firstMethod, evaluation, new List<IEvaluation> ());
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      methodCalls.Add (methodCallDistinct);
+      methodCalls.Add (methodCallFirst);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+
+      Assert.AreEqual("SELECT DISTINCT TOP 1 [o].[c] ", _commandBuilder.GetCommandText());
+    }
+
+    [Test]
+    public void SelectWithSingleSimple ()
+    {
+      IEvaluation evaluation = new Column(new Table("o","o"),"c");
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var singleMethod = ParserUtility.GetMethod (() => Enumerable.Single (query));
+
+      MethodCall singleMethodCall = new MethodCall (singleMethod, evaluation, new List<IEvaluation> ());
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      methodCalls.Add (singleMethodCall);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+
+      Assert.AreEqual ("SELECT TOP 1 [o].[c] ", _commandBuilder.GetCommandText());
+    }
+
+    [Test]
+    [Ignore]
+    public void SelectWithSingleComplex ()
+    {
+      //Predicat as WHERE-Clause
+      IEvaluation evaluation = new Column (new Table ("o", "o"), "c");
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var singleMethod = ParserUtility.GetMethod (() => Enumerable.Single (query,(i => i.First == "Test")));
+
+      MethodCall singleMethodCall = new MethodCall (singleMethod, evaluation, new List<IEvaluation>());
+      List<MethodCall> methodCalls = new List<MethodCall> ();
+      methodCalls.Add (singleMethodCall);
+
+      _selectBuilder.BuildSelectPart (evaluation, methodCalls);
+      
+      Assert.AreEqual ("SELECT TOP 1 [o].[c]  ", _commandBuilder.GetCommandText ());
+      //where clause
     }
 
     [Test]
@@ -89,7 +164,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.ElementAt (query, 5));
       List<MethodCall> methodCalls = new List<MethodCall> ();
-      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
       methodCalls.Add (methodCall);
       _selectBuilder.BuildSelectPart (evaluation, methodCalls);
     }
@@ -102,7 +177,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.First (query));
 
       List<MethodCall> methodCalls = new List<MethodCall> ();
-      MethodCall methodCall = new MethodCall (methodInfo, evaluation, null);
+      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation>());
       methodCalls.Add (methodCall);
 
       _selectBuilder.BuildSelectPart (evaluation, methodCalls);

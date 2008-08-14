@@ -140,6 +140,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       List<MethodCall> methodCalls = new List<MethodCall>();
       ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser);
+      
       if (selectClause.ResultModifiers != null)
       {
         foreach (var method in selectClause.ResultModifiers)

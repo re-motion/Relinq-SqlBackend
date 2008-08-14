@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
       MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
       Column column = new Column (fromSource, "FirstColumn");
-      MethodCall methodCall = new MethodCall (methodInfo, column, null);
+      MethodCall methodCall = new MethodCall (methodInfo, column, new List<IEvaluation> ());
 
       BinaryCondition binaryCondition = new BinaryCondition(methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);
 
