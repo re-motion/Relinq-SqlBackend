@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       _databaseInfo = StubDatabaseInfo.Instance;
 
       MockRepository repository = new MockRepository ();
-      _connection = repository.CreateMock<IDbConnection> ();
+      _connection = repository.StrictMock<IDbConnection> ();
 
       IDataParameterCollection parameterCollection = new StubParameterCollection ();
 

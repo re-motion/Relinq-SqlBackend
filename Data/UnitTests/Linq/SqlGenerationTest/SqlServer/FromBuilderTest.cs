@@ -114,8 +114,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       commandBuilder.AddParameter (1);
 
-      FromBuilder fromBuilderMock = mockRepository.CreateMock<FromBuilder> (commandBuilder, StubDatabaseInfo.Instance);
-      ISqlGeneratorBase subQueryGeneratorMock = mockRepository.CreateMock<ISqlGeneratorBase> ();
+      FromBuilder fromBuilderMock = mockRepository.StrictMock<FromBuilder> (commandBuilder, StubDatabaseInfo.Instance);
+      ISqlGeneratorBase subQueryGeneratorMock = mockRepository.StrictMock<ISqlGeneratorBase> ();
 
       Expect.Call (PrivateInvoke.InvokeNonPublicMethod (fromBuilderMock, "CreateSqlGeneratorForSubQuery", subQuery, StubDatabaseInfo.Instance,
           commandBuilder)).Return (subQueryGeneratorMock);

@@ -37,10 +37,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     public void SetUp()
     {
       _mockRepository = new MockRepository();
-      _selectBuilder = _mockRepository.CreateMock<ISelectBuilder> ();
-      _fromBuilder = _mockRepository.CreateMock<IFromBuilder> ();
-      _whereBuilder = _mockRepository.CreateMock<IWhereBuilder> ();
-      _orderByBuilder = _mockRepository.CreateMock<IOrderByBuilder> ();
+      _selectBuilder = _mockRepository.StrictMock<ISelectBuilder> ();
+      _fromBuilder = _mockRepository.StrictMock<IFromBuilder> ();
+      _whereBuilder = _mockRepository.StrictMock<IWhereBuilder> ();
+      _orderByBuilder = _mockRepository.StrictMock<IOrderByBuilder> ();
       
     }
 
