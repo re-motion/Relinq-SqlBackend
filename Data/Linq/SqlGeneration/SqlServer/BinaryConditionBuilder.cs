@@ -93,7 +93,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder.Append (")");
     }
 
-    protected virtual ISqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
+    protected virtual ISqlGenerator CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
     {
       return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseMode.SubQueryInWhere);
     }

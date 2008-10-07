@@ -12,7 +12,7 @@ using Remotion.Data.Linq.Parsing.Details;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public interface ISqlGeneratorBase
+  public interface ISqlGenerator
   {
     CommandData BuildCommand (QueryModel queryModel);
     DetailParserRegistries DetailParserRegistries { get; }

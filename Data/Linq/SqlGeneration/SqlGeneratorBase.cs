@@ -19,7 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public abstract class SqlGeneratorBase<TContext> : ISqlGeneratorBase where TContext : ISqlGenerationContext
+  public abstract class SqlGeneratorBase<TContext> : ISqlGenerator where TContext : ISqlGenerationContext
   {
     protected SqlGeneratorBase (IDatabaseInfo databaseInfo, ParseMode parseMode)
     {

@@ -53,13 +53,13 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     private void AppendCrossApply (SubQuery subQuery)
     {
       _commandBuilder.Append (" CROSS APPLY (");
-      ISqlGeneratorBase subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
+      ISqlGenerator subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
       subQueryGenerator.BuildCommand (subQuery.QueryModel);
       _commandBuilder.Append (") ");
       _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));
     }
 
-    protected virtual ISqlGeneratorBase CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
+    protected virtual ISqlGenerator CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
     {
       return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseMode.SubQueryInFrom);
     }
