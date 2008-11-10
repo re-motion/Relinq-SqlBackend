@@ -251,6 +251,25 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     }
 
     [Test]
+    public void VisitMemberFromClause ()
+    {
+      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource(ExpressionHelper.CreateQuerySource_IndustrialSector());
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      MemberFromClause fromClause = (MemberFromClause) parsedQuery.BodyClauses.First ();
+
+      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      sqlGeneratorVisitor.VisitMemberFromClause (fromClause);
+
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s1") }));
+
+      var expectedLeftSideTable = new Table ("industrialTable", "sector");
+      var expectedLeftSide = new Column (expectedLeftSideTable, "IDColumn");
+      var expectedRightSide = new Column (sqlGeneratorVisitor.SqlGenerationData.FromSources[0], "Student_to_IndustrialSector_FK");
+      var expectedCondition = new BinaryCondition (expectedLeftSide, expectedRightSide, BinaryCondition.ConditionKind.Equal);
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (expectedCondition));
+    }
+
+    [Test]
     public void VisitSubQueryFromClause ()
     {
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());

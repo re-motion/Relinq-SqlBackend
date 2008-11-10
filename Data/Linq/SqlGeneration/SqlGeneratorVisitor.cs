@@ -69,6 +69,20 @@ namespace Remotion.Data.Linq.SqlGeneration
       VisitFromClause (fromClause);
     }
 
+    public void VisitMemberFromClause (MemberFromClause fromClause)
+    {
+      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
+      VisitFromClause (fromClause);
+
+      var memberExpression = fromClause.MemberExpression;
+      var leftSide = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression).Parse (memberExpression.Expression, _parseContext);
+      var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).B;
+      var rightSide = new Column (fromClause.GetFromSource (_databaseInfo), foreignKeyName);
+
+      ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
+      SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
+    }
+
     public void VisitSubQueryFromClause (SubQueryFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
