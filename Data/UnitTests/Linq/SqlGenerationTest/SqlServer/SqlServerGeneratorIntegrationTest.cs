@@ -27,6 +27,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
   {
     private IQueryable<Student> _source;
     private IQueryable<Student_Detail> _detailSource;
+    private IQueryable<IndustrialSector> _industrialSectorSource;
     private IQueryable<Student_Detail_Detail> _detailDetailSource;
     private SqlServerGenerator _sqlGenerator;
 
@@ -35,6 +36,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     {
       _source = ExpressionHelper.CreateQuerySource ();
       _detailSource = ExpressionHelper.CreateQuerySource_Detail ();
+      _industrialSectorSource = ExpressionHelper.CreateQuerySource_IndustrialSector();
       _detailDetailSource = ExpressionHelper.CreateQuerySource_Detail_Detail ();
       _sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
     }
@@ -623,6 +625,28 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] WHERE ([sd].[Student_Detail_to_IndustrialSector_FK] = @1)"));
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", 5) }));
+    }
+
+    [Test]
+    [Ignore ("TODO: implement")]
+    public void QueryWithMemberQuerySource ()
+    {
+      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (_industrialSectorSource);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialSectorTable] [sector], [studentTable] [s1] WHERE ([sector].[industrialSector_to_Student_FK] = [s1].[ID])"));
+      Assert.That (result.Parameters, Is.Empty);
+    }
+
+    [Test]
+    [Ignore("TODO: implement")]
+    public void QueryWithMemberQuerySourceAndJoin ()
+    {
+      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailSource);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [studentDetailTable] [sd] LEFT OUTER JOIN [industrialSectorTable] [j0] ON [sd].[Student_Detail_to_IndustrialSector_FK] = [j0].[IndustrialSector_PK], [studentTable] [s1] WHERE ([j0].[ID] = [s1].[Student_to_IndustrialSector_FK])"));
+      Assert.That (result.Parameters, Is.Empty);
     }
   }
 }
