@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -51,6 +52,30 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       if (_generators.ContainsKey(methodInfo))
         return _generators[methodInfo];
+
+      //var baseMethods = (from m in _generators.Keys
+      //                   where m.GetBaseDefinition() == methodInfo.GetBaseDefinition() // => override the same method
+      //                   where m.DeclaringType.IsAssignableFrom (methodInfo.DeclaringType)
+      //                   select m);
+      //var orderedMethods = baseMethods.OrderBy (mi => mi.DeclaringType, new TypeComparer());
+      //var baseMethod = orderedMethods.FirstOrDefault ();
+
+      //if (baseMethod != null)
+      //  return _generators[baseMethod];
+
+    //class TypeComparer : IComparer<Type>
+    //{
+    //  public int Compare (Type x, Type y)
+    //  {
+    //    if (x == y)
+    //      return 0;
+    //    else if (x.IsAssignableFrom (y))
+    //      return -1;
+    //    else
+    //      return 1;
+    //  }
+    //}
+
       throw new SqlGenerationException (message);
     }
   }
