@@ -19,6 +19,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
@@ -99,7 +100,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     public SelectedObjectActivator GetSelectedObjectActivator ()
     {
-      return ObjectFactory.Create<SelectedObjectActivator>().With (SelectEvaluation);
+      return ObjectFactory.Create<SelectedObjectActivator>(ParamList.Create (SelectEvaluation));
     }
   }
 }
