@@ -29,7 +29,7 @@ using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallRemoveTest
+  public class MethodCallConvertToTest
   {
     private CommandBuilder _commandBuilder;
     private StringBuilder _commandText;
@@ -45,26 +45,45 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer.MethodCallGen
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
       _databaseInfo = StubDatabaseInfo.Instance;
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
+      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
     }
 
     [Test]
-    public void Remove ()
+    public void ConvertIntToString ()
     {
       ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
       IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
-      MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
+
+      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToString",new Type[] {typeof(int) } );
       Column column = new Column (fromSource, "FirstColumn");
-      Constant item = new Constant (5);
-      List<IEvaluation> arguments = new List<IEvaluation> { item };
-      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
+      //Constant item = new Constant (5);
+      List<IEvaluation> arguments = new List<IEvaluation> { column };
+      MethodCall methodCall = new MethodCall (methodInfo, null, arguments);
 
-      MethodCallRemove methodCallRemove = new MethodCallRemove();
-      methodCallRemove.GenerateSql (methodCall, _commandBuilder);
-
-      Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,LEN([s].[FirstColumn]), \"\")", _commandBuilder.GetCommandText ());
-      Assert.AreEqual (5, _commandBuilder.GetCommandParameters ()[1].Value);
+      MethodCallConvertTo methodCallConvertTo = new MethodCallConvertTo();
+      methodCallConvertTo.GenerateSql (methodCall, _commandBuilder);
+      Assert.AreEqual ("xyz CONVERT(nvarchar(max),[s].[FirstColumn]) ", _commandBuilder.GetCommandText ());
     }
+
+    [Test]
+    public void ConvertIntToBoolean ()
+    {
+      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+
+      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToBoolean", new Type[] { typeof (int) });
+      Column column = new Column (fromSource, "FirstColumn");
+      //Constant item = new Constant (5);
+      List<IEvaluation> arguments = new List<IEvaluation> { column };
+      MethodCall methodCall = new MethodCall (methodInfo, null, arguments);
+
+      MethodCallConvertTo methodCallConvertTo = new MethodCallConvertTo ();
+      methodCallConvertTo.GenerateSql (methodCall, _commandBuilder);
+      Assert.AreEqual ("xyz CONVERT(bit,[s].[FirstColumn]) ", _commandBuilder.GetCommandText ());
+    }
+
+
   }
 }

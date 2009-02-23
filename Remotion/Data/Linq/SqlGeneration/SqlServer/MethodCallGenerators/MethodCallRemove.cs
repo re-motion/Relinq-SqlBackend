@@ -26,9 +26,9 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
       commandBuilder.Append (",");
       foreach (var argument in methodCall.EvaluationArguments)
         commandBuilder.AppendEvaluation (argument);
-      commandBuilder.Append (",CONVERT(Int,DATALENGTH(");
+      commandBuilder.Append (",LEN(");
       commandBuilder.AppendEvaluation (methodCall.EvaluationObject);
-      commandBuilder.Append (") / 2), \"");
+      commandBuilder.Append ("), \"\"");
       commandBuilder.Append (")");
     }
   }

@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 
@@ -33,7 +34,15 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
     {
       MethodCallRegistry.Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper ());
       MethodCallRegistry.Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove ());
+      // TODO: register handler for string.Remove with two arguments
       MethodCallRegistry.Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower ());
+      
+      var methodCallConvertTo = new MethodCallConvertTo();
+      foreach (var method in methodCallConvertTo.GetSupportedConvertMethods())
+        MethodCallRegistry.Register (method, methodCallConvertTo);
+      
+      MethodCallRegistry.Register (typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) }), new MethodCallSubstring());
+      
     }
 
     protected override SqlServerGenerationContext CreateContext ()
