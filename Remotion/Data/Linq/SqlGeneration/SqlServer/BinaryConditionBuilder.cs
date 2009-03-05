@@ -204,6 +204,23 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         case BinaryCondition.ConditionKind.Like:
           commandString = "LIKE";
           break;
+        case BinaryCondition.ConditionKind.Add:
+          commandString = "+";
+          break;
+        case BinaryCondition.ConditionKind.Divide:
+          commandString = "/";
+          break;
+        case BinaryCondition.ConditionKind.Modulo:
+          commandString = "%";
+          break;
+        case BinaryCondition.ConditionKind.Multiply:
+          commandString = "*";
+          break;
+        case BinaryCondition.ConditionKind.Subtract:
+          commandString = "-";
+          break;
+
+
         default:
           throw new NotSupportedException ("The binary condition kind " + kind + " is not supported.");
       }
