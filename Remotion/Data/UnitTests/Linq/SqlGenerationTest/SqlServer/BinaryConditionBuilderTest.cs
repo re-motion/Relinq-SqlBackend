@@ -59,6 +59,21 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       CheckBuildBinaryConditionPart_Constants (
           new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Like),
           "(@1 LIKE @2)");
+      CheckBuildBinaryConditionPart_Constants (
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Add),
+          "(@1 + @2)");
+      CheckBuildBinaryConditionPart_Constants (
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Divide),
+          "(@1 / @2)");
+      CheckBuildBinaryConditionPart_Constants (
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Modulo),
+          "(@1 % @2)");
+      CheckBuildBinaryConditionPart_Constants (
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Multiply),
+          "(@1 * @2)");
+      CheckBuildBinaryConditionPart_Constants (
+          new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Subtract),
+          "(@1 - @2)");
     }
 
     [Test]

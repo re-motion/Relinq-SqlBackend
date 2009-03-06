@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
 
     public void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder)
     {
-      if (methodCall.EvaluationArguments.Count != 1)
+      if (methodCall.Arguments.Count != 1)
       {
         throw new ArgumentException("Wrong number of arguments in evaluation");
       }
@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
       if (_mappingTypes.TryGetValue (type, out exp))
       {
         commandBuilder.Append ("CONVERT(" + exp + ",");
-        commandBuilder.AppendEvaluation (methodCall.EvaluationArguments[0]);
+        commandBuilder.AppendEvaluation (methodCall.Arguments[0]);
         commandBuilder.Append (") ");
       }
       else

@@ -22,12 +22,12 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
     public void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder)
     {
       commandBuilder.Append ("STUFF(");
-      commandBuilder.AppendEvaluation (methodCall.EvaluationObject);
+      commandBuilder.AppendEvaluation (methodCall.TargetObject);
       commandBuilder.Append (",");
-      foreach (var argument in methodCall.EvaluationArguments)
+      foreach (var argument in methodCall.Arguments)
         commandBuilder.AppendEvaluation (argument);
       commandBuilder.Append (",LEN(");
-      commandBuilder.AppendEvaluation (methodCall.EvaluationObject);
+      commandBuilder.AppendEvaluation (methodCall.TargetObject);
       commandBuilder.Append ("), \"\"");
       commandBuilder.Append (")");
     }
