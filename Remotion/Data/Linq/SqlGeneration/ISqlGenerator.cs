@@ -17,6 +17,7 @@ using Remotion.Data.Linq.Parsing.Details;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
+
   public interface ISqlGenerator
   {
     CommandData BuildCommand (QueryModel queryModel);
