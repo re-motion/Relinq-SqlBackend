@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       Column column = new Column (path.FirstSource,"c1");
       FieldDescriptor descriptor = new FieldDescriptor (member, path, column);
 
-      OrderingField field1 = new OrderingField (descriptor,OrderDirection.Asc);
-      OrderingField field2 = new OrderingField (descriptor, OrderDirection.Desc);
+      OrderingField field1 = new OrderingField (descriptor,OrderingDirection.Asc);
+      OrderingField field2 = new OrderingField (descriptor, OrderingDirection.Desc);
       List<OrderingField> orderingFields = new List<OrderingField> { field1,field2 };
 
       orderByBuilder.BuildOrderByPart (orderingFields);
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "OrderDirection 2147483647 is not supported.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "OrderingDirection 2147483647 is not supported.")]
     public void CombineOrderedFields_InvalidDirection ()
     {
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       Column column = new Column (path.FirstSource, "c1");
       FieldDescriptor descriptor = new FieldDescriptor (member, path, column);
 
-      OrderingField field1 = new OrderingField (descriptor, (OrderDirection) int.MaxValue);
+      OrderingField field1 = new OrderingField (descriptor, (OrderingDirection) int.MaxValue);
       List<OrderingField> orderingFields = new List<OrderingField> { field1 };
 
       orderByBuilder.BuildOrderByPart (orderingFields);

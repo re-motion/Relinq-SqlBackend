@@ -122,18 +122,18 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       for (int i = 0; i < orderByClause.OrderingList.Count; i++)
       {
-        OrderingClause clause = orderByClause.OrderingList[i];
+        Ordering clause = orderByClause.OrderingList[i];
         clause.Accept (this);
         if (i == (orderByClause.OrderingList.Count - 1))
           _secondOrderByClause = true;
       }
     }
 
-    public void VisitOrderingClause (OrderingClause orderingClause)
+    public void VisitOrdering (Ordering ordering)
     {
-      ArgumentUtility.CheckNotNull ("orderingClause", orderingClause);
+      ArgumentUtility.CheckNotNull ("ordering", ordering);
       var fieldParser = new OrderingFieldParser (_databaseInfo);
-      OrderingField orderingField = fieldParser.Parse (orderingClause.Expression.Body, _parseContext, orderingClause.OrderDirection);
+      OrderingField orderingField = fieldParser.Parse (ordering.Expression.Body, _parseContext, ordering.OrderingDirection);
 
       if (!_secondOrderByClause)
         SqlGenerationData.AddOrderingFields (orderingField);

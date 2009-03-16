@@ -23,16 +23,16 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 {
   public class OrderByBuilder : IOrderByBuilder
   {
-    private static string GetOrderedDirectionString (OrderDirection direction)
+    private static string GetOrderedDirectionString (OrderingDirection direction)
     {
       switch (direction)
       {
-        case OrderDirection.Asc:
+        case OrderingDirection.Asc:
           return "ASC";
-        case OrderDirection.Desc:
+        case OrderingDirection.Desc:
           return "DESC";
         default:
-          throw new NotSupportedException ("OrderDirection " + direction + " is not supported.");
+          throw new NotSupportedException ("OrderingDirection " + direction + " is not supported.");
       }
     }
 

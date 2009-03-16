@@ -339,14 +339,14 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
-      OrderingClause orderingClause = orderBy.OrderingList.First ();
+      Ordering ordering = orderBy.OrderingList.First ();
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
+      sqlGeneratorVisitor.VisitOrdering (ordering);
 
       FieldDescriptor fieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
-          Is.EqualTo (new object[] { new OrderingField (fieldDescriptor, OrderDirection.Asc) }));
+          Is.EqualTo (new object[] { new OrderingField (fieldDescriptor, OrderingDirection.Asc) }));
     }
 
     [Test]
@@ -355,10 +355,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       OrderByClause orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
-      OrderingClause orderingClause = orderBy.OrderingList.First ();
+      Ordering ordering = orderBy.OrderingList.First ();
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery,_detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitOrderingClause (orderingClause);
+      sqlGeneratorVisitor.VisitOrdering (ordering);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
@@ -395,8 +395,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
           Is.EqualTo (new object[]
               {
-                new OrderingField (fieldDescriptor1, OrderDirection.Asc),
-                new OrderingField (fieldDescriptor2, OrderDirection.Asc),
+                new OrderingField (fieldDescriptor1, OrderingDirection.Asc),
+                new OrderingField (fieldDescriptor2, OrderingDirection.Asc),
               }));
     }
     
