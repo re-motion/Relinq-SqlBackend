@@ -39,27 +39,24 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         AppendNullCondition (binaryCondition.Left, binaryCondition.Kind);
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.Contains)
         AppendContainsCondition (binaryCondition.Left, binaryCondition.Right);
-        //AppendContainsCondition ((SubQuery) binaryCondition.Left, binaryCondition.Right);
       else if (binaryCondition.Kind == BinaryCondition.ConditionKind.ContainsFulltext)
         AppendContainsFulltext (binaryCondition.Left, binaryCondition.Right);
       else
         AppendGeneralCondition (binaryCondition);
     }
-
     
     private void AppendContainsFulltext(IValue left, IValue right)
     {
       _commandBuilder.Append ("CONTAINS (");
-      AppendValue (left);
+      _commandBuilder.AppendEvaluation (left);
       _commandBuilder.Append (",");
-      AppendValue (right);
+      _commandBuilder.AppendEvaluation (right);
       _commandBuilder.Append(")");
-      
     }
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
     {
-      AppendValue (value);
+      _commandBuilder.AppendEvaluation (value);
       switch (kind)
       {
         case BinaryCondition.ConditionKind.Equal:
@@ -74,28 +71,18 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
     private void AppendContainsCondition (IEvaluation left, IValue right)
     {
-      if (left is Constant)
+      // Is the left side an empty collection? "Contains" on empty collections is always false.
+      if (left is Constant && ((Constant) left).Value is ICollection && ((ICollection) ((Constant) left).Value).Count == 0)
       {
-        var constant = (Constant) left;
-        if (constant.Value is ICollection)
-        {
-          var possibleEmptyCollection = (ICollection) constant.Value;
-          if (possibleEmptyCollection.Count == 0)
-            _commandBuilder.Append ("(0 = 1)");
-          else
-            AppendContainsForSubQuery (left, right);
-        }
+        _commandBuilder.AppendEvaluation (new Constant (false));
       }
       else
-        AppendContainsForSubQuery (left, right);
-    }
-
-    private void AppendContainsForSubQuery (IEvaluation left, IValue right)
-    {
-      AppendValue (right);
-      _commandBuilder.Append (" IN (");
-      _commandBuilder.AppendEvaluation (left);
-      _commandBuilder.Append (")");
+      {
+        _commandBuilder.AppendEvaluation (right);
+        _commandBuilder.Append (" IN (");
+        _commandBuilder.AppendEvaluation (left);
+        _commandBuilder.Append (")");
+      }
     }
 
     protected virtual ISqlGenerator CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
@@ -108,11 +95,11 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder.Append ("(");
       AppendNullChecks (binaryCondition.Left, binaryCondition.Right, binaryCondition.Kind);
 
-      AppendValue (binaryCondition.Left);
+      _commandBuilder.AppendEvaluation (binaryCondition.Left);
       _commandBuilder.Append (" ");
       AppendConditionKind (binaryCondition.Kind);
       _commandBuilder.Append (" ");
-      AppendValue (binaryCondition.Right);
+      _commandBuilder.AppendEvaluation (binaryCondition.Right);
       _commandBuilder.Append (")");
     }
 
@@ -172,11 +159,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         _commandBuilder.Append (" OR ");
       }
     }
-    
-    private void AppendValue (IValue value)
-    {
-      _commandBuilder.AppendEvaluation (value);
-    }
 
     private void AppendConditionKind (BinaryCondition.ConditionKind kind)
     {
@@ -219,7 +201,6 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         case BinaryCondition.ConditionKind.Subtract:
           commandString = "-";
           break;
-
 
         default:
           throw new NotSupportedException ("The binary condition kind " + kind + " is not supported.");
