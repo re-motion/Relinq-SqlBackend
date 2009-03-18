@@ -72,10 +72,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
-      MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression);
-      List<MethodCallExpression> methodCallExpressions = new List<MethodCallExpression>();
-      methodCallExpressions.Add (methodCallExpression);
-      SelectClause selectClause = new SelectClause (clause, expression, methodCallExpressions);
+      SelectClause selectClause = new SelectClause (clause, expression);
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
@@ -105,11 +102,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.Single (query, (i => i.First == "Test")));
-      MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression);
-
-      List<MethodCallExpression> methodCallExpressions = new List<MethodCallExpression> ();
-      methodCallExpressions.Add (methodCallExpression);
-      SelectClause selectClause = new SelectClause (clause, expression, methodCallExpressions);
+      SelectClause selectClause = new SelectClause (clause, expression);
 
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
@@ -128,14 +121,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       Expression boolExpression = ExpressionHelper.MakeExpression<Student, Func<Student, bool>> (x => (i => i.First == "Test"));
       MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression, boolExpression);
 
-      // methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression<IQueryable<Student>, Student> (q => q.Single ((i => i.First == "Test")));
-
       SelectClause selectClause = new SelectClause (clause, expression);
       
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
       
       //VisitSelectClause
-      var expressionTree = selectClause.ResultModifierData.First().ResultModifier;
+      var expressionTree = selectClause.ResultModifierClauses.First().ResultModifier;
 
     }
 
