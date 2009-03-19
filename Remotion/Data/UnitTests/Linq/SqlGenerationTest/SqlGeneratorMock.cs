@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
 {
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       DetailParserRegistries detailParserRegistries = new DetailParserRegistries (databaseInfo, parseMode);
       Visitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParserRegistries, new ParseContext (query, query.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext));
       query.Accept (Visitor);
-      joinedTableContext.CreateAliases();
+      joinedTableContext.CreateAliases (query);
     }
 
     public bool CheckBaseProcessQueryMethod { get; set; }
@@ -69,8 +70,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
     {
       if (CheckBaseProcessQueryMethod)
       {
+        // reset counter so that we can compare the joins
+        PrivateInvoke.SetNonPublicField (queryModel, "_identifierCounter", 0);
+        
         SqlGenerationData sqlGenerationData = base.ProcessQuery(queryModel);
-        //SqlGeneratorVisitor visitor2 = base.ProcessQuery();
 
         Assert.AreEqual (ParseMode, sqlGenerationData.ParseMode);
 

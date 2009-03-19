@@ -261,8 +261,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
             CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] "
-          + "ON [sd].[Student_Detail_PK] = [j0].[Student_Detail_to_Student_FK] ORDER BY [j0].[FirstColumn] ASC",
+      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] "
+          + "ON [sd].[Student_Detail_PK] = [#j0].[Student_Detail_to_Student_FK] ORDER BY [#j0].[FirstColumn] ASC",
           result.Statement);
     }
 
@@ -274,9 +274,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
             CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
-          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
-          + "ORDER BY [j1].[FirstColumn] ASC";
+          + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Student_Detail_PK] = [#j1].[Student_Detail_to_Student_FK] "
+          + "ORDER BY [#j1].[FirstColumn] ASC";
       Assert.AreEqual (expectedString, result.Statement);
     }
 
@@ -298,12 +298,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       const string expectedString = "SELECT [sdd1].* "
           + "FROM "
           + "[detailDetailTable] [sdd1] "
-          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd1].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK], "
+          + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd1].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Student_Detail_PK] = [#j1].[Student_Detail_to_Student_FK], "
           + "[detailDetailTable] [sdd2] "
-          + "LEFT OUTER JOIN [detailTable] [j2] ON [sdd2].[Student_Detail_Detail_PK] = [j2].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "LEFT OUTER JOIN [studentTable] [j3] ON [j2].[Student_Detail_PK] = [j3].[Student_Detail_to_Student_FK] "
-          + "ORDER BY [j1].[FirstColumn] ASC, [j3].[FirstColumn] ASC, [j1].[FirstColumn] ASC";
+          + "LEFT OUTER JOIN [detailTable] [#j2] ON [sdd2].[Student_Detail_Detail_PK] = [#j2].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [#j3] ON [#j2].[Student_Detail_PK] = [#j3].[Student_Detail_to_Student_FK] "
+          + "ORDER BY [#j1].[FirstColumn] ASC, [#j3].[FirstColumn] ASC, [#j1].[FirstColumn] ASC";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -324,9 +324,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       const string expectedString = "SELECT [sdd].* "
           + "FROM "
           + "[detailDetailTable] [sdd] "
-          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
-          + "ORDER BY [j0].[IDColumn] ASC, [j1].[FirstColumn] ASC";
+          + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Student_Detail_PK] = [#j1].[Student_Detail_to_Student_FK] "
+          + "ORDER BY [#j0].[IDColumn] ASC, [#j1].[FirstColumn] ASC";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -343,12 +343,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       IQueryable<Tuple<string, int>> query = JoinTestQueryGenerator.CreateComplexImplicitSelectJoin (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
-      const string expectedString = "SELECT [j1].[FirstColumn], [j2].[IDColumn] "
+      const string expectedString = "SELECT [#j1].[FirstColumn], [#j2].[IDColumn] "
           + "FROM "
           + "[detailDetailTable] [sdd] "
-          + "LEFT OUTER JOIN [detailTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-          + "LEFT OUTER JOIN [studentTable] [j1] ON [j0].[Student_Detail_PK] = [j1].[Student_Detail_to_Student_FK] "
-          + "LEFT OUTER JOIN [industrialTable] [j2] ON [sdd].[Student_Detail_Detail_PK] = [j2].[Student_Detail_Detail_to_IndustrialSector_FK]";
+          + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+          + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Student_Detail_PK] = [#j1].[Student_Detail_to_Student_FK] "
+          + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Student_Detail_Detail_PK] = [#j2].[Student_Detail_Detail_to_IndustrialSector_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -363,8 +363,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
-      const string expectedString = "SELECT [j0].* FROM [detailTable] [sd] LEFT OUTER JOIN "
-          + "[studentTable] [j0] ON [sd].[Student_Detail_PK] = [j0].[Student_Detail_to_Student_FK]";
+      const string expectedString = "SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN "
+          + "[studentTable] [#j0] ON [sd].[Student_Detail_PK] = [#j0].[Student_Detail_to_Student_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -425,8 +425,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
       
       const string expectedString = "SELECT [industrial].* FROM [industrialTable] [industrial] "
-          + "LEFT OUTER JOIN [detailTable] [j0] ON [industrial].[IndustrialSector_PK] = [j0].[Student_Detail_to_IndustrialSector_FK] "
-          + "WHERE [j0].[IDColumn] IS NOT NULL";
+          + "LEFT OUTER JOIN [detailTable] [#j0] ON [industrial].[IndustrialSector_PK] = [#j0].[Student_Detail_to_IndustrialSector_FK] "
+          + "WHERE [#j0].[IDColumn] IS NOT NULL";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -537,8 +537,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
             CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [x].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = " +
-        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].*) [x]", result.Statement);
+      Assert.AreEqual ("SELECT [x].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Student_Detail_PK] = " +
+        "[#j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [#j0].*) [x]", result.Statement);
     }
 
     [Test]
@@ -550,8 +550,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
 
             CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [x].[x] FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = "+
-        "[j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [j0].[FirstColumn] [x]) [x]", result.Statement);
+      Assert.AreEqual ("SELECT [x].[x] FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Student_Detail_PK] = "+
+        "[#j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [#j0].[FirstColumn] [x]) [x]", result.Statement);
     }
 
     [Test]
@@ -618,7 +618,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       IQueryable<Student_Detail> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_VirtualColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [j0] ON [sd].[Student_Detail_PK] = [j0].[Student_Detail_to_Student_FK] WHERE ([j0].[IDColumn] = @1)"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Student_Detail_PK] = [#j0].[Student_Detail_to_Student_FK] WHERE ([#j0].[IDColumn] = @1)"));
       Assert.That (result.Parameters, Is.EqualTo (new[] {new CommandParameter("@1", 5)}));
     }
 
@@ -658,7 +658,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [j0] ON [sdd].[Student_Detail_Detail_PK] = [j0].[Student_Detail_Detail_to_IndustrialSector_FK], [studentTable] [s1] WHERE (([j0].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [j0].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_IndustrialSector_FK], [studentTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
   }

@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ParseContext parseContext = new ParseContext (queryModel, queryModel.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext);
       SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParserRegistries, parseContext);
       queryModel.Accept (visitor);
-      joinedTableContext.CreateAliases();
+      joinedTableContext.CreateAliases (queryModel);
       return visitor.SqlGenerationData;
     }
 
