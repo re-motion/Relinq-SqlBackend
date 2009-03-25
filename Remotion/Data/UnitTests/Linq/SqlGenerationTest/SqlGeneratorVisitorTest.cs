@@ -90,11 +90,11 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
       sqlGeneratorVisitor.VisitSelectClause ((SelectClause) parsedQuery.SelectOrGroupClause);
 
       var distinctMethod = ParserUtility.GetMethod (() => query.Distinct());
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers, Is.EqualTo (new[] { new MethodCall (distinctMethod, null, new List<IEvaluation> { SourceMarkerEvaluation.Instance }) }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers, Is.EqualTo (new[] { new MethodCall (distinctMethod, null, new List<IEvaluation>()) }));
     }
 
     [Test]
-    [Ignore ("TODO: Implement VisitResultModifierClause")]
+    [Ignore ("TODO: Implement VisitResultModifierClause")] //TODO: delete test
     public void VisitSelectClause_SingleComplex ()
     {
       LambdaExpression expression = ExpressionHelper.CreateLambdaExpression ();

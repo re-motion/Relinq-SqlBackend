@@ -169,9 +169,9 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       }
     }
 
-    public void VisitSourceMarkerEvaluation (SourceMarkerEvaluation sourceMarkerEvaluation)
-    {
-      CommandBuilder.Append ("");
-    }
+    //public void VisitSourceMarkerEvaluation (SourceMarkerEvaluation sourceMarkerEvaluation)
+    //{
+    //  CommandBuilder.Append ("");
+    //}
   }
 }

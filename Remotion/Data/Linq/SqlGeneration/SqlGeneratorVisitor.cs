@@ -30,6 +30,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     private readonly IDatabaseInfo _databaseInfo;
     private readonly DetailParserRegistries _detailParserRegistries;
     private readonly ParseContext _parseContext;
+    //private List<MethodCall> _methodCalls; 
 
     private bool _secondOrderByClause;
 
@@ -46,6 +47,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       _parseContext = parseContext;
 
       _secondOrderByClause = false;
+
+      //_methodCalls = new List<MethodCall> ();
 
       SqlGenerationData = new SqlGenerationData { ParseMode = parseMode };
     }
@@ -157,18 +160,30 @@ namespace Remotion.Data.Linq.SqlGeneration
     private List<MethodCall> GetMethodCalls (SelectClause selectClause)
     {
       List<MethodCall> methodCalls = new List<MethodCall>();
-      ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser);
+      ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser, _detailParserRegistries.WhereConditionParser);
 
       if (selectClause.ResultModifierClauses != null)
       {
         foreach (var resultModifierClause in selectClause.ResultModifierClauses)
         {
-          methodCalls.Add (parser.Parse (resultModifierClause.ResultModifier, _parseContext));
+          var resultModifierData = parser.Parse (resultModifierClause.ResultModifier, _parseContext);
+          methodCalls.Add (resultModifierData.A);
+
+          if (resultModifierData.B != null)
+            SqlGenerationData.AddWhereClause (resultModifierData.B, _parseContext.FieldDescriptors);
+          
         }
         
       }
       return methodCalls;
     }
+
+    //public void VisitResultModifierClause (ResultModifierClause resultModifierClause)
+    //{
+    //  ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser);
+    //  MethodCall methodCall = parser.Parse (resultModifierClause.ResultModifier, _parseContext);
+    //  methodCalls.Add (methodCall);
+    //}
 
     private void SetSelectClause (List<MethodCall> methodCalls, IEvaluation evaluation)
     {
@@ -195,5 +210,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       throw new NotImplementedException();
     }
+   
+    
   }
 }

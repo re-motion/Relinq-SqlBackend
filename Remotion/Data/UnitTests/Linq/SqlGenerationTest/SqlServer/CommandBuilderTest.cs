@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       _commandBuilder.AppendSeparatedItems (items, _commandBuilder.Append);
       Assert.AreEqual ("WHERE a, b, c", _commandText.ToString ());
     }
-    
+
     private void CheckTextUnchanged ()
     {
       Assert.AreEqual ("WHERE ", _commandBuilder.GetCommandText ());

@@ -48,6 +48,9 @@ namespace Remotion.Data.Linq.SqlGeneration
       if (SelectEvaluation != null)
         throw new InvalidOperationException ("There can only be one select clause.");
 
+      //needed for correct order when generating sql code
+      if (resultModifiers != null)
+        resultModifiers.Reverse();
       ResultModifiers = resultModifiers;
       SelectEvaluation = evaluation;
 

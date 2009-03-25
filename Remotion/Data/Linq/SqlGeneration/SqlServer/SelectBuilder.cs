@@ -36,31 +36,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       bool evaluation = true;
       _commandBuilder.Append ("SELECT ");
       //at the moment list may only has one method
-      if (resultModifiers != null)
-      {
-        foreach (var methodCall in resultModifiers)
-        {
-          string method = methodCall.EvaluationMethodInfo.Name;
-          
-          if (method == "Count")
-          {
-            _commandBuilder.Append ("COUNT (*) ");
-            evaluation = false;
-          }
-          else
-          {
-            if (method == "Distinct")
-              _commandBuilder.Append ("DISTINCT ");
-            else if ((method == "First") || (method == "Single"))
-              _commandBuilder.Append ("TOP 1 ");
-          else
-            {
-              string message = string.Format ("Method '{0}' is not supported.", method);
-              throw new NotSupportedException (message);
-            }
-          }
-        }
-      }
+      evaluation = AppendResultModifiers(resultModifiers, evaluation);
 
       if (evaluation)
       {
@@ -69,7 +45,40 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
         //_commandBuilder.Append (") ");
       }
     }
-    
+
+    private bool AppendResultModifiers (List<MethodCall> resultModifiers, bool evaluation)
+    {
+      if (resultModifiers != null)
+      {
+        
+        // TODO: use methodCallRegistry => AppendEvaluation (methodCall)?
+        foreach (var methodCall in resultModifiers)
+        {
+          AppendEvaluation (methodCall);
+          //string method = methodCall.EvaluationMethodInfo.Name;
+          
+          //if (method == "Count")
+          //{
+          //  _commandBuilder.Append ("COUNT (*) ");
+          //  evaluation = false;
+          //}
+          //else
+          //{
+          //  if (method == "Distinct")
+          //    _commandBuilder.Append ("DISTINCT ");
+          //  else if ((method == "First") || (method == "Single")) // TODO: Single must select TOP 2 so that an exception is thrown when more than one element is returned.
+          //    _commandBuilder.Append ("TOP 1 ");
+          //  else
+          //  {
+          //    string message = string.Format ("Method '{0}' is not supported.", method);
+          //    throw new NotSupportedException (message);
+          //  }
+          //}
+        }
+      }
+      return evaluation;
+    }
+
     private void AppendEvaluation (IEvaluation selectEvaluation)
     {
       _commandBuilder.AppendEvaluation (selectEvaluation);
