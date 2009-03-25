@@ -144,8 +144,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      Expression projectionBody =
-          selectClause.ProjectionExpression != null ? selectClause.ProjectionExpression.Body : _parseContext.QueryModel.MainFromClause.Identifier;
+      Expression projectionBody = selectClause.ProjectionExpression.Body;
 
       List<MethodCall> methodCalls = GetMethodCalls(selectClause);
 
