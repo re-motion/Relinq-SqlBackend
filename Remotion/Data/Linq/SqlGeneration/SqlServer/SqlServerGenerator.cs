@@ -69,9 +69,10 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
                            select m).Single();
       MethodCallRegistry.Register (methodInfoFirst, new MethodCallFirst ());
 
-      
-      //TODO: support Take(n)
-
+      var methodInfoTake = (from m in typeof (Queryable).GetMethods ()
+                            where m.Name == "Take" && m.GetParameters ().Length == 2
+                            select m).Single ();
+      MethodCallRegistry.Register (methodInfoTake, new MethodCallTake());
     }
 
     protected override SqlServerGenerationContext CreateContext ()
