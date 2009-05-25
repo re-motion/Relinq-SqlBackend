@@ -15,6 +15,8 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
@@ -659,6 +661,17 @@ namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_IndustrialSector_FK], [studentTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));
+      Assert.That (result.Parameters, Is.Empty);
+    }
+
+    [Test]
+    [Ignore ("TODO 594: Fix this")]
+    public void QueryWithCount ()
+    {
+      var expression = SelectTestQueryGenerator.CreateCountQueryExpression (_source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (expression);
+      CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
+      Assert.That (result.Statement, Is.EqualTo ("SELECT COUNT(*) FROM (SELECT [s].* FROM [studentTable] [s]) x"));
       Assert.That (result.Parameters, Is.Empty);
     }
   }
