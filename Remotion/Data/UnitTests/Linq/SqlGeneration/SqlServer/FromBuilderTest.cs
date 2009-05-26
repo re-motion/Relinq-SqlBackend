@@ -31,7 +31,7 @@ using Remotion.Data.Linq.DataObjectModel;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class FromBuilderTest

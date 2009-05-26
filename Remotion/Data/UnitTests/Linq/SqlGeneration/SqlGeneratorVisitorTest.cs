@@ -31,7 +31,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class SqlGeneratorVisitorTest

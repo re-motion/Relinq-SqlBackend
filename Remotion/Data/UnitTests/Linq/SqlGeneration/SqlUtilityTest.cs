@@ -21,7 +21,7 @@ using Remotion.Data.Linq;
 using Rhino.Mocks;
 using Remotion.Data.Linq.SqlGeneration;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class SqlUtilityTest

@@ -27,7 +27,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class SqlGeneratorBaseTest

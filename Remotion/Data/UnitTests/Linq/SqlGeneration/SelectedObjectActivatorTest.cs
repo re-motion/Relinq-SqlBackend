@@ -20,10 +20,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer;
+using Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class SelectedObjectActivatorTest

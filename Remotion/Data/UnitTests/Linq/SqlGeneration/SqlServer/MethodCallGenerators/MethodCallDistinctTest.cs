@@ -16,7 +16,7 @@ using NUnit.Framework;
 using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer.MethodCallGenerators
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerators
 {
   [TestFixture]
   public class MethodCallDistinctTest

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.Linq.SqlGeneration;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   public class SqlGeneratorMockContext : ISqlGenerationContext
   {

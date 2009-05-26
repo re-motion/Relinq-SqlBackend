@@ -22,7 +22,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 using System;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class CommandBuilderTest

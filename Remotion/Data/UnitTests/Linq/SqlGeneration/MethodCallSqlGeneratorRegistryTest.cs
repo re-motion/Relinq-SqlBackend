@@ -24,7 +24,7 @@ using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 using Rhino.Mocks.Constraints;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class MethodCallSqlGeneratorRegistryTest

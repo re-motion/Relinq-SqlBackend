@@ -26,7 +26,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.Linq;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class OrderByBuilderTest

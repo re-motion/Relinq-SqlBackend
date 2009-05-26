@@ -20,7 +20,7 @@ using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class JoinCollectionTest

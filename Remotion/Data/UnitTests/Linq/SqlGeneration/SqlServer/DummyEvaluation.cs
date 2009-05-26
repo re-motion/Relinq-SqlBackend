@@ -16,7 +16,7 @@
 using System;
 using Remotion.Data.Linq.DataObjectModel;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 {
   public class DummyEvaluation : IEvaluation
   {

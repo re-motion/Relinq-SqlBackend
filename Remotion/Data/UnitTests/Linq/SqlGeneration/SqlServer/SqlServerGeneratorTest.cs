@@ -19,7 +19,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
-namespace Remotion.Data.UnitTests.Linq.SqlGenerationTest.SqlServer
+namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class SqlServerGeneratorTest
