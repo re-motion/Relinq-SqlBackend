@@ -26,7 +26,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Parsing.Structure.Legacy;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
