@@ -113,7 +113,8 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
-      LambdaExpression boolExpression = whereClause.GetSimplifiedBoolExpression();
+      // TODO: Once the new resolve mechanism is integrated with the QueryModel, this will not be a LambdaExpression any longer.
+      LambdaExpression boolExpression = (LambdaExpression) whereClause.GetSimplifiedPredicate();
       ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext);
 
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
