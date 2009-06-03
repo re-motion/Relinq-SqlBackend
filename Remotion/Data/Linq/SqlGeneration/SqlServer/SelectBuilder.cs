@@ -15,6 +15,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ResultModifications;
 using Remotion.Utilities;
 using Remotion.Data.Linq.DataObjectModel;
 
@@ -30,53 +32,40 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildSelectPart (IEvaluation selectEvaluation, List<MethodCall> resultModifiers)
+    public void BuildSelectPart (IEvaluation selectEvaluation, List<ResultModificationBase> resultModifiers)
     {
       ArgumentUtility.CheckNotNull ("selectEvaluation", selectEvaluation);
-      bool evaluation = true;
       _commandBuilder.Append ("SELECT ");
-      //at the moment list may only has one method
-      evaluation = AppendResultModifiers(resultModifiers, evaluation);
 
-      if (evaluation)
+      //at the moment, result modifications may not correctly be combined; for example Take and First might not be correctly combined
+      bool distinct = false;
+      int? top = null;
+      bool count = false;
+
+      foreach (var modificationBase in resultModifiers)
       {
-        //_commandBuilder.Append ("( ");
+        if (modificationBase is FirstResultModification || modificationBase is SingleResultModification)
+          top = 1;
+        else if (modificationBase is CountResultModification)
+          count = true;
+        else if (modificationBase is DistinctResultModification)
+          distinct = true;
+        else if (modificationBase is TakeResultModification)
+          top = ((TakeResultModification) modificationBase).Count;
+        else
+          throw new NotSupportedException (
+              "Result modification type " + modificationBase.GetType().Name + " is not supported by this SQL generator.");
+      }
+
+      if (distinct)
+        _commandBuilder.Append ("DISTINCT ");
+      if (top != null)
+        _commandBuilder.Append ("TOP " + top + " ");
+      
+      if (count)
+        _commandBuilder.Append ("COUNT (*) ");
+      else
         AppendEvaluation (selectEvaluation);
-        //_commandBuilder.Append (") ");
-      }
-    }
-
-    private bool AppendResultModifiers (List<MethodCall> resultModifiers, bool evaluation)
-    {
-      if (resultModifiers != null)
-      {
-        
-        // TODO: use methodCallRegistry => AppendEvaluation (methodCall)?
-        foreach (var methodCall in resultModifiers)
-        {
-          AppendEvaluation (methodCall);
-          //string method = methodCall.EvaluationMethodInfo.Name;
-          
-          //if (method == "Count")
-          //{
-          //  _commandBuilder.Append ("COUNT (*) ");
-          //  evaluation = false;
-          //}
-          //else
-          //{
-          //  if (method == "Distinct")
-          //    _commandBuilder.Append ("DISTINCT ");
-          //  else if ((method == "First") || (method == "Single")) // TODO: Single must select TOP 2 so that an exception is thrown when more than one element is returned.
-          //    _commandBuilder.Append ("TOP 1 ");
-          //  else
-          //  {
-          //    string message = string.Format ("Method '{0}' is not supported.", method);
-          //    throw new NotSupportedException (message);
-          //  }
-          //}
-        }
-      }
-      return evaluation;
     }
 
     private void AppendEvaluation (IEvaluation selectEvaluation)

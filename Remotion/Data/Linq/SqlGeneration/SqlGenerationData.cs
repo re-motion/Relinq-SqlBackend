@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -41,17 +42,16 @@ namespace Remotion.Data.Linq.SqlGeneration
     public JoinCollection Joins { get; private set; }
     public List<LetData> LetEvaluations { get; private set; }
     public ParseMode ParseMode { get; set; }
-    public List<MethodCall> ResultModifiers { get; set; }
+    public List<ResultModificationBase> ResultModifiers { get; set; }
     
-    public void SetSelectClause (List<MethodCall> resultModifiers, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
+    public void SetSelectClause (ICollection<ResultModificationBase> resultModifiers, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
     {
       if (SelectEvaluation != null)
         throw new InvalidOperationException ("There can only be one select clause.");
 
-      //needed for correct order when generating sql code
-      if (resultModifiers != null)
-        resultModifiers.Reverse();
-      ResultModifiers = resultModifiers;
+      ResultModifiers = new List<ResultModificationBase> (resultModifiers);
+      //needed for correct order when generating sql code // TODO: Check whether this is really sensible.
+      ResultModifiers.Reverse ();
       SelectEvaluation = evaluation;
 
       foreach (var selectedField in fieldDescriptors)

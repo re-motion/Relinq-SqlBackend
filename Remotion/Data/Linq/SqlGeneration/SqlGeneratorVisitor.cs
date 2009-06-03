@@ -20,7 +20,6 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
-using Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
@@ -149,33 +148,10 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       Expression projectionBody = selectClause.Selector.Body;
 
-      List<MethodCall> methodCalls = GetMethodCalls(selectClause);
-
       IEvaluation evaluation =
           _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
 
-      SetSelectClause (methodCalls, evaluation);
-    }
-
-    private List<MethodCall> GetMethodCalls (SelectClause selectClause)
-    {
-      List<MethodCall> methodCalls = new List<MethodCall>();
-      ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser, _detailParserRegistries.WhereConditionParser);
-
-      if (selectClause.ResultModifierClauses != null)
-      {
-        foreach (var resultModifierClause in selectClause.ResultModifierClauses)
-        {
-          var resultModifierData = parser.Parse (resultModifierClause.ResultModifier, _parseContext);
-          methodCalls.Add (resultModifierData.A);
-
-          if (resultModifierData.B != null)
-            SqlGenerationData.AddWhereClause (resultModifierData.B, _parseContext.FieldDescriptors);
-          
-        }
-        
-      }
-      return methodCalls;
+      SetSelectClause (selectClause.ResultModifications, evaluation);
     }
 
     //public void VisitResultModifierClause (ResultModifierClause resultModifierClause)
@@ -185,12 +161,9 @@ namespace Remotion.Data.Linq.SqlGeneration
     //  methodCalls.Add (methodCall);
     //}
 
-    private void SetSelectClause (List<MethodCall> methodCalls, IEvaluation evaluation)
+    private void SetSelectClause (ICollection<ResultModificationBase> resultModifications, IEvaluation evaluation)
     {
-      if (methodCalls.Count != 0)
-        SqlGenerationData.SetSelectClause (methodCalls, _parseContext.FieldDescriptors, evaluation);
-      else
-        SqlGenerationData.SetSelectClause (null, _parseContext.FieldDescriptors, evaluation);
+      SqlGenerationData.SetSelectClause (resultModifications, _parseContext.FieldDescriptors, evaluation);
     }
 
     public void VisitLetClause (LetClause letClause)

@@ -14,12 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
   public interface ISelectBuilder
   {
-    void BuildSelectPart (IEvaluation selectEvaluation, List<MethodCall> resultModifiers);
+    void BuildSelectPart (IEvaluation selectEvaluation, List<ResultModificationBase> resultModifiers);
   }
 }

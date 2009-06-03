@@ -14,9 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ResultModifications;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
@@ -37,12 +40,21 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
       var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
       MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
-      List<MethodCall> methodCalls = new List<MethodCall>();
-      methodCalls.Add (methodCall);
+      
+      IClause clause = ExpressionHelper.CreateClause ();
+      SelectClause selectClause = new SelectClause (clause, ExpressionHelper.CreateLambdaExpression());
 
-      data.SetSelectClause (methodCalls, fieldDescriptors, evaluation);
 
-      Assert.That (data.ResultModifiers, Is.EqualTo (methodCalls));
+      //List<MethodCall> methodCalls = new List<MethodCall>();
+      //methodCalls.Add (methodCall);
+
+      ICollection<ResultModificationBase> modifications = new List<ResultModificationBase> ();
+      modifications.Add (new DistinctResultModification (selectClause));
+
+      //data.SetSelectClause (methodCalls, fieldDescriptors, evaluation);
+      data.SetSelectClause (modifications, fieldDescriptors, evaluation);
+
+      Assert.That (data.ResultModifiers, Is.EqualTo (modifications));
     }
 
     [Test]
@@ -51,7 +63,11 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var data = new SqlGenerationData ();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      data.SetSelectClause (null, fieldDescriptors, evaluation);
+
+      List<ResultModificationBase> resultModifications = new List<ResultModificationBase>();
+      SelectClause selectClause = new SelectClause (ExpressionHelper.CreateClause(), ExpressionHelper.CreateLambdaExpression());
+      resultModifications.Add (new DistinctResultModification (selectClause));
+      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
       Assert.That (data.SelectEvaluation, Is.EqualTo (evaluation));
     }
@@ -65,7 +81,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptor = new FieldDescriptor (typeof (string).GetProperty ("Length"), sourcePath, null);
       var fieldDescriptors = new List<FieldDescriptor> { fieldDescriptor };
       var evaluation = new Constant (0);
-      data.SetSelectClause (null, fieldDescriptors, evaluation);
+      List<ResultModificationBase> resultModifications = new List<ResultModificationBase> ();
+      SelectClause selectClause = new SelectClause (ExpressionHelper.CreateClause (), ExpressionHelper.CreateLambdaExpression ());
+      resultModifications.Add (new DistinctResultModification (selectClause));
+      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
       Assert.That (data.Joins[sourcePath.FirstSource], Is.EqualTo (new[] {join}));
     }
@@ -77,8 +96,11 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var data = new SqlGenerationData ();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      data.SetSelectClause (null, fieldDescriptors, evaluation);
-      data.SetSelectClause (null, fieldDescriptors, evaluation);
+      List<ResultModificationBase> resultModifications = new List<ResultModificationBase>();
+      SelectClause selectClause = new SelectClause (ExpressionHelper.CreateClause(), ExpressionHelper.CreateLambdaExpression());
+      resultModifications.Add (new DistinctResultModification (selectClause));
+      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
+      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
     }
   }
 }

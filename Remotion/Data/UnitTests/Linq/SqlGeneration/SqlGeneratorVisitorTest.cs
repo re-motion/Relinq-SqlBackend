@@ -24,9 +24,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ResultModifications;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.Parsing.Structure.Legacy;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
@@ -86,50 +88,15 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery(ExpressionHelper.CreateQuerySource ());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      
       SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
-      sqlGeneratorVisitor.VisitSelectClause ((SelectClause) parsedQuery.SelectOrGroupClause);
-
-      var distinctMethod = ParserUtility.GetMethod (() => query.Distinct());
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers, Is.EqualTo (new[] { new MethodCall (distinctMethod, null, new List<IEvaluation>()) }));
-    }
-
-    [Test]
-    [Ignore ("TODO: Implement VisitResultModifierClause")] //TODO: delete test
-    public void VisitSelectClause_SingleComplex ()
-    {
-      LambdaExpression expression = ExpressionHelper.CreateLambdaExpression ();
-      IClause clause = ExpressionHelper.CreateClause ();
-      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Single (query, (i => i.First == "Test")));
-      SelectClause selectClause = new SelectClause (clause, expression);
-
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      SelectClause selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
-    }
-
-    [Test]
-    [Ignore ("TODO: Implement VisitResultModifierClause")]
-    public void VisitResultModifierClause ()
-    {
-      LambdaExpression expression = ExpressionHelper.CreateLambdaExpression ();
-      IClause clause = ExpressionHelper.CreateClause ();
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      Func<Student, bool> predicate = (i => i.First == "Test");
-      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Single (query, predicate));
-      Expression boolExpression = ExpressionHelper.MakeExpression<Student, Func<Student, bool>> (x => (i => i.First == "Test"));
-      MethodCallExpression methodCallExpression = Expression.Call (methodInfo, query.Expression, boolExpression);
-
-      SelectClause selectClause = new SelectClause (clause, expression);
       
-      SqlGeneratorVisitor sqlGeneratorVisitor = new SqlGeneratorVisitor (StubDatabaseInfo.Instance, ParseMode.TopLevelQuery, _detailParserRegistries, new ParseContext (parsedQuery, parsedQuery.GetExpressionTree (), new List<FieldDescriptor> (), _context));
+      var distinctModification = new DistinctResultModification (selectClause);
       
-      //VisitSelectClause
-      var expressionTree = selectClause.ResultModifierClauses.First().ResultModifier;
-
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers.First().SelectClause, Is.EqualTo(distinctModification.SelectClause));
     }
-
 
     [Test]
     public void VisitSelectClause_WithNullProjection ()
