@@ -71,7 +71,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       if (CheckBaseProcessQueryMethod)
       {
         // reset counter so that we can compare the joins
-        PrivateInvoke.SetNonPublicField (queryModel, "_identifierCounter", 0);
+        var uniqueIdentifierGenerator = (UniqueIdentifierGeneratorBase) PrivateInvoke.GetNonPublicField (queryModel, "_uniqueIdentifierGenerator");
+        uniqueIdentifierGenerator.Reset();
         
         SqlGenerationData sqlGenerationData = base.ProcessQuery(queryModel);
 
