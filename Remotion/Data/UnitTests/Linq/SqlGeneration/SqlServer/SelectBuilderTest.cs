@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       Column c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new FirstResultModification (ExpressionHelper.CreateSelectClause ()) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new FirstResultModification (ExpressionHelper.CreateSelectClause (), false) });
       Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       Column c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new SingleResultModification (ExpressionHelper.CreateSelectClause ()) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new SingleResultModification (ExpressionHelper.CreateSelectClause (), false) });
       Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       Column c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new LastResultModification (ExpressionHelper.CreateSelectClause ()) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new LastResultModification (ExpressionHelper.CreateSelectClause (), false) });
     }
 
     [Test]
