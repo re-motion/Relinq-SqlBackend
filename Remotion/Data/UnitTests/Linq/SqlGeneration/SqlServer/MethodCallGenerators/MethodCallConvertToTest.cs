@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     {
       ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
-      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
 
       MethodInfo methodInfo = typeof (Convert).GetMethod ("ToString",new Type[] {typeof(int) } );
       Column column = new Column (fromSource, "FirstColumn");
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     {
       ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
-      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
 
       MethodInfo methodInfo = typeof (Convert).GetMethod ("ToBoolean", new Type[] { typeof (int) });
       Column column = new Column (fromSource, "FirstColumn");

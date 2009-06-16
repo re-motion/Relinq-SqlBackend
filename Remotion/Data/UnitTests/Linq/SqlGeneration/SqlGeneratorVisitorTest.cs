@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var letClause = (LetClause) parsedQuery.BodyClauses.First();
-      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitOrdering (ordering);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      IColumnSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource sourceTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
       Tuple<string, string> joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.A), new Column (studentTable, joinSelectEvaluations.B));
@@ -376,7 +376,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.FromSources,
-          Is.EqualTo (new object[] { subQueryFromClause.GetFromSource (StubDatabaseInfo.Instance) }));
+          Is.EqualTo (new object[] { subQueryFromClause.GetColumnSource (StubDatabaseInfo.Instance) }));
     }
 
     [Test]
@@ -466,7 +466,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      IColumnSource sourceTable = parsedQuery.MainFromClause.GetFromSource (StubDatabaseInfo.Instance); // Student_Detail
+      IColumnSource sourceTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance); // Student_Detail
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       var join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));

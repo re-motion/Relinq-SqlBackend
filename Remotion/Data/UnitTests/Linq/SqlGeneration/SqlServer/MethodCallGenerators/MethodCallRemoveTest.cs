@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     {
       ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
-      IColumnSource fromSource = fromClause.GetFromSource (StubDatabaseInfo.Instance);
+      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
       MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
       Column column = new Column (fromSource, "FirstColumn");
       Constant item = new Constant (5);

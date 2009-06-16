@@ -84,7 +84,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       var memberExpression = fromClause.MemberExpression;
       var leftSide = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression).Parse (memberExpression.Expression, _parseContext);
       var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).B;
-      var rightSide = new Column (fromClause.GetFromSource (_databaseInfo), foreignKeyName);
+      var rightSide = new Column (fromClause.GetColumnSource (_databaseInfo), foreignKeyName);
 
       ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     private void VisitFromClause (FromClauseBase fromClause)
     {
-      IColumnSource columnSource = fromClause.GetFromSource (_databaseInfo);
+      IColumnSource columnSource = fromClause.GetColumnSource (_databaseInfo);
 
       SqlGenerationData.AddFromClause (columnSource);
     }
