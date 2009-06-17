@@ -112,9 +112,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
-      LambdaExpression boolExpression = whereClause.GetSimplifiedPredicate();
-      ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (boolExpression.Body).Parse (boolExpression.Body, _parseContext);
-
+      ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (whereClause.Predicate).Parse (whereClause.Predicate, _parseContext);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
     }
 

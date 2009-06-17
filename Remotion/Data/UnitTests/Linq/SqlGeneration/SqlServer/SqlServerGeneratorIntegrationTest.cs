@@ -581,8 +581,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
+      // TODO 1180: CROSS APPLY should be removed
       const string sql = "SELECT [x].[x] FROM [studentTable] [s] CROSS APPLY (SELECT [s].[FirstColumn] [x]) [x] "+ 
-        "CROSS APPLY (SELECT [s].[IDColumn] [y]) [y] WHERE ([y].[y] > @1)";
+        "CROSS APPLY (SELECT [s].[IDColumn] [y]) [y] WHERE ([s].[IDColumn] > @1)";
       Assert.AreEqual (sql, result.Statement);
     }
 
