@@ -274,11 +274,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     [Test]
     public void VisitSelectClause_MethodCall ()
     {
-      LambdaExpression expression = ExpressionHelper.CreateLambdaExpression();
       IClause clause = ExpressionHelper.CreateClause();
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var selectClause = new SelectClause (clause, expression);
+      var selectClause = new SelectClause (clause, ExpressionHelper.CreateLambdaExpression(), ExpressionHelper.CreateExpression());
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,

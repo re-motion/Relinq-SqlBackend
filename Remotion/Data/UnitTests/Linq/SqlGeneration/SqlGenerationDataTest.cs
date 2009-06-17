@@ -31,27 +31,26 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
   [TestFixture]
   public class SqlGenerationDataTest
   {
+    private SelectClause _selectClause;
+    private IClause _previousClause;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _previousClause = ExpressionHelper.CreateClause ();
+      _selectClause = new SelectClause (_previousClause, ExpressionHelper.CreateLambdaExpression (), ExpressionHelper.CreateExpression());
+    }
+
     [Test]
-    public void SetSelectClause_MethodCall ()
+    public void SetSelectClause_ResultModification ()
     {
       var data = new SqlGenerationData();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
-      var methodInfo = ParserUtility.GetMethod (() => Enumerable.Count (query));
-      MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> ());
-      
-      IClause clause = ExpressionHelper.CreateClause ();
-      SelectClause selectClause = new SelectClause (clause, ExpressionHelper.CreateLambdaExpression());
-
-
-      //List<MethodCall> methodCalls = new List<MethodCall>();
-      //methodCalls.Add (methodCall);
 
       ICollection<ResultModificationBase> modifications = new List<ResultModificationBase> ();
-      modifications.Add (new DistinctResultModification (selectClause));
+      modifications.Add (new DistinctResultModification (_selectClause));
 
-      //data.SetSelectClause (methodCalls, fieldDescriptors, evaluation);
       data.SetSelectClause (modifications, fieldDescriptors, evaluation);
 
       Assert.That (data.ResultModifiers, Is.EqualTo (modifications));
@@ -65,8 +64,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var evaluation = new Constant (0);
 
       List<ResultModificationBase> resultModifications = new List<ResultModificationBase>();
-      SelectClause selectClause = new SelectClause (ExpressionHelper.CreateClause(), ExpressionHelper.CreateLambdaExpression());
-      resultModifications.Add (new DistinctResultModification (selectClause));
+      resultModifications.Add (new DistinctResultModification (_selectClause));
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
       Assert.That (data.SelectEvaluation, Is.EqualTo (evaluation));
@@ -82,8 +80,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptors = new List<FieldDescriptor> { fieldDescriptor };
       var evaluation = new Constant (0);
       List<ResultModificationBase> resultModifications = new List<ResultModificationBase> ();
-      SelectClause selectClause = new SelectClause (ExpressionHelper.CreateClause (), ExpressionHelper.CreateLambdaExpression ());
-      resultModifications.Add (new DistinctResultModification (selectClause));
+      resultModifications.Add (new DistinctResultModification (_selectClause));
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
       Assert.That (data.Joins[sourcePath.FirstSource], Is.EqualTo (new[] {join}));
@@ -97,8 +94,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
       List<ResultModificationBase> resultModifications = new List<ResultModificationBase>();
-      SelectClause selectClause = new SelectClause (ExpressionHelper.CreateClause(), ExpressionHelper.CreateLambdaExpression());
-      resultModifications.Add (new DistinctResultModification (selectClause));
+      resultModifications.Add (new DistinctResultModification (_selectClause));
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
     }
