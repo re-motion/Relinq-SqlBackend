@@ -133,7 +133,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("ordering", ordering);
       var fieldParser = new OrderingFieldParser (_databaseInfo);
-      OrderingField orderingField = fieldParser.Parse (ordering.Expression.Body, _parseContext, ordering.OrderingDirection);
+      OrderingField orderingField = fieldParser.Parse (ordering.Expression, _parseContext, ordering.OrderingDirection);
 
       if (!_secondOrderByClause)
         SqlGenerationData.AddOrderingFields (orderingField);
