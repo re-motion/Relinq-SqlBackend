@@ -479,7 +479,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void SimpleSubQueryInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
@@ -494,7 +493,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void SubQueryWithConstantInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
@@ -509,7 +507,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void SubQuerySelectingColumnsWithConstantInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
