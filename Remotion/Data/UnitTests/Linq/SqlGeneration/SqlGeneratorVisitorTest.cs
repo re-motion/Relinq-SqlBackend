@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       IClause clause = ExpressionHelper.CreateClause();
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var selectClause = new SelectClause (clause, ExpressionHelper.CreateLambdaExpression(), ExpressionHelper.CreateExpression());
+      var selectClause = new SelectClause (clause, Expression.Constant (0));
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,

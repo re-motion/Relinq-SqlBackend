@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     public void SetUp ()
     {
       _previousClause = ExpressionHelper.CreateClause ();
-      _selectClause = new SelectClause (_previousClause, ExpressionHelper.CreateLambdaExpression (), ExpressionHelper.CreateExpression());
+      _selectClause = ExpressionHelper.CreateSelectClause (_previousClause);
     }
 
     [Test]

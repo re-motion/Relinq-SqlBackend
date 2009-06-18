@@ -144,10 +144,9 @@ namespace Remotion.Data.Linq.SqlGeneration
     public void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      Expression projectionBody = selectClause.LegacySelector.Body;
 
       IEvaluation evaluation =
-          _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
+          _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector).Parse (selectClause.Selector, _parseContext);
 
       SetSelectClause (selectClause.ResultModifications, evaluation);
     }
