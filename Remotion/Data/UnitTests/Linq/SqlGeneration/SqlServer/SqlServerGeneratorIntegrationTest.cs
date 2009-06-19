@@ -79,7 +79,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     [ExpectedException (typeof (SqlGenerationException),
       ExpectedMessage = "The method Remotion.Collections.Tuple.NewTuple is not supported by this code generator, " + 
       "and no custom generator has been registered.")]
-    [Ignore ("TODO 1096: This test should pass again when the name resolution hack is removed.")]
     public void MultiFromQueryWithProjection ()
     {
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
