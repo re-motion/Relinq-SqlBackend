@@ -527,7 +527,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT ([s].[FirstColumn] + [s].[LastColumn]) FROM [studentTable] [s] CROSS APPLY (SELECT ([s].[FirstColumn] + [s].[LastColumn]) [x]) [x]", result.Statement);    
+      Assert.AreEqual ("SELECT ([s].[FirstColumn] + [s].[LastColumn]) FROM [studentTable] [s]", result.Statement);    
     }
 
     [Test]
@@ -540,7 +540,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
             CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
       Assert.AreEqual ("SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Student_Detail_PK] = " +
-        "[#j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [#j0].*) [x]", result.Statement);
+        "[#j0].[Student_Detail_to_Student_FK]", result.Statement);
     }
 
     [Test]
@@ -553,7 +553,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
             CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
       Assert.AreEqual ("SELECT [#j0].[FirstColumn] FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Student_Detail_PK] = " +
-        "[#j0].[Student_Detail_to_Student_FK] CROSS APPLY (SELECT [#j0].[FirstColumn] [x]) [x]", result.Statement);
+        "[#j0].[Student_Detail_to_Student_FK]", result.Statement);
     }
 
     [Test]
@@ -565,11 +565,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] CROSS APPLY (SELECT [s].*) [x]", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.Statement);
     }
 
     [Test]
-    [Ignore ("TODO 1181")]
     public void QueryWithMultiLet_Where ()
     {
       // from s in source let x = s.First let y = s.ID where y > 1 select x
@@ -578,9 +577,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      // TODO 1180: CROSS APPLY should be removed
-      const string sql = "SELECT [x].[x] FROM [studentTable] [s] CROSS APPLY (SELECT [s].[FirstColumn] [x]) [x] "+ 
-        "CROSS APPLY (SELECT [s].[IDColumn] [y]) [y] WHERE ([s].[IDColumn] > @1)";
+      const string sql = "SELECT [s].[FirstColumn] FROM [studentTable] [s] WHERE ([s].[IDColumn] > @1)";
       Assert.AreEqual (sql, result.Statement);
     }
 

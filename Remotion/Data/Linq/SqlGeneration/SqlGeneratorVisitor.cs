@@ -163,19 +163,6 @@ namespace Remotion.Data.Linq.SqlGeneration
       SqlGenerationData.SetSelectClause (resultModifications, _parseContext.FieldDescriptors, evaluation);
     }
 
-    public void VisitLetClause (LetClause letClause)
-    {
-      ArgumentUtility.CheckNotNull ("letClause", letClause);
-      Expression projectionBody = letClause.Expression;
-
-      IEvaluation evaluation =
-          _detailParserRegistries.SelectProjectionParser.GetParser (projectionBody).Parse (projectionBody, _parseContext);
-
-
-      LetData letData = new LetData (evaluation, letClause.Identifier.Name, letClause.GetColumnSource (_databaseInfo));
-      SqlGenerationData.AddLetClause (letData, _parseContext.FieldDescriptors);
-    }
-
     public void VisitGroupClause (GroupClause groupClause)
     {
       throw new NotImplementedException();

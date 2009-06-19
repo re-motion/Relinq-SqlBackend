@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
@@ -56,7 +55,6 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       CreateSelectBuilder (context).BuildSelectPart (selectEvaluation, sqlGenerationData.ResultModifiers);
       CreateFromBuilder (context).BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
-      CreateFromBuilder (context).BuildLetPart (sqlGenerationData.LetEvaluations);
       CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);
       CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData.OrderingFields);
 
@@ -65,9 +63,9 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
-      JoinedTableContext joinedTableContext = new JoinedTableContext();
-      ParseContext parseContext = new ParseContext (queryModel, queryModel.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext);
-      SqlGeneratorVisitor visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParserRegistries, parseContext);
+      var joinedTableContext = new JoinedTableContext();
+      var parseContext = new ParseContext (queryModel, queryModel.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext);
+      var visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParserRegistries, parseContext);
       queryModel.Accept (visitor);
       joinedTableContext.CreateAliases (queryModel);
       return visitor.SqlGenerationData;

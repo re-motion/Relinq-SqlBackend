@@ -32,7 +32,6 @@ namespace Remotion.Data.Linq.SqlGeneration
       SelectEvaluation = null;
       OrderingFields = new List<OrderingField> ();
       Joins = new JoinCollection ();
-      LetEvaluations = new List<LetData> ();
     }
 
     public IEvaluation SelectEvaluation { get; private set; }
@@ -40,7 +39,6 @@ namespace Remotion.Data.Linq.SqlGeneration
     public ICriterion Criterion { get; set; }
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
-    public List<LetData> LetEvaluations { get; private set; }
     public ParseMode ParseMode { get; set; }
     public List<ResultModificationBase> ResultModifiers { get; set; }
     
@@ -58,14 +56,6 @@ namespace Remotion.Data.Linq.SqlGeneration
         Joins.AddPath (selectedField.SourcePath);
     }
     
-    public void AddLetClause (LetData letData, List<FieldDescriptor> fieldDescriptors)
-    {
-      LetEvaluations.Add (letData);
-
-      foreach (var selectedField in fieldDescriptors)
-        Joins.AddPath (selectedField.SourcePath);
-    }
-
     public void AddFromClause(IColumnSource columnSource)
     {
       FromSources.Add (columnSource);

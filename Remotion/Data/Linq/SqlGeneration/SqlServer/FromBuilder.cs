@@ -84,23 +84,5 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder.Append (" = ");
       _commandBuilder.Append (SqlServerUtility.GetColumnString (join.RightColumn));
     }
-
-
-    public void BuildLetPart (List<LetData> letDataCollection)
-    {
-      ArgumentUtility.CheckNotNull ("letData", letDataCollection);
-      foreach (var letData in letDataCollection)
-      {
-        _commandBuilder.Append (" CROSS APPLY (SELECT ");
-        _commandBuilder.AppendEvaluation (letData.Evaluation);
-        
-        if (!letData.CorrespondingColumnSource.IsTable)
-          _commandBuilder.Append (" " + SqlServerUtility.WrapSqlIdentifier (letData.Name));
-
-        _commandBuilder.Append (") [");
-        _commandBuilder.Append (letData.Name);
-        _commandBuilder.Append ("]");
-      }
-    }
   }
 }

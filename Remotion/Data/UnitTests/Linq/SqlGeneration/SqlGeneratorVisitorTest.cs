@@ -70,61 +70,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
     }
 
-
-    [Test]
-    public void VisitLetClause ()
-    {
-      IQueryable<string> query = LetTestQueryGenerator.CreateSimpleLetClause (ExpressionHelper.CreateQuerySource());
-
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var letClause = (LetClause) parsedQuery.BodyClauses.First();
-
-      var sqlGeneratorVisitor = new SqlGeneratorVisitor (
-          StubDatabaseInfo.Instance,
-          ParseMode.TopLevelQuery,
-          _detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitLetClause (letClause);
-
-      var expectedResult =
-          new BinaryEvaluation (
-              new Column (new Table ("studentTable", "s"), "FirstColumn"),
-              new Column (new Table ("studentTable", "s"), "LastColumn"),
-              BinaryEvaluation.EvaluationKind.Add);
-
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First().Evaluation, Is.EqualTo (expectedResult));
-      Assert.AreEqual (letClause.Identifier.Name, sqlGeneratorVisitor.SqlGenerationData.LetEvaluations.First().Name);
-    }
-
-    [Test]
-    public void VisitLetClause_WithJoin ()
-    {
-      IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin_NoTable (ExpressionHelper.CreateQuerySource_Detail());
-
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var letClause = (LetClause) parsedQuery.BodyClauses.First();
-      IColumnSource studentDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
-
-      var sqlGeneratorVisitor = new SqlGeneratorVisitor (
-          StubDatabaseInfo.Instance,
-          ParseMode.TopLevelQuery,
-          _detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitLetClause (letClause);
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
-      Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
-
-
-      var c1 = new Column (studentDetailTable, "Student_Detail_PK");
-      var c2 = new Column (studentTable, "Student_Detail_to_Student_FK");
-
-      var expectedJoin = new SingleJoin (c1, c2);
-      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
-
-      SingleJoin actualJoin = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailTable].First();
-      Assert.AreEqual (expectedJoin, actualJoin);
-    }
-
     [Test]
     public void VisitMainFromClause ()
     {
