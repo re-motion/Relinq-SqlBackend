@@ -401,7 +401,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateQuerySource_Detail());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var whereClause = ClauseFinder.FindClause<WhereClause> (parsedQuery.SelectOrGroupClause);
+      var whereClause = (WhereClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
