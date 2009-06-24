@@ -446,7 +446,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 1222: Should work again after integrating SubQueryFromClause")]
     public void SimpleSubQueryInAdditionalFromClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
@@ -460,7 +459,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 1222: Should work again after integrating SubQueryFromClause")]
     public void ComplexSubQueryInAdditionalFromClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();

@@ -257,7 +257,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Query sources cannot be null.")]
-    [Ignore ("TODO 1222: Should work again after integrating SubQueryFromClause")]
     public void InvalidQuerySource ()
     {
       IQueryable<Student> query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;

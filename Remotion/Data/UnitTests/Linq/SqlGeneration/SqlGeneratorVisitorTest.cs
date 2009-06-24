@@ -305,7 +305,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     }
 
     [Test]
-    [Ignore ("TODO 1222: Should work again after integrating SubQueryFromClause")]
     public void VisitSubQueryFromClause ()
     {
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
