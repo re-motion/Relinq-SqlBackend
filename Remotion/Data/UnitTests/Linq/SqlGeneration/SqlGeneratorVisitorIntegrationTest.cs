@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
-      Ordering ordering = orderBy.OrderingList.First();
+      Ordering ordering = orderBy.Orderings.First();
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
@@ -88,8 +88,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
 
-      Ordering orderingClause1 = orderBy.OrderingList.First();
-      Ordering orderingClause2 = orderBy.OrderingList.Last();
+      Ordering orderingClause1 = orderBy.Orderings.First();
+      Ordering orderingClause2 = orderBy.Orderings.Last();
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
@@ -131,8 +131,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
 
-      Ordering orderingClause1 = orderBy.OrderingList.First();
-      Ordering orderingClause2 = orderBy.OrderingList.Last();
+      Ordering orderingClause1 = orderBy.Orderings.First();
+      Ordering orderingClause2 = orderBy.Orderings.Last();
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
@@ -171,8 +171,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
 
-      Ordering orderingClause1 = orderBy.OrderingList.First();
-      Ordering orderingClause2 = orderBy.OrderingList.Last();
+      Ordering orderingClause1 = orderBy.Orderings.First();
+      Ordering orderingClause2 = orderBy.Orderings.Last();
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
@@ -218,8 +218,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var orderBy1 = (OrderByClause) parsedQuery.BodyClauses.Skip (1).First();
       var orderBy2 = (OrderByClause) parsedQuery.BodyClauses.Last();
 
-      Ordering orderingClause1 = orderBy1.OrderingList.First();
-      Ordering orderingClause2 = orderBy2.OrderingList.First();
+      Ordering orderingClause1 = orderBy1.Orderings.First();
+      Ordering orderingClause2 = orderBy2.Orderings.First();
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (

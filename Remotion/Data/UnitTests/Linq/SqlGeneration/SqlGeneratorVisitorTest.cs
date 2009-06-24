@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
-      Ordering ordering = orderBy.OrderingList.First();
+      Ordering ordering = orderBy.Orderings.First();
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
-      Ordering ordering = orderBy.OrderingList.First();
+      Ordering ordering = orderBy.Orderings.First();
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,

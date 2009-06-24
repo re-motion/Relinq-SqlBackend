@@ -120,11 +120,11 @@ namespace Remotion.Data.Linq.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
 
-      for (int i = 0; i < orderByClause.OrderingList.Count; i++)
+      for (int i = 0; i < orderByClause.Orderings.Count; i++)
       {
-        Ordering clause = orderByClause.OrderingList[i];
+        Ordering clause = orderByClause.Orderings[i];
         clause.Accept (this);
-        if (i == (orderByClause.OrderingList.Count - 1))
+        if (i == (orderByClause.Orderings.Count - 1))
           _secondOrderByClause = true;
       }
     }
