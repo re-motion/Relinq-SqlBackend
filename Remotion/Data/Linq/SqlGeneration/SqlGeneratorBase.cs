@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
       var joinedTableContext = new JoinedTableContext();
-      var parseContext = new ParseContext (queryModel, queryModel.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext);
+      var parseContext = new ParseContext (queryModel, new List<FieldDescriptor>(), joinedTableContext);
       var visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParserRegistries, parseContext);
       queryModel.Accept (visitor);
       joinedTableContext.CreateAliases (queryModel);

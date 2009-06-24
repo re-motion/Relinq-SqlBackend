@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       JoinedTableContext joinedTableContext = new JoinedTableContext();
       DetailParserRegistries detailParserRegistries = new DetailParserRegistries (databaseInfo, parseMode);
-      Visitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParserRegistries, new ParseContext (query, query.GetExpressionTree(), new List<FieldDescriptor>(), joinedTableContext));
+      Visitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParserRegistries, new ParseContext (query, new List<FieldDescriptor>(), joinedTableContext));
       query.Accept (Visitor);
       joinedTableContext.CreateAliases (query);
     }

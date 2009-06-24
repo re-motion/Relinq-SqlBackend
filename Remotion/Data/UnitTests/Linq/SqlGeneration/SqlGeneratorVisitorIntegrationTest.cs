@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+          new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitOrdering (ordering);
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+          new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrdering (orderingClause1);
       sqlGeneratorVisitor.VisitOrdering (orderingClause2);
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+          new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrdering (orderingClause1);
       sqlGeneratorVisitor.VisitOrdering (orderingClause2);
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+          new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrdering (orderingClause1);
       sqlGeneratorVisitor.VisitOrdering (orderingClause2);
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           detailParserRegistries,
-          new ParseContext (parsedQuery, parsedQuery.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+          new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       sqlGeneratorVisitor.VisitOrdering (orderingClause1);
       sqlGeneratorVisitor.VisitOrdering (orderingClause2);
@@ -267,7 +267,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           detailParserRegistries,
-          new ParseContext (subQueryModel, subQueryModel.GetExpressionTree(), new List<FieldDescriptor>(), _context));
+          new ParseContext (subQueryModel, new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitQueryModel (subQueryModel);
     }
 
