@@ -51,10 +51,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void Remove ()
     {
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
       IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
-      MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
+      MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
       Column column = new Column (fromSource, "FirstColumn");
       Constant item = new Constant (5);
       List<IEvaluation> arguments = new List<IEvaluation> { item };

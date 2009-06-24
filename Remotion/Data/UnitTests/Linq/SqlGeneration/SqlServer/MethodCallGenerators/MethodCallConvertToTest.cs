@@ -51,11 +51,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ConvertIntToString ()
     {
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
       IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
 
-      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToString",new Type[] {typeof(int) } );
+      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToString",new[] {typeof(int) } );
       Column column = new Column (fromSource, "FirstColumn");
       //Constant item = new Constant (5);
       List<IEvaluation> arguments = new List<IEvaluation> { column };
@@ -69,11 +68,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ConvertIntToBoolean ()
     {
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
       IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
 
-      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToBoolean", new Type[] { typeof (int) });
+      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
       Column column = new Column (fromSource, "FirstColumn");
       //Constant item = new Constant (5);
       List<IEvaluation> arguments = new List<IEvaluation> { column };

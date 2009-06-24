@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
@@ -263,8 +262,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_MethodCall ()
     {
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student ();
       IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
 
       MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });

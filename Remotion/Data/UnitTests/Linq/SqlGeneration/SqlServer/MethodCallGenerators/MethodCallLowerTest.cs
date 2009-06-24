@@ -51,8 +51,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ToLower ()
     {
-      ParameterExpression parameter = Expression.Parameter (typeof (Student), "s");
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause (parameter, ExpressionHelper.CreateQuerySource ());
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
       IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
       MethodInfo methodInfo = typeof (string).GetMethod ("ToLower", new Type[] { });
       Column column = new Column (fromSource, "FirstColumn");
