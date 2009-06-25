@@ -219,10 +219,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     [Test]
     public void VisitSelectClause_MethodCall ()
     {
-      IClause clause = ExpressionHelper.CreateClause();
       IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var selectClause = new SelectClause (clause, Expression.Constant (0));
+      var selectClause = new SelectClause (Expression.Constant (0));
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,

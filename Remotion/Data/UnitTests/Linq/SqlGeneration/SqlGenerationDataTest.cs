@@ -14,17 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultModifications;
 using Remotion.Data.Linq.DataObjectModel;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
-using System.Linq;
-using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
@@ -34,11 +30,16 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     private SelectClause _selectClause;
     private IClause _previousClause;
 
+    public IClause PreviousClause
+    {
+      get { return _previousClause; }
+    }
+
     [SetUp]
     public void SetUp ()
     {
       _previousClause = ExpressionHelper.CreateClause ();
-      _selectClause = ExpressionHelper.CreateSelectClause (_previousClause);
+      _selectClause = ExpressionHelper.CreateSelectClause ();
     }
 
     [Test]
@@ -63,7 +64,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
 
-      List<ResultModificationBase> resultModifications = new List<ResultModificationBase>();
+      var resultModifications = new List<ResultModificationBase>();
       resultModifications.Add (new DistinctResultModification (_selectClause));
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
@@ -79,7 +80,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptor = new FieldDescriptor (typeof (string).GetProperty ("Length"), sourcePath, null);
       var fieldDescriptors = new List<FieldDescriptor> { fieldDescriptor };
       var evaluation = new Constant (0);
-      List<ResultModificationBase> resultModifications = new List<ResultModificationBase> ();
+      var resultModifications = new List<ResultModificationBase> ();
       resultModifications.Add (new DistinctResultModification (_selectClause));
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
@@ -93,7 +94,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var data = new SqlGenerationData ();
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
-      List<ResultModificationBase> resultModifications = new List<ResultModificationBase>();
+      var resultModifications = new List<ResultModificationBase>();
       resultModifications.Add (new DistinctResultModification (_selectClause));
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
