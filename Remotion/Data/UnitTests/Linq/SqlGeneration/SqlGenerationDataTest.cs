@@ -27,7 +27,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
   [TestFixture]
   public class SqlGenerationDataTest
   {
-    private SelectClause _selectClause;
     private IClause _previousClause;
 
     public IClause PreviousClause
@@ -39,7 +38,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     public void SetUp ()
     {
       _previousClause = ExpressionHelper.CreateClause ();
-      _selectClause = ExpressionHelper.CreateSelectClause ();
     }
 
     [Test]
@@ -50,7 +48,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var evaluation = new Constant (0);
 
       ICollection<ResultModificationBase> modifications = new List<ResultModificationBase> ();
-      modifications.Add (new DistinctResultModification (_selectClause));
+      modifications.Add (new DistinctResultModification ());
 
       data.SetSelectClause (modifications, fieldDescriptors, evaluation);
 
@@ -65,7 +63,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var evaluation = new Constant (0);
 
       var resultModifications = new List<ResultModificationBase>();
-      resultModifications.Add (new DistinctResultModification (_selectClause));
+      resultModifications.Add (new DistinctResultModification ());
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
       Assert.That (data.SelectEvaluation, Is.EqualTo (evaluation));
@@ -81,7 +79,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptors = new List<FieldDescriptor> { fieldDescriptor };
       var evaluation = new Constant (0);
       var resultModifications = new List<ResultModificationBase> ();
-      resultModifications.Add (new DistinctResultModification (_selectClause));
+      resultModifications.Add (new DistinctResultModification ());
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
 
       Assert.That (data.Joins[sourcePath.FirstSource], Is.EqualTo (new[] {join}));
@@ -95,7 +93,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fieldDescriptors = new List<FieldDescriptor> ();
       var evaluation = new Constant (0);
       var resultModifications = new List<ResultModificationBase>();
-      resultModifications.Add (new DistinctResultModification (_selectClause));
+      resultModifications.Add (new DistinctResultModification ());
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
       data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
     }
