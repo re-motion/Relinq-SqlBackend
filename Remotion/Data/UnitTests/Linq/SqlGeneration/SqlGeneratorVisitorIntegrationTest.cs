@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
@@ -244,7 +245,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       IQueryable<Student> query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      QueryModel subQueryModel = ((SubQueryFromClause) parsedQuery.BodyClauses[0]).SubQueryModel;
+      QueryModel subQueryModel = ((SubQueryExpression) ((AdditionalFromClause) parsedQuery.BodyClauses[0]).FromExpression).QueryModel;
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,

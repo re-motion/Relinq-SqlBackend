@@ -264,14 +264,14 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses[0];
+      var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitAdditionalFromClause (subQueryFromClause);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
 
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.FromSources,
-          Is.EqualTo (new object[] { subQueryFromClause.GetColumnSource (StubDatabaseInfo.Instance) }));
+          Is.EqualTo (new object[] { fromClause.GetColumnSource (StubDatabaseInfo.Instance) }));
     }
 
     [Test]
