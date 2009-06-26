@@ -77,14 +77,6 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitAdditionalFromClause (fromClause);
     }
 
-    public override void VisitSubQueryFromClause (SubQueryFromClause fromClause)
-    {
-      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-
-      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
-      base.VisitSubQueryFromClause (fromClause);
-    }
-
     public override void VisitJoinClause (JoinClause joinClause)
     {
       throw new NotSupportedException ("Join clauses are not supported by this SQL generator.");

@@ -260,14 +260,14 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     }
 
     [Test]
-    public void VisitSubQueryFromClause ()
+    public void VisitAdditionalFromClause_WithSubQuery ()
     {
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitSubQueryFromClause (subQueryFromClause);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (subQueryFromClause);
 
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.FromSources,
