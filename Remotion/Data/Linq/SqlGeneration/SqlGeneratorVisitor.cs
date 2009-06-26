@@ -24,7 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public class SqlGeneratorVisitor : IQueryVisitor
+  public class SqlGeneratorVisitor : IQueryModelVisitor
   {
     private readonly IDatabaseInfo _databaseInfo;
     private readonly DetailParserRegistries _detailParserRegistries;
@@ -122,8 +122,8 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       for (int i = 0; i < orderByClause.Orderings.Count; i++)
       {
-        Ordering clause = orderByClause.Orderings[i];
-        clause.Accept (this);
+        Ordering ordering = orderByClause.Orderings[i];
+        ordering.Accept (this);
         if (i == (orderByClause.Orderings.Count - 1))
           _secondOrderByClause = true;
       }
@@ -148,19 +148,12 @@ namespace Remotion.Data.Linq.SqlGeneration
       IEvaluation evaluation =
           _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector).Parse (selectClause.Selector, _parseContext);
 
-      SetSelectClause (selectClause.ResultModifications, evaluation);
+      SqlGenerationData.SetSelectClause (selectClause.ResultModifications, _parseContext.FieldDescriptors, evaluation);
     }
 
-    //public void VisitResultModifierClause (ResultModifierClause resultModifierClause)
-    //{
-    //  ResultModifierParser parser = new ResultModifierParser (_detailParserRegistries.SelectProjectionParser);
-    //  MethodCall methodCall = parser.Parse (resultModifierClause.ResultModifier, _parseContext);
-    //  methodCalls.Add (methodCall);
-    //}
-
-    private void SetSelectClause (ICollection<ResultModificationBase> resultModifications, IEvaluation evaluation)
+    public void VisitResultModification (ResultModificationBase resultModification)
     {
-      SqlGenerationData.SetSelectClause (resultModifications, _parseContext.FieldDescriptors, evaluation);
+      throw new NotImplementedException();
     }
 
     public void VisitGroupClause (GroupClause groupClause)
