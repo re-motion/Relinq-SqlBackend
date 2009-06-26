@@ -75,14 +75,14 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     }
 
     [Test]
-    public void VisitMemberFromClause ()
+    public void VisitAdditionalFromClause_WithMemberExpression ()
     {
       IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateQuerySource_IndustrialSector());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (MemberFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitMemberFromClause (fromClause);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s1") }));
 

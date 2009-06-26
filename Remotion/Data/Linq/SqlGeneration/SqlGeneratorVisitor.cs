@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -59,23 +60,21 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
 
       SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
+
+      // if the from clause contains a member expressions (e.g. from s1 in ... from s2 in s1.Friends), we'll parse the expression and add joins as needed
+      var memberExpression = fromClause.FromExpression as MemberExpression;
+      if (memberExpression != null)
+      {
+        var parser = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression);
+        var leftSide = parser.Parse (memberExpression.Expression, _parseContext);
+        var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).B;
+        var rightSide = new Column (fromClause.GetColumnSource (_databaseInfo), foreignKeyName);
+
+        ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
+        SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
+      }
+
       base.VisitAdditionalFromClause (fromClause);
-    }
-
-    public override void VisitMemberFromClause (MemberFromClause fromClause)
-    {
-      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-
-      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
-
-      var memberExpression = fromClause.MemberExpression;
-      var leftSide = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression).Parse (memberExpression.Expression, _parseContext);
-      var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).B;
-      var rightSide = new Column (fromClause.GetColumnSource (_databaseInfo), foreignKeyName);
-
-      ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
-      SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
-      base.VisitMemberFromClause (fromClause);
     }
 
     public override void VisitSubQueryFromClause (SubQueryFromClause fromClause)
