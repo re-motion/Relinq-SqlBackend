@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateQuerySource_IndustrialSector());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var fromClause = (MemberFromClause) parsedQuery.BodyClauses[0];
+      var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
