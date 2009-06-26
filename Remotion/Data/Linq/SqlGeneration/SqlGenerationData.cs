@@ -42,14 +42,11 @@ namespace Remotion.Data.Linq.SqlGeneration
     public ParseMode ParseMode { get; set; }
     public List<ResultModificationBase> ResultModifiers { get; set; }
     
-    public void SetSelectClause (ICollection<ResultModificationBase> resultModifiers, List<FieldDescriptor> fieldDescriptors, IEvaluation evaluation)
+    public void SetSelectEvaluation (IEvaluation evaluation, List<FieldDescriptor> fieldDescriptors)
     {
       if (SelectEvaluation != null)
         throw new InvalidOperationException ("There can only be one select clause.");
 
-      ResultModifiers = new List<ResultModificationBase> (resultModifiers);
-      //needed for correct order when generating sql code // TODO: Check whether this is really sensible.
-      ResultModifiers.Reverse ();
       SelectEvaluation = evaluation;
 
       foreach (var selectedField in fieldDescriptors)
@@ -72,23 +69,11 @@ namespace Remotion.Data.Linq.SqlGeneration
         Joins.AddPath (fieldDescriptor.SourcePath);
     }
 
-    public void AddOrderingFields(OrderingField orderingField)
+    public void PrependOrderingFields (IEnumerable<OrderingField> orderingFields)
     {
-      OrderingFields.Add (orderingField);
-      Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
-    }
-
-    public void AddFirstOrderingFields (OrderingField orderingField)
-    {
-      List<OrderingField> newOrderingFields = new List<OrderingField> ();
-      newOrderingFields.Add (orderingField);
-      foreach (OrderingField field in OrderingFields)
-      {
-        newOrderingFields.Add (field);
-      }
-      OrderingFields.Clear();
-      OrderingFields.AddRange (newOrderingFields);
-      Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
+      OrderingFields.InsertRange (0, orderingFields);
+      foreach (var orderingField in orderingFields)
+        Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
     }
 
     public SelectedObjectActivator GetSelectedObjectActivator ()

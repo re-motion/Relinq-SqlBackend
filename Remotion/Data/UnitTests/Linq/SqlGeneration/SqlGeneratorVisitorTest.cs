@@ -23,7 +23,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.ResultModifications;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
@@ -36,7 +35,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
   [TestFixture]
   public class SqlGeneratorVisitorTest
   {
-    #region Setup/Teardown
+    private JoinedTableContext _context;
+    private ParseMode _parseMode;
+    private DetailParserRegistries _detailParserRegistries;
 
     [SetUp]
     public void SetUp ()
@@ -46,19 +47,13 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       _detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
     }
 
-    #endregion
-
-    private JoinedTableContext _context;
-    private ParseMode _parseMode;
-    private DetailParserRegistries _detailParserRegistries;
-
     [Test]
     public void VisitAdditionalFromClause ()
     {
       IQueryable<Student> query = MixedTestQueryGenerator.CreateMultiFromWhereQuery (
           ExpressionHelper.CreateQuerySource(), ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses.First();
+      var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
@@ -92,7 +87,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateQuerySource_IndustrialSector());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var fromClause = (MemberFromClause) parsedQuery.BodyClauses.First();
+      var fromClause = (MemberFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
@@ -113,72 +108,48 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     [Test]
     public void VisitOrderByClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateQuerySource());
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var orderBy1 = (OrderByClause) parsedQuery.BodyClauses.First();
-
-      FieldDescriptor fieldDescriptor1 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
-      FieldDescriptor fieldDescriptor2 = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
-
-      var sqlGeneratorVisitor = new SqlGeneratorVisitor (
-          StubDatabaseInfo.Instance,
-          ParseMode.TopLevelQuery,
-          _detailParserRegistries,
-          new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy1);
-      Assert.That (
-          sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
-          Is.EqualTo (
-              new object[]
-              {
-                  new OrderingField (fieldDescriptor1, OrderingDirection.Asc),
-                  new OrderingField (fieldDescriptor2, OrderingDirection.Asc),
-              }));
-    }
-
-    [Test]
-    public void VisitOrderingClause ()
-    {
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
-      Ordering ordering = orderBy.Orderings.First();
+
+      FieldDescriptor expectedFieldDescriptor = 
+          ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           _detailParserRegistries,
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitOrdering (ordering);
 
-      FieldDescriptor fieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      var orderByClause = (OrderByClause) parsedQuery.BodyClauses[0];
+      sqlGeneratorVisitor.VisitOrderByClause (orderByClause);
+
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
-          Is.EqualTo (new object[] { new OrderingField (fieldDescriptor, OrderingDirection.Asc) }));
+          Is.EqualTo ( new [] { new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc), }));
     }
 
     [Test]
-    public void VisitOrderingClause_UsesContext ()
+    public void VisitOrderByClause_UsesContext ()
     {
-      Assert.AreEqual (0, _context.Count);
-      VisitOrderingClause_WithJoins();
-      Assert.AreEqual (1, _context.Count);
+      Assert.That (_context.Count, Is.EqualTo (0));
+      VisitOrderByClause_WithJoins();
+      Assert.That (_context.Count, Is.EqualTo (1));
     }
 
     [Test]
-    public void VisitOrderingClause_WithJoins ()
+    public void VisitOrderByClause_WithJoins ()
     {
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
-      Ordering ordering = orderBy.Orderings.First();
-
+      
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
           ParseMode.TopLevelQuery,
           _detailParserRegistries,
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitOrdering (ordering);
+
+      var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
@@ -187,9 +158,40 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       var join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[sourceTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
+    }
+
+    [Test]
+    public void VisitOrderByClause_Multiple ()
+    {
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+      var orderByClause1 = (OrderByClause) parsedQuery.BodyClauses[0];
+      var orderByClause2 = (OrderByClause) parsedQuery.BodyClauses[1];
+
+      FieldDescriptor firstFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      FieldDescriptor lastFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
+
+      var sqlGeneratorVisitor = new SqlGeneratorVisitor (
+          StubDatabaseInfo.Instance,
+          ParseMode.TopLevelQuery,
+          _detailParserRegistries,
+          new ParseContext (parsedQuery, new List<FieldDescriptor> (), _context));
+
+      sqlGeneratorVisitor.VisitOrderByClause (orderByClause1);
+      sqlGeneratorVisitor.VisitOrderByClause (orderByClause2);
+      
+      Assert.That (
+          sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
+          Is.EqualTo (
+              new object[]
+              {
+                  new OrderingField (lastFieldDescriptor, OrderingDirection.Desc),
+                  new OrderingField (firstFieldDescriptor, OrderingDirection.Asc),
+                  new OrderingField (lastFieldDescriptor, OrderingDirection.Asc),
+              }));
     }
 
     [Test]
@@ -230,7 +232,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitSelectClause (selectClause);
 
-      Assert.AreEqual (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, new Constant (0));
+      Assert.That (new Constant (0), Is.EqualTo (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation));
     }
 
     [Test]
@@ -254,9 +256,9 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     [Test]
     public void VisitSelectClause_UsesContext ()
     {
-      Assert.AreEqual (0, _context.Count);
+      Assert.That (_context.Count, Is.EqualTo (0));
       VisitSelectClause_WithJoins();
-      Assert.AreEqual (1, _context.Count);
+      Assert.That (_context.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -279,7 +281,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       Tuple<string, string> joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.A), new Column (studentTable, joinSelectEvaluations.B));
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailTable];
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
@@ -306,7 +308,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses.First();
+      var subQueryFromClause = (SubQueryFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
@@ -327,7 +329,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
-      var whereClause = (WhereClause) parsedQuery.BodyClauses.First();
+      var whereClause = (WhereClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = new SqlGeneratorVisitor (
           StubDatabaseInfo.Instance,
@@ -336,12 +338,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
       sqlGeneratorVisitor.VisitWhereClause (whereClause);
 
-      Assert.AreEqual (
-          new BinaryCondition (
-              new Column (new Table ("studentTable", "s"), "LastColumn"),
-              new Constant ("Garcia"),
-              BinaryCondition.ConditionKind.Equal),
-          sqlGeneratorVisitor.SqlGenerationData.Criterion);
+      Assert.That (
+                  sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (
+                            new BinaryCondition (
+                                            new Column (new Table ("studentTable", "s"), "LastColumn"),
+                                                          new Constant ("Garcia"),
+                                                                        BinaryCondition.ConditionKind.Equal)));
     }
 
     [Test]
@@ -371,7 +373,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new Constant ("Hugo"),
           BinaryCondition.ConditionKind.Equal);
       var combination12 = new ComplexCriterion (condition1, condition2, ComplexCriterion.JunctionKind.And);
-      Assert.AreEqual (combination12, sqlGeneratorVisitor.SqlGenerationData.Criterion);
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (combination12));
 
       sqlGeneratorVisitor.VisitWhereClause (whereClause3);
 
@@ -380,15 +382,15 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new Constant (100),
           BinaryCondition.ConditionKind.GreaterThan);
       var combination123 = new ComplexCriterion (combination12, condition3, ComplexCriterion.JunctionKind.And);
-      Assert.AreEqual (combination123, sqlGeneratorVisitor.SqlGenerationData.Criterion);
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (combination123));
     }
 
     [Test]
     public void VisitWhereClause_UsesContext ()
     {
-      Assert.AreEqual (0, _context.Count);
+      Assert.That (_context.Count, Is.EqualTo (0));
       VisitWhereClause_WithJoins();
-      Assert.AreEqual (1, _context.Count);
+      Assert.That (_context.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -412,7 +414,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       var join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
 
-      Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[sourceTable];
 

@@ -18,84 +18,104 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.ResultModifications;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {
   [TestFixture]
   public class SqlGenerationDataTest
   {
-    private IClause _previousClause;
-
-    public IClause PreviousClause
-    {
-      get { return _previousClause; }
-    }
+    private FieldDescriptor _fieldDescriptor1;
+    private FieldDescriptor _fieldDescriptor2;
+    private List<FieldDescriptor> _fieldDescriptors;
+    private FieldSourcePath _sourcePath1;
+    private SingleJoin _join1;
+    private FieldSourcePath _sourcePath2;
+    private SingleJoin _join2;
+    private Constant _evaluation;
 
     [SetUp]
     public void SetUp ()
     {
-      _previousClause = ExpressionHelper.CreateClause ();
+      _join1 = new SingleJoin ();
+      _sourcePath1 = new FieldSourcePath (new Table ("x", "y"), new[] { _join1 });
+      _join2 = new SingleJoin ();
+      _sourcePath2 = new FieldSourcePath (new Table ("a", "b"), new[] { _join2 });
+      _fieldDescriptor1 = new FieldDescriptor (typeof (string).GetProperty ("Length"), _sourcePath1, new Column());
+      _fieldDescriptor2 = new FieldDescriptor (typeof (string).GetProperty ("Length"), _sourcePath2, new Column());
+      _fieldDescriptors = new List<FieldDescriptor> { _fieldDescriptor1, _fieldDescriptor2 };
+      _evaluation = new Constant (0);
     }
 
     [Test]
-    public void SetSelectClause_ResultModification ()
-    {
-      var data = new SqlGenerationData();
-      var fieldDescriptors = new List<FieldDescriptor> ();
-      var evaluation = new Constant (0);
-
-      ICollection<ResultModificationBase> modifications = new List<ResultModificationBase> ();
-      modifications.Add (new DistinctResultModification ());
-
-      data.SetSelectClause (modifications, fieldDescriptors, evaluation);
-
-      Assert.That (data.ResultModifiers, Is.EqualTo (modifications));
-    }
-
-    [Test]
-    public void SetSelectClause_Evaluation ()
+    public void SetSelectEvaluation ()
     {
       var data = new SqlGenerationData ();
-      var fieldDescriptors = new List<FieldDescriptor> ();
-      var evaluation = new Constant (0);
+      data.SetSelectEvaluation (_evaluation, _fieldDescriptors);
 
-      var resultModifications = new List<ResultModificationBase>();
-      resultModifications.Add (new DistinctResultModification ());
-      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
-
-      Assert.That (data.SelectEvaluation, Is.EqualTo (evaluation));
+      Assert.That (data.SelectEvaluation, Is.EqualTo (_evaluation));
     }
 
     [Test]
-    public void SetSelectClause_FieldDescriptors ()
+    public void SetSelectEvaluation_FieldDescriptors ()
     {
       var data = new SqlGenerationData ();
-      var join = new SingleJoin();
-      var sourcePath = new FieldSourcePath (new Table (), new[] { join });
-      var fieldDescriptor = new FieldDescriptor (typeof (string).GetProperty ("Length"), sourcePath, null);
-      var fieldDescriptors = new List<FieldDescriptor> { fieldDescriptor };
-      var evaluation = new Constant (0);
-      var resultModifications = new List<ResultModificationBase> ();
-      resultModifications.Add (new DistinctResultModification ());
-      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
+      data.SetSelectEvaluation (_evaluation, _fieldDescriptors);
 
-      Assert.That (data.Joins[sourcePath.FirstSource], Is.EqualTo (new[] {join}));
+      Assert.That (data.Joins[_sourcePath1.FirstSource], Is.EqualTo (new[] { _join1 }));
+      Assert.That (data.Joins[_sourcePath2.FirstSource], Is.EqualTo (new[] { _join2 }));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There can only be one select clause.")]
-    public void SetSelectClause_Twice ()
+    public void SetSelectEvaluation_Twice ()
     {
       var data = new SqlGenerationData ();
-      var fieldDescriptors = new List<FieldDescriptor> ();
-      var evaluation = new Constant (0);
-      var resultModifications = new List<ResultModificationBase>();
-      resultModifications.Add (new DistinctResultModification ());
-      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
-      data.SetSelectClause (resultModifications, fieldDescriptors, evaluation);
+      data.SetSelectEvaluation (_evaluation, _fieldDescriptors);
+      data.SetSelectEvaluation (_evaluation, _fieldDescriptors);
+    }
+
+    [Test]
+    public void PrependOrderingFields ()
+    {
+      var orderingField1 = new OrderingField (_fieldDescriptor1, OrderingDirection.Asc);
+      var orderingField2 = new OrderingField (_fieldDescriptor2, OrderingDirection.Desc);
+
+      var data = new SqlGenerationData ();
+      data.PrependOrderingFields (new[] { orderingField1, orderingField2 });
+
+      Assert.That (data.OrderingFields, Is.EqualTo (new[] { orderingField1, orderingField2 }));
+    }
+
+    [Test]
+    public void PrependOrderingFields_Twice ()
+    {
+      var orderingField1 = new OrderingField (_fieldDescriptor1, OrderingDirection.Asc);
+      var orderingField2 = new OrderingField (_fieldDescriptor2, OrderingDirection.Desc);
+
+      var orderingField3 = new OrderingField (_fieldDescriptor1, OrderingDirection.Desc);
+      var orderingField4 = new OrderingField (_fieldDescriptor1, OrderingDirection.Desc);
+
+      var data = new SqlGenerationData ();
+      data.PrependOrderingFields (new[] { orderingField1, orderingField2 });
+      data.PrependOrderingFields (new[] { orderingField3, orderingField4 });
+
+      Assert.That (data.OrderingFields, Is.EqualTo (new[] { orderingField3, orderingField4, orderingField1, orderingField2 }));
+    }
+
+    [Test]
+    public void PrependOrderingFields_Joins ()
+    {
+      var orderingField1 = new OrderingField (_fieldDescriptor1, OrderingDirection.Asc);
+      var orderingField2 = new OrderingField (_fieldDescriptor2, OrderingDirection.Desc);
+
+      var data = new SqlGenerationData ();
+      data.PrependOrderingFields (new[] { orderingField1, orderingField2 });
+
+      Assert.That (data.Joins[_sourcePath1.FirstSource], Is.EqualTo (new[] { _join1 }));
+      Assert.That (data.Joins[_sourcePath2.FirstSource], Is.EqualTo (new[] { _join2 }));
     }
   }
 }

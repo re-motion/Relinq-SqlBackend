@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -24,14 +23,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public class SqlGeneratorVisitor : IQueryModelVisitor
+  public class SqlGeneratorVisitor : QueryModelVisitorBase
   {
     private readonly IDatabaseInfo _databaseInfo;
     private readonly DetailParserRegistries _detailParserRegistries;
     private readonly ParseContext _parseContext;
-    //private List<MethodCall> _methodCalls; 
-
-    private bool _secondOrderByClause;
 
     public SqlGeneratorVisitor (
         IDatabaseInfo databaseInfo, ParseMode parseMode, DetailParserRegistries detailParserRegistries, ParseContext parseContext)
@@ -45,41 +41,32 @@ namespace Remotion.Data.Linq.SqlGeneration
       _detailParserRegistries = detailParserRegistries;
       _parseContext = parseContext;
 
-      _secondOrderByClause = false;
-
-      //_methodCalls = new List<MethodCall> ();
-
       SqlGenerationData = new SqlGenerationData { ParseMode = parseMode };
     }
 
     public SqlGenerationData SqlGenerationData { get; private set; }
 
-    public void VisitQueryModel (QueryModel queryModel)
-    {
-      ArgumentUtility.CheckNotNull ("queryExpression", queryModel);
-      queryModel.MainFromClause.Accept (this);
-      foreach (IBodyClause bodyClause in queryModel.BodyClauses)
-        bodyClause.Accept (this);
-
-      queryModel.SelectOrGroupClause.Accept (this);
-    }
-
-    public void VisitMainFromClause (MainFromClause fromClause)
+    public override void VisitMainFromClause (MainFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      VisitFromClause (fromClause);
+
+      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
+      base.VisitMainFromClause (fromClause);
     }
 
-    public void VisitAdditionalFromClause (AdditionalFromClause fromClause)
+    public override void VisitAdditionalFromClause (AdditionalFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      VisitFromClause (fromClause);
+
+      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
+      base.VisitAdditionalFromClause (fromClause);
     }
 
-    public void VisitMemberFromClause (MemberFromClause fromClause)
+    public override void VisitMemberFromClause (MemberFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      VisitFromClause (fromClause);
+
+      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
 
       var memberExpression = fromClause.MemberExpression;
       var leftSide = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression).Parse (memberExpression.Expression, _parseContext);
@@ -88,79 +75,69 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
+      base.VisitMemberFromClause (fromClause);
     }
 
-    public void VisitSubQueryFromClause (SubQueryFromClause fromClause)
+    public override void VisitSubQueryFromClause (SubQueryFromClause fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      VisitFromClause (fromClause);
+
+      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
+      base.VisitSubQueryFromClause (fromClause);
     }
 
-    private void VisitFromClause (FromClauseBase fromClause)
+    public override void VisitJoinClause (JoinClause joinClause)
     {
-      IColumnSource columnSource = fromClause.GetColumnSource (_databaseInfo);
-
-      SqlGenerationData.AddFromClause (columnSource);
+      throw new NotSupportedException ("Join clauses are not supported by this SQL generator.");
     }
 
-    public void VisitJoinClause (JoinClause joinClause)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void VisitWhereClause (WhereClause whereClause)
+    public override void VisitWhereClause (WhereClause whereClause)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
       ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (whereClause.Predicate).Parse (whereClause.Predicate, _parseContext);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
+
+      base.VisitWhereClause (whereClause);
     }
 
-    public void VisitOrderByClause (OrderByClause orderByClause)
+    protected override void VisitOrderings (OrderByClause orderByClause, IList<Ordering> orderings)
     {
-      ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
-
-      for (int i = 0; i < orderByClause.Orderings.Count; i++)
-      {
-        Ordering ordering = orderByClause.Orderings[i];
-        ordering.Accept (this);
-        if (i == (orderByClause.Orderings.Count - 1))
-          _secondOrderByClause = true;
-      }
-    }
-
-    public void VisitOrdering (Ordering ordering)
-    {
-      ArgumentUtility.CheckNotNull ("ordering", ordering);
       var fieldParser = new OrderingFieldParser (_databaseInfo);
-      OrderingField orderingField = fieldParser.Parse (ordering.Expression, _parseContext, ordering.OrderingDirection);
 
-      if (!_secondOrderByClause)
-        SqlGenerationData.AddOrderingFields (orderingField);
-      else
-        SqlGenerationData.AddFirstOrderingFields (orderingField);
+      var orderingFields = new List<OrderingField> ();
+      foreach (var ordering in orderings)
+        orderingFields.Add (fieldParser.Parse (ordering.Expression, _parseContext, ordering.OrderingDirection));
+
+      SqlGenerationData.PrependOrderingFields (orderingFields);
+
+      base.VisitOrderings (orderByClause, orderings);
     }
 
-    public void VisitSelectClause (SelectClause selectClause)
+    public override void VisitSelectClause (SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
 
       IEvaluation evaluation =
-          _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector).Parse (selectClause.Selector, _parseContext);
+        _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector)
+        .Parse (selectClause.Selector, _parseContext);
+      SqlGenerationData.SetSelectEvaluation (evaluation, _parseContext.FieldDescriptors);
 
-      SqlGenerationData.SetSelectClause (selectClause.ResultModifications, _parseContext.FieldDescriptors, evaluation);
+      base.VisitSelectClause (selectClause);
     }
 
-    public void VisitResultModification (ResultModificationBase resultModification)
+    protected override void VisitResultModifications (SelectClause selectClause, IList<ResultModificationBase> resultModifications)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("selectClause", selectClause);
+      ArgumentUtility.CheckNotNull ("resultModifications", resultModifications);
+
+      SqlGenerationData.ResultModifiers = new List<ResultModificationBase> (resultModifications);
+      base.VisitResultModifications (selectClause, resultModifications);
     }
 
-    public void VisitGroupClause (GroupClause groupClause)
+    public override void VisitGroupClause (GroupClause groupClause)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException ("Group clauses are not supported by this SQL generator.");
     }
-   
-    
   }
 }
