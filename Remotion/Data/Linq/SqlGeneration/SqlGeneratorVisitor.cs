@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -92,7 +93,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitWhereClause (whereClause);
     }
 
-    protected override void VisitOrderings (OrderByClause orderByClause, IList<Ordering> orderings)
+    protected override void VisitOrderings (OrderByClause orderByClause, ObservableCollection<Ordering> orderings)
     {
       var fieldParser = new OrderingFieldParser (_databaseInfo);
 
@@ -117,7 +118,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitSelectClause (selectClause);
     }
 
-    protected override void VisitResultModifications (SelectClause selectClause, IList<ResultModificationBase> resultModifications)
+    protected override void VisitResultModifications (SelectClause selectClause, ObservableCollection<ResultModificationBase> resultModifications)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("resultModifications", resultModifications);
