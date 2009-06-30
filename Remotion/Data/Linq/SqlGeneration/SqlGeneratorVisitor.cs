@@ -48,12 +48,12 @@ namespace Remotion.Data.Linq.SqlGeneration
 
     public SqlGenerationData SqlGenerationData { get; private set; }
 
-    public override void VisitMainFromClause (MainFromClause fromClause)
+    public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
 
       SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
-      base.VisitMainFromClause (fromClause);
+      base.VisitMainFromClause (fromClause, queryModel);
     }
 
     public override void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index)
@@ -106,16 +106,17 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitOrderings (orderByClause, orderings);
     }
 
-    public override void VisitSelectClause (SelectClause selectClause)
+    public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       IEvaluation evaluation =
         _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector)
         .Parse (selectClause.Selector, _parseContext);
       SqlGenerationData.SetSelectEvaluation (evaluation, _parseContext.FieldDescriptors);
 
-      base.VisitSelectClause (selectClause);
+      base.VisitSelectClause (selectClause, queryModel);
     }
 
     protected override void VisitResultModifications (SelectClause selectClause, ObservableCollection<ResultModificationBase> resultModifications)
@@ -127,7 +128,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitResultModifications (selectClause, resultModifications);
     }
 
-    public override void VisitGroupClause (GroupClause groupClause)
+    public override void VisitGroupClause (GroupClause groupClause, QueryModel queryModel)
     {
       throw new NotSupportedException ("Group clauses are not supported by this SQL generator.");
     }
