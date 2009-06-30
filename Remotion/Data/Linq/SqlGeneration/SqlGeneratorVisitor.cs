@@ -51,6 +51,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
       base.VisitMainFromClause (fromClause, queryModel);
@@ -59,6 +60,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public override void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
 
@@ -86,6 +88,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (whereClause.Predicate).Parse (whereClause.Predicate, _parseContext);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
@@ -93,8 +96,12 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitWhereClause (whereClause, queryModel, index);
     }
 
-    protected override void VisitOrderings (OrderByClause orderByClause, ObservableCollection<Ordering> orderings)
+    protected override void VisitOrderings (QueryModel queryModel, OrderByClause orderByClause, ObservableCollection<Ordering> orderings)
     {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
+      ArgumentUtility.CheckNotNull ("orderings", orderings);
+
       var fieldParser = new OrderingFieldParser (_databaseInfo);
 
       var orderingFields = new List<OrderingField> ();
@@ -103,7 +110,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       SqlGenerationData.PrependOrderingFields (orderingFields);
 
-      base.VisitOrderings (orderByClause, orderings);
+      base.VisitOrderings (queryModel, orderByClause, orderings);
     }
 
     public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
