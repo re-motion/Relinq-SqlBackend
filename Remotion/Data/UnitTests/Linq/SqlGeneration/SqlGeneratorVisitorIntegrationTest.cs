@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
           detailParserRegistries,
           new ParseContext (parsedQuery, new List<FieldDescriptor>(), _context));
 
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
@@ -212,8 +212,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var orderBy1 = (OrderByClause) parsedQuery.BodyClauses[1];
       var orderBy2 = (OrderByClause) parsedQuery.BodyClauses[2];
 
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy1);
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy2);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy1, parsedQuery, 0);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy2, parsedQuery, 1);
 
       PropertyInfo relationalMemberFirstOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
       IColumnSource studentDetailDetailTable1 = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);

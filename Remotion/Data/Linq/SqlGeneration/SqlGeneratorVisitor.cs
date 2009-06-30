@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitMainFromClause (fromClause);
     }
 
-    public override void VisitAdditionalFromClause (AdditionalFromClause fromClause)
+    public override void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.SqlGeneration
         SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
       }
 
-      base.VisitAdditionalFromClause (fromClause);
+      base.VisitAdditionalFromClause (fromClause, queryModel, index);
     }
 
     public override void VisitJoinClause (JoinClause joinClause)
@@ -83,14 +83,14 @@ namespace Remotion.Data.Linq.SqlGeneration
       throw new NotSupportedException ("Join clauses are not supported by this SQL generator.");
     }
 
-    public override void VisitWhereClause (WhereClause whereClause)
+    public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
 
       ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (whereClause.Predicate).Parse (whereClause.Predicate, _parseContext);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
 
-      base.VisitWhereClause (whereClause);
+      base.VisitWhereClause (whereClause, queryModel, index);
     }
 
     protected override void VisitOrderings (OrderByClause orderByClause, ObservableCollection<Ordering> orderings)

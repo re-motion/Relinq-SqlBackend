@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
       SqlGeneratorVisitor sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause, parsedQuery, 0);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause, parsedQuery, 0);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s1") }));
 
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
       var orderByClause = (OrderByClause) parsedQuery.BodyClauses[0];
-      sqlGeneratorVisitor.VisitOrderByClause (orderByClause);
+      sqlGeneratorVisitor.VisitOrderByClause (orderByClause, parsedQuery, 0);
 
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
-      sqlGeneratorVisitor.VisitOrderByClause (orderBy);
+      sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
@@ -156,8 +156,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
-      sqlGeneratorVisitor.VisitOrderByClause (orderByClause1);
-      sqlGeneratorVisitor.VisitOrderByClause (orderByClause2);
+      sqlGeneratorVisitor.VisitOrderByClause (orderByClause1, parsedQuery, 0);
+      sqlGeneratorVisitor.VisitOrderByClause (orderByClause2, parsedQuery, 1);
       
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.OrderingFields,
@@ -267,7 +267,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause);
+      sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause, parsedQuery, 0);
 
       Assert.That (
           sqlGeneratorVisitor.SqlGenerationData.FromSources,
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var whereClause = (WhereClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitWhereClause (whereClause);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause, parsedQuery, 0);
 
       Assert.That (
                   sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (
@@ -305,8 +305,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var whereClause3 = (WhereClause) parsedQuery.BodyClauses[2];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitWhereClause (whereClause1);
-      sqlGeneratorVisitor.VisitWhereClause (whereClause2);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause1, parsedQuery, 0);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause2, parsedQuery, 1);
 
       var condition1 = new BinaryCondition (
           new Column (new Table ("studentTable", "s"), "LastColumn"),
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var combination12 = new ComplexCriterion (condition1, condition2, ComplexCriterion.JunctionKind.And);
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (combination12));
 
-      sqlGeneratorVisitor.VisitWhereClause (whereClause3);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause3, parsedQuery, 2);
 
       var condition3 = new BinaryCondition (
           new Column (new Table ("studentTable", "s"), "IDColumn"),
@@ -346,7 +346,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var whereClause = (WhereClause) parsedQuery.BodyClauses[0];
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      sqlGeneratorVisitor.VisitWhereClause (whereClause);
+      sqlGeneratorVisitor.VisitWhereClause (whereClause, parsedQuery, 0);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance); // Student_Detail
