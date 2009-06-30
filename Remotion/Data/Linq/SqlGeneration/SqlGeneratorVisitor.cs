@@ -119,13 +119,14 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitSelectClause (selectClause, queryModel);
     }
 
-    protected override void VisitResultModifications (SelectClause selectClause, ObservableCollection<ResultModificationBase> resultModifications)
+    protected override void VisitResultModifications (QueryModel queryModel, SelectClause selectClause, ObservableCollection<ResultModificationBase> resultModifications)
     {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("resultModifications", resultModifications);
 
       SqlGenerationData.ResultModifiers = new List<ResultModificationBase> (resultModifications);
-      base.VisitResultModifications (selectClause, resultModifications);
+      base.VisitResultModifications (queryModel, selectClause, resultModifications);
     }
 
     public override void VisitGroupClause (GroupClause groupClause, QueryModel queryModel)
