@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitWhereClause (whereClause, queryModel, index);
     }
 
-    protected override void VisitOrderings (QueryModel queryModel, OrderByClause orderByClause, ObservableCollection<Ordering> orderings)
+    protected override void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.SqlGeneration
 
       SqlGenerationData.PrependOrderingFields (orderingFields);
 
-      base.VisitOrderings (queryModel, orderByClause, orderings);
+      base.VisitOrderings (orderings, queryModel, orderByClause);
     }
 
     public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
@@ -126,14 +126,14 @@ namespace Remotion.Data.Linq.SqlGeneration
       base.VisitSelectClause (selectClause, queryModel);
     }
 
-    protected override void VisitResultModifications (QueryModel queryModel, SelectClause selectClause, ObservableCollection<ResultModificationBase> resultModifications)
+    protected override void VisitResultModifications (ObservableCollection<ResultModificationBase> resultModifications, QueryModel queryModel, SelectClause selectClause)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("resultModifications", resultModifications);
 
       SqlGenerationData.ResultModifiers = new List<ResultModificationBase> (resultModifications);
-      base.VisitResultModifications (queryModel, selectClause, resultModifications);
+      base.VisitResultModifications (resultModifications, queryModel, selectClause);
     }
 
     public override void VisitGroupClause (GroupClause groupClause, QueryModel queryModel)
