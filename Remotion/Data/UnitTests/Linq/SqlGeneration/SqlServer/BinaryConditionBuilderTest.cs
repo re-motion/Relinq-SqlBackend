@@ -15,11 +15,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
@@ -262,11 +260,8 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_MethodCall ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student ();
-      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
-
-      MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
-      var column = new Column (fromSource, "FirstColumn");
+      var methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
       var methodCall = new MethodCall (methodInfo, column, new List<IEvaluation> ());
 
       var binaryCondition = new BinaryCondition(methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);

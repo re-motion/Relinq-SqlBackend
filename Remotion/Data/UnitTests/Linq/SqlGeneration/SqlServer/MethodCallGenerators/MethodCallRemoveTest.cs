@@ -14,13 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -51,15 +48,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void Remove ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
-      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
-      MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
-      Column column = new Column (fromSource, "FirstColumn");
-      Constant item = new Constant (5);
-      List<IEvaluation> arguments = new List<IEvaluation> { item };
-      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
+      var methodInfo = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var arguments = new List<IEvaluation> { new Constant (5) };
+      var methodCall = new MethodCall (methodInfo, column, arguments);
 
-      MethodCallRemove methodCallRemove = new MethodCallRemove();
+      var methodCallRemove = new MethodCallRemove();
       methodCallRemove.GenerateSql (methodCall, _commandBuilder);
 
       Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,LEN([s].[FirstColumn]), \"\")", _commandBuilder.GetCommandText ());

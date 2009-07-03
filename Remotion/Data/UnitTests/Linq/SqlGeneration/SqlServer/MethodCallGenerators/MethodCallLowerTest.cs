@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
@@ -51,14 +50,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ToLower ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
-      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
-      MethodInfo methodInfo = typeof (string).GetMethod ("ToLower", new Type[] { });
-      Column column = new Column (fromSource, "FirstColumn");
-      List<IEvaluation> arguments = new List<IEvaluation> ();
-      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
+      var methodInfo = typeof (string).GetMethod ("ToLower", new Type[] { });
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var arguments = new List<IEvaluation> ();
+      var methodCall = new MethodCall (methodInfo, column, arguments);
 
-      MethodCallLower methodCallLower = new MethodCallLower ();
+      var methodCallLower = new MethodCallLower ();
       methodCallLower.GenerateSql (methodCall, _commandBuilder);
 
       Assert.AreEqual ("xyz LOWER([s].[FirstColumn])", _commandBuilder.GetCommandText ());

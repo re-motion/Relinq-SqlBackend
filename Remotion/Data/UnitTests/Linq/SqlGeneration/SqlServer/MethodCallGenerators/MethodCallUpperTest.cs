@@ -14,13 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -51,14 +48,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ToUpper ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student ();
-      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
-      MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
-      Column column = new Column (fromSource, "FirstColumn");
-      List<IEvaluation> arguments = new List<IEvaluation> ();
-      MethodCall methodCall = new MethodCall (methodInfo, column, arguments);
+      var methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var arguments = new List<IEvaluation> ();
+      var methodCall = new MethodCall (methodInfo, column, arguments);
       
-      MethodCallUpper methodCallUpper = new MethodCallUpper ();
+      var methodCallUpper = new MethodCallUpper ();
       methodCallUpper.GenerateSql (methodCall, _commandBuilder);
       
       Assert.AreEqual ("xyz UPPER([s].[FirstColumn])", _commandBuilder.GetCommandText ());

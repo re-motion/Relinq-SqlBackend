@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
+      SqlGenerationData.AddFromClause (_parseContext.JoinedTableContext.GetColumnSource (fromClause));
       base.VisitMainFromClause (fromClause, queryModel);
     }
 
@@ -62,7 +62,8 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      SqlGenerationData.AddFromClause (fromClause.GetColumnSource (_databaseInfo));
+      var columnSource = _parseContext.JoinedTableContext.GetColumnSource (fromClause);
+      SqlGenerationData.AddFromClause (columnSource);
 
       // if the from clause contains a member expressions (e.g. from s1 in ... from s2 in s1.Friends), we'll parse the expression and add joins as needed
       var memberExpression = fromClause.FromExpression as MemberExpression;
@@ -71,7 +72,7 @@ namespace Remotion.Data.Linq.SqlGeneration
         var parser = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression);
         var leftSide = parser.Parse (memberExpression.Expression, _parseContext);
         var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).B;
-        var rightSide = new Column (fromClause.GetColumnSource (_databaseInfo), foreignKeyName);
+        var rightSide = new Column (columnSource, foreignKeyName);
 
         ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
         SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);

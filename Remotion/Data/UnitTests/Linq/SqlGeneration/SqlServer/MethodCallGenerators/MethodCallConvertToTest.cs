@@ -14,13 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -51,16 +48,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ConvertIntToString ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
-      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      var methodInfo = typeof (Convert).GetMethod ("ToString",new[] {typeof(int) } );
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var arguments = new List<IEvaluation> { column };
+      var methodCall = new MethodCall (methodInfo, null, arguments);
 
-      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToString",new[] {typeof(int) } );
-      Column column = new Column (fromSource, "FirstColumn");
-      //Constant item = new Constant (5);
-      List<IEvaluation> arguments = new List<IEvaluation> { column };
-      MethodCall methodCall = new MethodCall (methodInfo, null, arguments);
-
-      MethodCallConvertTo methodCallConvertTo = new MethodCallConvertTo();
+      var methodCallConvertTo = new MethodCallConvertTo();
       methodCallConvertTo.GenerateSql (methodCall, _commandBuilder);
       Assert.AreEqual ("xyz CONVERT(nvarchar(max),[s].[FirstColumn]) ", _commandBuilder.GetCommandText ());
     }
@@ -68,16 +61,12 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer.MethodCallGenerat
     [Test]
     public void ConvertIntToBoolean ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
-      IColumnSource fromSource = fromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      var methodInfo = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var arguments = new List<IEvaluation> { column };
+      var methodCall = new MethodCall (methodInfo, null, arguments);
 
-      MethodInfo methodInfo = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
-      Column column = new Column (fromSource, "FirstColumn");
-      //Constant item = new Constant (5);
-      List<IEvaluation> arguments = new List<IEvaluation> { column };
-      MethodCall methodCall = new MethodCall (methodInfo, null, arguments);
-
-      MethodCallConvertTo methodCallConvertTo = new MethodCallConvertTo ();
+      var methodCallConvertTo = new MethodCallConvertTo ();
       methodCallConvertTo.GenerateSql (methodCall, _commandBuilder);
       Assert.AreEqual ("xyz CONVERT(bit,[s].[FirstColumn]) ", _commandBuilder.GetCommandText ());
     }

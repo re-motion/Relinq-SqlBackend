@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      _context = new JoinedTableContext();
+      _context = new JoinedTableContext(StubDatabaseInfo.Instance);
       _parseMode = new ParseMode();
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationMember1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationMember1);
 
       PropertyInfo relationMember2 = typeof (Student_Detail).GetProperty ("Student");
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
       PropertyInfo relationalMemberForFirstOrdering1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IColumnSource studentDetailDetailTable = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
       PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       sqlGeneratorVisitor.VisitOrderByClause (orderBy2, parsedQuery, 1);
 
       PropertyInfo relationalMemberFirstOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IColumnSource studentDetailDetailTable1 = parsedQuery.MainFromClause.GetColumnSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable1 = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable1, relationalMemberFirstOrderBy1);
 
       PropertyInfo relationalMemberFirstOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       SingleJoin join2 = CreateJoin (studentDetailTable1, relationalMemberFirstOrderBy2);
 
       PropertyInfo relationalMemberSecondOrderBy1 = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      IColumnSource studentDetailDetailTable2 = ((AdditionalFromClause) parsedQuery.BodyClauses[0]).GetColumnSource (StubDatabaseInfo.Instance);
+      IColumnSource studentDetailDetailTable2 = _context.GetColumnSource ((AdditionalFromClause) parsedQuery.BodyClauses[0]);
       SingleJoin join3 = CreateJoin (studentDetailDetailTable2, relationalMemberSecondOrderBy1);
 
       PropertyInfo relationalMemberSecondOrderBy2 = typeof (Student_Detail).GetProperty ("Student");

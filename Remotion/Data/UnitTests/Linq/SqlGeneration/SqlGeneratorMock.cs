@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -35,6 +34,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     private readonly IWhereBuilder _whereBuilder;
     private readonly IFromBuilder _fromBuilder;
     private readonly ISelectBuilder _selectBuilder;
+    private readonly ParseContext _referenceParseContext;
 
     public SqlGeneratorMock (QueryModel query, IDatabaseInfo databaseInfo,
         ISelectBuilder selectBuilder, IFromBuilder fromBuilder, IWhereBuilder whereBuilder, IOrderByBuilder orderByBuilder, ParseMode parseMode)
@@ -45,15 +45,17 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       _whereBuilder = whereBuilder;
       _orderByBuilder = orderByBuilder;
 
-      JoinedTableContext joinedTableContext = new JoinedTableContext();
-      DetailParserRegistries detailParserRegistries = new DetailParserRegistries (databaseInfo, parseMode);
-      Visitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParserRegistries, new ParseContext (query, new List<FieldDescriptor>(), joinedTableContext));
-      query.Accept (Visitor);
+      var joinedTableContext = new JoinedTableContext (StubDatabaseInfo.Instance);
+      var detailParserRegistries = new DetailParserRegistries (databaseInfo, parseMode);
+      _referenceParseContext = new ParseContext (query, new List<FieldDescriptor>(), joinedTableContext);
+      ReferenceVisitor = new SqlGeneratorVisitor (databaseInfo, parseMode, detailParserRegistries, _referenceParseContext);
+
+      query.Accept (ReferenceVisitor);
       joinedTableContext.CreateAliases (query);
     }
 
     public bool CheckBaseProcessQueryMethod { get; set; }
-    public SqlGeneratorVisitor Visitor { get; private set; }
+    public SqlGeneratorVisitor ReferenceVisitor { get; private set; }
 
     public SqlGeneratorMockContext Context
     {
@@ -78,17 +80,25 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
         Assert.AreEqual (ParseMode, sqlGenerationData.ParseMode);
 
-        Assert.That (sqlGenerationData.SelectEvaluation, Is.EqualTo (Visitor.SqlGenerationData.SelectEvaluation));
-        Assert.That (sqlGenerationData.Criterion, Is.EqualTo (Visitor.SqlGenerationData.Criterion));
+        Assert.That (sqlGenerationData.SelectEvaluation, Is.EqualTo (ReferenceVisitor.SqlGenerationData.SelectEvaluation));
+        Assert.That (sqlGenerationData.Criterion, Is.EqualTo (ReferenceVisitor.SqlGenerationData.Criterion));
 
-        Assert.AreEqual (Visitor.SqlGenerationData.Joins.Count, sqlGenerationData.Joins.Count);
-        foreach (KeyValuePair<IColumnSource, List<SingleJoin>> joinEntry in Visitor.SqlGenerationData.Joins)
+        Assert.AreEqual (ReferenceVisitor.SqlGenerationData.Joins.Count, sqlGenerationData.Joins.Count);
+        foreach (KeyValuePair<IColumnSource, List<SingleJoin>> joinEntry in ReferenceVisitor.SqlGenerationData.Joins)
           Assert.That (sqlGenerationData.Joins[joinEntry.Key], Is.EqualTo (joinEntry.Value));
 
-        Assert.That (sqlGenerationData.OrderingFields, Is.EqualTo (Visitor.SqlGenerationData.OrderingFields));
-        Assert.That (sqlGenerationData.FromSources, Is.EqualTo (Visitor.SqlGenerationData.FromSources));
+        Assert.That (sqlGenerationData.OrderingFields, Is.EqualTo (ReferenceVisitor.SqlGenerationData.OrderingFields));
+        Assert.That (sqlGenerationData.FromSources, Is.EqualTo (ReferenceVisitor.SqlGenerationData.FromSources));
       }
-      return Visitor.SqlGenerationData;
+      return ReferenceVisitor.SqlGenerationData;
+    }
+
+    protected override ParseContext CreateParseContext (QueryModel queryModel)
+    {
+      var parseContext = base.CreateParseContext (queryModel);
+      var oldTableMapping = PrivateInvoke.GetNonPublicField (_referenceParseContext.JoinedTableContext, "_columnSources");
+      PrivateInvoke.SetNonPublicField (parseContext.JoinedTableContext, "_columnSources", oldTableMapping);
+      return parseContext;
     }
 
     protected override IOrderByBuilder CreateOrderByBuilder (SqlGeneratorMockContext context)
