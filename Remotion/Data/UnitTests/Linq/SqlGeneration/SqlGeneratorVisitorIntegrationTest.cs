@@ -22,7 +22,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
@@ -237,27 +236,6 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 
       List<SingleJoin> actualJoins2 = sqlGeneratorVisitor.SqlGenerationData.Joins[studentDetailDetailTable2];
       Assert.That (actualJoins2, Is.EqualTo (new object[] { join3, join4 }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Query sources cannot be null.")]
-    public void InvalidQuerySource ()
-    {
-      IQueryable<Student> query = from s in ExpressionHelper.CreateQuerySource() from s2 in (from s3 in GetNullSource() select s3) select s;
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      QueryModel subQueryModel = ((SubQueryExpression) ((AdditionalFromClause) parsedQuery.BodyClauses[0]).FromExpression).QueryModel;
-      var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      var sqlGeneratorVisitor = new SqlGeneratorVisitor (
-          StubDatabaseInfo.Instance,
-          ParseMode.TopLevelQuery,
-          detailParserRegistries,
-          new ParseContext (subQueryModel, new List<FieldDescriptor>(), _context));
-      sqlGeneratorVisitor.VisitQueryModel (subQueryModel);
-    }
-
-    private IQueryable<Student> GetNullSource ()
-    {
-      return null;
     }
 
     private SingleJoin CreateJoin (IColumnSource sourceTable, MemberInfo relationMember)
