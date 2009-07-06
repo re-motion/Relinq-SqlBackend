@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      SqlGenerationData.AddFromClause (_parseContext.JoinedTableContext.GetColumnSource (fromClause));
+      VisitFromClause (fromClause);
       base.VisitMainFromClause (fromClause, queryModel);
     }
 
@@ -62,6 +62,12 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
+      VisitFromClause(fromClause);
+      base.VisitAdditionalFromClause (fromClause, queryModel, index);
+    }
+
+    private void VisitFromClause (FromClauseBase fromClause)
+    {
       var columnSource = _parseContext.JoinedTableContext.GetColumnSource (fromClause);
       SqlGenerationData.AddFromClause (columnSource);
 
@@ -77,8 +83,6 @@ namespace Remotion.Data.Linq.SqlGeneration
         ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
         SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
       }
-
-      base.VisitAdditionalFromClause (fromClause, queryModel, index);
     }
 
     public override void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, FromClauseBase fromClause, int index)
