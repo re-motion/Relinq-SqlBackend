@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.Linq;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
