@@ -19,8 +19,8 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
+using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 using Rhino.Mocks.Constraints;
 

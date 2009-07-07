@@ -19,7 +19,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.FieldResolving;
-using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;

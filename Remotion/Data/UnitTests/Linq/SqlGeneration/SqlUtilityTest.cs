@@ -19,7 +19,7 @@ using System.Data.Common;
 using NUnit.Framework;
 using Remotion.Data.Linq;
 using Rhino.Mocks;
-using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGeneration
 {

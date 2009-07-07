@@ -16,9 +16,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using System.Text;
-using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 using System;
 

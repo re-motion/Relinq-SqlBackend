@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.Linq.SqlGeneration
