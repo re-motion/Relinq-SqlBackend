@@ -226,17 +226,16 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     }
 
     [Test]
-    public void VisitSelectClause_ResultOperator ()
+    public void VisitQueryModel_ResultOperator ()
     {
       IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (ExpressionHelper.CreateQuerySource());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      var selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
-      sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
+      sqlGeneratorVisitor.VisitQueryModel (parsedQuery);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultOperators[0], Is.SameAs (selectClause.ResultOperators[0]));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultOperators[0], Is.SameAs (parsedQuery.ResultOperators[0]));
     }
 
     [Test]
