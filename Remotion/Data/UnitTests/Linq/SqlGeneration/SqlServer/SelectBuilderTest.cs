@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    public void ResultModifications_Count ()
+    public void ResultOperators_Count ()
     {
       // TODO 594: The SQL generated here is actually wrong, although it will work in many cases. The problem is that the projection
       // of the Select clause is not used for counting, which might lead to invalid results if NULLs are involved. What Count should really do
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    public void ResultModifications_First ()
+    public void ResultOperators_First ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    public void ResultModifications_Single ()
+    public void ResultOperators_Single ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void ResultModifications_Last_NotSupported ()
+    public void ResultOperators_Last_NotSupported ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    public void ResultModifications_Take ()
+    public void ResultOperators_Take ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     }
 
     [Test]
-    public void ResultModifications_Distinct ()
+    public void ResultOperators_Distinct ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 

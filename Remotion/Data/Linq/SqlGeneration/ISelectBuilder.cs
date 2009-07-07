@@ -21,6 +21,6 @@ namespace Remotion.Data.Linq.SqlGeneration
 {
   public interface ISelectBuilder
   {
-    void BuildSelectPart (IEvaluation selectEvaluation, List<ResultOperatorBase> resultModifiers);
+    void BuildSelectPart (IEvaluation selectEvaluation, List<ResultOperatorBase> resultOperators);
   }
 }

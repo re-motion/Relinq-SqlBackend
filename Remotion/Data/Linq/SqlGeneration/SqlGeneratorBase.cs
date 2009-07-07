@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       if (selectEvaluation == null)
         throw new InvalidOperationException ("The concrete subclass did not set a select evaluation.");
 
-      CreateSelectBuilder (context).BuildSelectPart (selectEvaluation, sqlGenerationData.ResultModifiers);
+      CreateSelectBuilder (context).BuildSelectPart (selectEvaluation, sqlGenerationData.ResultOperators);
       CreateFromBuilder (context).BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
       CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);
       CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData.OrderingFields);

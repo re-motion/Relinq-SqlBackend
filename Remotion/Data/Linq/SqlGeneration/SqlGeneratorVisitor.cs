@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.SqlGeneration
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("resultOperators", resultOperators);
 
-      SqlGenerationData.ResultModifiers = new List<ResultOperatorBase> (resultOperators);
+      SqlGenerationData.ResultOperators = new List<ResultOperatorBase> (resultOperators);
       base.VisitResultOperators (resultOperators, queryModel, selectClause);
     }
 
