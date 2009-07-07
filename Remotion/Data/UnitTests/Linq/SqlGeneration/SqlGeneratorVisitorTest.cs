@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers[0], Is.SameAs (selectClause.ResultModifications[0]));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.ResultModifiers[0], Is.SameAs (selectClause.ResultOperators[0]));
     }
 
     [Test]

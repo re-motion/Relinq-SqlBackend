@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
-      var modifications = new List<ResultModificationBase>();
+      var modifications = new List<ResultOperatorBase>();
       
       // expected
       _selectBuilder.BuildSelectPart (generator.ReferenceVisitor.SqlGenerationData.SelectEvaluation, modifications);
@@ -78,10 +78,10 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
-      var modifications = new List<ResultModificationBase> ();
+      var modifications = new List<ResultOperatorBase> ();
       // expected
       _selectBuilder.BuildSelectPart (generator.ReferenceVisitor.SqlGenerationData.SelectEvaluation, modifications);
-      LastCall.Do ((Action<IEvaluation, List<ResultModificationBase>>) delegate
+      LastCall.Do ((Action<IEvaluation, List<ResultOperatorBase>>) delegate
       {
         generator.Context.CommandText.Append ("Select");
       });
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
-      var modifications = new List<ResultModificationBase> ();
+      var modifications = new List<ResultOperatorBase> ();
 
       // expected
       _selectBuilder.BuildSelectPart (generator.ReferenceVisitor.SqlGenerationData.SelectEvaluation, modifications);
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
     {
       var query = ExpressionHelper.CreateQueryModel ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.SubQueryInWhere);
-      var modifications = new List<ResultModificationBase> ();
+      var modifications = new List<ResultOperatorBase> ();
 
       // expected
       _selectBuilder.BuildSelectPart (generator.ReferenceVisitor.SqlGenerationData.SelectEvaluation, modifications);
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration
       IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail();
       QueryModel query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
-      var modifications = new List<ResultModificationBase> ();
+      var modifications = new List<ResultOperatorBase> ();
 
       // expected
       _selectBuilder.BuildSelectPart (generator.ReferenceVisitor.SqlGenerationData.SelectEvaluation, modifications);

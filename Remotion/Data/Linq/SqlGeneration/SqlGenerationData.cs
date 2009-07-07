@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlGeneration
     public List<OrderingField> OrderingFields { get; private set; }
     public JoinCollection Joins { get; private set; }
     public ParseMode ParseMode { get; set; }
-    public List<ResultModificationBase> ResultModifiers { get; set; }
+    public List<ResultOperatorBase> ResultModifiers { get; set; }
     
     public void SetSelectEvaluation (IEvaluation evaluation, List<FieldDescriptor> fieldDescriptors)
     {

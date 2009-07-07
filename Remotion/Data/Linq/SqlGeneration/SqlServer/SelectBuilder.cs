@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildSelectPart (IEvaluation selectEvaluation, List<ResultModificationBase> resultModifiers)
+    public void BuildSelectPart (IEvaluation selectEvaluation, List<ResultOperatorBase> resultModifiers)
     {
       ArgumentUtility.CheckNotNull ("selectEvaluation", selectEvaluation);
       _commandBuilder.Append ("SELECT ");
@@ -44,14 +44,14 @@ namespace Remotion.Data.Linq.SqlGeneration.SqlServer
 
       foreach (var modificationBase in resultModifiers)
       {
-        if (modificationBase is FirstResultModification || modificationBase is SingleResultModification)
+        if (modificationBase is FirstResultOperator || modificationBase is SingleResultOperator)
           top = 1;
-        else if (modificationBase is CountResultModification)
+        else if (modificationBase is CountResultOperator)
           count = true;
-        else if (modificationBase is DistinctResultModification)
+        else if (modificationBase is DistinctResultOperator)
           distinct = true;
-        else if (modificationBase is TakeResultModification)
-          top = ((TakeResultModification) modificationBase).Count;
+        else if (modificationBase is TakeResultOperator)
+          top = ((TakeResultOperator) modificationBase).Count;
         else
           throw new NotSupportedException (
               "Result modification type " + modificationBase.GetType().Name + " is not supported by this SQL generator.");

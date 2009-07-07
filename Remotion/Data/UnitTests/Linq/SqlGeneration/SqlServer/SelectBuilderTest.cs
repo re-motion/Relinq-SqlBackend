@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
           new Column (new Table ("s3", "s3"), "c3")
           );
 
-      _selectBuilder.BuildSelectPart (evaluation, new List<ResultModificationBase> ());
+      _selectBuilder.BuildSelectPart (evaluation, new List<ResultOperatorBase> ());
       Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", _commandBuilder.GetCommandText());
     }
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
 
       var binaryEvaluation = new BinaryEvaluation (c1, c2, BinaryEvaluation.EvaluationKind.Add);
       
-      _selectBuilder.BuildSelectPart (binaryEvaluation, new List<ResultModificationBase>());
+      _selectBuilder.BuildSelectPart (binaryEvaluation, new List<ResultOperatorBase>());
       Assert.AreEqual ("SELECT ([s1].[c1] + [s2].[c2]) ", _commandBuilder.GetCommandText());
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
       // is create a new SELECT clause around the original SQL query, like this: SELECT COUNT (*) FROM (<SQL QUERY>).
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new CountResultModification () });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new CountResultOperator () });
       Assert.AreEqual ("SELECT COUNT (*) ", _commandBuilder.GetCommandText ());
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new FirstResultModification (false) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new FirstResultOperator (false) });
       Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new SingleResultModification (false) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new SingleResultOperator (false) });
       Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new LastResultModification (false) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new LastResultOperator (false) });
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new TakeResultModification (7) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new TakeResultOperator (7) });
       Assert.AreEqual ("SELECT TOP 7 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.Linq.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultModificationBase> { new DistinctResultModification () });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new DistinctResultOperator () });
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
   }
