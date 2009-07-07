@@ -15,7 +15,7 @@
 // 
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.Details;
-using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.Backend.FieldResolving;
 
 namespace Remotion.Data.Linq.Backend.Details
 {

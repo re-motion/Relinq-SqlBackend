@@ -27,7 +27,7 @@ using Remotion.Data.Linq.Backend.Details;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 

@@ -18,10 +18,12 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   /// <summary>
   /// Identifies the query source and members used by a field access expression.

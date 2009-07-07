@@ -18,7 +18,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.Linq.Clauses.Expressions;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class SelectFieldAccessPolicy : IResolveFieldAccessPolicy
   {

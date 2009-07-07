@@ -20,7 +20,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class FieldSourcePathBuilder
   {

@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   /// <summary>
   /// Defines how members are resolved for a specific resolution use case.

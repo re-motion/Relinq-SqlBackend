@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.Details.WhereConditionParsing;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.Backend.FieldResolving;
 
 namespace Remotion.Data.Linq.Backend.Details
 {

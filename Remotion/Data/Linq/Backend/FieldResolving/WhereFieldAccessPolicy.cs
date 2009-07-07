@@ -22,7 +22,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class WhereFieldAccessPolicy : IResolveFieldAccessPolicy
   {

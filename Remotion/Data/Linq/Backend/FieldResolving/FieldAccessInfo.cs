@@ -16,8 +16,9 @@
 using System;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   /// <summary>
   /// Holds information about the members involved in a field access. This is produced by <see cref="FieldResolverVisitor"/> and 

@@ -15,7 +15,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class FieldAccessResolveException : Exception
   {
