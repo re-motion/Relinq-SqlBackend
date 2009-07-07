@@ -18,7 +18,7 @@ using System.Collections.ObjectModel;
 using Remotion.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public struct FieldSourcePath
   {

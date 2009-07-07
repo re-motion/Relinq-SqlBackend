@@ -19,7 +19,7 @@ using Remotion.Text;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public class MethodCall : IEvaluation,ICriterion
   {

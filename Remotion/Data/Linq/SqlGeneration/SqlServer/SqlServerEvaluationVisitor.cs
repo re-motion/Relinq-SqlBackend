@@ -16,7 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 

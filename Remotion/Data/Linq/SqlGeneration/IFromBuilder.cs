@@ -14,7 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {

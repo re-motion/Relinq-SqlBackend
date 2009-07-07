@@ -15,32 +15,23 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct Constant : ICriterion
+  // LetColumnSource
+  public struct LetColumnSource : IColumnSource
   {
-    private readonly object _value;
-
-    public Constant (object value)
-        : this()
+    public LetColumnSource (string alias, bool isTable) : this()
     {
-      _value = value;
+      ArgumentUtility.CheckNotNull ("alias", alias);
+      ArgumentUtility.CheckNotNull ("isTable", isTable);
+      Alias = alias;
+      IsTable = isTable;
     }
 
-    public object Value
-    {
-      get { return _value; }
-    }
+    public bool IsTable { get; private set; }
 
-    public override string ToString ()
-    {
-      return _value != null ? _value.ToString() : "<null>";
-    }
-
-    public void Accept (IEvaluationVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitConstant (this);
+    public string Alias {get; private set; }
+    public string AliasString { get { return Alias; }
     }
   }
 }

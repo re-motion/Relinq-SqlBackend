@@ -22,7 +22,7 @@ using Rhino.Mocks;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 

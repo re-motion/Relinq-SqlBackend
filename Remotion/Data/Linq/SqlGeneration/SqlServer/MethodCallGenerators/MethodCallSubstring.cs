@@ -3,7 +3,7 @@
 //
 
 using System;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators
 {

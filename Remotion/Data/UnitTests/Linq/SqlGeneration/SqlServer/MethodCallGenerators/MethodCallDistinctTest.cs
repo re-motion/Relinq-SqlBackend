@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;

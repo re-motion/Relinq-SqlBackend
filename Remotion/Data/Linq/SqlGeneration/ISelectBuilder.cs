@@ -15,7 +15,7 @@
 // 
 using System.Collections.Generic;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {

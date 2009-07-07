@@ -15,31 +15,33 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct BinaryEvaluation : IEvaluation
+  public struct NotCriterion : ICriterion
   {
-    public enum EvaluationKind { Add, Divide, Modulo, Multiply, Subtract }
+    private readonly ICriterion _negatedCriterion;
 
-    public BinaryEvaluation (IEvaluation left, IEvaluation right, EvaluationKind kind) : this()
+    public NotCriterion (ICriterion negatedCriterion)
     {
-      ArgumentUtility.CheckNotNull ("left", left);
-      ArgumentUtility.CheckNotNull ("right", right);
-      ArgumentUtility.CheckNotNull ("kind", kind);
-
-      Left = left;
-      Right = right;
-      Kind = kind;
+      ArgumentUtility.CheckNotNull ("negatedCriterion", negatedCriterion);
+      _negatedCriterion = negatedCriterion;
     }
 
-    public IEvaluation Left { get; private set; }
-    public IEvaluation Right { get; private set; }
-    public EvaluationKind Kind { get; private set; }
+    public ICriterion NegatedCriterion
+    {
+      get { return _negatedCriterion; }
+    }
+
+    public override string ToString ()
+    {
+      return "NOT (" + _negatedCriterion + ")";
+    }
 
     public void Accept (IEvaluationVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitBinaryEvaluation (this);
+      visitor.VisitNotCriterion (this);
     }
+
   }
 }

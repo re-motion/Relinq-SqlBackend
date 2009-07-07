@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 

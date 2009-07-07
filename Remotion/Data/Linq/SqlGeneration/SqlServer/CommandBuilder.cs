@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.SqlGeneration.SqlServer

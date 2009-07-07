@@ -15,11 +15,11 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public struct FieldDescriptor
   {

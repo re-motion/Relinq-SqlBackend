@@ -13,37 +13,41 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Utilities;
+using Remotion.Data.Linq.Clauses;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct SingleJoin
+  public struct OrderingField
   {
-    public Column RightColumn { get; private set; }
-    public Column LeftColumn { get; private set; }
+    private readonly FieldDescriptor _fieldDescriptor;
+    private readonly OrderingDirection _direction;
 
-    public SingleJoin (Column leftColumn, Column rightColumn) : this()
+    public OrderingField (FieldDescriptor fieldDescriptor, OrderingDirection direction)
     {
-      ArgumentUtility.CheckNotNull ("leftColumn", leftColumn);
-      ArgumentUtility.CheckNotNull ("rightColumn", rightColumn);
+      fieldDescriptor.GetMandatoryColumn (); // assert that there is a column for ordering
 
-      LeftColumn = leftColumn;
-      RightColumn = rightColumn;
+      _fieldDescriptor = fieldDescriptor;
+      _direction = direction;
     }
 
-    public IColumnSource LeftSide
+    public Column Column
     {
-      get { return LeftColumn.ColumnSource; }
+      get { return _fieldDescriptor.GetMandatoryColumn(); }
     }
 
-    public IColumnSource RightSide
+    public FieldDescriptor FieldDescriptor
     {
-      get { return RightColumn.ColumnSource; }
+      get { return _fieldDescriptor; }
+    }
+
+    public OrderingDirection Direction
+    {
+      get { return _direction; }
     }
 
     public override string ToString ()
     {
-      return string.Format ("({0} left join {1} on {2} = {3})", RightSide, LeftSide, RightColumn, LeftColumn);
+      return _fieldDescriptor.ToString()+ " " + _direction.ToString();
     }
   }
 }

@@ -16,7 +16,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public class Table : IColumnSource
   {

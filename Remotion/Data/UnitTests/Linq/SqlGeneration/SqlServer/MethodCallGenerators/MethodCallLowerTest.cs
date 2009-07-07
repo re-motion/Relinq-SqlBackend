@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;

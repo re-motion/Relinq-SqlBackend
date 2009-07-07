@@ -15,41 +15,31 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct Column : ICriterion
+  public struct BinaryEvaluation : IEvaluation
   {
-    private readonly IColumnSource _columnSource;
-    // If Name is null, the column represents access to the whole ColumnSource. For tables, this would be the whole table; for let clauses either a
-    // table, a column, or a computed value.
-    private readonly string _name;
+    public enum EvaluationKind { Add, Divide, Modulo, Multiply, Subtract }
 
-    public Column (IColumnSource columnSource, string name)
+    public BinaryEvaluation (IEvaluation left, IEvaluation right, EvaluationKind kind) : this()
     {
-      ArgumentUtility.CheckNotNull ("fromSource", columnSource);
-      _name = name;
-      _columnSource = columnSource;
+      ArgumentUtility.CheckNotNull ("left", left);
+      ArgumentUtility.CheckNotNull ("right", right);
+      ArgumentUtility.CheckNotNull ("kind", kind);
+
+      Left = left;
+      Right = right;
+      Kind = kind;
     }
 
-    public IColumnSource ColumnSource
-    {
-      get { return _columnSource; }
-    }
-
-    public string Name
-    {
-      get { return _name; }
-    }
-
-    public override string ToString ()
-    {
-      return (_columnSource != null ? _columnSource.AliasString : "<null>") + "." + _name;
-    }
+    public IEvaluation Left { get; private set; }
+    public IEvaluation Right { get; private set; }
+    public EvaluationKind Kind { get; private set; }
 
     public void Accept (IEvaluationVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitColumn (this);
+      visitor.VisitBinaryEvaluation (this);
     }
   }
 }

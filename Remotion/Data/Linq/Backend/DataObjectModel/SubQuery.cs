@@ -16,7 +16,7 @@
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public class SubQuery : IColumnSource, ICriterion
   {

@@ -21,7 +21,7 @@ using System.Text;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.Linq;

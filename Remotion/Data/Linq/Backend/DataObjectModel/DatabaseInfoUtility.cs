@@ -19,7 +19,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public static class DatabaseInfoUtility
   {

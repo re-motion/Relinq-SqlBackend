@@ -13,25 +13,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Utilities;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  // LetColumnSource
-  public struct LetColumnSource : IColumnSource
+  public interface IEvaluationVisitor
   {
-    public LetColumnSource (string alias, bool isTable) : this()
-    {
-      ArgumentUtility.CheckNotNull ("alias", alias);
-      ArgumentUtility.CheckNotNull ("isTable", isTable);
-      Alias = alias;
-      IsTable = isTable;
-    }
-
-    public bool IsTable { get; private set; }
-
-    public string Alias {get; private set; }
-    public string AliasString { get { return Alias; }
-    }
+    void VisitBinaryEvaluation (BinaryEvaluation binaryEvaluation);
+    void VisitComplexCriterion (ComplexCriterion complexCriterion);
+    void VisitNotCriterion (NotCriterion notCriterion);
+    void VisitConstant (Constant constant);
+    void VisitColumn (Column column);
+    void VisitBinaryCondition (BinaryCondition binaryCondition);
+    void VisitSubQuery (SubQuery subQuery);
+    void VisitMethodCall (MethodCall methodCall);
+    void VisitNewObjectEvaluation (NewObject newObject);
+    //void VisitSourceMarkerEvaluation (SourceMarkerEvaluation sourceMarkerEvaluation);
   }
 }

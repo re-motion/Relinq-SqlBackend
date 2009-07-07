@@ -13,10 +13,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.Linq.DataObjectModel
+using Remotion.Utilities;
+
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public interface IValue : IEvaluation
+  public struct Constant : ICriterion
   {
-    
+    private readonly object _value;
+
+    public Constant (object value)
+        : this()
+    {
+      _value = value;
+    }
+
+    public object Value
+    {
+      get { return _value; }
+    }
+
+    public override string ToString ()
+    {
+      return _value != null ? _value.ToString() : "<null>";
+    }
+
+    public void Accept (IEvaluationVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      visitor.VisitConstant (this);
+    }
   }
 }

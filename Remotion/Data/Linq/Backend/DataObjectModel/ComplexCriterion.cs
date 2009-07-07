@@ -15,33 +15,36 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct NotCriterion : ICriterion
+  public struct ComplexCriterion : ICriterion
   {
-    private readonly ICriterion _negatedCriterion;
+    public enum JunctionKind { And, Or }
 
-    public NotCriterion (ICriterion negatedCriterion)
+    public ComplexCriterion (ICriterion left, ICriterion right, JunctionKind kind) : this()
     {
-      ArgumentUtility.CheckNotNull ("negatedCriterion", negatedCriterion);
-      _negatedCriterion = negatedCriterion;
+      ArgumentUtility.CheckNotNull ("kind", kind);
+      ArgumentUtility.CheckNotNull ("left", left);
+      ArgumentUtility.CheckNotNull ("right", right);
+
+      Left = left;
+      Kind = kind;
+      Right = right;
     }
 
-    public ICriterion NegatedCriterion
-    {
-      get { return _negatedCriterion; }
-    }
+    public ICriterion Left { get; private set; }
+    public ICriterion Right { get; private set; }
+    public JunctionKind Kind { get; private set; }
 
     public override string ToString ()
     {
-      return "NOT (" + _negatedCriterion + ")";
+      return "(" + Left + " " + Kind + " " + Right + ")";
     }
 
     public void Accept (IEvaluationVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitNotCriterion (this);
+      visitor.VisitComplexCriterion (this);
     }
-
   }
 }

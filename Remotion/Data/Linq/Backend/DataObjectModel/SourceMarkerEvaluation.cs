@@ -15,7 +15,7 @@
 // 
 using System.Linq;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   ///// <summary>
   ///// Defines an evaluation argument which represents the source of the query. For example, a call to <see cref="Queryable.Single{T}(IQueryable{T})"/>
