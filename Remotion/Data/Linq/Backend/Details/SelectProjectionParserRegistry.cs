@@ -20,7 +20,6 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.Details.SelectProjectionParsing;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
 namespace Remotion.Data.Linq.Backend.Details

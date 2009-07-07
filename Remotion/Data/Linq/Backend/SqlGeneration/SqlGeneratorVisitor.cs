@@ -20,7 +20,6 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.Details;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration

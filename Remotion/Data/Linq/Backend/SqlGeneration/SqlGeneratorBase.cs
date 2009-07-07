@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.Details;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 

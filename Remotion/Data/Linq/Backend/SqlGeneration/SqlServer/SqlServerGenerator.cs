@@ -17,7 +17,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
@@ -27,7 +26,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
   public class SqlServerGenerator : SqlGeneratorBase<SqlServerGenerationContext>
   {
     public SqlServerGenerator (IDatabaseInfo databaseInfo)
-      : this (databaseInfo, Parsing.ParseMode.TopLevelQuery)
+      : this (databaseInfo, ParseMode.TopLevelQuery)
     {
     }
 
