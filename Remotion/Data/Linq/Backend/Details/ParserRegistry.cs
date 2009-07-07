@@ -17,9 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Collections;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details
+namespace Remotion.Data.Linq.Backend.Details
 {
   public class ParserRegistry
   {

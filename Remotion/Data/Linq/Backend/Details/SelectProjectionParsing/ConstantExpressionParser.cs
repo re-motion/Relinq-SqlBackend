@@ -19,7 +19,7 @@ using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
 {
   public class ConstantExpressionParser : ISelectProjectionParser
   {

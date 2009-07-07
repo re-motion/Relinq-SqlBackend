@@ -13,31 +13,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
 {
-  public class SubQueryExpressionParser : IWhereConditionParser
+  /// <summary>
+  /// 
+  /// </summary>
+  public interface IWhereConditionParser  : IParser
   {
-    public ICriterion Parse (SubQueryExpression subQueryExpression, ParseContext parseContext)
-    {
-      ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
-      return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
-    }
-
-    public bool CanParse (Expression expression)
-    {
-      return expression is SubQueryExpression;
-    }
-
-    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
-    {
-      return Parse ((SubQueryExpression) expression, parseContext);
-    }
-
-    
+    ICriterion Parse (Expression expression, ParseContext parseContext);
   }
 }

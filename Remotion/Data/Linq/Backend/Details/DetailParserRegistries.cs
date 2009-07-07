@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Backend.Details;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 
-namespace Remotion.Data.Linq.Parsing.Details
+namespace Remotion.Data.Linq.Backend.Details
 {
   public class DetailParserRegistries
   {
@@ -35,8 +36,8 @@ namespace Remotion.Data.Linq.Parsing.Details
 
     public DetailParserRegistries (IDatabaseInfo databaseInfo, ParseMode parseMode)
     {
-       _whereConditionParserRegistry = new WhereConditionParserRegistry (databaseInfo);
-       _selectProjectionParserRegistry = new SelectProjectionParserRegistry (databaseInfo, parseMode);
+      _whereConditionParserRegistry = new WhereConditionParserRegistry (databaseInfo);
+      _selectProjectionParserRegistry = new SelectProjectionParserRegistry (databaseInfo, parseMode);
     }
   }
 }

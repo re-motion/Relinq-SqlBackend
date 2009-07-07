@@ -16,42 +16,40 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
 {
-  public class NewExpressionParser : ISelectProjectionParser
+  public class MemberExpressionParser : ISelectProjectionParser
   {
-    private readonly SelectProjectionParserRegistry _parserRegistry;
+    // member expression parsing is the same for where conditions and select projections, so delegate to that implementation
+    private readonly WhereConditionParsing.MemberExpressionParser _innerParser;
 
-    public NewExpressionParser (SelectProjectionParserRegistry parserRegistry)
+    public MemberExpressionParser (FieldResolver resolver)
     {
-      ArgumentUtility.CheckNotNull ("parserRegistry", parserRegistry);
-
-      _parserRegistry = parserRegistry;
+      ArgumentUtility.CheckNotNull ("resolver", resolver);
+      _innerParser = new WhereConditionParsing.MemberExpressionParser (resolver);
     }
 
-    public virtual IEvaluation Parse (NewExpression newExpression, ParseContext parseContext)
+    public virtual IEvaluation Parse (MemberExpression memberExpression, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("newExpression", newExpression);
+      ArgumentUtility.CheckNotNull ("memberExpression", memberExpression);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-
-      List<IEvaluation> argumentEvaluations = new List<IEvaluation> ();
-      foreach (Expression exp in newExpression.Arguments)
-      {
-        argumentEvaluations.Add (_parserRegistry.GetParser (exp).Parse (exp, parseContext));
-      }
-      return new NewObject (newExpression.Constructor, argumentEvaluations.ToArray());
+      return _innerParser.Parse (memberExpression, parseContext);
     }
 
     IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
     {
-      return Parse ((NewExpression) expression, parseContext);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
+      return Parse ((MemberExpression) expression, parseContext);
     }
 
     public bool CanParse(Expression expression)
     {
-      return expression is NewExpression;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return expression is MemberExpression;
     }
   }
 }

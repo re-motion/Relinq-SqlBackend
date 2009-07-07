@@ -13,29 +13,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details
+namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
 {
-  public class ParseContext
+  public class SubQueryExpressionParser : ISelectProjectionParser
   {
-    public QueryModel QueryModel { get; private set; }
-    public List<FieldDescriptor> FieldDescriptors { get; private set; }
-    public JoinedTableContext JoinedTableContext { get; private set; }
-
-    public ParseContext (QueryModel queryModel, List<FieldDescriptor> fieldDescriptors, JoinedTableContext joinedTableContext)
+    public bool CanParse (Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fieldDescriptors", fieldDescriptors);
-      ArgumentUtility.CheckNotNull ("joinedTableContext", joinedTableContext);
+      return expression is SubQueryExpression;
+    }
 
-      QueryModel = queryModel;
-      FieldDescriptors = fieldDescriptors;
-      JoinedTableContext = joinedTableContext;
+    IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
+    {
+      return Parse(expression, parseContext);
+    }
+
+    public IEvaluation Parse (Expression expression, ParseContext parseContext)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
+
+      throw new ParserException (
+          "This version of re-linq does not support subqueries in the select projection of a query.", expression, null);
     }
   }
 }

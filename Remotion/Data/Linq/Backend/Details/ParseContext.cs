@@ -13,33 +13,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.Details
 {
-  public class SubQueryExpressionParser : ISelectProjectionParser
+  public class ParseContext
   {
-    public bool CanParse (Expression expression)
-    {
-      return expression is SubQueryExpression;
-    }
+    public QueryModel QueryModel { get; private set; }
+    public List<FieldDescriptor> FieldDescriptors { get; private set; }
+    public JoinedTableContext JoinedTableContext { get; private set; }
 
-    IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
+    public ParseContext (QueryModel queryModel, List<FieldDescriptor> fieldDescriptors, JoinedTableContext joinedTableContext)
     {
-      return Parse(expression, parseContext);
-    }
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fieldDescriptors", fieldDescriptors);
+      ArgumentUtility.CheckNotNull ("joinedTableContext", joinedTableContext);
 
-    public IEvaluation Parse (Expression expression, ParseContext parseContext)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-
-      throw new ParserException (
-          "This version of re-linq does not support subqueries in the select projection of a query.", expression, null);
+      QueryModel = queryModel;
+      FieldDescriptors = fieldDescriptors;
+      JoinedTableContext = joinedTableContext;
     }
   }
 }

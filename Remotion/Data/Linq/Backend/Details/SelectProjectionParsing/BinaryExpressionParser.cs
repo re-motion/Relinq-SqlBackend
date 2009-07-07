@@ -16,10 +16,11 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
 {
   public class BinaryExpressionParser : ISelectProjectionParser
   {

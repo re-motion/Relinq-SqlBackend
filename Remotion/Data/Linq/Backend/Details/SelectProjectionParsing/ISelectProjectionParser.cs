@@ -14,30 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing.FieldResolving;
-using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details
+namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
 {
-  public class OrderingFieldParser
+  public interface ISelectProjectionParser : IParser
   {
-    private readonly FieldResolver _resolver;
-
-    public OrderingFieldParser (IDatabaseInfo databaseInfo)
-    {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-
-      _resolver = new FieldResolver (databaseInfo, new OrderingFieldAccessPolicy());
-    }
-
-    public OrderingField Parse (Expression expression, ParseContext parseContext, OrderingDirection orderingDirection)
-    {
-      FieldDescriptor fieldDescriptor = _resolver.ResolveField (expression, parseContext.JoinedTableContext);
-      var orderingField = new OrderingField (fieldDescriptor, orderingDirection);
-      return orderingField;
-    }
+    IEvaluation Parse (Expression expression, ParseContext parseContext);
   }
 }

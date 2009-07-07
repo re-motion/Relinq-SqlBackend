@@ -19,36 +19,32 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
 {
-  public class MemberExpressionParser : ISelectProjectionParser
+  public class MemberExpressionParser : IWhereConditionParser
   {
-    // member expression parsing is the same for where conditions and select projections, so delegate to that implementation
-    private readonly WhereConditionParsing.MemberExpressionParser _innerParser;
+    private readonly FieldResolver _resolver;
 
     public MemberExpressionParser (FieldResolver resolver)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
-      _innerParser = new WhereConditionParsing.MemberExpressionParser (resolver);
+      _resolver = resolver;
     }
 
-    public virtual IEvaluation Parse (MemberExpression memberExpression, ParseContext parseContext)
+    public virtual ICriterion Parse (MemberExpression memberExpression, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("memberExpression", memberExpression);
-      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-      return _innerParser.Parse (memberExpression, parseContext);
+      FieldDescriptor fieldDescriptor = _resolver.ResolveField (memberExpression, parseContext.JoinedTableContext);
+      parseContext.FieldDescriptors.Add (fieldDescriptor);
+      return fieldDescriptor.GetMandatoryColumn ();
     }
 
-    IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
+    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
       return Parse ((MemberExpression) expression, parseContext);
     }
 
     public bool CanParse(Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
       return expression is MemberExpression;
     }
   }

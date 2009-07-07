@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.Parsing.Details
+namespace Remotion.Data.Linq.Backend.Details
 {
   public interface IParser
   {
