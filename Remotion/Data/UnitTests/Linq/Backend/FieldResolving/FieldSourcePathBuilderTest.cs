@@ -20,7 +20,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
+namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
   [TestFixture]
   public class FieldSourcePathBuilderTest

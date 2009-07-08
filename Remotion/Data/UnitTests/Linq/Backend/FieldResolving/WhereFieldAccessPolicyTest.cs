@@ -20,8 +20,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using System.Linq;
+using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
+namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
   [TestFixture]
   public class WhereFieldAccessPolicyTest : FieldAccessPolicyTestBase

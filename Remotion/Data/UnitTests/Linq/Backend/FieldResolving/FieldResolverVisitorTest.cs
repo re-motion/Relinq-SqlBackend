@@ -21,7 +21,7 @@ using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
+namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
   [TestFixture]
   public class FieldResolverVisitorTest

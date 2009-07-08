@@ -20,8 +20,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
+namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
   [TestFixture]
   public class OrderingFieldAccessPolicyTest : FieldAccessPolicyTestBase

@@ -19,8 +19,9 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
+namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
   [TestFixture]
   public class SelectFieldAccessPolicyTest : FieldAccessPolicyTestBase
