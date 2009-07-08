@@ -15,7 +15,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend
 {
   public static class ContainsFulltextExtensionMethod
   {
