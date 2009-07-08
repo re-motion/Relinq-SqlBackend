@@ -16,21 +16,30 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   [TestFixture]
-  public class ConstantExpressionParserTest : DetailParserTestBase
+  public class UnaryExpressionParserTest : DetailParserTestBase
   {
     [Test]
     public void Parse ()
     {
-      object expected = new Constant (5);
-      var parser = new ConstantExpressionParser (StubDatabaseInfo.Instance);
-      object result = parser.Parse (Expression.Constant (5, typeof (int)), ParseContext);
-      Assert.AreEqual (expected, result);
+      UnaryExpression unaryExpression = Expression.Not (Expression.Constant (5));
+      ICriterion expectedCriterion = new NotCriterion (new Constant (5));
+
+      var parserRegistry = new WhereConditionParserRegistry (StubDatabaseInfo.Instance);
+      parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
+
+      var parser = new UnaryExpressionParser (parserRegistry);
+
+      ICriterion actualCriterion = parser.Parse (unaryExpression, ParseContext);
+      Assert.That (actualCriterion, Is.EqualTo (expectedCriterion));
     }
   }
 }

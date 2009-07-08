@@ -16,11 +16,11 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
+using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   [TestFixture]
   public class ConstantExpressionParserTest : DetailParserTestBase
@@ -28,15 +28,10 @@ namespace Remotion.Data.UnitTests.Linq.Parsing.Details.SelectProjectionParsing
     [Test]
     public void Parse ()
     {
-      ConstantExpression constantExpression = Expression.Constant (5);
-
+      object expected = new Constant (5);
       var parser = new ConstantExpressionParser (StubDatabaseInfo.Instance);
-      IEvaluation result = parser.Parse (constantExpression, ParseContext);
-
-      //expected
-      IEvaluation expected = new Constant (5);
-
-      Assert.That (result, Is.EqualTo (expected));
+      object result = parser.Parse (Expression.Constant (5, typeof (int)), ParseContext);
+      Assert.AreEqual (expected, result);
     }
   }
 }

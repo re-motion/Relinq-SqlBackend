@@ -22,7 +22,7 @@ using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
 {
   [TestFixture]
   public class WhereConditionParserRegistryTest

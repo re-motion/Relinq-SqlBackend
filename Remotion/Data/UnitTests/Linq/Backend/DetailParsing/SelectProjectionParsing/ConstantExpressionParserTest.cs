@@ -18,27 +18,26 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.DetailParser;
-using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
+using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
   [TestFixture]
-  public class UnaryExpressionParserTest : DetailParserTestBase
+  public class ConstantExpressionParserTest : DetailParserTestBase
   {
     [Test]
     public void Parse ()
     {
-      UnaryExpression unaryExpression = Expression.Not (Expression.Constant (5));
-      ICriterion expectedCriterion = new NotCriterion (new Constant (5));
+      ConstantExpression constantExpression = Expression.Constant (5);
 
-      var parserRegistry = new WhereConditionParserRegistry (StubDatabaseInfo.Instance);
-      parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
+      var parser = new ConstantExpressionParser (StubDatabaseInfo.Instance);
+      IEvaluation result = parser.Parse (constantExpression, ParseContext);
 
-      var parser = new UnaryExpressionParser (parserRegistry);
+      //expected
+      IEvaluation expected = new Constant (5);
 
-      ICriterion actualCriterion = parser.Parse (unaryExpression, ParseContext);
-      Assert.That (actualCriterion, Is.EqualTo (expectedCriterion));
+      Assert.That (result, Is.EqualTo (expected));
     }
   }
 }

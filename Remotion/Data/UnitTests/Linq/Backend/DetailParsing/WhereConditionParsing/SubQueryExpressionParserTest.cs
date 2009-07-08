@@ -14,58 +14,52 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   [TestFixture]
-  public class ContainsFulltextParserTest : DetailParserTestBase
+  public class SubQueryExpressionParserTest : DetailParserTestBase
   {
     [Test]
-    public void ParseContainsFulltext ()
+    public void CanParse_SubQueryExpression ()
     {
-      string methodName = "ContainsFulltext";
-      string pattern = "Test";
-      CheckParsingOfContainsFulltext (methodName, pattern);
+      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel());
+
+      var subQueryExpressionParser = new SubQueryExpressionParser();
+      Assert.That (subQueryExpressionParser.CanParse (subQueryExpression), Is.True);
     }
 
-    public static bool Contains ()
+    [Test]
+    public void ParseSubQuery ()
     {
-      return true;
-    }
+      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel();
+      var subQueryExpression = new SubQueryExpression (subQueryModel);
 
-    private void CheckParsingOfContainsFulltext (string methodName, string pattern)
-    {
-      MemberExpression memberAccess = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("First"));
-
-      MethodCallExpression methodCallExpression = Expression.Call (
-          memberAccess,
-          typeof (ContainsFulltextExtensionMethod).GetMethod (methodName),
-          Student_First_Expression,
-          Expression.Constant ("Test"));
-
-      var resolver = new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
-
+      var resolver =
+          new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
       var parserRegistry = new WhereConditionParserRegistry (StubDatabaseInfo.Instance);
       parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
       parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
 
-      var parser = new ContainsFullTextParser (parserRegistry);
+      var subQueryExpressionParser = new SubQueryExpressionParser();
 
-      ICriterion actualCriterion = parser.Parse (methodCallExpression, ParseContext);
-      ICriterion expectedCriterion = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "FirstColumn"), new Constant (pattern), BinaryCondition.ConditionKind.ContainsFulltext);
-      Assert.That (actualCriterion, Is.EqualTo (expectedCriterion));
+      var expectedSubQuery = new SubQuery (subQueryModel, ParseMode.SubQueryInSelect, null);
+
+      ICriterion actualCriterion = subQueryExpressionParser.Parse (subQueryExpression, ParseContext);
+
+      Assert.That (actualCriterion, Is.EqualTo (expectedSubQuery));
     }
   }
 }

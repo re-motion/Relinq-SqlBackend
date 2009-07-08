@@ -13,38 +13,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
   [TestFixture]
-  public class MemberExpressionParserTest : DetailParserTestBase
+  public class QuerySourceReferenceExpressionParserTest : DetailParserTestBase
   {
     [Test]
     public void Parse ()
     {
+      var expression = new QuerySourceReferenceExpression (StudentClause);
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, new SelectFieldAccessPolicy());
 
-      var parser = new MemberExpressionParser (resolver);
-      var fieldDescriptorCollection = new List<FieldDescriptor>();
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("ID"));
-      IColumnSource fromSource = ParseContext.JoinedTableContext.GetColumnSource (StudentClause);
+      var fromSource = ParseContext.JoinedTableContext.GetColumnSource (StudentClause);
       var path = new FieldSourcePath (fromSource, new SingleJoin[0]);
-      var expectedFieldDescriptor = new FieldDescriptor (null, path, new Column (fromSource, "IDColumn"));
-
-      IEvaluation actualEvaluation = parser.Parse (memberExpression, ParseContext);
+      var expectedFieldDescriptor = new FieldDescriptor (null, path, new Column (fromSource, "*"));
       IEvaluation expectedEvaluation = expectedFieldDescriptor.Column;
 
-      Assert.That (fieldDescriptorCollection, Is.Not.Null);
-      Assert.That (actualEvaluation, Is.EqualTo (expectedEvaluation));
+      var parser = new QuerySourceReferenceExpressionParser (resolver);
+
+      IEvaluation actualEvaluation = parser.Parse (expression, ParseContext);
+      Assert.AreEqual (expectedEvaluation, actualEvaluation);
     }
   }
 }

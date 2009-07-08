@@ -24,7 +24,7 @@ using NUnit.Framework.SyntaxHelpers;
 using System.Linq;
 
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
 {
   [TestFixture]
   public class ParserRegistryTest
