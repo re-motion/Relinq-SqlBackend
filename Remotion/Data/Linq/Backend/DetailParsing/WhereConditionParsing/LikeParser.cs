@@ -34,20 +34,20 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
     {
       if (methodCallExpression.Method.Name == "StartsWith")
       {
-        ParserUtility.CheckNumberOfArguments (methodCallExpression, "StartsWith", 1);
-        ParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "StartsWith", 0);
+        DetailParserUtility.CheckNumberOfArguments (methodCallExpression, "StartsWith", 1);
+        DetailParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "StartsWith", 0);
         return CreateLike (methodCallExpression, ((ConstantExpression) methodCallExpression.Arguments[0]).Value + "%", parseContext);
       }
       else if (methodCallExpression.Method.Name == "EndsWith")
       {
-        ParserUtility.CheckNumberOfArguments (methodCallExpression, "EndsWith", 1);
-        ParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "EndsWith", 0);
+        DetailParserUtility.CheckNumberOfArguments (methodCallExpression, "EndsWith", 1);
+        DetailParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "EndsWith", 0);
         return CreateLike (methodCallExpression, "%" + ((ConstantExpression) methodCallExpression.Arguments[0]).Value, parseContext);
       }
       else if (methodCallExpression.Method.Name == "Contains" && !methodCallExpression.Method.IsGenericMethod)
       {
-        ParserUtility.CheckNumberOfArguments (methodCallExpression, "Contains", 1);
-        ParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "Contains", 0);
+        DetailParserUtility.CheckNumberOfArguments (methodCallExpression, "Contains", 1);
+        DetailParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "Contains", 0);
         return CreateLike (methodCallExpression, "%" + ((ConstantExpression) methodCallExpression.Arguments[0]).Value + "%", parseContext);
       }
       throw ParserUtility.CreateParserException (

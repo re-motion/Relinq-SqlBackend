@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 
       if (CanParse (methodCallExpression))
       {
-        ParserUtility.CheckNumberOfArguments (methodCallExpression, "Contains", 2);
+        DetailParserUtility.CheckNumberOfArguments (methodCallExpression, "Contains", 2);
         return CreateContains (methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], parseContext);
       }
       else
