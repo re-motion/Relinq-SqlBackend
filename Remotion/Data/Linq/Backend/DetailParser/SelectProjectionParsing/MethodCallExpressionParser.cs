@@ -21,7 +21,7 @@ using System.Reflection;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 {
   public class MethodCallExpressionParser : ISelectProjectionParser
   {

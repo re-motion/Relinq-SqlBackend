@@ -13,44 +13,38 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Collections;
-using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
-  public class ParserRegistry
+  public class ConstantExpressionParser : IWhereConditionParser
   {
-    private readonly MultiDictionary<Type, IParser> _parsers;
+    private readonly IDatabaseInfo _databaseInfo;
 
-    public ParserRegistry()
+    public ConstantExpressionParser(IDatabaseInfo databaseInfo)
     {
-      _parsers = new MultiDictionary<Type, IParser> ();
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+      _databaseInfo = databaseInfo;
     }
 
-    public void RegisterParser (Type expressionType, IParser parser)
+    public ICriterion Parse (ConstantExpression constantExpression, ParseContext parseContext)
     {
-      _parsers[expressionType].Insert (0, parser);
+      object newValue = _databaseInfo.ProcessWhereParameter (constantExpression.Value);
+      return new Constant (newValue);
     }
 
-    public IEnumerable<IParser> GetParsers (Type expressionType)
+    public bool CanParse(Expression expression)
     {
-      return _parsers[expressionType];
+      return expression is ConstantExpression;
     }
 
-    public IParser GetParser (Expression expression)
+    ICriterion IWhereConditionParser.Parse(Expression expression, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      foreach (IParser parser in GetParsers (expression.GetType()))
-      {
-        if (parser.CanParse (expression))
-          return parser;
-      }
-      throw new ParserException ("Cannot parse " + expression + ", no appropriate parser found");
+      return Parse ((ConstantExpression) expression, parseContext);
     }
   }
 }

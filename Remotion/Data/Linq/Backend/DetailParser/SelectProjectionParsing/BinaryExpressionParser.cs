@@ -20,7 +20,7 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 {
   public class BinaryExpressionParser : ISelectProjectionParser
   {

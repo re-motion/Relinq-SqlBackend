@@ -19,7 +19,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
   public class BinaryExpressionParser : IWhereConditionParser
   {

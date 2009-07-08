@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.Linq.Backend.Details;
+using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.Linq.Backend.Details
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
   public class DetailParserRegistries
   {

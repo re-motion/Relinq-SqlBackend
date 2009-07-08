@@ -14,33 +14,44 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Collections;
+using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
-  public class SubQueryExpressionParser : ISelectProjectionParser
+  public class ParserRegistry
   {
-    public bool CanParse (Expression expression)
+    private readonly MultiDictionary<Type, IParser> _parsers;
+
+    public ParserRegistry()
     {
-      return expression is SubQueryExpression;
+      _parsers = new MultiDictionary<Type, IParser> ();
     }
 
-    IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
+    public void RegisterParser (Type expressionType, IParser parser)
     {
-      return Parse(expression, parseContext);
+      _parsers[expressionType].Insert (0, parser);
     }
 
-    public IEvaluation Parse (Expression expression, ParseContext parseContext)
+    public IEnumerable<IParser> GetParsers (Type expressionType)
+    {
+      return _parsers[expressionType];
+    }
+
+    public IParser GetParser (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
 
-      throw new ParserException (
-          "This version of re-linq does not support subqueries in the select projection of a query.", expression, null);
+      foreach (IParser parser in GetParsers (expression.GetType()))
+      {
+        if (parser.CanParse (expression))
+          return parser;
+      }
+      throw new ParserException ("Cannot parse " + expression + ", no appropriate parser found");
     }
   }
 }

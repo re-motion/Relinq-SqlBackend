@@ -13,26 +13,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
-using Remotion.Data.Linq.Backend.FieldResolving;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Backend.DetailParser;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 {
-  [TestFixture]
-  public class MemberExpressionParserTest : DetailParserTestBase
+  public interface ISelectProjectionParser : IParser
   {
-    [Test]
-    public void Parse ()
-    {
-      var resolver =
-          new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
-      var parser = new MemberExpressionParser (resolver);
-
-      parser.Parse (Student_ID_Expression, ParseContext);
-      Assert.That (ParseContext.FieldDescriptors, SyntaxHelper.Not.Empty);
-    }
+    IEvaluation Parse (Expression expression, ParseContext parseContext);
   }
 }

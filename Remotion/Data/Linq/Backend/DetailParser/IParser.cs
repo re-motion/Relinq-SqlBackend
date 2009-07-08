@@ -14,12 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
-  public interface ISelectProjectionParser : IParser
+  public interface IParser
   {
-    IEvaluation Parse (Expression expression, ParseContext parseContext);
+    bool CanParse (Expression expression);
   }
 }

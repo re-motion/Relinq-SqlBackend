@@ -14,30 +14,38 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
-  public class OrderingFieldParser
+  public class QuerySourceReferenceExpressionParser : IWhereConditionParser
   {
     private readonly FieldResolver _resolver;
 
-    public OrderingFieldParser (IDatabaseInfo databaseInfo)
+    public QuerySourceReferenceExpressionParser (FieldResolver resolver)
     {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-
-      _resolver = new FieldResolver (databaseInfo, new OrderingFieldAccessPolicy());
+      ArgumentUtility.CheckNotNull ("resolver", resolver);
+      _resolver = resolver;
     }
 
-    public OrderingField Parse (Expression expression, ParseContext parseContext, OrderingDirection orderingDirection)
+    public ICriterion Parse (QuerySourceReferenceExpression referenceExpression, ParseContext parseContext)
     {
-      FieldDescriptor fieldDescriptor = _resolver.ResolveField (expression, parseContext.JoinedTableContext);
-      var orderingField = new OrderingField (fieldDescriptor, orderingDirection);
-      return orderingField;
+      FieldDescriptor fieldDescriptor = _resolver.ResolveField (referenceExpression, parseContext.JoinedTableContext);
+      parseContext.FieldDescriptors.Add (fieldDescriptor);
+      return fieldDescriptor.GetMandatoryColumn ();
+    }
+
+    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
+    {
+      return Parse ((QuerySourceReferenceExpression) expression, parseContext);
+    }
+
+    public bool CanParse(Expression expression)
+    {
+      return expression is QuerySourceReferenceExpression;
     }
   }
 }

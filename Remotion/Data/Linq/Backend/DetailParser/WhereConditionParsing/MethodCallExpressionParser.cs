@@ -20,7 +20,7 @@ using System.Reflection;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
   public class MethodCallExpressionParser : IWhereConditionParser
   {

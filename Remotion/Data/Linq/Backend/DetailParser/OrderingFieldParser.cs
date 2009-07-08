@@ -13,39 +13,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
-  public class MemberExpressionParser : IWhereConditionParser
+  public class OrderingFieldParser
   {
     private readonly FieldResolver _resolver;
 
-    public MemberExpressionParser (FieldResolver resolver)
+    public OrderingFieldParser (IDatabaseInfo databaseInfo)
     {
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      _resolver = resolver;
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+
+      _resolver = new FieldResolver (databaseInfo, new OrderingFieldAccessPolicy());
     }
 
-    public virtual ICriterion Parse (MemberExpression memberExpression, ParseContext parseContext)
+    public OrderingField Parse (Expression expression, ParseContext parseContext, OrderingDirection orderingDirection)
     {
-      FieldDescriptor fieldDescriptor = _resolver.ResolveField (memberExpression, parseContext.JoinedTableContext);
-      parseContext.FieldDescriptors.Add (fieldDescriptor);
-      return fieldDescriptor.GetMandatoryColumn ();
-    }
-
-    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
-    {
-      return Parse ((MemberExpression) expression, parseContext);
-    }
-
-    public bool CanParse(Expression expression)
-    {
-      return expression is MemberExpression;
+      FieldDescriptor fieldDescriptor = _resolver.ResolveField (expression, parseContext.JoinedTableContext);
+      var orderingField = new OrderingField (fieldDescriptor, orderingDirection);
+      return orderingField;
     }
   }
 }

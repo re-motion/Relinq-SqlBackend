@@ -13,18 +13,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
-  public class ContainsParser : IWhereConditionParser
+  public class ContainsFullTextParser : IWhereConditionParser
   {
     private readonly WhereConditionParserRegistry _parserRegistry;
 
-    public ContainsParser (WhereConditionParserRegistry parserRegistry)
+    public ContainsFullTextParser (WhereConditionParserRegistry parserRegistry)
     {
       ArgumentUtility.CheckNotNull ("parserRegistry", parserRegistry);
       _parserRegistry = parserRegistry;
@@ -32,21 +32,7 @@ namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
 
     public ICriterion Parse (MethodCallExpression methodCallExpression, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-
-      if (CanParse (methodCallExpression))
-      {
-        ParserUtility.CheckNumberOfArguments (methodCallExpression, "Contains", 2);
-        return CreateContains (methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], parseContext);
-      }
-      else
-      {
-        throw ParserUtility.CreateParserException (
-            "Contains with expression",
-            methodCallExpression.Method.Name,
-            "method call expression in where condition");
-      }
+      return CreateContainsFulltext (methodCallExpression, (string) ((ConstantExpression) methodCallExpression.Arguments[1]).Value, parseContext);
     }
 
     ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
@@ -57,15 +43,18 @@ namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
     public bool CanParse (Expression expression)
     {
       var methodCallExpression = expression as MethodCallExpression;
-      return methodCallExpression != null && methodCallExpression.Method.Name == "Contains" && methodCallExpression.Method.IsGenericMethod;
+      if (methodCallExpression != null)
+      {
+        if (methodCallExpression.Method.Name == "ContainsFulltext")
+          return true;
+      }
+      return false;
     }
 
-    private BinaryCondition CreateContains (Expression expression, Expression itemExpression, ParseContext parseContext)
+    private BinaryCondition CreateContainsFulltext (MethodCallExpression expression, string pattern, ParseContext parseContext)
     {
-      return new BinaryCondition (
-        _parserRegistry.GetParser (expression).Parse (expression, parseContext),
-        _parserRegistry.GetParser (itemExpression).Parse (itemExpression, parseContext),
-        BinaryCondition.ConditionKind.Contains);
+      return new BinaryCondition (_parserRegistry.GetParser (expression.Arguments[0]).Parse (expression.Arguments[0], parseContext), new Constant (pattern), BinaryCondition.ConditionKind.ContainsFulltext);
     }
+
   }
 }

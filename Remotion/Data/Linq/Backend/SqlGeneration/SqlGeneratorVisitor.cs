@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.Details;
+using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Utilities;
 

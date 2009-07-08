@@ -13,31 +13,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 {
-  public class SubQueryExpressionParser : IWhereConditionParser
+  public class SubQueryExpressionParser : ISelectProjectionParser
   {
-    public ICriterion Parse (SubQueryExpression subQueryExpression, ParseContext parseContext)
-    {
-      ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
-      return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
-    }
-
     public bool CanParse (Expression expression)
     {
       return expression is SubQueryExpression;
     }
 
-    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
+    IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
     {
-      return Parse ((SubQueryExpression) expression, parseContext);
+      return Parse(expression, parseContext);
     }
 
-    
+    public IEvaluation Parse (Expression expression, ParseContext parseContext)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("parseContext", parseContext);
+
+      throw new ParserException (
+          "This version of re-linq does not support subqueries in the select projection of a query.", expression, null);
+    }
   }
 }

@@ -15,36 +15,37 @@
 // 
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
-  public class ConstantExpressionParser : IWhereConditionParser
+  public class MemberExpressionParser : IWhereConditionParser
   {
-    private readonly IDatabaseInfo _databaseInfo;
+    private readonly FieldResolver _resolver;
 
-    public ConstantExpressionParser(IDatabaseInfo databaseInfo)
+    public MemberExpressionParser (FieldResolver resolver)
     {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      _databaseInfo = databaseInfo;
+      ArgumentUtility.CheckNotNull ("resolver", resolver);
+      _resolver = resolver;
     }
 
-    public ICriterion Parse (ConstantExpression constantExpression, ParseContext parseContext)
+    public virtual ICriterion Parse (MemberExpression memberExpression, ParseContext parseContext)
     {
-      object newValue = _databaseInfo.ProcessWhereParameter (constantExpression.Value);
-      return new Constant (newValue);
+      FieldDescriptor fieldDescriptor = _resolver.ResolveField (memberExpression, parseContext.JoinedTableContext);
+      parseContext.FieldDescriptors.Add (fieldDescriptor);
+      return fieldDescriptor.GetMandatoryColumn ();
+    }
+
+    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
+    {
+      return Parse ((MemberExpression) expression, parseContext);
     }
 
     public bool CanParse(Expression expression)
     {
-      return expression is ConstantExpression;
-    }
-
-    ICriterion IWhereConditionParser.Parse(Expression expression, ParseContext parseContext)
-    {
-      return Parse ((ConstantExpression) expression, parseContext);
+      return expression is MemberExpression;
     }
   }
 }

@@ -13,43 +13,41 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 {
-  public class QuerySourceReferenceExpressionParser : ISelectProjectionParser
+  public class ConstantExpressionParser : ISelectProjectionParser
   {
-    // query source reference expression parsing is the same for where conditions and select projections, so delegate to that implementation
-    private readonly WhereConditionParsing.QuerySourceReferenceExpressionParser _innerParser;
+    private readonly WhereConditionParsing.ConstantExpressionParser _innerParser;
 
-    public QuerySourceReferenceExpressionParser (FieldResolver resolver)
+    public ConstantExpressionParser (IDatabaseInfo databaseInfo)
     {
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      _innerParser = new WhereConditionParsing.QuerySourceReferenceExpressionParser (resolver);
+      _innerParser = new WhereConditionParsing.ConstantExpressionParser (databaseInfo);
     }
 
-    public IEvaluation Parse (QuerySourceReferenceExpression referenceExpression, ParseContext parseContext)
+    public IEvaluation Parse (ConstantExpression constantExpression, ParseContext parseContext)
     {
-      ArgumentUtility.CheckNotNull ("referenceExpression", referenceExpression);
+      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-      return _innerParser.Parse (referenceExpression, parseContext);
+      return _innerParser.Parse (constantExpression, parseContext);
     }
 
     IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-      return Parse ((QuerySourceReferenceExpression) expression, parseContext);
+      return Parse ((ConstantExpression) expression, parseContext);
     }
 
     public bool CanParse(Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return expression is QuerySourceReferenceExpression;
+      return expression is ConstantExpression;
     }
   }
 }

@@ -18,11 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Backend.Details.SelectProjectionParsing;
+using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.Linq.Backend.Details
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
   public class SelectProjectionParserRegistry
   {

@@ -16,26 +16,15 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.FieldResolving;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Backend.DetailParser;
 
-namespace Remotion.Data.Linq.Backend.Details
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
-  public class ParseContext
+  /// <summary>
+  /// 
+  /// </summary>
+  public interface IWhereConditionParser  : IParser
   {
-    public QueryModel QueryModel { get; private set; }
-    public List<FieldDescriptor> FieldDescriptors { get; private set; }
-    public JoinedTableContext JoinedTableContext { get; private set; }
-
-    public ParseContext (QueryModel queryModel, List<FieldDescriptor> fieldDescriptors, JoinedTableContext joinedTableContext)
-    {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fieldDescriptors", fieldDescriptors);
-      ArgumentUtility.CheckNotNull ("joinedTableContext", joinedTableContext);
-
-      QueryModel = queryModel;
-      FieldDescriptors = fieldDescriptors;
-      JoinedTableContext = joinedTableContext;
-    }
+    ICriterion Parse (Expression expression, ParseContext parseContext);
   }
 }
