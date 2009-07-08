@@ -21,7 +21,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using System.Collections.Generic;
 
-namespace Remotion.Data.UnitTests.Linq.DataObjectModel
+namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
 {
   [TestFixture]
   public class MethodCallTest

@@ -14,23 +14,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Utilities;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses.Expressions;
 
-namespace Remotion.Data.UnitTests.Linq.DataObjectModel
+namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
 {
   [TestFixture]
-  public class BinaryConditionTest
+  public class SubQueryExpressionTest
   {
     [Test]
-    public void ContainsWithSubQuery ()
+    public void Initialize_CorrectType ()
     {
-      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInSelect, null);
-      BinaryCondition binaryCondition = new BinaryCondition(subQuery, new Constant(0), BinaryCondition.ConditionKind.Contains);
-      Assert.AreSame (subQuery, binaryCondition.Left);
+      var model = new QueryModel (typeof (int), ExpressionHelper.CreateMainFromClause(), ExpressionHelper.CreateSelectClause());
+      var sqe = new SubQueryExpression (model);
+
+      Assert.AreEqual (typeof (int), sqe.Type);
     }
 
+    [Test]
+    public void Initialize_DontOverwriteExpressionType ()
+    {
+      Assert.IsFalse (Enum.IsDefined (typeof (ExpressionType), new SubQueryExpression (ExpressionHelper.CreateQueryModel()).NodeType));
+    }
   }
 }

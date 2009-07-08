@@ -18,7 +18,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.UnitTests.Linq.DataObjectModel
+namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
 {
   [TestFixture]
   public class SubQueryTest
