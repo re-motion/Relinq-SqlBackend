@@ -15,8 +15,8 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Collections;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.Backend
 {
@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.Backend
     /// <param name="fromClause">The clause identifies the query source.</param>
     /// <returns>The table name as string.</returns>
     string GetTableName (FromClauseBase fromClause);
-    
+
     /// <summary>
     /// Has to be implemented to get the table name of the n-side of a relation.
     /// </summary>
@@ -52,21 +52,21 @@ namespace Remotion.Data.Linq.Backend
     /// <param name="relationMember"><see cref="MemberInfo"/></param>
     /// <returns>A tuple which containes the left and right side of a join. It must return the name of the primary and foreign key.</returns>
     Tuple<string, string> GetJoinColumnNames (MemberInfo relationMember);
-    
+
     /// <summary>
     /// Has to be implemented to get value of a parameter in a where condition.
     /// </summary>
     /// <param name="parameter">The parameter in a where condition.</param>
     /// <returns>The value of the given where parameter.</returns>
     object ProcessWhereParameter (object parameter);
-    
+
     /// <summary>
     /// Has to be implemented to get primary key member of a given entity.
     /// </summary>
     /// <param name="entityType">The type of the queried entity.</param>
     /// <returns><see cref="MemberInfo"/> of the primary key.</returns>
     MemberInfo GetPrimaryKeyMember (Type entityType);
-    
+
     /// <summary>
     /// Has to be implemented to check whether a given type is a table.
     /// </summary>

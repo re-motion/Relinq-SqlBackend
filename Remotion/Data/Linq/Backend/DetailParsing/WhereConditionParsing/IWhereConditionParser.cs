@@ -13,17 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.DetailParser;
 
 namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
   /// <summary>
   /// 
   /// </summary>
-  public interface IWhereConditionParser  : IParser
+  public interface IWhereConditionParser : IParser
   {
     ICriterion Parse (Expression expression, ParseContext parseContext);
   }

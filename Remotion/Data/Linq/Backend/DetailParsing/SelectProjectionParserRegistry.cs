@@ -17,10 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.Linq.Clauses.Expressions;
 
 namespace Remotion.Data.Linq.Backend.DetailParser
 {

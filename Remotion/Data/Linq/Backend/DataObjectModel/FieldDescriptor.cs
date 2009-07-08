@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
@@ -47,13 +46,15 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
         return Column.Value;
       else
       {
-        string message = string.Format ("The member '{0}.{1}' does not identify a queryable column.",
-            Member.DeclaringType.FullName, Member.Name);
+        string message = string.Format (
+            "The member '{0}.{1}' does not identify a queryable column.",
+            Member.DeclaringType.FullName,
+            Member.Name);
 
         throw new FieldAccessResolveException (message);
       }
     }
-    
+
     public override string ToString ()
     {
       return string.Format ("{0} => {1}", SourcePath, Column);

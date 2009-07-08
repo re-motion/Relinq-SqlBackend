@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -50,12 +49,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
           methodInfo.DeclaringType.FullName,
           methodInfo.Name);
 
-      if (_generators.ContainsKey(methodInfo))
+      if (_generators.ContainsKey (methodInfo))
         return _generators[methodInfo];
 
-       if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
-         return GetGenerator (methodInfo.GetGenericMethodDefinition());
-      
+      if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
+        return GetGenerator (methodInfo.GetGenericMethodDefinition());
+
       throw new SqlGenerationException (message);
     }
   }

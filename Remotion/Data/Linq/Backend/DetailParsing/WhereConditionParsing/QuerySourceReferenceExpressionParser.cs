@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
@@ -35,7 +36,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
     {
       FieldDescriptor fieldDescriptor = _resolver.ResolveField (referenceExpression, parseContext.JoinedTableContext);
       parseContext.FieldDescriptors.Add (fieldDescriptor);
-      return fieldDescriptor.GetMandatoryColumn ();
+      return fieldDescriptor.GetMandatoryColumn();
     }
 
     ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
@@ -43,7 +44,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
       return Parse ((QuerySourceReferenceExpression) expression, parseContext);
     }
 
-    public bool CanParse(Expression expression)
+    public bool CanParse (Expression expression)
     {
       return expression is QuerySourceReferenceExpression;
     }

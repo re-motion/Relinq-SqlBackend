@@ -15,9 +15,7 @@
 // 
 using System;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
@@ -26,52 +24,52 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
   public class SqlServerGenerator : SqlGeneratorBase<SqlServerGenerationContext>
   {
     public SqlServerGenerator (IDatabaseInfo databaseInfo)
-      : this (databaseInfo, ParseMode.TopLevelQuery)
+        : this (databaseInfo, ParseMode.TopLevelQuery)
     {
     }
 
     protected SqlServerGenerator (IDatabaseInfo databaseInfo, ParseMode parseMode)
-      : base (databaseInfo, parseMode)
+        : base (databaseInfo, parseMode)
     {
-      MethodCallRegistry.Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper ());
-      MethodCallRegistry.Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove ());
+      MethodCallRegistry.Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper());
+      MethodCallRegistry.Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove());
       // TODO: register handler for string.Remove with two arguments
-      MethodCallRegistry.Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower ());
-      
+      MethodCallRegistry.Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower());
+
       var methodCallConvertTo = new MethodCallConvertTo();
       foreach (var method in methodCallConvertTo.GetSupportedConvertMethods())
         MethodCallRegistry.Register (method, methodCallConvertTo);
-      
+
       MethodCallRegistry.Register (typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) }), new MethodCallSubstring());
 
-      var methodInfoCount = (from m in typeof (Queryable).GetMethods ()
-                             where m.Name == "Count" && m.GetParameters ().Length == 1
-                             select m).Single ();
+      var methodInfoCount = (from m in typeof (Queryable).GetMethods()
+                             where m.Name == "Count" && m.GetParameters().Length == 1
+                             select m).Single();
       MethodCallRegistry.Register (methodInfoCount, new MethodCallCount());
 
-      var methodInfoDistinct = (from m in typeof (Queryable).GetMethods ()
-                                where m.Name == "Distinct" && (m.GetParameters ().Length == 1)
-                                select m).Single ();
-      MethodCallRegistry.Register (methodInfoDistinct, new MethodCallDistinct ());
+      var methodInfoDistinct = (from m in typeof (Queryable).GetMethods()
+                                where m.Name == "Distinct" && (m.GetParameters().Length == 1)
+                                select m).Single();
+      MethodCallRegistry.Register (methodInfoDistinct, new MethodCallDistinct());
 
-      var methodInfoSingleOneParameter = (from m in typeof(Queryable).GetMethods() 
-                           where m.Name == "Single" && m.GetParameters().Length == 1
-                           select m).Single();
-      MethodCallRegistry.Register (methodInfoSingleOneParameter, new MethodCallSingle ());
+      var methodInfoSingleOneParameter = (from m in typeof (Queryable).GetMethods()
+                                          where m.Name == "Single" && m.GetParameters().Length == 1
+                                          select m).Single();
+      MethodCallRegistry.Register (methodInfoSingleOneParameter, new MethodCallSingle());
 
-      var methodInfoSingleTwoParameters = (from m in typeof (Queryable).GetMethods ()
-                                           where m.Name == "Single" && m.GetParameters ().Length == 2
-                                           select m).Single ();
-      MethodCallRegistry.Register (methodInfoSingleTwoParameters, new MethodCallSingle ());
+      var methodInfoSingleTwoParameters = (from m in typeof (Queryable).GetMethods()
+                                           where m.Name == "Single" && m.GetParameters().Length == 2
+                                           select m).Single();
+      MethodCallRegistry.Register (methodInfoSingleTwoParameters, new MethodCallSingle());
 
-      var methodInfoFirst = (from m in typeof(Queryable).GetMethods() 
-                           where m.Name == "First" && m.GetParameters().Length == 1
-                           select m).Single();
-      MethodCallRegistry.Register (methodInfoFirst, new MethodCallFirst ());
+      var methodInfoFirst = (from m in typeof (Queryable).GetMethods()
+                             where m.Name == "First" && m.GetParameters().Length == 1
+                             select m).Single();
+      MethodCallRegistry.Register (methodInfoFirst, new MethodCallFirst());
 
-      var methodInfoTake = (from m in typeof (Queryable).GetMethods ()
-                            where m.Name == "Take" && m.GetParameters ().Length == 2
-                            select m).Single ();
+      var methodInfoTake = (from m in typeof (Queryable).GetMethods()
+                            where m.Name == "Take" && m.GetParameters().Length == 2
+                            select m).Single();
       MethodCallRegistry.Register (methodInfoTake, new MethodCallTake());
     }
 

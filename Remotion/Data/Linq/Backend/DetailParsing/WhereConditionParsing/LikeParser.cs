@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -65,8 +66,8 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
       if (methodCallExpression != null)
       {
         if (methodCallExpression.Method.Name == "StartsWith" ||
-          methodCallExpression.Method.Name == "EndsWith" ||
-          (methodCallExpression.Method.Name == "Contains" && !methodCallExpression.Method.IsGenericMethod))
+            methodCallExpression.Method.Name == "EndsWith" ||
+            (methodCallExpression.Method.Name == "Contains" && !methodCallExpression.Method.IsGenericMethod))
           return true;
       }
       return false;
@@ -74,7 +75,10 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 
     private BinaryCondition CreateLike (MethodCallExpression expression, string pattern, ParseContext parseContext)
     {
-      return new BinaryCondition (_parserRegistry.GetParser (expression.Object).Parse (expression.Object, parseContext), new Constant (pattern), BinaryCondition.ConditionKind.Like);
+      return new BinaryCondition (
+          _parserRegistry.GetParser (expression.Object).Parse (expression.Object, parseContext),
+          new Constant (pattern),
+          BinaryCondition.ConditionKind.Like);
     }
   }
 }

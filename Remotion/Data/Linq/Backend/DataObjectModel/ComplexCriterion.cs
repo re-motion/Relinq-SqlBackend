@@ -13,15 +13,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public struct ComplexCriterion : ICriterion
   {
-    public enum JunctionKind { And, Or }
+    public enum JunctionKind
+    {
+      And,
+      Or
+    }
 
-    public ComplexCriterion (ICriterion left, ICriterion right, JunctionKind kind) : this()
+    public ComplexCriterion (ICriterion left, ICriterion right, JunctionKind kind)
+        : this()
     {
       ArgumentUtility.CheckNotNull ("kind", kind);
       ArgumentUtility.CheckNotNull ("left", left);

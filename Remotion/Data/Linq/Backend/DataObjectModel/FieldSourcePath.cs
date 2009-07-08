@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Text;
@@ -25,13 +26,14 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     public IColumnSource FirstSource { get; private set; }
     public ReadOnlyCollection<SingleJoin> Joins { get; private set; }
 
-    public FieldSourcePath(IColumnSource firstSource,IEnumerable<SingleJoin> joins) : this()
+    public FieldSourcePath (IColumnSource firstSource, IEnumerable<SingleJoin> joins)
+        : this()
     {
       ArgumentUtility.CheckNotNull ("firstSource", firstSource);
       ArgumentUtility.CheckNotNull ("joins", joins);
 
       FirstSource = firstSource;
-      Joins = new List<SingleJoin>(joins).AsReadOnly();
+      Joins = new List<SingleJoin> (joins).AsReadOnly();
     }
 
     public IColumnSource LastSource
@@ -51,7 +53,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
         return false;
 
       FieldSourcePath other = (FieldSourcePath) obj;
-      return object.ReferenceEquals (FirstSource, other.FirstSource) && JoinsEqual (Joins, other.Joins);
+      return ReferenceEquals (FirstSource, other.FirstSource) && JoinsEqual (Joins, other.Joins);
     }
 
     private bool JoinsEqual (ReadOnlyCollection<SingleJoin> joins1, ReadOnlyCollection<SingleJoin> joins2)
@@ -74,9 +76,9 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override string ToString ()
     {
-      bool joinsHasElements = Joins.GetEnumerator ().MoveNext ();
+      bool joinsHasElements = Joins.GetEnumerator().MoveNext();
       if (joinsHasElements)
-        return FirstSource.AliasString + "." + SeparatedStringBuilder.Build (".", Joins, join => ((Table)join.RightSide).Name);
+        return FirstSource.AliasString + "." + SeparatedStringBuilder.Build (".", Joins, join => ((Table) join.RightSide).Name);
       else
         return FirstSource.AliasString;
     }

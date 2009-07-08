@@ -19,7 +19,7 @@ namespace Remotion.Data.Linq.Backend
 {
   public static class ContainsFulltextExtensionMethod
   {
-    public static bool ContainsFulltext(this string extension, string search)
+    public static bool ContainsFulltext (this string extension, string search)
     {
       throw new NotImplementedException ("This method should not be executed. It should be used only in queries analyzed and parsed by re-linq.");
     }

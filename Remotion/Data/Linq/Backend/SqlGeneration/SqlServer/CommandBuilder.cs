@@ -17,15 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
   public class CommandBuilder : ICommandBuilder
   {
-    public CommandBuilder (StringBuilder commandText, List<CommandParameter> commandParameters, IDatabaseInfo databaseInfo, MethodCallSqlGeneratorRegistry methodCallRegistry)
+    public CommandBuilder (
+        StringBuilder commandText,
+        List<CommandParameter> commandParameters,
+        IDatabaseInfo databaseInfo,
+        MethodCallSqlGeneratorRegistry methodCallRegistry)
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
@@ -43,12 +45,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
 
-    public string GetCommandText()
+    public string GetCommandText ()
     {
       return CommandText.ToString();
     }
 
-    public CommandParameter[] GetCommandParameters()
+    public CommandParameter[] GetCommandParameters ()
     {
       return CommandParameters.ToArray();
     }
@@ -64,7 +66,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       evaluation.Accept (visitor);
     }
 
-    public void AppendSeparatedItems<T> (IEnumerable<T> items, System.Action<T> appendAction)
+    public void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction)
     {
       bool first = true;
       foreach (T item in items)

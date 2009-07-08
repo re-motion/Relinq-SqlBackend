@@ -15,9 +15,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Mixins;
 using Remotion.Reflection;
 
@@ -25,12 +24,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
   public class SqlGenerationData
   {
-    public SqlGenerationData()
+    public SqlGenerationData ()
     {
-      FromSources = new List<IColumnSource> ();
+      FromSources = new List<IColumnSource>();
       SelectEvaluation = null;
-      OrderingFields = new List<OrderingField> ();
-      Joins = new JoinCollection ();
+      OrderingFields = new List<OrderingField>();
+      Joins = new JoinCollection();
     }
 
     public IEvaluation SelectEvaluation { get; private set; }
@@ -40,7 +39,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     public JoinCollection Joins { get; private set; }
     public ParseMode ParseMode { get; set; }
     public List<ResultOperatorBase> ResultOperators { get; set; }
-    
+
     public void SetSelectEvaluation (IEvaluation evaluation, List<FieldDescriptor> fieldDescriptors)
     {
       if (SelectEvaluation != null)
@@ -51,8 +50,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       foreach (var selectedField in fieldDescriptors)
         Joins.AddPath (selectedField.SourcePath);
     }
-    
-    public void AddFromClause(IColumnSource columnSource)
+
+    public void AddFromClause (IColumnSource columnSource)
     {
       FromSources.Add (columnSource);
     }
@@ -77,7 +76,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
     public SelectedObjectActivator GetSelectedObjectActivator ()
     {
-      return ObjectFactory.Create<SelectedObjectActivator>(ParamList.Create (SelectEvaluation));
+      return ObjectFactory.Create<SelectedObjectActivator> (ParamList.Create (SelectEvaluation));
     }
   }
 }

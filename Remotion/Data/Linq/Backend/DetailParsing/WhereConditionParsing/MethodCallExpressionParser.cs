@@ -44,28 +44,30 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
       if (methodCallExpression.Object == null)
         criterionObject = null;
       else
+      {
         criterionObject = _parserRegistry.GetParser (methodCallExpression.Object).
-          Parse (methodCallExpression.Object, parseContext);
+            Parse (methodCallExpression.Object, parseContext);
+      }
 
-      List<IEvaluation> criterionArguments = new List<IEvaluation> ();
+      List<IEvaluation> criterionArguments = new List<IEvaluation>();
 
       foreach (Expression exp in methodCallExpression.Arguments)
         criterionArguments.Add (_parserRegistry.GetParser (exp).Parse (exp, parseContext));
 
-      return new MethodCall (methodInfo, criterionObject, criterionArguments); 
+      return new MethodCall (methodInfo, criterionObject, criterionArguments);
     }
 
     public bool CanParse (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return expression is MethodCallExpression;      
+      return expression is MethodCallExpression;
     }
 
     ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
-      
+
       return Parse ((MethodCallExpression) expression, parseContext);
     }
   }

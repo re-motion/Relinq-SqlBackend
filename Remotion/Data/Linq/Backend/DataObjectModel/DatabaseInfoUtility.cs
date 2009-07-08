@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
       {
         string message = string.Format (
             "The from clause with identifier {0} and item type {1} does not identify a queryable table.",
-            fromClause.ItemName, 
+            fromClause.ItemName,
             fromClause.ItemType.FullName);
         throw new ArgumentException (message, "fromClause");
       }
@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
       ArgumentUtility.CheckNotNull ("member", member);
       return (IsRelationMember (databaseInfo, member)) && (databaseInfo.GetColumnName (member) == null);
     }
-    
+
     public static Column? GetColumn (IDatabaseInfo databaseInfo, IColumnSource columnSource, MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
         return new Column (columnSource, columnName);
       //return new Column (columnSource, columnName, ReflectionUtility.GetFieldOrPropertyType (member));
     }
-    
+
     public static MemberInfo GetPrimaryKeyMember (IDatabaseInfo databaseInfo, Type entityType)
     {
       MemberInfo primaryKeyMember = databaseInfo.GetPrimaryKeyMember (entityType);

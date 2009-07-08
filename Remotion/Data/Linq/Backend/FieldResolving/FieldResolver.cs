@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
@@ -42,13 +42,23 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     public FieldDescriptor ResolveField (Expression fieldAccessExpression, JoinedTableContext joinedTableContext)
     {
       ArgumentUtility.CheckNotNull ("fieldAccessExpression", fieldAccessExpression);
-      
+
       var result = FieldResolverVisitor.ParseFieldAccess (DatabaseInfo, fieldAccessExpression, _policy.OptimizeRelatedKeyAccess());
       var clause = result.QuerySourceReferenceExpression.ReferencedClause;
-      return CreateFieldDescriptor (joinedTableContext.GetColumnSource (clause), result.QuerySourceReferenceExpression, result.AccessedMember, result.JoinMembers, joinedTableContext);
+      return CreateFieldDescriptor (
+          joinedTableContext.GetColumnSource (clause),
+          result.QuerySourceReferenceExpression,
+          result.AccessedMember,
+          result.JoinMembers,
+          joinedTableContext);
     }
 
-    private FieldDescriptor CreateFieldDescriptor (IColumnSource firstSource, QuerySourceReferenceExpression referenceExpression, MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers, JoinedTableContext joinedTableContext)
+    private FieldDescriptor CreateFieldDescriptor (
+        IColumnSource firstSource,
+        QuerySourceReferenceExpression referenceExpression,
+        MemberInfo accessedMember,
+        IEnumerable<MemberInfo> joinMembers,
+        JoinedTableContext joinedTableContext)
     {
       // Documentation example: sdd.Student_Detail.Student.First
       // joinMembers == "Student_Detail", "Student"
@@ -63,8 +73,9 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       Column? column = DatabaseInfoUtility.GetColumn (DatabaseInfo, fieldData.LastSource, accessedMemberForColumn);
       return new FieldDescriptor (accessedMember, fieldData, column);
     }
-    
-    private Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfos (QuerySourceReferenceExpression referenceExpression, MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+
+    private Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfos (
+        QuerySourceReferenceExpression referenceExpression, MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
       if (accessedMember == null)
       {
@@ -76,5 +87,5 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       else
         return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (accessedMember, joinMembers);
     }
- }
+  }
 }

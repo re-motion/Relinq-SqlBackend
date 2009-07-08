@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
@@ -42,11 +43,11 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     {
       get { return true; }
     }
-    
+
     public override bool Equals (object obj)
     {
       var other = obj as SubQuery;
-      return other != null && object.Equals (QueryModel, other.QueryModel) && object.Equals (Alias, other.Alias);
+      return other != null && Equals (QueryModel, other.QueryModel) && Equals (Alias, other.Alias);
     }
 
     public override int GetHashCode ()

@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Backend.DataObjectModel;
@@ -38,15 +37,15 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
 
-      return Parse(methodCallExpression, parseContext, methodCallExpression.Arguments);
+      return Parse (methodCallExpression, parseContext, methodCallExpression.Arguments);
     }
 
     public MethodCall Parse (MethodCallExpression methodCallExpression, ParseContext parseContext, IEnumerable<Expression> argumentsExpressions)
     {
       MethodInfo methodInfo = methodCallExpression.Method;
-      IEvaluation evaluationObject = ParseEvaluationObject(methodCallExpression, parseContext);
+      IEvaluation evaluationObject = ParseEvaluationObject (methodCallExpression, parseContext);
 
-      List<IEvaluation> evaluationArguments = new List<IEvaluation> ();
+      List<IEvaluation> evaluationArguments = new List<IEvaluation>();
       foreach (Expression exp in argumentsExpressions)
         evaluationArguments.Add (ParserRegistry.GetParser (exp).Parse (exp, parseContext));
 
@@ -70,7 +69,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
       return Parse ((MethodCallExpression) expression, parseContext);
     }
 
-    public virtual bool CanParse(Expression expression)
+    public virtual bool CanParse (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       return expression is MethodCallExpression;

@@ -17,13 +17,13 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParser;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
-  public abstract class SqlGeneratorBase<TContext> : ISqlGenerator where TContext : ISqlGenerationContext
+  public abstract class SqlGeneratorBase<TContext> : ISqlGenerator
+      where TContext: ISqlGenerationContext
   {
     protected SqlGeneratorBase (IDatabaseInfo databaseInfo, ParseMode parseMode)
     {
@@ -32,15 +32,15 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       DatabaseInfo = databaseInfo;
       ParseMode = parseMode;
       DetailParserRegistries = new DetailParserRegistries (DatabaseInfo, ParseMode);
-      MethodCallRegistry = new MethodCallSqlGeneratorRegistry ();
+      MethodCallRegistry = new MethodCallSqlGeneratorRegistry();
     }
 
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public ParseMode ParseMode { get; private set; }
-    
+
     public DetailParserRegistries DetailParserRegistries { get; private set; }
-    public MethodCallSqlGeneratorRegistry MethodCallRegistry {get; private set; }
-    
+    public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
+
 
     protected abstract TContext CreateContext ();
 
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     {
       SqlGenerationData sqlGenerationData = ProcessQuery (queryModel);
 
-      TContext context = CreateContext ();
+      TContext context = CreateContext();
       IEvaluation selectEvaluation = sqlGenerationData.SelectEvaluation;
       if (selectEvaluation == null)
         throw new InvalidOperationException ("The concrete subclass did not set a select evaluation.");
@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
     protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
-      ParseContext parseContext = CreateParseContext(queryModel);
+      ParseContext parseContext = CreateParseContext (queryModel);
       var visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParserRegistries, parseContext);
       queryModel.Accept (visitor);
       parseContext.JoinedTableContext.CreateAliases (queryModel);

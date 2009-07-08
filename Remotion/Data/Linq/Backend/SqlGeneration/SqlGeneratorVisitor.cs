@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      VisitFromClause(fromClause);
+      VisitFromClause (fromClause);
       base.VisitAdditionalFromClause (fromClause, queryModel, index);
     }
 
@@ -94,7 +94,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (whereClause.Predicate).Parse (whereClause.Predicate, _parseContext);
+      ICriterion criterion = _detailParserRegistries.WhereConditionParser.GetParser (whereClause.Predicate).Parse (
+          whereClause.Predicate, _parseContext);
       SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);
 
       base.VisitWhereClause (whereClause, queryModel, index);
@@ -108,7 +109,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
       var fieldParser = new OrderingFieldParser (_databaseInfo);
 
-      var orderingFields = new List<OrderingField> ();
+      var orderingFields = new List<OrderingField>();
       foreach (var ordering in orderings)
         orderingFields.Add (fieldParser.Parse (ordering.Expression, _parseContext, ordering.OrderingDirection));
 
@@ -123,8 +124,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       IEvaluation evaluation =
-        _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector)
-        .Parse (selectClause.Selector, _parseContext);
+          _detailParserRegistries.SelectProjectionParser.GetParser (selectClause.Selector)
+              .Parse (selectClause.Selector, _parseContext);
       SqlGenerationData.SetSelectEvaluation (evaluation, _parseContext.FieldDescriptors);
 
       base.VisitSelectClause (selectClause, queryModel);

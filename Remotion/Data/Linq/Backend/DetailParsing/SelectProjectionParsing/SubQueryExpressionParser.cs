@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 
     IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
     {
-      return Parse(expression, parseContext);
+      return Parse (expression, parseContext);
     }
 
     public IEvaluation Parse (Expression expression, ParseContext parseContext)

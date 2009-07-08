@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
@@ -28,6 +29,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     /// </summary>
     /// <param name="methodCall"><see cref="MethodCall"/></param>
     /// <param name="commandBuilder"><see cref="ICommandBuilder"/></param>
-    void GenerateSql(MethodCall methodCall, ICommandBuilder commandBuilder);
+    void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder);
   }
 }

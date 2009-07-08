@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
@@ -30,7 +31,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
         AddSingleJoin (fieldSourcePath.FirstSource, join);
     }
 
-    public List<SingleJoin> this[IColumnSource columnSource]
+    public List<SingleJoin> this [IColumnSource columnSource]
     {
       get { return _innerDictionary[columnSource]; }
     }
@@ -48,7 +49,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
     public IEnumerator<KeyValuePair<IColumnSource, List<SingleJoin>>> GetEnumerator ()
     {
-      return ((IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>)_innerDictionary).GetEnumerator();
+      return ((IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>) _innerDictionary).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

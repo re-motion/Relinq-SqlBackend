@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
@@ -38,7 +39,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     public static string GetTableDeclaration (Table table)
     {
-      return SqlServerUtility.WrapSqlIdentifier (table.Name) + " " + SqlServerUtility.WrapSqlIdentifier (table.Alias);
+      return WrapSqlIdentifier (table.Name) + " " + WrapSqlIdentifier (table.Alias);
     }
   }
 }

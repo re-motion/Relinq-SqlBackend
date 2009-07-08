@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Collections;
-using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
@@ -27,9 +26,9 @@ namespace Remotion.Data.Linq.Backend.DetailParser
   {
     private readonly MultiDictionary<Type, IParser> _parsers;
 
-    public ParserRegistry()
+    public ParserRegistry ()
     {
-      _parsers = new MultiDictionary<Type, IParser> ();
+      _parsers = new MultiDictionary<Type, IParser>();
     }
 
     public void RegisterParser (Type expressionType, IParser parser)

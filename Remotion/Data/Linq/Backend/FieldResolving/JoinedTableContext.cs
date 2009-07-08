@@ -17,10 +17,9 @@ using System;
 using System.Collections.Specialized;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
@@ -28,8 +27,8 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
   public class JoinedTableContext
   {
     private readonly IDatabaseInfo _databaseInfo;
-    private readonly SimpleDataStore<FromClauseBase, IColumnSource> _columnSources = new SimpleDataStore<FromClauseBase, IColumnSource> ();
-    private readonly OrderedDictionary _joinedTables = new OrderedDictionary ();
+    private readonly SimpleDataStore<FromClauseBase, IColumnSource> _columnSources = new SimpleDataStore<FromClauseBase, IColumnSource>();
+    private readonly OrderedDictionary _joinedTables = new OrderedDictionary();
 
     public JoinedTableContext (IDatabaseInfo databaseInfo)
     {

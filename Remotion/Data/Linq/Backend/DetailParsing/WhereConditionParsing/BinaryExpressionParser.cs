@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
           return CreateBinaryCondition (binaryExpression, BinaryCondition.ConditionKind.Multiply, parseContext);
         case ExpressionType.Subtract:
           return CreateBinaryCondition (binaryExpression, BinaryCondition.ConditionKind.Subtract, parseContext);
-        
+
 
         default:
           throw ParserUtility.CreateParserException (
@@ -81,24 +81,24 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
       return expression is BinaryExpression;
     }
 
-    private ComplexCriterion CreateComplexCriterion 
-      (BinaryExpression expression, ComplexCriterion.JunctionKind kind, ParseContext parseContext)
+    private ComplexCriterion CreateComplexCriterion
+        (BinaryExpression expression, ComplexCriterion.JunctionKind kind, ParseContext parseContext)
     {
       return new ComplexCriterion (
-        _parserRegistry.GetParser (expression.Left).Parse (expression.Left, parseContext),
-        _parserRegistry.GetParser (expression.Right).Parse (expression.Right, parseContext),
-        kind
-        );
+          _parserRegistry.GetParser (expression.Left).Parse (expression.Left, parseContext),
+          _parserRegistry.GetParser (expression.Right).Parse (expression.Right, parseContext),
+          kind
+          );
     }
 
-    private BinaryCondition CreateBinaryCondition 
-      (BinaryExpression expression, BinaryCondition.ConditionKind kind, ParseContext parseContext)
+    private BinaryCondition CreateBinaryCondition
+        (BinaryExpression expression, BinaryCondition.ConditionKind kind, ParseContext parseContext)
     {
       return new BinaryCondition (
-        _parserRegistry.GetParser (expression.Left).Parse (expression.Left, parseContext),
-        _parserRegistry.GetParser (expression.Right).Parse (expression.Right, parseContext),
-        kind
-        );
+          _parserRegistry.GetParser (expression.Left).Parse (expression.Left, parseContext),
+          _parserRegistry.GetParser (expression.Right).Parse (expression.Right, parseContext),
+          kind
+          );
     }
   }
 }

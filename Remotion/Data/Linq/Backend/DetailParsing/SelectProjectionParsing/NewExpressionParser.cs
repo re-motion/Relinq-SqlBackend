@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
@@ -36,11 +37,9 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
       ArgumentUtility.CheckNotNull ("newExpression", newExpression);
       ArgumentUtility.CheckNotNull ("parseContext", parseContext);
 
-      List<IEvaluation> argumentEvaluations = new List<IEvaluation> ();
+      List<IEvaluation> argumentEvaluations = new List<IEvaluation>();
       foreach (Expression exp in newExpression.Arguments)
-      {
         argumentEvaluations.Add (_parserRegistry.GetParser (exp).Parse (exp, parseContext));
-      }
       return new NewObject (newExpression.Constructor, argumentEvaluations.ToArray());
     }
 
@@ -49,7 +48,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
       return Parse ((NewExpression) expression, parseContext);
     }
 
-    public bool CanParse(Expression expression)
+    public bool CanParse (Expression expression)
     {
       return expression is NewExpression;
     }

@@ -13,10 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.Data.Linq.Backend
 {
   public enum ParseMode
   {
-    TopLevelQuery, SubQueryInFrom, SubQueryInWhere, LetExpression, SubQueryInSelect
+    TopLevelQuery,
+    SubQueryInFrom,
+    SubQueryInWhere,
+    LetExpression,
+    SubQueryInSelect
   }
 }

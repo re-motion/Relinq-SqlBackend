@@ -16,8 +16,6 @@
 using System;
 using System.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
@@ -45,14 +43,14 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       else
         AppendGeneralCondition (binaryCondition);
     }
-    
-    private void AppendContainsFulltext(IValue left, IValue right)
+
+    private void AppendContainsFulltext (IValue left, IValue right)
     {
       _commandBuilder.Append ("CONTAINS (");
       _commandBuilder.AppendEvaluation (left);
       _commandBuilder.Append (",");
       _commandBuilder.AppendEvaluation (right);
-      _commandBuilder.Append(")");
+      _commandBuilder.Append (")");
     }
 
     private void AppendNullCondition (IValue value, BinaryCondition.ConditionKind kind)
@@ -74,9 +72,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     {
       // Is the left side an empty collection? "Contains" on empty collections is always false.
       if (left is Constant && ((Constant) left).Value is ICollection && ((ICollection) ((Constant) left).Value).Count == 0)
-      {
         _commandBuilder.AppendEvaluation (new Constant (false));
-      }
       else
       {
         _commandBuilder.AppendEvaluation (right);
@@ -113,10 +109,10 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
           case BinaryCondition.ConditionKind.Equal:
           case BinaryCondition.ConditionKind.LessThanOrEqual:
           case BinaryCondition.ConditionKind.GreaterThanOrEqual:
-            AppendNullChecksForEqualKinds(left, right);
+            AppendNullChecksForEqualKinds (left, right);
             break;
           case BinaryCondition.ConditionKind.NotEqual:
-            AppendNullChecksForNotEqualKind(left, right);
+            AppendNullChecksForNotEqualKind (left, right);
             break;
         }
       }

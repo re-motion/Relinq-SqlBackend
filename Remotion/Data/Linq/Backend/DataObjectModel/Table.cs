@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     {
     }
 
-    public Table(string name, string alias)
+    public Table (string name, string alias)
     {
       ArgumentUtility.CheckNotNull ("name", name);
       Name = name;

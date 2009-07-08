@@ -15,12 +15,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Utilities;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
@@ -55,15 +53,17 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         else if (operatorBase is TakeResultOperator)
           top = ((TakeResultOperator) operatorBase).Count;
         else
+        {
           throw new NotSupportedException (
               "Result operator type " + operatorBase.GetType().Name + " is not supported by this SQL generator.");
+        }
       }
 
       if (distinct)
         _commandBuilder.Append ("DISTINCT ");
       if (top != null)
         _commandBuilder.Append ("TOP " + top + " ");
-      
+
       if (count)
         _commandBuilder.Append ("COUNT (*) ");
       else

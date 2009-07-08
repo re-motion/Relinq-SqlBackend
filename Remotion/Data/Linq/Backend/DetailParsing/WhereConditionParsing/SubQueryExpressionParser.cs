@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -37,7 +38,5 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
     {
       return Parse ((SubQueryExpression) expression, parseContext);
     }
-
-    
   }
 }

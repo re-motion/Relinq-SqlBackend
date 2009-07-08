@@ -17,10 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.Linq.Clauses.Expressions;
 
 namespace Remotion.Data.Linq.Backend.DetailParser
 {
@@ -30,7 +29,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser
 
     public WhereConditionParserRegistry (IDatabaseInfo databaseInfo)
     {
-      _parserRegistry = new ParserRegistry ();
+      _parserRegistry = new ParserRegistry();
       var resolver = new FieldResolver (databaseInfo, new WhereFieldAccessPolicy (databaseInfo));
 
       RegisterParser (typeof (BinaryExpression), new BinaryExpressionParser (this));
@@ -40,16 +39,16 @@ namespace Remotion.Data.Linq.Backend.DetailParser
       RegisterParser (typeof (MethodCallExpression), new LikeParser (this));
       RegisterParser (typeof (MethodCallExpression), new ContainsParser (this));
       RegisterParser (typeof (MethodCallExpression), new ContainsFullTextParser (this));
-      RegisterParser (typeof (SubQueryExpression), new SubQueryExpressionParser ());
+      RegisterParser (typeof (SubQueryExpression), new SubQueryExpressionParser());
       RegisterParser (typeof (UnaryExpression), new UnaryExpressionParser (this));
       RegisterParser (typeof (QuerySourceReferenceExpression), new QuerySourceReferenceExpressionParser (resolver));
     }
 
     public IEnumerable<IWhereConditionParser> GetParsers (Type expressionType)
     {
-      return _parserRegistry.GetParsers (expressionType).Cast<IWhereConditionParser> ();
+      return _parserRegistry.GetParsers (expressionType).Cast<IWhereConditionParser>();
     }
-    
+
     public virtual IWhereConditionParser GetParser (Expression expression)
     {
       return (IWhereConditionParser) _parserRegistry.GetParser (expression);

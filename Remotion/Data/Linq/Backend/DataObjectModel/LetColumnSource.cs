@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
@@ -20,7 +21,8 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
   // LetColumnSource
   public struct LetColumnSource : IColumnSource
   {
-    public LetColumnSource (string alias, bool isTable) : this()
+    public LetColumnSource (string alias, bool isTable)
+        : this()
     {
       ArgumentUtility.CheckNotNull ("alias", alias);
       ArgumentUtility.CheckNotNull ("isTable", isTable);
@@ -30,8 +32,11 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public bool IsTable { get; private set; }
 
-    public string Alias {get; private set; }
-    public string AliasString { get { return Alias; }
+    public string Alias { get; private set; }
+
+    public string AliasString
+    {
+      get { return Alias; }
     }
   }
 }

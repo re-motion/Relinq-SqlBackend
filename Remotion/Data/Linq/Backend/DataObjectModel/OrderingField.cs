@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
@@ -24,7 +25,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public OrderingField (FieldDescriptor fieldDescriptor, OrderingDirection direction)
     {
-      fieldDescriptor.GetMandatoryColumn (); // assert that there is a column for ordering
+      fieldDescriptor.GetMandatoryColumn(); // assert that there is a column for ordering
 
       _fieldDescriptor = fieldDescriptor;
       _direction = direction;
@@ -47,7 +48,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override string ToString ()
     {
-      return _fieldDescriptor.ToString()+ " " + _direction.ToString();
+      return _fieldDescriptor.ToString() + " " + _direction.ToString();
     }
   }
 }

@@ -13,15 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Text;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public class MethodCall : IEvaluation,ICriterion
+  public class MethodCall : IEvaluation, ICriterion
   {
     public MethodCall (MethodInfo evaluationMethodInfo, IEvaluation evaluationObject, List<IEvaluation> evaluationArguments)
     {
@@ -55,10 +56,10 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     public override bool Equals (object obj)
     {
       MethodCall other = obj as MethodCall;
-      return other != null 
-          && Equals (EvaluationMethodInfo, other.EvaluationMethodInfo) 
-          && Equals (TargetObject, other.TargetObject)
-          && Arguments.SequenceEqual (other.Arguments);
+      return other != null
+             && Equals (EvaluationMethodInfo, other.EvaluationMethodInfo)
+             && Equals (TargetObject, other.TargetObject)
+             && Arguments.SequenceEqual (other.Arguments);
     }
 
     public override int GetHashCode ()

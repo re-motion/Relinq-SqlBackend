@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
@@ -22,16 +23,17 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class SelectFieldAccessPolicy : IResolveFieldAccessPolicy
   {
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (QuerySourceReferenceExpression referenceExpression)
+    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (
+        QuerySourceReferenceExpression referenceExpression)
     {
       return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, new MemberInfo[0]);
     }
 
     public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
-        var newJoinMembers = new List<MemberInfo> (joinMembers);
-        newJoinMembers.Add (accessedMember);
-        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, newJoinMembers); // select full table if relation member is accessed
+      var newJoinMembers = new List<MemberInfo> (joinMembers);
+      newJoinMembers.Add (accessedMember);
+      return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, newJoinMembers); // select full table if relation member is accessed
     }
 
     public bool OptimizeRelatedKeyAccess ()

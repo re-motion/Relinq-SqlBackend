@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Text;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -43,9 +44,9 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     public override bool Equals (object obj)
     {
       NewObject other = obj as NewObject;
-      return other != null 
-          && ConstructorInfo.Equals (other.ConstructorInfo) 
-          && ConstructorArguments.SequenceEqual (other.ConstructorArguments);
+      return other != null
+             && ConstructorInfo.Equals (other.ConstructorInfo)
+             && ConstructorArguments.SequenceEqual (other.ConstructorArguments);
     }
 
     public override int GetHashCode ()

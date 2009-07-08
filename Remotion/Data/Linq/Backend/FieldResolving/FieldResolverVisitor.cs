@@ -17,8 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
@@ -37,7 +35,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
 
       var visitor = new FieldResolverVisitor (databaseInfo, optimizeRelatedKeyAccess);
       visitor.VisitExpression (fieldAccessExpression);
-      return new FieldAccessInfo (visitor._accessedMember, visitor._joinMembers.ToArray (), visitor._referenceExpression);
+      return new FieldAccessInfo (visitor._accessedMember, visitor._joinMembers.ToArray(), visitor._referenceExpression);
     }
 
     private readonly IDatabaseInfo _databaseInfo;
@@ -53,7 +51,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
 
       _databaseInfo = databaseInfo;
       _optimizeRelatedKeyAccess = optimizeRelatedKeyAccess;
-      _joinMembers = new List<MemberInfo> ();
+      _joinMembers = new List<MemberInfo>();
       _accessedMember = null;
       _referenceExpression = null;
     }
@@ -81,7 +79,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       bool isFirstMember = _accessedMember == null;
-      if (isFirstMember && (!_optimizeRelatedKeyAccess || !IsOptimizableRelatedKeyAccess(expression)))
+      if (isFirstMember && (!_optimizeRelatedKeyAccess || !IsOptimizableRelatedKeyAccess (expression)))
       {
         // for non-optimized (or non-optimizable) related key access, we leave _accessedMember null, we'll take the next one
         // eg. sd.Student.ID => we'll take sd.Student, not ID as the accessed member

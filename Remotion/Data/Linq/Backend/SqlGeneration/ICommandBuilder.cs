@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
   {
     void Append (string text);
     void AppendEvaluation (IEvaluation evaluation);
-    void AppendSeparatedItems<T> (IEnumerable<T> items, System.Action<T> appendAction);
+    void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction);
     void AppendEvaluations (IEnumerable<IEvaluation> evaluations);
     CommandParameter AddParameter (object value);
   }

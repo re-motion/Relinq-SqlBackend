@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
-using Remotion.Data.Linq.Backend.SqlGeneration;
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
@@ -27,7 +26,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
       ArgumentUtility.CheckNotNull ("sqlGenerationData", sqlGenerationData);
-      
+
       Statement = statement;
       Parameters = parameters;
       SqlGenerationData = sqlGenerationData;

@@ -15,11 +15,7 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
-using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Utilities;
 
 
@@ -98,7 +94,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     public void VisitConstant (Constant constant)
     {
       ArgumentUtility.CheckNotNull ("constant", constant);
-      
+
       if (constant.Value == null)
         CommandBuilder.CommandText.Append ("NULL");
       else if (constant.Value is ICollection)
@@ -122,10 +118,10 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         VisitConstant (new Constant (cons));
         counter++;
         if (counter != enumerable.Count)
-         CommandBuilder.Append (", ");
+          CommandBuilder.Append (", ");
       }
     }
-    
+
     public void VisitColumn (Column column)
     {
       ArgumentUtility.CheckNotNull ("column", column);

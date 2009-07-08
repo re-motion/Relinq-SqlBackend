@@ -15,8 +15,6 @@
 // 
 using System;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
@@ -56,7 +54,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       else if (criterion is Constant || criterion is Column) // cannot use "as" operator here because Constant/Column are value types
         AppendTopLevelValue (criterion);
       else
-        throw new NotSupportedException ("The criterion kind " + criterion.GetType ().Name + " is not supported.");
+        throw new NotSupportedException ("The criterion kind " + criterion.GetType().Name + " is not supported.");
     }
 
     private void AppendBinaryCondition (BinaryCondition condition)
@@ -73,7 +71,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
           throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
         else
           _commandBuilder.AppendEvaluation (constant);
-          //_commandBuilder.AppendConstant (constant);
+        //_commandBuilder.AppendConstant (constant);
       }
       else
       {

@@ -13,12 +13,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Utilities;
-
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
@@ -55,11 +53,11 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         first = false;
       }
     }
-    
+
     private void AppendCrossApply (SubQuery subQuery)
     {
       _commandBuilder.Append (" CROSS APPLY (");
-      ISqlGenerator subQueryGenerator = CreateSqlGeneratorForSubQuery(subQuery, _databaseInfo, _commandBuilder);
+      ISqlGenerator subQueryGenerator = CreateSqlGeneratorForSubQuery (subQuery, _databaseInfo, _commandBuilder);
       subQueryGenerator.BuildCommand (subQuery.QueryModel);
       _commandBuilder.Append (") ");
       _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));

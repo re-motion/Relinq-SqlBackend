@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
@@ -22,7 +23,8 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     public Column RightColumn { get; private set; }
     public Column LeftColumn { get; private set; }
 
-    public SingleJoin (Column leftColumn, Column rightColumn) : this()
+    public SingleJoin (Column leftColumn, Column rightColumn)
+        : this()
     {
       ArgumentUtility.CheckNotNull ("leftColumn", leftColumn);
       ArgumentUtility.CheckNotNull ("rightColumn", rightColumn);

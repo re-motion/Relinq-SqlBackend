@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
@@ -34,7 +34,8 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       _databaseInfo = databaseInfo;
     }
 
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (QuerySourceReferenceExpression referenceExpression)
+    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (
+        QuerySourceReferenceExpression referenceExpression)
     {
       ArgumentUtility.CheckNotNull ("referenceExpression", referenceExpression);
       var primaryKeyMember = _databaseInfo.GetPrimaryKeyMember (referenceExpression.ReferencedClause.ItemType);
@@ -47,8 +48,9 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       ArgumentUtility.CheckNotNull ("joinMembers", joinMembers);
       if (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, accessedMember))
       {
-        MemberInfo primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (_databaseInfo, ReflectionUtility.GetFieldOrPropertyType (accessedMember));
-        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, joinMembers.Concat (new[] {accessedMember}));
+        MemberInfo primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (
+            _databaseInfo, ReflectionUtility.GetFieldOrPropertyType (accessedMember));
+        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, joinMembers.Concat (new[] { accessedMember }));
       }
       else
         return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (accessedMember, joinMembers);

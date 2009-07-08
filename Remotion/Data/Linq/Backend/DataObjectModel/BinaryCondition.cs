@@ -13,23 +13,36 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.Linq.Backend.DataObjectModel;
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public struct BinaryCondition : ICriterion
   {
-    public enum ConditionKind 
-    { 
-      Equal, NotEqual, GreaterThan, GreaterThanOrEqual, LessThan, LessThanOrEqual, Like, Contains, ContainsFulltext, Add,
-      Divide,Modulo,Multiply,Negate,Subtract 
+    public enum ConditionKind
+    {
+      Equal,
+      NotEqual,
+      GreaterThan,
+      GreaterThanOrEqual,
+      LessThan,
+      LessThanOrEqual,
+      Like,
+      Contains,
+      ContainsFulltext,
+      Add,
+      Divide,
+      Modulo,
+      Multiply,
+      Negate,
+      Subtract
     }
 
     private readonly IValue _left;
     private readonly IValue _right;
     private readonly ConditionKind _kind;
- 
+
     public BinaryCondition (IValue left, IValue right, ConditionKind kind)
     {
       ArgumentUtility.CheckNotNull ("left", left);
@@ -55,7 +68,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     {
       get { return _kind; }
     }
-    
+
     public override string ToString ()
     {
       return "(" + _left + " " + _kind + " " + _right + ")";

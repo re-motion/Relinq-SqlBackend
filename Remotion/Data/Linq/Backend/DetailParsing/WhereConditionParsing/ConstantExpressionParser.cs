@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
 
@@ -25,7 +24,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
   {
     private readonly IDatabaseInfo _databaseInfo;
 
-    public ConstantExpressionParser(IDatabaseInfo databaseInfo)
+    public ConstantExpressionParser (IDatabaseInfo databaseInfo)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       _databaseInfo = databaseInfo;
@@ -37,12 +36,12 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
       return new Constant (newValue);
     }
 
-    public bool CanParse(Expression expression)
+    public bool CanParse (Expression expression)
     {
       return expression is ConstantExpression;
     }
 
-    ICriterion IWhereConditionParser.Parse(Expression expression, ParseContext parseContext)
+    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
     {
       return Parse ((ConstantExpression) expression, parseContext);
     }

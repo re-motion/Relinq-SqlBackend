@@ -13,15 +13,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public struct BinaryEvaluation : IEvaluation
   {
-    public enum EvaluationKind { Add, Divide, Modulo, Multiply, Subtract }
+    public enum EvaluationKind
+    {
+      Add,
+      Divide,
+      Modulo,
+      Multiply,
+      Subtract
+    }
 
-    public BinaryEvaluation (IEvaluation left, IEvaluation right, EvaluationKind kind) : this()
+    public BinaryEvaluation (IEvaluation left, IEvaluation right, EvaluationKind kind)
+        : this()
     {
       ArgumentUtility.CheckNotNull ("left", left);
       ArgumentUtility.CheckNotNull ("right", right);

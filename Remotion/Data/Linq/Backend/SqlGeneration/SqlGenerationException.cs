@@ -20,12 +20,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
   public class SqlGenerationException : Exception
   {
     public SqlGenerationException (string message, Exception innerException)
-        : base(message, innerException)
+        : base (message, innerException)
     {
     }
 
     public SqlGenerationException (string message)
-        : base(message)
+        : base (message)
     {
     }
   }

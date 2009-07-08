@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
@@ -22,7 +21,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
   public class SelectedObjectActivator
   {
     private readonly IEvaluation _selectEvaluation;
-    
+
     private object[] _values;
     private int _valueIndex;
 
@@ -75,6 +74,5 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     {
       return constant.Value;
     }
-
   }
 }

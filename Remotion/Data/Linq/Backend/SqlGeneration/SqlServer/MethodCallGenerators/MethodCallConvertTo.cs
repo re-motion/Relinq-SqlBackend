@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators
 {
@@ -43,9 +42,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerator
     public void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder)
     {
       if (methodCall.Arguments.Count != 1)
-      {
-        throw new ArgumentException("Wrong number of arguments in evaluation");
-      }
+        throw new ArgumentException ("Wrong number of arguments in evaluation");
 
       Type type = methodCall.EvaluationMethodInfo.ReturnType;
       string exp;
@@ -63,8 +60,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerator
     {
       var methodNames = _mappingTypes.Keys.ToLookup (t => "To" + t.Name);
       return from m in typeof (Convert).GetMethods()
-          where m.GetParameters().Length == 1 && methodNames.Contains (m.Name)
-          select m;
+             where m.GetParameters().Length == 1 && methodNames.Contains (m.Name)
+             select m;
     }
   }
 }

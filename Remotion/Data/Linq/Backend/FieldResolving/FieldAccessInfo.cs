@@ -16,7 +16,6 @@
 using System;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Backend.FieldResolving;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {

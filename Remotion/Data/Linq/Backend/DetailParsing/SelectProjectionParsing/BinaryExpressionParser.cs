@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
@@ -34,13 +35,13 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
 
       _parserRegistry = parserRegistry;
       NodeTypeMap = new Dictionary<ExpressionType, BinaryEvaluation.EvaluationKind>
-                      {
-                        {ExpressionType.Add, BinaryEvaluation.EvaluationKind.Add},
-                        {ExpressionType.Divide, BinaryEvaluation.EvaluationKind.Divide},
-                        {ExpressionType.Modulo, BinaryEvaluation.EvaluationKind.Modulo},
-                        {ExpressionType.Multiply, BinaryEvaluation.EvaluationKind.Multiply},
-                        {ExpressionType.Subtract, BinaryEvaluation.EvaluationKind.Subtract}
-                      };
+                    {
+                        { ExpressionType.Add, BinaryEvaluation.EvaluationKind.Add },
+                        { ExpressionType.Divide, BinaryEvaluation.EvaluationKind.Divide },
+                        { ExpressionType.Modulo, BinaryEvaluation.EvaluationKind.Modulo },
+                        { ExpressionType.Multiply, BinaryEvaluation.EvaluationKind.Multiply },
+                        { ExpressionType.Subtract, BinaryEvaluation.EvaluationKind.Subtract }
+                    };
     }
 
     public virtual IEvaluation Parse (BinaryExpression binaryExpression, ParseContext parseContext)
@@ -52,12 +53,14 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
       IEvaluation rightSide = _parserRegistry.GetParser (binaryExpression.Right).Parse (binaryExpression.Right, parseContext);
 
       BinaryEvaluation.EvaluationKind evaluationKind;
-      if (!NodeTypeMap.TryGetValue(binaryExpression.NodeType, out evaluationKind))
+      if (!NodeTypeMap.TryGetValue (binaryExpression.NodeType, out evaluationKind))
       {
-        throw ParserUtility.CreateParserException(GetSupportedNodeTypeString(), binaryExpression.NodeType,
-                                                  "binary expression in select projection");
+        throw ParserUtility.CreateParserException (
+            GetSupportedNodeTypeString(),
+            binaryExpression.NodeType,
+            "binary expression in select projection");
       }
-      return new BinaryEvaluation(leftSide, rightSide, evaluationKind);
+      return new BinaryEvaluation (leftSide, rightSide, evaluationKind);
     }
 
     IEvaluation ISelectProjectionParser.Parse (Expression expression, ParseContext parseContext)
@@ -65,12 +68,12 @@ namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
       return Parse ((BinaryExpression) expression, parseContext);
     }
 
-    private string GetSupportedNodeTypeString()
+    private string GetSupportedNodeTypeString ()
     {
-      return SeparatedStringBuilder.Build(", ", NodeTypeMap.Keys);
+      return SeparatedStringBuilder.Build (", ", NodeTypeMap.Keys);
     }
 
-    public bool CanParse(Expression expression)
+    public bool CanParse (Expression expression)
     {
       return expression is BinaryExpression;
     }

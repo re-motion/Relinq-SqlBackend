@@ -17,14 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class FieldSourcePathBuilder
   {
-    public FieldSourcePath BuildFieldSourcePath (IDatabaseInfo databaseInfo, JoinedTableContext context, IColumnSource firstSource, IEnumerable<MemberInfo> joinMembers)
+    public FieldSourcePath BuildFieldSourcePath (
+        IDatabaseInfo databaseInfo, JoinedTableContext context, IColumnSource firstSource, IEnumerable<MemberInfo> joinMembers)
     {
       List<SingleJoin> joins = new List<SingleJoin>();
 
@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         }
       }
 
-      return new FieldSourcePath(firstSource, joins);
+      return new FieldSourcePath (firstSource, joins);
     }
   }
 }
