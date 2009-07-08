@@ -27,8 +27,8 @@ using System.Reflection;
 namespace Remotion.Data.Linq.Backend
 {
   /// <summary>
-  /// Takes a <see cref="QueryModel"/> with a <see cref="GroupClause"/>, executes an equivalent query that fetches all elements, and then
-  /// performs the grouping in memory.
+  /// Takes a <see cref="QueryModel"/> with a <see cref="GroupClause"/>, executes an equivalent query with a <see cref="SelectClause"/> that fetches 
+  /// all elements, and then performs the grouping in memory.
   /// </summary>
   public class InMemoryGroupByQueryExecutor
   {
@@ -44,6 +44,10 @@ namespace Remotion.Data.Linq.Backend
 
     private readonly IQueryExecutor _innerExecutor;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InMemoryGroupByQueryExecutor"/> class.
+    /// </summary>
+    /// <param name="innerExecutor">The inner executor to be used for fetching the elements before grouping them in-memory.</param>
     public InMemoryGroupByQueryExecutor (IQueryExecutor innerExecutor)
     {
       ArgumentUtility.CheckNotNull ("innerExecutor", innerExecutor);
@@ -51,6 +55,18 @@ namespace Remotion.Data.Linq.Backend
       _innerExecutor = innerExecutor;
     }
 
+    /// <summary>
+    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then grouping the results in-memory. The query is executed
+    /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
+    /// does not support scalar operators, only non-scalar operators are supported. The type of the <see cref="IGrouping{TKey,TElement}"/> instances
+    /// to be returned is inferred from the <paramref name="queryModel"/>'s <see cref="GroupClause"/>. If <typeparamref name="T"/> does not match
+    /// that type, an exception is thrown.
+    /// </summary>
+    /// <typeparam name="T">The type of the <see cref="IGrouping{TKey,TElement}"/> instances to be returned. This must match the 
+    /// <paramref name="queryModel"/>'s <see cref="GroupClause.ByExpression"/> (TKey) and <see cref="GroupClause.GroupExpression"/> (TElement).</typeparam>
+    /// <param name="queryModel">The query model to be executed.</param>
+    /// <returns>An enumerable iterating over the <see cref="IGrouping{TKey,TElement}"/> instances that represent the result of the in-memory
+    /// grouping operation.</returns>
     public IEnumerable<T> ExecuteCollectionWithGrouping<T> (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -73,9 +89,17 @@ namespace Remotion.Data.Linq.Backend
       }
 
       return castGroupings;
-      
     }
 
+    /// <summary>
+    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then grouping the results in-memory. The query is executed
+    /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
+    /// does not support scalar operators, only non-scalar operators are supported.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys in the <see cref="IGrouping{TKey,TElement}"/> to be returned.</typeparam>
+    /// <typeparam name="TElement">The type of the elements in the <see cref="IGrouping{TKey,TElement}"/> to be returned.</typeparam>
+    /// <param name="queryModel">The query model to execute.</param>
+    /// <returns>An enumerable iterating over the results of the in-memory grouping operation.</returns>
     public IEnumerable<IGrouping<TKey, TElement>> ExecuteCollectionWithGrouping<TKey, TElement> (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -96,9 +120,7 @@ namespace Remotion.Data.Linq.Backend
                       group tuple.B by tuple.A;
 
       foreach (var resultOperator in queryModel.ResultOperators)
-      {
         groupings = GetNonScalarResultOperator (resultOperator).ExecuteInMemory (groupings);
-      }
 
       return groupings;
     }
