@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.Backend
       object groupings = InvokeExecuteCollectionWithGroupingInPlace (newQueryModel);
 
       var groupClause = GetGroupClause (queryModel);
-      var groupingType = typeof (IGrouping<,>).MakeGenericType (groupClause.ByExpression.Type, groupClause.GroupExpression.Type);
+      var groupingType = typeof (IGrouping<,>).MakeGenericType (groupClause.KeySelector.Type, groupClause.ElementSelector.Type);
       return (T) s_executeScalarInMemoryMethod.MakeGenericMethod (groupingType, typeof (T)).Invoke (scalarOperator, new [] { groupings });
     }
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.Backend
     /// that type, an exception is thrown.
     /// </summary>
     /// <typeparam name="T">The type of the <see cref="IGrouping{TKey,TElement}"/> instances to be returned. This must match the 
-    /// <paramref name="queryModel"/>'s <see cref="GroupClause.ByExpression"/> (TKey) and <see cref="GroupClause.GroupExpression"/> (TElement).</typeparam>
+    /// <paramref name="queryModel"/>'s <see cref="GroupClause.KeySelector"/> (TKey) and <see cref="GroupClause.ElementSelector"/> (TElement).</typeparam>
     /// <param name="queryModel">The query model to be executed.</param>
     /// <returns>An enumerable iterating over the <see cref="IGrouping{TKey,TElement}"/> instances that represent the result of the in-memory
     /// grouping operation.</returns>
@@ -101,8 +101,8 @@ namespace Remotion.Data.Linq.Backend
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var groupClause = GetGroupClause (queryModel);
-      var keyType = groupClause.ByExpression.Type;
-      var elementType = groupClause.GroupExpression.Type;
+      var keyType = groupClause.KeySelector.Type;
+      var elementType = groupClause.ElementSelector.Type;
 
       var groupings = InvokeExecuteCollectionWithGroupingInPlace (queryModel.Clone());
 
@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.Backend
       var tupleConstructor = typeof (Tuple<,>)
           .MakeGenericType (typeof (TKey), typeof (TElement))
           .GetConstructor (new[] { typeof (TKey), typeof (TElement) });
-      var newExpression = Expression.New (tupleConstructor, groupClause.ByExpression, groupClause.GroupExpression);
+      var newExpression = Expression.New (tupleConstructor, groupClause.KeySelector, groupClause.ElementSelector);
 
       queryModel.SelectOrGroupClause = new SelectClause (newExpression);
       var resultOperators = new List<ResultOperatorBase> (queryModel.ResultOperators);
@@ -196,8 +196,8 @@ namespace Remotion.Data.Linq.Backend
     private object InvokeExecuteCollectionWithGroupingInPlace (QueryModel queryModel)
     {
       var groupClause = GetGroupClause (queryModel);
-      var keyType = groupClause.ByExpression.Type;
-      var elementType = groupClause.GroupExpression.Type;
+      var keyType = groupClause.KeySelector.Type;
+      var elementType = groupClause.ElementSelector.Type;
       return s_executeCollectionInPlaceMethod.MakeGenericMethod (keyType, elementType).Invoke (this, new object[] { queryModel });
     }
   }
