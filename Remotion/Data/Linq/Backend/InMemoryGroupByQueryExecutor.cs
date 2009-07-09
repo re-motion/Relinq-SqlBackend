@@ -27,9 +27,10 @@ using System.Reflection;
 namespace Remotion.Data.Linq.Backend
 {
   /// <summary>
-  /// Takes a <see cref="QueryModel"/> with a <see cref="GroupClause"/>, executes an equivalent query with a <see cref="SelectClause"/> that fetches 
+  /// Takes a <see cref="QueryModel"/> with a <see cref="GroupResultOperator"/>, executes an equivalent query with a <see cref="SelectClause"/> that fetches 
   /// all elements, and then performs the grouping in memory.
   /// </summary>
+  [Obsolete ("TODO 1319")]
   public class InMemoryGroupByQueryExecutor
   {
     private static readonly MethodInfo s_executeCollectionInPlaceMethod = 
@@ -88,11 +89,11 @@ namespace Remotion.Data.Linq.Backend
     /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then groups the results in-memory. The query is executed
     /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
     /// does not support scalar operators, only non-scalar operators are supported. The type of the <see cref="IGrouping{TKey,TElement}"/> instances
-    /// to be returned is inferred from the <paramref name="queryModel"/>'s <see cref="GroupClause"/>. If <typeparamref name="T"/> does not match
+    /// to be returned is inferred from the <paramref name="queryModel"/>'s <see cref="GroupResultOperator"/>. If <typeparamref name="T"/> does not match
     /// that type, an exception is thrown.
     /// </summary>
     /// <typeparam name="T">The type of the <see cref="IGrouping{TKey,TElement}"/> instances to be returned. This must match the 
-    /// <paramref name="queryModel"/>'s <see cref="GroupClause.KeySelector"/> (TKey) and <see cref="GroupClause.ElementSelector"/> (TElement).</typeparam>
+    /// <paramref name="queryModel"/>'s <see cref="GroupResultOperator.KeySelector"/> (TKey) and <see cref="GroupResultOperator.ElementSelector"/> (TElement).</typeparam>
     /// <param name="queryModel">The query model to be executed.</param>
     /// <returns>An enumerable iterating over the <see cref="IGrouping{TKey,TElement}"/> instances that represent the result of the in-memory
     /// grouping operation.</returns>
@@ -149,12 +150,12 @@ namespace Remotion.Data.Linq.Backend
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      GroupClause groupClause = GetGroupClause (queryModel);
+      GroupResultOperator groupResultOperator = GetGroupClause (queryModel);
 
       var tupleConstructor = typeof (Tuple<,>)
           .MakeGenericType (typeof (TKey), typeof (TElement))
           .GetConstructor (new[] { typeof (TKey), typeof (TElement) });
-      var newExpression = Expression.New (tupleConstructor, groupClause.KeySelector, groupClause.ElementSelector);
+      var newExpression = Expression.New (tupleConstructor, groupResultOperator.KeySelector, groupResultOperator.ElementSelector);
 
       queryModel.SelectOrGroupClause = new SelectClause (newExpression);
       var resultOperators = new List<ResultOperatorBase> (queryModel.ResultOperators);
@@ -170,13 +171,13 @@ namespace Remotion.Data.Linq.Backend
       return groupings;
     }
 
-    protected GroupClause GetGroupClause (QueryModel queryModel)
+    protected GroupResultOperator GetGroupClause (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      var groupClause = queryModel.SelectOrGroupClause as GroupClause;
+      var groupClause = queryModel.SelectOrGroupClause as GroupResultOperator;
       if (groupClause == null)
-        throw new ArgumentException ("InMemoryGroupByQueryExecutor requires a GroupClause in the query model.", "queryModel");
+        throw new ArgumentException ("InMemoryGroupByQueryExecutor requires a GroupResultOperator in the query model.", "queryModel");
       return groupClause;
     }
 

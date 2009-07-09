@@ -20,6 +20,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
@@ -138,11 +139,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
       SqlGenerationData.ResultOperators = new List<ResultOperatorBase> (resultOperators);
       base.VisitResultOperators (resultOperators, queryModel);
-    }
-
-    public override void VisitGroupClause (GroupClause groupClause, QueryModel queryModel)
-    {
-      throw new NotSupportedException ("Group clauses are not supported by this SQL generator.");
     }
   }
 }

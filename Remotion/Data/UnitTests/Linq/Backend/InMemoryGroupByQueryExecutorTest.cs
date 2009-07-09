@@ -31,6 +31,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.Linq.Backend
 {
   [TestFixture]
+  [Ignore ("TODO 1319")]
   public class InMemoryGroupByQueryExecutorTest
   {
     private IQueryExecutor _queryExecutorMock;
