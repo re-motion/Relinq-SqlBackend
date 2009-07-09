@@ -36,6 +36,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
     private IQueryExecutor _queryExecutorMock;
     private InMemoryGroupByQueryExecutor _inMemoryExecutor;
     private QueryModel _queryModel;
+    private Tuple<string, int>[] _returnValues;
 
     [SetUp]
     public void SetUp ()
@@ -47,6 +48,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
                   group s.ID by s.Last;
       
       _queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      _returnValues = new[] { Tuple.NewTuple ("Garcia", 1), Tuple.NewTuple ("Miller", 2), Tuple.NewTuple ("Garcia", 3), Tuple.NewTuple ("Johnson", 4) };
     }
 
     [Test]
@@ -120,7 +122,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
           .Expect (mock => mock.ExecuteCollection<Tuple<string, int>> (
               Arg<QueryModel>.Is.Anything, 
               Arg<IEnumerable<FetchRequestBase>>.Is.Anything))
-          .Return (new[] { Tuple.NewTuple ("Garcia", 1), Tuple.NewTuple ("Miller", 2), Tuple.NewTuple ("Garcia", 3), Tuple.NewTuple ("Johnson", 4)});
+          .Return (_returnValues);
 
       _queryExecutorMock.Replay ();
 
@@ -149,7 +151,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
           .Expect (mock => mock.ExecuteCollection<Tuple<string, int>> (
               Arg<QueryModel>.Is.Anything,
               Arg<IEnumerable<FetchRequestBase>>.Is.Anything))
-          .Return (new[] { Tuple.NewTuple ("Garcia", 1), Tuple.NewTuple ("Miller", 2), Tuple.NewTuple ("Garcia", 3), Tuple.NewTuple ("Johnson", 4) });
+          .Return (_returnValues);
       _queryExecutorMock.Replay ();
 
       var result = _inMemoryExecutor.ExecuteCollectionWithGrouping<string, int> (_queryModel).ToArray();
@@ -160,7 +162,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ExecuteCollectionWithGrouping does not support scalar result operators, "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ExecuteCollectionWithGrouping only supports non-scalar result operators, "
         + "found a 'CountResultOperator'.")]
     public void ExecuteCollectionWithGrouping_Generic_WithScalarResultOperator ()
     {
@@ -170,7 +172,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
           .Expect (mock => mock.ExecuteCollection<Tuple<string, int>> (
               Arg<QueryModel>.Is.Anything,
               Arg<IEnumerable<FetchRequestBase>>.Is.Anything))
-          .Return (new[] { Tuple.NewTuple ("Garcia", 1), Tuple.NewTuple ("Miller", 2), Tuple.NewTuple ("Garcia", 3), Tuple.NewTuple ("Johnson", 4) });
+          .Return (_returnValues);
       _queryExecutorMock.Replay ();
 
       _inMemoryExecutor.ExecuteCollectionWithGrouping<string, int> (_queryModel).ToArray ();
@@ -185,7 +187,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
           .Expect (mock => mock.ExecuteCollection<Tuple<string, int>> (
               Arg<QueryModel>.Is.Anything,
               Arg<IEnumerable<FetchRequestBase>>.Is.Anything))
-          .Return (new[] { Tuple.NewTuple ("Garcia", 1), Tuple.NewTuple ("Miller", 2), Tuple.NewTuple ("Garcia", 3), Tuple.NewTuple ("Johnson", 4) });
+          .Return (_returnValues);
       _queryExecutorMock.Replay ();
 
       var result = _inMemoryExecutor.ExecuteCollectionWithGrouping<IGrouping<string, int>> (_queryModel).ToArray ();
@@ -193,6 +195,21 @@ namespace Remotion.Data.UnitTests.Linq.Backend
       _queryExecutorMock.VerifyAllExpectations ();
 
       Assert.That (result.Length, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void ExecuteCollection_NonGeneric_ClonesQueryModel ()
+    {
+      _queryExecutorMock
+          .Expect (mock => mock.ExecuteCollection<Tuple<string, int>> (
+              Arg<QueryModel>.Is.NotSame (_queryModel),
+              Arg<IEnumerable<FetchRequestBase>>.Is.Anything))
+          .Return (new Tuple<string, int>[0]);
+      _queryExecutorMock.Replay ();
+
+      _inMemoryExecutor.ExecuteCollectionWithGrouping<IGrouping<string, int>> (_queryModel).ToArray ();
+
+      _queryExecutorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -218,6 +235,84 @@ namespace Remotion.Data.UnitTests.Linq.Backend
       _inMemoryExecutor.ExecuteCollectionWithGrouping<IGrouping<double, double>> (_queryModel);
     }
 
-    
+    [Test]
+    [ExpectedException (typeof (ArgumentException))]
+    public void ExecuteScalarWithGrouping_WithoutResultModification ()
+    {
+      _inMemoryExecutor.ExecuteScalarWithGrouping<int> (_queryModel);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException))]
+    public void ExecuteScalarWithGrouping_WithNonScalarResultModification ()
+    {
+      _queryModel.ResultOperators.Add (new DistinctResultOperator ());
+      _inMemoryExecutor.ExecuteScalarWithGrouping<int> (_queryModel);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException))]
+    public void ExecuteScalarWithGrouping_WithoutGroupClause ()
+    {
+      _queryModel.SelectOrGroupClause = ExpressionHelper.CreateSelectClause ();
+      _queryModel.ResultOperators.Add (new DistinctResultOperator ());
+      _inMemoryExecutor.ExecuteScalarWithGrouping<int> (_queryModel);
+    }
+
+    [Test]
+    public void ExecuteScalarWithGrouping_DelegatesToExecuteCollectionQuery ()
+    {
+      _queryModel.ResultOperators.Add (new CountResultOperator ());
+
+      var inMemoryExecutorMock = new MockRepository ().PartialMock<InMemoryGroupByQueryExecutor> (_queryExecutorMock);
+
+      inMemoryExecutorMock
+          .Expect (mock => mock.ExecuteCollectionWithGroupingInPlace<string, int> (Arg<QueryModel>.Is.Anything))
+          .Return (new IGrouping<string, int>[0]);
+
+      inMemoryExecutorMock.Replay ();
+
+      inMemoryExecutorMock.ExecuteScalarWithGrouping<int> (_queryModel);
+
+      inMemoryExecutorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ExecuteScalarWithGrouping_DelegatesToExecuteCollectionQuery_WithCloneAndWithoutScalarOperator ()
+    {
+      _queryModel.ResultOperators.Add (new DistinctResultOperator ());
+      _queryModel.ResultOperators.Add (new CountResultOperator ());
+
+      var inMemoryExecutorMock = new MockRepository ().PartialMock<InMemoryGroupByQueryExecutor> (_queryExecutorMock);
+
+      inMemoryExecutorMock
+          .Expect (mock => mock.ExecuteCollectionWithGroupingInPlace<string, int> (
+              Arg<QueryModel>.Matches (qm => qm != _queryModel && qm.ResultOperators.Count == 1 && qm.ResultOperators[0] is DistinctResultOperator)))
+          .Return (new IGrouping<string, int>[0]);
+
+      inMemoryExecutorMock.Replay ();
+
+      inMemoryExecutorMock.ExecuteScalarWithGrouping<int> (_queryModel);
+
+      inMemoryExecutorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ExecuteScalarWithGrouping_DelegatesToExecuteCollectionQuery_AndExecutedScalarOperator ()
+    {
+      _queryModel.ResultOperators.Add (new CountResultOperator ());
+
+      _queryExecutorMock
+          .Expect (mock => mock.ExecuteCollection<Tuple<string, int>>(Arg<QueryModel>.Is.Anything, Arg<IEnumerable<FetchRequestBase>>.Is.Anything))
+          .Return (_returnValues);
+
+      _queryExecutorMock.Replay ();
+
+      var result = _inMemoryExecutor.ExecuteScalarWithGrouping<int> (_queryModel);
+
+      _queryExecutorMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.EqualTo (3));
+    }
   }
 }

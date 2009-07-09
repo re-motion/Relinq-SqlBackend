@@ -32,15 +32,9 @@ namespace Remotion.Data.Linq.Backend
   /// </summary>
   public class InMemoryGroupByQueryExecutor
   {
-    private static readonly MethodInfo s_executeCollectionMethod = GetExecuteCollectionMethod();
-
-    private static MethodInfo GetExecuteCollectionMethod ()
-    {
-      return typeof (InMemoryGroupByQueryExecutor)
-          .GetMethods ()
-          .Where (m => m.Name == "ExecuteCollectionWithGrouping" && m.GetGenericArguments ().Length == 2)
-          .Single ();
-    }
+    private static readonly MethodInfo s_executeCollectionInPlaceMethod = 
+        typeof (InMemoryGroupByQueryExecutor).GetMethod ("ExecuteCollectionWithGroupingInPlace", BindingFlags.Public | BindingFlags.Instance);
+    private static readonly MethodInfo s_executeScalarInMemoryMethod = typeof (ScalarResultOperatorBase).GetMethod ("ExecuteInMemory");
 
     private readonly IQueryExecutor _innerExecutor;
 
@@ -55,8 +49,43 @@ namespace Remotion.Data.Linq.Backend
       _innerExecutor = innerExecutor;
     }
 
+    public IQueryExecutor InnerExecutor
+    {
+      get { return _innerExecutor; }
+    }
+
     /// <summary>
-    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then grouping the results in-memory. The query is executed
+    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then groups the results in-memory. The query is executed
+    /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
+    /// does support one scalar operator at the end of the query, before that, only non-scalar operators are supported. If <typeparamref name="T"/> 
+    /// does not match the type of the scalar operator, an exception is thrown.
+    /// </summary>
+    /// <typeparam name="T">The type of the scalar value to be returned. This must match the scalar result operator in the 
+    /// <paramref name="queryModel"/>.</typeparam>
+    /// <param name="queryModel">The query model to be executed.</param>
+    /// <returns>A scalar value that represents the result of the scalar result operator executed after the in-memory grouping operation.</returns>
+    public virtual T ExecuteScalarWithGrouping<T> (QueryModel queryModel)
+    {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      
+      ScalarResultOperatorBase scalarOperator = null;
+      if (queryModel.ResultOperators.Count > 0)
+        scalarOperator = queryModel.ResultOperators[queryModel.ResultOperators.Count - 1] as ScalarResultOperatorBase;
+      
+      if (scalarOperator == null)
+        throw new ArgumentException ("ExecuteScalarWithGrouping requires a scalar result operator at the end of the queryModel's result operators.", "queryModel");
+
+      var newQueryModel = queryModel.Clone();
+      newQueryModel.ResultOperators.RemoveAt (queryModel.ResultOperators.Count - 1);
+      object groupings = InvokeExecuteCollectionWithGroupingInPlace (newQueryModel);
+
+      var groupClause = GetGroupClause (queryModel);
+      var groupingType = typeof (IGrouping<,>).MakeGenericType (groupClause.ByExpression.Type, groupClause.GroupExpression.Type);
+      return (T) s_executeScalarInMemoryMethod.MakeGenericMethod (groupingType, typeof (T)).Invoke (scalarOperator, new [] { groupings });
+    }
+
+    /// <summary>
+    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then groups the results in-memory. The query is executed
     /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
     /// does not support scalar operators, only non-scalar operators are supported. The type of the <see cref="IGrouping{TKey,TElement}"/> instances
     /// to be returned is inferred from the <paramref name="queryModel"/>'s <see cref="GroupClause"/>. If <typeparamref name="T"/> does not match
@@ -67,7 +96,7 @@ namespace Remotion.Data.Linq.Backend
     /// <param name="queryModel">The query model to be executed.</param>
     /// <returns>An enumerable iterating over the <see cref="IGrouping{TKey,TElement}"/> instances that represent the result of the in-memory
     /// grouping operation.</returns>
-    public IEnumerable<T> ExecuteCollectionWithGrouping<T> (QueryModel queryModel)
+    public virtual IEnumerable<T> ExecuteCollectionWithGrouping<T> (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
@@ -75,7 +104,7 @@ namespace Remotion.Data.Linq.Backend
       var keyType = groupClause.ByExpression.Type;
       var elementType = groupClause.GroupExpression.Type;
 
-      var groupings = s_executeCollectionMethod.MakeGenericMethod (keyType, elementType).Invoke (this, new object[] { queryModel });
+      var groupings = InvokeExecuteCollectionWithGroupingInPlace (queryModel.Clone());
 
       var castGroupings = groupings as IEnumerable<T>;
       if (castGroupings == null)
@@ -92,7 +121,7 @@ namespace Remotion.Data.Linq.Backend
     }
 
     /// <summary>
-    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then grouping the results in-memory. The query is executed
+    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then groups the results in-memory. The query is executed
     /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
     /// does not support scalar operators, only non-scalar operators are supported.
     /// </summary>
@@ -100,33 +129,51 @@ namespace Remotion.Data.Linq.Backend
     /// <typeparam name="TElement">The type of the elements in the <see cref="IGrouping{TKey,TElement}"/> to be returned.</typeparam>
     /// <param name="queryModel">The query model to execute.</param>
     /// <returns>An enumerable iterating over the results of the in-memory grouping operation.</returns>
-    public IEnumerable<IGrouping<TKey, TElement>> ExecuteCollectionWithGrouping<TKey, TElement> (QueryModel queryModel)
+    public virtual IEnumerable<IGrouping<TKey, TElement>> ExecuteCollectionWithGrouping<TKey, TElement> (QueryModel queryModel)
+    {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      return ExecuteCollectionWithGroupingInPlace<TKey, TElement> (queryModel.Clone ());
+    }
+
+    /// <summary>
+    /// Executes an equivalent Select query for the given <paramref name="queryModel"/>, then groups the results in-memory. The query is executed
+    /// without any <see cref="QueryModel.ResultOperators"/>; those are also executed in memory after the grouping has been performed. This method
+    /// does not support scalar operators, only non-scalar operators are supported. This method may modify the given <paramref name="queryModel"/>.
+    /// Call <see cref="ExecuteCollectionWithGrouping{TKey,TElement}"/> to avoid modifying the supplied <paramref name="queryModel"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys in the <see cref="IGrouping{TKey,TElement}"/> to be returned.</typeparam>
+    /// <typeparam name="TElement">The type of the elements in the <see cref="IGrouping{TKey,TElement}"/> to be returned.</typeparam>
+    /// <param name="queryModel">The query model to execute.</param>
+    /// <returns>An enumerable iterating over the results of the in-memory grouping operation.</returns>
+    public virtual IEnumerable<IGrouping<TKey, TElement>> ExecuteCollectionWithGroupingInPlace<TKey, TElement> (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      var newQueryModel = queryModel.Clone ();
-      GroupClause groupClause = GetGroupClause (newQueryModel);
+      GroupClause groupClause = GetGroupClause (queryModel);
 
       var tupleConstructor = typeof (Tuple<,>)
           .MakeGenericType (typeof (TKey), typeof (TElement))
           .GetConstructor (new[] { typeof (TKey), typeof (TElement) });
       var newExpression = Expression.New (tupleConstructor, groupClause.ByExpression, groupClause.GroupExpression);
 
-      newQueryModel.SelectOrGroupClause = new SelectClause (newExpression);
-      newQueryModel.ResultOperators.Clear ();
-      var collection = _innerExecutor.ExecuteCollection<Tuple<TKey, TElement>> (newQueryModel, new FetchRequestBase[0]);
+      queryModel.SelectOrGroupClause = new SelectClause (newExpression);
+      var resultOperators = new List<ResultOperatorBase> (queryModel.ResultOperators);
+      queryModel.ResultOperators.Clear ();
+      var collection = _innerExecutor.ExecuteCollection<Tuple<TKey, TElement>> (queryModel, new FetchRequestBase[0]);
 
       var groupings = from tuple in collection
                       group tuple.B by tuple.A;
 
-      foreach (var resultOperator in queryModel.ResultOperators)
+      foreach (var resultOperator in resultOperators)
         groupings = GetNonScalarResultOperator (resultOperator).ExecuteInMemory (groupings);
 
       return groupings;
     }
 
-    private GroupClause GetGroupClause (QueryModel queryModel)
+    protected GroupClause GetGroupClause (QueryModel queryModel)
     {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
       var groupClause = queryModel.SelectOrGroupClause as GroupClause;
       if (groupClause == null)
         throw new ArgumentException ("InMemoryGroupByQueryExecutor requires a GroupClause in the query model.", "queryModel");
@@ -139,11 +186,19 @@ namespace Remotion.Data.Linq.Backend
       if (nonScalarResultOperator == null)
       {
         var message = string.Format (
-            "ExecuteCollectionWithGrouping does not support scalar result operators, found a '{0}'.", 
+            "ExecuteCollectionWithGrouping only supports non-scalar result operators, found a '{0}'.", 
             resultOperator.GetType().Name);
         throw new NotSupportedException (message);
       }
       return nonScalarResultOperator;
+    }
+
+    private object InvokeExecuteCollectionWithGroupingInPlace (QueryModel queryModel)
+    {
+      var groupClause = GetGroupClause (queryModel);
+      var keyType = groupClause.ByExpression.Type;
+      var elementType = groupClause.GroupExpression.Type;
+      return s_executeCollectionInPlaceMethod.MakeGenericMethod (keyType, elementType).Invoke (this, new object[] { queryModel });
     }
   }
 }
