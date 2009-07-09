@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
             var qm = (QueryModel) mi.Arguments[0];
             var expectedSelector = ExpressionHelper.Resolve<Student, Tuple<string, int>> (
                 qm.MainFromClause, s => new Tuple<string, int> (s.Last, s.ID));
-            ExpressionTreeComparer.CheckAreEqualTrees (expectedSelector, ((SelectClause) qm.SelectOrGroupClause).Selector);
+            ExpressionTreeComparer.CheckAreEqualTrees (expectedSelector, qm.SelectClause.Selector);
           });
 
       _queryExecutorMock.Replay ();
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
     [ExpectedException (typeof (ArgumentException))]
     public void ExecuteScalarWithGrouping_WithoutGroupClause ()
     {
-      _queryModel.SelectOrGroupClause = ExpressionHelper.CreateSelectClause ();
+      _queryModel.SelectClause = ExpressionHelper.CreateSelectClause ();
       _queryModel.ResultOperators.Add (new DistinctResultOperator ());
       _inMemoryExecutor.ExecuteScalarWithGrouping<int> (_queryModel);
     }

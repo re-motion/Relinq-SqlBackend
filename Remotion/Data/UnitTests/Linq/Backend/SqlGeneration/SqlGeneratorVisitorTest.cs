@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     {
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
+      var selectClause = parsedQuery.SelectClause;
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
-      var selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
+      var selectClause = parsedQuery.SelectClause;
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     {
       IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      var selectClause = (SelectClause) parsedQuery.SelectOrGroupClause;
+      var selectClause = parsedQuery.SelectClause;
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);

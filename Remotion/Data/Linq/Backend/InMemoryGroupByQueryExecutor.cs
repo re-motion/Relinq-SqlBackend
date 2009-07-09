@@ -157,7 +157,7 @@ namespace Remotion.Data.Linq.Backend
           .GetConstructor (new[] { typeof (TKey), typeof (TElement) });
       var newExpression = Expression.New (tupleConstructor, groupResultOperator.KeySelector, groupResultOperator.ElementSelector);
 
-      queryModel.SelectOrGroupClause = new SelectClause (newExpression);
+      queryModel.SelectClause = new SelectClause (newExpression);
       var resultOperators = new List<ResultOperatorBase> (queryModel.ResultOperators);
       queryModel.ResultOperators.Clear ();
       var collection = _innerExecutor.ExecuteCollection<Tuple<TKey, TElement>> (queryModel, new FetchRequestBase[0]);
@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.Backend
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      var groupClause = queryModel.SelectOrGroupClause as GroupResultOperator;
+      var groupClause = queryModel.ResultOperators[0] as GroupResultOperator; // TODO 1319: This does not work.
       if (groupClause == null)
         throw new ArgumentException ("InMemoryGroupByQueryExecutor requires a GroupResultOperator in the query model.", "queryModel");
       return groupClause;
