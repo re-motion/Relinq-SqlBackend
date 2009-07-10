@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause, parsedQuery);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "<generated>_1") }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
 
       var expectedLeftSideTable = new Table ("industrialTable", "sector");
       var expectedLeftSide = new Column (expectedLeftSideTable, "IDColumn");
