@@ -110,6 +110,15 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Resolve_QuerySourceReferenceExpression_WithJoin ()
+    {
+      var joinClause = ExpressionHelper.CreateJoinClause();
+      var referenceExpression = new QuerySourceReferenceExpression (joinClause);
+      new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (referenceExpression, _context);
+    }
+
+    [Test]
     public void Resolve_SimpleMemberAccess_Succeeds ()
     {
       // s.First
