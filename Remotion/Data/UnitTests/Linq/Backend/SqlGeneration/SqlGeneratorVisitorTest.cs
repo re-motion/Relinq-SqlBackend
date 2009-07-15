@@ -382,6 +382,22 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       Assert.That (actualJoins, Is.EqualTo (new object[] { join }));
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void VisitJoinClause ()
+    {
+      var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (ExpressionHelper.CreateQueryModel());
+      sqlGeneratorVisitor.VisitJoinClause (ExpressionHelper.CreateJoinClause (), _queryModel, 1);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void VisitGroupJoinClause ()
+    {
+      var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (ExpressionHelper.CreateQueryModel ());
+      sqlGeneratorVisitor.VisitGroupJoinClause (ExpressionHelper.CreateGroupJoinClause (), _queryModel, 1);
+    }
+
     private SqlGeneratorVisitor CreateSqlGeneratorVisitor (QueryModel parsedQuery)
     {
       return new SqlGeneratorVisitor (

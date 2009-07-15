@@ -90,6 +90,11 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       throw new NotSupportedException ("Join clauses are not supported by this SQL generator.");
     }
 
+    public override void VisitGroupJoinClause (GroupJoinClause joinClause, QueryModel queryModel, int index)
+    {
+      throw new NotSupportedException ("Group join clauses are not supported by this SQL generator.");
+    }
+
     public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
