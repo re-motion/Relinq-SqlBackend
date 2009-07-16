@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       if (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, accessedMember))
       {
         MemberInfo primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (
-            _databaseInfo, ReflectionUtility.GetFieldOrPropertyType (accessedMember));
+            _databaseInfo, Utilities.ReflectionUtility.GetFieldOrPropertyType (accessedMember));
         return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, joinMembers.Concat (new[] { accessedMember }));
       }
       else

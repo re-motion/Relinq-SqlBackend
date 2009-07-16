@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
       }
       else
       {
-        throw ParserUtility.CreateParserException (
+        throw new ParserException (
             "Contains with expression",
             methodCallExpression.Method.Name,
             "method call expression in where condition");

@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer.MethodCal
     public void Count ()
     {
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
-      var methodInfo = ParserUtility.GetMethod (() => query.Count ());
+      var methodInfo = ReflectionUtility.GetMethod (() => query.Count ());
       IEvaluation evaluation = new Constant ();
       MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation>());
       MethodCallCount count = new MethodCallCount();

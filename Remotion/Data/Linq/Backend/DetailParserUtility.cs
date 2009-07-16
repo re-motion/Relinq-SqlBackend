@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.Backend
 
       if (expression.Arguments.Count != expectedArgumentCount)
       {
-        throw ParserUtility.CreateParserException (
+        throw new ParserException (
             "at least " + expectedArgumentCount + " argument",
             expression.Arguments.Count + " arguments",
             methodName + " method call");
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.Backend
 
       if (!(expression.Arguments[parameterIndex] is T))
       {
-        throw ParserUtility.CreateParserException (
+        throw new ParserException (
             typeof (T).Name,
             expression.Arguments[parameterIndex].GetType().Name + " (" + expression.Arguments[parameterIndex] + ")",
             "argument " + parameterIndex + " of " + methodName + " method call");

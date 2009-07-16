@@ -18,12 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer.MethodCal
     public void Take5 ()
     {
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
-      var methodInfo = ParserUtility.GetMethod (() => query.Take (5));
+      var methodInfo = ReflectionUtility.GetMethod (() => query.Take (5));
       IEvaluation evaluation = new Constant();
       MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation> { new Constant (5) });
       MethodCallTake callTake = new MethodCallTake();

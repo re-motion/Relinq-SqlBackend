@@ -17,8 +17,8 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing;
 using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void ToString_NullObject ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithoutArguments());
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments());
       IEvaluation evaluationObject = null;
       List<IEvaluation> evaluationArguments = new List<IEvaluation>();
       MethodCall methodCall = new MethodCall (method, evaluationObject, evaluationArguments);
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void ToString_NonNullObject ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => InstanceMethodWithoutArguments ());
+      MethodInfo method = ReflectionUtility.GetMethod (() => InstanceMethodWithoutArguments ());
       IEvaluation evaluationObject = new Constant("abc");
       List<IEvaluation> evaluationArguments = new List<IEvaluation> ();
       MethodCall methodCall = new MethodCall (method, evaluationObject, evaluationArguments);
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void ToString_Arguments ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
       IEvaluation evaluationObject = null;
       List<IEvaluation> evaluationArguments = new List<IEvaluation> { new Constant(10), new Constant("Text") };
       MethodCall methodCall = new MethodCall (method, evaluationObject, evaluationArguments);
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Equals_True ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
       IEvaluation evaluationObject = new Constant ("abc");
       List<IEvaluation> evaluationArguments = new List<IEvaluation> { new Constant (10), new Constant ("Text") };
       MethodCall m1 = new MethodCall (method, evaluationObject, evaluationArguments);
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Equals_False_Null ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
       IEvaluation evaluationObject = new Constant ("abc");
       List<IEvaluation> evaluationArguments = new List<IEvaluation> { new Constant (10), new Constant ("Text") };
       MethodCall m1 = new MethodCall (method, evaluationObject, evaluationArguments);
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Equals_False_ObjectDifferent ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
       IEvaluation evaluationObject1 = new Constant ("abc");
       IEvaluation evaluationObject2 = new Constant ("abcd");
       List<IEvaluation> evaluationArguments = new List<IEvaluation> { new Constant (10), new Constant ("Text") };
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Equals_False_ArgumentsDifferent ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
       IEvaluation evaluationObject = new Constant ("abc");
       List<IEvaluation> evaluationArguments1 = new List<IEvaluation> { new Constant (10), new Constant ("Text") };
       List<IEvaluation> evaluationArguments2 = new List<IEvaluation> { new Constant (10), new Constant ("Text2") };
@@ -108,8 +108,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Equals_False_MethodDifferent ()
     {
-      MethodInfo method1 = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
-      MethodInfo method2 = ParserUtility.GetMethod (() => StaticMethodWithoutArguments ());
+      MethodInfo method1 = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method2 = ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments ());
       IEvaluation evaluationObject = new Constant ("abc");
       List<IEvaluation> evaluationArguments = new List<IEvaluation> { new Constant (10), new Constant ("Text") };
       MethodCall m1 = new MethodCall (method1, evaluationObject, evaluationArguments);
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void GetHashCode_Equal ()
     {
-      MethodInfo method = ParserUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
+      MethodInfo method = ReflectionUtility.GetMethod (() => StaticMethodWithArguments (1, "2"));
       IEvaluation evaluationObject = new Constant ("abc");
       List<IEvaluation> evaluationArguments = new List<IEvaluation> { new Constant (10), new Constant ("Text") };
       MethodCall m1 = new MethodCall (method, evaluationObject, evaluationArguments);

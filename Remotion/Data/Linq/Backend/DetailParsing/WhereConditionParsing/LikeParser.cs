@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
         DetailParserUtility.CheckParameterType<ConstantExpression> (methodCallExpression, "Contains", 0);
         return CreateLike (methodCallExpression, "%" + ((ConstantExpression) methodCallExpression.Arguments[0]).Value + "%", parseContext);
       }
-      throw ParserUtility.CreateParserException (
+      throw new ParserException (
           "StartsWith, EndsWith, Contains with no expression", methodCallExpression.Method.Name, "method call expression in where condition");
     }
 

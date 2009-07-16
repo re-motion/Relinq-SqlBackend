@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
       var item = new Student();
       ConstantExpression checkedExpression = Expression.Constant (item);
 
-      MethodInfo containsMethod = ParserUtility.GetMethod (() => querySource.Contains (item));
+      MethodInfo containsMethod = ReflectionUtility.GetMethod (() => querySource.Contains (item));
       MethodCallExpression methodCallExpression = Expression.Call (
           Student_First_Expression,
           containsMethod,

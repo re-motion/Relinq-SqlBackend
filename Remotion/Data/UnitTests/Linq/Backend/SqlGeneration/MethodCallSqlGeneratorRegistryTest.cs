@@ -17,8 +17,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void GetGeneratorForGenericMethodInfo ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ParserUtility.GetMethod (() => source.Distinct ());
+      var methodInfo = ReflectionUtility.GetMethod (() => source.Distinct ());
       
       var methodInfoDistinct = (from m in typeof (Queryable).GetMethods ()
                                 where m.Name == "Distinct" && m.GetParameters ().Length == 1
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void GetGeneratorForCountWithOneParameter ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ParserUtility.GetMethod (() => source.Count ());
+      var methodInfo = ReflectionUtility.GetMethod (() => source.Count ());
 
       var methodInfoCount = (from m in typeof (Queryable).GetMethods ()
                              where m.Name == "Count" && m.GetParameters ().Length == 1
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void GetGeneratorForFirstWithOneParameter ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ParserUtility.GetMethod (() => source.First ());
+      var methodInfo = ReflectionUtility.GetMethod (() => source.First ());
 
       var methodInfoFirst = (from m in typeof (Queryable).GetMethods ()
                              where m.Name == "First" && m.GetParameters ().Length == 1
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void GetGeneratorForSingleWithOneParameter ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ParserUtility.GetMethod (() => source.Single ());
+      var methodInfo = ReflectionUtility.GetMethod (() => source.Single ());
 
       var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()
                               where m.Name == "Single" && m.GetParameters ().Length == 1
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void GetGeneratorForSingleWithOneParameter2 ()
     {
       var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
-      var methodInfo = ParserUtility.GetMethod (() => query.Single ());
+      var methodInfo = ReflectionUtility.GetMethod (() => query.Single ());
 
       var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()
                               where m.Name == "Single" && m.GetParameters ().Length == 1
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void GetGeneratorForSingleWithTwoParameter ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ParserUtility.GetMethod (() => source.Single (s => s.ID == 5));
+      var methodInfo = ReflectionUtility.GetMethod (() => source.Single (s => s.ID == 5));
 
       var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()
                               where m.Name == "Single" && m.GetParameters ().Length == 2
