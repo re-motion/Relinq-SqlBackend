@@ -28,10 +28,10 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Initialize_CorrectType ()
     {
-      var model = new QueryModel (null, ExpressionHelper.CreateMainFromClause(), ExpressionHelper.CreateSelectClause());
+      var model = new QueryModel (ExpressionHelper.CreateMainFromClause(), ExpressionHelper.CreateSelectClause());
       var sqe = new SubQueryExpression (model);
 
-      Assert.That (sqe.Type, Is.EqualTo (model.ResultType));
+      Assert.That (sqe.Type, Is.EqualTo (model.GetResultType()));
     }
 
     [Test]
