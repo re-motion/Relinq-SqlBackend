@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration

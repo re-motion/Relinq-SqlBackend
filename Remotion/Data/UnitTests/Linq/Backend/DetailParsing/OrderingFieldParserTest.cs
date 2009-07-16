@@ -25,6 +25,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
@@ -120,7 +121,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.Student.NonDBProperty' "
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.TestDomain.Student.NonDBProperty' "
         + "does not identify a queryable column.")]
     public void OrderingClause_WithNonDBField ()
     {
@@ -168,7 +169,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.UnitTests.Linq.Student_Detail.Student' "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.UnitTests.Linq.TestDomain.Student_Detail.Student' "
         + "is not supported because it is a relation member.")]
     public void OrderingOnRelationMemberThrows()
     {

@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using System.Linq;
 using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {

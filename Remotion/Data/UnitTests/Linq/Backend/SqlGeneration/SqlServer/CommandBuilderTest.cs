@@ -21,6 +21,7 @@ using System.Text;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 using System;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 {

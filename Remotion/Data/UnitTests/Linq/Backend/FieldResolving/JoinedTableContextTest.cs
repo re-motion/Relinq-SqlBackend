@@ -24,6 +24,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
@@ -97,7 +98,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.Student.First' "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.TestDomain.Student.First' "
       +"does not identify a relation.")]
     public void GetJoinedTable_InvalidMember ()
     {

@@ -18,6 +18,7 @@ using System.Data;
 using System.Data.Common;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 

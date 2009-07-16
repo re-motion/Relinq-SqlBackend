@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
 {
@@ -61,7 +62,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.Student.First' does not "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.TestDomain.Student.First' does not "
         + "identify a relation.")]
     public void GetRelatedTable_InvalidMember ()
     {
@@ -76,7 +77,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.Student.First' does not "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.TestDomain.Student.First' does not "
         + "identify a relation.")]
     public void GetJoinColumns_InvalidMember ()
     {

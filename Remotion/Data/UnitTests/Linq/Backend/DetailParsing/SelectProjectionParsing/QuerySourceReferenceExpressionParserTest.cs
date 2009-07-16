@@ -19,6 +19,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
