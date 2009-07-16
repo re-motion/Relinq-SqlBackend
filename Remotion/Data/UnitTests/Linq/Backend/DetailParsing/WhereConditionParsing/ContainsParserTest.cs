@@ -27,7 +27,6 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
-using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
 {
@@ -37,12 +36,13 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
     [Test]
     public void ParseContainsWithSubQuery ()
     {
-      IQueryable<Student> querySource = ExpressionHelper.CreateQuerySource();
-      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel();
+      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel ();
+      subQueryModel.SelectClause.Selector = Expression.Constant (null, typeof (Student));
       var subQueryExpression = new SubQueryExpression (subQueryModel);
       var item = new Student();
       ConstantExpression checkedExpression = Expression.Constant (item);
 
+      IQueryable<Student> querySource = ExpressionHelper.CreateQuerySource ();
       MethodInfo containsMethod = ReflectionUtility.GetMethod (() => querySource.Contains (item));
       MethodCallExpression methodCallExpression = Expression.Call (
           Student_First_Expression,

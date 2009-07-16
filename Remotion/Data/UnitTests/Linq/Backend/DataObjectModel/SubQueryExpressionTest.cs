@@ -16,6 +16,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.Expressions;
 
@@ -27,16 +28,16 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Initialize_CorrectType ()
     {
-      var model = new QueryModel (typeof (int), ExpressionHelper.CreateMainFromClause(), ExpressionHelper.CreateSelectClause());
+      var model = new QueryModel (null, ExpressionHelper.CreateMainFromClause(), ExpressionHelper.CreateSelectClause());
       var sqe = new SubQueryExpression (model);
 
-      Assert.AreEqual (typeof (int), sqe.Type);
+      Assert.That (sqe.Type, Is.EqualTo (model.ResultType));
     }
 
     [Test]
     public void Initialize_DontOverwriteExpressionType ()
     {
-      Assert.IsFalse (Enum.IsDefined (typeof (ExpressionType), new SubQueryExpression (ExpressionHelper.CreateQueryModel()).NodeType));
+      Assert.That (Enum.IsDefined (typeof (ExpressionType), new SubQueryExpression (ExpressionHelper.CreateQueryModel ()).NodeType), Is.False);
     }
   }
 }
