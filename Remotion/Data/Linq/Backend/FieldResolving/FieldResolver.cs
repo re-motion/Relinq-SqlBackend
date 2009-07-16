@@ -45,12 +45,12 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       ArgumentUtility.CheckNotNull ("fieldAccessExpression", fieldAccessExpression);
 
       var result = FieldResolverVisitor.ParseFieldAccess (DatabaseInfo, fieldAccessExpression, _policy.OptimizeRelatedKeyAccess());
-      var clause = result.QuerySourceReferenceExpression.ReferencedClause as FromClauseBase;
+      var clause = result.QuerySourceReferenceExpression.ReferencedQuerySource as FromClauseBase;
       if (clause == null)
       {
         var message = string.Format (
             "References to clauses of type '{0}' are not supported by this class.",
-            result.QuerySourceReferenceExpression.ReferencedClause.GetType().Name);
+            result.QuerySourceReferenceExpression.ReferencedQuerySource.GetType().Name);
         throw new NotSupportedException (message);
       }
 

@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         QuerySourceReferenceExpression referenceExpression)
     {
       ArgumentUtility.CheckNotNull ("referenceExpression", referenceExpression);
-      var primaryKeyMember = _databaseInfo.GetPrimaryKeyMember (referenceExpression.ReferencedClause.ItemType);
+      var primaryKeyMember = _databaseInfo.GetPrimaryKeyMember (referenceExpression.Type);
       return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, new MemberInfo[0]);
     }
 

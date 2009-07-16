@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     }
 
     [Test]
-    public void AdjustMemberInfosForFromIdentifier ()
+    public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
       var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
       Assert.That (result.A, Is.Null);

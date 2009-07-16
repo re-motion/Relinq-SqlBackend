@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using System.Linq;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     }
 
     [Test]
-    public void AdjustMemberInfosForFromIdentifier ()
+    public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
       var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
       Assert.That (result.A, Is.EqualTo (typeof (Student).GetProperty ("ID")));
