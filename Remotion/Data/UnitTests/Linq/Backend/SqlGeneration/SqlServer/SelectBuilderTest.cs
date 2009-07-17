@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       // is create a new SELECT clause around the original SQL query, like this: SELECT COUNT (*) FROM (<SQL QUERY>).
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new CountResultOperator ("x") });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new CountResultOperator () });
       Assert.AreEqual ("SELECT COUNT (*) ", _commandBuilder.GetCommandText ());
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new FirstResultOperator ("x", false) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new FirstResultOperator (false) });
       Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new LastResultOperator ("x", false) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new LastResultOperator (false) });
     }
 
     [Test]
