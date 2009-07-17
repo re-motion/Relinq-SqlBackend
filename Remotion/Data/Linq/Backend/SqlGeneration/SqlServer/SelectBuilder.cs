@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         else if (operatorBase is DistinctResultOperator)
           distinct = true;
         else if (operatorBase is TakeResultOperator)
-          top = ((TakeResultOperator) operatorBase).Count;
+          top = ((TakeResultOperator) operatorBase).GetConstantCount();
         else
         {
           throw new NotSupportedException (

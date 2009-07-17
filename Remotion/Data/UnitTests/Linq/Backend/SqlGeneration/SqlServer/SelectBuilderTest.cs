@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
@@ -110,7 +111,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new TakeResultOperator (7) });
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new TakeResultOperator (Expression.Constant (7)) });
       Assert.AreEqual ("SELECT TOP 7 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
