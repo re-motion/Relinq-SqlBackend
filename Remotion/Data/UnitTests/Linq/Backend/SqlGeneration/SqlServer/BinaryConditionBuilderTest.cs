@@ -18,12 +18,10 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.UnitTests.Linq.TestDomain;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 {
@@ -196,18 +194,6 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       CheckBuildBinaryConditionPart (binaryCondition, null);
     }
     
-    [Test]
-    public void CreateSqlGeneratorForSubQuery ()
-    {
-      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInWhere, null);
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var conditionBuilder = new BinaryConditionBuilder (commandBuilder);
-      var subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (conditionBuilder, "CreateSqlGeneratorForSubQuery",
-          subQuery, StubDatabaseInfo.Instance, commandBuilder);
-      Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
-      Assert.AreEqual (ParseMode.SubQueryInWhere, subQueryGenerator.ParseMode);
-    }
-
     [Test]
     public void BuildBinaryCondition_ContainsFulltext ()
     {

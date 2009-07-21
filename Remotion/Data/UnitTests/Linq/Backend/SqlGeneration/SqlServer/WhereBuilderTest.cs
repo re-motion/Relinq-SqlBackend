@@ -79,21 +79,6 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       CheckAppendCriterion (new Constant (null), null);
     }
 
-    class PseudoCriterion : ICriterion
-    {
-      public void Accept (IEvaluationVisitor visitor)
-      {
-        throw new NotImplementedException();
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The criterion kind PseudoCriterion is not supported.")]
-    public void InvalidCriterionKind_NotSupportedException()
-    {
-      CheckAppendCriterion (new PseudoCriterion(), null);
-    }
-
     private static void CheckAppendCriterion (ICriterion criterion, string expectedString,
                                               params CommandParameter[] expectedParameters)
     {
@@ -102,7 +87,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       whereBuilder.BuildWherePart (criterion);
 
-      Assert.AreEqual (" WHERE " + expectedString, commandBuilder.GetCommandText());
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo (" WHERE " + expectedString));
       Assert.That (commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
     }
 

@@ -82,11 +82,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       }
     }
 
-    protected virtual ISqlGenerator CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
-    {
-      return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseMode.SubQueryInWhere);
-    }
-
     private void AppendGeneralCondition (BinaryCondition binaryCondition)
     {
       _commandBuilder.Append ("(");

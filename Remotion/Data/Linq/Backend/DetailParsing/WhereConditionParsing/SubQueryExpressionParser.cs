@@ -14,9 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
@@ -26,7 +28,20 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
     public ICriterion Parse (SubQueryExpression subQueryExpression, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
-      return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
+
+      var containsResultOperator = subQueryExpression.QueryModel.ResultOperators.LastOrDefault() as ContainsResultOperator;
+      if (containsResultOperator != null)
+      {
+        var queryModelClone = subQueryExpression.QueryModel.Clone();
+        queryModelClone.ResultOperators.RemoveAt (queryModelClone.ResultOperators.Count - 1);
+        var item = new Constant (containsResultOperator.Item); // TODO 1313: Parse this as soon as Item is an Expression
+
+        return new ContainsCriterion (new SubQuery (queryModelClone, ParseMode.SubQueryInWhere, null), item);
+      }
+      else
+      {
+        return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
+      }
     }
 
     public bool CanParse (Expression expression)

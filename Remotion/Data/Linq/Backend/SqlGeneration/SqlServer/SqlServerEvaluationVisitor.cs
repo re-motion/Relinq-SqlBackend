@@ -15,7 +15,9 @@
 // 
 using System;
 using System.Collections;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 
@@ -69,6 +71,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     public void VisitComplexCriterion (ComplexCriterion complexCriterion)
     {
       ArgumentUtility.CheckNotNull ("complexCriterion", complexCriterion);
+      
       CommandBuilder.Append ("(");
       complexCriterion.Left.Accept (this);
       switch (complexCriterion.Kind)
@@ -87,7 +90,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     public void VisitNotCriterion (NotCriterion notCriterion)
     {
       ArgumentUtility.CheckNotNull ("notCriterion", notCriterion);
-      CommandBuilder.Append (" NOT ");
+
+      CommandBuilder.Append ("NOT ");
       notCriterion.NegatedCriterion.Accept (this);
     }
 
@@ -98,7 +102,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       if (constant.Value == null)
         CommandBuilder.CommandText.Append ("NULL");
       else if (constant.Value is ICollection)
-        AddConstantCollection ((ICollection) constant.Value);
+        AppendConstantCollection ((ICollection) constant.Value);
       else if (constant.Value.Equals (true))
         CommandBuilder.Append ("(1=1)");
       else if (constant.Value.Equals (false))
@@ -107,18 +111,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       {
         CommandParameter parameter = CommandBuilder.AddParameter (constant.Value);
         CommandBuilder.CommandText.Append (parameter.Name);
-      }
-    }
-
-    private void AddConstantCollection (ICollection enumerable)
-    {
-      int counter = 0;
-      foreach (var cons in enumerable)
-      {
-        VisitConstant (new Constant (cons));
-        counter++;
-        if (counter != enumerable.Count)
-          CommandBuilder.Append (", ");
       }
     }
 
@@ -137,7 +129,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     public void VisitSubQuery (SubQuery subQuery)
     {
       CommandBuilder.Append ("(");
-      //new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, ParseMode.SubQueryInSelect).BuildCommand (subQuery.QueryModel);
       new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, subQuery.ParseMode).BuildCommand (subQuery.QueryModel);
       CommandBuilder.Append (")");
       if (subQuery.Alias != null)
@@ -145,6 +136,29 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         CommandBuilder.Append (" [");
         CommandBuilder.Append (subQuery.Alias);
         CommandBuilder.Append ("]");
+      }
+    }
+
+    public void VisitContainsCriterion (ContainsCriterion containsCriterion)
+    {
+      CommandBuilder.AppendEvaluation (containsCriterion.Item);
+      CommandBuilder.Append (" IN ");
+
+      var subQueryModel = containsCriterion.SubQuery.QueryModel;
+      if (subQueryModel.MainFromClause.FromExpression is ConstantExpression 
+          && subQueryModel.BodyClauses.Count == 0 
+          && subQueryModel.ResultOperators.Count == 0
+          && subQueryModel.SelectClause.Selector is QuerySourceReferenceExpression
+          && ((QuerySourceReferenceExpression) subQueryModel.SelectClause.Selector).ReferencedQuerySource == subQueryModel.MainFromClause)
+      {
+        var constant = (IEnumerable) ((ConstantExpression) subQueryModel.MainFromClause.FromExpression).Value;
+        CommandBuilder.Append ("(");
+        AppendConstantCollection (constant);
+        CommandBuilder.Append (")");
+      }
+      else
+      {
+        VisitSubQuery (containsCriterion.SubQuery);
       }
     }
 
@@ -167,9 +181,17 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       }
     }
 
-    //public void VisitSourceMarkerEvaluation (SourceMarkerEvaluation sourceMarkerEvaluation)
-    //{
-    //  CommandBuilder.Append ("");
-    //}
+    private void AppendConstantCollection (IEnumerable enumerable)
+    {
+      bool first = true;
+      foreach (var cons in enumerable)
+      {
+        if (!first)
+          CommandBuilder.Append (", ");
+
+        VisitConstant (new Constant (cons));
+        first = false;
+      }
+    }
   }
 }

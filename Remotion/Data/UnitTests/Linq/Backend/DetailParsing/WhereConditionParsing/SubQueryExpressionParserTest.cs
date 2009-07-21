@@ -25,6 +25,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 
@@ -61,6 +62,35 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
       ICriterion actualCriterion = subQueryExpressionParser.Parse (subQueryExpression, ParseContext);
 
       Assert.That (actualCriterion, Is.EqualTo (expectedSubQuery));
+    }
+
+    [Test]
+    public void ParseSubQuery_WithContains ()
+    {
+      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel ();
+      subQueryModel.ResultOperators.Add (new ContainsResultOperator (20));
+
+      var subQueryExpression = new SubQueryExpression (subQueryModel);
+
+      var resolver = new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
+      var parserRegistry = new WhereConditionParserRegistry (StubDatabaseInfo.Instance);
+      parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
+      parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
+
+      var subQueryExpressionParser = new SubQueryExpressionParser ();
+
+      ICriterion actualCriterion = subQueryExpressionParser.Parse (subQueryExpression, ParseContext);
+
+      Assert.That (actualCriterion, Is.InstanceOfType (typeof (ContainsCriterion)));
+      var containsCriterion = (ContainsCriterion) actualCriterion;
+      Assert.That (containsCriterion.Item, Is.EqualTo (new Constant (20)));
+
+      var subQueryModelWithoutResultOperator = subQueryModel.Clone();
+      subQueryModelWithoutResultOperator.ResultOperators.RemoveAt (0);
+
+      Assert.That (containsCriterion.SubQuery.QueryModel.ToString (), Is.EqualTo (subQueryModelWithoutResultOperator.ToString ()));
+      Assert.That (containsCriterion.SubQuery.ParseMode, Is.EqualTo (ParseMode.SubQueryInWhere));
+      Assert.That (containsCriterion.SubQuery.Alias, Is.Null);
     }
   }
 }

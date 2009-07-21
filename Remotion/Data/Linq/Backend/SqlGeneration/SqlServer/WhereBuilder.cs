@@ -34,75 +34,40 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       _builder = new BinaryConditionBuilder (_commandBuilder);
     }
 
+    public BinaryConditionBuilder Builder
+    {
+      get { return _builder; }
+    }
+
+    public IDatabaseInfo DatabaseInfo
+    {
+      get { return _databaseInfo; }
+    }
+
     public void BuildWherePart (ICriterion criterion)
     {
       if (criterion != null)
       {
         _commandBuilder.Append (" WHERE ");
-        AppendCriterion (criterion);
-      }
-    }
-
-    private void AppendCriterion (ICriterion criterion)
-    {
-      if (criterion is BinaryCondition)
-        AppendBinaryCondition ((BinaryCondition) criterion);
-      else if (criterion is ComplexCriterion)
-        AppendComplexCriterion ((ComplexCriterion) criterion);
-      else if (criterion is NotCriterion)
-        AppendNotCriterion ((NotCriterion) criterion);
-      else if (criterion is Constant || criterion is Column) // cannot use "as" operator here because Constant/Column are value types
-        AppendTopLevelValue (criterion);
-      else
-        throw new NotSupportedException ("The criterion kind " + criterion.GetType().Name + " is not supported.");
-    }
-
-    private void AppendBinaryCondition (BinaryCondition condition)
-    {
-      _builder.BuildBinaryConditionPart (condition);
-    }
-
-    private void AppendTopLevelValue (IValue value)
-    {
-      if (value is Constant)
-      {
-        Constant constant = (Constant) value;
-        if (constant.Value == null)
-          throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
+  
+        if (criterion is Constant)
+        {
+          Constant constant = (Constant) criterion;
+          if (constant.Value == null)
+            throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
+          else
+            _commandBuilder.AppendEvaluation (constant);
+        }
+        else if (criterion is Column)
+        {
+          _commandBuilder.AppendEvaluation (criterion);
+          _commandBuilder.Append ("=1");
+        }
         else
-          _commandBuilder.AppendEvaluation (constant);
-        //_commandBuilder.AppendConstant (constant);
+        {
+          _commandBuilder.AppendEvaluation (criterion);
+        }
       }
-      else
-      {
-        _commandBuilder.AppendEvaluation ((Column) value);
-        _commandBuilder.Append ("=1");
-      }
-    }
-
-    private void AppendComplexCriterion (ComplexCriterion criterion)
-    {
-      _commandBuilder.Append ("(");
-      AppendCriterion (criterion.Left);
-
-      switch (criterion.Kind)
-      {
-        case ComplexCriterion.JunctionKind.And:
-          _commandBuilder.Append (" AND ");
-          break;
-        case ComplexCriterion.JunctionKind.Or:
-          _commandBuilder.Append (" OR ");
-          break;
-      }
-
-      AppendCriterion (criterion.Right);
-      _commandBuilder.Append (")");
-    }
-
-    private void AppendNotCriterion (NotCriterion criterion)
-    {
-      _commandBuilder.Append ("NOT ");
-      AppendCriterion (criterion.NegatedCriterion);
     }
   }
 }

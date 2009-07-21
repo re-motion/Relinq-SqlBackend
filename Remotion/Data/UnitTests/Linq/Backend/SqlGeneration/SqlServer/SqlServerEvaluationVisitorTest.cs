@@ -34,8 +34,6 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
   [TestFixture]
   public class SqlServerEvaluationVisitorTest
   {
-    #region Setup/Teardown
-
     [SetUp]
     public void SetUp ()
     {
@@ -46,8 +44,6 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       _databaseInfo = StubDatabaseInfo.Instance;
       _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
     }
-
-    #endregion
 
     private StringBuilder _commandText;
     private List<CommandParameter> _commandParameters;
@@ -78,7 +74,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
           aoperator = " - ";
           break;
       }
-      Assert.AreEqual ("xyz ([alias1].[id1]" + aoperator + "[alias2].[id2])", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ([alias1].[id1]" + aoperator + "[alias2].[id2])"));
       _commandText = new StringBuilder();
       _commandText.Append ("xyz ");
       _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
@@ -96,8 +92,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitBinaryCondition (binaryCondition);
 
-      Assert.AreEqual ("xyz ([s].[LastColumn] = @2)", _commandBuilder.GetCommandText());
-      Assert.AreEqual ("Garcia", _commandBuilder.GetCommandParameters()[1].Value);
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ([s].[LastColumn] = @2)"));
+      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("Garcia"));
     }
 
     [Test]
@@ -132,7 +128,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitBinaryEvaluation (binaryEvaluation2);
 
-      Assert.AreEqual ("xyz (([alias1].[id1] + [alias2].[id2]) / [alias2].[id2])", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (([alias1].[id1] + [alias2].[id2]) / [alias2].[id2])"));
     }
 
     [Test]
@@ -143,7 +139,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitColumn (column);
 
-      Assert.AreEqual ("xyz [alias].[name]", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz [alias].[name]"));
     }
 
     [Test]
@@ -154,7 +150,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitColumn (column);
 
-      Assert.AreEqual ("xyz [test].[test]", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz [test].[test]"));
     }
 
     [Test]
@@ -169,8 +165,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitComplexCriterion (complexCriterion);
 
-      Assert.AreEqual ("xyz ((@2 = @3) AND (@4 = @5))", _commandBuilder.GetCommandText());
-      Assert.AreEqual ("foo", _commandBuilder.GetCommandParameters()[1].Value);
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ((@2 = @3) AND (@4 = @5))"));
+      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
     }
 
     [Test]
@@ -185,8 +181,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitComplexCriterion (complexCriterion);
 
-      Assert.AreEqual ("xyz ((@2 = @3) OR (@4 = @5))", _commandBuilder.GetCommandText());
-      Assert.AreEqual ("foo", _commandBuilder.GetCommandParameters()[1].Value);
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ((@2 = @3) OR (@4 = @5))"));
+      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
     }
 
     [Test]
@@ -197,8 +193,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitConstant (constant);
 
-      Assert.AreEqual ("xyz @2", _commandBuilder.GetCommandText());
-      Assert.AreEqual (5, _commandBuilder.GetCommandParameters()[1].Value);
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz @2"));
+      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo (5));
     }
 
     [Test]
@@ -209,7 +205,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitConstant (constant);
 
-      Assert.AreEqual ("xyz (1<>1)", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (1<>1)"));
     }
 
     [Test]
@@ -220,7 +216,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitConstant (constant);
 
-      Assert.AreEqual ("xyz NULL", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz NULL"));
     }
 
     [Test]
@@ -231,7 +227,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitConstant (constant);
 
-      Assert.AreEqual ("xyz (1=1)", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (1=1)"));
     }
 
     [Test]
@@ -244,7 +240,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitConstant (constant);
 
-      Assert.AreEqual ("xyz @2, @3, @4, @5", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz @2, @3, @4, @5"));
     }
 
     [Test]
@@ -273,8 +269,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitNotCriterion (notCriterion);
 
-      Assert.AreEqual ("xyz  NOT @2", _commandBuilder.GetCommandText());
-      Assert.AreEqual ("foo", _commandBuilder.GetCommandParameters()[1].Value);
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz NOT @2"));
+      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
     }
 
     [Test]
@@ -290,7 +286,46 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitSubQuery (subQuery);
 
-      Assert.AreEqual ("xyz (SELECT [s].[FirstColumn] FROM [studentTable] [s]) [sub_alias]", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (SELECT [s].[FirstColumn] FROM [studentTable] [s]) [sub_alias]"));
+    }
+
+    [Test]
+    public void VisitContainsCriterion ()
+    {
+      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
+
+      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<string> query = SelectTestQueryGenerator.CreateSimpleQuery_WithProjection (source);
+      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+
+      var subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, null);
+      var containsCriterion = new ContainsCriterion (subQuery, new Constant ("foo"));
+
+      visitor.VisitContainsCriterion (containsCriterion);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz @2 IN (SELECT [s].[FirstColumn] FROM [studentTable] [s])"));
+      Assert.That (_commandParameters[1], Is.EqualTo (new CommandParameter ("@2", "foo")));
+    }
+
+    [Test]
+    public void VisitContainsCriterion_WithConstantFromSource ()
+    {
+      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
+
+      var query = from i in new[] { 1, 2, 3 }.AsQueryable() select i;
+      
+      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+
+      var subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, null);
+      var containsCriterion = new ContainsCriterion (subQuery, new Constant ("foo"));
+
+      visitor.VisitContainsCriterion (containsCriterion);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz @2 IN (@3, @4, @5)"));
+      Assert.That (_commandParameters[1], Is.EqualTo (new CommandParameter ("@2", "foo")));
+      Assert.That (_commandParameters[2], Is.EqualTo (new CommandParameter ("@3", 1)));
+      Assert.That (_commandParameters[3], Is.EqualTo (new CommandParameter ("@4", 2)));
+      Assert.That (_commandParameters[4], Is.EqualTo (new CommandParameter ("@5", 3)));
     }
 
     [Test]
