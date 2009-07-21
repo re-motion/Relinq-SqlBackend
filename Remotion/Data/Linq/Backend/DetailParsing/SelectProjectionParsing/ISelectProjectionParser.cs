@@ -17,7 +17,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
   public interface ISelectProjectionParser : IParser
   {

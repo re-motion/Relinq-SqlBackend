@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Backend.DetailParser;
+using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;

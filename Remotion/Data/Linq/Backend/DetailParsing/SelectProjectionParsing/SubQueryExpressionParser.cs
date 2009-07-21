@@ -20,7 +20,7 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
   public class SubQueryExpressionParser : ISelectProjectionParser
   {

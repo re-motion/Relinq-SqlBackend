@@ -19,7 +19,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing
+namespace Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
   public class MemberExpressionParser : ISelectProjectionParser
   {

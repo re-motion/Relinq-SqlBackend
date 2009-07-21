@@ -17,7 +17,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   /// <summary>
   /// 

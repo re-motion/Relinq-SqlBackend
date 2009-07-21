@@ -20,7 +20,7 @@ using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.DetailParser
+namespace Remotion.Data.Linq.Backend.DetailParsing
 {
   public class OrderingFieldParser
   {

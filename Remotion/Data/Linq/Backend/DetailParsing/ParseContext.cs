@@ -19,7 +19,7 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.DetailParser
+namespace Remotion.Data.Linq.Backend.DetailParsing
 {
   public class ParseContext
   {

@@ -15,7 +15,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.Backend.DetailParser
+namespace Remotion.Data.Linq.Backend.DetailParsing
 {
   public class DetailParserRegistries
   {

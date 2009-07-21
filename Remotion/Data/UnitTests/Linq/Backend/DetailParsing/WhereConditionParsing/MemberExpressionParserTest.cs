@@ -16,7 +16,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
+using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 using Remotion.Data.UnitTests.Linq.TestDomain;

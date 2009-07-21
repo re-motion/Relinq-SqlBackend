@@ -20,7 +20,7 @@ using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   public class QuerySourceReferenceExpressionParser : IWhereConditionParser
   {
