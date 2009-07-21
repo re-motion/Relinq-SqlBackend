@@ -51,11 +51,11 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         else if (operatorBase is DistinctResultOperator)
           distinct = true;
         else if (operatorBase is TakeResultOperator)
-          top = ((TakeResultOperator) operatorBase).GetConstantCount();
-        else
+          top = ((TakeResultOperator) operatorBase).GetConstantCount ();
+        else if (!(operatorBase is CastResultOperator))
         {
           throw new NotSupportedException (
-              "Result operator type " + operatorBase.GetType().Name + " is not supported by this SQL generator.");
+              "Result operator type " + operatorBase.GetType ().Name + " is not supported by this SQL generator.");
         }
       }
 

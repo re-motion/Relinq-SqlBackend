@@ -123,5 +123,14 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new DistinctResultOperator () });
       Assert.AreEqual ("SELECT DISTINCT [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
+
+    [Test]
+    public void ResultOperators_Cast ()
+    {
+      var c1 = new Column (new Table ("s1", "s1"), "c1");
+
+      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new CastResultOperator (typeof (int)) });
+      Assert.AreEqual ("SELECT [s1].[c1] ", _commandBuilder.GetCommandText ());
+    }
   }
 }
