@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer.MethodCal
     [Test]
     public void First ()
     {
-      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
       var methodInfo = ReflectionUtility.GetMethod (() => query.First());
       IEvaluation evaluation = new Constant();
       MethodCall methodCall = new MethodCall (methodInfo, evaluation, new List<IEvaluation>());

@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void VisitAdditionalFromClause ()
     {
       IQueryable<Student> query = MixedTestQueryGenerator.CreateMultiFromWhereQuery (
-          ExpressionHelper.CreateQuerySource(), ExpressionHelper.CreateQuerySource());
+          ExpressionHelper.CreateStudentQueryable(), ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitAdditionalFromClause_WithMemberExpression ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateQuerySource_IndustrialSector ());
+      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateIndustrialSectorQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitMainFromClause ()
     {
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       MainFromClause fromClause = parsedQuery.MainFromClause;
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitMainFromClause_WithMemberExpression ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource_InMainFromClauseOfSubQuery (ExpressionHelper.CreateQuerySource_IndustrialSector ());
+      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource_InMainFromClauseOfSubQuery (ExpressionHelper.CreateIndustrialSectorQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = ((SubQueryExpression) ((AdditionalFromClause) parsedQuery.BodyClauses[0]).FromExpression).QueryModel.MainFromClause;
 
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitOrderByClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       FieldDescriptor expectedFieldDescriptor = 
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitOrderByClause_WithJoins ()
     {
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail());
+      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitOrderByClause_Multiple ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderByClause1 = (OrderByClause) parsedQuery.BodyClauses[0];
       var orderByClause2 = (OrderByClause) parsedQuery.BodyClauses[1];
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitSelectClause ()
     {
-      IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateQuerySource());
+      IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var selectClause = parsedQuery.SelectClause;
 
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitSelectClause_MethodCall ()
     {
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var selectClause = new SelectClause (Expression.Constant (0));
 
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitQueryModel_ResultOperator ()
     {
-      IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (ExpressionHelper.CreateStudentQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitSelectClause_WithJoins ()
     {
-      IQueryable<string> query = JoinTestQueryGenerator.CreateSimpleImplicitSelectJoin (ExpressionHelper.CreateQuerySource_Detail());
+      IQueryable<string> query = JoinTestQueryGenerator.CreateSimpleImplicitSelectJoin (ExpressionHelper.CreateStudentDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitSelectClause_WithNullProjection ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var selectClause = parsedQuery.SelectClause;
 
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitAdditionalFromClause_WithSubQuery ()
     {
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitWhereClause ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateStudentQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitWhereClause_MultipleTimes ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (ExpressionHelper.CreateQuerySource());
+      IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var whereClause1 = (WhereClause) parsedQuery.BodyClauses[0];
@@ -362,7 +362,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void VisitWhereClause_WithJoins ()
     {
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateQuerySource_Detail());
+      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateStudentDetailQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var whereClause = (WhereClause) parsedQuery.BodyClauses[0];

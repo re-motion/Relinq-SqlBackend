@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     public void VisitOrderByClause_WithNestedJoins ()
     {
       IQueryable<Student_Detail_Detail> query =
-          JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail_Detail());
+          JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> IndustrialSector) }
 
       IQueryable<Student_Detail_Detail> query =
-          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateQuerySource_Detail_Detail());
+          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateStudentDetailDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       // Joins[sdd] = { (sdd -> Student_Detail -> Student) }
 
       IQueryable<Student_Detail_Detail> query =
-          JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateQuerySource_Detail_Detail());
+          JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateStudentDetailDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> Student_Detail -> IndustrialSector) }
 
       IQueryable<Student_Detail_Detail> query =
-          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateQuerySource_Detail_Detail());
+          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateStudentDetailDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
 
       IQueryable<Student_Detail_Detail> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleKeys
-              (ExpressionHelper.CreateQuerySource_Detail_Detail(), ExpressionHelper.CreateQuerySource_Detail_Detail());
+              (ExpressionHelper.CreateStudentDetailDetailQueryable(), ExpressionHelper.CreateStudentDetailDetailQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 

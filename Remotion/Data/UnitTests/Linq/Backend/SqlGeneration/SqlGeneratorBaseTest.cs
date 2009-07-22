@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_CreatesAliases()
     {
-      IQueryable<Student_Detail> source = ExpressionHelper.CreateQuerySource_Detail();
+      IQueryable<Student_Detail> source = ExpressionHelper.CreateStudentDetailQueryable();
       QueryModel query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
       var operators = new List<ResultOperatorBase> ();
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void CreateDistinct ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
       // expected
@@ -209,7 +209,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_ReturnsSqlGenerationData ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 

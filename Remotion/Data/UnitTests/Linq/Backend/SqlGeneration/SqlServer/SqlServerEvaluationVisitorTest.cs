@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
 
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable();
       IQueryable<string> query = SelectTestQueryGenerator.CreateSimpleQuery_WithProjection (source);
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 
@@ -294,7 +294,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
 
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable();
       IQueryable<string> query = SelectTestQueryGenerator.CreateSimpleQuery_WithProjection (source);
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 

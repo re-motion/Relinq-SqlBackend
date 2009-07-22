@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void GetGeneratorForSingleWithOneParameter2 ()
     {
-      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource ());
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable ());
       var methodInfo = ReflectionUtility.GetMethod (() => query.Single ());
 
       var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()

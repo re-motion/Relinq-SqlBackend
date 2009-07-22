@@ -40,10 +40,10 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _source = ExpressionHelper.CreateQuerySource ();
-      _detailSource = ExpressionHelper.CreateQuerySource_Detail ();
-      _industrialSectorSource = ExpressionHelper.CreateQuerySource_IndustrialSector();
-      _detailDetailSource = ExpressionHelper.CreateQuerySource_Detail_Detail ();
+      _source = ExpressionHelper.CreateStudentQueryable ();
+      _detailSource = ExpressionHelper.CreateStudentDetailQueryable ();
+      _industrialSectorSource = ExpressionHelper.CreateIndustrialSectorQueryable();
+      _detailDetailSource = ExpressionHelper.CreateStudentDetailDetailQueryable ();
       _sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
     }
 
@@ -374,7 +374,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void Select_WithDistinct ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source);
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -389,7 +389,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void Select_WithDistinctAndWhere ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateDisinctWithWhereQuery (source);
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -419,7 +419,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereJoin_WithRelationMember_VirtualSide ()
     {
-      IQueryable<IndustrialSector> source = ExpressionHelper.CreateQuerySource_IndustrialSector ();
+      IQueryable<IndustrialSector> source = ExpressionHelper.CreateIndustrialSectorQueryable ();
 
       IQueryable<IndustrialSector> query = WhereTestQueryGenerator.CreateRelationMemberVirtualSideWhereQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -449,7 +449,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInAdditionalFromClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -462,7 +462,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void ComplexSubQueryInAdditionalFromClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateComplexSubQueryInAdditionalFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -480,7 +480,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Ignore ("TODO 1313")]
     public void SimpleSubQueryInWhereClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -495,7 +495,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Ignore ("TODO 1313")]
     public void SubQueryWithConstantInWhereClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSubQueryWithConstantInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -510,7 +510,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Ignore ("TODO 1313")]
     public void SubQuerySelectingColumnsWithConstantInWhereClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
 
       IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSubQuerySelectingColumnsWithConstantInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -524,7 +524,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLet_Binary ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<string > query = LetTestQueryGenerator.CreateSimpleLetClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -561,7 +561,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLet_WithTable ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<Student> query = LetTestQueryGenerator.CreateLet_WithTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -574,7 +574,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     public void QueryWithMultiLet_Where ()
     {
       // from s in source let x = s.First let y = s.ID where y > 1 select x
-      IQueryable<Student> source = ExpressionHelper.CreateQuerySource ();
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<string> query = LetTestQueryGenerator.CreateMultiLet_WithWhere (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 

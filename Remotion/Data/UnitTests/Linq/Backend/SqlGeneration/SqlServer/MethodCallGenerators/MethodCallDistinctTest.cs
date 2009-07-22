@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer.MethodCal
     [Test]
     public void Distinct ()
     {
-      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateQuerySource());
+      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
       var methodInfo = ReflectionUtility.GetMethod (() => Queryable.Distinct (query));
       IEvaluation evaluation = new NewObject (
           typeof (Student).GetConstructor (Type.EmptyTypes),

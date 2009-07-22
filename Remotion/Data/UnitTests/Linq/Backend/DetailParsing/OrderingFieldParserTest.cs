@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     [Test]
     public void SimpleOrderingClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     [Test]
     public void TwoOrderingClause_FirstClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     [Test]
     public void TwoOrderingClause_SecondClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateQuerySource ());
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.Last ();
       var ordering = orderBy.Orderings.Last ();
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     public void ComplexOrderingClause_FirstOrdering ()
     {
       IQueryable<Student> query =
-          MixedTestQueryGenerator.CreateMultiFromWhereOrderByQuery (ExpressionHelper.CreateQuerySource (), ExpressionHelper.CreateQuerySource ());
+          MixedTestQueryGenerator.CreateMultiFromWhereOrderByQuery (ExpressionHelper.CreateStudentQueryable (), ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.Skip (2).First ();
       var ordering = orderBy.Orderings.First ();
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     public void ComplexOrderingClause_SecondOrdering ()
     {
       IQueryable<Student> query =
-          MixedTestQueryGenerator.CreateMultiFromWhereOrderByQuery (ExpressionHelper.CreateQuerySource (), ExpressionHelper.CreateQuerySource ());
+          MixedTestQueryGenerator.CreateMultiFromWhereOrderByQuery (ExpressionHelper.CreateStudentQueryable (), ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.Skip (2).First ();
       var ordering = orderBy.Orderings.Last ();
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
         + "does not identify a queryable column.")]
     public void OrderingClause_WithNonDBField ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateOrderByNonDBPropertyQuery (ExpressionHelper.CreateQuerySource ());
+      IQueryable<Student> query = OrderByTestQueryGenerator.CreateOrderByNonDBPropertyQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     [Test]
     public void JoinOrderingClause ()
     {
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateQuerySource_Detail ());
+      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
         + "is not supported because it is a relation member.")]
     public void OrderingOnRelationMemberThrows()
     {
-      IQueryable<Student_Detail> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (ExpressionHelper.CreateQuerySource_Detail ());
+      IQueryable<Student_Detail> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (ExpressionHelper.CreateStudentDetailQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();

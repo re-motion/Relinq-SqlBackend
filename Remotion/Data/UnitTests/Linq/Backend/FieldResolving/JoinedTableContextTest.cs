@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     [Test]
     public void GetColumnSource ()
     {
-      IQueryable querySource = ExpressionHelper.CreateQuerySource ();
+      IQueryable querySource = ExpressionHelper.CreateStudentQueryable ();
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ("s1", typeof (Student), querySource);
       Assert.That (_context.GetColumnSource (fromClause), Is.EqualTo (new Table ("studentTable", "s1")));

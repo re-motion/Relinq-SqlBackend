@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
     [Test]
     public void CheckNumberOfArguments_Succeed ()
     {
-      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateQuerySource ());
+      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateStudentQueryable ());
       DetailParserUtility.CheckNumberOfArguments (selectExpression, "Select", 2);
     }
 
@@ -36,14 +36,14 @@ namespace Remotion.Data.UnitTests.Linq.Backend
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected at least 1 argument for Select method call, found '2 arguments'.")]
     public void CheckNumberOfArguments_Fail ()
     {
-      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateQuerySource ());
+      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateStudentQueryable ());
       DetailParserUtility.CheckNumberOfArguments (selectExpression, "Select", 1);
     }
 
     [Test]
     public void CheckParameterType_Succeed ()
     {
-      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateQuerySource ());
+      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateStudentQueryable ());
       DetailParserUtility.CheckParameterType<ConstantExpression> (selectExpression, "Select", 0);
     }
 
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend
         + "'ConstantExpression (TestQueryable<Student>())'.")]
     public void CheckParameterType_Fail ()
     {
-      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateQuerySource ());
+      MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateStudentQueryable ());
       DetailParserUtility.CheckParameterType<ParameterExpression> (selectExpression, "Select", 0);
     }
   }
