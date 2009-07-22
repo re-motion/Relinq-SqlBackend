@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       visitor.VisitConstant (constant);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz @2, @3, @4, @5"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (@2, @3, @4, @5)"));
     }
 
     [Test]
@@ -290,44 +290,6 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       visitor.VisitSubQuery (subQuery);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (SELECT [s].[FirstColumn] FROM [studentTable] [s]) [sub_alias]"));
-    }
-
-    [Test]
-    public void VisitContainsCriterion ()
-    {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
-
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable();
-      IQueryable<string> query = SelectTestQueryGenerator.CreateSimpleQuery_WithProjection (source);
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
-
-      var subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, null);
-      var containsCriterion = new ContainsCriterion (subQuery, new Constant ("foo"));
-
-      visitor.VisitContainsCriterion (containsCriterion);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz @2 IN (SELECT [s].[FirstColumn] FROM [studentTable] [s])"));
-      Assert.That (_commandParameters[1], Is.EqualTo (new CommandParameter ("@2", "foo")));
-    }
-
-    [Test]
-    public void VisitContainsCriterion_WithConstantFromSource ()
-    {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
-
-      var mainFromClause = new MainFromClause ("i", typeof (int), Expression.Constant (new[] {1, 2, 3}));
-      var model = new QueryModel (mainFromClause, new SelectClause (new QuerySourceReferenceExpression (mainFromClause)));
-
-      var subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, null);
-      var containsCriterion = new ContainsCriterion (subQuery, new Constant ("foo"));
-
-      visitor.VisitContainsCriterion (containsCriterion);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz @2 IN (@3, @4, @5)"));
-      Assert.That (_commandParameters[1], Is.EqualTo (new CommandParameter ("@2", "foo")));
-      Assert.That (_commandParameters[2], Is.EqualTo (new CommandParameter ("@3", 1)));
-      Assert.That (_commandParameters[3], Is.EqualTo (new CommandParameter ("@4", 2)));
-      Assert.That (_commandParameters[4], Is.EqualTo (new CommandParameter ("@5", 3)));
     }
 
     [Test]

@@ -15,10 +15,7 @@
 // 
 using System;
 using System.Collections;
-using System.Linq;
-using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 
@@ -140,30 +137,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       }
     }
 
-    public void VisitContainsCriterion (ContainsCriterion containsCriterion)
-    {
-      CommandBuilder.AppendEvaluation (containsCriterion.Item);
-      CommandBuilder.Append (" IN ");
-
-      var subQueryModel = containsCriterion.SubQuery.QueryModel;
-      if (subQueryModel.MainFromClause.FromExpression is ConstantExpression
-          && !typeof (IQueryable).IsAssignableFrom(subQueryModel.MainFromClause.FromExpression.Type)
-          && subQueryModel.BodyClauses.Count == 0 
-          && subQueryModel.ResultOperators.Count == 0
-          && subQueryModel.SelectClause.Selector is QuerySourceReferenceExpression
-          && ((QuerySourceReferenceExpression) subQueryModel.SelectClause.Selector).ReferencedQuerySource == subQueryModel.MainFromClause)
-      {
-        var constant = (IEnumerable) ((ConstantExpression) subQueryModel.MainFromClause.FromExpression).Value;
-        CommandBuilder.Append ("(");
-        AppendConstantCollection (constant);
-        CommandBuilder.Append (")");
-      }
-      else
-      {
-        VisitSubQuery (containsCriterion.SubQuery);
-      }
-    }
-
     public void VisitMethodCall (MethodCall methodCall)
     {
       ArgumentUtility.CheckNotNull ("methodCall", methodCall);
@@ -185,6 +158,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     private void AppendConstantCollection (IEnumerable enumerable)
     {
+      CommandBuilder.Append ("(");
       bool first = true;
       foreach (var cons in enumerable)
       {
@@ -194,6 +168,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         new Constant (cons).Accept (this);
         first = false;
       }
+      CommandBuilder.Append (")");
     }
   }
 }

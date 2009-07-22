@@ -76,9 +76,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       else
       {
         _commandBuilder.AppendEvaluation (right);
-        _commandBuilder.Append (" IN (");
+        _commandBuilder.Append (" IN ");
         _commandBuilder.AppendEvaluation (left);
-        _commandBuilder.Append (")");
       }
     }
 

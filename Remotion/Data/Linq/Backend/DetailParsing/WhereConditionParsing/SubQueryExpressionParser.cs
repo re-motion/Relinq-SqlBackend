@@ -37,20 +37,50 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
     {
       ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
 
-      var containsResultOperator = subQueryExpression.QueryModel.ResultOperators.LastOrDefault() as ContainsResultOperator;
+      var subQueryModel = subQueryExpression.QueryModel;
+      var containsResultOperator = subQueryModel.ResultOperators.LastOrDefault() as ContainsResultOperator;
       if (containsResultOperator != null)
-      {
-        var queryModelClone = subQueryExpression.QueryModel.Clone();
-        queryModelClone.ResultOperators.RemoveAt (queryModelClone.ResultOperators.Count - 1);
-        var item = _parserRegistry.GetParser (containsResultOperator.Item).Parse (containsResultOperator.Item, parseContext);
+        return ParseSubQueryWithContainsOperator(subQueryModel, containsResultOperator, parseContext);
+      else
+        return new SubQuery (subQueryModel, ParseMode.SubQueryInWhere, null);
+    }
 
-        return new ContainsCriterion (new SubQuery (queryModelClone, ParseMode.SubQueryInWhere, null), item);
+    private ICriterion ParseSubQueryWithContainsOperator (QueryModel subQueryModel, ContainsResultOperator containsResultOperator, ParseContext parseContext)
+    {
+      var item = _parserRegistry.GetParser (containsResultOperator.Item).Parse (containsResultOperator.Item, parseContext);
+
+      var queryModelClone = subQueryModel.Clone ();
+      queryModelClone.ResultOperators.RemoveAt (queryModelClone.ResultOperators.Count - 1);
+
+      var constantFromExpression = GetConstantFromExpression (queryModelClone);
+      if (constantFromExpression != null)
+      {
+        var constantValue = _parserRegistry.GetParser (constantFromExpression).Parse (constantFromExpression, parseContext);
+        return new BinaryCondition (constantValue, item, BinaryCondition.ConditionKind.Contains);
       }
       else
       {
-        return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
+        return new BinaryCondition (new SubQuery (queryModelClone, ParseMode.SubQueryInWhere, null), item, BinaryCondition.ConditionKind.Contains);
       }
     }
+
+    private ConstantExpression GetConstantFromExpression (QueryModel subQueryModel)
+    {
+      if (subQueryModel.MainFromClause.FromExpression is ConstantExpression
+          && !typeof (IQueryable).IsAssignableFrom (subQueryModel.MainFromClause.FromExpression.Type)
+          && subQueryModel.BodyClauses.Count == 0
+          && subQueryModel.ResultOperators.Count == 0
+          && subQueryModel.SelectClause.Selector is QuerySourceReferenceExpression
+          && ((QuerySourceReferenceExpression) subQueryModel.SelectClause.Selector).ReferencedQuerySource == subQueryModel.MainFromClause)
+      {
+        return (ConstantExpression) subQueryModel.MainFromClause.FromExpression;
+      }
+      else
+      {
+        return null;
+      }
+    }
+
 
     public bool CanParse (Expression expression)
     {

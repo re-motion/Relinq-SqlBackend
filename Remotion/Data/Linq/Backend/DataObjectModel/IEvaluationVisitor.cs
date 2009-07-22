@@ -26,7 +26,6 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     void VisitColumn (Column column);
     void VisitBinaryCondition (BinaryCondition binaryCondition);
     void VisitSubQuery (SubQuery subQuery);
-    void VisitContainsCriterion (ContainsCriterion containsCriterion);
     void VisitMethodCall (MethodCall methodCall);
     void VisitNewObjectEvaluation (NewObject newObject);
   }
