@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
@@ -26,6 +27,8 @@ using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 
@@ -312,9 +315,8 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
 
-      var query = from i in new[] { 1, 2, 3 }.AsQueryable() select i;
-      
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      var mainFromClause = new MainFromClause ("i", typeof (int), Expression.Constant (new[] {1, 2, 3}));
+      var model = new QueryModel (mainFromClause, new SelectClause (new QuerySourceReferenceExpression (mainFromClause)));
 
       var subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, null);
       var containsCriterion = new ContainsCriterion (subQuery, new Constant ("foo"));

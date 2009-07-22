@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -145,7 +146,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       CommandBuilder.Append (" IN ");
 
       var subQueryModel = containsCriterion.SubQuery.QueryModel;
-      if (subQueryModel.MainFromClause.FromExpression is ConstantExpression 
+      if (subQueryModel.MainFromClause.FromExpression is ConstantExpression
+          && !typeof (IQueryable).IsAssignableFrom(subQueryModel.MainFromClause.FromExpression.Type)
           && subQueryModel.BodyClauses.Count == 0 
           && subQueryModel.ResultOperators.Count == 0
           && subQueryModel.SelectClause.Selector is QuerySourceReferenceExpression
@@ -189,7 +191,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         if (!first)
           CommandBuilder.Append (", ");
 
-        VisitConstant (new Constant (cons));
+        new Constant (cons).Accept (this);
         first = false;
       }
     }

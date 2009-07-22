@@ -60,18 +60,17 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
       var parsers = whereConditionParserRegistry.GetParsers (typeof (MethodCallExpression)).ToArray ();
       Assert.That (parsers.SingleOrDefault (p => p.GetType () == typeof (MethodCallExpressionParser)), Is.Not.Null);
       Assert.That (parsers.SingleOrDefault (p => p.GetType () == typeof (LikeParser)), Is.Not.Null);
-      Assert.That (parsers.SingleOrDefault (p => p.GetType () == typeof (ContainsParser)), Is.Not.Null);
       Assert.That (parsers.SingleOrDefault (p => p.GetType () == typeof (ContainsFullTextParser)), Is.Not.Null);
     }
 
     [Test]
     public void RegisterNewMethodCallExpressionParser_RegisterFirst ()
     {
-      Assert.That (_whereConditionParserRegistry.GetParsers (typeof (MethodCallExpression)).Count (), Is.EqualTo (4));
+      Assert.That (_whereConditionParserRegistry.GetParsers (typeof (MethodCallExpression)).Count (), Is.EqualTo (3));
       
       var likeParser = new LikeParser (_whereConditionParserRegistry);
       _whereConditionParserRegistry.RegisterParser (typeof (MethodCallExpression), likeParser);
-      Assert.That (_whereConditionParserRegistry.GetParsers (typeof (MethodCallExpression)).Count (), Is.EqualTo (5));
+      Assert.That (_whereConditionParserRegistry.GetParsers (typeof (MethodCallExpression)).Count (), Is.EqualTo (4));
       Assert.That (_whereConditionParserRegistry.GetParsers (typeof (MethodCallExpression)).First (), Is.SameAs (likeParser));
     }
     

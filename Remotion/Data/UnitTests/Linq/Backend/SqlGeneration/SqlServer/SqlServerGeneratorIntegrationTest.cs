@@ -477,7 +477,6 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
-    [Ignore ("TODO 1313")]
     public void SimpleSubQueryInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
@@ -487,12 +486,11 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN ((SELECT [s2].[IDColumn] FROM [studentTable] [s2]))", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.Statement);
       Assert.That (result.Parameters, Is.Empty);
     }
 
     [Test]
-    [Ignore ("TODO 1313")]
     public void SubQueryWithConstantInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
@@ -502,12 +500,11 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN ((SELECT [s2].[IDColumn] FROM [studentTable] [s2]))", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", 5) }));
     }
 
     [Test]
-    [Ignore ("TODO 1313")]
     public void SubQuerySelectingColumnsWithConstantInWhereClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
@@ -517,7 +514,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN ((SELECT [s2].[FirstColumn] FROM [studentTable] [s2]))", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[FirstColumn] FROM [studentTable] [s2])", result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", "Hugo") }));
     }
 

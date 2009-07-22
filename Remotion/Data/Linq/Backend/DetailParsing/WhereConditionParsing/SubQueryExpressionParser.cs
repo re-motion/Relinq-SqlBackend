@@ -25,6 +25,14 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   public class SubQueryExpressionParser : IWhereConditionParser
   {
+    private readonly WhereConditionParserRegistry _parserRegistry;
+
+    public SubQueryExpressionParser (WhereConditionParserRegistry parserRegistry)
+    {
+      ArgumentUtility.CheckNotNull ("parserRegistry", parserRegistry);
+      _parserRegistry = parserRegistry;
+    }
+
     public ICriterion Parse (SubQueryExpression subQueryExpression, ParseContext parseContext)
     {
       ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
@@ -34,7 +42,7 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
       {
         var queryModelClone = subQueryExpression.QueryModel.Clone();
         queryModelClone.ResultOperators.RemoveAt (queryModelClone.ResultOperators.Count - 1);
-        var item = new Constant (containsResultOperator.Item); // TODO 1313: Parse this as soon as Item is an Expression
+        var item = _parserRegistry.GetParser (containsResultOperator.Item).Parse (containsResultOperator.Item, parseContext);
 
         return new ContainsCriterion (new SubQuery (queryModelClone, ParseMode.SubQueryInWhere, null), item);
       }

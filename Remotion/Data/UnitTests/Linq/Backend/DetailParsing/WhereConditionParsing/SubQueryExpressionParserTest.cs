@@ -34,12 +34,16 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
   [TestFixture]
   public class SubQueryExpressionParserTest : DetailParserTestBase
   {
+    private WhereConditionParserRegistry _whereConditionParserRegistry;
+
     [Test]
     public void CanParse_SubQueryExpression ()
     {
       var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel());
 
-      var subQueryExpressionParser = new SubQueryExpressionParser();
+      var databaseInfo = StubDatabaseInfo.Instance;
+      _whereConditionParserRegistry = new WhereConditionParserRegistry (databaseInfo);
+      var subQueryExpressionParser = new SubQueryExpressionParser(_whereConditionParserRegistry);
       Assert.That (subQueryExpressionParser.CanParse (subQueryExpression), Is.True);
     }
 
@@ -55,7 +59,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
       parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
       parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
 
-      var subQueryExpressionParser = new SubQueryExpressionParser();
+      var subQueryExpressionParser = new SubQueryExpressionParser (_whereConditionParserRegistry);
 
       var expectedSubQuery = new SubQuery (subQueryModel, ParseMode.SubQueryInSelect, null);
 
@@ -68,7 +72,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
     public void ParseSubQuery_WithContains ()
     {
       QueryModel subQueryModel = ExpressionHelper.CreateQueryModel ();
-      subQueryModel.ResultOperators.Add (new ContainsResultOperator (20));
+      subQueryModel.ResultOperators.Add (new ContainsResultOperator (Expression.Constant (20)));
 
       var subQueryExpression = new SubQueryExpression (subQueryModel);
 
@@ -77,7 +81,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
       parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
       parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
 
-      var subQueryExpressionParser = new SubQueryExpressionParser ();
+      var subQueryExpressionParser = new SubQueryExpressionParser (_whereConditionParserRegistry);
 
       ICriterion actualCriterion = subQueryExpressionParser.Parse (subQueryExpression, ParseContext);
 
