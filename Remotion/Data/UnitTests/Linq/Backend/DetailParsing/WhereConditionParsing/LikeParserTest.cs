@@ -18,11 +18,10 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
-using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing

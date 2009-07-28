@@ -19,7 +19,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing;
-using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.SelectProjectionParsing

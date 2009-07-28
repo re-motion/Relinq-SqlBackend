@@ -25,10 +25,10 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
 

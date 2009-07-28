@@ -14,14 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
 {

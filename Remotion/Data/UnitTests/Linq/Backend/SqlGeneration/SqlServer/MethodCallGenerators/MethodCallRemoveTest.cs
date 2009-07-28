@@ -14,13 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 

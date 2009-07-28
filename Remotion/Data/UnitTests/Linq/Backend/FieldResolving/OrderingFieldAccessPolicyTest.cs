@@ -14,13 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.FieldResolving;
-using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {

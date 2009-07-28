@@ -17,15 +17,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.Linq.TestDomain;
-using Rhino.Mocks;
-using Remotion.Data.Linq.Backend.DataObjectModel;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
 {

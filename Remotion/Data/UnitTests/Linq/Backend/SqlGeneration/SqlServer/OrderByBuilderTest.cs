@@ -15,16 +15,13 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.UnitTests.Linq;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer

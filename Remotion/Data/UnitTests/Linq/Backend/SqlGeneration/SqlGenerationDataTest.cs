@@ -17,10 +17,9 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using System.Linq;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
 {

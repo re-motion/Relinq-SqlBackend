@@ -13,15 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Development.UnitTesting;
 

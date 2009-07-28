@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
-using Remotion.Data.Linq.Clauses.Expressions;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing

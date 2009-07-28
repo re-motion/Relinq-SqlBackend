@@ -18,16 +18,16 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
+using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 using Rhino.Mocks;
-using Remotion.Collections;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.FieldResolving;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
