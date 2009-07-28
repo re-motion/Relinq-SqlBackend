@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
       var model = new QueryModel (ExpressionHelper.CreateMainFromClause(), ExpressionHelper.CreateSelectClause());
       var sqe = new SubQueryExpression (model);
 
-      Assert.That (sqe.Type, Is.EqualTo (model.GetResultType()));
+      Assert.That (sqe.Type, Is.EqualTo (model.GetOutputDataInfo ().DataType));
     }
 
     [Test]
