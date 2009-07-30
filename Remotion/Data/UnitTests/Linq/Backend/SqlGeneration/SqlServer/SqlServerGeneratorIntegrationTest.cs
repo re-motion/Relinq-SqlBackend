@@ -447,6 +447,19 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
+    public void SimpleSubQueryInMainFromClause ()
+    {
+      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+
+      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInMainFromClause (source);
+      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
+
+      CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
+
+      Assert.AreEqual ("SELECT [s].* FROM (SELECT TOP 1 [s2].* FROM [studentTable] [s2]) [s]", result.Statement);
+    }
+
+    [Test]
     public void SimpleSubQueryInAdditionalFromClause ()
     {
       IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();

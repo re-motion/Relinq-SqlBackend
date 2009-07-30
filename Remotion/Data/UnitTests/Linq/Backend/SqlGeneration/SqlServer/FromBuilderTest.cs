@@ -17,14 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.Linq.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
@@ -36,7 +33,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     public void CombineTables_SelectsJoinsPerTable()
     {
       var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      var fromBuilder = new FromBuilder (commandBuilder);
 
       var table1 = new Table ("s1", "s1_alias");
       var table2 = new Table ("s2", "s2_alias");
@@ -56,7 +53,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     public void CombineTables_WithJoin ()
     {
       var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      var fromBuilder = new FromBuilder (commandBuilder);
 
       var table1 = new Table ("s1", "s1_alias");
       var table2 = new Table ("s2", "s2_alias");
@@ -77,7 +74,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var commandBuilder = new CommandBuilder (
           new StringBuilder(), new List<CommandParameter>(), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
+      var fromBuilder = new FromBuilder (commandBuilder);
 
       // table2.table1.table3
 
@@ -112,55 +109,40 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
       var mockRepository = new MockRepository();
 
       var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel(), ParseMode.SubQueryInFrom, "sub_alias");
-      var table1 = new Table ("s1", "s1_alias");
-      var tables = new List<IColumnSource> { table1, subQuery };
+      var tables = new List<IColumnSource> { new Table ("s1", "s1_alias"), subQuery };
 
-      var commandBuilder = new CommandBuilder (
-          new StringBuilder(), new List<CommandParameter>(), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      commandBuilder.AddParameter (1);
+      var commandBuilderMock = mockRepository.StrictMock<ICommandBuilder> ();
 
-      var fromBuilderMock = mockRepository.StrictMock<FromBuilder> (commandBuilder, StubDatabaseInfo.Instance);
-      var subQueryGeneratorMock = mockRepository.StrictMock<ISqlGenerator>();
+      commandBuilderMock.Expect (mock => mock.Append ("FROM "));
+      commandBuilderMock.Expect (mock => mock.Append ("[s1] [s1_alias]"));
+      commandBuilderMock.Expect (mock => mock.Append (" CROSS APPLY "));
+      commandBuilderMock.Expect (mock => mock.AppendEvaluation (subQuery));
 
-      Expect.Call (
-          PrivateInvoke.InvokeNonPublicMethod (
-              fromBuilderMock,
-              "CreateSqlGeneratorForSubQuery",
-              subQuery,
-              StubDatabaseInfo.Instance,
-              commandBuilder)).Return (subQueryGeneratorMock);
-      Expect.Call (subQueryGeneratorMock.BuildCommand (subQuery.QueryModel)).Do (
-          (Func<QueryModel, CommandData>) delegate
-          {
-            commandBuilder.Append ("x");
-            commandBuilder.AddParameter (0);
-            return new CommandData();
-          });
+      commandBuilderMock.Replay ();
 
-      mockRepository.ReplayAll();
-      fromBuilderMock.BuildFromPart (tables, new JoinCollection());
-      mockRepository.VerifyAll();
-
-      Assert.AreEqual ("FROM [s1] [s1_alias] CROSS APPLY (x) [sub_alias]", commandBuilder.GetCommandText());
-      Assert.That (commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { new CommandParameter ("@1", 1), new CommandParameter ("@2", 0) }));
+      var fromBuilder = new FromBuilder (commandBuilderMock);
+      fromBuilder.BuildFromPart (tables, new JoinCollection ());
+      commandBuilderMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void CreateSqlGeneratorForSubQuery ()
+    public void CombineTables_WithSubqueryInFirstFrom ()
     {
-      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel(), ParseMode.SubQueryInFrom, "sub_alias");
-      var commandBuilder = new CommandBuilder (
-          new StringBuilder(), new List<CommandParameter>(), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder, StubDatabaseInfo.Instance);
-      var subQueryGenerator = (InlineSqlServerGenerator) PrivateInvoke.InvokeNonPublicMethod (
-                                                             fromBuilder,
-                                                             "CreateSqlGeneratorForSubQuery",
-                                                             subQuery,
-                                                             StubDatabaseInfo.Instance,
-                                                             commandBuilder);
-      //Assert.AreSame (subQuery.QueryModel, subQueryGenerator.QueryModel);
-      Assert.AreSame (StubDatabaseInfo.Instance, subQueryGenerator.DatabaseInfo);
-      Assert.AreEqual (ParseMode.SubQueryInFrom, subQueryGenerator.ParseMode);
+      var mockRepository = new MockRepository ();
+
+      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInFrom, "sub_alias");
+      var tables = new List<IColumnSource> { subQuery };
+
+      var commandBuilderMock = mockRepository.StrictMock<ICommandBuilder>();
+
+      commandBuilderMock.Expect (mock => mock.Append ("FROM "));
+      commandBuilderMock.Expect (mock => mock.AppendEvaluation (subQuery));
+
+      commandBuilderMock.Replay ();
+
+      var fromBuilder = new FromBuilder (commandBuilderMock);
+      fromBuilder.BuildFromPart (tables, new JoinCollection ());
+      commandBuilderMock.VerifyAllExpectations ();
     }
   }
 }

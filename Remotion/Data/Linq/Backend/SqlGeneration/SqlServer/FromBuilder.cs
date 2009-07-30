@@ -22,14 +22,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
   public class FromBuilder : IFromBuilder
   {
-    private readonly CommandBuilder _commandBuilder;
-    private readonly IDatabaseInfo _databaseInfo;
+    private readonly ICommandBuilder _commandBuilder;
 
-    public FromBuilder (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public FromBuilder (ICommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       _commandBuilder = commandBuilder;
-      _databaseInfo = databaseInfo;
     }
 
     public void BuildFromPart (List<IColumnSource> fromSources, JoinCollection joins)
@@ -39,33 +37,29 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       bool first = true;
       foreach (IColumnSource fromSource in fromSources)
       {
-        Table table = fromSource as Table;
+        var table = fromSource as Table;
         if (table != null)
-        {
-          if (!first)
-            _commandBuilder.Append (", ");
-          _commandBuilder.Append (SqlServerUtility.GetTableDeclaration (table));
-        }
-        else
-          AppendCrossApply ((SubQuery) fromSource);
+          AppendTable(table, first);
+        else 
+          AppendSubQuery(fromSource, first);
 
         AppendJoinPart (joins[fromSource]);
         first = false;
       }
     }
 
-    private void AppendCrossApply (SubQuery subQuery)
+    private void AppendTable (Table table, bool first)
     {
-      _commandBuilder.Append (" CROSS APPLY (");
-      ISqlGenerator subQueryGenerator = CreateSqlGeneratorForSubQuery (subQuery, _databaseInfo, _commandBuilder);
-      subQueryGenerator.BuildCommand (subQuery.QueryModel);
-      _commandBuilder.Append (") ");
-      _commandBuilder.Append (SqlServerUtility.WrapSqlIdentifier (subQuery.Alias));
+      if (!first)
+        _commandBuilder.Append (", ");
+      _commandBuilder.Append (SqlServerUtility.GetTableDeclaration (table));
     }
 
-    protected virtual ISqlGenerator CreateSqlGeneratorForSubQuery (SubQuery subQuery, IDatabaseInfo databaseInfo, CommandBuilder commandBuilder)
+    private void AppendSubQuery (IColumnSource fromSource, bool first)
     {
-      return new InlineSqlServerGenerator (databaseInfo, commandBuilder, ParseMode.SubQueryInFrom);
+      if (!first)
+        _commandBuilder.Append (" CROSS APPLY ");
+      _commandBuilder.AppendEvaluation ((SubQuery) fromSource);
     }
 
     private void AppendJoinPart (IEnumerable<SingleJoin> joins)

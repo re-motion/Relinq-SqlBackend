@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     public void AppendEvaluation (IEvaluation evaluation)
     {
-      SqlServerEvaluationVisitor visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo, MethodCallRegistry);
+      var visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo, MethodCallRegistry);
       evaluation.Accept (visitor);
     }
 
@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     public CommandParameter AddParameter (object value)
     {
-      CommandParameter parameter = new CommandParameter ("@" + (CommandParameters.Count + 1), value);
+      var parameter = new CommandParameter ("@" + (CommandParameters.Count + 1), value);
       CommandParameters.Add (parameter);
       return parameter;
     }

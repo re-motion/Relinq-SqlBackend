@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     protected override IFromBuilder CreateFromBuilder (SqlServerGenerationContext context)
     {
-      return new FromBuilder (context.CommandBuilder, DatabaseInfo);
+      return new FromBuilder (context.CommandBuilder);
     }
 
     protected override ISelectBuilder CreateSelectBuilder (SqlServerGenerationContext context)
