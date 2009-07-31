@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
     [Test]
     public void ParseSubQuery_WithContains ()
     {
-      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel ();
+      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel (ExpressionHelper.CreateMainFromClause());
       subQueryModel.ResultOperators.Add (new ContainsResultOperator (Expression.Constant (20)));
 
       var subQueryExpression = new SubQueryExpression (subQueryModel);
