@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
       _selectProjectionParserRegistry = new SelectProjectionParserRegistry (_databaseInfo, _parseMode);
       
       _parseContext = new ParseContext (
-          ExpressionHelper.CreateQueryModel(), 
+          ExpressionHelper.CreateQueryModel_Student(), 
           new List<FieldDescriptor>(), 
           new JoinedTableContext(StubDatabaseInfo.Instance));
     }
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     {
       var selectProjectionParserRegistry = new SelectProjectionParserRegistry (_databaseInfo, _parseMode);
 
-      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel());
+      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student());
       var parser = selectProjectionParserRegistry.GetParser (subQueryExpression);
       Assert.That (parser, Is.Not.Null);
       parser.Parse (subQueryExpression, _parseContext);

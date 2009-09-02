@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void BuildCommand_CallsPartBuilders()
     {
-      var query = ExpressionHelper.CreateQueryModel ();
+      var query = ExpressionHelper.CreateQueryModel_Student ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
 
       var operators = new List<ResultOperatorBase>();
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void BuildCommand_ReturnsCommandAndParameters ()
     {
-      var query = ExpressionHelper.CreateQueryModel ();
+      var query = ExpressionHelper.CreateQueryModel_Student ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
       var operators = new List<ResultOperatorBase> ();
       // expected
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The concrete subclass did not set a select evaluation.")]
     public void BuildCommand_ThrowsOnNullSelect ()
     {
-      var query = ExpressionHelper.CreateQueryModel ();
+      var query = ExpressionHelper.CreateQueryModel_Student ();
       var generator = _mockRepository.PartialMock<SqlGeneratorMock> (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, 
           _orderByBuilder, ParseMode.TopLevelQuery);
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_PassesQueryToVisitor()
     {
-      var query = ExpressionHelper.CreateQueryModel ();
+      var query = ExpressionHelper.CreateQueryModel_Student ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.TopLevelQuery);
       var operators = new List<ResultOperatorBase> ();
 
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_WithDifferentParseContext ()
     {
-      var query = ExpressionHelper.CreateQueryModel ();
+      var query = ExpressionHelper.CreateQueryModel_Student ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilder, _fromBuilder, _whereBuilder, _orderByBuilder, ParseMode.SubQueryInWhere);
       var operators = new List<ResultOperatorBase> ();
 

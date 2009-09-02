@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
       _context = new JoinedTableContext (StubDatabaseInfo.Instance);
       _parseMode = new ParseMode();
       _detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
-      _queryModel = ExpressionHelper.CreateQueryModel ();
+      _queryModel = ExpressionHelper.CreateQueryModel_Student ();
     }
 
     [Test]
@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [ExpectedException (typeof (NotSupportedException))]
     public void VisitJoinClause ()
     {
-      var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (ExpressionHelper.CreateQueryModel());
+      var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (ExpressionHelper.CreateQueryModel_Student());
       sqlGeneratorVisitor.VisitJoinClause (ExpressionHelper.CreateJoinClause (), _queryModel, 1);
     }
 
@@ -395,7 +395,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
     [ExpectedException (typeof (NotSupportedException))]
     public void VisitGroupJoinClause ()
     {
-      var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (ExpressionHelper.CreateQueryModel ());
+      var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (ExpressionHelper.CreateQueryModel_Student ());
       sqlGeneratorVisitor.VisitGroupJoinClause (ExpressionHelper.CreateGroupJoinClause (), _queryModel, 1);
     }
 

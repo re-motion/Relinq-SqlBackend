@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void Initialize_DontOverwriteExpressionType ()
     {
-      Assert.That (Enum.IsDefined (typeof (ExpressionType), new SubQueryExpression (ExpressionHelper.CreateQueryModel ()).NodeType), Is.False);
+      Assert.That (Enum.IsDefined (typeof (ExpressionType), new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student ()).NodeType), Is.False);
     }
   }
 }

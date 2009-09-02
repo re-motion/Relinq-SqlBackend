@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     [Test]
     public void ContainsWithSubQuery ()
     {
-      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInSelect, null);
+      SubQuery subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student (), ParseMode.SubQueryInSelect, null);
       BinaryCondition binaryCondition = new BinaryCondition(subQuery, new Constant(0), BinaryCondition.ConditionKind.Contains);
       Assert.AreSame (subQuery, binaryCondition.Left);
     }

@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     [SetUp]
     public void SetUp ()
     {
-      _queryModel = ExpressionHelper.CreateQueryModel ();
+      _queryModel = ExpressionHelper.CreateQueryModel_Student ();
       _context = new JoinedTableContext (StubDatabaseInfo.Instance);
     }
 
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     [Test]
     public void GetColumnSource_SubQuery ()
     {
-      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel ());
+      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student ());
       var fromClause = new AdditionalFromClause ("s", typeof (Student), subQueryExpression);
 
       IColumnSource columnSource = _context.GetColumnSource (fromClause);

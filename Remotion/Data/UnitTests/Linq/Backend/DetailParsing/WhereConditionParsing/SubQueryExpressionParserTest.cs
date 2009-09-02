@@ -52,14 +52,14 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsi
     [Test]
     public void CanParse_SubQueryExpression ()
     {
-      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel());
+      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student());
       Assert.That (_subQueryExpressionParser.CanParse (subQueryExpression), Is.True);
     }
 
     [Test]
     public void ParseSubQuery ()
     {
-      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel();
+      QueryModel subQueryModel = ExpressionHelper.CreateQueryModel_Student();
       var subQueryExpression = new SubQueryExpression (subQueryModel);
 
       var expectedSubQuery = new SubQuery (subQueryModel, ParseMode.SubQueryInSelect, null);

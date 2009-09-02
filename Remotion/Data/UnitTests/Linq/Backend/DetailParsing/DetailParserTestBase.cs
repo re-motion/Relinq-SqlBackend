@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     [SetUp]
     public virtual void SetUp ()
     {
-      QueryModel = ExpressionHelper.CreateQueryModel ();
+      QueryModel = ExpressionHelper.CreateQueryModel_Student ();
       ParseContext = new ParseContext(QueryModel, new List<FieldDescriptor>(), new JoinedTableContext (StubDatabaseInfo.Instance));
 
       _studentClause = ExpressionHelper.CreateMainFromClause_Student ();

@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var mockRepository = new MockRepository();
 
-      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel(), ParseMode.SubQueryInFrom, "sub_alias");
+      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInFrom, "sub_alias");
       var tables = new List<IColumnSource> { new Table ("s1", "s1_alias"), subQuery };
 
       var commandBuilderMock = mockRepository.StrictMock<ICommandBuilder> ();
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
     {
       var mockRepository = new MockRepository ();
 
-      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel (), ParseMode.SubQueryInFrom, "sub_alias");
+      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student (), ParseMode.SubQueryInFrom, "sub_alias");
       var tables = new List<IColumnSource> { subQuery };
 
       var commandBuilderMock = mockRepository.StrictMock<ICommandBuilder>();
