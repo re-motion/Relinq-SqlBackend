@@ -20,9 +20,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 {
   [TestFixture]
   public class SelectedObjectActivatorTest

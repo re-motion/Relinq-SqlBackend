@@ -24,9 +24,9 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class SelectBuilderTest

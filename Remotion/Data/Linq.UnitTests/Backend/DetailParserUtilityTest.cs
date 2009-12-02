@@ -19,9 +19,9 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Remotion.Data.UnitTests.Linq.Backend
+namespace Remotion.Data.Linq.UnitTests.Backend
 {
   [TestFixture]
   public class DetailParserUtilityTest

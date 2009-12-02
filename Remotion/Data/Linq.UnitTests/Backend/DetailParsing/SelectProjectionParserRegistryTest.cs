@@ -27,9 +27,9 @@ using Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
+namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 {
   [TestFixture]
   public class SelectProjectionParserRegistryTest

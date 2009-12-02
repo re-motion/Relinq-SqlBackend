@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCallGenerators
 {
   [TestFixture]
   public class MethodCallSubstringTest

@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
+namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
   [TestFixture]
   public class SelectFieldAccessPolicyTest : FieldAccessPolicyTestBase

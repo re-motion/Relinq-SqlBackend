@@ -21,9 +21,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
+namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsing
 {
   [TestFixture]
   public class UnaryExpressionParserTest : DetailParserTestBase

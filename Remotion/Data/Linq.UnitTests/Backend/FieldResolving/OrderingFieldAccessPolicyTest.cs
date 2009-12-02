@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
+namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
   [TestFixture]
   public class OrderingFieldAccessPolicyTest : FieldAccessPolicyTestBase
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.UnitTests.Linq.TestDomain.Student_Detail.Student' "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Student' "
         + "is not supported because it is a relation member.")]
     public void AdjustMemberInfosForRelation ()
     {

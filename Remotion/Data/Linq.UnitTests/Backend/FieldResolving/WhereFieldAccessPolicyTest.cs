@@ -22,9 +22,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
+namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
   [TestFixture]
   public class WhereFieldAccessPolicyTest : FieldAccessPolicyTestBase

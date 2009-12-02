@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 {
   public class SqlGeneratorMockContext : ISqlGenerationContext
   {

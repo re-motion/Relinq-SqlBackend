@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 {
   public class StubParameterCollection : DbParameterCollection
   {

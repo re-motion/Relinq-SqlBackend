@@ -28,10 +28,10 @@ using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.UnitTests.Linq.TestDomain;
-using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
+using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 {
   [TestFixture]
   public class SqlGeneratorVisitorIntegrationTest

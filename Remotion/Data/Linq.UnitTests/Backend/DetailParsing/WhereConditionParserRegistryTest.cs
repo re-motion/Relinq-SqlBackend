@@ -23,9 +23,9 @@ using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
+namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 {
   [TestFixture]
   public class WhereConditionParserRegistryTest

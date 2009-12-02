@@ -26,10 +26,10 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.UnitTests.Linq.TestDomain;
-using Remotion.Data.UnitTests.Linq.TestQueryGenerators;
+using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
+namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 {
   [TestFixture]
   public class OrderingFieldParserTest
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.TestDomain.Student.NonDBProperty' "
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBProperty' "
         + "does not identify a queryable column.")]
     public void OrderingClause_WithNonDBField ()
     {
@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.UnitTests.Linq.TestDomain.Student_Detail.Student' "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Student' "
         + "is not supported because it is a relation member.")]
     public void OrderingOnRelationMemberThrows()
     {

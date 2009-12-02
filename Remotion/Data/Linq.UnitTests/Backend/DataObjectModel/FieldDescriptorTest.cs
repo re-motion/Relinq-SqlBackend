@@ -20,9 +20,9 @@ using NUnit.Framework;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
+namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
 {
   [TestFixture]
   public class FieldDescriptorTest
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
     }
     
     [Test]
-    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.UnitTests.Linq.TestDomain.Student.First' "
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' "
       + "does not identify a queryable column.")]
     public void GetMandatoryColumnWithException ()
     {

@@ -20,10 +20,10 @@ using System.Data.Common;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 {
   [TestFixture]
   public class SqlUtilityTest

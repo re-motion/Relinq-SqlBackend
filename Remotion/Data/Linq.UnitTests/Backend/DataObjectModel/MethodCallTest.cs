@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DataObjectModel
+namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
 {
   [TestFixture]
   public class MethodCallTest

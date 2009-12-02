@@ -25,9 +25,9 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.SelectProjectionParsing
+namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionParsing
 {
   [TestFixture]
   public class MethodCallExpressionParserTest : DetailParserTestBase
