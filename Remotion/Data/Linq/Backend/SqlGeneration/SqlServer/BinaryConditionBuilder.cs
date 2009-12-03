@@ -17,7 +17,7 @@
 using System;
 using System.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
           _commandBuilder.Append (" IS NULL");
           break;
         default:
-          Assertion.IsTrue (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
+          Remotion.Utilities.Assertion.IsTrue (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
           _commandBuilder.Append (" IS NOT NULL");
           break;
       }

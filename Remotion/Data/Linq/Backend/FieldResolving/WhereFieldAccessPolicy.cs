@@ -21,7 +21,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       if (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, accessedMember))
       {
         MemberInfo primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (
-            _databaseInfo, Utilities.ReflectionUtility.GetFieldOrPropertyType (accessedMember));
+            _databaseInfo, Remotion.Utilities.ReflectionUtility.GetFieldOrPropertyType (accessedMember));
         return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, joinMembers.Concat (new[] { accessedMember }));
       }
       else

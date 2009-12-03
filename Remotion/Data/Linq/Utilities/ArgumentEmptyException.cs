@@ -15,21 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Utilities;
+using System.Runtime.Serialization;
 
-namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators
+namespace Remotion.Data.Linq.Utilities
 {
-  public class MethodCallUpper : IMethodCallSqlGenerator
+  /// <summary>
+  /// This exception is thrown if an argument is empty although it must have a content.
+  /// </summary>
+  [Serializable]
+  public class ArgumentEmptyException : ArgumentException
   {
-    public void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder)
+    public ArgumentEmptyException (string paramName)
+      : base (FormatMessage (paramName), paramName)
     {
-      ArgumentUtility.CheckNotNull ("methodCall", methodCall);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+    }
 
-      commandBuilder.Append ("UPPER(");
-      commandBuilder.AppendEvaluation (methodCall.TargetObject);
-      commandBuilder.Append (")");
+    public ArgumentEmptyException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
+    {
+    }
+
+    private static string FormatMessage (string paramName)
+    {
+      return string.Format ("Parameter '{0}' cannot be empty.", paramName);
     }
   }
 }

@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Text;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return FirstSource.GetHashCode() ^ EqualityUtility.GetRotatedHashCode (Joins);
+      return FirstSource.GetHashCode () ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode (Joins);
     }
 
     public override string ToString ()

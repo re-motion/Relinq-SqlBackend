@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Data.Linq.Utilities;
 using Remotion.Text;
-using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (EvaluationMethodInfo, TargetObject, EqualityUtility.GetRotatedHashCode (Arguments));
+      return Remotion.Utilities.EqualityUtility.GetRotatedHashCode (EvaluationMethodInfo, TargetObject, Remotion.Utilities.EqualityUtility.GetRotatedHashCode (Arguments));
     }
   }
 }

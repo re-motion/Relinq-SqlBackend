@@ -23,7 +23,7 @@ using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     {
       if (accessedMember == null)
       {
-        Assertion.IsTrue (joinMembers.Count() == 0);
+        Remotion.Utilities.Assertion.IsTrue (joinMembers.Count () == 0);
         return _policy.AdjustMemberInfosForDirectAccessOfQuerySource (referenceExpression);
       }
       else if (DatabaseInfoUtility.IsRelationMember (DatabaseInfo, accessedMember))

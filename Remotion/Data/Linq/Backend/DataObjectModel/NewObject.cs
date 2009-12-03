@@ -17,8 +17,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Remotion.Data.Linq.Utilities;
 using Remotion.Text;
-using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return ConstructorInfo.GetHashCode() ^ EqualityUtility.GetRotatedHashCode (ConstructorArguments);
+      return ConstructorInfo.GetHashCode () ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode (ConstructorArguments);
     }
 
     public override string ToString ()

@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (Alias, QueryModel);
+      return Remotion.Utilities.EqualityUtility.GetRotatedHashCode (Alias, QueryModel);
     }
 
     public void Accept (IEvaluationVisitor visitor)
