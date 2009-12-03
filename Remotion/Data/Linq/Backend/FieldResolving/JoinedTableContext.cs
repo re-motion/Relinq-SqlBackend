@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       ArgumentUtility.CheckNotNull ("fieldSourcePath", fieldSourcePath);
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      Tuple<FieldSourcePath, MemberInfo> key = Tuple.NewTuple (fieldSourcePath, relationMember);
+      Tuple<FieldSourcePath, MemberInfo> key = new Tuple<FieldSourcePath, MemberInfo> (fieldSourcePath, relationMember);
 
       if (!_joinedTables.Contains (key))
         _joinedTables.Add (key, DatabaseInfoUtility.GetRelatedTable (databaseInfo, relationMember));
