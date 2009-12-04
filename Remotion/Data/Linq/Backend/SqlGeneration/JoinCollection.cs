@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
@@ -28,6 +29,8 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
     public void AddPath (FieldSourcePath fieldSourcePath)
     {
+      ArgumentUtility.CheckNotNull ("fieldSourcePath", fieldSourcePath);
+
       foreach (var join in fieldSourcePath.Joins)
         AddSingleJoin (fieldSourcePath.FirstSource, join);
     }
