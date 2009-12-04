@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
 
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
       MemberInfo member = typeof (Student).GetProperty ("First");
       Column column = new Column (path.FirstSource,"c1");
@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
       OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
 
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
       MemberInfo member = typeof (Student).GetProperty ("First");
       Column column = new Column (path.FirstSource, "c1");

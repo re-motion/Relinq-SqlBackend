@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void MemberNull()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int();
       Column column = new Column();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable();
       FieldDescriptor descriptor = new FieldDescriptor (null, path, column);
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void ColumnNull ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable();
       MemberInfo member = typeof (Student).GetProperty ("First");
       FieldDescriptor descriptor = new FieldDescriptor (member,path, null);
@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void MemberAndColumnNotNull ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ();
       MemberInfo member = typeof (Student).GetProperty ("First");
       Column column = new Column ();
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void GetMandatoryColumn()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ();
       MemberInfo member = typeof (Student).GetProperty ("First");
       Column column = new Column ();
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
       + "does not identify a queryable column.")]
     public void GetMandatoryColumnWithException ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable ();
       MemberInfo member = typeof (Student).GetProperty ("First");
       new FieldDescriptor (member, path, null).GetMandatoryColumn ();

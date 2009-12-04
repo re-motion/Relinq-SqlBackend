@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void GetTableForFromClause_InvalidSource ()
     {
       var ints = new TestQueryable<int> (ExpressionHelper.CreateExecutor());
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause("i", typeof (int) , ints);
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int("i", typeof (int) , ints);
       DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, fromClause);
     }
 

@@ -183,7 +183,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IQueryable querySource = ExpressionHelper.CreateStudentQueryable ();
 
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause ("s1", typeof (Student), querySource);
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ("s1", typeof (Student), querySource);
       Assert.That (_context.GetColumnSource (fromClause), Is.EqualTo (new Table ("studentTable", "s1")));
     }
 
