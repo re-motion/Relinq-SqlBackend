@@ -19,7 +19,6 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
@@ -602,19 +601,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstColumn], [s].[LastColumn] FROM [studentTable] [s]"));
       Assert.That (result.SqlGenerationData.SelectEvaluation, Is.InstanceOfType (typeof (NewObject)));
-    }
-
-    [Test]
-    public void QueryWithNewExpression_AndActivator ()
-    {
-      IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (_source);
-      QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
-      CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstColumn], [s].[LastColumn] FROM [studentTable] [s]"));
-
-      object[] values = new[] { "Hugo", "Boss" };
-      object selectedObject = result.SqlGenerationData.GetSelectedObjectActivator().CreateSelectedObject (values);
-      Assert.That (selectedObject, Is.EqualTo (new Tuple<string, string> ("Hugo", "Boss")));
     }
 
     [Test]

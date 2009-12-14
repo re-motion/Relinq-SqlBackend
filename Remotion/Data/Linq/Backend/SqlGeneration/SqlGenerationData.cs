@@ -18,8 +18,6 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Mixins;
-using Remotion.Reflection;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
@@ -73,11 +71,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       OrderingFields.InsertRange (0, orderingFields);
       foreach (var orderingField in orderingFields)
         Joins.AddPath (orderingField.FieldDescriptor.SourcePath);
-    }
-
-    public SelectedObjectActivator GetSelectedObjectActivator ()
-    {
-      return ObjectFactory.Create<SelectedObjectActivator> (ParamList.Create (SelectEvaluation));
     }
   }
 }
