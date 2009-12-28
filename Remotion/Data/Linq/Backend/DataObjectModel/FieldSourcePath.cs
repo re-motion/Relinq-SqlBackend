@@ -17,8 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Remotion.Text;
-using Remotion.Data.Linq.Utilities;
+using System.Linq;
+using Remotion.Utilities;
+using ArgumentUtility=Remotion.Data.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -72,14 +73,17 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return FirstSource.GetHashCode () ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode (Joins);
+      return FirstSource.GetHashCode() ^ EqualityUtility.GetRotatedHashCode (Joins);
     }
 
     public override string ToString ()
     {
       bool joinsHasElements = Joins.GetEnumerator().MoveNext();
       if (joinsHasElements)
-        return FirstSource.AliasString + "." + SeparatedStringBuilder.Build (".", Joins, join => ((Table) join.RightSide).Name);
+      {
+        return FirstSource.AliasString + "."
+               + Joins.Select (join => ((Table) join.RightSide).Name).Aggregate ((fullString, itemString) => fullString + "." + itemString);
+      }
       else
         return FirstSource.AliasString;
     }
