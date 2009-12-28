@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.Linq.Utilities;
-using Remotion.Text;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -47,7 +46,9 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override string ToString ()
     {
-      string argumentString = SeparatedStringBuilder.Build (", ", Arguments);
+      string argumentString = "";
+      if (Arguments.Count != 0)
+        argumentString = Arguments.Select (item => item.ToString ()).Aggregate (((fullString, itemString) => fullString + ", " + itemString));
       if (TargetObject != null)
         return string.Format ("{0}.{1}({2})", TargetObject, EvaluationMethodInfo.Name, argumentString);
       else
