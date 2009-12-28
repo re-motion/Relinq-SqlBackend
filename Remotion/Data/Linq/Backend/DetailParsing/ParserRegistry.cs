@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Collections;
+using Remotion.Data.Linq.Collections;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
