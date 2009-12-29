@@ -57,7 +57,8 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override string ToString ()
     {
-      return string.Format ("new {0} ({1})", ConstructorInfo.DeclaringType.Name, SeparatedStringBuilder.Build (", ", ConstructorArguments));
+      var constructorArguments = ConstructorArguments.Select (item => item.ToString ()).Aggregate ((fullString, itemString) => fullString + ", " + itemString);
+      return string.Format ("new {0} ({1})", ConstructorInfo.DeclaringType.Name, constructorArguments);
     }
   }
 }
