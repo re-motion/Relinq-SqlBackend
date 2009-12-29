@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
 using Remotion.Collections;
@@ -28,7 +29,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
   public class JoinedTableContext
   {
     private readonly IDatabaseInfo _databaseInfo;
-    private readonly SimpleDataStore<FromClauseBase, IColumnSource> _columnSources = new SimpleDataStore<FromClauseBase, IColumnSource>();
+    private readonly Dictionary<FromClauseBase, IColumnSource> _columnSources = new Dictionary<FromClauseBase, IColumnSource> ();
     private readonly OrderedDictionary _joinedTables = new OrderedDictionary();
 
     public JoinedTableContext (IDatabaseInfo databaseInfo)
@@ -68,7 +69,18 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     public IColumnSource GetColumnSource (FromClauseBase fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      return _columnSources.GetOrCreateValue (fromClause, CreateColumnSource);
+      return GetOrCreateValue (_columnSources, fromClause, CreateColumnSource);
+    }
+
+    private IColumnSource GetOrCreateValue (Dictionary<FromClauseBase, IColumnSource> dictionary, FromClauseBase key, Func<FromClauseBase, IColumnSource> creator)
+    {
+      IColumnSource value;
+      if (!dictionary.TryGetValue (key, out value))
+      {
+        value = creator (key);
+        dictionary.Add (key, value);
+      }
+      return value;
     }
 
     private IColumnSource CreateColumnSource (FromClauseBase clause)
