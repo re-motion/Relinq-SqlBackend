@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
@@ -71,7 +72,7 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing
 
     private string GetSupportedNodeTypeString ()
     {
-      return SeparatedStringBuilder.Build (", ", NodeTypeMap.Keys);
+      return NodeTypeMap.Keys.Select (item => item.ToString()).Aggregate ((fullString, itemString) => fullString + ", " + itemString);
     }
 
     public bool CanParse (Expression expression)
