@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -89,7 +90,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     {
       if (accessedMember == null)
       {
-        Remotion.Utilities.Assertion.IsTrue (joinMembers.Count () == 0);
+        Debug.WriteLineIf (joinMembers.Count() == 0, "Number of joinMembers must be 0.");
         return _policy.AdjustMemberInfosForDirectAccessOfQuerySource (referenceExpression);
       }
       else if (DatabaseInfoUtility.IsRelationMember (DatabaseInfo, accessedMember))
