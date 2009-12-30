@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -49,8 +48,8 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       ArgumentUtility.CheckNotNull ("fieldSourcePath", fieldSourcePath);
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      Tuple<FieldSourcePath, MemberInfo> key = new Tuple<FieldSourcePath, MemberInfo> (fieldSourcePath, relationMember);
-
+      JoinedTableKey key = new JoinedTableKey (fieldSourcePath, relationMember);
+      
       if (!_joinedTables.Contains (key))
         _joinedTables.Add (key, DatabaseInfoUtility.GetRelatedTable (databaseInfo, relationMember));
       return (Table) _joinedTables[key];
