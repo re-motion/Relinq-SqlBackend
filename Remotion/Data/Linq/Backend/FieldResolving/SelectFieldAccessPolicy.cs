@@ -17,24 +17,24 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class SelectFieldAccessPolicy : IResolveFieldAccessPolicy
   {
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (
+    public MemberInfoChain AdjustMemberInfosForDirectAccessOfQuerySource (
         QuerySourceReferenceExpression referenceExpression)
     {
-      return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, new MemberInfo[0]);
+      return new MemberInfoChain (null, new MemberInfo[0]);
     }
 
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+    public MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
       var newJoinMembers = new List<MemberInfo> (joinMembers);
       newJoinMembers.Add (accessedMember);
-      return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, newJoinMembers); // select full table if relation member is accessed
+      return new MemberInfoChain (null, newJoinMembers.ToArray()); // select full table if relation member is accessed
     }
 
     public bool OptimizeRelatedKeyAccess ()

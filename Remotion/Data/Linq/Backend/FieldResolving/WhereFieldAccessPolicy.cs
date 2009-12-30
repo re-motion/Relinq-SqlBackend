@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Utilities;
@@ -35,15 +34,15 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       _databaseInfo = databaseInfo;
     }
 
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (
+    public MemberInfoChain AdjustMemberInfosForDirectAccessOfQuerySource (
         QuerySourceReferenceExpression referenceExpression)
     {
       ArgumentUtility.CheckNotNull ("referenceExpression", referenceExpression);
       var primaryKeyMember = _databaseInfo.GetPrimaryKeyMember (referenceExpression.Type);
-      return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, new MemberInfo[0]);
+      return new MemberInfoChain (primaryKeyMember, new MemberInfo[0]);
     }
 
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+    public MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
       ArgumentUtility.CheckNotNull ("accessedMember", accessedMember);
       ArgumentUtility.CheckNotNull ("joinMembers", joinMembers);
@@ -51,10 +50,10 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       {
         MemberInfo primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (
             _databaseInfo, ReflectionUtility.GetFieldOrPropertyType (accessedMember));
-        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (primaryKeyMember, joinMembers.Concat (new[] { accessedMember }));
+        return new MemberInfoChain (primaryKeyMember, (joinMembers.Concat (new[] { accessedMember })).ToArray());
       }
       else
-        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (accessedMember, joinMembers);
+        return new MemberInfoChain (accessedMember, joinMembers.ToArray());
     }
 
     public bool OptimizeRelatedKeyAccess ()

@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
@@ -40,18 +38,18 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
       var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
-      Assert.That (result.A, Is.Null);
-      Assert.That (result.B, Is.Empty);
+      Assert.That (result.AccessedMember, Is.Null);
+      Assert.That (result.JoinedMembers, Is.Empty);
     }
 
     [Test]
     public void AdjustMemberInfosForRelation()
     {
-      Tuple<MemberInfo, IEnumerable<MemberInfo>> result = _policy.AdjustMemberInfosForRelation (StudentDetail_Student_Member, new[] { StudentDetailDetail_StudentDetail_Member });
-      var expected = new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, new[] {StudentDetailDetail_StudentDetail_Member, StudentDetail_Student_Member});
+      var result = _policy.AdjustMemberInfosForRelation (StudentDetail_Student_Member, new[] { StudentDetailDetail_StudentDetail_Member });
+      var expected = new MemberInfoChain (null, new[] {StudentDetailDetail_StudentDetail_Member, StudentDetail_Student_Member});
 
-      Assert.AreEqual (expected.A, result.A);
-      Assert.That (result.B, Is.EqualTo (expected.B));
+      Assert.AreEqual (expected.AccessedMember, result.AccessedMember);
+      Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));
     }
 
     [Test]

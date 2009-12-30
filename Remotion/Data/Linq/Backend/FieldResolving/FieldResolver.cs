@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -75,8 +74,8 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       // joinMembers == "Student_Detail", "Student"
 
       var memberInfos = AdjustMemberInfos (referenceExpression, accessedMember, joinMembers);
-      MemberInfo accessedMemberForColumn = memberInfos.A;
-      IEnumerable<MemberInfo> joinMembersForCalculation = memberInfos.B;
+      MemberInfo accessedMemberForColumn = memberInfos.AccessedMember;
+      IEnumerable<MemberInfo> joinMembersForCalculation = memberInfos.JoinedMembers;
 
       var pathBuilder = new FieldSourcePathBuilder();
       FieldSourcePath fieldData = pathBuilder.BuildFieldSourcePath (DatabaseInfo, joinedTableContext, firstSource, joinMembersForCalculation);
@@ -85,7 +84,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       return new FieldDescriptor (accessedMember, fieldData, column);
     }
 
-    private Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfos (
+    private MemberInfoChain AdjustMemberInfos (
         QuerySourceReferenceExpression referenceExpression, MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
       if (accessedMember == null)
@@ -96,7 +95,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       else if (DatabaseInfoUtility.IsRelationMember (DatabaseInfo, accessedMember))
         return _policy.AdjustMemberInfosForRelation (accessedMember, joinMembers);
       else
-        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (accessedMember, joinMembers);
+        return new MemberInfoChain (accessedMember, joinMembers.ToArray());
     }
   }
 }

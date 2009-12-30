@@ -20,12 +20,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
@@ -290,7 +290,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           mock => mock.AdjustMemberInfosForRelation (
               Arg.Is<MemberInfo> (_studentDetail_Student_Property), 
               Arg<IEnumerable<MemberInfo>>.List.Equal (new[] { _studentDetailDetail_StudentDetail_Property })))
-          .Return (new Tuple<MemberInfo, IEnumerable<MemberInfo>> (_student_ID_Property, newJoinMembers));
+          .Return (new MemberInfoChain (_student_ID_Property, newJoinMembers));
 
       _policyMock.Replay();
 
@@ -318,7 +318,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       var newJoinMembers = new[] { _student_OtherStudent_Property };
       _policyMock
           .Expect (mock => mock.AdjustMemberInfosForDirectAccessOfQuerySource (_studentDetailDetailReference))
-          .Return (new Tuple<MemberInfo, IEnumerable<MemberInfo>> (_student_ID_Property, newJoinMembers));
+          .Return (new MemberInfoChain (_student_ID_Property, newJoinMembers));
 
       _policyMock.Replay ();
 

@@ -15,14 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
@@ -42,33 +40,33 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
       var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
-      Assert.That (result.A, Is.EqualTo (typeof (Student).GetProperty ("ID")));
-      Assert.That (result.B, Is.Empty);
+      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("ID")));
+      Assert.That (result.JoinedMembers, Is.Empty);
     }
 
     [Test]
     public void AdjustMemberInfosForRelation ()
     {
-      Tuple<MemberInfo, IEnumerable<MemberInfo>> result = _policy.AdjustMemberInfosForRelation (
+      var result = _policy.AdjustMemberInfosForRelation (
           StudentDetail_IndustrialSector_Member, new[] { StudentDetailDetail_StudentDetail_Member });
 
-      var expected = new Tuple<MemberInfo, IEnumerable<MemberInfo>> (StudentDetail_IndustrialSector_Member, new[] { StudentDetailDetail_StudentDetail_Member });
-      Assert.That (result.A, Is.EqualTo (expected.A));
-      Assert.That (result.B, Is.EqualTo (expected.B));
+      var expected = new MemberInfoChain (StudentDetail_IndustrialSector_Member, new[] { StudentDetailDetail_StudentDetail_Member });
+      Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));
+      Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));
     }
 
     [Test]
     public void AdjustMemberInfosForRelation_VirtualSide ()
     {
-      Tuple<MemberInfo, IEnumerable<MemberInfo>> result = _policy.AdjustMemberInfosForRelation (
+      var result = _policy.AdjustMemberInfosForRelation (
           IndustrialSector_StudentDetail_Member, new[] { StudentDetailDetail_IndustrialSector_Member });
 
       MemberInfo primaryKeyMember = typeof (Student_Detail).GetProperty ("ID");
-      var expected = new Tuple<MemberInfo, IEnumerable<MemberInfo>> (
+      var expected = new MemberInfoChain (
           primaryKeyMember, new[] { StudentDetailDetail_IndustrialSector_Member, IndustrialSector_StudentDetail_Member });
 
-      Assert.That (result.A, Is.EqualTo (expected.A));
-      Assert.That (result.B.ToArray(), Is.EqualTo (expected.B.ToArray()));
+      Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));
+      Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));
     }
 
     [Test]

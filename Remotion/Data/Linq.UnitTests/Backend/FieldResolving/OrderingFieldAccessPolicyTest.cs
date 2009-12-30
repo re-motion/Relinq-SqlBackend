@@ -37,8 +37,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
       var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
-      Assert.That (result.A, Is.Null);
-      Assert.That (result.B, Is.Empty);
+      Assert.That (result.AccessedMember, Is.Null);
+      Assert.That (result.JoinedMembers, Is.Empty);
     }
 
     [Test]

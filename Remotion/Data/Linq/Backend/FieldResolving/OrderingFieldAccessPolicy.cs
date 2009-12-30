@@ -17,20 +17,20 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
   public class OrderingFieldAccessPolicy : IResolveFieldAccessPolicy
   {
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (
+    public MemberInfoChain AdjustMemberInfosForDirectAccessOfQuerySource (
         QuerySourceReferenceExpression referenceExpression)
     {
-      return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, new MemberInfo[0]);
+      return new MemberInfoChain (null, new MemberInfo[0]);
     }
 
-    public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+    public MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
       string message = string.Format (
           "Ordering by '{0}.{1}' is not supported because it is a relation member.",
