@@ -22,7 +22,6 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
@@ -158,9 +157,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
-      var join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
+      var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[sourceTable];
@@ -261,8 +260,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource studentDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
-      Tuple<string, string> joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.A), new Column (studentTable, joinSelectEvaluations.B));
+      var joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.Value.PrimaryKey), new Column (studentTable, joinSelectEvaluations.Value.ForeignKey));
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 
@@ -374,8 +373,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Student_Detail
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      var join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
+      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 

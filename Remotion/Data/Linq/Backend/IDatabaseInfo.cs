@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend
 {
@@ -52,7 +52,8 @@ namespace Remotion.Data.Linq.Backend
     /// </summary>
     /// <param name="relationMember"><see cref="MemberInfo"/></param>
     /// <returns>A tuple which containes the left and right side of a join. It must return the name of the primary and foreign key.</returns>
-    Tuple<string, string> GetJoinColumnNames (MemberInfo relationMember);
+    //Tuple<string, string> GetJoinColumnNames (MemberInfo relationMember);
+    JoinColumnNames? GetJoinColumnNames (MemberInfo relationMember);
 
     /// <summary>
     /// Has to be implemented to get value of a parameter in a where condition.

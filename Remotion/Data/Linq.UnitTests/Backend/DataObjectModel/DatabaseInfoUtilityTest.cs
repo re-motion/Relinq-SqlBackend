@@ -18,11 +18,11 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
 {
@@ -73,8 +73,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void GetJoinColumns()
     {
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, typeof (Student_Detail).GetProperty ("Student"));
-      Assert.That (columns, Is.EqualTo (Tuple.NewTuple ("Student_Detail_PK", "Student_Detail_to_Student_FK")));
+      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, typeof (Student_Detail).GetProperty ("Student"));
+      Assert.That (columns, Is.EqualTo (new JoinColumnNames ("Student_Detail_PK", "Student_Detail_to_Student_FK")));
     }
 
     [Test]

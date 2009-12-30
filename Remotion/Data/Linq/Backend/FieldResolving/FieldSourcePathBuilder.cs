@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
@@ -36,12 +36,12 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         try
         {
           Table relatedTable = context.GetJoinedTable (databaseInfo, pathSoFar, member);
-          Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (databaseInfo, member);
+          JoinColumnNames? joinColumns = DatabaseInfoUtility.GetJoinColumnNames (databaseInfo, member);
 
           //Column leftColumn = new Column (lastSource, joinColumns.A, ReflectionUtility.GetFieldOrPropertyType (member));
           //Column rightColumn = new Column (relatedTable, joinColumns.B, ReflectionUtility.GetFieldOrPropertyType (member));
-          Column leftColumn = new Column (lastSource, joinColumns.A);
-          Column rightColumn = new Column (relatedTable, joinColumns.B);
+          Column leftColumn = new Column (lastSource, joinColumns.Value.PrimaryKey);
+          Column rightColumn = new Column (relatedTable, joinColumns.Value.ForeignKey);
 
           joins.Add (new SingleJoin (leftColumn, rightColumn));
           lastSource = relatedTable;

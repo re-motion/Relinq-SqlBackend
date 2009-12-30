@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Utilities;
 
@@ -58,12 +57,12 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
         return new Table (tableName, null);
     }
 
-    public static Tuple<string, string> GetJoinColumnNames (IDatabaseInfo databaseInfo, MemberInfo relationMember)
+    public static JoinColumnNames? GetJoinColumnNames (IDatabaseInfo databaseInfo, MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      Tuple<string, string> columns = databaseInfo.GetJoinColumnNames (relationMember);
+      var columns = databaseInfo.GetJoinColumnNames (relationMember);
       if (columns == null)
       {
         string message =

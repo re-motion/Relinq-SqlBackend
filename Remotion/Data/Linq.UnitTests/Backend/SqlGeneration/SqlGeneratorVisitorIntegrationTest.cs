@@ -20,8 +20,6 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
@@ -243,8 +241,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     private SingleJoin CreateJoin (IColumnSource sourceTable, MemberInfo relationMember)
     {
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      return new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
+      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      return new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
     }
   }
 }

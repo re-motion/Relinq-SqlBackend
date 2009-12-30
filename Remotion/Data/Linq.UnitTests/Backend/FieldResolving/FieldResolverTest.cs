@@ -232,8 +232,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
       IColumnSource detailTable = _context.GetColumnSource (_studentDetailClause);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
-      Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
-      var join = new SingleJoin (new Column (detailTable, joinColumns.A), new Column (studentTable, joinColumns.B));
+      var joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
+      var join = new SingleJoin (new Column (detailTable, joinColumns.Value.PrimaryKey), new Column (studentTable, joinColumns.Value.ForeignKey));
       var column = new Column (studentTable, "*");
 
       var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (detailTable, new[] { join }), column);
@@ -251,11 +251,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       IColumnSource detailDetailTable = _context.GetColumnSource (_studentDetailDetailClause);
       Table detailTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetailDetail_StudentDetail_Property);
       Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
-      Tuple<string, string> innerJoinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetailDetail_StudentDetail_Property);
-      Tuple<string, string> outerJoinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
+      var innerJoinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetailDetail_StudentDetail_Property);
+      var outerJoinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
 
-      var join1 = new SingleJoin (new Column (detailDetailTable, innerJoinColumns.A), new Column (detailTable, innerJoinColumns.B));
-      var join2 = new SingleJoin (new Column (detailTable, outerJoinColumns.A), new Column (studentTable, outerJoinColumns.B));
+      var join1 = new SingleJoin (new Column (detailDetailTable, innerJoinColumns.Value.PrimaryKey), new Column (detailTable, innerJoinColumns.Value.ForeignKey));
+      var join2 = new SingleJoin (new Column (detailTable, outerJoinColumns.Value.PrimaryKey), new Column (studentTable, outerJoinColumns.Value.ForeignKey));
       var column = new Column (studentTable, "*");
 
       var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (detailDetailTable, new[] { join1, join2 }), column);

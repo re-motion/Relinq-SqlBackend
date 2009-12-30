@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       {
         var parser = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression);
         var leftSide = parser.Parse (memberExpression.Expression, _parseContext);
-        var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).B;
+        var foreignKeyName = DatabaseInfoUtility.GetJoinColumnNames (_databaseInfo, memberExpression.Member).Value.ForeignKey;
         var rightSide = new Column (columnSource, foreignKeyName);
 
         ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);

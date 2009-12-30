@@ -20,8 +20,6 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
@@ -150,10 +148,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Student_Detail
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
-      Tuple<string, string> columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
       PropertyInfo orderingMember = typeof (Student).GetProperty ("First");
-      var join = new SingleJoin (new Column (sourceTable, columns.A), new Column (relatedTable, columns.B));
+      var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
       var path = new FieldSourcePath (sourceTable, new[] { join });
       var column = DatabaseInfoUtility.GetColumn (StubDatabaseInfo.Instance, relatedTable, orderingMember);
       var expectedFieldDescriptor = new FieldDescriptor (orderingMember, path, column);

@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.UnitTests.TestDomain;
@@ -62,9 +61,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldSourcePathBuilder ().BuildFieldSourcePath (StubDatabaseInfo.Instance, _context, _initialTable, joinMembers);
 
       Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentMember);
-      Tuple<string, string> joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentMember);
+      var joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentMember);
 
-      var singleJoin = new SingleJoin (new Column (_initialTable, joinColumns.A), new Column (relatedTable, joinColumns.B));
+      var singleJoin = new SingleJoin (new Column (_initialTable, joinColumns.Value.PrimaryKey), new Column (relatedTable, joinColumns.Value.ForeignKey));
       var expected = new FieldSourcePath (_initialTable, new[] { singleJoin });
       Assert.That (result, Is.EqualTo (expected));
     }
@@ -77,13 +76,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldSourcePathBuilder ().BuildFieldSourcePath (StubDatabaseInfo.Instance, _context, _initialTable, joinMembers);
 
       Table relatedTable1 = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetailMember);
-      Tuple<string, string> joinColumns1 = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetailMember);
+      var joinColumns1 = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetailMember);
 
       Table relatedTable2 = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentMember);
-      Tuple<string, string> joinColumns2 = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentMember);
+      var joinColumns2 = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentMember);
 
-      var singleJoin1 = new SingleJoin (new Column (_initialTable, joinColumns1.A), new Column (relatedTable1, joinColumns1.B));
-      var singleJoin2 = new SingleJoin (new Column (relatedTable1, joinColumns2.A), new Column (relatedTable2, joinColumns2.B));
+      var singleJoin1 = new SingleJoin (new Column (_initialTable, joinColumns1.Value.PrimaryKey), new Column (relatedTable1, joinColumns1.Value.ForeignKey));
+      var singleJoin2 = new SingleJoin (new Column (relatedTable1, joinColumns2.Value.PrimaryKey), new Column (relatedTable2, joinColumns2.Value.ForeignKey));
       var expected = new FieldSourcePath (_initialTable, new[] { singleJoin1, singleJoin2 });
       Assert.That (result, Is.EqualTo (expected));
     }
