@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
           _commandBuilder.Append (" IS NULL");
           break;
         default:
-          Debug.WriteLineIf (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
+          Debug.Assert (kind == BinaryCondition.ConditionKind.NotEqual, "null can only be compared via == and !=");
           _commandBuilder.Append (" IS NOT NULL");
           break;
       }
