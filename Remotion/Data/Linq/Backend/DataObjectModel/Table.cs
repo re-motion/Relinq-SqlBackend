@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return Remotion.Utilities.EqualityUtility.GetRotatedHashCode (Name, Alias);
+      return Remotion.Data.Linq.Utilities.EqualityUtility.GetRotatedHashCode (Name, Alias);
     }
 
     public void SetAlias (string newAlias)

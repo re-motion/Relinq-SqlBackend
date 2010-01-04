@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return Remotion.Utilities.EqualityUtility.GetRotatedHashCode (Alias, QueryModel);
+      return Remotion.Data.Linq.Utilities.EqualityUtility.GetRotatedHashCode (Alias, QueryModel);
     }
 
     public void Accept (IEvaluationVisitor visitor)
