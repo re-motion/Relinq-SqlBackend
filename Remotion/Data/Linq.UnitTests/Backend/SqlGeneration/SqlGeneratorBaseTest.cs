@@ -19,14 +19,13 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
-using Remotion.Development.UnitTesting;
+using Remotion.Data.Linq.UnitTests.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
