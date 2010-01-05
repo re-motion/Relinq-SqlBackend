@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
         Assert.That (sqlGenerationData.Criterion, Is.EqualTo (ReferenceVisitor.SqlGenerationData.Criterion));
 
         Assert.AreEqual (ReferenceVisitor.SqlGenerationData.Joins.Count, sqlGenerationData.Joins.Count);
-        foreach (KeyValuePair<IColumnSource, List<SingleJoin>> joinEntry in ReferenceVisitor.SqlGenerationData.Joins)
+        foreach (KeyValuePair<IColumnSource, IList<SingleJoin>> joinEntry in ReferenceVisitor.SqlGenerationData.Joins)
           Assert.That (sqlGenerationData.Joins[joinEntry.Key], Is.EqualTo (joinEntry.Value));
 
         Assert.That (sqlGenerationData.OrderingFields, Is.EqualTo (ReferenceVisitor.SqlGenerationData.OrderingFields));

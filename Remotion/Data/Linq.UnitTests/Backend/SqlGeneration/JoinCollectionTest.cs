@@ -210,16 +210,16 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       joins.AddPath (new FieldSourcePath (_initialTable, new[] { join1b }));
       joins.AddPath (new FieldSourcePath (initialTable2, new[] { join2 }));
 
-      List<KeyValuePair<IColumnSource, List<SingleJoin>>> list = new List<KeyValuePair<IColumnSource, List<SingleJoin>>> ();
-      foreach (KeyValuePair<IColumnSource, List<SingleJoin>> item in joins)
+      List<KeyValuePair<IColumnSource, IList<SingleJoin>>> list = new List<KeyValuePair<IColumnSource, IList<SingleJoin>>> ();
+      foreach (KeyValuePair<IColumnSource, IList<SingleJoin>> item in joins)
         list.Add (item);
 
       Assert.AreEqual (2, list.Count);
       Assert.IsTrue (list[0].Key == _initialTable || list[1].Key == _initialTable);
       Assert.IsTrue (list[0].Key == initialTable2 || list[1].Key == initialTable2);
 
-      List<SingleJoin> itemsForInitialTable = list[0].Key == _initialTable ? list[0].Value : list[1].Value;
-      List<SingleJoin> itemsForInitialTable2 = list[0].Key == initialTable2 ? list[0].Value : list[1].Value;
+      IList<SingleJoin> itemsForInitialTable = list[0].Key == _initialTable ? list[0].Value : list[1].Value;
+      IList<SingleJoin> itemsForInitialTable2 = list[0].Key == initialTable2 ? list[0].Value : list[1].Value;
 
       Assert.That (itemsForInitialTable, Is.EqualTo (new[] { join1a, join1b }));
       Assert.That (itemsForInitialTable2, Is.EqualTo (new[] { join2 }));

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
@@ -53,7 +54,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return Remotion.Data.Linq.Utilities.EqualityUtility.GetRotatedHashCode (Alias, QueryModel);
+      return ((Alias == null) ? 0 : Alias.GetHashCode ()) ^ ((QueryModel == null) ? 0 : QueryModel.GetHashCode ());
     }
 
     public void Accept (IEvaluationVisitor visitor)

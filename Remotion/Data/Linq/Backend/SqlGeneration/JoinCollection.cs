@@ -17,13 +17,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Utilities;
+using Remotion.Data.Linq.Collections;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
-  public class JoinCollection : IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>
+  public class JoinCollection : IEnumerable<KeyValuePair<IColumnSource, IList<SingleJoin>>>
   {
     private readonly MultiDictionary<IColumnSource, SingleJoin> _innerDictionary = new MultiDictionary<IColumnSource, SingleJoin>();
 
@@ -37,12 +37,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
     public List<SingleJoin> this [IColumnSource columnSource]
     {
-      get { return _innerDictionary[columnSource]; }
+      get { return (List<SingleJoin>) _innerDictionary[columnSource]; }
     }
 
     public int Count
     {
-      get { return _innerDictionary.Count; }
+      get { return _innerDictionary.KeyCount; }
     }
 
     private void AddSingleJoin (IColumnSource firstSource, SingleJoin join)
@@ -51,9 +51,9 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
         _innerDictionary.Add (firstSource, join);
     }
 
-    public IEnumerator<KeyValuePair<IColumnSource, List<SingleJoin>>> GetEnumerator ()
+    public IEnumerator<KeyValuePair<IColumnSource, IList<SingleJoin>>> GetEnumerator ()
     {
-      return ((IEnumerable<KeyValuePair<IColumnSource, List<SingleJoin>>>) _innerDictionary).GetEnumerator();
+      return _innerDictionary.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

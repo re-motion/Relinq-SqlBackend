@@ -72,7 +72,8 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return FirstSource.GetHashCode() ^ EqualityUtility.GetRotatedHashCode (Joins);
+      return ((FirstSource == null) ? 0 : FirstSource.GetHashCode())
+             ^ Joins.Aggregate (0, (totalHashCode, item) => totalHashCode ^ item.GetHashCode());
     }
 
     public override string ToString ()
