@@ -46,9 +46,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override string ToString ()
     {
-      string argumentString = "";
-      if (Arguments.Count != 0)
-        argumentString = Arguments.Select (item => item.ToString ()).Aggregate (((fullString, itemString) => fullString + ", " + itemString));
+      string argumentString = SeparatedStringBuilder.Build (", ", Arguments);
       if (TargetObject != null)
         return string.Format ("{0}.{1}({2})", TargetObject, EvaluationMethodInfo.Name, argumentString);
       else

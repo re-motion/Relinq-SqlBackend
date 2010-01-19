@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.SelectProjectionParsing
 
     private string GetSupportedNodeTypeString ()
     {
-      return NodeTypeMap.Keys.Select (item => item.ToString()).Aggregate ((fullString, itemString) => fullString + ", " + itemString);
+      return SeparatedStringBuilder.Build (", ", NodeTypeMap.Keys);
     }
 
     public bool CanParse (Expression expression)

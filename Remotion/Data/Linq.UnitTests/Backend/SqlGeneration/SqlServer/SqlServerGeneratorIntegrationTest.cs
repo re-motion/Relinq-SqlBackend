@@ -24,7 +24,7 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
-using Remotion.Data.Linq.UnitTests.Utilities;
+using Remotion.Data.Linq.UnitTests.TestUtilities;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
     [Test]
     [ExpectedException (typeof (SqlGenerationException),
-        ExpectedMessage = "The method Remotion.Data.Linq.UnitTests.Utilities.Tuple.NewTuple is not supported by this code generator, " + 
+        ExpectedMessage = "The method Remotion.Data.Linq.UnitTests.TestUtilities.Tuple.NewTuple is not supported by this code generator, " + 
                           "and no custom generator has been registered.")]
     public void MultiFromQueryWithProjection ()
     {

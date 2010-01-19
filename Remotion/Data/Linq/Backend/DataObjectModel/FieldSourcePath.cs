@@ -78,12 +78,8 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override string ToString ()
     {
-      bool joinsHasElements = Joins.GetEnumerator().MoveNext();
-      if (joinsHasElements)
-      {
-        return FirstSource.AliasString + "."
-               + Joins.Select (join => ((Table) join.RightSide).Name).Aggregate ((fullString, itemString) => fullString + "." + itemString);
-      }
+      if (Joins.Any())
+        return FirstSource.AliasString + "." + SeparatedStringBuilder.Build (".", Joins.Select (join => ((Table) join.RightSide).Name));
       else
         return FirstSource.AliasString;
     }
