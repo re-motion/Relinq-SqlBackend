@@ -88,12 +88,27 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       _commandBuilder.Append ("(");
       AppendNullChecks (binaryCondition.Left, binaryCondition.Right, binaryCondition.Kind);
 
-      _commandBuilder.AppendEvaluation (binaryCondition.Left);
+      AppendConditionValue(binaryCondition.Left);
       _commandBuilder.Append (" ");
       AppendConditionKind (binaryCondition.Kind);
       _commandBuilder.Append (" ");
-      _commandBuilder.AppendEvaluation (binaryCondition.Right);
-      _commandBuilder.Append (")");
+      AppendConditionValue(binaryCondition.Right);
+      _commandBuilder.Append(")");
+    }
+
+    private void AppendConditionValue (IValue value)
+    {
+      if (value is Constant)
+      {
+        var constantValue = ((Constant)value).Value;
+        
+        if (constantValue.Equals(true))
+          value = new Constant (1);
+        else if (constantValue.Equals(false))
+          value = new Constant(0);
+      }
+
+      _commandBuilder.AppendEvaluation(value);
     }
 
     private void AppendNullChecks (IValue left, IValue right, BinaryCondition.ConditionKind conditionKind)

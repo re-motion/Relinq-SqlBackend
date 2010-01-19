@@ -153,6 +153,18 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
+    public void BuildBinaryConditionPart_BinaryConditions_WithConstantTrueFalse ()
+    {
+      var c1 = new Constant (true);
+      var c2 = new Constant (false);
+      CheckBuildBinaryConditionPart (
+          new BinaryCondition (c1, c2, BinaryCondition.ConditionKind.Equal), 
+          "(@1 = @2)",
+          new CommandParameter ("@1", 1),
+          new CommandParameter ("@2", 0));
+          }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The binary condition kind 2147483647 is not supported.")]
     public void BuildBinaryConditionPart_InvalidBinaryConditionKind ()
     {

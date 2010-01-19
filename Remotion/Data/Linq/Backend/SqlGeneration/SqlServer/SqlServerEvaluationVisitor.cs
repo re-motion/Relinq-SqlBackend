@@ -67,12 +67,15 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       CommandBuilder.Append (")");
     }
 
-    public void VisitComplexCriterion (ComplexCriterion complexCriterion)
+    public virtual void VisitComplexCriterion (ComplexCriterion complexCriterion)
     {
       ArgumentUtility.CheckNotNull ("complexCriterion", complexCriterion);
-      
+
+      var leftCriterion = FixComplexCriterionValue (complexCriterion.Left);
+      var rightCriterion = FixComplexCriterionValue (complexCriterion.Right);
+
       CommandBuilder.Append ("(");
-      complexCriterion.Left.Accept (this);
+      leftCriterion.Accept(this);
       switch (complexCriterion.Kind)
       {
         case ComplexCriterion.JunctionKind.And:
@@ -82,8 +85,16 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
           CommandBuilder.Append (" OR ");
           break;
       }
-      complexCriterion.Right.Accept (this);
+      rightCriterion.Accept(this);
       CommandBuilder.Append (")");
+    }
+
+    private ICriterion FixComplexCriterionValue(ICriterion value)
+    {
+      if (value is Column) // columns need to be compared in order to be used in a complex SQL statement, e.g. ([isActive] = 1) AND (...)
+        return new BinaryCondition (value, new Constant (1), BinaryCondition.ConditionKind.Equal);
+      else
+        return value;
     }
 
     public void VisitNotCriterion (NotCriterion notCriterion)
@@ -91,7 +102,9 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       ArgumentUtility.CheckNotNull ("notCriterion", notCriterion);
 
       CommandBuilder.Append ("NOT ");
-      notCriterion.NegatedCriterion.Accept (this);
+
+      var fixedNegatedCriterion = FixComplexCriterionValue (notCriterion.NegatedCriterion);
+      fixedNegatedCriterion.Accept(this);
     }
 
     public void VisitConstant (Constant constant)
@@ -99,7 +112,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       ArgumentUtility.CheckNotNull ("constant", constant);
 
       if (constant.Value == null)
-        CommandBuilder.CommandText.Append ("NULL");
+        CommandBuilder.Append ("NULL");
       else if (constant.Value is ICollection)
         AppendConstantCollection ((ICollection) constant.Value);
       else if (constant.Value.Equals (true))
@@ -109,7 +122,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       else
       {
         CommandParameter parameter = CommandBuilder.AddParameter (constant.Value);
-        CommandBuilder.CommandText.Append (parameter.Name);
+        CommandBuilder.Append (parameter.Name);
       }
     }
 

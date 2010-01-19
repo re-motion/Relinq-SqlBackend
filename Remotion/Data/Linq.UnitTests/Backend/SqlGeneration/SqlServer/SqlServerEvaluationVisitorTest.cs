@@ -186,6 +186,22 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
+    public void VisitComplexCriterion_AdjustsBooleanColumns ()
+    {
+      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
+
+      var column1 = new Column (new Table ("T1", "t1"), "c1");
+      var column2 = new Column (new Table ("T2", "t2"), "c2");
+      var complexCriterion = new ComplexCriterion (column1, column2, ComplexCriterion.JunctionKind.And);
+
+      visitor.VisitComplexCriterion (complexCriterion);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz (([t1].[c1] = @2) AND ([t2].[c2] = @3))"));
+      Assert.That (_commandBuilder.GetCommandParameters ()[1].Value, Is.EqualTo (1));
+      Assert.That (_commandBuilder.GetCommandParameters ()[2].Value, Is.EqualTo (1));
+    }
+
+    [Test]
     public void VisitConstant ()
     {
       var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
@@ -271,6 +287,20 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz NOT @2"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
+    }
+
+    [Test]
+    public void VisitNotCriterion_AdjustsBooleanColumns ()
+    {
+      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
+
+      var column = new Column (new Table ("T1", "t1"), "c1");
+      var notCriterion = new NotCriterion (column);
+
+      visitor.VisitNotCriterion (notCriterion);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz NOT ([t1].[c1] = @2)"));
+      Assert.That (_commandBuilder.GetCommandParameters ()[1].Value, Is.EqualTo (1));
     }
 
     [Test]
