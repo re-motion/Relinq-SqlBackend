@@ -287,10 +287,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _policyMock.Expect (mock => mock.OptimizeRelatedKeyAccess ()).Return (false);
       var newJoinMembers = new[] { _studentDetailDetail_StudentDetail_Property, _studentDetail_Student_Property };
       _policyMock.Expect (
-          mock => mock.AdjustMemberInfosForRelation (
-              Arg.Is<MemberInfo> (_studentDetail_Student_Property), 
-              Arg<IEnumerable<MemberInfo>>.List.Equal (new[] { _studentDetailDetail_StudentDetail_Property })))
-          .Return (new MemberInfoChain (_student_ID_Property, newJoinMembers));
+          mock => mock.AdjustMemberInfosForRelation (Arg<IEnumerable<MemberInfo>>.List.Equal (new[] { _studentDetailDetail_StudentDetail_Property }), Arg.Is<MemberInfo> (_studentDetail_Student_Property)))
+          .Return (new MemberInfoChain (newJoinMembers, _student_ID_Property));
 
       _policyMock.Replay();
 
@@ -318,7 +316,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       var newJoinMembers = new[] { _student_OtherStudent_Property };
       _policyMock
           .Expect (mock => mock.AdjustMemberInfosForDirectAccessOfQuerySource (_studentDetailDetailReference))
-          .Return (new MemberInfoChain (_student_ID_Property, newJoinMembers));
+          .Return (new MemberInfoChain (newJoinMembers, _student_ID_Property));
 
       _policyMock.Replay ();
 

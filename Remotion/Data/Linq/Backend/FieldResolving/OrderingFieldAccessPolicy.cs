@@ -27,10 +27,10 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     public MemberInfoChain AdjustMemberInfosForDirectAccessOfQuerySource (
         QuerySourceReferenceExpression referenceExpression)
     {
-      return new MemberInfoChain (null, new MemberInfo[0]);
+      return new MemberInfoChain (new MemberInfo[0], null);
     }
 
-    public MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+    public MemberInfoChain AdjustMemberInfosForRelation (IEnumerable<MemberInfo> joinedMembers, MemberInfo accessedMember)
     {
       string message = string.Format (
           "Ordering by '{0}.{1}' is not supported because it is a relation member.",

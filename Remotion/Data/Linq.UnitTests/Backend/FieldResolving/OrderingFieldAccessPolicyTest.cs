@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
         + "is not supported because it is a relation member.")]
     public void AdjustMemberInfosForRelation ()
     {
-      _policy.AdjustMemberInfosForRelation (StudentDetail_Student_Member, new[] { StudentDetailDetail_StudentDetail_Member });
+      _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_Student_Member);
     }
 
     [Test]

@@ -47,10 +47,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForRelation ()
     {
-      var result = _policy.AdjustMemberInfosForRelation (
-          StudentDetail_IndustrialSector_Member, new[] { StudentDetailDetail_StudentDetail_Member });
+      var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_IndustrialSector_Member);
 
-      var expected = new MemberInfoChain (StudentDetail_IndustrialSector_Member, new[] { StudentDetailDetail_StudentDetail_Member });
+      var expected = new MemberInfoChain (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_IndustrialSector_Member);
       Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));
       Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));
     }
@@ -58,12 +57,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForRelation_VirtualSide ()
     {
-      var result = _policy.AdjustMemberInfosForRelation (
-          IndustrialSector_StudentDetail_Member, new[] { StudentDetailDetail_IndustrialSector_Member });
+      var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_IndustrialSector_Member }, IndustrialSector_StudentDetail_Member);
 
       MemberInfo primaryKeyMember = typeof (Student_Detail).GetProperty ("ID");
-      var expected = new MemberInfoChain (
-          primaryKeyMember, new[] { StudentDetailDetail_IndustrialSector_Member, IndustrialSector_StudentDetail_Member });
+      var expected = new MemberInfoChain (new[] { StudentDetailDetail_IndustrialSector_Member, IndustrialSector_StudentDetail_Member }, primaryKeyMember);
 
       Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));
       Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));

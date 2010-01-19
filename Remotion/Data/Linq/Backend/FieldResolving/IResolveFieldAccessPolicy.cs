@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
   public interface IResolveFieldAccessPolicy
   {
     MemberInfoChain AdjustMemberInfosForDirectAccessOfQuerySource (QuerySourceReferenceExpression referenceExpression);
-    MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers);
+    MemberInfoChain AdjustMemberInfosForRelation (IEnumerable<MemberInfo> joinedMembers, MemberInfo accessedMember);
     bool OptimizeRelatedKeyAccess ();
   }
 }

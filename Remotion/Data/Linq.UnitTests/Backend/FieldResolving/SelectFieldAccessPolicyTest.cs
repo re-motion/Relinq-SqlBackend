@@ -45,8 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForRelation()
     {
-      var result = _policy.AdjustMemberInfosForRelation (StudentDetail_Student_Member, new[] { StudentDetailDetail_StudentDetail_Member });
-      var expected = new MemberInfoChain (null, new[] {StudentDetailDetail_StudentDetail_Member, StudentDetail_Student_Member});
+      var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_Student_Member);
+      var expected = new MemberInfoChain (new[] {StudentDetailDetail_StudentDetail_Member, StudentDetail_Student_Member}, null);
 
       Assert.AreEqual (expected.AccessedMember, result.AccessedMember);
       Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));

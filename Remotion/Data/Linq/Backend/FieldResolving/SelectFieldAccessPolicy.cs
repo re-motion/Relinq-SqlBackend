@@ -27,14 +27,14 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     public MemberInfoChain AdjustMemberInfosForDirectAccessOfQuerySource (
         QuerySourceReferenceExpression referenceExpression)
     {
-      return new MemberInfoChain (null, new MemberInfo[0]);
+      return new MemberInfoChain (new MemberInfo[0], null);
     }
 
-    public MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+    public MemberInfoChain AdjustMemberInfosForRelation (IEnumerable<MemberInfo> joinedMembers, MemberInfo accessedMember)
     {
-      var newJoinMembers = new List<MemberInfo> (joinMembers);
+      var newJoinMembers = new List<MemberInfo> (joinedMembers);
       newJoinMembers.Add (accessedMember);
-      return new MemberInfoChain (null, newJoinMembers.ToArray()); // select full table if relation member is accessed
+      return new MemberInfoChain (newJoinMembers.ToArray(), null); // select full table if relation member is accessed
     }
 
     public bool OptimizeRelatedKeyAccess ()

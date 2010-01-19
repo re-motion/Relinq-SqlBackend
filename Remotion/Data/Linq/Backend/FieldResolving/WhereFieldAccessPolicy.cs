@@ -39,21 +39,21 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     {
       ArgumentUtility.CheckNotNull ("referenceExpression", referenceExpression);
       var primaryKeyMember = _databaseInfo.GetPrimaryKeyMember (referenceExpression.Type);
-      return new MemberInfoChain (primaryKeyMember, new MemberInfo[0]);
+      return new MemberInfoChain (new MemberInfo[0], primaryKeyMember);
     }
 
-    public MemberInfoChain AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+    public MemberInfoChain AdjustMemberInfosForRelation (IEnumerable<MemberInfo> joinedMembers, MemberInfo accessedMember)
     {
       ArgumentUtility.CheckNotNull ("accessedMember", accessedMember);
-      ArgumentUtility.CheckNotNull ("joinMembers", joinMembers);
+      ArgumentUtility.CheckNotNull ("joinMembers", joinedMembers);
       if (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, accessedMember))
       {
         MemberInfo primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (
             _databaseInfo, ReflectionUtility.GetFieldOrPropertyType (accessedMember));
-        return new MemberInfoChain (primaryKeyMember, (joinMembers.Concat (new[] { accessedMember })).ToArray());
+        return new MemberInfoChain ((joinedMembers.Concat (new[] { accessedMember })).ToArray(), primaryKeyMember);
       }
       else
-        return new MemberInfoChain (accessedMember, joinMembers.ToArray());
+        return new MemberInfoChain (joinedMembers.ToArray(), accessedMember);
     }
 
     public bool OptimizeRelatedKeyAccess ()

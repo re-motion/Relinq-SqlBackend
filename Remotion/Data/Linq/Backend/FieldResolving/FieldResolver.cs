@@ -58,22 +58,21 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       return CreateFieldDescriptor (
           joinedTableContext.GetColumnSource (clause),
           result.QuerySourceReferenceExpression,
-          result.AccessedMember,
           result.JoinMembers,
-          joinedTableContext);
+          result.AccessedMember, joinedTableContext);
     }
 
     private FieldDescriptor CreateFieldDescriptor (
-        IColumnSource firstSource,
-        QuerySourceReferenceExpression referenceExpression,
-        MemberInfo accessedMember,
-        IEnumerable<MemberInfo> joinMembers,
+        IColumnSource firstSource, 
+        QuerySourceReferenceExpression referenceExpression, 
+        IEnumerable<MemberInfo> joinMembers, 
+        MemberInfo accessedMember, 
         JoinedTableContext joinedTableContext)
     {
       // Documentation example: sdd.Student_Detail.Student.First
       // joinMembers == "Student_Detail", "Student"
 
-      var memberInfos = AdjustMemberInfos (referenceExpression, accessedMember, joinMembers);
+      var memberInfos = AdjustMemberInfos (referenceExpression, joinMembers, accessedMember);
       MemberInfo accessedMemberForColumn = memberInfos.AccessedMember;
       IEnumerable<MemberInfo> joinMembersForCalculation = memberInfos.JoinedMembers;
 
@@ -85,17 +84,17 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
     }
 
     private MemberInfoChain AdjustMemberInfos (
-        QuerySourceReferenceExpression referenceExpression, MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
+        QuerySourceReferenceExpression referenceExpression, IEnumerable<MemberInfo> joinedMembers, MemberInfo accessedMember)
     {
       if (accessedMember == null)
       {
-        Debug.Assert (joinMembers.Count() == 0, "Number of joinMembers must be 0.");
+        Debug.Assert (joinedMembers.Count() == 0, "Number of joinMembers must be 0.");
         return _policy.AdjustMemberInfosForDirectAccessOfQuerySource (referenceExpression);
       }
       else if (DatabaseInfoUtility.IsRelationMember (DatabaseInfo, accessedMember))
-        return _policy.AdjustMemberInfosForRelation (accessedMember, joinMembers);
+        return _policy.AdjustMemberInfosForRelation (joinedMembers, accessedMember);
       else
-        return new MemberInfoChain (accessedMember, joinMembers.ToArray());
+        return new MemberInfoChain (joinedMembers.ToArray(), accessedMember);
     }
   }
 }
