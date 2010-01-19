@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend
 {
@@ -29,30 +28,30 @@ namespace Remotion.Data.Linq.Backend
     /// <summary>
     /// Has to be implemented to get the table name of the given clause.
     /// </summary>
-    /// <param name="fromClause">The clause identifies the query source.</param>
+    /// <param name="fromClause">The clause for which to get the table name.</param>
     /// <returns>The table name as string.</returns>
     string GetTableName (FromClauseBase fromClause);
 
     /// <summary>
     /// Has to be implemented to get the table name of the n-side of a relation.
     /// </summary>
-    /// <param name="relationMember"><see cref="MemberInfo"/></param>
+    /// <param name="relationMember">The <see cref="MemberInfo"/> identifying the relation.</param>
     /// <returns>The table name of the related side of a join as string.</returns>
     string GetRelatedTableName (MemberInfo relationMember);
 
     /// <summary>
     /// Has to be implemented to get the column name of a given member.
     /// </summary>
-    /// <param name="member"><see cref="MemberInfo"/></param>
+    /// <param name="member">The <see cref="MemberInfo"/> identifying the column.</param>
     /// <returns>The column name as string.</returns>
     string GetColumnName (MemberInfo member);
 
     /// <summary>
     /// Has to be implemented to get affected columns of a join.
     /// </summary>
-    /// <param name="relationMember"><see cref="MemberInfo"/></param>
-    /// <returns>A tuple which containes the left and right side of a join. It must return the name of the primary and foreign key.</returns>
-    //Tuple<string, string> GetJoinColumnNames (MemberInfo relationMember);
+    /// <param name="relationMember">The <see cref="MemberInfo"/> identifying the relation.</param>
+    /// <returns>The names of the primary and foreign key columns to be compared for joining, or <see langword="null" /> if the 
+    /// <paramref name="relationMember"/> does not identify relation.</returns>
     JoinColumnNames? GetJoinColumnNames (MemberInfo relationMember);
 
     /// <summary>

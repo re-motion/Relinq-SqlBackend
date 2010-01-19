@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.Utilities
+namespace Remotion.Data.Linq.Backend
 {
   /// <summary>
   /// A struct which containes the name of the primary and the foreign key of a join.

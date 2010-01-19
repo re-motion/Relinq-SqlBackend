@@ -22,7 +22,6 @@ using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.UnitTests.TestDomain;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
 {

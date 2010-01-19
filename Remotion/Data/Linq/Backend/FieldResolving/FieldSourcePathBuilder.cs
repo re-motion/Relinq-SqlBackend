@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.FieldResolving
 {
