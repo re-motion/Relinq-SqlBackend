@@ -64,9 +64,9 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return ((EvaluationMethodInfo == null) ? 0 : EvaluationMethodInfo.GetHashCode ())
-             ^ ((TargetObject == null) ? 0 : TargetObject.GetHashCode ())
-             ^ Arguments.Aggregate (0, (totalHashCode, item) => totalHashCode ^ item.GetHashCode());
+      return EvaluationMethodInfo.GetHashCode()
+             ^ HashCodeUtility.GetHashCodeOrZero (TargetObject)
+             ^ HashCodeUtility.GetHashCodeForSequence (Arguments);
     }
   }
 }

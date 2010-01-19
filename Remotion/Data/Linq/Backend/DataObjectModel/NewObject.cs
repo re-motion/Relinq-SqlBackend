@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public override int GetHashCode ()
     {
-      return ConstructorInfo.GetHashCode() ^ ConstructorArguments.Aggregate (0, (totalHashCode, item) => totalHashCode ^ item.GetHashCode());
+      return ConstructorInfo.GetHashCode () ^ HashCodeUtility.GetHashCodeForSequence (ConstructorArguments);
     }
 
     public override string ToString ()
