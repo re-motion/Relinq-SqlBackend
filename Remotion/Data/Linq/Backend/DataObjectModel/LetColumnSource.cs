@@ -19,7 +19,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  // LetColumnSource
+  // TODO: Remove
   public struct LetColumnSource : IColumnSource
   {
     public LetColumnSource (string alias, bool isTable)
