@@ -71,30 +71,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     }
 
     [Test]
-    public void IsVirtualColumn_True()
-    {
-      Assert.That (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, typeof (IndustrialSector).GetProperty ("Student_Detail")), Is.True);
-    }
-
-    [Test]
-    public void IsVirtualColumn_False_RealSide ()
-    {
-      Assert.That (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, typeof (Student_Detail).GetProperty ("IndustrialSector")), Is.False);
-    }
-
-    [Test]
-    public void IsVirtualColumn_False_NonRelationMember ()
-    {
-      Assert.That (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, typeof (Student).GetProperty ("ID")), Is.False);
-    }
-
-    [Test]
-    public void IsVirtualColumn_False_NonDBMember ()
-    {
-      Assert.That (DatabaseInfoUtility.IsVirtualColumn (_databaseInfo, typeof (Student).GetProperty ("NonDBProperty")), Is.False);
-    }
-
-    [Test]
     public void GetColumn ()
     {
       var table = new Table ("Student", "s");

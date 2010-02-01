@@ -38,12 +38,6 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
         return columns;
     }
 
-    public static bool IsVirtualColumn (IDatabaseInfo databaseInfo, MemberInfo member)
-    {
-      ArgumentUtility.CheckNotNull ("member", member);
-      return databaseInfo.IsRelationMember (member) && (databaseInfo.GetColumnName (member) == null);
-    }
-
     public static Column GetColumn (IDatabaseInfo databaseInfo, IColumnSource columnSource, MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
