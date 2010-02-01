@@ -34,15 +34,10 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         FieldSourcePath pathSoFar = new FieldSourcePath (firstSource, joins);
         try
         {
-          Table relatedTable = context.GetJoinedTable (databaseInfo, pathSoFar, member);
-          JoinColumnNames? joinColumns = databaseInfo.GetJoinColumnNames (member);
+          var relatedTable = context.GetJoinedTable (databaseInfo, pathSoFar, member);
+          var joinColumns = databaseInfo.GetJoinForMember (member, lastSource, relatedTable);
 
-          //Column leftColumn = new Column (lastSource, joinColumns.A, ReflectionUtility.GetFieldOrPropertyType (member));
-          //Column rightColumn = new Column (relatedTable, joinColumns.B, ReflectionUtility.GetFieldOrPropertyType (member));
-          Column leftColumn = new Column (lastSource, joinColumns.Value.PrimaryKey);
-          Column rightColumn = new Column (relatedTable, joinColumns.Value.ForeignKey);
-
-          joins.Add (new SingleJoin (leftColumn, rightColumn));
+          joins.Add (new SingleJoin (joinColumns.LeftColumn, joinColumns.RightColumn));
           lastSource = relatedTable;
         }
         catch (Exception ex)

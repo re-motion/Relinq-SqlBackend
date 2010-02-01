@@ -20,7 +20,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
@@ -28,8 +27,6 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.Utilities;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_List = Rhino.Mocks.Constraints.List;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
@@ -229,9 +226,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_Expression, _context);
 
       IColumnSource detailTable = _context.GetColumnSource (_studentDetailClause);
-      Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetail_Student_Property, null);
-      var joinColumns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (_studentDetail_Student_Property);
-      var join = new SingleJoin (new Column (detailTable, joinColumns.PrimaryKey), new Column (studentTable, joinColumns.ForeignKey));
+      Table studentTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
+      var join = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, detailTable, studentTable);
       var column = new Column (studentTable, "*");
 
       var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (detailTable, new[] { join }), column);
@@ -247,13 +243,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
 
       IColumnSource detailDetailTable = _context.GetColumnSource (_studentDetailDetailClause);
-      Table detailTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
-      Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetail_Student_Property, null);
-      var innerJoinColumns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (_studentDetailDetail_StudentDetail_Property);
-      var outerJoinColumns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (_studentDetail_Student_Property);
+      Table detailTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
+      Table studentTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
+      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailDetail_StudentDetail_Property, detailDetailTable, detailTable);
+      var join2 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, detailTable, studentTable);
 
-      var join1 = new SingleJoin (new Column (detailDetailTable, innerJoinColumns.PrimaryKey), new Column (detailTable, innerJoinColumns.ForeignKey));
-      var join2 = new SingleJoin (new Column (detailTable, outerJoinColumns.PrimaryKey), new Column (studentTable, outerJoinColumns.ForeignKey));
       var column = new Column (studentTable, "*");
 
       var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (detailDetailTable, new[] { join1, join2 }), column);

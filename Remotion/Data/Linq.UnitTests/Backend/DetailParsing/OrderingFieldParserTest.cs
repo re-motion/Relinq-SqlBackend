@@ -148,13 +148,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       FromClauseBase fromClause = parsedQuery.MainFromClause;
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Student_Detail
-      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
-      var columns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (relationMember);
+      Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Student
+      var join = StubDatabaseInfo.Instance.GetJoinForMember (relationMember, sourceTable, relatedTable);
 
       PropertyInfo orderingMember = typeof (Student).GetProperty ("First");
-      var join = new SingleJoin (new Column (sourceTable, columns.PrimaryKey), new Column (relatedTable, columns.ForeignKey));
       var path = new FieldSourcePath (sourceTable, new[] { join });
-      var column = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetColumnForMember (relatedTable, orderingMember);
+      var column = StubDatabaseInfo.Instance.GetColumnForMember (relatedTable, orderingMember);
       var expectedFieldDescriptor = new FieldDescriptor (orderingMember, path, column);
       
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));

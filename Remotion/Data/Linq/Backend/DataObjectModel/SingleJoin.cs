@@ -21,8 +21,8 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public struct SingleJoin
   {
-    public Column RightColumn { get; private set; }
     public Column LeftColumn { get; private set; }
+    public Column RightColumn { get; private set; }
 
     public SingleJoin (Column leftColumn, Column rightColumn)
         : this()

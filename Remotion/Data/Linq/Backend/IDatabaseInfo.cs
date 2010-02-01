@@ -78,13 +78,18 @@ namespace Remotion.Data.Linq.Backend
     Column GetColumnForMember (IColumnSource columnSource, MemberInfo member);
 
     /// <summary>
-    /// Has to be implemented to get affected columns of a join.
+    /// Retrieves a <see cref="SingleJoin"/> instance representing the given relation <see cref="MemberInfo"/>.
     /// </summary>
-    /// <param name="relationMember">The <see cref="MemberInfo"/> identifying the relation.</param>
-    /// <returns>The names of the primary and foreign key columns to be compared for joining, or <see langword="null" /> if the 
-    /// <paramref name="relationMember"/> does not identify relation.</returns>
-    /// <exception cref="UnmappedItemException">The given <paramref name="relationMember"/> cannot be mapped to a <see cref="Table"/>.</exception>
-    JoinColumnNames GetJoinColumnNames (MemberInfo relationMember);
+    /// <param name="relationMember">The <see cref="MemberInfo"/> representing the join.</param>
+    /// <param name="leftSource">The left <see cref="IColumnSource"/>. This represents the owner of the left column in the join (the instance whose 
+    /// member is retrieved).</param>
+    /// <param name="rightSource">The right <see cref="IColumnSource"/>. This represents the owner of the right column in the join (the value stored
+    /// by the member).</param>
+    /// <returns>
+    /// A <see cref="SingleJoin"/> instance holding the columns involved in the join operation.
+    /// </returns>
+    /// <exception cref="UnmappedItemException">The given <paramref name="relationMember"/> cannot be mapped to a join.</exception>
+    SingleJoin GetJoinForMember (MemberInfo relationMember, IColumnSource leftSource, IColumnSource rightSource);
 
     /// <summary>
     /// Has to be implemented to get value of a parameter in a where condition.

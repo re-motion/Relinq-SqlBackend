@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
+using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Collections;
 using Remotion.Data.Linq.Utilities;
@@ -76,10 +76,12 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       var memberExpression = fromClause.FromExpression as MemberExpression;
       if (memberExpression != null)
       {
-        var parser = _detailParserRegistries.WhereConditionParser.GetParser (memberExpression.Expression);
-        var leftSide = parser.Parse (memberExpression.Expression, _parseContext);
-        var foreignKeyName = _databaseInfo.GetJoinColumnNames (memberExpression.Member).ForeignKey;
-        var rightSide = new Column (columnSource, foreignKeyName);
+        var resolver = new FieldResolver (_databaseInfo, new WhereFieldAccessPolicy (_databaseInfo));
+        var leftSideFieldDescriptor = resolver.ResolveField (memberExpression.Expression, _parseContext.JoinedTableContext);
+        _parseContext.FieldDescriptors.Add (leftSideFieldDescriptor);
+
+        var leftSide = leftSideFieldDescriptor.Column;
+        var rightSide = _databaseInfo.GetJoinForMember (memberExpression.Member, leftSide.ColumnSource, columnSource).RightColumn;
 
         ICriterion criterion = new BinaryCondition (leftSide, rightSide, BinaryCondition.ConditionKind.Equal);
         SqlGenerationData.AddWhereClause (criterion, _parseContext.FieldDescriptors);

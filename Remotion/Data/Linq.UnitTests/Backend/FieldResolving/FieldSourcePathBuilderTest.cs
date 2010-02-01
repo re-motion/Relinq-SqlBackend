@@ -61,10 +61,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath result =
           new FieldSourcePathBuilder ().BuildFieldSourcePath (StubDatabaseInfo.Instance, _context, _initialTable, joinMembers);
 
-      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentMember, null);
-      var joinColumns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (_studentMember);
+      Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentMember, null);
+      var singleJoin = StubDatabaseInfo.Instance.GetJoinForMember (_studentMember, _initialTable, relatedTable);
 
-      var singleJoin = new SingleJoin (new Column (_initialTable, joinColumns.PrimaryKey), new Column (relatedTable, joinColumns.ForeignKey));
       var expected = new FieldSourcePath (_initialTable, new[] { singleJoin });
       Assert.That (result, Is.EqualTo (expected));
     }
@@ -76,14 +75,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath result =
           new FieldSourcePathBuilder ().BuildFieldSourcePath (StubDatabaseInfo.Instance, _context, _initialTable, joinMembers);
 
-      Table relatedTable1 = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetailMember, null);
-      var joinColumns1 = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (_studentDetailMember);
+      Table relatedTable1 = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetailMember, null);
+      var singleJoin1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailMember, _initialTable, relatedTable1);
 
-      Table relatedTable2 = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentMember, null);
-      var joinColumns2 = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (_studentMember);
+      Table relatedTable2 = StubDatabaseInfo.Instance.GetTableForRelation (_studentMember, null);
+      var singleJoin2 = StubDatabaseInfo.Instance.GetJoinForMember (_studentMember, relatedTable1, relatedTable2);
 
-      var singleJoin1 = new SingleJoin (new Column (_initialTable, joinColumns1.PrimaryKey), new Column (relatedTable1, joinColumns1.ForeignKey));
-      var singleJoin2 = new SingleJoin (new Column (relatedTable1, joinColumns2.PrimaryKey), new Column (relatedTable2, joinColumns2.ForeignKey));
       var expected = new FieldSourcePath (_initialTable, new[] { singleJoin1, singleJoin2 });
       Assert.That (result, Is.EqualTo (expected));
     }
