@@ -16,31 +16,12 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public static class DatabaseInfoUtility
   {
-    public static Table GetTableForFromClause (IDatabaseInfo databaseInfo, FromClauseBase fromClause)
-    {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-
-      string tableName = databaseInfo.GetTableName (fromClause);
-      if (tableName == null)
-      {
-        string message = string.Format (
-            "The from clause with identifier {0} and item type {1} does not identify a queryable table.",
-            fromClause.ItemName,
-            fromClause.ItemType.FullName);
-        throw new ArgumentException (message, "fromClause");
-      }
-      else
-        return new Table (tableName, fromClause.ItemName);
-    }
-
     public static Table GetRelatedTable (IDatabaseInfo databaseInfo, MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);

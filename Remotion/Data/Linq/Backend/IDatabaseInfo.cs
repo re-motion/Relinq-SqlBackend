@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.Backend
@@ -26,11 +27,12 @@ namespace Remotion.Data.Linq.Backend
   public interface IDatabaseInfo
   {
     /// <summary>
-    /// Has to be implemented to get the table name of the given clause.
+    /// Creates a <see cref="Table"/> object for the query source represented by the given <see cref="FromClauseBase"/>.
     /// </summary>
-    /// <param name="fromClause">The clause for which to get the table name.</param>
-    /// <returns>The table name as string.</returns>
-    string GetTableName (FromClauseBase fromClause);
+    /// <param name="fromClause">The clause for which to get a <see cref="Table"/> object.</param>
+    /// <returns>The <see cref="Table"/> object.</returns>
+    /// <exception cref="UnmappedItemException">The given <paramref name="fromClause"/> cannot be mapped to a <see cref="Table"/>.</exception>
+    Table GetTableForFromClause (FromClauseBase fromClause);
 
     /// <summary>
     /// Has to be implemented to get the table name of the n-side of a relation.

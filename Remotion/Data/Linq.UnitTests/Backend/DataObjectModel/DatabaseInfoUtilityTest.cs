@@ -20,7 +20,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
@@ -34,24 +33,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void SetUp()
     {
       _databaseInfo = StubDatabaseInfo.Instance;
-    }
-
-    [Test]
-    public void GetTableForFromClause()
-    {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student();
-      Table table = DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, fromClause);
-      Assert.That (table, Is.EqualTo (new Table ("studentTable", "s")));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The from clause with identifier i and item type "
-        + "System.Int32 does not identify a queryable table.", MatchType = MessageMatch.Contains)]
-    public void GetTableForFromClause_InvalidSource ()
-    {
-      var ints = new TestQueryable<int> (ExpressionHelper.CreateExecutor());
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int("i", typeof (int) , ints);
-      DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, fromClause);
     }
 
     [Test]

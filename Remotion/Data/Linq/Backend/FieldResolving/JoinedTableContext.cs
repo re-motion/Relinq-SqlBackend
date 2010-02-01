@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       ArgumentUtility.CheckNotNull ("fieldSourcePath", fieldSourcePath);
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      JoinedTableKey key = new JoinedTableKey (fieldSourcePath, relationMember);
+      var key = new JoinedTableKey (fieldSourcePath, relationMember);
       
       if (!_joinedTables.Contains (key))
         _joinedTables.Add (key, DatabaseInfoUtility.GetRelatedTable (databaseInfo, relationMember));
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       if (subQueryExpression != null)
         return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInFrom, clause.ItemName);
       else
-        return DatabaseInfoUtility.GetTableForFromClause (_databaseInfo, clause);
+        return _databaseInfo.GetTableForFromClause (clause);
     }
   }
 }
