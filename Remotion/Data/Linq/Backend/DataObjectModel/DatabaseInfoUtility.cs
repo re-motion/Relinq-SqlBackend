@@ -44,18 +44,17 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
       return databaseInfo.IsRelationMember (member) && (databaseInfo.GetColumnName (member) == null);
     }
 
-    public static Column? GetColumn (IDatabaseInfo databaseInfo, IColumnSource columnSource, MemberInfo member)
+    public static Column GetColumn (IDatabaseInfo databaseInfo, IColumnSource columnSource, MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
 
       string columnName = member == null ? "*" : databaseInfo.GetColumnName (member);
       if (columnName == null)
-        return null;
+        throw new UnmappedItemException (string.Format ("The member '{0}.{1}' does not identify a queryable column.", member.DeclaringType, member.Name));
       else if (!columnSource.IsTable && member == null)
         return new Column (columnSource, null);
       else
         return new Column (columnSource, columnName);
-      //return new Column (columnSource, columnName, ReflectionUtility.GetFieldOrPropertyType (member));
     }
 
     public static MemberInfo GetPrimaryKeyMember (IDatabaseInfo databaseInfo, Type entityType)

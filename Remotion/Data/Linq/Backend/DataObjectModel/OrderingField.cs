@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public OrderingField (FieldDescriptor fieldDescriptor, OrderingDirection direction)
     {
-      fieldDescriptor.GetMandatoryColumn(); // assert that there is a column for ordering
+      Column temp = fieldDescriptor.Column;
 
       _fieldDescriptor = fieldDescriptor;
       _direction = direction;
@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 
     public Column Column
     {
-      get { return _fieldDescriptor.GetMandatoryColumn(); }
+      get { return _fieldDescriptor.Column; }
     }
 
     public FieldDescriptor FieldDescriptor

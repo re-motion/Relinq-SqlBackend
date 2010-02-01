@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing
     {
       FieldDescriptor fieldDescriptor = _resolver.ResolveField (referenceExpression, parseContext.JoinedTableContext);
       parseContext.FieldDescriptors.Add (fieldDescriptor);
-      return fieldDescriptor.GetMandatoryColumn();
+      return fieldDescriptor.Column;
     }
 
     ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)

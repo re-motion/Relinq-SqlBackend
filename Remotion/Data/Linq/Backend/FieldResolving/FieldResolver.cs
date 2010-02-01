@@ -79,8 +79,15 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       var pathBuilder = new FieldSourcePathBuilder();
       FieldSourcePath fieldData = pathBuilder.BuildFieldSourcePath (DatabaseInfo, joinedTableContext, firstSource, joinMembersForCalculation);
 
-      Column? column = DatabaseInfoUtility.GetColumn (DatabaseInfo, fieldData.LastSource, accessedMemberForColumn);
-      return new FieldDescriptor (accessedMember, fieldData, column);
+      try
+      {
+        var column = DatabaseInfoUtility.GetColumn (DatabaseInfo, fieldData.LastSource, accessedMemberForColumn);
+        return new FieldDescriptor (accessedMember, fieldData, column);
+      }
+      catch (UnmappedItemException ex)
+      {
+        throw new FieldAccessResolveException (ex.Message, ex);
+      }
     }
 
     private MemberInfoChain AdjustMemberInfos (

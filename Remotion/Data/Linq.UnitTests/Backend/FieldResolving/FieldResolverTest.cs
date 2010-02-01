@@ -192,19 +192,16 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     }
 
     [Test]
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage =
+        "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBProperty' does not identify a queryable column.")]
     public void Resolve_SimpleMemberAccess_InvalidField ()
     {
-      IColumnSource table = _context.GetColumnSource (_studentClause);
-
       Expression fieldExpression = Expression.MakeMemberAccess (
           _studentReference,
           typeof (Student).GetProperty ("NonDBProperty"));
 
-      FieldDescriptor fieldDescriptor =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (fieldExpression, _context);
+      new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (fieldExpression, _context);
 
-      var path = new FieldSourcePath (table, new SingleJoin[0]);
-      Assert.That (fieldDescriptor, Is.EqualTo (new FieldDescriptor (typeof (Student).GetProperty ("NonDBProperty"), path, null)));
     }
 
     [Test]

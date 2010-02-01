@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void GetColumn ()
     {
       var table = new Table ("Student", "s");
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("First")).Value;
+      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("First"));
       Assert.That (column, Is.EqualTo (new Column (table, "FirstColumn")));
     }
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void GetColumn_IsTableFalse_MemberNull ()
     {
       IColumnSource table = new LetColumnSource ("s", false);
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, null).Value;
+      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, null);
       Assert.That (column, Is.EqualTo (new Column (table, null)));
     }
 
@@ -114,11 +114,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void GetColumn_IsTableFalse_Member ()
     {
       IColumnSource table = new LetColumnSource ("s", false);
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("First")).Value;
+      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("First"));
       Assert.That (column, Is.EqualTo (new Column (table, "FirstColumn")));
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
+        "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBProperty' does not identify a queryable column.")]
     public void GetColumn_InvalidMember ()
     {
       IColumnSource table = new Table ("Student", "s");
