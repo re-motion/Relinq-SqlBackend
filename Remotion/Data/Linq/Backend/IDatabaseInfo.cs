@@ -67,22 +67,15 @@ namespace Remotion.Data.Linq.Backend
     /// </returns>
     bool HasAssociatedColumn (MemberInfo member);
 
-    ///// <summary>
-    ///// Creates a <see cref="Column"/> instance for the given <see cref="IColumnSource"/> and <see cref="MemberInfo"/>.
-    ///// </summary>
-    ///// <param name="columnSource">The column source representing the object the column is retrieved from, e.g. a <see cref="Table"/> or 
-    ///// <see cref="SubQuery"/>.</param>
-    ///// <param name="member">The <see cref="MemberInfo"/> identifying the column being queried.</param>
-    ///// <returns>A <see cref="Column"/> for the given <paramref name="member"/>.</returns>
-    ///// <exception cref="UnmappedItemException">The given <paramref name="member"/> cannot be mapped to a <see cref="Table"/>.</exception>
-    //Column GetColumn (IColumnSource columnSource, MemberInfo member);
-
     /// <summary>
-    /// Has to be implemented to get the column name of a given member.
+    /// Creates a <see cref="Column"/> instance for the given <see cref="IColumnSource"/> and <see cref="MemberInfo"/>.
     /// </summary>
-    /// <param name="member">The <see cref="MemberInfo"/> identifying the column.</param>
-    /// <returns>The column name as string.</returns>
-    string GetColumnName (MemberInfo member);
+    /// <param name="columnSource">The <see cref="IColumnSource"/> representing the object owning the column, e.g. a <see cref="Table"/> or a 
+    /// <see cref="SubQuery"/>.</param>
+    /// <param name="member">The <see cref="MemberInfo"/> identifying the column being queried.</param>
+    /// <returns>A <see cref="Column"/> for the given <paramref name="member"/>.</returns>
+    /// <exception cref="UnmappedItemException">The given <paramref name="member"/> cannot be mapped to a <see cref="Table"/>.</exception>
+    Column GetColumnForMember (IColumnSource columnSource, MemberInfo member);
 
     /// <summary>
     /// Has to be implemented to get affected columns of a join.

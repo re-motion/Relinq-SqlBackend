@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       PropertyInfo orderingMember = typeof (Student).GetProperty ("First");
       var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
       var path = new FieldSourcePath (sourceTable, new[] { join });
-      var column = DatabaseInfoUtility.GetColumn (StubDatabaseInfo.Instance, relatedTable, orderingMember);
+      var column = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetColumnForMember (relatedTable, orderingMember);
       var expectedFieldDescriptor = new FieldDescriptor (orderingMember, path, column);
       
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));

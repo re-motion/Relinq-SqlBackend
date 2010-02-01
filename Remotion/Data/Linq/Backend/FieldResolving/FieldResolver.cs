@@ -95,7 +95,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       {
         try
         {
-          return DatabaseInfoUtility.GetColumn (DatabaseInfo, columnSource, columnMember);
+          return DatabaseInfo.GetColumnForMember (columnSource, columnMember);
         }
         catch (UnmappedItemException ex)
         {

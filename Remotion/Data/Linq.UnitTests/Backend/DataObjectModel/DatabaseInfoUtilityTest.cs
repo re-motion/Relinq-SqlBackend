@@ -71,31 +71,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     }
 
     [Test]
-    public void GetColumn ()
-    {
-      var table = new Table ("Student", "s");
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("First"));
-      Assert.That (column, Is.EqualTo (new Column (table, "FirstColumn")));
-    }
-
-    [Test]
-    public void GetColumn_IsTableFalse_Member ()
-    {
-      IColumnSource subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInFrom, "test");
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, subQuery, typeof (Student).GetProperty ("First"));
-      Assert.That (column, Is.EqualTo (new Column (subQuery, "FirstColumn")));
-    }
-
-    [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
-        "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBProperty' does not identify a queryable column.")]
-    public void GetColumn_InvalidMember ()
-    {
-      IColumnSource table = new Table ("Student", "s");
-      Assert.That (DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("NonDBProperty")), Is.Null);
-    }
-
-    [Test]
     public void GetPrimaryKeyMember ()
     {
       MemberInfo studentDetailKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (_databaseInfo, typeof (Student_Detail));
