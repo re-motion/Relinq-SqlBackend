@@ -149,10 +149,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Student_Detail
       Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
-      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      var columns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (relationMember);
 
       PropertyInfo orderingMember = typeof (Student).GetProperty ("First");
-      var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
+      var join = new SingleJoin (new Column (sourceTable, columns.PrimaryKey), new Column (relatedTable, columns.ForeignKey));
       var path = new FieldSourcePath (sourceTable, new[] { join });
       var column = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetColumnForMember (relatedTable, orderingMember);
       var expectedFieldDescriptor = new FieldDescriptor (orderingMember, path, column);

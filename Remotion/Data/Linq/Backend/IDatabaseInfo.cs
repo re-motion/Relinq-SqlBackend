@@ -83,7 +83,8 @@ namespace Remotion.Data.Linq.Backend
     /// <param name="relationMember">The <see cref="MemberInfo"/> identifying the relation.</param>
     /// <returns>The names of the primary and foreign key columns to be compared for joining, or <see langword="null" /> if the 
     /// <paramref name="relationMember"/> does not identify relation.</returns>
-    JoinColumnNames? GetJoinColumnNames (MemberInfo relationMember);
+    /// <exception cref="UnmappedItemException">The given <paramref name="relationMember"/> cannot be mapped to a <see cref="Table"/>.</exception>
+    JoinColumnNames GetJoinColumnNames (MemberInfo relationMember);
 
     /// <summary>
     /// Has to be implemented to get value of a parameter in a where condition.

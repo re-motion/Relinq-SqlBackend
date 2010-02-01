@@ -36,21 +36,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     }
 
     [Test]
-    public void GetJoinColumns()
-    {
-      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, typeof (Student_Detail).GetProperty ("Student"));
-      Assert.That (columns, Is.EqualTo (new JoinColumnNames ("Student_Detail_PK", "Student_Detail_to_Student_FK")));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' does not "
-        + "identify a relation.")]
-    public void GetJoinColumns_InvalidMember ()
-    {
-      DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, typeof (Student).GetProperty ("First"));
-    }
-
-    [Test]
     public void IsRelationMember_True ()
     {
       Assert.That (

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend
 {
@@ -25,6 +26,9 @@ namespace Remotion.Data.Linq.Backend
   {
     public JoinColumnNames (string primaryKey, string foreignKey) : this ()
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("primaryKey", primaryKey);
+      ArgumentUtility.CheckNotNullOrEmpty ("foreignKey", foreignKey);
+
       PrimaryKey = primaryKey;
       ForeignKey = foreignKey;
     }

@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         try
         {
           Table relatedTable = context.GetJoinedTable (databaseInfo, pathSoFar, member);
-          JoinColumnNames? joinColumns = DatabaseInfoUtility.GetJoinColumnNames (databaseInfo, member);
+          JoinColumnNames? joinColumns = databaseInfo.GetJoinColumnNames (member);
 
           //Column leftColumn = new Column (lastSource, joinColumns.A, ReflectionUtility.GetFieldOrPropertyType (member));
           //Column rightColumn = new Column (relatedTable, joinColumns.B, ReflectionUtility.GetFieldOrPropertyType (member));

@@ -157,9 +157,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
-      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
+      var columns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (relationMember);
 
-      var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
+      var join = new SingleJoin (new Column (sourceTable, columns.PrimaryKey), new Column (relatedTable, columns.ForeignKey));
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
       List<SingleJoin> actualJoins = sqlGeneratorVisitor.SqlGenerationData.Joins[sourceTable];
@@ -260,8 +260,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource studentDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null);
-      var joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.Value.PrimaryKey), new Column (studentTable, joinSelectEvaluations.Value.ForeignKey));
+      var joinSelectEvaluations = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (relationMember);
+      var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.PrimaryKey), new Column (studentTable, joinSelectEvaluations.ForeignKey));
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 
@@ -373,8 +373,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Student_Detail
       Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
-      var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
-      var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
+      var columns = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinColumnNames (relationMember);
+      var join = new SingleJoin (new Column (sourceTable, columns.PrimaryKey), new Column (relatedTable, columns.ForeignKey));
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 

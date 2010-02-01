@@ -16,28 +16,11 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public static class DatabaseInfoUtility
   {
-    public static JoinColumnNames? GetJoinColumnNames (IDatabaseInfo databaseInfo, MemberInfo relationMember)
-    {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-
-      var columns = databaseInfo.GetJoinColumnNames (relationMember);
-      if (columns == null)
-      {
-        string message =
-            string.Format ("The member '{0}.{1}' does not identify a relation.", relationMember.DeclaringType.FullName, relationMember.Name);
-        throw new InvalidOperationException (message);
-      }
-      else
-        return columns;
-    }
-
     public static MemberInfo GetPrimaryKeyMember (IDatabaseInfo databaseInfo, Type entityType)
     {
       MemberInfo primaryKeyMember = databaseInfo.GetPrimaryKeyMember (entityType);
