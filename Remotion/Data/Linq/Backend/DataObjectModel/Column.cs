@@ -29,8 +29,10 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
     public Column (IColumnSource columnSource, string name)
     {
       ArgumentUtility.CheckNotNull ("fromSource", columnSource);
-      _name = name;
+      ArgumentUtility.CheckNotNull ("name", name);
+
       _columnSource = columnSource;
+      _name = name;
     }
 
     public IColumnSource ColumnSource
