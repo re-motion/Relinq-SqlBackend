@@ -69,24 +69,38 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         MemberInfo accessedMember, 
         JoinedTableContext joinedTableContext)
     {
-      // Documentation example: sdd.Student_Detail.Student.First
+      // Example: sdd.Student_Detail.Student.First
+      // firstSource == "sdd", QuerySourceReferenceExpression == [sdd]
       // joinMembers == "Student_Detail", "Student"
+      // accessedMember == "First"
 
       var memberInfos = AdjustMemberInfos (referenceExpression, joinMembers, accessedMember);
       MemberInfo accessedMemberForColumn = memberInfos.AccessedMember;
       IEnumerable<MemberInfo> joinMembersForCalculation = memberInfos.JoinedMembers;
 
       var pathBuilder = new FieldSourcePathBuilder();
-      FieldSourcePath fieldData = pathBuilder.BuildFieldSourcePath (DatabaseInfo, joinedTableContext, firstSource, joinMembersForCalculation);
+      var fieldData = pathBuilder.BuildFieldSourcePath (DatabaseInfo, joinedTableContext, firstSource, joinMembersForCalculation);
 
-      try
+      var column = GetColumn (fieldData.LastSource, accessedMemberForColumn);
+      return new FieldDescriptor (accessedMember, fieldData, column);
+    }
+
+    private Column GetColumn (IColumnSource columnSource, MemberInfo columnMember)
+    {
+      if (columnMember == null) // sdd
       {
-        var column = DatabaseInfoUtility.GetColumn (DatabaseInfo, fieldData.LastSource, accessedMemberForColumn);
-        return new FieldDescriptor (accessedMember, fieldData, column);
+        return new Column (columnSource, "*");
       }
-      catch (UnmappedItemException ex)
+      else // ...Student.First
       {
-        throw new FieldAccessResolveException (ex.Message, ex);
+        try
+        {
+          return DatabaseInfoUtility.GetColumn (DatabaseInfo, columnSource, columnMember);
+        }
+        catch (UnmappedItemException ex)
+        {
+          throw new FieldAccessResolveException (ex.Message, ex);
+        }
       }
     }
 

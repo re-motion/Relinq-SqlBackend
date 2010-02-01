@@ -146,11 +146,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void VisitColumn_ColumnSource_NoTable ()
     {
       var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-      var column = new Column (new LetColumnSource ("test", false), null);
+      var column = new Column (new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInSelect, "test"), "testC");
 
       visitor.VisitColumn (column);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz [test].[test]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz [test].[testC]"));
     }
 
     [Test]

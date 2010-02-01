@@ -103,19 +103,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     }
 
     [Test]
-    public void GetColumn_IsTableFalse_MemberNull ()
-    {
-      IColumnSource table = new LetColumnSource ("s", false);
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, null);
-      Assert.That (column, Is.EqualTo (new Column (table, null)));
-    }
-
-    [Test]
     public void GetColumn_IsTableFalse_Member ()
     {
-      IColumnSource table = new LetColumnSource ("s", false);
-      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, table, typeof (Student).GetProperty ("First"));
-      Assert.That (column, Is.EqualTo (new Column (table, "FirstColumn")));
+      IColumnSource subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInFrom, "test");
+      Column column = DatabaseInfoUtility.GetColumn (_databaseInfo, subQuery, typeof (Student).GetProperty ("First"));
+      Assert.That (column, Is.EqualTo (new Column (subQuery, "FirstColumn")));
     }
 
     [Test]
