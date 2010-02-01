@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.Backend
     /// <returns>
     /// 	<see langword="true"/> if the specified member is associated with a column; otherwise, <see langword="false"/>.
     /// </returns>
-    bool HasColumn (MemberInfo member);
+    bool HasAssociatedColumn (MemberInfo member);
 
     ///// <summary>
     ///// Creates a <see cref="Column"/> instance for the given <see cref="IColumnSource"/> and <see cref="MemberInfo"/>.

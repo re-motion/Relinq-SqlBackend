@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
 
       // for field accesses of the form "sdd.Student", where sdd.Student does not directly represent a mapped column (because the foreign key is
       // on the other side), we have to return the equivalent of "sdd.Student.ID"
-      if (!_databaseInfo.HasColumn (accessedMember))
+      if (!_databaseInfo.HasAssociatedColumn (accessedMember))
       {
         var primaryKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (_databaseInfo, ReflectionUtility.GetFieldOrPropertyType (accessedMember));
         return new MemberInfoChain ((joinedMembers.Concat (new[] { accessedMember })).ToArray(), primaryKeyMember);
