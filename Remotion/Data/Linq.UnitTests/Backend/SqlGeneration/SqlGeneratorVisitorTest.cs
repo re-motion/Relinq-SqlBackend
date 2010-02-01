@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause);
-      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
       var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
       var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
@@ -259,7 +259,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource studentDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
-      Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember);
+      Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null);
       var joinSelectEvaluations = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       var join = new SingleJoin (new Column (studentDetailTable, joinSelectEvaluations.Value.PrimaryKey), new Column (studentTable, joinSelectEvaluations.Value.ForeignKey));
 
@@ -372,7 +372,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Student_Detail
-      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
       var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       var join = new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
 

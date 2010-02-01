@@ -240,7 +240,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
     private SingleJoin CreateJoin (IColumnSource sourceTable, MemberInfo relationMember)
     {
-      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
       var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
       return new SingleJoin (new Column (sourceTable, columns.Value.PrimaryKey), new Column (relatedTable, columns.Value.ForeignKey));
     }

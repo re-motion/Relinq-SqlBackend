@@ -22,7 +22,8 @@ using Remotion.Data.Linq.Clauses;
 namespace Remotion.Data.Linq.Backend
 {
   /// <summary>
-  /// The interface has to be implemented so that the linq provider can use the underlying system to get information of the data source.
+  /// Provides an interface for classes representing the databases to re-linq's SQL backend. Usually, implementations of this interface will be
+  /// linked to an O/R mapping infrastructure that knows how types and properties are mapped to tables and columns.
   /// </summary>
   public interface IDatabaseInfo
   {
@@ -30,16 +31,32 @@ namespace Remotion.Data.Linq.Backend
     /// Creates a <see cref="Table"/> object for the query source represented by the given <see cref="FromClauseBase"/>.
     /// </summary>
     /// <param name="fromClause">The clause for which to get a <see cref="Table"/> object.</param>
-    /// <returns>The <see cref="Table"/> object.</returns>
+    /// <param name="alias">The alias to assign to the table.</param>
+    /// <returns>
+    /// A <see cref="Table"/> object for the <paramref name="fromClause"/>.
+    /// </returns>
     /// <exception cref="UnmappedItemException">The given <paramref name="fromClause"/> cannot be mapped to a <see cref="Table"/>.</exception>
-    Table GetTableForFromClause (FromClauseBase fromClause);
+    Table GetTableForFromClause (FromClauseBase fromClause, string alias);
 
     /// <summary>
-    /// Has to be implemented to get the table name of the n-side of a relation.
+    /// Determines whether the specified member identifies a mapped relation.
+    /// </summary>
+    /// <param name="member">The member to check.</param>
+    /// <returns>
+    /// 	<see langword="true"/> if the specified member identifies a mapped relation; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool IsRelationMember (MemberInfo member);
+
+    /// <summary>
+    /// Creates a <see cref="Table"/> object for the related table represented by the member identified by the given <see cref="MemberInfo"/>.
     /// </summary>
     /// <param name="relationMember">The <see cref="MemberInfo"/> identifying the relation.</param>
-    /// <returns>The table name of the related side of a join as string.</returns>
-    string GetRelatedTableName (MemberInfo relationMember);
+    /// <param name="alias">The alias to assign to the table.</param>
+    /// <returns>
+    /// A <see cref="Table"/> object for the given <paramref name="relationMember"/>.
+    /// </returns>
+    /// <exception cref="UnmappedItemException">The given <paramref name="relationMember"/> cannot be mapped to a <see cref="Table"/>.</exception>
+    Table GetTableForRelation (MemberInfo relationMember, string alias);
 
     /// <summary>
     /// Has to be implemented to get the column name of a given member.
@@ -69,12 +86,5 @@ namespace Remotion.Data.Linq.Backend
     /// <param name="entityType">The type of the queried entity.</param>
     /// <returns><see cref="MemberInfo"/> of the primary key.</returns>
     MemberInfo GetPrimaryKeyMember (Type entityType);
-
-    /// <summary>
-    /// Has to be implemented to check whether a given type is a table.
-    /// </summary>
-    /// <param name="type">The type of a queried entity.</param>
-    /// <returns>Boolean value depending on the evaluation.</returns>
-    bool IsTableType (Type type);
   }
 }

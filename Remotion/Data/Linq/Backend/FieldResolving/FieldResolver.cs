@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
         Debug.Assert (joinedMembers.Count() == 0, "Number of joinMembers must be 0.");
         return _policy.AdjustMemberInfosForDirectAccessOfQuerySource (referenceExpression);
       }
-      else if (DatabaseInfoUtility.IsRelationMember (DatabaseInfo, accessedMember))
+      else if (DatabaseInfo.IsRelationMember (accessedMember))
         return _policy.AdjustMemberInfosForRelation (joinedMembers, accessedMember);
       else
         return new MemberInfoChain (joinedMembers.ToArray(), accessedMember);

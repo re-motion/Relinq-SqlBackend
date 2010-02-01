@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
@@ -147,7 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       FromClauseBase fromClause = parsedQuery.MainFromClause;
       PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
       IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Student_Detail
-      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, relationMember); // Student
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
       var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, relationMember);
 
       PropertyInfo orderingMember = typeof (Student).GetProperty ("First");

@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.UnitTests.TestDomain;
@@ -60,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath result =
           new FieldSourcePathBuilder ().BuildFieldSourcePath (StubDatabaseInfo.Instance, _context, _initialTable, joinMembers);
 
-      Table relatedTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentMember);
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentMember, null);
       var joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentMember);
 
       var singleJoin = new SingleJoin (new Column (_initialTable, joinColumns.Value.PrimaryKey), new Column (relatedTable, joinColumns.Value.ForeignKey));
@@ -75,10 +76,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath result =
           new FieldSourcePathBuilder ().BuildFieldSourcePath (StubDatabaseInfo.Instance, _context, _initialTable, joinMembers);
 
-      Table relatedTable1 = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetailMember);
+      Table relatedTable1 = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetailMember, null);
       var joinColumns1 = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetailMember);
 
-      Table relatedTable2 = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentMember);
+      Table relatedTable2 = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentMember, null);
       var joinColumns2 = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentMember);
 
       var singleJoin1 = new SingleJoin (new Column (_initialTable, joinColumns1.Value.PrimaryKey), new Column (relatedTable1, joinColumns1.Value.ForeignKey));

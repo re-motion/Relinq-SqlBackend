@@ -36,21 +36,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     }
 
     [Test]
-    public void GetRelatedTable ()
-    {
-      Table table = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, typeof (Student_Detail).GetProperty ("Student"));
-      Assert.That (table, Is.EqualTo (new Table ("studentTable", null)));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' does not "
-        + "identify a relation.")]
-    public void GetRelatedTable_InvalidMember ()
-    {
-      DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, typeof (Student).GetProperty ("First"));
-    }
-
-    [Test]
     public void GetJoinColumns()
     {
       var columns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, typeof (Student_Detail).GetProperty ("Student"));
@@ -69,20 +54,20 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void IsRelationMember_True ()
     {
       Assert.That (
-          DatabaseInfoUtility.IsRelationMember (StubDatabaseInfo.Instance, typeof (Student_Detail_Detail).GetProperty ("Student_Detail")), Is.True);
-      Assert.That (DatabaseInfoUtility.IsRelationMember (StubDatabaseInfo.Instance, typeof (Student_Detail).GetProperty ("Student")), Is.True);
+          ((IDatabaseInfo) StubDatabaseInfo.Instance).IsRelationMember (typeof (Student_Detail_Detail).GetProperty ("Student_Detail")), Is.True);
+      Assert.That (((IDatabaseInfo) StubDatabaseInfo.Instance).IsRelationMember (typeof (Student_Detail).GetProperty ("Student")), Is.True);
     }
 
     [Test]
     public void IsRelationMember_False ()
     {
-      Assert.That (DatabaseInfoUtility.IsRelationMember (StubDatabaseInfo.Instance, typeof (Student).GetProperty ("First")), Is.False);
+      Assert.That (((IDatabaseInfo) StubDatabaseInfo.Instance).IsRelationMember (typeof (Student).GetProperty ("First")), Is.False);
     }
 
     [Test]
     public void IsRelationMember_NonDBMember ()
     {
-      Assert.That (DatabaseInfoUtility.IsRelationMember (StubDatabaseInfo.Instance, typeof (Student).GetProperty ("NonDBProperty")), Is.False);
+      Assert.That (((IDatabaseInfo) StubDatabaseInfo.Instance).IsRelationMember (typeof (Student).GetProperty ("NonDBProperty")), Is.False);
     }
 
     [Test]

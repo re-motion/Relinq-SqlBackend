@@ -15,29 +15,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.UnitTests.TestUtilities;
 
-namespace Remotion.Data.Linq.Backend
+namespace Remotion.Data.Linq.UnitTests.Backend
 {
-  /// <summary>
-  /// Thrown by implementations of <see cref="IDatabaseInfo"/> when the given item cannot be mapped to a database construct.
-  /// </summary>
-  [Serializable]
-  public class UnmappedItemException : Exception
+  [TestFixture]
+  public class UnmappedItemExceptionTest
   {
-    public UnmappedItemException (string message)
-        : base(message)
+    [Test]
+    public void Serialization ()
     {
-    }
+      var exception = new UnmappedItemException ("message", new Exception ("inner"));
+      
+      var deserializedException = Serializer.SerializeAndDeserialize (exception);
 
-    public UnmappedItemException (string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
-
-    protected UnmappedItemException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
+      Assert.That (deserializedException.Message, Is.EqualTo ("message"));
+      Assert.That (deserializedException.InnerException, Is.InstanceOfType (typeof (Exception)));
+      Assert.That (deserializedException.InnerException.Message, Is.EqualTo ("inner"));
     }
   }
 }

@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.Linq.Clauses;
@@ -177,8 +178,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     }
 
     [Test]
-    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' does not "
-                                                                                + "identify a relation.")]
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = 
+        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' is not a relation member.")]
     public void Resolve_Join_InvalidMember ()
     {
       // s.First.Length
@@ -231,7 +232,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_Expression, _context);
 
       IColumnSource detailTable = _context.GetColumnSource (_studentDetailClause);
-      Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
+      Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetail_Student_Property, null);
       var joinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
       var join = new SingleJoin (new Column (detailTable, joinColumns.Value.PrimaryKey), new Column (studentTable, joinColumns.Value.ForeignKey));
       var column = new Column (studentTable, "*");
@@ -249,8 +250,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
 
       IColumnSource detailDetailTable = _context.GetColumnSource (_studentDetailDetailClause);
-      Table detailTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetailDetail_StudentDetail_Property);
-      Table studentTable = DatabaseInfoUtility.GetRelatedTable (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
+      Table detailTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
+      Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (_studentDetail_Student_Property, null);
       var innerJoinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetailDetail_StudentDetail_Property);
       var outerJoinColumns = DatabaseInfoUtility.GetJoinColumnNames (StubDatabaseInfo.Instance, _studentDetail_Student_Property);
 

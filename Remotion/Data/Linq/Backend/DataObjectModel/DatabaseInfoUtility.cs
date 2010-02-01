@@ -22,22 +22,6 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
   public static class DatabaseInfoUtility
   {
-    public static Table GetRelatedTable (IDatabaseInfo databaseInfo, MemberInfo relationMember)
-    {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-
-      string tableName = databaseInfo.GetRelatedTableName (relationMember);
-      if (tableName == null)
-      {
-        string message =
-            string.Format ("The member '{0}.{1}' does not identify a relation.", relationMember.DeclaringType.FullName, relationMember.Name);
-        throw new InvalidOperationException (message);
-      }
-      else
-        return new Table (tableName, null);
-    }
-
     public static JoinColumnNames? GetJoinColumnNames (IDatabaseInfo databaseInfo, MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
@@ -54,18 +38,10 @@ namespace Remotion.Data.Linq.Backend.DataObjectModel
         return columns;
     }
 
-    public static bool IsRelationMember (IDatabaseInfo databaseInfo, MemberInfo member)
-    {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      ArgumentUtility.CheckNotNull ("member", member);
-
-      return databaseInfo.GetRelatedTableName (member) != null;
-    }
-
     public static bool IsVirtualColumn (IDatabaseInfo databaseInfo, MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
-      return (IsRelationMember (databaseInfo, member)) && (databaseInfo.GetColumnName (member) == null);
+      return databaseInfo.IsRelationMember (member) && (databaseInfo.GetColumnName (member) == null);
     }
 
     public static Column? GetColumn (IDatabaseInfo databaseInfo, IColumnSource columnSource, MemberInfo member)

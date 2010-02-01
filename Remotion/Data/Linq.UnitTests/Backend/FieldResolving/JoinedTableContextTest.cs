@@ -19,7 +19,6 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.FieldResolving;
@@ -99,8 +98,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' "
-      +"does not identify a relation.")]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
+        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' is not a relation member.")]
     public void GetJoinedTable_InvalidMember ()
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();

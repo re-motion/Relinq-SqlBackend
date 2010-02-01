@@ -51,7 +51,11 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       var key = new JoinedTableKey (fieldSourcePath, relationMember);
       
       if (!_joinedTables.Contains (key))
-        _joinedTables.Add (key, DatabaseInfoUtility.GetRelatedTable (databaseInfo, relationMember));
+      {
+        var table = databaseInfo.GetTableForRelation (relationMember, null);
+        _joinedTables.Add (key, table);
+      }
+
       return (Table) _joinedTables[key];
     }
 
@@ -88,7 +92,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       if (subQueryExpression != null)
         return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInFrom, clause.ItemName);
       else
-        return _databaseInfo.GetTableForFromClause (clause);
+        return _databaseInfo.GetTableForFromClause (clause, clause.ItemName);
     }
   }
 }
