@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
@@ -26,14 +25,22 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.UnitTests.TestDomain;
-using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 using Remotion.Data.Linq.UnitTests.TestUtilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class SqlServerEvaluationVisitorTest
   {
+    private StringBuilder _commandText;
+    private List<CommandParameter> _commandParameters;
+    private CommandBuilder _commandBuilder;
+    private CommandParameter _defaultParameter;
+    private IDatabaseInfo _databaseInfo;
+    private ISqlGenerator _sqlGeneratorMock;
+    private SqlServerEvaluationVisitor _visitor;
+
     [SetUp]
     public void SetUp ()
     {
@@ -42,55 +49,20 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
       _databaseInfo = StubDatabaseInfo.Instance;
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-    }
-
-    private StringBuilder _commandText;
-    private List<CommandParameter> _commandParameters;
-    private CommandBuilder _commandBuilder;
-    private CommandParameter _defaultParameter;
-    private IDatabaseInfo _databaseInfo;
-
-    private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
-    {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-      visitor.VisitBinaryEvaluation (binaryEvaluation);
-      string aoperator = "";
-      switch (binaryEvaluation.Kind)
-      {
-        case (BinaryEvaluation.EvaluationKind.Add):
-          aoperator = " + ";
-          break;
-        case (BinaryEvaluation.EvaluationKind.Divide):
-          aoperator = " / ";
-          break;
-        case (BinaryEvaluation.EvaluationKind.Modulo):
-          aoperator = " % ";
-          break;
-        case (BinaryEvaluation.EvaluationKind.Multiply):
-          aoperator = " * ";
-          break;
-        case (BinaryEvaluation.EvaluationKind.Subtract):
-          aoperator = " - ";
-          break;
-      }
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ([alias1].[id1]" + aoperator + "[alias2].[id2])"));
-      _commandText = new StringBuilder();
-      _commandText.Append ("xyz ");
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
+      _sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
+      _commandBuilder = new CommandBuilder (_sqlGeneratorMock, _commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
+      _visitor = new SqlServerEvaluationVisitor (_sqlGeneratorMock, _commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
     }
 
     [Test]
     public void VisitBinaryCondition ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-
       var binaryCondition = new BinaryCondition (
           new Column (new Table ("studentTable", "s"), "LastColumn"),
           new Constant ("Garcia"),
           BinaryCondition.ConditionKind.Equal);
 
-      visitor.VisitBinaryCondition (binaryCondition);
+      _visitor.VisitBinaryCondition (binaryCondition);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ([s].[LastColumn] = @2)"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("Garcia"));
@@ -114,19 +86,17 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CheckBinaryEvaluation (binaryEvaluation4);
       CheckBinaryEvaluation (binaryEvaluation5);
     }
-
+    
     [Test]
     public void VisitBinaryEvaluation_Encapsulated ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-
       var column1 = new Column (new Table ("table1", "alias1"), "id1");
       var column2 = new Column (new Table ("table2", "alias2"), "id2");
 
       var binaryEvaluation1 = new BinaryEvaluation (column1, column2, BinaryEvaluation.EvaluationKind.Add);
       var binaryEvaluation2 = new BinaryEvaluation (binaryEvaluation1, column2, BinaryEvaluation.EvaluationKind.Divide);
 
-      visitor.VisitBinaryEvaluation (binaryEvaluation2);
+      _visitor.VisitBinaryEvaluation (binaryEvaluation2);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (([alias1].[id1] + [alias2].[id2]) / [alias2].[id2])"));
     }
@@ -134,10 +104,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitColumn ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       var column = new Column (new Table ("table", "alias"), "name");
 
-      visitor.VisitColumn (column);
+      _visitor.VisitColumn (column);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz [alias].[name]"));
     }
@@ -145,10 +114,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitColumn_ColumnSource_NoTable ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-      var column = new Column (new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInSelect, "test"), "testC");
+      var column = new Column (new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInFrom, "test"), "testC");
 
-      visitor.VisitColumn (column);
+      _visitor.VisitColumn (column);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz [test].[testC]"));
     }
@@ -156,14 +124,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitComplexCriterion_And ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-
       var binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
       var binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
 
       var complexCriterion = new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.And);
 
-      visitor.VisitComplexCriterion (complexCriterion);
+      _visitor.VisitComplexCriterion (complexCriterion);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ((@2 = @3) AND (@4 = @5))"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
@@ -172,14 +138,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitComplexCriterion_Or ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-
       var binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
       var binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
 
       var complexCriterion = new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.Or);
 
-      visitor.VisitComplexCriterion (complexCriterion);
+      _visitor.VisitComplexCriterion (complexCriterion);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz ((@2 = @3) OR (@4 = @5))"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
@@ -188,13 +152,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitComplexCriterion_AdjustsBooleanColumns ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
-
       var column1 = new Column (new Table ("T1", "t1"), "c1");
       var column2 = new Column (new Table ("T2", "t2"), "c2");
       var complexCriterion = new ComplexCriterion (column1, column2, ComplexCriterion.JunctionKind.And);
 
-      visitor.VisitComplexCriterion (complexCriterion);
+      _visitor.VisitComplexCriterion (complexCriterion);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz (([t1].[c1] = @2) AND ([t2].[c2] = @3))"));
       Assert.That (_commandBuilder.GetCommandParameters ()[1].Value, Is.EqualTo (1));
@@ -204,10 +166,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitConstant ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       var constant = new Constant (5);
 
-      visitor.VisitConstant (constant);
+      _visitor.VisitConstant (constant);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz @2"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo (5));
@@ -216,10 +177,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitConstant_False ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       var constant = new Constant (false);
 
-      visitor.VisitConstant (constant);
+      _visitor.VisitConstant (constant);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (1<>1)"));
     }
@@ -227,10 +187,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitConstant_Null ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       var constant = new Constant (null);
 
-      visitor.VisitConstant (constant);
+      _visitor.VisitConstant (constant);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz NULL"));
     }
@@ -238,10 +197,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitConstant_True ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       var constant = new Constant (true);
 
-      visitor.VisitConstant (constant);
+      _visitor.VisitConstant (constant);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (1=1)"));
     }
@@ -249,12 +207,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitConstant_WithCollection ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-
       var ls = new List<int> { 1, 2, 3, 4 };
       var constant = new Constant (ls);
 
-      visitor.VisitConstant (constant);
+      _visitor.VisitConstant (constant);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (@2, @3, @4, @5)"));
     }
@@ -262,12 +218,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitNewObjectEvaluation ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       var newObject = new NewObject (
           typeof (Tuple<int, string>).GetConstructors()[0],
           new IEvaluation[] { new Constant (1), new Constant ("2") });
 
-      visitor.VisitNewObjectEvaluation (newObject);
+      _visitor.VisitNewObjectEvaluation (newObject);
 
       Assert.That (_commandBuilder.CommandParameters.Count, Is.EqualTo (3));
       Assert.That (_commandBuilder.CommandParameters[1].Value, Is.EqualTo (1));
@@ -279,11 +234,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitNotCriterion ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-
       var notCriterion = new NotCriterion (new Constant ("foo"));
 
-      visitor.VisitNotCriterion (notCriterion);
+      _visitor.VisitNotCriterion (notCriterion);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz NOT @2"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("foo"));
@@ -292,12 +245,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitNotCriterion_AdjustsBooleanColumns ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
-
       var column = new Column (new Table ("T1", "t1"), "c1");
       var notCriterion = new NotCriterion (column);
 
-      visitor.VisitNotCriterion (notCriterion);
+      _visitor.VisitNotCriterion (notCriterion);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz NOT ([t1].[c1] = @2)"));
       Assert.That (_commandBuilder.GetCommandParameters ()[1].Value, Is.EqualTo (1));
@@ -306,17 +257,54 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitSubQuery ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
+      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "sub_alias");
 
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable();
-      IQueryable<string> query = SelectTestQueryGenerator.CreateSimpleQuery_WithProjection (source);
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      var nestedGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
+      _sqlGeneratorMock
+          .Expect (mock => mock.CreateNestedSqlGenerator (ParseMode.SubQueryInWhere))
+          .Return (nestedGeneratorMock);
+      nestedGeneratorMock
+          .Expect (mock => mock.BuildCommand (queryModel))
+          .Return (new CommandData ("NESTED", new[] { new CommandParameter("@2", "value1"),  }, new SqlGenerationData() ));
 
-      var subQuery = new SubQuery (model, ParseMode.SubQueryInSelect, "sub_alias");
+      _sqlGeneratorMock.Replay ();
+      nestedGeneratorMock.Replay ();
 
-      visitor.VisitSubQuery (subQuery);
+      _commandBuilder.AppendEvaluation (subQuery);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("xyz (SELECT [s].[FirstColumn] FROM [studentTable] [s]) [sub_alias]"));
+      nestedGeneratorMock.VerifyAllExpectations ();
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz (NESTED) [sub_alias]"));
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { _defaultParameter, new CommandParameter("@2", "value1") }));
+    }
+
+    [Test]
+    public void VisitSubQuery_ParametersAreAdjusted ()
+    {
+      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "sub_alias");
+
+      var nestedGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
+      _sqlGeneratorMock
+          .Expect (mock => mock.CreateNestedSqlGenerator (ParseMode.SubQueryInWhere))
+          .Return (nestedGeneratorMock);
+      nestedGeneratorMock
+          .Expect (mock => mock.BuildCommand (queryModel))
+          .Return (new CommandData ("NESTED @2", new[] { new CommandParameter ("@2", "nestedValue"), }, new SqlGenerationData ()));
+
+      _sqlGeneratorMock.Replay ();
+      nestedGeneratorMock.Replay ();
+
+      var outerParameter = _commandBuilder.AddParameter ("outerValue");
+      _commandBuilder.Append (outerParameter.Name);
+      _commandBuilder.AppendEvaluation (subQuery);
+
+      nestedGeneratorMock.VerifyAllExpectations ();
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz @2(NESTED @3) [sub_alias]"));
+      Assert.That (_commandBuilder.GetCommandParameters (), 
+          Is.EqualTo (new[] { _defaultParameter, new CommandParameter ("@2", "outerValue"), new CommandParameter("@3", "nestedValue") }));
     }
 
     [Test]
@@ -325,11 +313,38 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                           + "and no custom generator has been registered.")]
     public void VisitUnknownMethodCall ()
     {
-      var visitor = new SqlServerEvaluationVisitor (_commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       MethodInfo methodInfo = typeof (DateTime).GetMethod ("get_Now");
       var methodCall = new MethodCall (methodInfo, null, new List<IEvaluation>());
 
-      visitor.VisitMethodCall (methodCall);
+      _visitor.VisitMethodCall (methodCall);
+    }
+
+    private void CheckBinaryEvaluation (BinaryEvaluation binaryEvaluation)
+    {
+      _commandText.Length = 0;
+      _commandParameters.Clear ();
+
+      _visitor.VisitBinaryEvaluation (binaryEvaluation);
+      string operatorSymbol = "";
+      switch (binaryEvaluation.Kind)
+      {
+        case (BinaryEvaluation.EvaluationKind.Add):
+          operatorSymbol = " + ";
+          break;
+        case (BinaryEvaluation.EvaluationKind.Divide):
+          operatorSymbol = " / ";
+          break;
+        case (BinaryEvaluation.EvaluationKind.Modulo):
+          operatorSymbol = " % ";
+          break;
+        case (BinaryEvaluation.EvaluationKind.Multiply):
+          operatorSymbol = " * ";
+          break;
+        case (BinaryEvaluation.EvaluationKind.Subtract):
+          operatorSymbol = " - ";
+          break;
+      }
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("([alias1].[id1]" + operatorSymbol + "[alias2].[id2])"));
     }
   }
 }

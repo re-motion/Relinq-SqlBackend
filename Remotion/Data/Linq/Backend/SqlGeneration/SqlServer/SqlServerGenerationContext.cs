@@ -23,12 +23,16 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
   public class SqlServerGenerationContext : ISqlGenerationContext
   {
-    public SqlServerGenerationContext (IDatabaseInfo databaseInfo, MethodCallSqlGeneratorRegistry methodCallRegistry)
+    public SqlServerGenerationContext (
+        SqlServerGenerator sqlServerGenerator, 
+        IDatabaseInfo databaseInfo, 
+        MethodCallSqlGeneratorRegistry methodCallRegistry)
     {
+      ArgumentUtility.CheckNotNull ("sqlServerGenerator", sqlServerGenerator);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
 
-      CommandBuilder = new CommandBuilder (new StringBuilder(), new List<CommandParameter>(), databaseInfo, methodCallRegistry);
+      CommandBuilder = new CommandBuilder (sqlServerGenerator, new StringBuilder(), new List<CommandParameter>(), databaseInfo, methodCallRegistry);
     }
 
     public SqlServerGenerationContext (CommandBuilder commandBuilder)

@@ -25,22 +25,26 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
   public class CommandBuilder : ICommandBuilder
   {
     public CommandBuilder (
+        ISqlGenerator sqlServerGenerator,
         StringBuilder commandText,
         List<CommandParameter> commandParameters,
         IDatabaseInfo databaseInfo,
         MethodCallSqlGeneratorRegistry methodCallRegistry)
     {
+      ArgumentUtility.CheckNotNull ("sqlServerGenerator", sqlServerGenerator);
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
 
+      SqlGenerator = sqlServerGenerator;
       CommandText = commandText;
       CommandParameters = commandParameters;
       DatabaseInfo = databaseInfo;
       MethodCallRegistry = methodCallRegistry;
     }
 
+    public ISqlGenerator SqlGenerator { get; set; }
     public StringBuilder CommandText { get; private set; }
     public List<CommandParameter> CommandParameters { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }
@@ -63,7 +67,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     public void AppendEvaluation (IEvaluation evaluation)
     {
-      var visitor = new SqlServerEvaluationVisitor (this, DatabaseInfo, MethodCallRegistry);
+      var visitor = new SqlServerEvaluationVisitor (SqlGenerator, this, DatabaseInfo, MethodCallRegistry);
       evaluation.Accept (visitor);
     }
 

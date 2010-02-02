@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SetUp ()
     {
       _commandBuilder = new CommandBuilder (
+          new SqlServerGenerator (StubDatabaseInfo.Instance),
           new StringBuilder (),
           new List<CommandParameter> (),
           StubDatabaseInfo.Instance,

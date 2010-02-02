@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
@@ -33,7 +32,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
         : base (databaseInfo, parseMode)
     {
       MethodCallRegistry.Register (typeof (string).GetMethod ("ToUpper", new Type[] { }), new MethodCallUpper());
-      MethodCallRegistry.Register (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }), new MethodCallRemove());
+      MethodCallRegistry.Register (typeof (string).GetMethod ("Remove", new[] { typeof (int) }), new MethodCallRemove());
       // TODO: register handler for string.Remove with two arguments
       MethodCallRegistry.Register (typeof (string).GetMethod ("ToLower", new Type[] { }), new MethodCallLower());
 
@@ -41,42 +40,17 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       foreach (var method in methodCallConvertTo.GetSupportedConvertMethods())
         MethodCallRegistry.Register (method, methodCallConvertTo);
 
-      MethodCallRegistry.Register (typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) }), new MethodCallSubstring());
+      MethodCallRegistry.Register (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) }), new MethodCallSubstring());
+    }
 
-      var methodInfoCount = (from m in typeof (Queryable).GetMethods()
-                             where m.Name == "Count" && m.GetParameters().Length == 1
-                             select m).Single();
-      MethodCallRegistry.Register (methodInfoCount, new MethodCallCount());
-
-      var methodInfoDistinct = (from m in typeof (Queryable).GetMethods()
-                                where m.Name == "Distinct" && (m.GetParameters().Length == 1)
-                                select m).Single();
-      MethodCallRegistry.Register (methodInfoDistinct, new MethodCallDistinct());
-
-      var methodInfoSingleOneParameter = (from m in typeof (Queryable).GetMethods()
-                                          where m.Name == "Single" && m.GetParameters().Length == 1
-                                          select m).Single();
-      MethodCallRegistry.Register (methodInfoSingleOneParameter, new MethodCallSingle());
-
-      var methodInfoSingleTwoParameters = (from m in typeof (Queryable).GetMethods()
-                                           where m.Name == "Single" && m.GetParameters().Length == 2
-                                           select m).Single();
-      MethodCallRegistry.Register (methodInfoSingleTwoParameters, new MethodCallSingle());
-
-      var methodInfoFirst = (from m in typeof (Queryable).GetMethods()
-                             where m.Name == "First" && m.GetParameters().Length == 1
-                             select m).Single();
-      MethodCallRegistry.Register (methodInfoFirst, new MethodCallFirst());
-
-      var methodInfoTake = (from m in typeof (Queryable).GetMethods()
-                            where m.Name == "Take" && m.GetParameters().Length == 2
-                            select m).Single();
-      MethodCallRegistry.Register (methodInfoTake, new MethodCallTake());
+    public override ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode)
+    {
+      return new SqlServerGenerator (DatabaseInfo, parseMode);
     }
 
     protected override SqlServerGenerationContext CreateContext ()
     {
-      return new SqlServerGenerationContext (DatabaseInfo, MethodCallRegistry);
+      return new SqlServerGenerationContext (this, DatabaseInfo, MethodCallRegistry);
     }
 
     protected override IOrderByBuilder CreateOrderByBuilder (SqlServerGenerationContext context)

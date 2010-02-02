@@ -42,7 +42,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
+      _commandBuilder = new CommandBuilder (
+          new SqlServerGenerator (StubDatabaseInfo.Instance),
+          new StringBuilder (),
+          new List<CommandParameter> (),
+          StubDatabaseInfo.Instance,
+          new MethodCallSqlGeneratorRegistry ());
+
       _fromBuilder = new FromBuilder (_commandBuilder);
 
       _table1 = new Table ("Table1", "t1");

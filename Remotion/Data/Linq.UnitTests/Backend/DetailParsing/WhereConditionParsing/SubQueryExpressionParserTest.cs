@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParsing;
@@ -63,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       QueryModel subQueryModel = ExpressionHelper.CreateQueryModel_Student();
       var subQueryExpression = new SubQueryExpression (subQueryModel);
 
-      var expectedSubQuery = new SubQuery (subQueryModel, ParseMode.SubQueryInSelect, null);
+      var expectedSubQuery = new SubQuery (subQueryModel, ParseMode.SubQueryInWhere, null);
 
       ICriterion actualCriterion = _subQueryExpressionParser.Parse (subQueryExpression, ParseContext);
 

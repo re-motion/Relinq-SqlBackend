@@ -16,28 +16,49 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Backend;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class SqlServerGeneratorTest
   {
+    private SqlServerGenerator _sqlServerGenerator;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sqlServerGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
+    }
+
     [Test]
     public void DefaultMethodCallRegistration ()
     {
-      MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = new SqlServerGenerator (StubDatabaseInfo.Instance).MethodCallRegistry;
+      MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = _sqlServerGenerator.MethodCallRegistry;
 
       IMethodCallSqlGenerator removeGenerator =
-          methodCallSqlGeneratorRegistry.GetGenerator (typeof (string).GetMethod ("Remove", new Type[] { typeof (int) }));
+          methodCallSqlGeneratorRegistry.GetGenerator (typeof (string).GetMethod ("Remove", new[] { typeof (int) }));
 
       IMethodCallSqlGenerator upperGenerator =
           methodCallSqlGeneratorRegistry.GetGenerator (typeof (string).GetMethod ("ToUpper", new Type[] { }));
 
-      Assert.IsNotNull (removeGenerator);
-      Assert.IsNotNull (upperGenerator);
+      Assert.That (removeGenerator, Is.Not.Null);
+      Assert.That (upperGenerator, Is.Not.Null);
     }
+
+    [Test]
+    public void CreateNestedSqlGenerator ()
+    {
+      var result = _sqlServerGenerator.CreateNestedSqlGenerator (ParseMode.SubQueryInFrom);
+
+      Assert.That (result, Is.InstanceOfType (typeof (SqlServerGenerator)));
+      Assert.That (((SqlServerGenerator) result).ParseMode, Is.EqualTo (ParseMode.SubQueryInFrom));
+      Assert.That (((SqlServerGenerator) result).DatabaseInfo, Is.SameAs (_sqlServerGenerator.DatabaseInfo));
+    }
+
   }
 }

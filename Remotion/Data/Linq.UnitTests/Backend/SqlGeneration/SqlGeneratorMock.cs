@@ -65,6 +65,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       set { _context = value; }
     }
 
+    public override ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode)
+    {
+      return this;
+    }
+
     protected override SqlGeneratorMockContext CreateContext ()
     {
       return _context;

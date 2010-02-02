@@ -22,8 +22,6 @@ namespace Remotion.Data.Linq.Backend
   {
     TopLevelQuery,
     SubQueryInFrom,
-    SubQueryInWhere,
-    LetExpression,
-    SubQueryInSelect
+    SubQueryInWhere
   }
 }

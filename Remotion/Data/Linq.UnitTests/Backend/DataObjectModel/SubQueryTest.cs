@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 
@@ -29,7 +28,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void Initialize ()
     {
       QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student();
-      SubQuery subQuery = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
+      SubQuery subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreSame (queryModel, subQuery.QueryModel);
       Assert.AreEqual ("foo", subQuery.Alias);
@@ -39,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void AliasString ()
     {
       QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student();
-      SubQuery subQuery = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
+      SubQuery subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreEqual ("foo", subQuery.AliasString);
     }
@@ -48,8 +47,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void Equals_True ()
     {
       QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
-      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
-      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
+      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
+      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreEqual (subQuery1, subQuery2);
     }
@@ -60,9 +59,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
       QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
       QueryModel queryModel2 = ExpressionHelper.CreateQueryModel_Student ();
 
-      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
-      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo1");
-      SubQuery subQuery3 = new SubQuery (queryModel2, ParseMode.SubQueryInSelect, "foo");
+      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
+      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo1");
+      SubQuery subQuery3 = new SubQuery (queryModel2, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreNotEqual (subQuery1, subQuery2);
       Assert.AreNotEqual (subQuery1, subQuery3);
@@ -73,8 +72,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void GetHashCode_EqualObjects ()
     {
       QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
-      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
-      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, "foo");
+      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
+      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreEqual (subQuery1.GetHashCode(), subQuery2.GetHashCode());
     }
@@ -83,8 +82,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void GetHashCode_NullAlias ()
     {
       QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
-      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, null);
-      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInSelect, null);
+      SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, null);
+      SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, null);
 
       Assert.AreEqual (subQuery1.GetHashCode (), subQuery2.GetHashCode ());
     }

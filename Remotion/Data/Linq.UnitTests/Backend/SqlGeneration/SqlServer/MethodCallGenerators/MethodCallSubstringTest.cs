@@ -15,12 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallSubstringTest
+  public class MethodCallSubstringTest : MethodCalTestBase
   {
+    [Test]
+    public void Substring ()
+    {
+      var methodInfo = typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) });
+      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var arguments = new List<IEvaluation> { new Constant (5), new Constant (6) };
+      var methodCall = new MethodCall (methodInfo, column, arguments);
+
+      var methodCallRemove = new MethodCallSubstring ();
+      methodCallRemove.GenerateSql (methodCall, CommandBuilder);
+
+      Assert.AreEqual ("xyz SUBSTRING([s].[FirstColumn],@2,@3)", CommandBuilder.GetCommandText ());
+      Assert.AreEqual (5, CommandBuilder.GetCommandParameters ()[1].Value);
+      Assert.AreEqual (6, CommandBuilder.GetCommandParameters ()[2].Value);
+    }
   }
 }

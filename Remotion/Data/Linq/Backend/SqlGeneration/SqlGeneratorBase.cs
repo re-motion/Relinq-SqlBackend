@@ -42,14 +42,18 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     public DetailParserRegistries DetailParserRegistries { get; private set; }
     public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
 
-
+    public abstract ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode);
     protected abstract TContext CreateContext ();
 
     public virtual CommandData BuildCommand (QueryModel queryModel)
     {
-      var sqlGenerationData = ProcessQuery (queryModel);
-
       TContext context = CreateContext();
+      return BuildCommand(queryModel, context);
+    }
+
+    public virtual CommandData BuildCommand (QueryModel queryModel, TContext context)
+    {
+      var sqlGenerationData = ProcessQuery (queryModel);
       if (sqlGenerationData.SelectEvaluation == null)
         throw new InvalidOperationException ("The concrete subclass did not set a select evaluation.");
 
@@ -61,7 +65,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
       return new CommandData (context.CommandText, context.CommandParameters, sqlGenerationData);
     }
 
-    protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
+   protected virtual SqlGenerationData ProcessQuery (QueryModel queryModel)
     {
       ParseContext parseContext = CreateParseContext (queryModel);
       var visitor = new SqlGeneratorVisitor (DatabaseInfo, ParseMode, DetailParserRegistries, parseContext);

@@ -24,22 +24,28 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
   public class SqlServerEvaluationVisitor : IEvaluationVisitor
   {
-    public SqlServerEvaluationVisitor (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo, MethodCallSqlGeneratorRegistry methodCallRegistry)
+    public SqlServerEvaluationVisitor (
+        ISqlGenerator sqlServerGenerator,
+        CommandBuilder commandBuilder, 
+        IDatabaseInfo databaseInfo, 
+        MethodCallSqlGeneratorRegistry methodCallRegistry)
     {
+      ArgumentUtility.CheckNotNull ("sqlServerGenerator", sqlServerGenerator);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
       ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
 
+      SqlGenerator = sqlServerGenerator;
       CommandBuilder = commandBuilder;
       DatabaseInfo = databaseInfo;
       MethodCallRegistry = methodCallRegistry;
     }
 
+    public ISqlGenerator SqlGenerator { get; private set; }
     public CommandBuilder CommandBuilder { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
-
-
+    
     public void VisitBinaryEvaluation (BinaryEvaluation binaryEvaluation)
     {
       ArgumentUtility.CheckNotNull ("binaryEvaluation", binaryEvaluation);
@@ -141,7 +147,24 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     public void VisitSubQuery (SubQuery subQuery)
     {
       CommandBuilder.Append ("(");
-      new InlineSqlServerGenerator (DatabaseInfo, CommandBuilder, subQuery.ParseMode).BuildCommand (subQuery.QueryModel);
+
+      var newGenerator = SqlGenerator.CreateNestedSqlGenerator (subQuery.ParseMode);
+      var innerCommandData = newGenerator.BuildCommand (subQuery.QueryModel);
+
+      var innerStatementStart = CommandBuilder.CommandText.Length;
+      CommandBuilder.Append (innerCommandData.Statement);
+
+      // copy parameters, substituting their names with new ones
+      foreach (var innerParameter in innerCommandData.Parameters)
+      {
+        var newParameter = CommandBuilder.AddParameter (innerParameter.Value);
+        CommandBuilder.CommandText.Replace (
+            innerParameter.Name, 
+            newParameter.Name, 
+            innerStatementStart, 
+            CommandBuilder.CommandText.Length - innerStatementStart);
+      }
+      
       CommandBuilder.Append (")");
       if (subQuery.Alias != null)
       {

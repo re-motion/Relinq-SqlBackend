@@ -21,8 +21,11 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
   public interface ISqlGenerator
   {
-    CommandData BuildCommand (QueryModel queryModel);
     DetailParserRegistries DetailParserRegistries { get; }
     MethodCallSqlGeneratorRegistry MethodCallRegistry { get; }
+
+    CommandData BuildCommand (QueryModel queryModel);
+
+    ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode);
   }
 }

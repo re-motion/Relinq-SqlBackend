@@ -41,5 +41,10 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     {
       get { return _value; }
     }
+
+    public override string ToString ()
+    {
+      return Name + "=" + Value;
+    }
   }
 }

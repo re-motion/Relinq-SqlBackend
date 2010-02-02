@@ -22,13 +22,33 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class BinaryConditionBuilderTest
   {
+    private static CommandBuilder _commandBuilder;
+    private static BinaryConditionBuilder _binaryConditionBuilder;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _commandBuilder = new CommandBuilder (
+          MockRepository.GenerateStub<ISqlGenerator>(),
+          new StringBuilder (), 
+          new List<CommandParameter> (), 
+          StubDatabaseInfo.Instance, 
+          new MethodCallSqlGeneratorRegistry ());
+
+      _commandBuilder.MethodCallRegistry.Register (typeof (string).GetMethod ("ToUpper", Type.EmptyTypes), new MethodCallUpper ());
+
+      _binaryConditionBuilder = new BinaryConditionBuilder (_commandBuilder);
+    }
+
     [Test]
     public void BuildBinaryConditionPart_BinaryConditions ()
     {
@@ -214,13 +234,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var constant = new Constant("Test");
       var binaryCondition = new BinaryCondition (column, constant, BinaryCondition.ConditionKind.ContainsFulltext);
 
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
+      _binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
-      binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
-
-      Assert.AreEqual("CONTAINS ([s].[First],@1)", commandBuilder.GetCommandText());
-      Assert.That (commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
+      Assert.AreEqual("CONTAINS ([s].[First],@1)", _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
     }
 
     [Test]
@@ -231,13 +248,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var constantCollection = new Constant(collection);
       var binaryCondition = new BinaryCondition(constantCollection, column, BinaryCondition.ConditionKind.Contains);
 
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
-      var binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
+      _binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
-      binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
-
-      Assert.AreEqual ("[s].[First] IN (@1, @2)", commandBuilder.GetCommandText ());
-      Assert.That (commandBuilder.GetCommandParameters (), 
+      Assert.AreEqual ("[s].[First] IN (@1, @2)", _commandBuilder.GetCommandText ());
+      Assert.That (_commandBuilder.GetCommandParameters (), 
         Is.EqualTo (new object[] { new CommandParameter ("@1", "Test1"), new CommandParameter ("@2", "Test2") }));
     }
 
@@ -249,12 +263,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var constantCollection = new Constant (collection);
       var binaryCondition = new BinaryCondition (constantCollection, column, BinaryCondition.ConditionKind.Contains);
 
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
-      var binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
+      _binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
-      binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
-
-      Assert.AreEqual ("(1<>1)", commandBuilder.GetCommandText ());
+      Assert.AreEqual ("(1<>1)", _commandBuilder.GetCommandText ());
     }
 
     [Test]
@@ -264,16 +275,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var column = new Column (new Table ("Student", "s"), "FirstColumn");
       var methodCall = new MethodCall (methodInfo, column, new List<IEvaluation> ());
 
-      var binaryCondition = new BinaryCondition(methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);
+      var binaryCondition = new BinaryCondition (methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);
 
-      var sqlServerGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, sqlServerGenerator.MethodCallRegistry);
-      var binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
+      _binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
-      binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
-
-      Assert.AreEqual ("(UPPER([s].[FirstColumn]) = @1)", commandBuilder.GetCommandText ());
-      Assert.That (commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
+      Assert.AreEqual ("(UPPER([s].[FirstColumn]) = @1)", _commandBuilder.GetCommandText ());
+      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
     }
 
     public class PseudoValue : IValue
@@ -284,23 +291,24 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       }
     }
 
-
     private static void CheckBuildBinaryConditionPart_Constants (BinaryCondition binaryCondition, string expectedString)
     {
       CheckBuildBinaryConditionPart (binaryCondition, expectedString,
           new CommandParameter ("@1", "foo"), new CommandParameter ("@2", "foo"));
     }
 
-    private static void CheckBuildBinaryConditionPart (BinaryCondition condition, string expectedString,
-       params CommandParameter[] expectedParameters)
+    private static void CheckBuildBinaryConditionPart (
+        BinaryCondition condition, 
+        string expectedString,
+      params CommandParameter[] expectedParameters)
     {
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var binaryConditionBuilder = new BinaryConditionBuilder (commandBuilder);
+      _commandBuilder.CommandParameters.Clear ();
+      _commandBuilder.CommandText.Length = 0;
 
-      binaryConditionBuilder.BuildBinaryConditionPart (condition);
+      _binaryConditionBuilder.BuildBinaryConditionPart (condition);
 
-      Assert.AreEqual (expectedString, commandBuilder.GetCommandText());
-      Assert.That (commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
+      Assert.AreEqual (expectedString, _commandBuilder.GetCommandText());
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
     }
   }
 }

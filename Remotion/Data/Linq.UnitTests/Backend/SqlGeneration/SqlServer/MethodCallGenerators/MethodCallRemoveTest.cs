@@ -16,37 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
-using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallRemoveTest
+  public class MethodCallRemoveTest : MethodCalTestBase
   {
-    private CommandBuilder _commandBuilder;
-    private StringBuilder _commandText;
-    private List<CommandParameter> _commandParameters;
-    private CommandParameter _defaultParameter;
-    private IDatabaseInfo _databaseInfo;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _commandText = new StringBuilder ();
-      _commandText.Append ("xyz ");
-      _defaultParameter = new CommandParameter ("abc", 5);
-      _commandParameters = new List<CommandParameter> { _defaultParameter };
-      _databaseInfo = StubDatabaseInfo.Instance;
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
-    }
-
     [Test]
     public void Remove ()
     {
@@ -56,10 +34,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
       var methodCall = new MethodCall (methodInfo, column, arguments);
 
       var methodCallRemove = new MethodCallRemove();
-      methodCallRemove.GenerateSql (methodCall, _commandBuilder);
+      methodCallRemove.GenerateSql (methodCall, CommandBuilder);
 
-      Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,LEN([s].[FirstColumn]), \"\")", _commandBuilder.GetCommandText ());
-      Assert.AreEqual (5, _commandBuilder.GetCommandParameters ()[1].Value);
+      Assert.AreEqual ("xyz STUFF([s].[FirstColumn],@2,LEN([s].[FirstColumn]), \"\")", CommandBuilder.GetCommandText ());
+      Assert.AreEqual (5, CommandBuilder.GetCommandParameters ()[1].Value);
     }
   }
 }

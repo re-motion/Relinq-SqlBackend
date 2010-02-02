@@ -18,12 +18,11 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.Linq.UnitTests.TestDomain;
-using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 {
@@ -34,34 +33,34 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void RegisterNewMethod ()
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      DummyMetthodCallSqlGenerator generator = new DummyMetthodCallSqlGenerator();
+      var generator = new DummyMetthodCallSqlGenerator();
 
-      MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
+      var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
 
       methodCallSqlGeneratorRegistry.Register (methodInfo, generator);
 
       IMethodCallSqlGenerator expectedGenerator = methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
 
-      Assert.AreEqual (expectedGenerator, generator);
+      Assert.That (generator, Is.EqualTo (expectedGenerator));
     }
 
     [Test]
     public void RegisterMethodTwice ()
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      DummyMetthodCallSqlGenerator generator = new DummyMetthodCallSqlGenerator ();
+      var generator = new DummyMetthodCallSqlGenerator();
 
-      MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry ();
+      var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
 
       methodCallSqlGeneratorRegistry.Register (methodInfo, generator);
 
-      DummyMetthodCallSqlGenerator generator2 = new DummyMetthodCallSqlGenerator ();
+      var generator2 = new DummyMetthodCallSqlGenerator();
       methodCallSqlGeneratorRegistry.Register (methodInfo, generator2);
 
       IMethodCallSqlGenerator expectedGenerator = methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
 
-      Assert.AreNotEqual (expectedGenerator, generator);
-      Assert.AreEqual (expectedGenerator, generator2);
+      Assert.That (generator, Is.Not.EqualTo (expectedGenerator));
+      Assert.That (generator2, Is.EqualTo (expectedGenerator));
     }
 
     [Test]
@@ -71,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
 
-      MethodCallSqlGeneratorRegistry methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry ();
+      var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
 
       methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
     }
@@ -80,122 +79,64 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void GetGeneratorForGenericMethodInfo ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ReflectionUtility.GetMethod (() => source.Distinct ());
-      
-      var methodInfoDistinct = (from m in typeof (Queryable).GetMethods ()
-                                where m.Name == "Distinct" && m.GetParameters ().Length == 1
-                                select m).Single ();
-      MethodCallSqlGeneratorRegistry registry = new MethodCallSqlGeneratorRegistry();
-      MethodCallDistinct generator = new MethodCallDistinct();
-      registry.Register (methodInfoDistinct, generator);
+      var methodInfo = ReflectionUtility.GetMethod (() => source.Distinct());
+
+      var methodInfoDistinct = (from m in typeof (Queryable).GetMethods()
+                                where m.Name == "Distinct" && m.GetParameters().Length == 1
+                                select m).Single();
+      var registry = new MethodCallSqlGeneratorRegistry();
+      var generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator>();
+      registry.Register (methodInfoDistinct, generatorStub);
 
       var expectedGenerator = registry.GetGenerator (methodInfo);
 
-      Assert.AreEqual (generator, expectedGenerator);
+      Assert.That (expectedGenerator, Is.SameAs (generatorStub));
     }
 
     [Test]
-    public void GetGeneratorForCountWithOneParameter ()
+    public void GetGeneratorForMethodWithOneParameter ()
     {
       IQueryable<Student> source = null;
-      var methodInfo = ReflectionUtility.GetMethod (() => source.Count ());
+      var methodInfo = ReflectionUtility.GetMethod (() => source.Count());
 
-      var methodInfoCount = (from m in typeof (Queryable).GetMethods ()
-                             where m.Name == "Count" && m.GetParameters ().Length == 1
-                             select m).Single ();
+      var methodInfoCount = (from m in typeof (Queryable).GetMethods()
+                             where m.Name == "Count" && m.GetParameters().Length == 1
+                             select m).Single();
 
-      MethodCallSqlGeneratorRegistry registry = new MethodCallSqlGeneratorRegistry ();
-      MethodCallCount generator = new MethodCallCount ();
-      registry.Register (methodInfoCount, generator);
-
-      var expectedGenerator = registry.GetGenerator (methodInfo);
-
-      Assert.AreEqual (generator, expectedGenerator);
-    }
-
-    [Test]
-    public void GetGeneratorForFirstWithOneParameter ()
-    {
-      IQueryable<Student> source = null;
-      var methodInfo = ReflectionUtility.GetMethod (() => source.First ());
-
-      var methodInfoFirst = (from m in typeof (Queryable).GetMethods ()
-                             where m.Name == "First" && m.GetParameters ().Length == 1
-                             select m).Single ();
-
-      MethodCallSqlGeneratorRegistry registry = new MethodCallSqlGeneratorRegistry ();
-      MethodCallFirst generator = new MethodCallFirst ();
-      registry.Register (methodInfoFirst, generator);
+      var registry = new MethodCallSqlGeneratorRegistry();
+      var generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator>();
+      registry.Register (methodInfoCount, generatorStub);
 
       var expectedGenerator = registry.GetGenerator (methodInfo);
 
-      Assert.AreEqual (generator, expectedGenerator);
+      Assert.That (expectedGenerator, Is.SameAs (generatorStub));
     }
 
     [Test]
-    public void GetGeneratorForSingleWithOneParameter ()
-    {
-      IQueryable<Student> source = null;
-      var methodInfo = ReflectionUtility.GetMethod (() => source.Single ());
-
-      var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()
-                              where m.Name == "Single" && m.GetParameters ().Length == 1
-                              select m).Single ();
-
-      MethodCallSqlGeneratorRegistry registry = new MethodCallSqlGeneratorRegistry ();
-      MethodCallSingle generator = new MethodCallSingle ();
-      registry.Register (methodInfoSingle, generator);
-
-      var expectedGenerator = registry.GetGenerator (methodInfo);
-
-      Assert.AreEqual (generator, expectedGenerator);
-    }
-
-    [Test]
-    public void GetGeneratorForSingleWithOneParameter2 ()
-    {
-      var query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable ());
-      var methodInfo = ReflectionUtility.GetMethod (() => query.Single ());
-
-      var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()
-                              where m.Name == "Single" && m.GetParameters ().Length == 1
-                              select m).Single ();
-
-      MethodCallSqlGeneratorRegistry registry = new MethodCallSqlGeneratorRegistry ();
-      MethodCallSingle generator = new MethodCallSingle ();
-      registry.Register (methodInfoSingle, generator);
-
-      var expectedGenerator = registry.GetGenerator (methodInfo);
-
-      Assert.AreEqual (generator, expectedGenerator);
-    }
-
-    [Test]
-    public void GetGeneratorForSingleWithTwoParameter ()
+    public void GetGeneratorForMethodWithTwoParameters ()
     {
       IQueryable<Student> source = null;
       var methodInfo = ReflectionUtility.GetMethod (() => source.Single (s => s.ID == 5));
 
-      var methodInfoSingle = (from m in typeof (Queryable).GetMethods ()
-                              where m.Name == "Single" && m.GetParameters ().Length == 2
-                              select m).Single ();
+      var methodInfoSingle = (from m in typeof (Queryable).GetMethods()
+                              where m.Name == "Single" && m.GetParameters().Length == 2
+                              select m).Single();
 
-      MethodCallSqlGeneratorRegistry registry = new MethodCallSqlGeneratorRegistry ();
-      MethodCallSingle generator = new MethodCallSingle ();
-      registry.Register (methodInfoSingle, generator);
+      var registry = new MethodCallSqlGeneratorRegistry();
+      var generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator> ();
+      registry.Register (methodInfoSingle, generatorStub);
 
       var expectedGenerator = registry.GetGenerator (methodInfo);
 
-      Assert.AreEqual (generator, expectedGenerator);
+      Assert.That (expectedGenerator, Is.EqualTo (generatorStub));
     }
-    
   }
 
   public class DummyMetthodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCall methodCall, ICommandBuilder commandBuilder)
     {
-      throw new System.NotImplementedException();
+      throw new NotImplementedException();
     }
   }
 }

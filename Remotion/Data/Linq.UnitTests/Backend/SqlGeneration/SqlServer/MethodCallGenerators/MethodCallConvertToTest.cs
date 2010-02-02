@@ -16,37 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
-using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallConvertToTest
+  public class MethodCallConvertToTest : MethodCalTestBase
   {
-    private CommandBuilder _commandBuilder;
-    private StringBuilder _commandText;
-    private List<CommandParameter> _commandParameters;
-    private CommandParameter _defaultParameter;
-    private IDatabaseInfo _databaseInfo;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _commandText = new StringBuilder ();
-      _commandText.Append ("xyz ");
-      _defaultParameter = new CommandParameter ("abc", 5);
-      _commandParameters = new List<CommandParameter> { _defaultParameter };
-      _databaseInfo = StubDatabaseInfo.Instance;
-      _commandBuilder = new CommandBuilder (_commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
-    }
-
     [Test]
     public void ConvertIntToString ()
     {
@@ -56,8 +34,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
       var methodCall = new MethodCall (methodInfo, null, arguments);
 
       var methodCallConvertTo = new MethodCallConvertTo();
-      methodCallConvertTo.GenerateSql (methodCall, _commandBuilder);
-      Assert.AreEqual ("xyz CONVERT(nvarchar(max),[s].[FirstColumn]) ", _commandBuilder.GetCommandText ());
+      methodCallConvertTo.GenerateSql (methodCall, CommandBuilder);
+      Assert.AreEqual ("xyz CONVERT(nvarchar(max),[s].[FirstColumn]) ", CommandBuilder.GetCommandText ());
     }
 
     [Test]
@@ -69,8 +47,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
       var methodCall = new MethodCall (methodInfo, null, arguments);
 
       var methodCallConvertTo = new MethodCallConvertTo ();
-      methodCallConvertTo.GenerateSql (methodCall, _commandBuilder);
-      Assert.AreEqual ("xyz CONVERT(bit,[s].[FirstColumn]) ", _commandBuilder.GetCommandText ());
+      methodCallConvertTo.GenerateSql (methodCall, CommandBuilder);
+      Assert.AreEqual ("xyz CONVERT(bit,[s].[FirstColumn]) ", CommandBuilder.GetCommandText ());
     }
 
 
