@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
   public interface IWhereBuilder
   {
-    void BuildWherePart (ICriterion criterion);
+    void BuildWherePart (SqlGenerationData sqlGenerationData);
   }
 }

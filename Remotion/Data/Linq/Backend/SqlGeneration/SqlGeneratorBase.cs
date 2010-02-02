@@ -47,17 +47,16 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
 
     public virtual CommandData BuildCommand (QueryModel queryModel)
     {
-      SqlGenerationData sqlGenerationData = ProcessQuery (queryModel);
+      var sqlGenerationData = ProcessQuery (queryModel);
 
       TContext context = CreateContext();
-      IEvaluation selectEvaluation = sqlGenerationData.SelectEvaluation;
-      if (selectEvaluation == null)
+      if (sqlGenerationData.SelectEvaluation == null)
         throw new InvalidOperationException ("The concrete subclass did not set a select evaluation.");
 
-      CreateSelectBuilder (context).BuildSelectPart (selectEvaluation, sqlGenerationData.ResultOperators);
-      CreateFromBuilder (context).BuildFromPart (sqlGenerationData.FromSources, sqlGenerationData.Joins);
-      CreateWhereBuilder (context).BuildWherePart (sqlGenerationData.Criterion);
-      CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData.OrderingFields);
+      CreateSelectBuilder (context).BuildSelectPart (sqlGenerationData);
+      CreateFromBuilder (context).BuildFromPart (sqlGenerationData);
+      CreateWhereBuilder (context).BuildWherePart (sqlGenerationData);
+      CreateOrderByBuilder (context).BuildOrderByPart (sqlGenerationData);
 
       return new CommandData (context.CommandText, context.CommandParameters, sqlGenerationData);
     }

@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 
     protected override IWhereBuilder CreateWhereBuilder (SqlServerGenerationContext context)
     {
-      return new WhereBuilder (context.CommandBuilder, DatabaseInfo);
+      return new WhereBuilder (context.CommandBuilder);
     }
 
     protected override IFromBuilder CreateFromBuilder (SqlServerGenerationContext context)

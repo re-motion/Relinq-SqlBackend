@@ -23,51 +23,43 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
   public class WhereBuilder : IWhereBuilder
   {
     private readonly CommandBuilder _commandBuilder;
-    private readonly IDatabaseInfo _databaseInfo;
-    private readonly BinaryConditionBuilder _builder;
 
-    public WhereBuilder (CommandBuilder commandBuilder, IDatabaseInfo databaseInfo)
+    public WhereBuilder (CommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+
       _commandBuilder = commandBuilder;
-      _databaseInfo = databaseInfo;
-      _builder = new BinaryConditionBuilder (_commandBuilder);
     }
 
-    public BinaryConditionBuilder Builder
+    public void BuildWherePart (SqlGenerationData sqlGenerationData)
     {
-      get { return _builder; }
-    }
-
-    public IDatabaseInfo DatabaseInfo
-    {
-      get { return _databaseInfo; }
-    }
-
-    public void BuildWherePart (ICriterion criterion)
-    {
-      if (criterion != null)
+      if (sqlGenerationData.Criterion != null)
       {
         _commandBuilder.Append (" WHERE ");
-  
-        if (criterion is Constant)
-        {
-          Constant constant = (Constant) criterion;
-          if (constant.Value == null)
-            throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
-          else
-            _commandBuilder.AppendEvaluation (constant);
-        }
-        else if (criterion is Column)
-        {
-          _commandBuilder.AppendEvaluation (criterion);
-          _commandBuilder.Append ("=1");
-        }
+        AppendCriterion (sqlGenerationData.Criterion);
+      }
+    }
+
+    public void AppendCriterion (ICriterion criterion)
+    {
+      ArgumentUtility.CheckNotNull ("criterion", criterion);
+
+      if (criterion is Constant)
+      {
+        var constant = (Constant) criterion;
+        if (constant.Value == null)
+          throw new NotSupportedException ("NULL constants are not supported as WHERE conditions.");
         else
-        {
-          _commandBuilder.AppendEvaluation (criterion);
-        }
+          _commandBuilder.AppendEvaluation (constant);
+      }
+      else if (criterion is Column)
+      {
+        _commandBuilder.AppendEvaluation (criterion);
+        _commandBuilder.Append ("=1");
+      }
+      else
+      {
+        _commandBuilder.AppendEvaluation (criterion);
       }
     }
   }

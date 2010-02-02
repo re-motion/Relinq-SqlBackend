@@ -31,45 +31,65 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildFromPart (List<IColumnSource> fromSources, JoinCollection joins)
+    public void BuildFromPart (SqlGenerationData sqlGenerationData)
     {
+      ArgumentUtility.CheckNotNull ("sqlGenerationData", sqlGenerationData);
+
       _commandBuilder.Append ("FROM ");
+      AppendColumnSources (sqlGenerationData.FromSources, sqlGenerationData.Joins);
+    }
+
+    public void AppendColumnSources (IEnumerable<IColumnSource> fromSources, JoinCollection joins)
+    {
+      ArgumentUtility.CheckNotNull ("fromSources", fromSources);
+      ArgumentUtility.CheckNotNull ("joins", joins);
 
       bool first = true;
-      foreach (IColumnSource fromSource in fromSources)
+      foreach (var fromSource in fromSources)
       {
-        var table = fromSource as Table;
-        if (table != null)
-          AppendTable(table, first);
-        else 
-          AppendSubQuery(fromSource, first);
-
-        AppendJoinPart (joins[fromSource]);
+        AppendColumnSource(fromSource, joins[fromSource], first);
         first = false;
       }
     }
 
-    private void AppendTable (Table table, bool first)
+    public void AppendColumnSource (IColumnSource fromSource, IEnumerable<SingleJoin> joins, bool first)
     {
+      ArgumentUtility.CheckNotNull ("fromSource", fromSource);
+      ArgumentUtility.CheckNotNull ("joins", joins);
+
+      var table = fromSource as Table;
+      if (table != null)
+        AppendTable(table, first);
+      else
+        AppendSubQuery ((SubQuery) fromSource, first);
+
+      AppendJoins (joins);
+    }
+
+    public void AppendTable (Table table, bool first)
+    {
+      ArgumentUtility.CheckNotNull ("table", table);
       if (!first)
         _commandBuilder.Append (", ");
       _commandBuilder.Append (SqlServerUtility.GetTableDeclaration (table));
     }
 
-    private void AppendSubQuery (IColumnSource fromSource, bool first)
+    public void AppendSubQuery (SubQuery subQuery, bool first)
     {
+      ArgumentUtility.CheckNotNull ("subQuery", subQuery);
       if (!first)
         _commandBuilder.Append (" CROSS APPLY ");
-      _commandBuilder.AppendEvaluation ((SubQuery) fromSource);
+      _commandBuilder.AppendEvaluation (subQuery);
     }
 
-    private void AppendJoinPart (IEnumerable<SingleJoin> joins)
+    public void AppendJoins (IEnumerable<SingleJoin> joins)
     {
-      foreach (SingleJoin join in joins)
-        AppendJoinExpression (join);
+      ArgumentUtility.CheckNotNull ("joins", joins);
+      foreach (var join in joins)
+        AppendJoin (join);
     }
 
-    private void AppendJoinExpression (SingleJoin join)
+    public void AppendJoin (SingleJoin join)
     {
       _commandBuilder.Append (" LEFT OUTER JOIN ");
       _commandBuilder.Append (SqlServerUtility.GetTableDeclaration ((Table) join.RightSide));

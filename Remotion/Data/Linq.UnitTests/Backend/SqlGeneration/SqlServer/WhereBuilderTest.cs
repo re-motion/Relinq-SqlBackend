@@ -29,84 +29,88 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
   [TestFixture]
   public class WhereBuilderTest
   {
+    private CommandBuilder _commandBuilder;
+    private WhereBuilder _whereBuilder;
+    
+    private Constant _trueCriterion;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _commandBuilder = new CommandBuilder (
+          new StringBuilder (),
+          new List<CommandParameter> (),
+          StubDatabaseInfo.Instance,
+          new MethodCallSqlGeneratorRegistry ());
+
+      _whereBuilder = new WhereBuilder (_commandBuilder);
+
+      _trueCriterion = new Constant (true);
+    }
+
+    [Test]
+    public void BuildWherePart_NullCriterion ()
+    {
+      _whereBuilder.BuildWherePart (new SqlGenerationData ());
+      Assert.That (_commandBuilder.GetCommandText (), Is.Empty);
+    }
+
+    [Test]
+    public void BuildWherePart_NonNullCriterion ()
+    {
+      _whereBuilder.BuildWherePart (new SqlGenerationData { Criterion = _trueCriterion });
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" WHERE (1=1)"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "NULL constants are not supported as WHERE conditions.")]
+    public void AppendCriterion_Constant_Null ()
+    {
+      CheckAppendCriterion (new Constant (null), null);
+    }
+
     [Test]
     public void AppendCriterion_TrueValue()
     {
       ICriterion value = new Constant (true);
-      const string expectedString = "(1=1)";
-      CheckAppendCriterion_Value(value, expectedString);
+      CheckAppendCriterion (value, "(1=1)");
     }
 
     [Test]
     public void AppendCriterion_FalseValue ()
     {
       ICriterion value = new Constant (false);
-      const string expectedString = "(1<>1)";
-      CheckAppendCriterion_Value (value, expectedString);
+      CheckAppendCriterion (value, "(1<>1)");
     }
 
     [Test]
     public void AppendCriterion_Column ()
     {
       ICriterion value = new Column (new Table ("foo", "foo_alias"), "col");
-      const string expectedString = "[foo_alias].[col]=1";
-      CheckAppendCriterion_Value (value, expectedString);
+      CheckAppendCriterion (value, "[foo_alias].[col]=1");
     }
 
     [Test]
     public void AppendCriterion_ComplexCriterion ()
     {
-      BinaryCondition binaryCondition1 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
-      BinaryCondition binaryCondition2 = new BinaryCondition (new Constant ("foo"), new Constant ("foo"), BinaryCondition.ConditionKind.Equal);
-      
-      CheckAppendCriterion_ComplexCriterion
-          (new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.And), "AND");
-      CheckAppendCriterion_ComplexCriterion
-          (new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.Or), "OR");
+      var binaryCondition1 = new BinaryCondition (new Constant ("a1"), new Constant ("a2"), BinaryCondition.ConditionKind.Equal);
+      var binaryCondition2 = new BinaryCondition (new Constant ("b1"), new Constant ("b2"), BinaryCondition.ConditionKind.Equal);
+
+      CheckAppendCriterion (
+          new ComplexCriterion (binaryCondition1, binaryCondition2, ComplexCriterion.JunctionKind.And),
+          "((@1 = @2) AND (@3 = @4))",
+          new CommandParameter ("@1", "a1"),
+          new CommandParameter ("@2", "a2"),
+          new CommandParameter ("@3", "b1"),
+          new CommandParameter ("@4", "b2"));
     }
 
-    [Test]
-    public void AppendCriterion_NotCriterion()
+    private void CheckAppendCriterion (ICriterion criterion, string expectedString, params CommandParameter[] expectedParameters)
     {
-      NotCriterion notCriterion = new NotCriterion(new Constant("foo"));
-      CheckAppendCriterion (notCriterion, "NOT @1", new CommandParameter ("@1", "foo"));
+      _whereBuilder.AppendCriterion (criterion);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (expectedString));
+      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (expectedParameters));
     }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "NULL constants are not supported as WHERE conditions.")]
-    public void AppendCriterion_NULL ()
-    {
-      CheckAppendCriterion (new Constant (null), null);
-    }
-
-    private static void CheckAppendCriterion (ICriterion criterion, string expectedString,
-                                              params CommandParameter[] expectedParameters)
-    {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
-      WhereBuilder whereBuilder = new WhereBuilder (commandBuilder, StubDatabaseInfo.Instance);
-
-      whereBuilder.BuildWherePart (criterion);
-
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo (" WHERE " + expectedString));
-      Assert.That (commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
-    }
-
-    private static void CheckAppendCriterion_Value (ICriterion value, string expectedString)
-    {
-      CheckAppendCriterion (value, expectedString);
-    }
-    
-    private static void CheckAppendCriterion_ComplexCriterion (ICriterion criterion, string expectedOperator)
-    {
-      CheckAppendCriterion (criterion, "((@1 = @2) " + expectedOperator + " (@3 = @4))",
-                            new CommandParameter ("@1", "foo"),
-                            new CommandParameter ("@2", "foo"),
-                            new CommandParameter ("@3", "foo"),
-                            new CommandParameter ("@4", "foo")
-          );
-    }
-
-    
-
   }
 }

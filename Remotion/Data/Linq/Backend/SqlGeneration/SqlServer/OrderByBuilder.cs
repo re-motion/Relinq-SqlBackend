@@ -19,12 +19,13 @@ using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
   public class OrderByBuilder : IOrderByBuilder
   {
-    private static string GetOrderedDirectionString (OrderingDirection direction)
+    private static string GetDirectionString (OrderingDirection direction)
     {
       switch (direction)
       {
@@ -45,20 +46,30 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildOrderByPart (List<OrderingField> orderingFields)
+    public void BuildOrderByPart (SqlGenerationData sqlGenerationData)
     {
-      if (orderingFields.Count != 0)
+      ArgumentUtility.CheckNotNull ("sqlGenerationData", sqlGenerationData);
+
+      if (sqlGenerationData.OrderingFields.Count > 0)
       {
         _commandBuilder.Append (" ORDER BY ");
-        _commandBuilder.AppendSeparatedItems (orderingFields, AppendOrderingField);
+        AppendOrderingFields (sqlGenerationData.OrderingFields);
       }
     }
 
-    private void AppendOrderingField (OrderingField orderingField)
+    public void AppendOrderingFields (IEnumerable<OrderingField> orderingFields)
+    {
+      ArgumentUtility.CheckNotNull ("orderingFields", orderingFields);
+
+      _commandBuilder.AppendSeparatedItems (orderingFields, AppendOrderingField);
+    }
+
+    public void AppendOrderingField (OrderingField orderingField)
     {
       _commandBuilder.AppendEvaluation (orderingField.Column);
       _commandBuilder.Append (" ");
-      _commandBuilder.Append (GetOrderedDirectionString (orderingField.Direction));
+      _commandBuilder.Append (GetDirectionString (orderingField.Direction));
     }
+
   }
 }

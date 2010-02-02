@@ -33,12 +33,20 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       _commandBuilder = commandBuilder;
     }
 
-    public void BuildSelectPart (IEvaluation selectEvaluation, List<ResultOperatorBase> resultOperators)
+    public void BuildSelectPart (SqlGenerationData sqlGenerationData)
+    {
+      ArgumentUtility.CheckNotNull ("sqlGenerationData", sqlGenerationData);
+
+      _commandBuilder.Append ("SELECT ");
+      AppendSelectEvaluation (sqlGenerationData.SelectEvaluation, sqlGenerationData.ResultOperators);
+    }
+
+    public void AppendSelectEvaluation (IEvaluation selectEvaluation, List<ResultOperatorBase> resultOperators)
     {
       ArgumentUtility.CheckNotNull ("selectEvaluation", selectEvaluation);
-      _commandBuilder.Append ("SELECT ");
+      ArgumentUtility.CheckNotNull ("resultOperators", resultOperators);
 
-      //at the moment, result operators may not correctly be combined; for example Take and First might not be correctly combined
+      //at the moment, result operators may not be correctly combined; for example Take and First might not be correctly combined
       bool distinct = false;
       int? top = null;
       bool count = false;
@@ -59,6 +67,13 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
               "Result operator type " + operatorBase.GetType ().Name + " is not supported by this SQL generator.");
         }
       }
+
+      AppendSelectEvaluation (selectEvaluation, distinct, top, count);
+    }
+
+    public void AppendSelectEvaluation (IEvaluation selectEvaluation, bool distinct, int? top, bool count)
+    {
+      ArgumentUtility.CheckNotNull ("selectEvaluation", selectEvaluation);
 
       if (distinct)
         _commandBuilder.Append ("DISTINCT ");

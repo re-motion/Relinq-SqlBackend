@@ -15,13 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration
 {
   public interface IFromBuilder
   {
-    void BuildFromPart (List<IColumnSource> fromSources, JoinCollection joins);
+    void BuildFromPart (SqlGenerationData sqlGenerationData);
   }
 }

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
@@ -30,44 +31,90 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
   [TestFixture]
   public class OrderByBuilderTest
   {
-    [Test]
-    public void CombineOrderedFields()
+    private CommandBuilder _commandBuilder;
+    private OrderByBuilder _orderByBuilder;
+
+    private FieldDescriptor _fieldDescriptor1;
+    private FieldDescriptor _fieldDescriptor2;
+
+    private OrderingField _orderingFieldAsc;
+    private OrderingField _orderingFieldDesc;
+
+    [SetUp]
+    public void SetUp ()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
+      _commandBuilder = new CommandBuilder (
+          new StringBuilder(), 
+          new List<CommandParameter>(), 
+          StubDatabaseInfo.Instance, 
+          new MethodCallSqlGeneratorRegistry());
+      _orderByBuilder = new OrderByBuilder (_commandBuilder);
 
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
-      FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
-      MemberInfo member = typeof (Student).GetProperty ("First");
-      Column column = new Column (path.FirstSource,"c1");
-      FieldDescriptor descriptor = new FieldDescriptor (member, path, column);
+      _fieldDescriptor1 = CreateFieldDescriptor ("Table1", "table1", "c1");
+      _fieldDescriptor2 = CreateFieldDescriptor ("Table2", "table2", "c2");
 
-      OrderingField field1 = new OrderingField (descriptor,OrderingDirection.Asc);
-      OrderingField field2 = new OrderingField (descriptor, OrderingDirection.Desc);
-      List<OrderingField> orderingFields = new List<OrderingField> { field1,field2 };
-
-      orderByBuilder.BuildOrderByPart (orderingFields);
-
-      Assert.AreEqual (" ORDER BY [s1].[c1] ASC, [s1].[c1] DESC", commandBuilder.GetCommandText());
+      _orderingFieldAsc = new OrderingField (_fieldDescriptor1, OrderingDirection.Asc);
+      _orderingFieldDesc = new OrderingField (_fieldDescriptor2, OrderingDirection.Desc);
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "OrderingDirection 2147483647 is not supported.")]
-    public void CombineOrderedFields_InvalidDirection ()
+    public void BuildOrderByPart_NoOrderingFields ()
     {
-      CommandBuilder commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      OrderByBuilder orderByBuilder = new OrderByBuilder (commandBuilder);
+      _orderByBuilder.BuildOrderByPart (new SqlGenerationData ());
 
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ();
-      FieldSourcePath path = ExpressionHelper.GetPathForNewTable ("s1", "s1");
-      MemberInfo member = typeof (Student).GetProperty ("First");
-      Column column = new Column (path.FirstSource, "c1");
-      FieldDescriptor descriptor = new FieldDescriptor (member, path, column);
-
-      OrderingField field1 = new OrderingField (descriptor, (OrderingDirection) int.MaxValue);
-      List<OrderingField> orderingFields = new List<OrderingField> { field1 };
-
-      orderByBuilder.BuildOrderByPart (orderingFields);
+      Assert.That (_commandBuilder.GetCommandText (), Is.Empty);
     }
+
+    [Test]
+    public void BuildOrderByPart_WithOrderingFields ()
+    {
+      var sqlGenerationData = new SqlGenerationData ();
+      sqlGenerationData.OrderingFields.Add (_orderingFieldAsc);
+      sqlGenerationData.OrderingFields.Add (_orderingFieldDesc);
+
+      _orderByBuilder.BuildOrderByPart (sqlGenerationData);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" ORDER BY [table1].[c1] ASC, [table2].[c2] DESC"));
+    }
+
+    [Test]
+    public void AppendOrderingFields ()
+    {
+      _orderByBuilder.AppendOrderingFields (new[] { _orderingFieldAsc, _orderingFieldDesc });
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[table1].[c1] ASC, [table2].[c2] DESC"));
+    }
+
+    [Test]
+    public void AppendOrderingField_Asc ()
+    {
+      _orderByBuilder.AppendOrderingField (_orderingFieldAsc);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[table1].[c1] ASC"));
+    }
+
+    [Test]
+    public void AppendOrderingField_Desc ()
+    {
+      _orderByBuilder.AppendOrderingField (_orderingFieldDesc);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[table2].[c2] DESC"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "OrderingDirection -1 is not supported.")]
+    public void AppendOrderingField_Invalid ()
+    {
+      _orderByBuilder.AppendOrderingField (new OrderingField(_fieldDescriptor1, (OrderingDirection)(-1)));
+    }
+
+    private FieldDescriptor CreateFieldDescriptor (string tableName, string tableAlias, string columnName)
+    {
+      FieldSourcePath path = ExpressionHelper.GetPathForNewTable (tableName, tableAlias);
+      MemberInfo member = typeof (Student).GetProperty ("First");
+      var column = new Column (path.FirstSource, columnName);
+      return new FieldDescriptor (member, path, column);
+    }
+
   }
 }

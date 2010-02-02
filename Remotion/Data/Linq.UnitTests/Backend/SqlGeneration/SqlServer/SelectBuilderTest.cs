@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
-    public void CombineColumnItems ()
+    public void BuildSelectPart ()
     {
       IEvaluation evaluation = new NewObject (
           typeof (Student).GetConstructor (Type.EmptyTypes),
@@ -52,86 +52,105 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
           new Column (new Table ("s3", "s3"), "c3")
           );
 
-      _selectBuilder.BuildSelectPart (evaluation, new List<ResultOperatorBase> ());
-      Assert.AreEqual ("SELECT [s1].[c1], [s2].[c2], [s3].[c3] ", _commandBuilder.GetCommandText());
+      var sqlGenerationData = new SqlGenerationData();
+      sqlGenerationData.SetSelectEvaluation (evaluation, new List<FieldDescriptor> ());
+
+      sqlGenerationData.ResultOperators = new List<ResultOperatorBase> { new FirstResultOperator (true) };
+
+      _selectBuilder.BuildSelectPart (sqlGenerationData);
+      Assert.AreEqual ("SELECT TOP 1 [s1].[c1], [s2].[c2], [s3].[c3] ", _commandBuilder.GetCommandText ());
     }
 
     [Test]
-    public void BinaryEvaluations_Add ()
+    public void AppendSelectEvaluation_NewObject ()
+    {
+      IEvaluation evaluation = new NewObject (
+          typeof (Student).GetConstructor (Type.EmptyTypes),
+          new Column (new Table ("s1", "s1"), "c1"),
+          new Column (new Table ("s2", "s2"), "c2"),
+          new Column (new Table ("s3", "s3"), "c3")
+          );
+
+      _selectBuilder.AppendSelectEvaluation (evaluation, new List<ResultOperatorBase> ());
+      Assert.AreEqual ("[s1].[c1], [s2].[c2], [s3].[c3] ", _commandBuilder.GetCommandText());
+    }
+
+    [Test]
+    public void AppendSelectEvaluation_BinaryEvaluation ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
       var c2 = new Column (new Table ("s2", "s2"), "c2");
 
       var binaryEvaluation = new BinaryEvaluation (c1, c2, BinaryEvaluation.EvaluationKind.Add);
       
-      _selectBuilder.BuildSelectPart (binaryEvaluation, new List<ResultOperatorBase>());
-      Assert.AreEqual ("SELECT ([s1].[c1] + [s2].[c2]) ", _commandBuilder.GetCommandText());
+      _selectBuilder.AppendSelectEvaluation (binaryEvaluation, new List<ResultOperatorBase>());
+      Assert.AreEqual ("([s1].[c1] + [s2].[c2]) ", _commandBuilder.GetCommandText());
     }
 
     [Test]
-    public void ResultOperators_Count ()
+    public void AppendSelectEvaluationResultOperators__Count ()
     {
       // TODO 594: The SQL generated here is actually wrong, although it will work in many cases. The problem is that the projection
       // of the Select clause is not used for counting, which might lead to invalid results if NULLs are involved. What Count should really do
       // is create a new SELECT clause around the original SQL query, like this: SELECT COUNT (*) FROM (<SQL QUERY>).
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new CountResultOperator () });
-      Assert.AreEqual ("SELECT COUNT (*) ", _commandBuilder.GetCommandText ());
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new CountResultOperator () });
+      Assert.AreEqual ("COUNT (*) ", _commandBuilder.GetCommandText ());
     }
 
     [Test]
-    public void ResultOperators_First ()
+    public void AppendSelectEvaluation_ResultOperators_First ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new FirstResultOperator (false) });
-      Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new FirstResultOperator (false) });
+      Assert.AreEqual ("TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
     [Test]
-    public void ResultOperators_Single ()
+    public void AppendSelectEvaluation_ResultOperators_Single ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new SingleResultOperator (false) });
-      Assert.AreEqual ("SELECT TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new SingleResultOperator (false) });
+      Assert.AreEqual ("TOP 1 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void ResultOperators_Last_NotSupported ()
+    public void AppendSelectEvaluation_ResultOperators_Last_NotSupported ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new LastResultOperator (false) });
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new LastResultOperator (false) });
     }
 
     [Test]
-    public void ResultOperators_Take ()
+    public void AppendSelectEvaluation_ResultOperators_Take ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new TakeResultOperator (Expression.Constant (7)) });
-      Assert.AreEqual ("SELECT TOP 7 [s1].[c1] ", _commandBuilder.GetCommandText ());
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new TakeResultOperator (Expression.Constant (7)) });
+      Assert.AreEqual ("TOP 7 [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
     [Test]
-    public void ResultOperators_Distinct ()
+    public void AppendSelectEvaluation_ResultOperators_Distinct ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new DistinctResultOperator () });
-      Assert.AreEqual ("SELECT DISTINCT [s1].[c1] ", _commandBuilder.GetCommandText ());
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new DistinctResultOperator () });
+      Assert.AreEqual ("DISTINCT [s1].[c1] ", _commandBuilder.GetCommandText ());
     }
 
     [Test]
-    public void ResultOperators_Cast ()
+    public void AppendSelectEvaluation_ResultOperators_Cast ()
     {
       var c1 = new Column (new Table ("s1", "s1"), "c1");
 
-      _selectBuilder.BuildSelectPart (c1, new List<ResultOperatorBase> { new CastResultOperator (typeof (int)) });
-      Assert.AreEqual ("SELECT [s1].[c1] ", _commandBuilder.GetCommandText ());
+      _selectBuilder.AppendSelectEvaluation (c1, new List<ResultOperatorBase> { new CastResultOperator (typeof (int)) });
+      Assert.AreEqual ("[s1].[c1] ", _commandBuilder.GetCommandText ());
     }
   }
 }

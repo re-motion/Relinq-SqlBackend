@@ -24,126 +24,172 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
   [TestFixture]
   public class FromBuilderTest
   {
-    [Test]
-    public void CombineTables_SelectsJoinsPerTable()
+    private CommandBuilder _commandBuilder;
+    private FromBuilder _fromBuilder;
+    private Table _table1;
+    private Table _table2;
+    private SubQuery _subQuery;
+    private SingleJoin _join1;
+    private SingleJoin _join2;
+
+    [SetUp]
+    public void SetUp ()
     {
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder);
+      _commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry ());
+      _fromBuilder = new FromBuilder (_commandBuilder);
 
-      var table1 = new Table ("s1", "s1_alias");
-      var table2 = new Table ("s2", "s2_alias");
-      var column1 = new Column (table1, "c1");
-      var column2 = new Column (table2, "c2");
+      _table1 = new Table ("Table1", "t1");
+      _table2 = new Table ("Table2", "t2");
 
-      var tables = new List<IColumnSource> { table1 }; // this table does not have a join associated with it
+      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      _subQuery = new SubQuery (queryModel, ParseMode.SubQueryInFrom, "s1");
+
+      _join1 = new SingleJoin (new Column (_table1, "c1"), new Column (new Table ("JoinedTable", "j1"), "c2"));
+      _join2 = new SingleJoin (new Column (_join1.RightSide, "c3"), new Column (new Table ("JoinedTable2", "j2"), "c4"));
+    }
+
+    [Test]
+    public void BuildFromPart ()
+    {
+      var _sqlGenerationData = new SqlGenerationData ();
+      _sqlGenerationData.FromSources.Add (_table1);
+      _sqlGenerationData.FromSources.Add (_table2);
+
+      var shortFieldSourcePath = new FieldSourcePath (_join1.LeftSide, new[] { _join1 });
+      _sqlGenerationData.Joins.AddPath (shortFieldSourcePath);
+
+      _fromBuilder.BuildFromPart (_sqlGenerationData);
+
+      Assert.That (
+          _commandBuilder.GetCommandText(), 
+          Is.EqualTo ("FROM [Table1] [t1] LEFT OUTER JOIN [JoinedTable] [j1] ON [t1].[c1] = [j1].[c2], [Table2] [t2]"));
+    }
+
+    [Test]
+    public void AppendColumnSources ()
+    {
       var joins = new JoinCollection ();
-      var join = new SingleJoin (column2, column1);
-      joins.AddPath (new FieldSourcePath(table2, new [] { join }));
-      fromBuilder.BuildFromPart (tables, joins);
+      var shortFieldSourcePath = new FieldSourcePath (_join1.LeftSide, new[] { _join1 });
+      joins.AddPath (shortFieldSourcePath);
 
-      Assert.AreEqual ("FROM [s1] [s1_alias]", commandBuilder.GetCommandText());
+      _fromBuilder.AppendColumnSources (new[] { _table1, _table2 }, joins);
+
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo ("[Table1] [t1] LEFT OUTER JOIN [JoinedTable] [j1] ON [t1].[c1] = [j1].[c2], [Table2] [t2]"));
     }
 
     [Test]
-    public void CombineTables_WithJoin ()
+    public void AppendColumnSources_MultipleJoins ()
     {
-      var commandBuilder = new CommandBuilder (new StringBuilder (), new List<CommandParameter> (), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder);
+      var joins = new JoinCollection ();
+      var longFieldSourcePath = new FieldSourcePath (_join1.LeftSide, new[] { _join1, _join2 });
+      joins.AddPath (longFieldSourcePath);
 
-      var table1 = new Table ("s1", "s1_alias");
-      var table2 = new Table ("s2", "s2_alias");
-      var column1 = new Column (table1, "c1");
-      var column2 = new Column (table2, "c2");
+      _fromBuilder.AppendColumnSources (new[] { _table1, _table2 }, joins);
 
-      var tables = new List<IColumnSource> { table2 };
-      var joins = new JoinCollection();
-      var join = new SingleJoin (column2, column1);
-      joins.AddPath (new FieldSourcePath (table2, new[] { join }));
-      fromBuilder.BuildFromPart (tables, joins);
-
-      Assert.AreEqual ("FROM [s2] [s2_alias] LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1]", commandBuilder.GetCommandText());
+      Assert.That (
+          _commandBuilder.GetCommandText (),
+          Is.EqualTo (
+              "[Table1] [t1] "
+              + "LEFT OUTER JOIN [JoinedTable] [j1] ON [t1].[c1] = [j1].[c2] "
+              + "LEFT OUTER JOIN [JoinedTable2] [j2] ON [j1].[c3] = [j2].[c4], [Table2] [t2]"));
     }
 
     [Test]
-    public void CombineTables_WithNestedJoin ()
+    public void AppendColumnSource_First_Table ()
     {
-      var commandBuilder = new CommandBuilder (
-          new StringBuilder(), new List<CommandParameter>(), StubDatabaseInfo.Instance, new MethodCallSqlGeneratorRegistry());
-      var fromBuilder = new FromBuilder (commandBuilder);
+      _fromBuilder.AppendColumnSource (_table1, new[] { _join1 }, true);
 
-      // table2.table1.table3
-
-      var table1 = new Table ("s1", "s1_alias");
-      var table2 = new Table ("s2", "s2_alias");
-      var table3 = new Table ("s3", "s3_alias");
-      var column1 = new Column (table1, "c1");
-      var column2 = new Column (table2, "c2");
-      var column3 = new Column (table1, "c1'");
-      var column4 = new Column (table3, "c3");
-
-      var tables = new List<IColumnSource> { table2 };
-
-      var joins = new JoinCollection();
-
-      var join1 = new SingleJoin (column2, column1);
-      var join2 = new SingleJoin (column3, column4);
-      joins.AddPath (new FieldSourcePath (table2, new[] { join1, join2 }));
-
-      fromBuilder.BuildFromPart (tables, joins);
-
-      Assert.AreEqual (
-          "FROM [s2] [s2_alias] "
-          + "LEFT OUTER JOIN [s1] [s1_alias] ON [s2_alias].[c2] = [s1_alias].[c1] "
-          + "LEFT OUTER JOIN [s3] [s3_alias] ON [s1_alias].[c1'] = [s3_alias].[c3]",
-          commandBuilder.GetCommandText());
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo ("[Table1] [t1] LEFT OUTER JOIN [JoinedTable] [j1] ON [t1].[c1] = [j1].[c2]"));
     }
 
     [Test]
-    public void CombineTables_WithSubqueries ()
+    public void AppendColumnSource_NonFirst_Table ()
     {
-      var mockRepository = new MockRepository();
+      _fromBuilder.AppendColumnSource (_table1, new SingleJoin[0], false);
 
-      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInFrom, "sub_alias");
-      var tables = new List<IColumnSource> { new Table ("s1", "s1_alias"), subQuery };
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (", [Table1] [t1]"));
+    }
 
-      var commandBuilderMock = mockRepository.StrictMock<ICommandBuilder> ();
+    [Test]
+    public void AppendColumnSource_First_SubQuery ()
+    {
+      _fromBuilder.AppendColumnSource (_subQuery, new[] { _join1 }, true);
 
-      commandBuilderMock.Expect (mock => mock.Append ("FROM "));
-      commandBuilderMock.Expect (mock => mock.Append ("[s1] [s1_alias]"));
-      commandBuilderMock.Expect (mock => mock.Append (" CROSS APPLY "));
-      commandBuilderMock.Expect (mock => mock.AppendEvaluation (subQuery));
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Text.Matches (@"^\(SELECT .*\) \[s1\] LEFT OUTER JOIN \[JoinedTable\] \[j1\] ON \[t1\]\.\[c1\] = \[j1\]\.\[c2\]$"));
+    }
 
-      commandBuilderMock.Replay ();
+    [Test]
+    public void AppendColumnSource_NonFirst_SubQuery ()
+    {
+      _fromBuilder.AppendColumnSource (_subQuery, new SingleJoin[0], false);
 
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Text.Matches (@"^ CROSS APPLY \(SELECT .*\) \[s1\]$"));
+    }
+
+    [Test]
+    public void AppendTable_First ()
+    {
+      _fromBuilder.AppendTable (_table1, true);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table1] [t1]"));
+    }
+
+    [Test]
+    public void AppendTable_NonFirst ()
+    {
+      _fromBuilder.AppendTable (_table1, false);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (", [Table1] [t1]"));
+    }
+
+    [Test]
+    public void AppendSubQuery_First ()
+    {
+      _fromBuilder.AppendSubQuery (_subQuery, true);
+
+      Assert.That (_commandBuilder.GetCommandText(), Text.Matches (@"^\(SELECT .*\) \[s1\]"));
+    }
+
+    [Test]
+    public void AppendSubQuery_NonFirst ()
+    {
+      _fromBuilder.AppendSubQuery (_subQuery, false);
+
+      Assert.That (_commandBuilder.GetCommandText(), Text.Matches (@"^ CROSS APPLY \(SELECT .*\) \[s1\]"));
+    }
+
+    [Test]
+    public void AppendSubQuery_UsesCommandBuilder ()
+    {
+      var commandBuilderMock = MockRepository.GenerateMock<ICommandBuilder> ();
       var fromBuilder = new FromBuilder (commandBuilderMock);
-      fromBuilder.BuildFromPart (tables, new JoinCollection ());
-      commandBuilderMock.VerifyAllExpectations ();
+
+      fromBuilder.AppendSubQuery (_subQuery, true);
+
+      commandBuilderMock.AssertWasCalled (mock => mock.AppendEvaluation (_subQuery));
     }
 
     [Test]
-    public void CombineTables_WithSubqueryInFirstFrom ()
+    public void AppendJoin ()
     {
-      var mockRepository = new MockRepository ();
+      _fromBuilder.AppendJoin (_join1);
 
-      var subQuery = new SubQuery (ExpressionHelper.CreateQueryModel_Student (), ParseMode.SubQueryInFrom, "sub_alias");
-      var tables = new List<IColumnSource> { subQuery };
-
-      var commandBuilderMock = mockRepository.StrictMock<ICommandBuilder>();
-
-      commandBuilderMock.Expect (mock => mock.Append ("FROM "));
-      commandBuilderMock.Expect (mock => mock.AppendEvaluation (subQuery));
-
-      commandBuilderMock.Replay ();
-
-      var fromBuilder = new FromBuilder (commandBuilderMock);
-      fromBuilder.BuildFromPart (tables, new JoinCollection ());
-      commandBuilderMock.VerifyAllExpectations ();
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" LEFT OUTER JOIN [JoinedTable] [j1] ON [t1].[c1] = [j1].[c2]"));
     }
   }
 }
