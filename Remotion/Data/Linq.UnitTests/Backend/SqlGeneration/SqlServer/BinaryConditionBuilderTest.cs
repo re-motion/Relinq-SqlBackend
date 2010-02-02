@@ -24,7 +24,6 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.Linq.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
@@ -38,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SetUp ()
     {
       _commandBuilder = new CommandBuilder (
-          MockRepository.GenerateStub<ISqlGenerator>(),
+          new SqlServerGenerator (StubDatabaseInfo.Instance),
           new StringBuilder (), 
           new List<CommandParameter> (), 
           StubDatabaseInfo.Instance, 

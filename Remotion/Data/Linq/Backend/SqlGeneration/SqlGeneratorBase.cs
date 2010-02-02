@@ -42,7 +42,6 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     public DetailParserRegistries DetailParserRegistries { get; private set; }
     public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
 
-    public abstract ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode);
     protected abstract TContext CreateContext ();
 
     public virtual CommandData BuildCommand (QueryModel queryModel)

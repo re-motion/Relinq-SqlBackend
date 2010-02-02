@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     private StringBuilder _commandText;
     private List<CommandParameter> _commandParameters;
     private CommandParameter _defaultParameter;
-    private ISqlGenerator _sqlGeneratorMock;
+    private SqlServerGenerator _sqlGeneratorMock;
     private CommandBuilder _commandBuilder;
 
     [SetUp]
@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       _commandText = new StringBuilder();
       _commandText.Append ("WHERE ");
       _defaultParameter = new CommandParameter ("abc", 5);
-      _sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator>();
+      _sqlGeneratorMock = MockRepository.GenerateMock<SqlServerGenerator> (StubDatabaseInfo.Instance);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
       _commandBuilder = new CommandBuilder (
           _sqlGeneratorMock,
@@ -95,13 +95,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var queryModel = ExpressionHelper.CreateQueryModel_Student ();
       var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "test");
 
-      var nestedGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
+      var nestedGeneratorMock = MockRepository.GenerateMock<SqlServerGenerator> (StubDatabaseInfo.Instance);
       _sqlGeneratorMock
           .Expect (mock => mock.CreateNestedSqlGenerator (ParseMode.SubQueryInWhere))
           .Return (nestedGeneratorMock);
       nestedGeneratorMock
-          .Expect (mock => mock.BuildCommand (queryModel))
-          .Return (new CommandData("", new CommandParameter[0], new SqlGenerationData()));
+          .Expect (mock => mock.BuildCommand (Arg.Is (queryModel), Arg<SqlServerGenerationContext>.Is.Anything))
+          .Return (new CommandData());
       _sqlGeneratorMock.Replay ();
       nestedGeneratorMock.Replay ();
       

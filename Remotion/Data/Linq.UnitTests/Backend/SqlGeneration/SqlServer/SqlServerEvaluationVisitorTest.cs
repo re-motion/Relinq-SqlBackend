@@ -27,6 +27,7 @@ using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.UnitTests.TestUtilities;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
@@ -38,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     private CommandBuilder _commandBuilder;
     private CommandParameter _defaultParameter;
     private IDatabaseInfo _databaseInfo;
-    private ISqlGenerator _sqlGeneratorMock;
+    private SqlServerGenerator _sqlGeneratorMock;
     private SqlServerEvaluationVisitor _visitor;
 
     [SetUp]
@@ -49,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       _defaultParameter = new CommandParameter ("abc", 5);
       _commandParameters = new List<CommandParameter> { _defaultParameter };
       _databaseInfo = StubDatabaseInfo.Instance;
-      _sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
+      _sqlGeneratorMock = MockRepository.GenerateMock<SqlServerGenerator> (StubDatabaseInfo.Instance);
       _commandBuilder = new CommandBuilder (_sqlGeneratorMock, _commandText, _commandParameters, _databaseInfo, new MethodCallSqlGeneratorRegistry());
       _visitor = new SqlServerEvaluationVisitor (_sqlGeneratorMock, _commandBuilder, _databaseInfo, new MethodCallSqlGeneratorRegistry ());
     }
@@ -260,13 +261,27 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var queryModel = ExpressionHelper.CreateQueryModel_Student ();
       var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "sub_alias");
 
-      var nestedGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
+      var nestedGeneratorMock = MockRepository.GenerateMock<SqlServerGenerator> (StubDatabaseInfo.Instance);
       _sqlGeneratorMock
           .Expect (mock => mock.CreateNestedSqlGenerator (ParseMode.SubQueryInWhere))
           .Return (nestedGeneratorMock);
       nestedGeneratorMock
-          .Expect (mock => mock.BuildCommand (queryModel))
-          .Return (new CommandData ("NESTED", new[] { new CommandParameter("@2", "value1"),  }, new SqlGenerationData() ));
+          .Expect (mock => mock.CreateDerivedContext (_commandBuilder))
+          .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+      nestedGeneratorMock
+          .Expect (mock => mock.BuildCommand (
+              Arg.Is (queryModel), 
+              Arg<SqlServerGenerationContext>.Matches (ctx => 
+                  ctx != null
+                  && ctx.CommandBuilder.CommandText == _commandText 
+                  && ctx.CommandBuilder.CommandParameters == _commandParameters 
+                  && ctx.CommandBuilder.SqlGenerator == nestedGeneratorMock)))
+          .Return (new CommandData ())
+          .WhenCalled (mi =>
+          {
+            _commandText.Append ("NESTED");
+            _commandParameters.Add (new CommandParameter ("@2", "nestedValue"));
+          });
 
       _sqlGeneratorMock.Replay ();
       nestedGeneratorMock.Replay ();
@@ -276,35 +291,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       nestedGeneratorMock.VerifyAllExpectations ();
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz (NESTED) [sub_alias]"));
-      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { _defaultParameter, new CommandParameter("@2", "value1") }));
-    }
-
-    [Test]
-    public void VisitSubQuery_ParametersAreAdjusted ()
-    {
-      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
-      var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "sub_alias");
-
-      var nestedGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
-      _sqlGeneratorMock
-          .Expect (mock => mock.CreateNestedSqlGenerator (ParseMode.SubQueryInWhere))
-          .Return (nestedGeneratorMock);
-      nestedGeneratorMock
-          .Expect (mock => mock.BuildCommand (queryModel))
-          .Return (new CommandData ("NESTED @2", new[] { new CommandParameter ("@2", "nestedValue"), }, new SqlGenerationData ()));
-
-      _sqlGeneratorMock.Replay ();
-      nestedGeneratorMock.Replay ();
-
-      var outerParameter = _commandBuilder.AddParameter ("outerValue");
-      _commandBuilder.Append (outerParameter.Name);
-      _commandBuilder.AppendEvaluation (subQuery);
-
-      nestedGeneratorMock.VerifyAllExpectations ();
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("xyz @2(NESTED @3) [sub_alias]"));
-      Assert.That (_commandBuilder.GetCommandParameters (), 
-          Is.EqualTo (new[] { _defaultParameter, new CommandParameter ("@2", "outerValue"), new CommandParameter("@3", "nestedValue") }));
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { _defaultParameter, new CommandParameter("@2", "nestedValue") }));
     }
 
     [Test]

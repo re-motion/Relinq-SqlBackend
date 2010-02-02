@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer.MethodCallGenerators;
+using System.Text;
 
 namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
 {
@@ -43,7 +44,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       MethodCallRegistry.Register (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) }), new MethodCallSubstring());
     }
 
-    public override ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode)
+    public virtual SqlServerGenerator CreateNestedSqlGenerator (ParseMode parseMode)
     {
       return new SqlServerGenerator (DatabaseInfo, parseMode);
     }
@@ -51,6 +52,16 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
     protected override SqlServerGenerationContext CreateContext ()
     {
       return new SqlServerGenerationContext (this, DatabaseInfo, MethodCallRegistry);
+    }
+
+    public virtual SqlServerGenerationContext CreateDerivedContext (CommandBuilder commandBuilder)
+    {
+      var derivedCommandBuilder = new CommandBuilder (
+          this, 
+          commandBuilder.CommandText, 
+          commandBuilder.CommandParameters, 
+          DatabaseInfo, MethodCallRegistry);
+      return new SqlServerGenerationContext (derivedCommandBuilder);
     }
 
     protected override IOrderByBuilder CreateOrderByBuilder (SqlServerGenerationContext context)

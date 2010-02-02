@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
   public class CommandBuilder : ICommandBuilder
   {
     public CommandBuilder (
-        ISqlGenerator sqlServerGenerator,
+        SqlServerGenerator sqlServerGenerator,
         StringBuilder commandText,
         List<CommandParameter> commandParameters,
         IDatabaseInfo databaseInfo,
@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       MethodCallRegistry = methodCallRegistry;
     }
 
-    public ISqlGenerator SqlGenerator { get; set; }
+    public SqlServerGenerator SqlGenerator { get; set; }
     public StringBuilder CommandText { get; private set; }
     public List<CommandParameter> CommandParameters { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }

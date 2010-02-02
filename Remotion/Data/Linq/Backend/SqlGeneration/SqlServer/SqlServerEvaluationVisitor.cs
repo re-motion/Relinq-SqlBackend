@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
   public class SqlServerEvaluationVisitor : IEvaluationVisitor
   {
     public SqlServerEvaluationVisitor (
-        ISqlGenerator sqlServerGenerator,
+        SqlServerGenerator sqlServerGenerator,
         CommandBuilder commandBuilder, 
         IDatabaseInfo databaseInfo, 
         MethodCallSqlGeneratorRegistry methodCallRegistry)
@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       MethodCallRegistry = methodCallRegistry;
     }
 
-    public ISqlGenerator SqlGenerator { get; private set; }
+    public SqlServerGenerator SqlGenerator { get; private set; }
     public CommandBuilder CommandBuilder { get; private set; }
     public IDatabaseInfo DatabaseInfo { get; private set; }
     public MethodCallSqlGeneratorRegistry MethodCallRegistry { get; private set; }
@@ -149,22 +149,9 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration.SqlServer
       CommandBuilder.Append ("(");
 
       var newGenerator = SqlGenerator.CreateNestedSqlGenerator (subQuery.ParseMode);
-      var innerCommandData = newGenerator.BuildCommand (subQuery.QueryModel);
+      var newContext = newGenerator.CreateDerivedContext (CommandBuilder);
+      newGenerator.BuildCommand (subQuery.QueryModel, newContext);
 
-      var innerStatementStart = CommandBuilder.CommandText.Length;
-      CommandBuilder.Append (innerCommandData.Statement);
-
-      // copy parameters, substituting their names with new ones
-      foreach (var innerParameter in innerCommandData.Parameters)
-      {
-        var newParameter = CommandBuilder.AddParameter (innerParameter.Value);
-        CommandBuilder.CommandText.Replace (
-            innerParameter.Name, 
-            newParameter.Name, 
-            innerStatementStart, 
-            CommandBuilder.CommandText.Length - innerStatementStart);
-      }
-      
       CommandBuilder.Append (")");
       if (subQuery.Alias != null)
       {

@@ -25,7 +25,5 @@ namespace Remotion.Data.Linq.Backend.SqlGeneration
     MethodCallSqlGeneratorRegistry MethodCallRegistry { get; }
 
     CommandData BuildCommand (QueryModel queryModel);
-
-    ISqlGenerator CreateNestedSqlGenerator (ParseMode parseMode);
   }
 }

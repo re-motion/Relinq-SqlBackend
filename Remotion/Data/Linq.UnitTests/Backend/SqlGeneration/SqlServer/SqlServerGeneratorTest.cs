@@ -15,12 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.Backend;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 {
@@ -55,9 +58,30 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     {
       var result = _sqlServerGenerator.CreateNestedSqlGenerator (ParseMode.SubQueryInFrom);
 
-      Assert.That (result, Is.InstanceOfType (typeof (SqlServerGenerator)));
-      Assert.That (((SqlServerGenerator) result).ParseMode, Is.EqualTo (ParseMode.SubQueryInFrom));
-      Assert.That (((SqlServerGenerator) result).DatabaseInfo, Is.SameAs (_sqlServerGenerator.DatabaseInfo));
+      Assert.That (result.ParseMode, Is.EqualTo (ParseMode.SubQueryInFrom));
+      Assert.That (result.DatabaseInfo, Is.SameAs (_sqlServerGenerator.DatabaseInfo));
+    }
+
+    [Test]
+    public void CreateDerivedContext ()
+    {
+      var commandText = new StringBuilder ();
+      var commandParameters = new List<CommandParameter> ();
+      var commandBuilder = new CommandBuilder (
+          new SqlServerGenerator(StubDatabaseInfo.Instance), 
+          commandText, 
+          commandParameters, 
+          MockRepository.GenerateStub<IDatabaseInfo>(), 
+          new MethodCallSqlGeneratorRegistry());
+
+      var result = _sqlServerGenerator.CreateDerivedContext (commandBuilder);
+
+      Assert.That (result.CommandBuilder, Is.Not.SameAs (commandBuilder));
+      Assert.That (result.CommandBuilder.DatabaseInfo, Is.SameAs (_sqlServerGenerator.DatabaseInfo));
+      Assert.That (result.CommandBuilder.CommandText, Is.SameAs (commandText));
+      Assert.That (result.CommandBuilder.CommandParameters, Is.SameAs (commandParameters));
+      Assert.That (result.CommandBuilder.MethodCallRegistry, Is.SameAs (_sqlServerGenerator.MethodCallRegistry));
+      Assert.That (result.CommandBuilder.SqlGenerator, Is.SameAs (_sqlServerGenerator));
     }
 
   }
