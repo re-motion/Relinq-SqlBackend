@@ -47,6 +47,7 @@ namespace Remotion.Data.Linq.Backend.DetailParsing
         if (parser.Key.IsAssignableFrom(expressionType))
           return parser.Value;
       }
+      return new IParser[0];
 #endif
     }
   
