@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.Backend.DetailParsing
 #else
       return _parsers
           .Where (p => p.Key.IsAssignableFrom (expressionType))
-          .OrderBy (p => p.Key, new TypeComperer ())
+          .OrderByDescending (p => p.Key, new TypeComperer ())
           .Select (p => p.Value)
           .FirstOrDefault () ?? new IParser[0];
 #endif
