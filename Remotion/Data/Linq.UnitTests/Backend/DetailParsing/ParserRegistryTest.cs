@@ -88,12 +88,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 
       ParserRegistry parserRegistry = new ParserRegistry();
       parserRegistry.RegisterParser (typeof (BinaryExpression), parser1);
-      parserRegistry.RegisterParser (typeof (Expression), parser1);
+      parserRegistry.RegisterParser (typeof (Expression), parser2);
       parserRegistry.RegisterParser (typeof (ConstantExpression), parser3);
 
       Assert.That (parserRegistry.GetParsers (typeof (BinaryExpression)).ToArray(), Is.EqualTo (new[] { parser1 }));
-      Assert.That (parserRegistry.GetParsers (typeof (Expression)).ToArray(), Is.EqualTo (new[] { parser3 }));
-      Assert.That (parserRegistry.GetParsers (typeof (ConstantExpression)).ToArray(), Is.EqualTo (new[] { parser2 }));
+      Assert.That (parserRegistry.GetParsers (typeof (Expression)).ToArray(), Is.EqualTo (new[] { parser2 }));
+      Assert.That (parserRegistry.GetParsers (typeof (ConstantExpression)).ToArray(), Is.EqualTo (new[] { parser3 }));
     }
 #endif
   }
