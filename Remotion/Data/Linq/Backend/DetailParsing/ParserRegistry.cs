@@ -16,6 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+#if !NET_3_5
+using System.Linq;
+#endif
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Collections;
 using Remotion.Data.Linq.Parsing;
@@ -25,6 +28,21 @@ namespace Remotion.Data.Linq.Backend.DetailParsing
 {
   public class ParserRegistry
   {
+#if !NET_3_5
+    private class TypeComperer : IComparer<Type>
+    {
+      public int Compare(Type left, Type right)
+      {
+        if (left == right)
+          return 0;
+        if (left.IsAssignableFrom(right))
+          return -1;
+        else
+          return 1;
+      }
+    }
+#endif
+
     private readonly MultiDictionary<Type, IParser> _parsers;
 
     public ParserRegistry ()
@@ -42,12 +60,11 @@ namespace Remotion.Data.Linq.Backend.DetailParsing
 #if NET_3_5
       return _parsers[expressionType];
 #else
-      foreach (var parser in _parsers)
-      {
-        if (parser.Key.IsAssignableFrom(expressionType))
-          return parser.Value;
-      }
-      return new IParser[0];
+      return _parsers
+          .Where(p => p.Key.IsAssignableFrom(expressionType))
+          .OrderByDescending(p => p.Key, new TypeComperer())
+          .Select(p => p.Value)
+          .FirstOrDefault() ?? new IParser[0];
 #endif
     }
   

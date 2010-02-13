@@ -77,5 +77,24 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       ConstantExpression constantExpression = Expression.Constant (5);
       parserRegistry.GetParser (constantExpression);
     }
+
+#if !NET_3_5
+    [Test]
+    public void GetParsers_ClosestMatch ()
+    {
+      ConstantExpressionParser parser1 = new ConstantExpressionParser (StubDatabaseInfo.Instance);
+      ConstantExpressionParser parser2 = new ConstantExpressionParser (StubDatabaseInfo.Instance);
+      ConstantExpressionParser parser3 = new ConstantExpressionParser (StubDatabaseInfo.Instance);
+
+      ParserRegistry parserRegistry = new ParserRegistry();
+      parserRegistry.RegisterParser (typeof (BinaryExpression), parser1);
+      parserRegistry.RegisterParser (typeof (Expression), parser1);
+      parserRegistry.RegisterParser (typeof (ConstantExpression), parser3);
+
+      Assert.That (parserRegistry.GetParsers (typeof (BinaryExpression)).ToArray(), Is.EqualTo (new[] { parser1 }));
+      Assert.That (parserRegistry.GetParsers (typeof (Expression)).ToArray(), Is.EqualTo (new[] { parser3 }));
+      Assert.That (parserRegistry.GetParsers (typeof (ConstantExpression)).ToArray(), Is.EqualTo (new[] { parser2 }));
+    }
+#endif
   }
 }
