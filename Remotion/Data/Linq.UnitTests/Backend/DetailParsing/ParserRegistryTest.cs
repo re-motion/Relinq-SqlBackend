@@ -93,7 +93,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 
       Assert.That (parserRegistry.GetParsers (typeof (BinaryExpression)).ToArray(), Is.EqualTo (new[] { parser1 }));
       Assert.That (parserRegistry.GetParsers (typeof (Expression)).ToArray(), Is.EqualTo (new[] { parser2 }));
-      Assert.That (parserRegistry.GetParsers (typeof (ConstantExpression)).ToArray(), Is.EqualTo (new[] { parser3 }));
+      Assert.That (parserRegistry.GetParsers (typeof (UnaryExpression)).ToArray (), Is.EqualTo (new[] { parser2 }));
+      Assert.That (parserRegistry.GetParsers (typeof (ConstantExpression)).ToArray (), Is.EqualTo (new[] { parser3 }));
     }
 #endif
   }
