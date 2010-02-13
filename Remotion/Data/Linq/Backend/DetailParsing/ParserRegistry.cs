@@ -39,9 +39,17 @@ namespace Remotion.Data.Linq.Backend.DetailParsing
 
     public IEnumerable<IParser> GetParsers (Type expressionType)
     {
+#if NET_3_5
       return _parsers[expressionType];
+#else
+      foreach (var parser in _parsers)
+      {
+        if (parser.Key.IsAssignableFrom(expressionType))
+          return parser.Value;
+      }
+#endif
     }
-
+  
     public IParser GetParser (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
