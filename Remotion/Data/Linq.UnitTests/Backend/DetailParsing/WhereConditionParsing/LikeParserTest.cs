@@ -39,8 +39,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected ConstantExpression for argument 0 of StartsWith method call, "
-                                                                    + "found 'ParameterExpression (Test)'.")]
+    [ExpectedException (typeof (ParserException), ExpectedMessage = 
+        "Expected ConstantExpression for argument 0 of StartsWith method call, found ", MatchType = MessageMatch.Contains)]
     public void ParseStartsWith_NoConstantExpression ()
     {
       string methodName = "StartsWith";
@@ -64,8 +64,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected ConstantExpression for argument 0 of EndsWith method call, "
-                                                                    + "found 'ParameterExpression (Test)'.")]
+    [ExpectedException (typeof (ParserException),
+        ExpectedMessage = "Expected ConstantExpression for argument 0 of EndsWith method call, found", MatchType = MessageMatch.Contains)]
     public void ParseEndsWith_NoConstantExpression ()
     {
       string methodName = "EndsWith";

@@ -78,8 +78,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
     [Test]
     [ExpectedException (typeof (SqlGenerationException),
-        ExpectedMessage = "The method Remotion.Data.Linq.UnitTests.TestUtilities.Tuple.Create is not supported by this code generator, " + 
-                          "and no custom generator has been registered.")]
+        ExpectedMessage = @"The method .*\.Tuple\.Create is not supported by this code generator, and no custom generator has been registered\.",
+        MatchType = MessageMatch.Regex)]
     public void MultiFromQueryWithProjection ()
     {
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
