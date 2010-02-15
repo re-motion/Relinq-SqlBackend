@@ -154,7 +154,6 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
 
       MethodCallExpression methodCallExpression = Expression.Call (
-          Student_First_Expression,
           typeof (LikeParserTest).GetMethod (methodName)
           );
 
