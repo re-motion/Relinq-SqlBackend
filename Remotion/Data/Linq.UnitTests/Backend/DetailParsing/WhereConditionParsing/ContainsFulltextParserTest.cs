@@ -45,10 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
 
     private void CheckParsingOfContainsFulltext (string methodName, string pattern)
     {
-      MemberExpression memberAccess = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("First"));
-
       MethodCallExpression methodCallExpression = Expression.Call (
-          memberAccess,
+          null,
           typeof (ContainsFulltextExtensionMethod).GetMethod (methodName),
           Student_First_Expression,
           Expression.Constant ("Test"));
