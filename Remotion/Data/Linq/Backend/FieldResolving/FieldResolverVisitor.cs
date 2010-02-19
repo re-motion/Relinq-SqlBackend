@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.Backend.FieldResolving
       _referenceExpression = null;
     }
 
-    protected override Expression VisitExpression (Expression expression)
+    public override Expression VisitExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
