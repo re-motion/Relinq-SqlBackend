@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
       Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection.Expression, Is.SameAs (_selectClause.Selector));
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.SameAs (_selectClause.Selector));
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       
       Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression, Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression.Expression, Is.SameAs (_mainFromClause.FromExpression));
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression, Is.SameAs (_mainFromClause.FromExpression));
     }
   }
 }
