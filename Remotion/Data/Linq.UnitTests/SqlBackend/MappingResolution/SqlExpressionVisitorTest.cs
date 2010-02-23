@@ -19,11 +19,13 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
   public class SqlExpressionVisitorTest
@@ -62,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), 
-      ExpectedMessage = "The given expression type 'NotSupportedExpression' is not supported in from clauses. (Expression: '[2147483647]')")]
+        ExpectedMessage = "The given expression type 'NotSupportedExpression' is not supported in from clauses. (Expression: '[2147483647]')")]
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
