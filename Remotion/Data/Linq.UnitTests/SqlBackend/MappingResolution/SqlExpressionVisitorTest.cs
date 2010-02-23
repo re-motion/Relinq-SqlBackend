@@ -39,23 +39,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlTableExpression_CreatesSqlTableSource ()
-    {
-      var tableExpression = new SqlTableExpression (typeof (Student), new ConstantTableSource (Expression.Constant ("Student",typeof(string))));
-      var expectedTableExpression = SqlExpressionVisitor.TranslateSqlTableExpression (tableExpression, _resolver);
-
-      Assert.That (((SqlTableExpression)expectedTableExpression).TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
-      Assert.That (((SqlTableSource) ((SqlTableExpression) expectedTableExpression).TableSource).TableName, Is.EqualTo ("Student"));
-      Assert.That (((SqlTableSource) ((SqlTableExpression) expectedTableExpression).TableSource).TableAlias, Is.EqualTo ("s"));
-    }
-
-    [Test]
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
       var tableExpression = new SqlTableExpression (typeof (Student), new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), tableExpression);
 
-      var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableExpression (tableReferenceExpression, _resolver);
+      var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableReferenceExpression (tableReferenceExpression, _resolver);
       List<string> studentColumns = new List<string>(typeof (Student).GetProperties().Select (s => s.Name));
 
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (studentColumns.Count));
@@ -68,15 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlExpressionVisitor.TranslateSqlTableExpression (unknownExpression, _resolver);
-    }
-
-    [Test]
-    [ExpectedException(typeof(NotSupportedException))]
-    public void NoConstantTableSource ()
-    {
-      var tableExpression = new SqlTableExpression (typeof (Student), new UnknownTableSource());
-      SqlExpressionVisitor.TranslateSqlTableExpression (tableExpression, _resolver);
+      SqlExpressionVisitor.TranslateSqlTableReferenceExpression (unknownExpression, _resolver);
     }
 
     public class UnknownTableSource : AbstractTableSource

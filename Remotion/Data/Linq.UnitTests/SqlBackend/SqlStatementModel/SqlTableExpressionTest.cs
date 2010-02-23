@@ -35,10 +35,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     
     [Test]
+    [ExpectedException (typeof(NotImplementedException))]
     public void Accept ()
     {
-      var expression = _tableExpression.Accept (new ExpressionTreeVisitorTest());
-      Assert.That (expression, Is.SameAs (_tableExpression));
+      _tableExpression.Accept (new ExpressionTreeVisitorTest());
     }
   }
 }
