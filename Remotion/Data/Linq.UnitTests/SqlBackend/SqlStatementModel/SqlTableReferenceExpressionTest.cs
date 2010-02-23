@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
@@ -34,10 +35,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    [ExpectedException(typeof(NotImplementedException))]
     public void Accept ()
     {
-      _tableReferenceExpression.Accept (new ExpressionTreeVisitorTest());
+      var expression = _tableReferenceExpression.Accept (new ExpressionTreeVisitorTest());
+      Assert.That (expression, Is.SameAs (_tableReferenceExpression));
     }
   }
 }

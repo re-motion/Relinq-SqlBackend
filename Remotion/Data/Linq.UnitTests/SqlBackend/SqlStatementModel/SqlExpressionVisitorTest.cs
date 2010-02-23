@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -40,9 +42,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var tableExpression = new SqlTableExpression (typeof (Student), new ConstantTableSource (Expression.Constant ("Student",typeof(string))));
       var expectedTableExpression = SqlExpressionVisitor.TranslateSqlTableExpression (tableExpression, _resolver);
 
-      Assert.That (expectedTableExpression.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
-      Assert.That (((SqlTableSource) expectedTableExpression.TableSource).TableName, Is.EqualTo ("Student"));
-      Assert.That (((SqlTableSource) expectedTableExpression.TableSource).TableAlias, Is.EqualTo ("s"));
+      Assert.That (((SqlTableExpression)expectedTableExpression).TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
+      Assert.That (((SqlTableSource) ((SqlTableExpression) expectedTableExpression).TableSource).TableName, Is.EqualTo ("Student"));
+      Assert.That (((SqlTableSource) ((SqlTableExpression) expectedTableExpression).TableSource).TableAlias, Is.EqualTo ("s"));
+    }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
+    {
+      var tableExpression = new SqlTableExpression (typeof (Student), new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
+      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), tableExpression);
+
+      var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableExpression (tableReferenceExpression, _resolver);
+      List<string> studentColumns = new List<string>(typeof (Student).GetProperties().Select (s => s.Name));
+
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (studentColumns.Count));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Select (n => n.ColumnName).ToList(), Is.EquivalentTo (studentColumns));
     }
 
     [Test]

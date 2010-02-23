@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
@@ -32,6 +34,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       }
       else
         throw new NotSupportedException();
+    }
+
+    public override Expression ResolveSelectProjection (Expression expression)
+    {
+      var tableReferenceExpression = expression as SqlTableReferenceExpression;
+      if (tableReferenceExpression != null)
+      {
+        var properties = tableReferenceExpression.Type.GetProperties();
+        List<SqlColumnExpression> columnExpressions = new List<SqlColumnExpression>();
+
+        foreach (var property in properties)
+        {
+          columnExpressions.Add(new SqlColumnExpression (tableReferenceExpression.Type, tableReferenceExpression.SqlTableExpression, property.Name));
+        }
+        
+        return new SqlColumnListExpression (tableReferenceExpression.Type, columnExpressions);
+      }
+      else
+        throw new NotSupportedException ();
     }
   }
 }
