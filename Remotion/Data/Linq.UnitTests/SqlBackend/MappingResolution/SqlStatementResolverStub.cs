@@ -22,9 +22,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
-  public class SqlStatementResolverStub : SqlStatementResolver
+  public class SqlStatementResolverStub : ISqlStatementResolver
   {
-    public override SqlTableSource ResolveTableSource (ConstantTableSource tableSource)
+    public virtual SqlTableSource ResolveTableSource (ConstantTableSource tableSource)
     {
       var tableName = tableSource.ConstantExpression.Value.ToString();
       var tableAlias = tableName.Substring (0, 1).ToLower();
@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     //TODO: return only some SqlColumnExpressions
-    public override Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
+    public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
       var properties = tableReferenceExpression.Type.GetProperties();
       List<SqlColumnExpression> columnExpressions = new List<SqlColumnExpression>();
