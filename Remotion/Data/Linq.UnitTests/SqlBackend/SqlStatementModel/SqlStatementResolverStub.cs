@@ -15,30 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  [TestFixture]
-  public class SqlTableExpressionTest
+  public class SqlStatementResolverStub : SqlStatementResolver
   {
-    private SqlTableExpression _tableExpression;
-
-    [SetUp]
-    public void SetUp ()
+    public override SqlTableSource ResolveTableSource (AbstractTableSource tableSource)
     {
-      _tableExpression = new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int))));
-    }
-
-    
-    [Test]
-    public void Accept ()
-    {
-      var expression = _tableExpression.Accept (new ExpressionTreeVisitorTest());
-      Assert.That (expression, Is.SameAs (_tableExpression));
+      var constantTableSource = tableSource as ConstantTableSource;
+      if (constantTableSource != null)
+      {
+        var tableName = constantTableSource.ConstantExpression.Value.ToString();
+        var tableAlias = tableName.Substring (0,1).ToLower();
+        return new SqlTableSource (tableName, tableAlias);
+      }
+      else
+        throw new NotSupportedException();
     }
   }
 }

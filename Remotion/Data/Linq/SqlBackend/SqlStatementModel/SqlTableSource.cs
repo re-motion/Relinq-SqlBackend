@@ -15,30 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  [TestFixture]
-  public class SqlTableExpressionTest
+  /// <summary>
+  /// <see cref="SqlTableSource"/> holds the sql-specific parts of a from expression.
+  /// </summary>
+  public class SqlTableSource : AbstractTableSource
   {
-    private SqlTableExpression _tableExpression;
+    private readonly string _tableName;
+    private readonly string _tableAlias;
 
-    [SetUp]
-    public void SetUp ()
+    public SqlTableSource (string tableName, string tableAlias)
     {
-      _tableExpression = new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int))));
+      ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
+      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+      
+      _tableName = tableName;
+      _tableAlias = tableAlias;
     }
 
-    
-    [Test]
-    public void Accept ()
+    public string TableName
     {
-      var expression = _tableExpression.Accept (new ExpressionTreeVisitorTest());
-      Assert.That (expression, Is.SameAs (_tableExpression));
+      get { return _tableName; }
+    }
+
+    public string TableAlias
+    {
+      get { return _tableAlias; }
     }
   }
 }

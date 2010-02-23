@@ -16,29 +16,14 @@
 // 
 using System;
 using System.Linq.Expressions;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  [TestFixture]
-  public class SqlTableExpressionTest
+  /// <summary>
+  /// <see cref="ISqlExpressionVisitor"/> provides methods to visit expressions in sql-statement model.
+  /// </summary>
+  public interface ISqlExpressionVisitor
   {
-    private SqlTableExpression _tableExpression;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _tableExpression = new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int))));
-    }
-
-    
-    [Test]
-    public void Accept ()
-    {
-      var expression = _tableExpression.Accept (new ExpressionTreeVisitorTest());
-      Assert.That (expression, Is.SameAs (_tableExpression));
-    }
+    SqlTableExpression VisitSqlTableExpression (SqlTableExpression tableExpression);
   }
 }
