@@ -28,32 +28,38 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlSelectExpressionVisitorTest
   {
-    private SqlSelectExpressionVisitor _selectExpressionVisitor;
     private SqlGenerationContext _context;
 
     [SetUp]
     public void SetUp ()
     {
       _context = new SqlGenerationContext();
-      _selectExpressionVisitor = new SqlSelectExpressionVisitor (_context);
     }
 
     [Test]
     public void VisitQuerySourceReferenceExpression_CreatesSqlTableReferenceExpression ()
     {
-      var mainFromClause = new MainFromClause ("x", typeof (Student), Expression.Constant ("source"));
+      var mainFromClause = ClauseObjectMother.CreateMainFromClause();
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
-      _context.Mapping.Add (mainFromClause, new SqlTableExpression(querySourceReferenceExpression.Type)) ;
-      var result = _selectExpressionVisitor.VisitExpression (querySourceReferenceExpression);
-      Assert.That (result, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
+
+      var sqlTableExpression = new SqlTableExpression(
+          querySourceReferenceExpression.Type, 
+          new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression));
+      _context.AddQuerySourceMapping (mainFromClause, sqlTableExpression) ;
+      
+      var result = SqlSelectExpressionVisitor.TranslateSelectExpression (querySourceReferenceExpression, _context);
+
+      Assert.That (result.SqlTableExpression, Is.SameAs (sqlTableExpression));
+      Assert.That (result.Type, Is.SameAs (typeof (Student)));
     }
 
     [Test]
-    [ExpectedException (typeof (NotImplementedException))]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The given expression type 'NotSupportedExpression' is not supported in select clauses. (Expression: '[2147483647]')")]
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
-      var expression = BinaryExpression.And (Expression.Constant (0), Expression.Constant (0));
-      _selectExpressionVisitor.VisitExpression (expression);
+      var expression = new NotSupportedExpression (typeof (int));
+      SqlSelectExpressionVisitor.TranslateSelectExpression (expression, _context);
     }
 
   }

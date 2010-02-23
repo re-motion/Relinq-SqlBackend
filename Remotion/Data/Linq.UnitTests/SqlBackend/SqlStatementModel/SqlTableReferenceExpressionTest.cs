@@ -16,36 +16,28 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Utilities;
+using NUnit.Framework;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  /// <summary>
-  /// <see cref="SqlStatement"/> holds modified expressions for select and from part. The <see cref="QueryModel"/> is translated  to this model.
-  /// </summary>
-  public class SqlStatement
+  [TestFixture]
+  public class SqlTableReferenceExpressionTest
   {
-    private Expression _selectProjection;
-    private SqlTableExpression _fromExpression;
-    
-    public SqlStatement ()
+    private SqlTableReferenceExpression _tableReferenceExpression;
+
+    [SetUp]
+    public void SetUp ()
     {
+      _tableReferenceExpression = new SqlTableReferenceExpression (
+          typeof (int), new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int)))));
     }
 
-    public Expression SelectProjection
+    [Test]
+    [ExpectedException(typeof(NotImplementedException))]
+    public void Accept ()
     {
-      get { return _selectProjection; }
-      set { _selectProjection = ArgumentUtility.CheckNotNull("value",value); }
+      _tableReferenceExpression.Accept (new ExpressionTreeVisitorTest());
     }
-
-    public SqlTableExpression FromExpression
-    {
-      get { return _fromExpression; }
-      set { _fromExpression = ArgumentUtility.CheckNotNull("value",value); }
-    }
-
-    
-
-   
   }
 }

@@ -27,29 +27,24 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlFromExpressionVisitorTest
   {
-    private SqlFromExpressionVisitor _fromExpressionVisitor;
-    
-    [SetUp]
-    public void SetUp ()
-    {
-      _fromExpressionVisitor = new SqlFromExpressionVisitor ();
-    }
-
     [Test]
     public void VisitConstantExpression_CreatesSqlTableExpression ()
     {
       var mainFromClause = new MainFromClause ("x", typeof (Student), Expression.Constant ("source"));
-      var result = _fromExpressionVisitor.VisitExpression (mainFromClause.FromExpression);
+      var result = SqlFromExpressionVisitor.TranslateFromExpression (mainFromClause.FromExpression);
 
-      Assert.That (result, Is.InstanceOfType (typeof(SqlTableExpression)));
+      Assert.That (result.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
+      Assert.That (((ConstantTableSource) result.TableSource).ConstantExpression, Is.SameAs (mainFromClause.FromExpression));
+      Assert.That (result.Type, Is.SameAs (mainFromClause.FromExpression.Type));
     }
 
     [Test]
-    [ExpectedException(typeof(NotImplementedException))]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The given expression type 'BinaryExpression' is not supported in from clauses. (Expression: '(0 & 0)')")]
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
-      var expression = BinaryExpression.And(Expression.Constant (0), Expression.Constant (0));
-      _fromExpressionVisitor.VisitExpression (expression);
+      var expression = BinaryExpression.And (Expression.Constant (0), Expression.Constant (0));
+      SqlFromExpressionVisitor.TranslateFromExpression (expression);
     }
 
     

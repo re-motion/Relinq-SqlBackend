@@ -16,36 +16,21 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  /// <summary>
-  /// <see cref="SqlStatement"/> holds modified expressions for select and from part. The <see cref="QueryModel"/> is translated  to this model.
-  /// </summary>
-  public class SqlStatement
+  public class NotSupportedExpression : ExtensionExpression
   {
-    private Expression _selectProjection;
-    private SqlTableExpression _fromExpression;
-    
-    public SqlStatement ()
+    public NotSupportedExpression (Type type)
+        : base (type)
     {
     }
 
-    public Expression SelectProjection
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      get { return _selectProjection; }
-      set { _selectProjection = ArgumentUtility.CheckNotNull("value",value); }
+      return this;
     }
-
-    public SqlTableExpression FromExpression
-    {
-      get { return _fromExpression; }
-      set { _fromExpression = ArgumentUtility.CheckNotNull("value",value); }
-    }
-
-    
-
-   
   }
 }
