@@ -45,10 +45,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void VisitSelectClause_CreatesSelectProjection ()
     {
+      _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
       Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.SameAs (_selectClause.Selector));
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.TypeOf (typeof(SqlTableReferenceExpression)));
     }
 
     [Test]
@@ -70,5 +71,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var expression = (SqlTableExpression) _sqlQueryModelVisitor.SqlStatement.FromExpression;
       Assert.That (_sqlQueryModelVisitor.SqlStatement.SqlGenerationContext.Mapping.ContainsValue (expression), Is.True);
     }
+    
   }
 }
