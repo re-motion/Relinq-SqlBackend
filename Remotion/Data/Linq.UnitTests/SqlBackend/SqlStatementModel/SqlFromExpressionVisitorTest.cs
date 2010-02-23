@@ -52,8 +52,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       _fromExpressionVisitor.VisitExpression (expression);
     }
 
-
-
-
+    
   }
 }

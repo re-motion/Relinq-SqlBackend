@@ -55,11 +55,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public void VisitFromClause_CreatesFromExpression ()
     {
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
-      var sqlTableExpression = new SqlTableExpression (_mainFromClause.FromExpression.Type);
-      sqlTableExpression.SqlTableSource = new ConstantTableSource (((ConstantExpression) _mainFromClause.FromExpression));
-
+      
       Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression, Is.Not.Null);
       Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression,Is.TypeOf(typeof(SqlTableExpression)));
+    }
+
+    [Test]
+    public void VisitFromClause_AddMapping ()
+    {
+      _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.SqlGenerationContext.Mapping, Is.Not.Null);
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.SqlGenerationContext.Mapping.ContainsKey (_mainFromClause), Is.True);
+      var expression = (SqlTableExpression) _sqlQueryModelVisitor.SqlStatement.FromExpression;
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.SqlGenerationContext.Mapping.ContainsValue (expression), Is.True);
     }
   }
 }
