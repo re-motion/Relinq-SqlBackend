@@ -31,16 +31,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       return new SqlTableSource (tableName, tableAlias);
     }
 
-    //TODO: return only some SqlColumnExpressions
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
-      var properties = tableReferenceExpression.Type.GetProperties();
-      List<SqlColumnExpression> columnExpressions = new List<SqlColumnExpression>();
-
-      foreach (var property in properties)
-        columnExpressions.Add (new SqlColumnExpression (tableReferenceExpression.Type, tableReferenceExpression.SqlTableExpression, property.Name));
-
-      return new SqlColumnListExpression (tableReferenceExpression.Type, columnExpressions);
+      return new SqlColumnListExpression (
+          tableReferenceExpression.Type,
+          new List<SqlColumnExpression>
+          {
+              new SqlColumnExpression (typeof (int), new SqlTableExpression (typeof (int), new SqlTableSource ("Table", "t")), "ID"),
+              new SqlColumnExpression (typeof (int), new SqlTableExpression (typeof (int), new SqlTableSource ("Table", "t")), "Name"),
+              new SqlColumnExpression (typeof (int), new SqlTableExpression (typeof (int), new SqlTableSource ("Table", "t")), "City")
+          });
     }
   }
 }

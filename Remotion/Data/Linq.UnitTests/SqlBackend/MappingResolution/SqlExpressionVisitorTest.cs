@@ -47,8 +47,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableReferenceExpression (tableReferenceExpression, _resolver);
       List<string> studentColumns = new List<string>(typeof (Student).GetProperties().Select (s => s.Name));
 
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (studentColumns.Count));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Select (n => n.ColumnName).ToList(), Is.EquivalentTo (studentColumns));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].ColumnName, Is.EqualTo ("ID"));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[1].ColumnName, Is.EqualTo ("Name"));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[2].ColumnName, Is.EqualTo ("City"));
     }
 
     [Test]

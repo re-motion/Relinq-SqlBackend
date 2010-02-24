@@ -51,20 +51,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolvingSqlStatementVisitor.VisitSqlStatement (_sqlStatement);
 
       Assert.That (_sqlStatement.FromExpression.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
-      Assert.That (
-          ((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableName, Is.EqualTo ("Student"));
-      Assert.That (
-          ((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableAlias, Is.EqualTo ("s"));
+      Assert.That (((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableName, Is.EqualTo ("Student"));
+      Assert.That (((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableAlias, Is.EqualTo ("s"));
     }
 
     [Test]
     public void VisitSelectProjection_CreatesSqlColumnListExpression ()
     {
       _resolvingSqlStatementVisitor.VisitSqlStatement (_sqlStatement);
-      List<string> studentColumns = new List<string> (typeof (Student).GetProperties ().Select (s => s.Name));
-
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (studentColumns.Count));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Select (n => n.ColumnName).ToList (), Is.EquivalentTo (studentColumns));
+      
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (3));
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].ColumnName, Is.EqualTo ("ID"));
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].ColumnName, Is.EqualTo ("Name"));
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].ColumnName, Is.EqualTo ("City"));
     }
   }
 }
