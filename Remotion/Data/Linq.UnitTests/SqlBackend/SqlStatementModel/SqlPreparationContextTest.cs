@@ -37,7 +37,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       _context = new SqlPreparationContext();
       _source = ClauseObjectMother.CreateMainFromClause ();
-      _sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant (1, typeof (int))));
+      var source = new ConstantTableSource (Expression.Constant (1, typeof (int)));
+      _sqlTable = new SqlTable ();
+      _sqlTable.TableSource = source;
     }
 
     [Test]

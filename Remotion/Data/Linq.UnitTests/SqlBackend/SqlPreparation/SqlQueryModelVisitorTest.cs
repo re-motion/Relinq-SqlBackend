@@ -47,10 +47,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.SqlTable, Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.SqlTable.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression, Is.Not.Null);
+      Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
       Assert.That (
-          ((ConstantTableSource) _sqlQueryModelVisitor.SqlStatement.SqlTable.TableSource).ConstantExpression,
+          ((ConstantTableSource) _sqlQueryModelVisitor.SqlStatement.FromExpression.TableSource).ConstantExpression,
           Is.SameAs (_mainFromClause.FromExpression));
     }
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       Assert.That (_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
 
-      var expected = _sqlQueryModelVisitor.SqlStatement.SqlTable;
+      var expected = _sqlQueryModelVisitor.SqlStatement.FromExpression;
       Assert.That (_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource(_mainFromClause), Is.SameAs (expected));
     }
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (
           ((SqlTableReferenceExpression) _sqlQueryModelVisitor.SqlStatement.SelectProjection).SqlTable, 
-          Is.SameAs (_sqlQueryModelVisitor.SqlStatement.SqlTable));
+          Is.SameAs (_sqlQueryModelVisitor.SqlStatement.FromExpression));
     }
   }
 }

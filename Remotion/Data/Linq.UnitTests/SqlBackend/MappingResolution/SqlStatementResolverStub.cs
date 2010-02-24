@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   public class SqlStatementResolverStub : ISqlStatementResolver
   {
-    public virtual SqlTableSource ResolveTableSource (ConstantTableSource tableSource)
+    public virtual SqlTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
     {
       var tableName = tableSource.ConstantExpression.Value.ToString();
       var tableAlias = tableName.Substring (0, 1).ToLower();
@@ -33,13 +33,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
+      var sqlTable = new SqlTable();
+      sqlTable.TableSource = new SqlTableSource ("Table", "t");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
           new List<SqlColumnExpression>
           {
-              new SqlColumnExpression (typeof (int), new SqlTable (new SqlTableSource ("Table", "t")), "ID"),
-              new SqlColumnExpression (typeof (int), new SqlTable (new SqlTableSource ("Table", "t")), "Name"),
-              new SqlColumnExpression (typeof (int), new SqlTable (new SqlTableSource ("Table", "t")), "City")
+              new SqlColumnExpression (typeof (int), sqlTable, "ID"),
+              new SqlColumnExpression (typeof (int), sqlTable, "Name"),
+              new SqlColumnExpression (typeof (int), sqlTable, "City")
           });
     }
   }

@@ -34,7 +34,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitSqlColumnListExpression ()
     {
       var resolver = new SqlStatementResolverStub ();
-      var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
+      var tableSource = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = tableSource;
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
       SqlColumnListExpression sqlColumnListExpression = (SqlColumnListExpression) SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);

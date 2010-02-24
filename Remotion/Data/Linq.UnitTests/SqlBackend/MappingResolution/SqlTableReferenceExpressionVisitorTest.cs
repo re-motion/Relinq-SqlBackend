@@ -40,7 +40,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
       // TODO: Consider adding SqlExpressionObjectMother with CreateSqlTableReference.
-      var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
+      var source = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = source;
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
       var sqlColumnListExpression = SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);

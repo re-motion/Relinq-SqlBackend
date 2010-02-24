@@ -43,7 +43,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var mainFromClause = ClauseObjectMother.CreateMainFromClause();
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
 
-      var sqlTable = new SqlTable(new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression));
+      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression);
+      var sqlTable = new SqlTable();
+      sqlTable.TableSource = source;
       _context.AddQuerySourceMapping (mainFromClause, sqlTable) ;
       
       var result = SqlSelectExpressionVisitor.TranslateSelectExpression (querySourceReferenceExpression, _context);
