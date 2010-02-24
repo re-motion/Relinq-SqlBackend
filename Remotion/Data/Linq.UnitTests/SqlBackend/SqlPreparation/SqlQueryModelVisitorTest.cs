@@ -46,11 +46,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void VisitFromClause_CreatesFromExpression ()
     {
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
       
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression, Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.FromExpression.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
+      var result = _sqlQueryModelVisitor.GetSqlStatement();
+
+      Assert.That (result.FromExpression, Is.Not.Null);
+      Assert.That (result.FromExpression.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
       Assert.That (
-          ((ConstantTableSource) _sqlQueryModelVisitor.SqlStatement.FromExpression.TableSource).ConstantExpression,
+          ((ConstantTableSource) result.FromExpression.TableSource).ConstantExpression,
           Is.SameAs (_mainFromClause.FromExpression));
     }
 
@@ -58,25 +61,26 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void VisitFromClause_AddMapping ()
     {
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+
+      var result = _sqlQueryModelVisitor.GetSqlStatement();
 
       Assert.That (_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
-
-      var expected = _sqlQueryModelVisitor.SqlStatement.FromExpression;
-      Assert.That (_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource(_mainFromClause), Is.SameAs (expected));
+      var expected = result.FromExpression;
+      Assert.That ((_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource(_mainFromClause)).TableSource, Is.SameAs (expected.TableSource));
     }
 
     [Test]
     public void VisitSelectClause_CreatesSelectProjection ()
     {
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
-
       _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      
+      var result = _sqlQueryModelVisitor.GetSqlStatement ();
 
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlStatement.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (
-          ((SqlTableReferenceExpression) _sqlQueryModelVisitor.SqlStatement.SelectProjection).SqlTable, 
-          Is.SameAs (_sqlQueryModelVisitor.SqlStatement.FromExpression));
+      Assert.That (result.SelectProjection, Is.Not.Null);
+      Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That ((((SqlTableReferenceExpression) result.SelectProjection).SqlTable).TableSource, Is.EqualTo (result.FromExpression.TableSource));
     }
   }
 }
