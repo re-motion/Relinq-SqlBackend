@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -37,10 +35,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _sqlStatement = new SqlStatement();
-      var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student",typeof(string))));
-      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
+
+      // TODO: Consider adding SqlExpressionObjectMother with CreateSqlTable.
+      var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
       _sqlStatement.SqlTable = sqlTable;
+
+      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
       _sqlStatement.SelectProjection = tableReferenceExpression;
+      
       _resolver = new SqlStatementResolverStub();
       _resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
     }
@@ -61,6 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolvingSqlStatementVisitor.VisitSqlStatement (_sqlStatement);
       
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (3));
+      // TODO: Test Columns[x].SqlTable
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].ColumnName, Is.EqualTo ("ID"));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].ColumnName, Is.EqualTo ("Name"));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].ColumnName, Is.EqualTo ("City"));

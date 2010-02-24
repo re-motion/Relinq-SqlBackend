@@ -30,9 +30,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
+      // TODO: Consider adding SqlStatementModelObjectMother with CreateSqlTable.
       _tableReferenceExpression = new SqlTableReferenceExpression (
           typeof (int), new SqlTable (new ConstantTableSource (Expression.Constant (1, typeof (int)))));
     }
+
+    // TODO: Add Initialize test that shows that SqlTableReferenceExpression correctly gets its type from the SqlTable.
 
     [Test]
     public void Accept ()

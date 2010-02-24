@@ -22,7 +22,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -45,30 +44,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public void AddQuerySourceMapping ()
     {
       _context.AddQuerySourceMapping (_source, _sqlTable);
-      Assert.That (_context.GetQuerySourceMapping().Count, Is.EqualTo (1));
+      Assert.That (_context.QuerySourceMappingCount, Is.EqualTo (1));
     }
 
     [Test]
-    public void GetQuerySourceMapping ()
+    public void GetSqlTableForQuerySource ()
     {
       _context.AddQuerySourceMapping (_source, _sqlTable);
-      Assert.That (_context.GetQuerySourceMapping().Keys.First(), Is.SameAs (_source));
-      Assert.That (_context.GetQuerySourceMapping ().Values.First (), Is.SameAs (_sqlTable));
-    }
-
-    [Test]
-    public void GetSqlTableExpression ()
-    {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
-      Assert.That (_context.GetSqlTable (_source), Is.SameAs (_sqlTable));
+      Assert.That (_context.GetSqlTableForQuerySource (_source), Is.SameAs (_sqlTable));
     }
 
     [Test]
     [ExpectedException (typeof(KeyNotFoundException))]
-    public void KeyNotFoundException ()
+    public void KeyNotFoundException () // TODO: Rename to GetSqlTableForQuerySource_Throws_WhenSourceNotAdded
     {
       _source = ClauseObjectMother.CreateMainFromClause ();
-      _context.GetSqlTable (_source);
+      _context.GetSqlTableForQuerySource (_source);
     }
 
   }

@@ -21,6 +21,7 @@ using Remotion.Data.Linq.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
+  // TODO: Move to outer namespace (SqlBackend) since it's used by SqlPreparation and MappingResolution tests.
   public class NotSupportedExpression : ExtensionExpression
   {
     public NotSupportedExpression (Type type)

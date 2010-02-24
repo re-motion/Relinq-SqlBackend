@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -23,7 +22,6 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
-using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
@@ -41,13 +39,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
+      // TODO: Consider adding SqlExpressionObjectMother with CreateSqlTableReference.
       var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
-      var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableReferenceExpression (tableReferenceExpression, _resolver);
-      List<string> studentColumns = new List<string>(typeof (Student).GetProperties().Select (s => s.Name));
-
+      var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
+      
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
+      // TODO: Test Columns[x].SqlTable
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].ColumnName, Is.EqualTo ("ID"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[1].ColumnName, Is.EqualTo ("Name"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[2].ColumnName, Is.EqualTo ("City"));
@@ -59,12 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlExpressionVisitor.TranslateSqlTableReferenceExpression (unknownExpression, _resolver);
+      SqlExpressionVisitor.TranslateSqlTableReferenceExpressions (unknownExpression, _resolver);
     }
-
-    public class UnknownTableSource : AbstractTableSource
-    { 
-    }
-
   }
 }

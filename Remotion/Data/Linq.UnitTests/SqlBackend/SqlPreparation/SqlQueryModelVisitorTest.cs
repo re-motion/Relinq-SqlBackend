@@ -59,11 +59,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
 
-      Assert.That (_sqlQueryModelVisitor.SqlGenerationContext.GetQuerySourceMapping(), Is.Not.Null);
-      Assert.That (_sqlQueryModelVisitor.SqlGenerationContext.GetSqlTable (_mainFromClause), Is.Not.Null);
+      Assert.That (_sqlQueryModelVisitor.SqlGenerationContext.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
 
-      var expression = _sqlQueryModelVisitor.SqlStatement.SqlTable;
-      Assert.That (_sqlQueryModelVisitor.SqlGenerationContext.GetSqlTable(_mainFromClause), Is.SameAs (expression));
+      var expected = _sqlQueryModelVisitor.SqlStatement.SqlTable;
+      Assert.That (_sqlQueryModelVisitor.SqlGenerationContext.GetSqlTableForQuerySource(_mainFromClause), Is.SameAs (expected));
     }
 
     [Test]

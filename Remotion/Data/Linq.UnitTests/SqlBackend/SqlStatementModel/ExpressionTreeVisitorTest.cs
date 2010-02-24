@@ -19,6 +19,7 @@ using Remotion.Data.Linq.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
+  // TODO: Remove?
   public class ExpressionTreeVisitorTest : ExpressionTreeVisitor
   {
   }
