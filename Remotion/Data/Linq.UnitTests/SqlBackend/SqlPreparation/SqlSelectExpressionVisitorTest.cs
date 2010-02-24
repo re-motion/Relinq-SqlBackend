@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -44,14 +43,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var mainFromClause = ClauseObjectMother.CreateMainFromClause();
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
 
-      var sqlTableExpression = new SqlTableExpression(
-          querySourceReferenceExpression.Type, 
-          new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression));
-      _context.AddQuerySourceMapping (mainFromClause, sqlTableExpression) ;
+      var sqlTable = new SqlTable(new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression));
+      _context.AddQuerySourceMapping (mainFromClause, sqlTable) ;
       
       var result = SqlSelectExpressionVisitor.TranslateSelectExpression (querySourceReferenceExpression, _context);
 
-      Assert.That (result.SqlTableExpression, Is.SameAs (sqlTableExpression));
+      Assert.That (result.SqlTable, Is.SameAs (sqlTable));
       Assert.That (result.Type, Is.SameAs (typeof (Student)));
     }
 

@@ -31,36 +31,36 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   {
     private SqlGenerationContext _context;
     private MainFromClause _source;
-    private SqlTableExpression _tableExpression;
+    private SqlTable _sqlTable;
 
     [SetUp]
     public void SetUp ()
     {
       _context = new SqlGenerationContext();
       _source = ClauseObjectMother.CreateMainFromClause ();
-      _tableExpression = new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int))));
+      _sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant (1, typeof (int))));
     }
 
     [Test]
     public void AddQuerySourceMapping ()
     {
-      _context.AddQuerySourceMapping (_source, _tableExpression);
+      _context.AddQuerySourceMapping (_source, _sqlTable);
       Assert.That (_context.GetQuerySourceMapping().Count, Is.EqualTo (1));
     }
 
     [Test]
     public void GetQuerySourceMapping ()
     {
-      _context.AddQuerySourceMapping (_source, _tableExpression);
+      _context.AddQuerySourceMapping (_source, _sqlTable);
       Assert.That (_context.GetQuerySourceMapping().Keys.First(), Is.SameAs (_source));
-      Assert.That (_context.GetQuerySourceMapping ().Values.First (), Is.SameAs (_tableExpression));
+      Assert.That (_context.GetQuerySourceMapping ().Values.First (), Is.SameAs (_sqlTable));
     }
 
     [Test]
     public void GetSqlTableExpression ()
     {
-      _context.AddQuerySourceMapping (_source, _tableExpression);
-      Assert.That (_context.GetSqlTableExpression (_source), Is.SameAs (_tableExpression));
+      _context.AddQuerySourceMapping (_source, _sqlTable);
+      Assert.That (_context.GetSqlTable (_source), Is.SameAs (_sqlTable));
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public void KeyNotFoundException ()
     {
       _source = ClauseObjectMother.CreateMainFromClause ();
-      _context.GetSqlTableExpression (_source);
+      _context.GetSqlTable (_source);
     }
 
   }

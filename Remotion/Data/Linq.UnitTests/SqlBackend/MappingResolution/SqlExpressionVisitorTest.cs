@@ -41,8 +41,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
-      var tableExpression = new SqlTableExpression (typeof (Student), new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
-      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), tableExpression);
+      var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
+      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
       var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableReferenceExpression (tableReferenceExpression, _resolver);
       List<string> studentColumns = new List<string>(typeof (Student).GetProperties().Select (s => s.Name));

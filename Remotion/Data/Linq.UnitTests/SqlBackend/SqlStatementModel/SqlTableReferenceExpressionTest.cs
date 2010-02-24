@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public void SetUp ()
     {
       _tableReferenceExpression = new SqlTableReferenceExpression (
-          typeof (int), new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int)))));
+          typeof (int), new SqlTable (new ConstantTableSource (Expression.Constant (1, typeof (int)))));
     }
 
     [Test]

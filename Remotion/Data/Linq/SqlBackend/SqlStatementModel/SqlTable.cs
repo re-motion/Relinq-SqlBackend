@@ -16,29 +16,29 @@
 // 
 using System;
 using System.Linq.Expressions;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  [TestFixture]
-  public class SqlTableExpressionTest
+  /// <summary>
+  /// <see cref="SqlTable"/> holds source of a from expression.
+  /// </summary>
+  public class SqlTable
   {
-    private SqlTableExpression _tableExpression;
+    private AbstractTableSource _tableSource;
 
-    [SetUp]
-    public void SetUp ()
+    public SqlTable (AbstractTableSource tableSource)
     {
-      _tableExpression = new SqlTableExpression (typeof (int), new ConstantTableSource (Expression.Constant (1, typeof (int))));
+      ArgumentUtility.CheckNotNull ("tableSource", tableSource);
+      _tableSource = tableSource;
     }
 
-    
-    [Test]
-    [ExpectedException (typeof(NotImplementedException))]
-    public void Accept ()
+    public AbstractTableSource TableSource
     {
-      _tableExpression.Accept (new ExpressionTreeVisitorTest());
+      get { return _tableSource; }
+      set { _tableSource = ArgumentUtility.CheckNotNull ("value", value); }
     }
   }
 }

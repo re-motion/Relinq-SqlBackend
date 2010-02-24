@@ -37,9 +37,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _sqlStatement = new SqlStatement();
-      var tableExpression = new SqlTableExpression (typeof (Student), new ConstantTableSource (Expression.Constant ("Student",typeof(string))));
-      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), tableExpression);
-      _sqlStatement.FromExpression = tableExpression;
+      var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student",typeof(string))));
+      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
+      _sqlStatement.SqlTable = sqlTable;
       _sqlStatement.SelectProjection = tableReferenceExpression;
       _resolver = new SqlStatementResolverStub();
       _resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
@@ -50,9 +50,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       _resolvingSqlStatementVisitor.VisitSqlStatement (_sqlStatement);
 
-      Assert.That (_sqlStatement.FromExpression.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
-      Assert.That (((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableName, Is.EqualTo ("Student"));
-      Assert.That (((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableAlias, Is.EqualTo ("s"));
+      Assert.That (_sqlStatement.SqlTable.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
+      Assert.That (((SqlTableSource) _sqlStatement.SqlTable.TableSource).TableName, Is.EqualTo ("Student"));
+      Assert.That (((SqlTableSource) _sqlStatement.SqlTable.TableSource).TableAlias, Is.EqualTo ("s"));
     }
 
     [Test]

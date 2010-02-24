@@ -37,9 +37,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           tableReferenceExpression.Type,
           new List<SqlColumnExpression>
           {
-              new SqlColumnExpression (typeof (int), new SqlTableExpression (typeof (int), new SqlTableSource ("Table", "t")), "ID"),
-              new SqlColumnExpression (typeof (int), new SqlTableExpression (typeof (int), new SqlTableSource ("Table", "t")), "Name"),
-              new SqlColumnExpression (typeof (int), new SqlTableExpression (typeof (int), new SqlTableSource ("Table", "t")), "City")
+              new SqlColumnExpression (typeof (int), new SqlTable (new SqlTableSource ("Table", "t")), "ID"),
+              new SqlColumnExpression (typeof (int), new SqlTable (new SqlTableSource ("Table", "t")), "Name"),
+              new SqlColumnExpression (typeof (int), new SqlTable (new SqlTableSource ("Table", "t")), "City")
           });
     }
   }
