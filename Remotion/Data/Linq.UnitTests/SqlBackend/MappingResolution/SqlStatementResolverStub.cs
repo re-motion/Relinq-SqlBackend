@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       sqlTable.TableSource = new SqlTableSource (typeof(string), "Table", "t");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
-          new List<SqlColumnExpression>
+          new[]
           {
               new SqlColumnExpression (typeof (int), sqlTable, "ID"),
               new SqlColumnExpression (typeof (int), sqlTable, "Name"),

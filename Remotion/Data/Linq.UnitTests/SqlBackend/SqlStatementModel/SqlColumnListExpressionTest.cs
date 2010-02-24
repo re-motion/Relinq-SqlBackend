@@ -19,8 +19,10 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -38,7 +40,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       sqlTable.TableSource = source;
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
-      _columnListExpression = (SqlColumnListExpression) SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
+      _columnListExpression = new SqlColumnListExpression (
+          tableReferenceExpression.Type,
+          new[]
+          {
+              new SqlColumnExpression (typeof (int), sqlTable, "ID"),
+              new SqlColumnExpression (typeof (int), sqlTable, "Name"),
+              new SqlColumnExpression (typeof (int), sqlTable, "City")
+          });
     }
 
     [Test]
@@ -47,5 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var expression = _columnListExpression.Accept (new ExpressionTreeVisitorTest());
       Assert.That (expression, Is.SameAs (_columnListExpression));
     }
+
+
   }
 }
