@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     [Test]
     [ExpectedException (typeof(KeyNotFoundException))]
-    public void KeyNotFoundException () // TODO: Rename to GetSqlTableForQuerySource_Throws_WhenSourceNotAdded
+    public void GetSqlTableForQuerySource_Throws_WhenSourceNotAdded ()
     {
       _source = ClauseObjectMother.CreateMainFromClause ();
       _context.GetSqlTableForQuerySource (_source);

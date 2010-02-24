@@ -20,7 +20,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
@@ -39,16 +38,23 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
-      // TODO: Consider adding SqlExpressionObjectMother with CreateSqlTableReference.
       var source = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = source;
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
       var sqlColumnListExpression = SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
+
+      var constraint = new SqlTableSource (typeof (string), "Table", "t");
       
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
-      // TODO: Test Columns[x].SqlTable
+      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[0].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[0].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
+      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[1].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[1].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
+      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[2].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[2].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
+      
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].ColumnName, Is.EqualTo ("ID"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[1].ColumnName, Is.EqualTo ("Name"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[2].ColumnName, Is.EqualTo ("City"));

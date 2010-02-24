@@ -16,22 +16,18 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  // TODO: Move to outer namespace (SqlBackend) since it's used by SqlPreparation and MappingResolution tests.
-  public class NotSupportedExpression : ExtensionExpression
+  public class SqlStatementModelObjectMother
   {
-    public NotSupportedExpression (Type type)
-        : base (type)
+    public static SqlTable CreateSqlTable ()
     {
-    }
-
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
-    {
-      return this;
+      var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = constantTableSource;
+      return sqlTable;
     }
   }
 }

@@ -30,14 +30,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      // TODO: Consider adding SqlStatementModelObjectMother with CreateSqlTable.
-      var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = constantTableSource;
-      _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable());
     }
 
-    // TODO: Add Initialize test that shows that SqlTableReferenceExpression correctly gets its type from the SqlTable.
+    [Test]
+    public void Initialize ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.Type));
+    }
+
 
     [Test]
     public void Accept ()

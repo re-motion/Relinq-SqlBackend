@@ -15,11 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
-  public class ExpressionTreeVisitorTest : ExpressionTreeVisitor
+  public class NotSupportedExpression : ExtensionExpression
   {
+    public NotSupportedExpression (Type type)
+        : base (type)
+    {
+    }
+
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    {
+      return this;
+    }
   }
 }
