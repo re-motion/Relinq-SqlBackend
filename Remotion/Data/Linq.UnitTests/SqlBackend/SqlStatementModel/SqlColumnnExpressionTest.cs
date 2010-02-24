@@ -16,21 +16,28 @@
 // 
 using System;
 using System.Linq.Expressions;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  /// <summary>
-  /// <see cref="SqlStatementVisitor"/> provides methods to visit sql-statement classes.
-  /// </summary>
-  public abstract class SqlStatementVisitor
+  [TestFixture]
+  public class SqlColumnnExpressionTest
   {
-    public virtual void VisitSqlStatement (SqlStatement sqlStatement)
+    private SqlColumnExpression _columnExpression;
+
+    [SetUp]
+    public void SetUp ()
     {
-      sqlStatement.SelectProjection = VisitSelectProjection (sqlStatement.SelectProjection);
-      VisitSqlTable (sqlStatement.SqlTable);
+      _columnExpression = new SqlColumnExpression (typeof (int), new SqlTable (new ConstantTableSource (Expression.Constant (1, typeof (int)))),"t");
     }
 
-    protected abstract Expression VisitSelectProjection (Expression selectProjection);
-    protected abstract void VisitSqlTable (SqlTable sqlTable);
+    [Test]
+    public void Accept ()
+    {
+      var expression = _columnExpression.Accept (new ExpressionTreeVisitorTest ());
+      Assert.That (expression, Is.SameAs (_columnExpression));
+    }
   }
 }
