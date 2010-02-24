@@ -28,13 +28,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var tableName = tableSource.ConstantExpression.Value.ToString();
       var tableAlias = tableName.Substring (0, 1).ToLower();
-      return new SqlTableSource (tableName, tableAlias);
+      return new SqlTableSource (typeof(string), tableName, tableAlias);
     }
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
       var sqlTable = new SqlTable();
-      sqlTable.TableSource = new SqlTableSource ("Table", "t");
+      sqlTable.TableSource = new SqlTableSource (typeof(string), "Table", "t");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
           new List<SqlColumnExpression>

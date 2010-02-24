@@ -34,8 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = constantTableSource;
-      _tableReferenceExpression = new SqlTableReferenceExpression (
-          typeof (int), sqlTable);
+      _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
     }
 
     // TODO: Add Initialize test that shows that SqlTableReferenceExpression correctly gets its type from the SqlTable.

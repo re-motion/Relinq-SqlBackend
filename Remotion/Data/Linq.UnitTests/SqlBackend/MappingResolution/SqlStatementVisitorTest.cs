@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var source = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
       _sqlStatement.FromExpression.TableSource = source;
 
-      var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), _sqlStatement.FromExpression);
+      var tableReferenceExpression = new SqlTableReferenceExpression (_sqlStatement.FromExpression);
       _sqlStatement.SelectProjection = tableReferenceExpression;
       
       _resolver = new SqlStatementResolverStub();
