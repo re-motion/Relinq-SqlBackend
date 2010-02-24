@@ -21,15 +21,16 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using SqlStatementVisitor=Remotion.Data.Linq.SqlBackend.MappingResolution.SqlStatementVisitor;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class ResolvingSqlStatementVisitorTest
+  public class SqlStatementVisitorTest
   {
     private SqlStatement _sqlStatement;
     private SqlStatementResolverStub _resolver;
-    private ResolvingSqlStatementVisitor _resolvingSqlStatementVisitor;
+    private SqlStatementVisitor _sqlStatementVisitor;
 
     [SetUp]
     public void SetUp ()
@@ -44,13 +45,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _sqlStatement.SelectProjection = tableReferenceExpression;
       
       _resolver = new SqlStatementResolverStub();
-      _resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
+      _sqlStatementVisitor = new SqlStatementVisitor (_resolver);
     }
 
     [Test]
     public void VisitFromExpression_ReplacesTableSource ()
     {
-      _resolvingSqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
 
       Assert.That (_sqlStatement.SqlTable.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
       Assert.That (((SqlTableSource) _sqlStatement.SqlTable.TableSource).TableName, Is.EqualTo ("Student"));
@@ -60,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSelectProjection_CreatesSqlColumnListExpression ()
     {
-      _resolvingSqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
       
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (3));
       // TODO: Test Columns[x].SqlTable

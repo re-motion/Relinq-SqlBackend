@@ -26,7 +26,7 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class SqlExpressionVisitorTest
+  public class SqlTableReferenceExpressionVisitorTest
   {
     private SqlStatementResolverStub _resolver;
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
-      var sqlColumnListExpression = SqlExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
+      var sqlColumnListExpression = SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
       
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
       // TODO: Test Columns[x].SqlTable
@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlExpressionVisitor.TranslateSqlTableReferenceExpressions (unknownExpression, _resolver);
+      SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (unknownExpression, _resolver);
     }
   }
 }

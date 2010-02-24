@@ -29,12 +29,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
   [TestFixture]
   public class SqlSelectExpressionVisitorTest
   {
-    private SqlGenerationContext _context;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
     {
-      _context = new SqlGenerationContext();
+      _context = new SqlPreparationContext();
     }
 
     [Test]

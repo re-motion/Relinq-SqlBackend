@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
-      _columnListExpression = (SqlColumnListExpression) SqlExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
+      _columnListExpression = (SqlColumnListExpression) SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
     }
 
     [Test]

@@ -26,16 +26,16 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
   [TestFixture]
-  public class SqlGenerationContextTest
+  public class SqlPreparationContextTest
   {
-    private SqlGenerationContext _context;
+    private SqlPreparationContext _context;
     private MainFromClause _source;
     private SqlTable _sqlTable;
 
     [SetUp]
     public void SetUp ()
     {
-      _context = new SqlGenerationContext();
+      _context = new SqlPreparationContext();
       _source = ClauseObjectMother.CreateMainFromClause ();
       _sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant (1, typeof (int))));
     }

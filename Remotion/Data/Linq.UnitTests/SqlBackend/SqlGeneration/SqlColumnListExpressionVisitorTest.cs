@@ -28,7 +28,7 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
-  public class SqlTextExpressionVisitorTest
+  public class SqlColumnListExpressionVisitorTest
   {
     [Test]
     public void VisitSqlColumnListExpression ()
@@ -37,10 +37,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var sqlTable = new SqlTable (new ConstantTableSource (Expression.Constant ("Student", typeof (string))));
       var tableReferenceExpression = new SqlTableReferenceExpression (typeof (Student), sqlTable);
 
-      SqlColumnListExpression sqlColumnListExpression = (SqlColumnListExpression) SqlExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
+      SqlColumnListExpression sqlColumnListExpression = (SqlColumnListExpression) SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
 
       StringBuilder sb = new StringBuilder();
-      SqlTextExpressionVisitor.TranslateSqlColumnListExpression (sqlColumnListExpression, sb);
+      SqlColumnListExpressionVisitor.TranslateSqlColumnListExpression (sqlColumnListExpression, sb);
 
       Assert.That (sb.ToString(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
