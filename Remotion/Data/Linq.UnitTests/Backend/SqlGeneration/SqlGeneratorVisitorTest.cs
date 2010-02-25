@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var orderByClause2 = (OrderByClause) parsedQuery.BodyClauses[1];
 
       FieldDescriptor firstFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
-      FieldDescriptor lastFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
+      FieldDescriptor lastFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("Name"));
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
@@ -206,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
           new IEvaluation[]
           {
               new Column (new Table ("studentTable", "s"), "FirstNameColumn"),
-              new Column (new Table ("studentTable", "s"), "LastColumn")
+              new Column (new Table ("studentTable", "s"), "NameColumn")
           });
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (expectedNewObject));
     }
@@ -308,7 +308,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       Assert.That (
                   sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (
                             new BinaryCondition (
-                                            new Column (new Table ("studentTable", "s"), "LastColumn"),
+                                            new Column (new Table ("studentTable", "s"), "NameColumn"),
                                                           new Constant ("Garcia"),
                                                                         BinaryCondition.ConditionKind.Equal)));
     }
@@ -328,7 +328,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       sqlGeneratorVisitor.VisitWhereClause (whereClause2, parsedQuery, 1);
 
       var condition1 = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "LastColumn"),
+          new Column (new Table ("studentTable", "s"), "NameColumn"),
           new Constant ("Garcia"),
           BinaryCondition.ConditionKind.Equal);
       var condition2 = new BinaryCondition (

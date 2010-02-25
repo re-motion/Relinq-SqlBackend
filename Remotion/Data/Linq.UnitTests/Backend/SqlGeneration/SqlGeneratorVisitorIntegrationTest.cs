@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     {
       // 2)
       // order by sdd.Student_Detail.Student.FirstName
-      // order by sdd.Student_Detail.Student.Last
+      // order by sdd.Student_Detail.Student.Name
       // Joins[sdd] = { (sdd -> Student_Detail -> Student) }
 
       IQueryable<Student_Detail_Detail> query =

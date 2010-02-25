@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
 
       //expectedResult
       var column1 = new Column (_fromSource, "FirstNameColumn");
-      var column2 = new Column (_fromSource, "LastColumn");
+      var column2 = new Column (_fromSource, "NameColumn");
       var expectedResult = new BinaryEvaluation (column1, column2, BinaryEvaluation.EvaluationKind.Add);
 
       var binaryExpressionParser = new BinaryExpressionParser (_parserRegistry);

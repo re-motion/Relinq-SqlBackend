@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s1].[FirstNameColumn], [s2].[LastColumn], [s3].[IDColumn] FROM [studentTable] [s1], [studentTable] [s2], [studentTable] [s3]",
+      Assert.AreEqual ("SELECT [s1].[FirstNameColumn], [s2].[NameColumn], [s3].[IDColumn] FROM [studentTable] [s1], [studentTable] [s2], [studentTable] [s3]",
                        result.Statement);
 
       Assert.IsEmpty (result.Parameters);
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[LastColumn] = @1)", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[NameColumn] = @1)", result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia") }));
@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((([s].[LastColumn] = @1) AND ([s].[FirstNameColumn] = @2)) AND ([s].[IDColumn] > @3))",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((([s].[NameColumn] = @1) AND ([s].[FirstNameColumn] = @2)) AND ([s].[IDColumn] > @3))",
                        result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
@@ -165,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] IS NULL OR [s].[LastColumn] IS NOT NULL)",
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] IS NULL OR [s].[NameColumn] IS NOT NULL)",
                        result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
@@ -241,7 +241,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[LastColumn] DESC, [s1].[FirstNameColumn] ASC",
+      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[NameColumn] DESC, [s1].[FirstNameColumn] ASC",
                        result.Statement);
     }
 
@@ -251,8 +251,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Student> query = OrderByTestQueryGenerator.CreateOrderByQueryWithMultipleOrderBys (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] ORDER BY [s].[LastColumn] ASC, "+
-                       "[s].[FirstNameColumn] ASC, [s].[LastColumn] DESC, [s].[ScoresColumn] ASC", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] ORDER BY [s].[NameColumn] ASC, "+
+                       "[s].[FirstNameColumn] ASC, [s].[NameColumn] DESC, [s].[ScoresColumn] ASC", result.Statement);
     }
 
     [Test]
@@ -539,7 +539,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT ([s].[FirstNameColumn] + [s].[LastColumn]) FROM [studentTable] [s]", result.Statement);    
+      Assert.AreEqual ("SELECT ([s].[FirstNameColumn] + [s].[NameColumn]) FROM [studentTable] [s]", result.Statement);    
     }
 
     [Test]
@@ -599,7 +599,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstNameColumn], [s].[LastColumn] FROM [studentTable] [s]"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstNameColumn], [s].[NameColumn] FROM [studentTable] [s]"));
       Assert.That (result.SqlGenerationData.SelectEvaluation, Is.InstanceOfType (typeof (NewObject)));
     }
 

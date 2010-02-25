@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
 
       //expectedResult
       var column1 = new Column (_fromSource, "FirstNameColumn");
-      var column2 = new Column (_fromSource, "LastColumn");
+      var column2 = new Column (_fromSource, "NameColumn");
 
       var expectedInnerNewObject = new NewObject (constructorInfo2, new IEvaluation[] { column1, column2 });
       var expectedOuterNewObject = new NewObject (constructorInfo1, new IEvaluation[] { column1, expectedInnerNewObject });
