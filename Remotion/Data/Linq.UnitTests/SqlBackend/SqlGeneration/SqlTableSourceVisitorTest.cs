@@ -27,34 +27,39 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlTableSourceVisitorTest
   {
+    private StringBuilder _sb;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sb = new StringBuilder();
+    }
+
     [Test]
     public void GenerateSql_ForSqlTableSource ()
     {
-      var sb = new StringBuilder (); // TODO: Move to setup
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
-      SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
 
-      Assert.That (sb.ToString(), Is.EqualTo ("[Table] AS [t]"));
+      Assert.That (_sb.ToString(), Is.EqualTo ("[Table] AS [t]"));
     }
 
     [Test]
     [ExpectedException (typeof (NotImplementedException))]
     public void TranslateTableSource_WithUnknownTableSource ()
     {
-      var sb = new StringBuilder (); // TODO: Move to setup
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = new UnknownTableSource ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "ConstantTableSource is not valid at this point.")]
     public void GenerateSql_WithConstantTableSource_RaisesException ()
     {
-      var sb = new StringBuilder (); // TODO: Move to setup
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
     }
 
     private class UnknownTableSource : AbstractTableSource

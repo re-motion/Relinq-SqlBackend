@@ -48,8 +48,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
 
       Assert.That (_sqlStatement.FromExpression.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
-      Assert.That (((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableName, Is.EqualTo ("Student"));
-      Assert.That (((SqlTableSource) _sqlStatement.FromExpression.TableSource).TableAlias, Is.EqualTo ("s"));
     }
 
     [Test]

@@ -15,14 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
@@ -30,40 +27,48 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlGeneratingExpressionVisitorTest
   {
+    private StringBuilder _sb;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sb = new StringBuilder ();
+    }
+
     [Test]
     public void GenerateSql_VisitSqlColumnExpression ()
     {
-      // TODO: Remove when SqlColumnExpression only takes a string
-      
       var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID");
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _sb);
 
-      StringBuilder sb = new StringBuilder ();
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, sb);
-
-      Assert.That (sb.ToString (), Is.EqualTo ("[s].[ID]"));
+      Assert.That (_sb.ToString (), Is.EqualTo ("[s].[ID]"));
     }
 
     [Test]
     public void GenerateSql_VisitSqlColumnListExpression ()
     {
-      var resolver = new SqlStatementResolverStub ();
-      var tableSource = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = tableSource;
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var sqlColumnListExpression = new SqlColumnListExpression (
+          typeof (Student),
+          new[]
+          {
+              new SqlColumnExpression (typeof (string), "t", "ID"),
+              new SqlColumnExpression (typeof (string), "t", "Name"),
+              new SqlColumnExpression (typeof (string), "t", "City")
+          });
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _sb);
 
-      SqlColumnListExpression sqlColumnListExpression = (SqlColumnListExpression) ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
-
-      // TODO: var sqlColumnListExpression = new SqlColumnListExpression (typeof (Student), new[] { new SqlColumnExpression (typeof (string), sqlTable, "ID") , ...
-
-      StringBuilder sb = new StringBuilder();
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, sb);
-
-      Assert.That (sb.ToString(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_sb.ToString(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
 
-    // TODO: Test case where unsupported expression is passed to visitor
-    // [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-    //     "The expression '...' cannot be translated to SQL text by this SQL generator. Expression type '...' is not supported.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+         "The expression '[2147483647]' cannot be translated to SQL text by this SQL generator. Expression type 'NotSupportedExpression' is not supported.")]
+    [Test]
+    public void GenerateSql_UnsupportedExpression ()
+    {
+      var unknownExpression = new NotSupportedExpression (typeof (int));
+      SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _sb);
+    }
+
+
   }
 }

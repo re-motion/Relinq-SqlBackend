@@ -29,11 +29,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return sqlTable;
     }
 
-    public static SqlTable CreateSqlTableWithConstantTableSource () // TODO add variant for SqlTableSource
+    public static SqlTable CreateSqlTableWithConstantTableSource () 
     {
       var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = constantTableSource;
+      return sqlTable;
+    }
+
+    public static SqlTable CreateSqlTableWithSqlTableSource ()
+    {
+      var sqlTableSource = new SqlTableSource (typeof (string), "Table", "t");
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = sqlTableSource;
       return sqlTable;
     }
   }
