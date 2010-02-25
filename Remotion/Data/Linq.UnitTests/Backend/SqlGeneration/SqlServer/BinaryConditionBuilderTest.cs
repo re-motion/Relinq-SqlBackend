@@ -229,7 +229,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_ContainsFulltext ()
     {
-      var column = new Column (new Table ("Chef", "s"), "FirstName");
+      var column = new Column (new Table ("Cook", "s"), "FirstName");
       var constant = new Constant("Test");
       var binaryCondition = new BinaryCondition (column, constant, BinaryCondition.ConditionKind.ContainsFulltext);
 
@@ -242,7 +242,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_Contains_OnCollection ()
     {
-      var column = new Column (new Table ("Chef", "s"), "FirstName");
+      var column = new Column (new Table ("Cook", "s"), "FirstName");
       var collection = new [] {"Test1", "Test2"};
       var constantCollection = new Constant(collection);
       var binaryCondition = new BinaryCondition(constantCollection, column, BinaryCondition.ConditionKind.Contains);
@@ -257,7 +257,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_Contains_OnEmptyCollection ()
     {
-      var column = new Column (new Table ("Chef", "s"), "FirstName");
+      var column = new Column (new Table ("Cook", "s"), "FirstName");
       var collection = new string[] {};
       var constantCollection = new Constant (collection);
       var binaryCondition = new BinaryCondition (constantCollection, column, BinaryCondition.ConditionKind.Contains);
@@ -271,7 +271,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void BuildBinaryCondition_MethodCall ()
     {
       var methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
-      var column = new Column (new Table ("Chef", "s"), "FirstColumn");
+      var column = new Column (new Table ("Cook", "s"), "FirstColumn");
       var methodCall = new MethodCall (methodInfo, column, new List<IEvaluation> ());
 
       var binaryCondition = new BinaryCondition (methodCall,new Constant("Test"),BinaryCondition.ConditionKind.Equal);

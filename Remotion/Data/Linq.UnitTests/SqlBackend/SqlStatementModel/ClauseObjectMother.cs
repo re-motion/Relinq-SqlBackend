@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   {
     public static MainFromClause CreateMainFromClause ()
     {
-      return new MainFromClause ("x", typeof (Chef), Expression.Constant (new Chef[0]));
+      return new MainFromClause ("x", typeof (Cook), Expression.Constant (new Cook[0]));
     }
 
     public static SelectClause CreateSelectClause (MainFromClause mainFromClause)

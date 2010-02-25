@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      var source = new ConstantTableSource (Expression.Constant ("Chef", typeof (string)));
+      var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
       var sqlTable = new SqlTable();
       sqlTable.TableSource = source;
       _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);

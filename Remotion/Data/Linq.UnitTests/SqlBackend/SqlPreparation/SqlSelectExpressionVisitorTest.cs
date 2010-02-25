@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var result = SqlSelectExpressionVisitor.TranslateSelectExpression (querySourceReferenceExpression, _context);
 
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (sqlTable));
-      Assert.That (result.Type, Is.SameAs (typeof (Chef[])));
+      Assert.That (result.Type, Is.SameAs (typeof (Cook[])));
     }
 
     [Test]

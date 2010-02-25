@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
     public void Remove ()
     {
       var methodInfo = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
-      var column = new Column (new Table ("Chef", "s"), "FirstColumn");
+      var column = new Column (new Table ("Cook", "s"), "FirstColumn");
       var arguments = new List<IEvaluation> { new Constant (5) };
       var methodCall = new MethodCall (methodInfo, column, arguments);
 

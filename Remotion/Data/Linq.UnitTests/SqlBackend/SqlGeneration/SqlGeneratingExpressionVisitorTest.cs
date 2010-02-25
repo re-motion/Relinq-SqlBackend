@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_VisitSqlColumnListExpression ()
     {
       var sqlColumnListExpression = new SqlColumnListExpression (
-          typeof (Chef),
+          typeof (Cook),
           new[]
           {
               new SqlColumnExpression (typeof (string), "t", "ID"),

@@ -180,7 +180,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_ReturnsSqlGenerationData ()
     {
-      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilderMock, _fromBuilderMock, _whereBuilderMock, _orderByBuilderMock, ParseMode.TopLevelQuery);
 

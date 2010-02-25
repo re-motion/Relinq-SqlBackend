@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
     public void ToLower ()
     {
       var methodInfo = typeof (string).GetMethod ("ToLower", new Type[] { });
-      var column = new Column (new Table ("Chef", "s"), "FirstColumn");
+      var column = new Column (new Table ("Cook", "s"), "FirstColumn");
       var arguments = new List<IEvaluation> ();
       var methodCall = new MethodCall (methodInfo, column, arguments);
 

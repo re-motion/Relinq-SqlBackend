@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
       var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
-      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Chef).GetProperty ("ID")));
+      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Cook).GetProperty ("ID")));
       Assert.That (result.JoinedMembers, Is.Empty);
     }
 

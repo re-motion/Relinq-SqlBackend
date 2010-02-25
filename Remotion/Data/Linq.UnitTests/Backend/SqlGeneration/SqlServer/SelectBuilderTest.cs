@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void BuildSelectPart ()
     {
       IEvaluation evaluation = new NewObject (
-          typeof (Chef).GetConstructor (Type.EmptyTypes),
+          typeof (Cook).GetConstructor (Type.EmptyTypes),
           new Column (new Table ("s1", "s1"), "c1"),
           new Column (new Table ("s2", "s2"), "c2"),
           new Column (new Table ("s3", "s3"), "c3")
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void AppendSelectEvaluation_NewObject ()
     {
       IEvaluation evaluation = new NewObject (
-          typeof (Chef).GetConstructor (Type.EmptyTypes),
+          typeof (Cook).GetConstructor (Type.EmptyTypes),
           new Column (new Table ("s1", "s1"), "c1"),
           new Column (new Table ("s2", "s2"), "c2"),
           new Column (new Table ("s3", "s3"), "c3")

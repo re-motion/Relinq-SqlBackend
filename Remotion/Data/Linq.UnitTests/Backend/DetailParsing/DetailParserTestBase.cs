@@ -74,9 +74,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 
       _studentClause = ExpressionHelper.CreateMainFromClause_Student ();
       _studentReference = new QuerySourceReferenceExpression (_studentClause);
-      _student_First_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Chef).GetProperty ("FirstName"));
-      _student_Last_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Chef).GetProperty ("Name"));
-      _student_ID_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Chef).GetProperty ("ID"));
+      _student_First_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("FirstName"));
+      _student_Last_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("Name"));
+      _student_ID_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("ID"));
     }
   }
 }

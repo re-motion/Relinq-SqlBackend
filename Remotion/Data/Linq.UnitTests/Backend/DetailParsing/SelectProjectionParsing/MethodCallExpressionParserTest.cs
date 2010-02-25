@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     [Test]
     public void CreateMethodCallEvaluation ()
     {
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Chef).GetProperty ("FirstName"));
+      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Cook).GetProperty ("FirstName"));
       MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
       MethodCallExpression methodCallExpression = Expression.Call (memberExpression, methodInfo);
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     [Test]
     public void CreateMethodCall_WithOneArgument ()
     {
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Chef).GetProperty ("FirstName"));
+      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Cook).GetProperty ("FirstName"));
 
       MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
       MethodCallExpression methodCallExpression = Expression.Call (memberExpression, methodInfo, Expression.Constant (5));
