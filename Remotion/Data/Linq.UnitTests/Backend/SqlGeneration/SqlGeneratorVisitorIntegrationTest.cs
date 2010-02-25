@@ -79,8 +79,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     {
       // 1)
       // order by sdd.MainKitchen.Cook.FirstName
-      // order by sdd.IndustrialSector.ID
-      // Joins[sdd] = { (sdd -> MainKitchen -> Cook), (sdd -> IndustrialSector) }
+      // order by sdd.Restaurant.ID
+      // Joins[sdd] = { (sdd -> MainKitchen -> Cook), (sdd -> Restaurant) }
 
       IQueryable<Company> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateStudentDetailDetailQueryable());
@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
-      PropertyInfo relationalMemberForLastOrdering = typeof (Company).GetProperty ("IndustrialSector");
+      PropertyInfo relationalMemberForLastOrdering = typeof (Company).GetProperty ("Restaurant");
       SingleJoin join3 = CreateJoin (studentDetailDetailTable, relationalMemberForLastOrdering);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);
@@ -152,8 +152,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     {
       // 3)
       // order by sdd.MainKitchen.Cook.FirstName
-      // order by sdd.MainKitchen.IndustrialSector.ID
-      // Joins[sdd] = { (sdd -> MainKitchen -> Cook), (sdd -> MainKitchen -> IndustrialSector) }
+      // order by sdd.MainKitchen.Restaurant.ID
+      // Joins[sdd] = { (sdd -> MainKitchen -> Cook), (sdd -> MainKitchen -> Restaurant) }
 
       IQueryable<Company> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateStudentDetailDetailQueryable());
@@ -178,7 +178,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
-      PropertyInfo relationalMemberForLastOrdering = typeof (Kitchen).GetProperty ("IndustrialSector");
+      PropertyInfo relationalMemberForLastOrdering = typeof (Kitchen).GetProperty ("Restaurant");
       SingleJoin join3 = CreateJoin (studentDetailTable, relationalMemberForLastOrdering);
 
       Assert.AreEqual (1, sqlGeneratorVisitor.SqlGenerationData.Joins.Count);

@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void GetJoinedTable_TwiceWithDifferentMembers ()
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();
-      MemberInfo member1 = typeof (Kitchen).GetProperty ("IndustrialSector");
+      MemberInfo member1 = typeof (Kitchen).GetProperty ("Restaurant");
       MemberInfo member2 = typeof (Kitchen).GetProperty ("Cook");
       
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member1);
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath fieldSourcePath1 = ExpressionHelper.GetPathForNewTable ("x", "y");
       FieldSourcePath fieldSourcePath2 = ExpressionHelper.GetPathForNewTable ("z", "i");
 
-      MemberInfo member = typeof (Kitchen).GetProperty ("IndustrialSector");
+      MemberInfo member = typeof (Kitchen).GetProperty ("Restaurant");
       
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath1, member);
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath2, member);
@@ -145,7 +145,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _context.CreateAliases (_queryModel);
       Assert.That (table1.Alias, Is.EqualTo ("#j0"));
 
-      MemberInfo member2 = typeof (Kitchen).GetProperty ("IndustrialSector");
+      MemberInfo member2 = typeof (Kitchen).GetProperty ("Restaurant");
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member2);
 
       Assert.That (table2.Alias, Is.Null);

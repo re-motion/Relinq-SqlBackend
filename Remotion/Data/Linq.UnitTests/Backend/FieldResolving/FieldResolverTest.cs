@@ -332,7 +332,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IResolveFieldAccessPolicy policy = new WhereFieldAccessPolicy (StubDatabaseInfo.Instance);
       Assert.That (policy.OptimizeRelatedKeyAccess(), Is.True);
-      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.IndustrialSector.ID);
+      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.Restaurant.ID);
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, policy);
 
@@ -347,7 +347,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IResolveFieldAccessPolicy policy = new SelectFieldAccessPolicy();
       Assert.That (policy.OptimizeRelatedKeyAccess(), Is.False);
-      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int>(_studentDetailClause, sd => sd.IndustrialSector.ID);
+      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int>(_studentDetailClause, sd => sd.Restaurant.ID);
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, policy);
       FieldDescriptor result = resolver.ResolveField (fieldExpression, _context);

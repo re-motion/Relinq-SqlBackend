@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
   {
     private IQueryable<Cook> _source;
     private IQueryable<Kitchen> _detailSource;
-    private IQueryable<IndustrialSector> _industrialSectorSource;
+    private IQueryable<Restaurant> _industrialSectorSource;
     private IQueryable<Company> _detailDetailSource;
     private SqlServerGenerator _sqlGenerator;
 
@@ -337,7 +337,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SelectJoin()
     {
       // from sdd in source 
-      // select new Tuple<string,int>{sdd.MainKitchen.Cook.FirstName,sdd.IndustrialSector.ID}
+      // select new Tuple<string,int>{sdd.MainKitchen.Cook.FirstName,sdd.Restaurant.ID}
 
       IQueryable<Company> source = _detailDetailSource;
 
@@ -419,9 +419,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereJoin_WithRelationMember_VirtualSide ()
     {
-      IQueryable<IndustrialSector> source = ExpressionHelper.CreateIndustrialSectorQueryable ();
+      IQueryable<Restaurant> source = ExpressionHelper.CreateIndustrialSectorQueryable ();
 
-      IQueryable<IndustrialSector> query = WhereTestQueryGenerator.CreateRelationMemberVirtualSideWhereQuery (source);
+      IQueryable<Restaurant> query = WhereTestQueryGenerator.CreateRelationMemberVirtualSideWhereQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
