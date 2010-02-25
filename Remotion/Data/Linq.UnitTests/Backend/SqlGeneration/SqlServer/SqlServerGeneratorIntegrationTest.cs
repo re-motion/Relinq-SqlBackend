@@ -349,7 +349,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "[companyTable] [sdd] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
-                                    + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Company_PK] = [#j2].[Company_to_Restaurant_FK]";
+                                    + "LEFT OUTER JOIN [restaurantTable] [#j2] ON [sdd].[Company_PK] = [#j2].[Company_to_Restaurant_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -425,7 +425,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
-      const string expectedString = "SELECT [industrial].* FROM [industrialTable] [industrial] "
+      const string expectedString = "SELECT [industrial].* FROM [restaurantTable] [industrial] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [industrial].[Restaurant_PK] = [#j0].[Kitchen_to_Restaurant_FK] "
                                     + "WHERE [#j0].[IDColumn] IS NOT NULL";
 
@@ -638,7 +638,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (_industrialSectorSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialTable] [sector], [cookTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [restaurantTable] [sector], [cookTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -658,7 +658,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [companyTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [cookTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [companyTable] [sdd] LEFT OUTER JOIN [restaurantTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [cookTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 

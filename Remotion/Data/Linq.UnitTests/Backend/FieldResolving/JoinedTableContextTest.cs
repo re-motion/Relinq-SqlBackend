@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member2);
       Assert.That (_context.Count, Is.EqualTo (2));
       Assert.That (table2, Is.Not.SameAs (table1));
-      Assert.That (table1.Name, Is.EqualTo ("industrialTable"));
+      Assert.That (table1.Name, Is.EqualTo ("restaurantTable"));
       Assert.That (table2.Name, Is.EqualTo ("cookTable"));
     }
 
