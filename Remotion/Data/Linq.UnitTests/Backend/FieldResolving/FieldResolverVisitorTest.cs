@@ -109,12 +109,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void VisitMemberExpression_OptimzationWithRelatedPrimaryKeyOverSeveralSteps ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Cook.BuddyCook.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Cook.Substitution.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
-      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Cook> (s => s.BuddyCook)));
+      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Cook> (s => s.Substitution)));
       Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Cook) }));
 
-      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Cook> (_studentDetailClause, sd => sd.Cook.BuddyCook);
+      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Cook> (_studentDetailClause, sd => sd.Cook.Substitution);
       CheckOptimization (result, optimizedExpressionTree);
     }
 

@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
       _student_ID_Property = typeof (Cook).GetProperty ("ID");
       _student_First_Property = typeof (Cook).GetProperty ("FirstName");
-      _student_OtherStudent_Property = typeof (Cook).GetProperty ("BuddyCook");
+      _student_OtherStudent_Property = typeof (Cook).GetProperty ("Substitution");
       _studentDetail_Student_Property = typeof (Student_Detail).GetProperty ("Cook");
       _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
 
