@@ -339,7 +339,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldDescriptor result = resolver.ResolveField (fieldExpression, _context);
 
       Assert.That (
-          result.Column, Is.EqualTo (new Column (_context.GetColumnSource (_studentDetailClause), "Student_Detail_to_IndustrialSector_FK")));
+          result.Column, Is.EqualTo (new Column (_context.GetColumnSource (_studentDetailClause), "Kitchen_to_Restaurant_FK")));
     }
 
     [Test]
