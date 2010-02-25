@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitColumn_ColumnSource_NoTable ()
     {
-      var column = new Column (new SubQuery (ExpressionHelper.CreateQueryModel_Student(), ParseMode.SubQueryInFrom, "test"), "testC");
+      var column = new Column (new SubQuery (ExpressionHelper.CreateQueryModel_Cook(), ParseMode.SubQueryInFrom, "test"), "testC");
 
       _visitor.VisitColumn (column);
 
@@ -258,7 +258,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void VisitSubQuery ()
     {
-      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      var queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "sub_alias");
 
       var nestedGeneratorMock = MockRepository.GenerateMock<SqlServerGenerator> (StubDatabaseInfo.Instance);

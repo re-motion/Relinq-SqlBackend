@@ -69,10 +69,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     [SetUp]
     public virtual void SetUp ()
     {
-      QueryModel = ExpressionHelper.CreateQueryModel_Student ();
+      QueryModel = ExpressionHelper.CreateQueryModel_Cook ();
       ParseContext = new ParseContext(QueryModel, new List<FieldDescriptor>(), new JoinedTableContext (StubDatabaseInfo.Instance));
 
-      _studentClause = ExpressionHelper.CreateMainFromClause_Student ();
+      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
       _studentReference = new QuerySourceReferenceExpression (_studentClause);
       _student_First_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("FirstName"));
       _student_Last_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("Name"));

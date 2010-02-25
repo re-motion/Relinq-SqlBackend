@@ -66,10 +66,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       _context = new JoinedTableContext(StubDatabaseInfo.Instance);
       _policy = new SelectFieldAccessPolicy();
-      _studentClause = ExpressionHelper.CreateMainFromClause_Student ();
+      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
       _studentReference = new QuerySourceReferenceExpression (_studentClause);
 
-      _studentDetailClause = ExpressionHelper.CreateMainFromClause_Detail ();
+      _studentDetailClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
       _studentDetailReference = new QuerySourceReferenceExpression (_studentDetailClause);
 
       _studentDetailDetailClause = ExpressionHelper.CreateMainFromClause_Detail_Detail ();
@@ -259,7 +259,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       // from x in (...)
       // select x.ID
-      var fromClause = new AdditionalFromClause ("x", typeof (Cook), new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student ()));
+      var fromClause = new AdditionalFromClause ("x", typeof (Cook), new SubQueryExpression (ExpressionHelper.CreateQueryModel_Cook ()));
 
       PropertyInfo member = typeof (Cook).GetProperty ("ID");
       Expression fieldExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (fromClause), member);

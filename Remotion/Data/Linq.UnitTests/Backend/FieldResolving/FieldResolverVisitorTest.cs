@@ -37,10 +37,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [SetUp]
     public void SetUp ()
     {
-      _studentClause = ExpressionHelper.CreateMainFromClause_Student ();
+      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
       _studentReference = new QuerySourceReferenceExpression (_studentClause);
 
-      _studentDetailClause = ExpressionHelper.CreateMainFromClause_Detail ();
+      _studentDetailClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
       _studentDetailReference = new QuerySourceReferenceExpression (_studentDetailClause);
     }
 

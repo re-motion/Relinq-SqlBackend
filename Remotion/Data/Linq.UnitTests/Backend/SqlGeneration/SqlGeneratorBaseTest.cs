@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void BuildCommand_CallsPartBuilders()
     {
-      var query = ExpressionHelper.CreateQueryModel_Student ();
+      var query = ExpressionHelper.CreateQueryModel_Cook ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilderMock, _fromBuilderMock, _whereBuilderMock, _orderByBuilderMock, ParseMode.TopLevelQuery);
 
       using (_mockRepository.Ordered ())
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void BuildCommand_ReturnsCommandAndParameters ()
     {
-      var query = ExpressionHelper.CreateQueryModel_Student ();
+      var query = ExpressionHelper.CreateQueryModel_Cook ();
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilderMock, _fromBuilderMock, _whereBuilderMock, _orderByBuilderMock, ParseMode.TopLevelQuery);
 
       _selectBuilderMock
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The concrete subclass did not set a select evaluation.")]
     public void BuildCommand_ThrowsOnNullSelect ()
     {
-      var query = ExpressionHelper.CreateQueryModel_Student ();
+      var query = ExpressionHelper.CreateQueryModel_Cook ();
       var generatorPartialMock = _mockRepository.PartialMock<SqlGeneratorMock> (query, StubDatabaseInfo.Instance, _selectBuilderMock, _fromBuilderMock, _whereBuilderMock, 
           _orderByBuilderMock, ParseMode.TopLevelQuery);
 
@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_PassesQueryToVisitor()
     {
-      var query = ExpressionHelper.CreateQueryModel_Student ();
+      var query = ExpressionHelper.CreateQueryModel_Cook ();
       var generator = new SqlGeneratorMock (
           query, 
           StubDatabaseInfo.Instance, 
@@ -144,7 +144,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_WithDifferentParseContext ()
     {
-      var query = ExpressionHelper.CreateQueryModel_Student ();
+      var query = ExpressionHelper.CreateQueryModel_Cook ();
       var generator = new SqlGeneratorMock (
           query, 
           StubDatabaseInfo.Instance, 

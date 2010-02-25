@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       _table1 = new Table ("Table1", "t1");
       _table2 = new Table ("Table2", "t2");
 
-      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      var queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       _subQuery = new SubQuery (queryModel, ParseMode.SubQueryInFrom, "s1");
 
       _join1 = new SingleJoin (new Column (_table1, "c1"), new Column (new Table ("JoinedTable", "j1"), "c2"));

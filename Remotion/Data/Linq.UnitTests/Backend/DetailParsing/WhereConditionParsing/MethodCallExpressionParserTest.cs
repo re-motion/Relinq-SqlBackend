@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
     {
       base.SetUp();
 
-      _fromClause = ExpressionHelper.CreateMainFromClause_Student ();
+      _fromClause = ExpressionHelper.CreateMainFromClause_Cook ();
       _fromSource = ParseContext.JoinedTableContext.GetColumnSource (_fromClause);
       QueryModel = ExpressionHelper.CreateQueryModel (_fromClause);
       _resolver = new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));

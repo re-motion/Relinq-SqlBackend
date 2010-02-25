@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void Initialize ()
     {
-      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student();
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Cook();
       SubQuery subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreSame (queryModel, subQuery.QueryModel);
@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void AliasString ()
     {
-      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student();
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Cook();
       SubQuery subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
       Assert.AreEqual ("foo", subQuery.AliasString);
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void Equals_True ()
     {
-      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
       SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
@@ -56,8 +56,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void Equals_False ()
     {
-      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
-      QueryModel queryModel2 = ExpressionHelper.CreateQueryModel_Student ();
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Cook ();
+      QueryModel queryModel2 = ExpressionHelper.CreateQueryModel_Cook ();
 
       SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
       SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo1");
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void GetHashCode_EqualObjects ()
     {
-      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
       SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "foo");
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void GetHashCode_NullAlias ()
     {
-      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      QueryModel queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       SubQuery subQuery1 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, null);
       SubQuery subQuery2 = new SubQuery (queryModel, ParseMode.SubQueryInWhere, null);
 

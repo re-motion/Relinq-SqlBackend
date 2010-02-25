@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [SetUp]
     public void SetUp ()
     {
-      _queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      _queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       _context = new JoinedTableContext (StubDatabaseInfo.Instance);
     }
 
@@ -189,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void GetColumnSource_CachesInstance ()
     {
-      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Student ();
+      MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Cook ();
       IColumnSource t1 = _context.GetColumnSource (fromClause);
       IColumnSource t2 = _context.GetColumnSource (fromClause);
       Assert.That (t2, Is.SameAs (t1));
@@ -198,7 +198,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void GetColumnSource_SubQuery ()
     {
-      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student ());
+      var subQueryExpression = new SubQueryExpression (ExpressionHelper.CreateQueryModel_Cook ());
       var fromClause = new AdditionalFromClause ("s", typeof (Cook), subQueryExpression);
 
       IColumnSource columnSource = _context.GetColumnSource (fromClause);

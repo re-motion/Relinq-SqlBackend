@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void AppendEvaluation_SubQuery ()
     {
-      var queryModel = ExpressionHelper.CreateQueryModel_Student ();
+      var queryModel = ExpressionHelper.CreateQueryModel_Cook ();
       var subQuery = new SubQuery (queryModel, ParseMode.SubQueryInWhere, "test");
 
       var nestedGeneratorMock = MockRepository.GenerateMock<SqlServerGenerator> (StubDatabaseInfo.Instance);

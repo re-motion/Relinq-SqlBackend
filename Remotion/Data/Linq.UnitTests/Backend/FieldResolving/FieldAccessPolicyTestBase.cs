@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
     public virtual void SetUp ()
     {
-      _studentClause = ExpressionHelper.CreateMainFromClause_Student ();
+      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
       _studentReference = new QuerySourceReferenceExpression (StudentClause);
       _studentDetailDetail_StudentDetail_Member = typeof (Company).GetProperty ("MainKitchen");
       _studentDetail_Student_Member = typeof (Kitchen).GetProperty ("Cook");
