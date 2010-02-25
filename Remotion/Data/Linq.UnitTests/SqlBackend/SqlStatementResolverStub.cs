@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
+namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
   public class SqlStatementResolverStub : ISqlStatementResolver
   {
