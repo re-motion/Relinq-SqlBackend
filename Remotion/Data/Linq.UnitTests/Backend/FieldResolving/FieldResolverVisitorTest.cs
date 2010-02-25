@@ -67,12 +67,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void NestedMembers ()
     {
       Expression expressionTree = Expression.MakeMemberAccess (
-          Expression.MakeMemberAccess (_studentDetailReference, typeof (Student_Detail).GetProperty ("Cook")),
+          Expression.MakeMemberAccess (_studentDetailReference, typeof (Kitchen).GetProperty ("Cook")),
           typeof (Cook).GetProperty ("FirstName"));
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
 
       Assert.That (result.AccessedMember, Is.EqualTo (typeof (Cook).GetProperty ("FirstName")));
-      Assert.That (result.JoinMembers, Is.EqualTo (new object[] { typeof (Student_Detail).GetProperty ("Cook") }));
+      Assert.That (result.JoinMembers, Is.EqualTo (new object[] { typeof (Kitchen).GetProperty ("Cook") }));
       Assert.That (result.QuerySourceReferenceExpression, Is.SameAs (_studentDetailReference));
     }
 
@@ -88,33 +88,33 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void VisitMemberExpression_OptimizesAccessToRelatedPrimaryKey ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Cook.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.Cook.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
-      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Student_Detail> (sd => sd.Cook)));
+      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Kitchen> (sd => sd.Cook)));
       Assert.IsEmpty (result.JoinMembers);
 
-      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Cook> (_studentDetailClause, sd => sd.Cook);
+      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Kitchen, Cook> (_studentDetailClause, sd => sd.Cook);
       CheckOptimization (result, optimizedExpressionTree);
     }
 
     [Test]
     public void VisitMemberExpression_AccessToRelatedPrimaryKey_OptimizeFalse ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Cook.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.Cook.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, false);
       Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Cook> (s => s.ID)));
-      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Cook) }));
+      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Kitchen> (sd => sd.Cook) }));
     }
 
     [Test]
     public void VisitMemberExpression_OptimzationWithRelatedPrimaryKeyOverSeveralSteps ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Cook.Substitution.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.Cook.Substitution.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
       Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Cook> (s => s.Substitution)));
-      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Cook) }));
+      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Kitchen> (sd => sd.Cook) }));
 
-      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Cook> (_studentDetailClause, sd => sd.Cook.Substitution);
+      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Kitchen, Cook> (_studentDetailClause, sd => sd.Cook.Substitution);
       CheckOptimization (result, optimizedExpressionTree);
     }
 

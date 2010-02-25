@@ -78,8 +78,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _student_ID_Property = typeof (Cook).GetProperty ("ID");
       _student_First_Property = typeof (Cook).GetProperty ("FirstName");
       _student_OtherStudent_Property = typeof (Cook).GetProperty ("Substitution");
-      _studentDetail_Student_Property = typeof (Student_Detail).GetProperty ("Cook");
-      _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
+      _studentDetail_Student_Property = typeof (Kitchen).GetProperty ("Cook");
+      _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Kitchen");
 
       _student_First_Expression = Expression.MakeMemberAccess (_studentReference, _student_First_Property);
       _studentDetail_Student_Expression = Expression.MakeMemberAccess (_studentDetailReference, _studentDetail_Student_Property);
@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_DoubleJoin ()
     {
-      // sdd.Student_Detail.Cook.FirstName
+      // sdd.Kitchen.Cook.FirstName
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_First_Expression, _context);
@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
 
       IColumnSource expectedDetailDetailTable = fieldDescriptor.SourcePath.FirstSource;
-      var expectedDetailTable = new Table ("detailTable", null); // Student_Detail
+      var expectedDetailTable = new Table ("detailTable", null); // Kitchen
       var join1 = new SingleJoin (
           new Column (expectedDetailDetailTable, "Student_Detail_Detail_PK"),
           new Column (expectedDetailTable, "Student_Detail_Detail_to_Student_Detail_FK"));
@@ -237,7 +237,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_EntityField_Nested ()
     {
-      //sdd.Student_Detail.Cook
+      //sdd.Kitchen.Cook
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
@@ -332,7 +332,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IResolveFieldAccessPolicy policy = new WhereFieldAccessPolicy (StubDatabaseInfo.Instance);
       Assert.That (policy.OptimizeRelatedKeyAccess(), Is.True);
-      Expression fieldExpression = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.IndustrialSector.ID);
+      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.IndustrialSector.ID);
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, policy);
 
@@ -347,7 +347,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IResolveFieldAccessPolicy policy = new SelectFieldAccessPolicy();
       Assert.That (policy.OptimizeRelatedKeyAccess(), Is.False);
-      Expression fieldExpression = ExpressionHelper.Resolve<Student_Detail, int>(_studentDetailClause, sd => sd.IndustrialSector.ID);
+      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int>(_studentDetailClause, sd => sd.IndustrialSector.ID);
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, policy);
       FieldDescriptor result = resolver.ResolveField (fieldExpression, _context);

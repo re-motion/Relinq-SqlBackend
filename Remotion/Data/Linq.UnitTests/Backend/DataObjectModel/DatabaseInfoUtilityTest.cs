@@ -39,8 +39,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void IsRelationMember_True ()
     {
       Assert.That (
-          StubDatabaseInfo.Instance.IsRelationMember (typeof (Student_Detail_Detail).GetProperty ("Student_Detail")), Is.True);
-      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student_Detail).GetProperty ("Cook")), Is.True);
+          StubDatabaseInfo.Instance.IsRelationMember (typeof (Student_Detail_Detail).GetProperty ("Kitchen")), Is.True);
+      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Kitchen).GetProperty ("Cook")), Is.True);
     }
 
     [Test]
@@ -58,8 +58,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void GetPrimaryKeyMember ()
     {
-      MemberInfo studentDetailKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (_databaseInfo, typeof (Student_Detail));
-      Assert.That (studentDetailKeyMember, Is.EqualTo (typeof (Student_Detail).GetProperty ("ID")));
+      MemberInfo studentDetailKeyMember = DatabaseInfoUtility.GetPrimaryKeyMember (_databaseInfo, typeof (Kitchen));
+      Assert.That (studentDetailKeyMember, Is.EqualTo (typeof (Kitchen).GetProperty ("ID")));
     }
 
     [Test]

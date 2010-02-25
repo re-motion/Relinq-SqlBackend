@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
   public class SqlServerGeneratorIntegrationTest
   {
     private IQueryable<Cook> _source;
-    private IQueryable<Student_Detail> _detailSource;
+    private IQueryable<Kitchen> _detailSource;
     private IQueryable<IndustrialSector> _industrialSectorSource;
     private IQueryable<Student_Detail_Detail> _detailDetailSource;
     private SqlServerGenerator _sqlGenerator;
@@ -259,7 +259,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SimpleImplicitJoin ()
     {
       // from sd in source orderby sd.Cook.FirstName select sd
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (_detailSource);
+      IQueryable<Kitchen> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] "
@@ -270,7 +270,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void NestedImplicitJoin ()
     {
-      // from sdd in source orderby sdd.Student_Detail.Cook.FirstName select sdd
+      // from sdd in source orderby sdd.Kitchen.Cook.FirstName select sdd
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -286,9 +286,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     {
       // from sdd1 in ...
       // from sdd2 in ...
-      // order by sdd1.Student_Detail.Cook.FirstName
-      // order by sdd2.Student_Detail.Cook.FirstName
-      // order by sdd1.Student_Detail.Cook.FirstName
+      // order by sdd1.Kitchen.Cook.FirstName
+      // order by sdd2.Kitchen.Cook.FirstName
+      // order by sdd1.Kitchen.Cook.FirstName
       // select sdd1;
 
       IQueryable<Student_Detail_Detail> source1 = _detailDetailSource;
@@ -314,8 +314,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void JoinPartReuse ()
     {
       //from sdd in ...
-      //orderby sdd.Student_Detail.Cook.FirstName
-      //orderby sdd.Student_Detail.ID
+      //orderby sdd.Kitchen.Cook.FirstName
+      //orderby sdd.Kitchen.ID
       //select sdd;
 
       IQueryable<Student_Detail_Detail> source1 = _detailDetailSource;
@@ -337,7 +337,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SelectJoin()
     {
       // from sdd in source 
-      // select new Tuple<string,int>{sdd.Student_Detail.Cook.FirstName,sdd.IndustrialSector.ID}
+      // select new Tuple<string,int>{sdd.Kitchen.Cook.FirstName,sdd.IndustrialSector.ID}
 
       IQueryable<Student_Detail_Detail> source = _detailDetailSource;
 
@@ -358,7 +358,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SelectJoin_WithRelationMember()
     {
-      IQueryable<Student_Detail> source = _detailSource;
+      IQueryable<Kitchen> source = _detailSource;
 
       IQueryable<Cook> query = SelectTestQueryGenerator.CreateRelationMemberSelectQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -404,9 +404,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereJoin_WithRelationMember ()
     {
-      IQueryable<Student_Detail> source = _detailSource;
+      IQueryable<Kitchen> source = _detailSource;
 
-      IQueryable<Student_Detail> query = WhereTestQueryGenerator.CreateRelationMemberWhereQuery (source);
+      IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateRelationMemberWhereQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
@@ -434,13 +434,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Cook' is not "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Kitchen.Cook' is not "
                                                                           + "supported because it is a relation member.")]
     public void OrderingJoin_WithRelationMember ()
     {
-      IQueryable<Student_Detail> source = _detailSource;
+      IQueryable<Kitchen> source = _detailSource;
 
-      IQueryable<Student_Detail> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (source);
+      IQueryable<Kitchen> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       _sqlGenerator.BuildCommand (parsedQuery);
@@ -545,7 +545,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLetAndJoin_WithTable ()
     {
-      IQueryable<Student_Detail> source = _detailSource;
+      IQueryable<Kitchen> source = _detailSource;
       IQueryable<Cook> query = LetTestQueryGenerator.CreateLet_WithJoin_WithTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -558,7 +558,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLetAndJoin_NoTable ()
     {
-      IQueryable<Student_Detail> source = _detailSource;
+      IQueryable<Kitchen> source = _detailSource;
       IQueryable<string> query = LetTestQueryGenerator.CreateLet_WithJoin_NoTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -615,7 +615,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithWhereClause_OnRelatedPrimaryKey_VirtualColumn ()
     {
-      IQueryable<Student_Detail> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_VirtualColumn (_detailSource);
+      IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_VirtualColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Student_Detail_PK] = [#j0].[Student_Detail_to_Student_FK] WHERE ([#j0].[IDColumn] = @1)"));
@@ -625,7 +625,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithWhereClause_OnRelatedPrimaryKey_RealColumn ()
     {
-      IQueryable<Student_Detail> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_RealColumn (_detailSource);
+      IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_RealColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] WHERE ([sd].[Student_Detail_to_IndustrialSector_FK] = @1)"));

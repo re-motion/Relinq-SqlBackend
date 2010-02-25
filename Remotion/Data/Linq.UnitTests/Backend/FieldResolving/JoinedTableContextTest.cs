@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void GetJoinedTable()
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable();
-      MemberInfo member = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member = typeof (Kitchen).GetProperty ("Cook");
       Assert.That (_context.Count, Is.EqualTo (0));
       Table table = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member);
       Assert.That (_context.Count, Is.EqualTo (1));
@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       var table = new Table();
       FieldSourcePath fieldSourcePath1 = ExpressionHelper.GetPathForTable (table);
       FieldSourcePath fieldSourcePath2 = ExpressionHelper.GetPathForTable (table);
-      MemberInfo member = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member = typeof (Kitchen).GetProperty ("Cook");
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath1, member);
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath2, member);
       Assert.That (_context.Count, Is.EqualTo (1));
@@ -71,8 +71,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void GetJoinedTable_TwiceWithDifferentMembers ()
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();
-      MemberInfo member1 = typeof (Student_Detail).GetProperty ("IndustrialSector");
-      MemberInfo member2 = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member1 = typeof (Kitchen).GetProperty ("IndustrialSector");
+      MemberInfo member2 = typeof (Kitchen).GetProperty ("Cook");
       
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member1);
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member2);
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath fieldSourcePath1 = ExpressionHelper.GetPathForNewTable ("x", "y");
       FieldSourcePath fieldSourcePath2 = ExpressionHelper.GetPathForNewTable ("z", "i");
 
-      MemberInfo member = typeof (Student_Detail).GetProperty ("IndustrialSector");
+      MemberInfo member = typeof (Kitchen).GetProperty ("IndustrialSector");
       
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath1, member);
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath2, member);
@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();
       
-      MemberInfo member1 = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member1 = typeof (Kitchen).GetProperty ("Cook");
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member1);
 
       Assert.That (table1.Alias, Is.Null);
@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();
 
-      MemberInfo member1 = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member1 = typeof (Kitchen).GetProperty ("Cook");
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member1);
       table1.SetAlias ("Franz");
 
@@ -138,14 +138,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();
 
-      MemberInfo member1 = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member1 = typeof (Kitchen).GetProperty ("Cook");
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member1);
 
       Assert.That (table1.Alias, Is.Null);
       _context.CreateAliases (_queryModel);
       Assert.That (table1.Alias, Is.EqualTo ("#j0"));
 
-      MemberInfo member2 = typeof (Student_Detail).GetProperty ("IndustrialSector");
+      MemberInfo member2 = typeof (Kitchen).GetProperty ("IndustrialSector");
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member2);
 
       Assert.That (table2.Alias, Is.Null);
@@ -160,7 +160,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath fieldSourcePath2 = ExpressionHelper.GetPathForNewTable ("2", null);
       FieldSourcePath fieldSourcePath3 = ExpressionHelper.GetPathForNewTable ("3", null);
 
-      MemberInfo member = typeof (Student_Detail).GetProperty ("Cook");
+      MemberInfo member = typeof (Kitchen).GetProperty ("Cook");
 
       Table table1 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath1, member);
       Table table2 = _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath2, member);

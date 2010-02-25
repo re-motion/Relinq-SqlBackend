@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     [Test]
     public void JoinOrderingClause ()
     {
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailQueryable ());
+      IQueryable<Kitchen> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -146,8 +146,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
       FromClauseBase fromClause = parsedQuery.MainFromClause;
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Cook");
-      IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Student_Detail
+      PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
+      IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Kitchen
       Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Cook
       var join = StubDatabaseInfo.Instance.GetJoinForMember (relationMember, sourceTable, relatedTable);
 
@@ -168,11 +168,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Cook' "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Kitchen.Cook' "
         + "is not supported because it is a relation member.")]
     public void OrderingOnRelationMemberThrows()
     {
-      IQueryable<Student_Detail> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (ExpressionHelper.CreateStudentDetailQueryable ());
+      IQueryable<Kitchen> query = OrderByTestQueryGenerator.CreateRelationMemberOrderByQuery (ExpressionHelper.CreateStudentDetailQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();

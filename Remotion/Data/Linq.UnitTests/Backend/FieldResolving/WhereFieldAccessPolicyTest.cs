@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_IndustrialSector_Member }, IndustrialSector_StudentDetail_Member);
 
-      MemberInfo primaryKeyMember = typeof (Student_Detail).GetProperty ("ID");
+      MemberInfo primaryKeyMember = typeof (Kitchen).GetProperty ("ID");
       var expected = new MemberInfoChain (new[] { StudentDetailDetail_IndustrialSector_Member, IndustrialSector_StudentDetail_Member }, primaryKeyMember);
 
       Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));

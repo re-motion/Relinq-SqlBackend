@@ -146,7 +146,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitOrderByClause_WithJoins ()
     {
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailQueryable());
+      IQueryable<Kitchen> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
       sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Cook");
+      PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Cook
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, sourceTable, relatedTable);
@@ -255,7 +255,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var selectClause = parsedQuery.SelectClause;
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
 
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Cook");
+      PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
       IColumnSource studentDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null);
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, studentDetailTable, studentTable);
@@ -359,7 +359,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitWhereClause_WithJoins ()
     {
-      IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateStudentDetailQueryable());
+      IQueryable<Kitchen> query = JoinTestQueryGenerator.CreateSimpleImplicitWhereJoin (ExpressionHelper.CreateStudentDetailQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var whereClause = (WhereClause) parsedQuery.BodyClauses[0];
@@ -367,8 +367,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitWhereClause (whereClause, parsedQuery, 0);
 
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Cook");
-      IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Student_Detail
+      PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
+      IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Kitchen
       Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Cook
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, sourceTable, relatedTable);
 
