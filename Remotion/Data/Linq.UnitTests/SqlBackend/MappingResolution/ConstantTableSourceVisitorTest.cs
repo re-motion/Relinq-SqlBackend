@@ -6,15 +6,16 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class TableSourceVisitorTest
+  public class ConstantTableSourceVisitorTest
   {
     [Test]
-    public void TranslateTableSource_ConstantTableSource ()
+    public void TranslateConstantTableSource ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
@@ -22,19 +23,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var tableSource = new SqlTableSource (typeof (int), "Table", "t");
       resolver.Expect (mock => mock.ResolveConstantTableSource ((ConstantTableSource) sqlTable.TableSource)).Return (tableSource);
 
-      TableSourceVisitor.ReplaceTableSource (sqlTable, resolver);
+      ConstantTableSourceVisitor.ReplaceTableSource (sqlTable, resolver);
 
       Assert.That (sqlTable.TableSource, Is.TypeOf (typeof(SqlTableSource)));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "SqlTable.TableSource of type 'UnknownTableSource' is not supported.")]
+    [ExpectedException (typeof (NotImplementedException))]
     public void TranslateTableSource_WithUnknownTableSource ()
     {
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = new UnknownTableSource();
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver> ();
-      TableSourceVisitor.ReplaceTableSource (sqlTable, resolver);
+      ConstantTableSourceVisitor.ReplaceTableSource (sqlTable, resolver);
     }
 
     private class UnknownTableSource : AbstractTableSource {
