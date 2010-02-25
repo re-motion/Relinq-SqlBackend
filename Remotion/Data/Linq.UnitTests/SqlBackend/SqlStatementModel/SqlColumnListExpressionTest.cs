@@ -44,9 +44,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
           tableReferenceExpression.Type,
           new[]
           {
-              new SqlColumnExpression (typeof (int), sqlTable, "ID"),
-              new SqlColumnExpression (typeof (int), sqlTable, "Name"),
-              new SqlColumnExpression (typeof (int), sqlTable, "City")
+              new SqlColumnExpression (typeof (int), "t", "ID"),
+              new SqlColumnExpression (typeof (int), "t", "Name"),
+              new SqlColumnExpression (typeof (int), "t", "City")
           });
     }
 

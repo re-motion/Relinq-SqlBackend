@@ -15,51 +15,44 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class SqlTableSourceVisitorTest
+  public class ResolvingTableSourceVisitorTest
   {
     [Test]
-    public void GenerateSql_ForSqlTableSource ()
+    public void ResolveConstantTableSource ()
     {
-      var sb = new StringBuilder (); // TODO: Move to setup
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
-      sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
-      SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
 
-      Assert.That (sb.ToString(), Is.EqualTo ("[Table] AS [t]"));
+      var tableSource = new SqlTableSource (typeof (int), "Table", "t");
+      resolver.Expect (mock => mock.ResolveConstantTableSource ((ConstantTableSource) sqlTable.TableSource)).Return (tableSource);
+
+      ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, resolver);
+
+      Assert.That (sqlTable.TableSource, Is.TypeOf (typeof (SqlTableSource)));
     }
 
     [Test]
     [ExpectedException (typeof (NotImplementedException))]
-    public void TranslateTableSource_WithUnknownTableSource ()
+    public void ResolveConstantTableSource_WithUnknownTableSource ()
     {
-      var sb = new StringBuilder (); // TODO: Move to setup
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = new UnknownTableSource ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "ConstantTableSource is not valid at this point.")]
-    public void GenerateSql_WithConstantTableSource_RaisesException ()
-    {
-      var sb = new StringBuilder (); // TODO: Move to setup
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
+      var sqlTable = new SqlTable();
+      sqlTable.TableSource = new UnknownTableSource();
+      var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
+      ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, resolver);
     }
 
     private class UnknownTableSource : AbstractTableSource
     {
-
       public override Type Type
       {
         get { return typeof (string); }
@@ -67,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       public override AbstractTableSource Accept (ITableSourceVisitor visitor)
       {
-        throw new NotImplementedException ();
+        throw new NotImplementedException();
       }
     }
   }

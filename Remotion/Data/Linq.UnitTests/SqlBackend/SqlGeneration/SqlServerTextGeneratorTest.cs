@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void Build ()
     {
-      SqlStatement sqlStatement = new SqlStatement();
+      SqlStatement sqlStatement = new SqlStatement (); // TODO: new SqlStatement (sqlTable, columnListExpression);
       
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
@@ -38,9 +38,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           tableReferenceExpression.Type,
           new[]
           {
-              new SqlColumnExpression (typeof (int), sqlTable, "ID"),
-              new SqlColumnExpression (typeof (int), sqlTable, "Name"),
-              new SqlColumnExpression (typeof (int), sqlTable, "City")
+              new SqlColumnExpression (typeof (int), "t", "ID"),
+              new SqlColumnExpression (typeof (int), "t", "Name"),
+              new SqlColumnExpression (typeof (int), "t", "City")
           });
 
       sqlStatement.SelectProjection = columnListExpression;

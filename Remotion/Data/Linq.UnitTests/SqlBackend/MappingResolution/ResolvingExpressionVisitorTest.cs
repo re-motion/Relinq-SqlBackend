@@ -20,12 +20,11 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class SqlTableReferenceExpressionVisitorTest
+  public class ResolvingExpressionVisitorTest
   {
     private SqlStatementResolverStub _resolver;
 
@@ -43,17 +42,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       sqlTable.TableSource = source;
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
-      var sqlColumnListExpression = SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
+      var sqlColumnListExpression = ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
 
       var constraint = new SqlTableSource (typeof (string), "Table", "t");
       
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[0].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[0].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[1].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[1].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[2].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) sqlColumnListExpression).Columns[2].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
       
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].ColumnName, Is.EqualTo ("ID"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[1].ColumnName, Is.EqualTo ("Name"));
@@ -66,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (unknownExpression, _resolver);
+      ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (unknownExpression, _resolver);
     }
   }
 }

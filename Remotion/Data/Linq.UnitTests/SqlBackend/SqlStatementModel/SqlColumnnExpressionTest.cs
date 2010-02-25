@@ -30,9 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
-      _columnExpression = new SqlColumnExpression (typeof (int), sqlTable,"t");
+      _columnExpression = new SqlColumnExpression (typeof (int), "t" ,"name");
     }
 
     [Test]

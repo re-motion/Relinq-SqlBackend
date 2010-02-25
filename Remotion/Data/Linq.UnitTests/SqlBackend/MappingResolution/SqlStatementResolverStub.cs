@@ -33,15 +33,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
+      // TODO: Change to get sqlTable from tableReferenceExpression instead of creating a new one.
       var sqlTable = new SqlTable();
       sqlTable.TableSource = new SqlTableSource (typeof(string), "Table", "t");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
           new[]
           {
-              new SqlColumnExpression (typeof (int), sqlTable, "ID"),
-              new SqlColumnExpression (typeof (int), sqlTable, "Name"),
-              new SqlColumnExpression (typeof (int), sqlTable, "City")
+              new SqlColumnExpression (typeof (int), "t", "ID"),
+              new SqlColumnExpression (typeof (int), "t", "Name"),
+              new SqlColumnExpression (typeof (int), "t", "City")
           });
     }
   }

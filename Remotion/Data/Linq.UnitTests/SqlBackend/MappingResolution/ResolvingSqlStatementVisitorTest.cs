@@ -18,17 +18,17 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using SqlStatementVisitor=Remotion.Data.Linq.SqlBackend.MappingResolution.SqlStatementVisitor;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class SqlStatementVisitorTest
+  public class ResolvingSqlStatementVisitorTest
   {
     private SqlStatement _sqlStatement;
     private SqlStatementResolverStub _resolver;
-    private SqlStatementVisitor _sqlStatementVisitor;
+    private ResolvingSqlStatementVisitor _sqlStatementVisitor;
 
     [SetUp]
     public void SetUp ()
@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _sqlStatement.SelectProjection = tableReferenceExpression;
       
       _resolver = new SqlStatementResolverStub();
-      _sqlStatementVisitor = new SqlStatementVisitor (_resolver);
+      _sqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
     }
 
     [Test]
@@ -62,12 +62,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var constraint = new SqlTableSource (typeof (string), "Table", "t");
 
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (3));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].SqlTable.TableSource).TableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlTableSource) ((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].SqlTable.TableSource).TableName, Is.EqualTo (constraint.TableName));
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].ColumnName, Is.EqualTo ("ID"));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].ColumnName, Is.EqualTo ("Name"));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].ColumnName, Is.EqualTo ("City"));

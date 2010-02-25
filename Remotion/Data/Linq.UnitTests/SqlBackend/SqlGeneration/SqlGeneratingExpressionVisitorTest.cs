@@ -28,10 +28,23 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
-  public class SqlColumnListExpressionVisitorTest
+  public class SqlGeneratingExpressionVisitorTest
   {
     [Test]
-    public void VisitSqlColumnListExpression ()
+    public void GenerateSql_VisitSqlColumnExpression ()
+    {
+      // TODO: Remove when SqlColumnExpression only takes a string
+      
+      var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID");
+
+      StringBuilder sb = new StringBuilder ();
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, sb);
+
+      Assert.That (sb.ToString (), Is.EqualTo ("[s].[ID]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlColumnListExpression ()
     {
       var resolver = new SqlStatementResolverStub ();
       var tableSource = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
@@ -39,12 +52,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       sqlTable.TableSource = tableSource;
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
-      SqlColumnListExpression sqlColumnListExpression = (SqlColumnListExpression) SqlTableReferenceExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
+      SqlColumnListExpression sqlColumnListExpression = (SqlColumnListExpression) ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, resolver);
+
+      // TODO: var sqlColumnListExpression = new SqlColumnListExpression (typeof (Student), new[] { new SqlColumnExpression (typeof (string), sqlTable, "ID") , ...
 
       StringBuilder sb = new StringBuilder();
-      SqlColumnListExpressionVisitor.TranslateSqlColumnListExpression (sqlColumnListExpression, sb);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, sb);
 
       Assert.That (sb.ToString(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
+
+    // TODO: Test case where unsupported expression is passed to visitor
+    // [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+    //     "The expression '...' cannot be translated to SQL text by this SQL generator. Expression type '...' is not supported.")]
   }
 }
