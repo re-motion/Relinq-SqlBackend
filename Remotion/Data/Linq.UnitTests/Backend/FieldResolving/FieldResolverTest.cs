@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
       _student_ID_Property = typeof (Student).GetProperty ("ID");
       _student_First_Property = typeof (Student).GetProperty ("FirstName");
-      _student_OtherStudent_Property = typeof (Student).GetProperty ("OtherStudent");
+      _student_OtherStudent_Property = typeof (Student).GetProperty ("BuddyStudent");
       _studentDetail_Student_Property = typeof (Student_Detail).GetProperty ("Student");
       _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
 
