@@ -426,7 +426,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       
       const string expectedString = "SELECT [industrial].* FROM [industrialTable] [industrial] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [industrial].[IndustrialSector_PK] = [#j0].[Student_Detail_to_IndustrialSector_FK] "
+                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [industrial].[Restaurant_PK] = [#j0].[Student_Detail_to_IndustrialSector_FK] "
                                     + "WHERE [#j0].[IDColumn] IS NOT NULL";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
