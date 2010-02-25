@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
       
       var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
       tableSourceVisitorMock.Expect (mock => mock.VisitConstantTableSource ((ConstantTableSource) sqlTable.TableSource));

@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_ForSqlTableSource ()
     {
       var sb = new StringBuilder (); // TODO: Move to setup
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
       SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_WithConstantTableSource_RaisesException ()
     {
       var sb = new StringBuilder (); // TODO: Move to setup
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       SqlTableSourceVisitor.GenerateSql (sqlTable, sb);
     }
 

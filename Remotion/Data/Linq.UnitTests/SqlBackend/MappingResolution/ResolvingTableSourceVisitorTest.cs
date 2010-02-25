@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void ResolveConstantTableSource ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
 
       var tableSource = new SqlTableSource (typeof (int), "Table", "t");

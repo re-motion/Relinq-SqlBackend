@@ -22,7 +22,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
   public class SqlStatementModelObjectMother
   {
-    public static SqlTable CreateSqlTable () // TODO add variant for SqlTableSource
+    public static SqlTable CreateSqlTable (AbstractTableSource tableSource)
+    {
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = tableSource;
+      return sqlTable;
+    }
+
+    public static SqlTable CreateSqlTableWithConstantTableSource () // TODO add variant for SqlTableSource
     {
       var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
       var sqlTable = new SqlTable ();

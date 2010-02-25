@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
@@ -33,14 +34,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _sqlStatement = new SqlStatement();
-      
       var source = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
-      _sqlStatement.FromExpression.TableSource = source;
-
-      var tableReferenceExpression = new SqlTableReferenceExpression (_sqlStatement.FromExpression);
-      _sqlStatement.SelectProjection = tableReferenceExpression;
-      
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
+      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable);
       _resolver = new SqlStatementResolverStub();
       _sqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
     }

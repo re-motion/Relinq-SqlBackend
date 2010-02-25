@@ -29,9 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void Build ()
     {
-      SqlStatement sqlStatement = new SqlStatement (); // TODO: new SqlStatement (sqlTable, columnListExpression);
-      
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       var columnListExpression = new SqlColumnListExpression (
@@ -43,9 +41,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      sqlStatement.SelectProjection = columnListExpression;
-      sqlStatement.FromExpression.TableSource = sqlTable.TableSource;
-
+      SqlStatement sqlStatement = new SqlStatement (columnListExpression, sqlTable);
+      
       SqlServerTextGenerator generator = new SqlServerTextGenerator();
       var result = generator.Build (sqlStatement);
       Assert.That (result, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));

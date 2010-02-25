@@ -30,13 +30,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable());
+      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource());
     }
 
     [Test]
     public void Initialize ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
       Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.Type));
     }
 
