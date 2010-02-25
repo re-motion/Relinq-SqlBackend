@@ -163,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       IColumnSource expectedDetailDetailTable = fieldDescriptor.SourcePath.FirstSource;
       var expectedDetailTable = new Table ("detailTable", null); // MainKitchen
       var join1 = new SingleJoin (
-          new Column (expectedDetailDetailTable, "Student_Detail_Detail_PK"),
+          new Column (expectedDetailDetailTable, "Company_PK"),
           new Column (expectedDetailTable, "Student_Detail_Detail_to_Student_Detail_FK"));
 
       var expectedStudentTable = new Table ("studentTable", null); // Cook
