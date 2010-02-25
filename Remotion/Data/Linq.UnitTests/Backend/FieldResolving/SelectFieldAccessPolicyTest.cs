@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
-      var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
+      var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (CookReference);
       Assert.That (result.AccessedMember, Is.Null);
       Assert.That (result.JoinedMembers, Is.Empty);
     }
@@ -45,8 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForRelation()
     {
-      var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_Student_Member);
-      var expected = new MemberInfoChain (new[] {StudentDetailDetail_StudentDetail_Member, StudentDetail_Student_Member}, null);
+      var result = _policy.AdjustMemberInfosForRelation (new[] { CompanyKitchenMember }, KitchenCookMember);
+      var expected = new MemberInfoChain (new[] {CompanyKitchenMember, KitchenCookMember}, null);
 
       Assert.AreEqual (expected.AccessedMember, result.AccessedMember);
       Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));

@@ -36,8 +36,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
 
       var parser = new MemberExpressionParser (resolver);
       var fieldDescriptorCollection = new List<FieldDescriptor>();
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Cook).GetProperty ("ID"));
-      IColumnSource fromSource = ParseContext.JoinedTableContext.GetColumnSource (StudentClause);
+      MemberExpression memberExpression = Expression.MakeMemberAccess (CookReference, typeof (Cook).GetProperty ("ID"));
+      IColumnSource fromSource = ParseContext.JoinedTableContext.GetColumnSource (CookClause);
       var path = new FieldSourcePath (fromSource, new SingleJoin[0]);
       var expectedFieldDescriptor = new FieldDescriptor (null, path, new Column (fromSource, "IDColumn"));
 

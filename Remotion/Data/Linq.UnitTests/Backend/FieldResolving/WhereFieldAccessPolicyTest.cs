@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
-      var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
+      var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (CookReference);
       Assert.That (result.AccessedMember, Is.EqualTo (typeof (Cook).GetProperty ("ID")));
       Assert.That (result.JoinedMembers, Is.Empty);
     }
@@ -47,9 +47,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForRelation ()
     {
-      var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_IndustrialSector_Member);
+      var result = _policy.AdjustMemberInfosForRelation (new[] { CompanyKitchenMember }, KitchenRestaurantMember);
 
-      var expected = new MemberInfoChain (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_IndustrialSector_Member);
+      var expected = new MemberInfoChain (new[] { CompanyKitchenMember }, KitchenRestaurantMember);
       Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));
       Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));
     }
@@ -57,10 +57,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForRelation_VirtualSide ()
     {
-      var result = _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_IndustrialSector_Member }, IndustrialSector_StudentDetail_Member);
+      var result = _policy.AdjustMemberInfosForRelation (new[] { CompanyRestaurantMember }, RestaurantKitchenMember);
 
       MemberInfo primaryKeyMember = typeof (Kitchen).GetProperty ("ID");
-      var expected = new MemberInfoChain (new[] { StudentDetailDetail_IndustrialSector_Member, IndustrialSector_StudentDetail_Member }, primaryKeyMember);
+      var expected = new MemberInfoChain (new[] { CompanyRestaurantMember, RestaurantKitchenMember }, primaryKeyMember);
 
       Assert.That (result.AccessedMember, Is.EqualTo (expected.AccessedMember));
       Assert.That (result.JoinedMembers, Is.EqualTo (expected.JoinedMembers));

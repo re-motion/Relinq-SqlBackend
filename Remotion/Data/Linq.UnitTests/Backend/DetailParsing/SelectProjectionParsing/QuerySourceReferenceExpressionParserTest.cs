@@ -30,10 +30,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     [Test]
     public void Parse ()
     {
-      var expression = new QuerySourceReferenceExpression (StudentClause);
+      var expression = new QuerySourceReferenceExpression (CookClause);
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, new SelectFieldAccessPolicy());
 
-      var fromSource = ParseContext.JoinedTableContext.GetColumnSource (StudentClause);
+      var fromSource = ParseContext.JoinedTableContext.GetColumnSource (CookClause);
       var path = new FieldSourcePath (fromSource, new SingleJoin[0]);
       var expectedFieldDescriptor = new FieldDescriptor (null, path, new Column (fromSource, "*"));
       IEvaluation expectedEvaluation = expectedFieldDescriptor.Column;

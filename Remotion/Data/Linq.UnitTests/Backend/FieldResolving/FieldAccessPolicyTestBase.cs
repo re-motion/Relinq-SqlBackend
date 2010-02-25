@@ -24,59 +24,59 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 {
   public abstract class FieldAccessPolicyTestBase
   {
-    private MainFromClause _studentClause;
-    private QuerySourceReferenceExpression _studentReference;
+    private MainFromClause _cookClause;
+    private QuerySourceReferenceExpression _cookReference;
     
-    private MemberInfo _studentDetailDetail_StudentDetail_Member;
-    private MemberInfo _studentDetail_Student_Member;
-    private MemberInfo _industrialSector_StudentDetail_Member;
-    private MemberInfo _studentDetailDetail_IndustrialSector_Member;
-    private MemberInfo _studentDetail_IndustrialSector_Member;
+    private MemberInfo _company_Kitchen_Member;
+    private MemberInfo _kitchen_Cook_Member;
+    private MemberInfo _restaurant_Kitchen_Member;
+    private MemberInfo _company_Restaurant_Member;
+    private MemberInfo _kitchen_Restaurant_Member;
 
-    public MemberInfo StudentDetailDetail_StudentDetail_Member
+    public MemberInfo CompanyKitchenMember
     {
-      get { return _studentDetailDetail_StudentDetail_Member; }
+      get { return _company_Kitchen_Member; }
     }
 
-    public MemberInfo StudentDetail_Student_Member
+    public MemberInfo KitchenCookMember
     {
-      get { return _studentDetail_Student_Member; }
+      get { return _kitchen_Cook_Member; }
     }
 
-    public MainFromClause StudentClause
+    public MainFromClause CookClause
     {
-      get { return _studentClause; }
+      get { return _cookClause; }
     }
 
-    public QuerySourceReferenceExpression StudentReference
+    public QuerySourceReferenceExpression CookReference
     {
-      get { return _studentReference; }
+      get { return _cookReference; }
     }
 
-    public MemberInfo StudentDetailDetail_IndustrialSector_Member
+    public MemberInfo CompanyRestaurantMember
     {
-      get { return _studentDetailDetail_IndustrialSector_Member; }
+      get { return _company_Restaurant_Member; }
     }
 
-    public MemberInfo StudentDetail_IndustrialSector_Member
+    public MemberInfo KitchenRestaurantMember
     {
-      get { return _studentDetail_IndustrialSector_Member; }
+      get { return _kitchen_Restaurant_Member; }
     }
 
-    public MemberInfo IndustrialSector_StudentDetail_Member
+    public MemberInfo RestaurantKitchenMember
     {
-      get { return _industrialSector_StudentDetail_Member; }
+      get { return _restaurant_Kitchen_Member; }
     }
 
     public virtual void SetUp ()
     {
-      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
-      _studentReference = new QuerySourceReferenceExpression (StudentClause);
-      _studentDetailDetail_StudentDetail_Member = typeof (Company).GetProperty ("MainKitchen");
-      _studentDetail_Student_Member = typeof (Kitchen).GetProperty ("Cook");
-      _studentDetailDetail_IndustrialSector_Member = typeof (Company).GetProperty ("Restaurant");
-      _studentDetail_IndustrialSector_Member = typeof (Kitchen).GetProperty ("Restaurant");
-      _industrialSector_StudentDetail_Member = typeof (Restaurant).GetProperty ("SubKitchen");
+      _cookClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      _cookReference = new QuerySourceReferenceExpression (CookClause);
+      _company_Kitchen_Member = typeof (Company).GetProperty ("MainKitchen");
+      _kitchen_Cook_Member = typeof (Kitchen).GetProperty ("Cook");
+      _company_Restaurant_Member = typeof (Company).GetProperty ("Restaurant");
+      _kitchen_Restaurant_Member = typeof (Kitchen).GetProperty ("Restaurant");
+      _restaurant_Kitchen_Member = typeof (Restaurant).GetProperty ("SubKitchen");
     }
   }
 }

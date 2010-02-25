@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
           new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
       var parser = new MemberExpressionParser (resolver);
 
-      parser.Parse (Student_ID_Expression, ParseContext);
+      parser.Parse (CookIDExpression, ParseContext);
       Assert.That (ParseContext.FieldDescriptors, SyntaxHelper.Not.Empty);
     }
   }

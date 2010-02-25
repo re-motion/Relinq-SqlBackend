@@ -36,27 +36,27 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     private JoinedTableContext _context;
     private IResolveFieldAccessPolicy _policy;
 
-    private MainFromClause _studentClause;
-    private QuerySourceReferenceExpression _studentReference;
+    private MainFromClause _cookClause;
+    private QuerySourceReferenceExpression _cookReference;
 
-    private MainFromClause _studentDetailClause;
-    private QuerySourceReferenceExpression _studentDetailReference;
+    private MainFromClause _kitchenClause;
+    private QuerySourceReferenceExpression _kitchenReference;
 
-    private MainFromClause _studentDetailDetailClause;
-    private QuerySourceReferenceExpression _studentDetailDetailReference;
+    private MainFromClause _companyClause;
+    private QuerySourceReferenceExpression _companyReference;
     
-    private PropertyInfo _studentDetail_Student_Property;
-    private PropertyInfo _studentDetailDetail_StudentDetail_Property;
-    private PropertyInfo _student_ID_Property;
-    private PropertyInfo _student_OtherStudent_Property;
-    private PropertyInfo _student_First_Property;
+    private PropertyInfo _kitchen_Cook_Property;
+    private PropertyInfo _company_Kitchen_Property;
+    private PropertyInfo _cook_ID_Property;
+    private PropertyInfo _cook_Substitution_Property;
+    private PropertyInfo _cook_FirstName_Property;
 
-    private MemberExpression _student_First_Expression;
-    private MemberExpression _studentDetail_Student_Expression;
-    private MemberExpression _studentDetail_Student_First_Expression;
-    private MemberExpression _studentDetailDetail_StudentDetail_Student_First_Expression;
-    private MemberExpression _studentDetailDetail_StudentDetail_Student_Expression;
-    private MemberExpression _studentDetailDetail_StudentDetail_Expression;
+    private MemberExpression _cook_FirstName_Expression;
+    private MemberExpression _kitchen_Cook_Expression;
+    private MemberExpression _kitchen_Cook_FirstName_Expression;
+    private MemberExpression _company_kitchen_Cook_FirstName_Expression;
+    private MemberExpression _company_Kitchen_Cook_Expression;
+    private MemberExpression _company_Kitchen_Expression;
 
     private MockRepository _mockRepository;
     private IResolveFieldAccessPolicy _policyMock;
@@ -66,30 +66,30 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       _context = new JoinedTableContext(StubDatabaseInfo.Instance);
       _policy = new SelectFieldAccessPolicy();
-      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
-      _studentReference = new QuerySourceReferenceExpression (_studentClause);
+      _cookClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      _cookReference = new QuerySourceReferenceExpression (_cookClause);
 
-      _studentDetailClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
-      _studentDetailReference = new QuerySourceReferenceExpression (_studentDetailClause);
+      _kitchenClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
+      _kitchenReference = new QuerySourceReferenceExpression (_kitchenClause);
 
-      _studentDetailDetailClause = ExpressionHelper.CreateMainFromClause_Detail_Detail ();
-      _studentDetailDetailReference = new QuerySourceReferenceExpression (_studentDetailDetailClause);
+      _companyClause = ExpressionHelper.CreateMainFromClause_Detail_Detail ();
+      _companyReference = new QuerySourceReferenceExpression (_companyClause);
 
-      _student_ID_Property = typeof (Cook).GetProperty ("ID");
-      _student_First_Property = typeof (Cook).GetProperty ("FirstName");
-      _student_OtherStudent_Property = typeof (Cook).GetProperty ("Substitution");
-      _studentDetail_Student_Property = typeof (Kitchen).GetProperty ("Cook");
-      _studentDetailDetail_StudentDetail_Property = typeof (Company).GetProperty ("MainKitchen");
+      _cook_ID_Property = typeof (Cook).GetProperty ("ID");
+      _cook_FirstName_Property = typeof (Cook).GetProperty ("FirstName");
+      _cook_Substitution_Property = typeof (Cook).GetProperty ("Substitution");
+      _kitchen_Cook_Property = typeof (Kitchen).GetProperty ("Cook");
+      _company_Kitchen_Property = typeof (Company).GetProperty ("MainKitchen");
 
-      _student_First_Expression = Expression.MakeMemberAccess (_studentReference, _student_First_Property);
-      _studentDetail_Student_Expression = Expression.MakeMemberAccess (_studentDetailReference, _studentDetail_Student_Property);
-      _studentDetail_Student_First_Expression = Expression.MakeMemberAccess (_studentDetail_Student_Expression, _student_First_Property);
-      _studentDetailDetail_StudentDetail_Expression = 
-          Expression.MakeMemberAccess (_studentDetailDetailReference, _studentDetailDetail_StudentDetail_Property);
-      _studentDetailDetail_StudentDetail_Student_Expression = 
-          Expression.MakeMemberAccess (_studentDetailDetail_StudentDetail_Expression, _studentDetail_Student_Property);
-      _studentDetailDetail_StudentDetail_Student_First_Expression =
-          Expression.MakeMemberAccess (_studentDetailDetail_StudentDetail_Student_Expression, _student_First_Property);
+      _cook_FirstName_Expression = Expression.MakeMemberAccess (_cookReference, _cook_FirstName_Property);
+      _kitchen_Cook_Expression = Expression.MakeMemberAccess (_kitchenReference, _kitchen_Cook_Property);
+      _kitchen_Cook_FirstName_Expression = Expression.MakeMemberAccess (_kitchen_Cook_Expression, _cook_FirstName_Property);
+      _company_Kitchen_Expression = 
+          Expression.MakeMemberAccess (_companyReference, _company_Kitchen_Property);
+      _company_Kitchen_Cook_Expression = 
+          Expression.MakeMemberAccess (_company_Kitchen_Expression, _kitchen_Cook_Property);
+      _company_kitchen_Cook_FirstName_Expression =
+          Expression.MakeMemberAccess (_company_Kitchen_Cook_Expression, _cook_FirstName_Property);
 
       _mockRepository = new MockRepository ();
       _policyMock = _mockRepository.StrictMock<IResolveFieldAccessPolicy> ();
@@ -100,8 +100,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       // s
 
-      IColumnSource table = _context.GetColumnSource (_studentClause);
-      FieldDescriptor fieldDescriptor = new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentReference, _context);
+      IColumnSource table = _context.GetColumnSource (_cookClause);
+      FieldDescriptor fieldDescriptor = new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_cookReference, _context);
 
       var column = new Column (table, "*");
       var expected = new FieldDescriptor (null, new FieldSourcePath (table, new SingleJoin[0]), column);
@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
       FieldDescriptor fieldDescriptor = 
           new FieldResolver (StubDatabaseInfo.Instance, _policy)
-          .ResolveField (_student_First_Expression, _context);
+          .ResolveField (_cook_FirstName_Expression, _context);
       Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("cookTable", "s"), "FirstNameColumn")));
     }
 
@@ -135,10 +135,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       // sd.Cook.FirstName
 
       FieldDescriptor fieldDescriptor =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);
+          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_kitchen_Cook_FirstName_Expression, _context);
 
       Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("cookTable", null), "FirstNameColumn")));
-      Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
+      Assert.That (fieldDescriptor.Member, Is.EqualTo (_cook_FirstName_Property));
 
       IColumnSource expectedSourceTable = fieldDescriptor.SourcePath.FirstSource;
       var expectedRelatedTable = new Table ("cookTable", null);
@@ -155,10 +155,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       // sdd.MainKitchen.Cook.FirstName
 
       FieldDescriptor fieldDescriptor =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_First_Expression, _context);
+          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_company_kitchen_Cook_FirstName_Expression, _context);
 
       Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("cookTable", null), "FirstNameColumn")));
-      Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
+      Assert.That (fieldDescriptor.Member, Is.EqualTo (_cook_FirstName_Property));
 
       IColumnSource expectedDetailDetailTable = fieldDescriptor.SourcePath.FirstSource;
       var expectedDetailTable = new Table ("kitchenTable", null); // MainKitchen
@@ -166,9 +166,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new Column (expectedDetailDetailTable, "Company_PK"),
           new Column (expectedDetailTable, "Company_to_Kitchen_FK"));
 
-      var expectedStudentTable = new Table ("cookTable", null); // Cook
+      var expectedCookTable = new Table ("cookTable", null); // Cook
       var join2 = new SingleJoin (
-          new Column (expectedDetailTable, "Kitchen_PK"), new Column (expectedStudentTable, "Kitchen_to_Cook_FK"));
+          new Column (expectedDetailTable, "Kitchen_PK"), new Column (expectedCookTable, "Kitchen_to_Cook_FK"));
 
       var expectedPath = new FieldSourcePath (expectedDetailDetailTable, new[] { join1, join2 });
       Assert.That (fieldDescriptor.SourcePath, Is.EqualTo (expectedPath));
@@ -182,7 +182,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       // s.FirstName.Length
       Expression fieldExpression =
           Expression.MakeMemberAccess (
-              _student_First_Expression,
+              _cook_FirstName_Expression,
               typeof (string).GetProperty ("Length"));
 
       new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (fieldExpression, _context);
@@ -194,7 +194,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void Resolve_SimpleMemberAccess_InvalidField ()
     {
       Expression fieldExpression = Expression.MakeMemberAccess (
-          _studentReference,
+          _cookReference,
           typeof (Cook).GetProperty ("NonDBStringProperty"));
 
       new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (fieldExpression, _context);
@@ -207,9 +207,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       // sd.Cook.FirstName
 
       FieldDescriptor fieldDescriptor1 =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);
+          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_kitchen_Cook_FirstName_Expression, _context);
       FieldDescriptor fieldDescriptor2 =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);
+          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_kitchen_Cook_FirstName_Expression, _context);
 
       IColumnSource table1 = fieldDescriptor1.SourcePath.Joins[0].RightSide;
       IColumnSource table2 = fieldDescriptor2.SourcePath.Joins[0].RightSide;
@@ -223,14 +223,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       //sd.Cook
 
       FieldDescriptor fieldDescriptor =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_Expression, _context);
+          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_kitchen_Cook_Expression, _context);
 
-      IColumnSource kitchenTable = _context.GetColumnSource (_studentDetailClause);
-      Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
-      var join = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, kitchenTable, cookTable);
+      IColumnSource kitchenTable = _context.GetColumnSource (_kitchenClause);
+      Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_kitchen_Cook_Property, null);
+      var join = StubDatabaseInfo.Instance.GetJoinForMember (_kitchen_Cook_Property, kitchenTable, cookTable);
       var column = new Column (cookTable, "*");
 
-      var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (kitchenTable, new[] { join }), column);
+      var expected = new FieldDescriptor (_kitchen_Cook_Property, new FieldSourcePath (kitchenTable, new[] { join }), column);
       Assert.That (fieldDescriptor, Is.EqualTo (expected));
     }
 
@@ -240,17 +240,17 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       //sdd.MainKitchen.Cook
 
       FieldDescriptor fieldDescriptor =
-          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
+          new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_company_Kitchen_Cook_Expression, _context);
 
-      IColumnSource companyTable = _context.GetColumnSource (_studentDetailDetailClause);
-      Table kitchenTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
-      Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
-      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailDetail_StudentDetail_Property, companyTable, kitchenTable);
-      var join2 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, kitchenTable, cookTable);
+      IColumnSource companyTable = _context.GetColumnSource (_companyClause);
+      Table kitchenTable = StubDatabaseInfo.Instance.GetTableForRelation (_company_Kitchen_Property, null);
+      Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_kitchen_Cook_Property, null);
+      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_company_Kitchen_Property, companyTable, kitchenTable);
+      var join2 = StubDatabaseInfo.Instance.GetJoinForMember (_kitchen_Cook_Property, kitchenTable, cookTable);
 
       var column = new Column (cookTable, "*");
 
-      var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (companyTable, new[] { join1, join2 }), column);
+      var expected = new FieldDescriptor (_kitchen_Cook_Property, new FieldSourcePath (companyTable, new[] { join1, join2 }), column);
       Assert.That (fieldDescriptor, Is.EqualTo (expected));
     }
 
@@ -277,24 +277,24 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void Resolver_UsesPolicyToAdjustRelationMembers ()
     {
       _policyMock.Expect (mock => mock.OptimizeRelatedKeyAccess ()).Return (false);
-      var newJoinMembers = new[] { _studentDetailDetail_StudentDetail_Property, _studentDetail_Student_Property };
+      var newJoinMembers = new[] { _company_Kitchen_Property, _kitchen_Cook_Property };
       _policyMock.Expect (
-          mock => mock.AdjustMemberInfosForRelation (Arg<IEnumerable<MemberInfo>>.List.Equal (new[] { _studentDetailDetail_StudentDetail_Property }), Arg.Is<MemberInfo> (_studentDetail_Student_Property)))
-          .Return (new MemberInfoChain (newJoinMembers, _student_ID_Property));
+          mock => mock.AdjustMemberInfosForRelation (Arg<IEnumerable<MemberInfo>>.List.Equal (new[] { _company_Kitchen_Property }), Arg.Is<MemberInfo> (_kitchen_Cook_Property)))
+          .Return (new MemberInfoChain (newJoinMembers, _cook_ID_Property));
 
       _policyMock.Replay();
 
       FieldDescriptor actualFieldDescriptor = new FieldResolver (StubDatabaseInfo.Instance, _policyMock)
-          .ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
+          .ResolveField (_company_Kitchen_Cook_Expression, _context);
       
       _policyMock.VerifyAllExpectations();
 
       var expectedPath = new FieldSourcePathBuilder().BuildFieldSourcePath (
           StubDatabaseInfo.Instance,
           _context,
-          _context.GetColumnSource (_studentDetailDetailClause),
+          _context.GetColumnSource (_companyClause),
           newJoinMembers);
-      var expectedFieldDescriptor = new FieldDescriptor (_studentDetail_Student_Property, expectedPath, new Column (expectedPath.LastSource, "IDColumn"));
+      var expectedFieldDescriptor = new FieldDescriptor (_kitchen_Cook_Property, expectedPath, new Column (expectedPath.LastSource, "IDColumn"));
       Assert.That (actualFieldDescriptor, Is.EqualTo (expectedFieldDescriptor));
     }
 
@@ -303,12 +303,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       _policyMock.Expect (mock => mock.OptimizeRelatedKeyAccess()).Return (false);
 
-      Expression fieldExpression = _studentDetailDetailReference;
+      Expression fieldExpression = _companyReference;
 
-      var newJoinMembers = new[] { _student_OtherStudent_Property };
+      var newJoinMembers = new[] { _cook_Substitution_Property };
       _policyMock
-          .Expect (mock => mock.AdjustMemberInfosForDirectAccessOfQuerySource (_studentDetailDetailReference))
-          .Return (new MemberInfoChain (newJoinMembers, _student_ID_Property));
+          .Expect (mock => mock.AdjustMemberInfosForDirectAccessOfQuerySource (_companyReference))
+          .Return (new MemberInfoChain (newJoinMembers, _cook_ID_Property));
 
       _policyMock.Replay ();
 
@@ -321,7 +321,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldSourcePath path = new FieldSourcePathBuilder().BuildFieldSourcePath (
           StubDatabaseInfo.Instance,
           _context,
-          _context.GetColumnSource (_studentDetailDetailClause),
+          _context.GetColumnSource (_companyClause),
           newJoinMembers);
       var expectedFieldDescriptor = new FieldDescriptor (null, path, new Column (path.LastSource, "IDColumn"));
       Assert.That (actualFieldDescriptor, Is.EqualTo (expectedFieldDescriptor));
@@ -332,14 +332,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IResolveFieldAccessPolicy policy = new WhereFieldAccessPolicy (StubDatabaseInfo.Instance);
       Assert.That (policy.OptimizeRelatedKeyAccess(), Is.True);
-      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int> (_studentDetailClause, sd => sd.Restaurant.ID);
+      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int> (_kitchenClause, sd => sd.Restaurant.ID);
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, policy);
 
       FieldDescriptor result = resolver.ResolveField (fieldExpression, _context);
 
       Assert.That (
-          result.Column, Is.EqualTo (new Column (_context.GetColumnSource (_studentDetailClause), "Kitchen_to_Restaurant_FK")));
+          result.Column, Is.EqualTo (new Column (_context.GetColumnSource (_kitchenClause), "Kitchen_to_Restaurant_FK")));
     }
 
     [Test]
@@ -347,7 +347,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       IResolveFieldAccessPolicy policy = new SelectFieldAccessPolicy();
       Assert.That (policy.OptimizeRelatedKeyAccess(), Is.False);
-      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int>(_studentDetailClause, sd => sd.Restaurant.ID);
+      Expression fieldExpression = ExpressionHelper.Resolve<Kitchen, int>(_kitchenClause, sd => sd.Restaurant.ID);
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, policy);
       FieldDescriptor result = resolver.ResolveField (fieldExpression, _context);

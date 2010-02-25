@@ -40,9 +40,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     {
       base.SetUp();
 
-      QueryModel = ExpressionHelper.CreateQueryModel (StudentClause);
+      QueryModel = ExpressionHelper.CreateQueryModel (CookClause);
       _resolver = new FieldResolver (StubDatabaseInfo.Instance, new SelectFieldAccessPolicy());
-      _fromSource = ParseContext.JoinedTableContext.GetColumnSource (StudentClause);
+      _fromSource = ParseContext.JoinedTableContext.GetColumnSource (CookClause);
 
       _parserRegistry = new SelectProjectionParserRegistry (StubDatabaseInfo.Instance, new ParseMode());
       _parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
       types[0] = typeof (string);
       ConstructorInfo constructorInfo = constructorType.GetConstructor (
           BindingFlags.Instance | BindingFlags.Public, null, CallingConventions.Any, types, null);
-      NewExpression newExpression = Expression.New (constructorInfo, new[] { Student_First_Expression });
+      NewExpression newExpression = Expression.New (constructorInfo, new[] { CookFirstExpression });
 
       //expectedResult
       var column = new Column (_fromSource, "FirstNameColumn");
@@ -84,8 +84,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
       var types2 = new[] { typeof (string), typeof (string) };
       ConstructorInfo constructorInfo2 = typeof (DoubleString).GetConstructor (
           BindingFlags.Instance | BindingFlags.Public, null, CallingConventions.Any, types2, null);
-      NewExpression innerExpression = Expression.New (constructorInfo2, Student_First_Expression, Student_Last_Expression);
-      NewExpression outerExpression = Expression.New (constructorInfo1, Student_First_Expression, innerExpression);
+      NewExpression innerExpression = Expression.New (constructorInfo2, CookFirstExpression, CookLastExpression);
+      NewExpression outerExpression = Expression.New (constructorInfo1, CookFirstExpression, innerExpression);
 
       //expectedResult
       var column1 = new Column (_fromSource, "FirstNameColumn");

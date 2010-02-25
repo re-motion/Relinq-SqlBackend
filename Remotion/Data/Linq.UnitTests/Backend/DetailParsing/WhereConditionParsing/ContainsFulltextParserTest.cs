@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       MethodCallExpression methodCallExpression = Expression.Call (
           null,
           typeof (ContainsFulltextExtensionMethod).GetMethod (methodName),
-          Student_First_Expression,
+          CookFirstExpression,
           Expression.Constant ("Test"));
 
       var resolver = new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));

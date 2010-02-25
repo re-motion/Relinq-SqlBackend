@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void AdjustMemberInfosForDirectAccessOfQuerySource ()
     {
-      var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (StudentReference);
+      var result = _policy.AdjustMemberInfosForDirectAccessOfQuerySource (CookReference);
       Assert.That (result.AccessedMember, Is.Null);
       Assert.That (result.JoinedMembers, Is.Empty);
     }
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
         + "is not supported because it is a relation member.")]
     public void AdjustMemberInfosForRelation ()
     {
-      _policy.AdjustMemberInfosForRelation (new[] { StudentDetailDetail_StudentDetail_Member }, StudentDetail_Student_Member);
+      _policy.AdjustMemberInfosForRelation (new[] { CompanyKitchenMember }, KitchenCookMember);
     }
 
     [Test]

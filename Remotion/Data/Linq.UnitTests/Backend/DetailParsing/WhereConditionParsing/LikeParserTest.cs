@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
     public void Parse_WithException ()
     {
       MethodCallExpression methodCallExpression = Expression.Call (
-          Student_First_Expression,
+          CookFirstExpression,
           typeof (string).GetMethod ("Equals", new[] { typeof (object) }),
           Expression.Constant ("Test")
           );
@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
 
       MethodCallExpression methodCallExpression = Expression.Call (
-          Student_First_Expression,
+          CookFirstExpression,
           typeof (string).GetMethod (methodName, new[] { typeof (string) }),
           Expression.Constant ("Test")
           );
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
 
       MethodCallExpression methodCallExpression = Expression.Call (
-          Student_First_Expression,
+          CookFirstExpression,
           typeof (string).GetMethod (methodName, new[] { typeof (string) }),
           Expression.Parameter (typeof (string), "Test")
           );

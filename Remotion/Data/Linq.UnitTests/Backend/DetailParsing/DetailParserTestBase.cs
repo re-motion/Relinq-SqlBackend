@@ -33,37 +33,37 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     protected QueryModel QueryModel;
     protected ParseContext ParseContext;
 
-    private MainFromClause _studentClause;
-    private QuerySourceReferenceExpression _studentReference;
+    private MainFromClause _cookClause;
+    private QuerySourceReferenceExpression _cookReference;
 
-    private MemberExpression _student_First_Expression;
-    private MemberExpression _student_Last_Expression;
-    private MemberExpression _student_ID_Expression;
+    private MemberExpression _cook_First_Expression;
+    private MemberExpression _cook_Last_Expression;
+    private MemberExpression _cook_ID_Expression;
 
-    public MainFromClause StudentClause
+    public MainFromClause CookClause
     {
-      get { return _studentClause; }
-      set { _studentClause = value; }
+      get { return _cookClause; }
+      set { _cookClause = value; }
     }
 
-    public QuerySourceReferenceExpression StudentReference
+    public QuerySourceReferenceExpression CookReference
     {
-      get { return _studentReference; }
+      get { return _cookReference; }
     }
 
-    public MemberExpression Student_First_Expression
+    public MemberExpression CookFirstExpression
     {
-      get { return _student_First_Expression; }
+      get { return _cook_First_Expression; }
     }
 
-    public MemberExpression Student_Last_Expression
+    public MemberExpression CookLastExpression
     {
-      get { return _student_Last_Expression; }
+      get { return _cook_Last_Expression; }
     }
 
-    public MemberExpression Student_ID_Expression
+    public MemberExpression CookIDExpression
     {
-      get { return _student_ID_Expression; }
+      get { return _cook_ID_Expression; }
     }
 
     [SetUp]
@@ -72,11 +72,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       QueryModel = ExpressionHelper.CreateQueryModel_Cook ();
       ParseContext = new ParseContext(QueryModel, new List<FieldDescriptor>(), new JoinedTableContext (StubDatabaseInfo.Instance));
 
-      _studentClause = ExpressionHelper.CreateMainFromClause_Cook ();
-      _studentReference = new QuerySourceReferenceExpression (_studentClause);
-      _student_First_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("FirstName"));
-      _student_Last_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("Name"));
-      _student_ID_Expression = Expression.MakeMemberAccess (_studentReference, typeof (Cook).GetProperty ("ID"));
+      _cookClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      _cookReference = new QuerySourceReferenceExpression (_cookClause);
+      _cook_First_Expression = Expression.MakeMemberAccess (_cookReference, typeof (Cook).GetProperty ("FirstName"));
+      _cook_Last_Expression = Expression.MakeMemberAccess (_cookReference, typeof (Cook).GetProperty ("Name"));
+      _cook_ID_Expression = Expression.MakeMemberAccess (_cookReference, typeof (Cook).GetProperty ("ID"));
     }
   }
 }

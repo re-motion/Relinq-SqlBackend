@@ -40,9 +40,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     {
       base.SetUp();
 
-      QueryModel = ExpressionHelper.CreateQueryModel (StudentClause);
+      QueryModel = ExpressionHelper.CreateQueryModel (CookClause);
       _resolver = new FieldResolver (StubDatabaseInfo.Instance, new SelectFieldAccessPolicy());
-      _fromSource = ParseContext.JoinedTableContext.GetColumnSource (StudentClause);
+      _fromSource = ParseContext.JoinedTableContext.GetColumnSource (CookClause);
       _parserRegistry = new SelectProjectionParserRegistry (StubDatabaseInfo.Instance, new ParseMode());
       _parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
       _parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (_resolver));
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     public void ParseWithAdd ()
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      BinaryExpression binaryExpression = Expression.Add (Student_First_Expression, Student_Last_Expression, methodInfo);
+      BinaryExpression binaryExpression = Expression.Add (CookFirstExpression, CookLastExpression, methodInfo);
 
       //expectedResult
       var column1 = new Column (_fromSource, "FirstNameColumn");
@@ -71,11 +71,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     [Test]
     public void CheckNodeTypeMap ()
     {
-      BinaryExpression binaryExpression1 = Expression.Add (Student_ID_Expression, Student_ID_Expression);
-      BinaryExpression binaryExpression2 = Expression.Divide (Student_ID_Expression, Student_ID_Expression);
-      BinaryExpression binaryExpression3 = Expression.Modulo (Student_ID_Expression, Student_ID_Expression);
-      BinaryExpression binaryExpression4 = Expression.Multiply (Student_ID_Expression, Student_ID_Expression);
-      BinaryExpression binaryExpression5 = Expression.Subtract (Student_ID_Expression, Student_ID_Expression);
+      BinaryExpression binaryExpression1 = Expression.Add (CookIDExpression, CookIDExpression);
+      BinaryExpression binaryExpression2 = Expression.Divide (CookIDExpression, CookIDExpression);
+      BinaryExpression binaryExpression3 = Expression.Modulo (CookIDExpression, CookIDExpression);
+      BinaryExpression binaryExpression4 = Expression.Multiply (CookIDExpression, CookIDExpression);
+      BinaryExpression binaryExpression5 = Expression.Subtract (CookIDExpression, CookIDExpression);
 
       var binaryExpressionParser = new BinaryExpressionParser (_parserRegistry);
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
                                                                     + "in select projection, found 'AddChecked'.")]
     public void CheckExceptionHandling ()
     {
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Cook).GetProperty ("ID"));
+      MemberExpression memberExpression = Expression.MakeMemberAccess (CookReference, typeof (Cook).GetProperty ("ID"));
       BinaryExpression binaryExpression = Expression.AddChecked (memberExpression, memberExpression);
       var binaryExpressionParser = new BinaryExpressionParser (_parserRegistry);
       binaryExpressionParser.Parse (binaryExpression, ParseContext);
