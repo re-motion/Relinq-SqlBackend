@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _studentDetail_Student_Member = typeof (Kitchen).GetProperty ("Cook");
       _studentDetailDetail_IndustrialSector_Member = typeof (Company).GetProperty ("Restaurant");
       _studentDetail_IndustrialSector_Member = typeof (Kitchen).GetProperty ("Restaurant");
-      _industrialSector_StudentDetail_Member = typeof (Restaurant).GetProperty ("Kitchen");
+      _industrialSector_StudentDetail_Member = typeof (Restaurant).GetProperty ("SubKitchen");
     }
   }
 }
