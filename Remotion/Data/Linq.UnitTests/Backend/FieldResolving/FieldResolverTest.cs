@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _student_First_Property = typeof (Cook).GetProperty ("FirstName");
       _student_OtherStudent_Property = typeof (Cook).GetProperty ("Substitution");
       _studentDetail_Student_Property = typeof (Kitchen).GetProperty ("Cook");
-      _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Kitchen");
+      _studentDetailDetail_StudentDetail_Property = typeof (Restaurant).GetProperty ("Kitchen");
 
       _student_First_Expression = Expression.MakeMemberAccess (_studentReference, _student_First_Property);
       _studentDetail_Student_Expression = Expression.MakeMemberAccess (_studentDetailReference, _studentDetail_Student_Property);
