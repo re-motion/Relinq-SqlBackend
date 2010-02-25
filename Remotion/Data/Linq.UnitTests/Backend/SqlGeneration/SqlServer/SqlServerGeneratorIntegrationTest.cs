@@ -263,7 +263,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] "
-                       + "ON [sd].[Kitchen_PK] = [#j0].[Student_Detail_to_Student_FK] ORDER BY [#j0].[FirstNameColumn] ASC",
+                       + "ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] ORDER BY [#j0].[FirstNameColumn] ASC",
                        result.Statement);
     }
 
@@ -276,7 +276,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Student_Detail_to_Student_FK] "
+                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC";
       Assert.AreEqual (expectedString, result.Statement);
     }
@@ -300,10 +300,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "FROM "
                                     + "[detailDetailTable] [sdd1] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd1].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Student_Detail_to_Student_FK], "
+                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK], "
                                     + "[detailDetailTable] [sdd2] "
                                     + "LEFT OUTER JOIN [detailTable] [#j2] ON [sdd2].[Student_Detail_Detail_PK] = [#j2].[Student_Detail_Detail_to_Student_Detail_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Student_Detail_to_Student_FK] "
+                                    + "LEFT OUTER JOIN [studentTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC, [#j3].[FirstNameColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -326,7 +326,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Student_Detail_to_Student_FK] "
+                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j0].[IDColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -348,7 +348,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Student_Detail_to_Student_FK] "
+                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Student_Detail_Detail_PK] = [#j2].[Student_Detail_Detail_to_IndustrialSector_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -365,7 +365,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       
       const string expectedString = "SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN "
-                                    + "[studentTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Student_Detail_to_Student_FK]";
+                                    + "[studentTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -552,7 +552,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
       Assert.AreEqual ("SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = " +
-                       "[#j0].[Student_Detail_to_Student_FK]", result.Statement);
+                       "[#j0].[Kitchen_to_Cook_FK]", result.Statement);
     }
 
     [Test]
@@ -565,7 +565,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
       Assert.AreEqual ("SELECT [#j0].[FirstNameColumn] FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = " +
-                       "[#j0].[Student_Detail_to_Student_FK]", result.Statement);
+                       "[#j0].[Kitchen_to_Cook_FK]", result.Statement);
     }
 
     [Test]
@@ -618,7 +618,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_VirtualColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Student_Detail_to_Student_FK] WHERE ([#j0].[IDColumn] = @1)"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] WHERE ([#j0].[IDColumn] = @1)"));
       Assert.That (result.Parameters, Is.EqualTo (new[] {new CommandParameter("@1", 5)}));
     }
 
