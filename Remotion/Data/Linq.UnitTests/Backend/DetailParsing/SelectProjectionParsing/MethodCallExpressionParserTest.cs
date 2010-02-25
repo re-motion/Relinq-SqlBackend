@@ -54,12 +54,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     [Test]
     public void CreateMethodCallEvaluation ()
     {
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("First"));
+      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("FirstName"));
       MethodInfo methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
       MethodCallExpression methodCallExpression = Expression.Call (memberExpression, methodInfo);
 
       //expected Result
-      var column = new Column (_fromSource, "FirstColumn");
+      var column = new Column (_fromSource, "FirstNameColumn");
       var c1 = new List<IEvaluation> { column };
       var expected = new MethodCall (methodInfo, column, new List<IEvaluation>());
 
@@ -76,13 +76,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
     [Test]
     public void CreateMethodCall_WithOneArgument ()
     {
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("First"));
+      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("FirstName"));
 
       MethodInfo methodInfo = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
       MethodCallExpression methodCallExpression = Expression.Call (memberExpression, methodInfo, Expression.Constant (5));
 
       //expected Result
-      var column = new Column (_fromSource, "FirstColumn");
+      var column = new Column (_fromSource, "FirstNameColumn");
       var c1 = new List<IEvaluation> { column };
       var item = new Constant (5);
       var item1 = new List<IEvaluation> { item };

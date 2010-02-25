@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void MultipleJoinsForSameTable ()
     {
       // 1)
-      // order by sdd.Student_Detail.Student.First
+      // order by sdd.Student_Detail.Student.FirstName
       // order by sdd.IndustrialSector.ID
       // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> IndustrialSector) }
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void OneJoinWithMultipleExpression ()
     {
       // 2)
-      // order by sdd.Student_Detail.Student.First
+      // order by sdd.Student_Detail.Student.FirstName
       // order by sdd.Student_Detail.Student.Last
       // Joins[sdd] = { (sdd -> Student_Detail -> Student) }
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void JoinWithDifferentLevels ()
     {
       // 3)
-      // order by sdd.Student_Detail.Student.First
+      // order by sdd.Student_Detail.Student.FirstName
       // order by sdd.Student_Detail.IndustrialSector.ID
       // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> Student_Detail -> IndustrialSector) }
 
@@ -190,8 +190,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void JoinWithMultipleKeys ()
     {
       // 4)
-      // order by sdd1.Student_Detail.Student.First
-      // order by sdd2.Student_Detail.Student.First
+      // order by sdd1.Student_Detail.Student.FirstName
+      // order by sdd2.Student_Detail.Student.FirstName
       // Joins[sdd1] = { (sdd1 -> Student_Detail -> Student) }
       // Joins[sdd2] = { (sdd2 -> Student_Detail -> Student) }
 

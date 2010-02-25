@@ -56,9 +56,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void NestedQuerySourceReferenceExpression ()
     {
-      Expression expressionTree = Expression.MakeMemberAccess (_studentReference, typeof (Student).GetProperty ("First"));
+      Expression expressionTree = Expression.MakeMemberAccess (_studentReference, typeof (Student).GetProperty ("FirstName"));
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
-      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("First")));
+      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("FirstName")));
       Assert.That (result.JoinMembers, Is.Empty);
       Assert.That (result.QuerySourceReferenceExpression, Is.SameAs (_studentReference));
     }
@@ -68,10 +68,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       Expression expressionTree = Expression.MakeMemberAccess (
           Expression.MakeMemberAccess (_studentDetailReference, typeof (Student_Detail).GetProperty ("Student")),
-          typeof (Student).GetProperty ("First"));
+          typeof (Student).GetProperty ("FirstName"));
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
 
-      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("First")));
+      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("FirstName")));
       Assert.That (result.JoinMembers, Is.EqualTo (new object[] { typeof (Student_Detail).GetProperty ("Student") }));
       Assert.That (result.QuerySourceReferenceExpression, Is.SameAs (_studentDetailReference));
     }

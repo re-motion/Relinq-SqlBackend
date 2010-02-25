@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _studentDetailDetailReference = new QuerySourceReferenceExpression (_studentDetailDetailClause);
 
       _student_ID_Property = typeof (Student).GetProperty ("ID");
-      _student_First_Property = typeof (Student).GetProperty ("First");
+      _student_First_Property = typeof (Student).GetProperty ("FirstName");
       _student_OtherStudent_Property = typeof (Student).GetProperty ("OtherStudent");
       _studentDetail_Student_Property = typeof (Student_Detail).GetProperty ("Student");
       _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
@@ -121,23 +121,23 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_SimpleMemberAccess_Succeeds ()
     {
-      // s.First
+      // s.FirstName
 
       FieldDescriptor fieldDescriptor = 
           new FieldResolver (StubDatabaseInfo.Instance, _policy)
           .ResolveField (_student_First_Expression, _context);
-      Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("studentTable", "s"), "FirstColumn")));
+      Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("studentTable", "s"), "FirstNameColumn")));
     }
 
     [Test]
     public void Resolve_Join ()
     {
-      // sd.Student.First
+      // sd.Student.FirstName
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);
 
-      Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("studentTable", null), "FirstColumn")));
+      Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("studentTable", null), "FirstNameColumn")));
       Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
 
       IColumnSource expectedSourceTable = fieldDescriptor.SourcePath.FirstSource;
@@ -152,12 +152,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_DoubleJoin ()
     {
-      // sdd.Student_Detail.Student.First
+      // sdd.Student_Detail.Student.FirstName
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_First_Expression, _context);
 
-      Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("studentTable", null), "FirstColumn")));
+      Assert.That (fieldDescriptor.Column, Is.EqualTo (new Column (new Table ("studentTable", null), "FirstNameColumn")));
       Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
 
       IColumnSource expectedDetailDetailTable = fieldDescriptor.SourcePath.FirstSource;
@@ -176,10 +176,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
     [Test]
     [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = 
-        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' is not a relation member.")]
+        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.FirstName' is not a relation member.")]
     public void Resolve_Join_InvalidMember ()
     {
-      // s.First.Length
+      // s.FirstName.Length
       Expression fieldExpression =
           Expression.MakeMemberAccess (
               _student_First_Expression,
@@ -204,7 +204,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_UsesContext ()
     {
-      // sd.Student.First
+      // sd.Student.FirstName
 
       FieldDescriptor fieldDescriptor1 =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);

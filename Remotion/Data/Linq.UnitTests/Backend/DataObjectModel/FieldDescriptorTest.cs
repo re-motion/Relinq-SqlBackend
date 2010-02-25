@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void MemberNotNull ()
     {
       var path = ExpressionHelper.GetPathForNewTable ();
-      MemberInfo member = typeof (Student).GetProperty ("First");
+      MemberInfo member = typeof (Student).GetProperty ("FirstName");
       var column = new Column ();
       var descriptor = new FieldDescriptor (member, path, column);
       Assert.AreEqual (column, descriptor.Column);

@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       _parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (_resolver));
       _parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
 
-      _memberExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (_fromClause), typeof (Student).GetProperty ("First"));
+      _memberExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (_fromClause), typeof (Student).GetProperty ("FirstName"));
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       MethodCallExpression methodCallExpression = Expression.Call (_memberExpression, methodInfo);
 
       //expected Result
-      var column = new Column (_fromSource, "FirstColumn");
+      var column = new Column (_fromSource, "FirstNameColumn");
       var expected = new MethodCall (methodInfo, column, new List<IEvaluation>());
 
       var methodCallExpressionParser = new MethodCallExpressionParser (_parserRegistry);
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       MethodCallExpression methodCallExpression = Expression.Call (_memberExpression, methodInfo, Expression.Constant (5));
 
       //expected result
-      var column = new Column (_fromSource, "FirstColumn");
+      var column = new Column (_fromSource, "FirstNameColumn");
       var item = new Constant (5);
       var arguments = new List<IEvaluation> { item };
       var expected = new MethodCall (methodInfo, column, arguments);

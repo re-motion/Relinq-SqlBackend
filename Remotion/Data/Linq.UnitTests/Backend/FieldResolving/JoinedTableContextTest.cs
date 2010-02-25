@@ -99,11 +99,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
-        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.First' is not a relation member.")]
+        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.FirstName' is not a relation member.")]
     public void GetJoinedTable_InvalidMember ()
     {
       FieldSourcePath fieldSourcePath = ExpressionHelper.GetPathForNewTable ();
-      MemberInfo member = typeof (Student).GetProperty ("First");
+      MemberInfo member = typeof (Student).GetProperty ("FirstName");
       _context.GetJoinedTable (StubDatabaseInfo.Instance, fieldSourcePath, member);
     }
 

@@ -229,27 +229,27 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_ContainsFulltext ()
     {
-      var column = new Column (new Table ("Student", "s"), "First");
+      var column = new Column (new Table ("Student", "s"), "FirstName");
       var constant = new Constant("Test");
       var binaryCondition = new BinaryCondition (column, constant, BinaryCondition.ConditionKind.ContainsFulltext);
 
       _binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
-      Assert.AreEqual("CONTAINS ([s].[First],@1)", _commandBuilder.GetCommandText());
+      Assert.AreEqual("CONTAINS ([s].[FirstName],@1)", _commandBuilder.GetCommandText());
       Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (new object[] { new CommandParameter ("@1", "Test") }));
     }
 
     [Test]
     public void BuildBinaryCondition_Contains_OnCollection ()
     {
-      var column = new Column (new Table ("Student", "s"), "First");
+      var column = new Column (new Table ("Student", "s"), "FirstName");
       var collection = new [] {"Test1", "Test2"};
       var constantCollection = new Constant(collection);
       var binaryCondition = new BinaryCondition(constantCollection, column, BinaryCondition.ConditionKind.Contains);
 
       _binaryConditionBuilder.BuildBinaryConditionPart (binaryCondition);
 
-      Assert.AreEqual ("[s].[First] IN (@1, @2)", _commandBuilder.GetCommandText ());
+      Assert.AreEqual ("[s].[FirstName] IN (@1, @2)", _commandBuilder.GetCommandText ());
       Assert.That (_commandBuilder.GetCommandParameters (), 
         Is.EqualTo (new object[] { new CommandParameter ("@1", "Test1"), new CommandParameter ("@2", "Test2") }));
     }
@@ -257,7 +257,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void BuildBinaryCondition_Contains_OnEmptyCollection ()
     {
-      var column = new Column (new Table ("Student", "s"), "First");
+      var column = new Column (new Table ("Student", "s"), "FirstName");
       var collection = new string[] {};
       var constantCollection = new Constant (collection);
       var binaryCondition = new BinaryCondition (constantCollection, column, BinaryCondition.ConditionKind.Contains);

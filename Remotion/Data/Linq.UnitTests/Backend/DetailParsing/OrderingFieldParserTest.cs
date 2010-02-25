@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));
     }
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));
     }
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));
     }
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Student
       var join = StubDatabaseInfo.Instance.GetJoinForMember (relationMember, sourceTable, relatedTable);
 
-      PropertyInfo orderingMember = typeof (Student).GetProperty ("First");
+      PropertyInfo orderingMember = typeof (Student).GetProperty ("FirstName");
       var path = new FieldSourcePath (sourceTable, new[] { join });
       var column = StubDatabaseInfo.Instance.GetColumnForMember (relatedTable, orderingMember);
       var expectedFieldDescriptor = new FieldDescriptor (orderingMember, path, column);

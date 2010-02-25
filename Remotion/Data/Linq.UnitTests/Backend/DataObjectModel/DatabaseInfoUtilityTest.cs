@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void IsRelationMember_False ()
     {
-      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student).GetProperty ("First")), Is.False);
+      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student).GetProperty ("FirstName")), Is.False);
     }
 
     [Test]

@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
       BinaryExpression binaryExpression = Expression.Add (Student_First_Expression, Student_Last_Expression, methodInfo);
 
       //expectedResult
-      var column1 = new Column (_fromSource, "FirstColumn");
+      var column1 = new Column (_fromSource, "FirstNameColumn");
       var column2 = new Column (_fromSource, "LastColumn");
       var expectedResult = new BinaryEvaluation (column1, column2, BinaryEvaluation.EvaluationKind.Add);
 

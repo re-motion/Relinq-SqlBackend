@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       FieldDescriptor expectedFieldDescriptor = 
-          ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+          ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
@@ -172,7 +172,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var orderByClause1 = (OrderByClause) parsedQuery.BodyClauses[0];
       var orderByClause2 = (OrderByClause) parsedQuery.BodyClauses[1];
 
-      FieldDescriptor firstFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("First"));
+      FieldDescriptor firstFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
       FieldDescriptor lastFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("Last"));
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
@@ -205,7 +205,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
           typeof (Tuple<string, string>).GetConstructors()[0],
           new IEvaluation[]
           {
-              new Column (new Table ("studentTable", "s"), "FirstColumn"),
+              new Column (new Table ("studentTable", "s"), "FirstNameColumn"),
               new Column (new Table ("studentTable", "s"), "LastColumn")
           });
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (expectedNewObject));
@@ -332,7 +332,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
           new Constant ("Garcia"),
           BinaryCondition.ConditionKind.Equal);
       var condition2 = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "FirstColumn"),
+          new Column (new Table ("studentTable", "s"), "FirstNameColumn"),
           new Constant ("Hugo"),
           BinaryCondition.ConditionKind.Equal);
       var combination12 = new ComplexCriterion (condition1, condition2, ComplexCriterion.JunctionKind.And);

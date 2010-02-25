@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
       NewExpression newExpression = Expression.New (constructorInfo, new[] { Student_First_Expression });
 
       //expectedResult
-      var column = new Column (_fromSource, "FirstColumn");
+      var column = new Column (_fromSource, "FirstNameColumn");
       var newObject = new NewObject (constructorInfo, new IEvaluation[] { column });
 
 
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
       NewExpression outerExpression = Expression.New (constructorInfo1, Student_First_Expression, innerExpression);
 
       //expectedResult
-      var column1 = new Column (_fromSource, "FirstColumn");
+      var column1 = new Column (_fromSource, "FirstNameColumn");
       var column2 = new Column (_fromSource, "LastColumn");
 
       var expectedInnerNewObject = new NewObject (constructorInfo2, new IEvaluation[] { column1, column2 });
