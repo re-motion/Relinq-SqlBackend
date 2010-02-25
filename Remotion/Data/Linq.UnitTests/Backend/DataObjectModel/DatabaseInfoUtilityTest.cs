@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     [Test]
     public void IsRelationMember_NonDBMember ()
     {
-      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student).GetProperty ("NonDBProperty")), Is.False);
+      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student).GetProperty ("NonDBStringProperty")), Is.False);
     }
 
     [Test]

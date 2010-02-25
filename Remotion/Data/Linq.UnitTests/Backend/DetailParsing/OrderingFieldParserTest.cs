@@ -121,7 +121,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBProperty' "
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBStringProperty' "
         + "does not identify a queryable column.")]
     public void OrderingClause_WithNonDBField ()
     {
