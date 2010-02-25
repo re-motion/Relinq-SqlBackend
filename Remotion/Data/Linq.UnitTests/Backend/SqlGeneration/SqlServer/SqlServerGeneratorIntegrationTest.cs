@@ -252,7 +252,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] ORDER BY [s].[NameColumn] ASC, "+
-                       "[s].[FirstNameColumn] ASC, [s].[NameColumn] DESC, [s].[ScoresColumn] ASC", result.Statement);
+                       "[s].[FirstNameColumn] ASC, [s].[NameColumn] DESC, [s].[HolidaysColumn] ASC", result.Statement);
     }
 
     [Test]
