@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     private IQueryable<Cook> _source;
     private IQueryable<Kitchen> _detailSource;
     private IQueryable<IndustrialSector> _industrialSectorSource;
-    private IQueryable<Restaurant> _detailDetailSource;
+    private IQueryable<Company> _detailDetailSource;
     private SqlServerGenerator _sqlGenerator;
 
     [SetUp]
@@ -270,8 +270,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void NestedImplicitJoin ()
     {
-      // from sdd in source orderby sdd.Kitchen.Cook.FirstName select sdd
-      IQueryable<Restaurant> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (_detailDetailSource);
+      // from sdd in source orderby sdd.MainKitchen.Cook.FirstName select sdd
+      IQueryable<Company> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
@@ -286,14 +286,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     {
       // from sdd1 in ...
       // from sdd2 in ...
-      // order by sdd1.Kitchen.Cook.FirstName
-      // order by sdd2.Kitchen.Cook.FirstName
-      // order by sdd1.Kitchen.Cook.FirstName
+      // order by sdd1.MainKitchen.Cook.FirstName
+      // order by sdd2.MainKitchen.Cook.FirstName
+      // order by sdd1.MainKitchen.Cook.FirstName
       // select sdd1;
 
-      IQueryable<Restaurant> source1 = _detailDetailSource;
-      IQueryable<Restaurant> source2 = _detailDetailSource;
-      IQueryable<Restaurant> query = JoinTestQueryGenerator.CreateImplicitOrderByJoinWithJoinReuse (source1, source2);
+      IQueryable<Company> source1 = _detailDetailSource;
+      IQueryable<Company> source2 = _detailDetailSource;
+      IQueryable<Company> query = JoinTestQueryGenerator.CreateImplicitOrderByJoinWithJoinReuse (source1, source2);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       const string expectedString = "SELECT [sdd1].* "
@@ -314,12 +314,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void JoinPartReuse ()
     {
       //from sdd in ...
-      //orderby sdd.Kitchen.Cook.FirstName
-      //orderby sdd.Kitchen.ID
+      //orderby sdd.MainKitchen.Cook.FirstName
+      //orderby sdd.MainKitchen.ID
       //select sdd;
 
-      IQueryable<Restaurant> source1 = _detailDetailSource;
-      IQueryable<Restaurant> query = JoinTestQueryGenerator.CreateImplicitOrderByJoinWithJoinPartReuse (source1);
+      IQueryable<Company> source1 = _detailDetailSource;
+      IQueryable<Company> query = JoinTestQueryGenerator.CreateImplicitOrderByJoinWithJoinPartReuse (source1);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       const string expectedString = "SELECT [sdd].* "
@@ -337,9 +337,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SelectJoin()
     {
       // from sdd in source 
-      // select new Tuple<string,int>{sdd.Kitchen.Cook.FirstName,sdd.IndustrialSector.ID}
+      // select new Tuple<string,int>{sdd.MainKitchen.Cook.FirstName,sdd.IndustrialSector.ID}
 
-      IQueryable<Restaurant> source = _detailDetailSource;
+      IQueryable<Company> source = _detailDetailSource;
 
       IQueryable<Tuple<string, int>> query = JoinTestQueryGenerator.CreateComplexImplicitSelectJoin (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);

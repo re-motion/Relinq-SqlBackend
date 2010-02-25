@@ -72,9 +72,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       _studentClause = ExpressionHelper.CreateMainFromClause_Student ();
       _studentReference = new QuerySourceReferenceExpression (StudentClause);
-      _studentDetailDetail_StudentDetail_Member = typeof (Restaurant).GetProperty ("Kitchen");
+      _studentDetailDetail_StudentDetail_Member = typeof (Company).GetProperty ("MainKitchen");
       _studentDetail_Student_Member = typeof (Kitchen).GetProperty ("Cook");
-      _studentDetailDetail_IndustrialSector_Member = typeof (Restaurant).GetProperty ("IndustrialSector");
+      _studentDetailDetail_IndustrialSector_Member = typeof (Company).GetProperty ("IndustrialSector");
       _studentDetail_IndustrialSector_Member = typeof (Kitchen).GetProperty ("IndustrialSector");
       _industrialSector_StudentDetail_Member = typeof (IndustrialSector).GetProperty ("Kitchen");
     }

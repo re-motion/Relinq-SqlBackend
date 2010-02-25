@@ -368,7 +368,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       sqlGeneratorVisitor.VisitWhereClause (whereClause, parsedQuery, 0);
 
       PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
-      IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Kitchen
+      IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // MainKitchen
       Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Cook
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, sourceTable, relatedTable);
 

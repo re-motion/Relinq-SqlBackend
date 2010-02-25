@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _student_First_Property = typeof (Cook).GetProperty ("FirstName");
       _student_OtherStudent_Property = typeof (Cook).GetProperty ("Substitution");
       _studentDetail_Student_Property = typeof (Kitchen).GetProperty ("Cook");
-      _studentDetailDetail_StudentDetail_Property = typeof (Restaurant).GetProperty ("Kitchen");
+      _studentDetailDetail_StudentDetail_Property = typeof (Company).GetProperty ("MainKitchen");
 
       _student_First_Expression = Expression.MakeMemberAccess (_studentReference, _student_First_Property);
       _studentDetail_Student_Expression = Expression.MakeMemberAccess (_studentDetailReference, _studentDetail_Student_Property);
@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_DoubleJoin ()
     {
-      // sdd.Kitchen.Cook.FirstName
+      // sdd.MainKitchen.Cook.FirstName
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_First_Expression, _context);
@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
 
       IColumnSource expectedDetailDetailTable = fieldDescriptor.SourcePath.FirstSource;
-      var expectedDetailTable = new Table ("detailTable", null); // Kitchen
+      var expectedDetailTable = new Table ("detailTable", null); // MainKitchen
       var join1 = new SingleJoin (
           new Column (expectedDetailDetailTable, "Student_Detail_Detail_PK"),
           new Column (expectedDetailTable, "Student_Detail_Detail_to_Student_Detail_FK"));
@@ -237,7 +237,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_EntityField_Nested ()
     {
-      //sdd.Kitchen.Cook
+      //sdd.MainKitchen.Cook
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);

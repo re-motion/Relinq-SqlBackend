@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     public void IsRelationMember_True ()
     {
       Assert.That (
-          StubDatabaseInfo.Instance.IsRelationMember (typeof (Restaurant).GetProperty ("Kitchen")), Is.True);
+          StubDatabaseInfo.Instance.IsRelationMember (typeof (Company).GetProperty ("MainKitchen")), Is.True);
       Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Kitchen).GetProperty ("Cook")), Is.True);
     }
 

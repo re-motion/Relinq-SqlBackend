@@ -147,7 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
 
       FromClauseBase fromClause = parsedQuery.MainFromClause;
       PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
-      IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Kitchen
+      IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // MainKitchen
       Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Cook
       var join = StubDatabaseInfo.Instance.GetJoinForMember (relationMember, sourceTable, relatedTable);
 

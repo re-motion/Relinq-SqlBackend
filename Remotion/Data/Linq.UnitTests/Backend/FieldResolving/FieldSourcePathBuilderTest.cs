@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _context = new JoinedTableContext (StubDatabaseInfo.Instance);
       _initialTable = new Table ("initial", "i");
 
-      _studentDetailMember = typeof (Restaurant).GetProperty ("Kitchen");
+      _studentDetailMember = typeof (Company).GetProperty ("MainKitchen");
       _studentMember = typeof (Kitchen).GetProperty ("Cook");
     }
 
