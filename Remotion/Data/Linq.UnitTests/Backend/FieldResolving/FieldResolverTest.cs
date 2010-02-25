@@ -242,15 +242,15 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
 
-      IColumnSource detailDetailTable = _context.GetColumnSource (_studentDetailDetailClause);
+      IColumnSource companyTable = _context.GetColumnSource (_studentDetailDetailClause);
       Table kitchenTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
       Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
-      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailDetail_StudentDetail_Property, detailDetailTable, kitchenTable);
+      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailDetail_StudentDetail_Property, companyTable, kitchenTable);
       var join2 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, kitchenTable, cookTable);
 
       var column = new Column (cookTable, "*");
 
-      var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (detailDetailTable, new[] { join1, join2 }), column);
+      var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (companyTable, new[] { join1, join2 }), column);
       Assert.That (fieldDescriptor, Is.EqualTo (expected));
     }
 

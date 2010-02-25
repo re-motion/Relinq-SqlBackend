@@ -274,7 +274,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Company> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
+      const string expectedString = "SELECT [sdd].* FROM [companyTable] [sdd] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC";
@@ -298,10 +298,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       
       const string expectedString = "SELECT [sdd1].* "
                                     + "FROM "
-                                    + "[detailDetailTable] [sdd1] "
+                                    + "[companyTable] [sdd1] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd1].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK], "
-                                    + "[detailDetailTable] [sdd2] "
+                                    + "[companyTable] [sdd2] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j2] ON [sdd2].[Company_PK] = [#j2].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC, [#j3].[FirstNameColumn] ASC, [#j1].[FirstNameColumn] ASC";
@@ -324,7 +324,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       
       const string expectedString = "SELECT [sdd].* "
                                     + "FROM "
-                                    + "[detailDetailTable] [sdd] "
+                                    + "[companyTable] [sdd] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j0].[IDColumn] ASC, [#j1].[FirstNameColumn] ASC";
@@ -346,7 +346,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       
       const string expectedString = "SELECT [#j1].[FirstNameColumn], [#j2].[IDColumn] "
                                     + "FROM "
-                                    + "[detailDetailTable] [sdd] "
+                                    + "[companyTable] [sdd] "
                                     + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Company_PK] = [#j2].[Company_to_Restaurant_FK]";
@@ -658,7 +658,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [cookTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [companyTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [cookTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
