@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       IColumnSource expectedSourceTable = fieldDescriptor.SourcePath.FirstSource;
       var expectedRelatedTable = new Table ("studentTable", null);
       var join = new SingleJoin (
-          new Column (expectedSourceTable, "Student_Detail_PK"), new Column (expectedRelatedTable, "Student_Detail_to_Student_FK"));
+          new Column (expectedSourceTable, "Kitchen_PK"), new Column (expectedRelatedTable, "Student_Detail_to_Student_FK"));
       var expectedPath = new FieldSourcePath (expectedSourceTable, new[] { join });
 
       Assert.That (fieldDescriptor.SourcePath, Is.EqualTo (expectedPath));
@@ -168,7 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
       var expectedStudentTable = new Table ("studentTable", null); // Cook
       var join2 = new SingleJoin (
-          new Column (expectedDetailTable, "Student_Detail_PK"), new Column (expectedStudentTable, "Student_Detail_to_Student_FK"));
+          new Column (expectedDetailTable, "Kitchen_PK"), new Column (expectedStudentTable, "Student_Detail_to_Student_FK"));
 
       var expectedPath = new FieldSourcePath (expectedDetailDetailTable, new[] { join1, join2 });
       Assert.That (fieldDescriptor.SourcePath, Is.EqualTo (expectedPath));
