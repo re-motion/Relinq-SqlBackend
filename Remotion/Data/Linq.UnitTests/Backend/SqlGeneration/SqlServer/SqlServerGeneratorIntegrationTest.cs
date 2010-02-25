@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = SelectTestQueryGenerator.CreateSimpleQueryWithNonDBProjection (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT NULL FROM [studentTable] [s]"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT NULL FROM [cookTable] [s]"));
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = SelectTestQueryGenerator.CreateSimpleQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s]", result.Statement);
       Assert.That (result.SqlGenerationData, Is.Not.Null);
       Assert.That (result.SqlGenerationData.SelectEvaluation, Is.InstanceOfType (typeof (Column)));
 
@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Tuple<string, string, int>> query = MixedTestQueryGenerator.CreateMultiFromQueryWithProjection (_source, _source, _source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s1].[FirstNameColumn], [s2].[NameColumn], [s3].[IDColumn] FROM [studentTable] [s1], [studentTable] [s2], [studentTable] [s3]",
+      Assert.AreEqual ("SELECT [s1].[FirstNameColumn], [s2].[NameColumn], [s3].[IDColumn] FROM [cookTable] [s1], [cookTable] [s2], [cookTable] [s3]",
                        result.Statement);
 
       Assert.IsEmpty (result.Parameters);
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[NameColumn] = @1)", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE ([s].[NameColumn] = @1)", result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia") }));
@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ((([s].[NameColumn] = @1) AND ([s].[FirstNameColumn] = @2)) AND ([s].[IDColumn] > @3))",
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE ((([s].[NameColumn] = @1) AND ([s].[FirstNameColumn] = @2)) AND ([s].[IDColumn] > @3))",
                        result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
@@ -126,7 +126,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] "
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] "
                        + "WHERE ((NOT ([s].[FirstNameColumn] = @1) OR ([s].[FirstNameColumn] = @2)) AND ([s].[FirstNameColumn] = @3))",
                        result.Statement);
 
@@ -142,7 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ("
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE ("
                        + "((((([s].[FirstNameColumn] IS NULL OR [s].[FirstNameColumn] <> @1) "
                        + "AND ([s].[IDColumn] > @2)) "
                        + "AND ([s].[IDColumn] >= @3)) "
@@ -165,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] IS NULL OR [s].[NameColumn] IS NOT NULL)",
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE ([s].[FirstNameColumn] IS NULL OR [s].[NameColumn] IS NOT NULL)",
                        result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
@@ -179,7 +179,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE (1=1)",
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE (1=1)",
                        result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
@@ -193,7 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE (1<>1)",
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE (1<>1)",
                        result.Statement);
 
       CommandParameter[] parameters = result.Parameters;
@@ -206,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = WhereTestQueryGenerator.CreateWhereQueryWithStartsWith (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] LIKE @1)",
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE ([s].[FirstNameColumn] LIKE @1)",
                        result.Statement);
       CommandParameter[] parameters = result.Parameters;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "Garcia%") }));
@@ -218,7 +218,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = WhereTestQueryGenerator.CreateWhereQueryWithEndsWith (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] LIKE @1)",
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE ([s].[FirstNameColumn] LIKE @1)",
                        result.Statement);
       CommandParameter[] parameters = result.Parameters;
       Assert.That (parameters, Is.EqualTo (new object[] { new CommandParameter ("@1", "%Garcia") }));
@@ -231,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[FirstNameColumn] ASC",
+      Assert.AreEqual ("SELECT [s1].* FROM [cookTable] [s1] ORDER BY [s1].[FirstNameColumn] ASC",
                        result.Statement);
     }
 
@@ -241,7 +241,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[NameColumn] DESC, [s1].[FirstNameColumn] ASC",
+      Assert.AreEqual ("SELECT [s1].* FROM [cookTable] [s1] ORDER BY [s1].[NameColumn] DESC, [s1].[FirstNameColumn] ASC",
                        result.Statement);
     }
 
@@ -251,7 +251,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = OrderByTestQueryGenerator.CreateOrderByQueryWithMultipleOrderBys (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] ORDER BY [s].[NameColumn] ASC, "+
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] ORDER BY [s].[NameColumn] ASC, "+
                        "[s].[FirstNameColumn] ASC, [s].[NameColumn] DESC, [s].[HolidaysColumn] ASC", result.Statement);
     }
 
@@ -262,7 +262,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Kitchen> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] "
+      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] "
                        + "ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] ORDER BY [#j0].[FirstNameColumn] ASC",
                        result.Statement);
     }
@@ -276,7 +276,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
+                                    + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC";
       Assert.AreEqual (expectedString, result.Statement);
     }
@@ -300,10 +300,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "FROM "
                                     + "[detailDetailTable] [sdd1] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd1].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK], "
+                                    + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK], "
                                     + "[detailDetailTable] [sdd2] "
                                     + "LEFT OUTER JOIN [detailTable] [#j2] ON [sdd2].[Company_PK] = [#j2].[Company_to_Kitchen_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Kitchen_to_Cook_FK] "
+                                    + "LEFT OUTER JOIN [cookTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC, [#j3].[FirstNameColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -326,7 +326,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
+                                    + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j0].[IDColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -348,7 +348,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
                                     + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
-                                    + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
+                                    + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Company_PK] = [#j2].[Company_to_Restaurant_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -365,7 +365,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       
       const string expectedString = "SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN "
-                                    + "[studentTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK]";
+                                    + "[cookTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -380,7 +380,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
-      const string expectedString = "SELECT DISTINCT [s].[FirstNameColumn] FROM [studentTable] [s]";
+      const string expectedString = "SELECT DISTINCT [s].[FirstNameColumn] FROM [cookTable] [s]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -395,7 +395,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
-      const string expectedString = "SELECT DISTINCT [s].[FirstNameColumn] FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] = @1)";
+      const string expectedString = "SELECT DISTINCT [s].[FirstNameColumn] FROM [cookTable] [s] WHERE ([s].[FirstNameColumn] = @1)";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -456,7 +456,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM (SELECT TOP 1 [s2].* FROM [studentTable] [s2]) [s]", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM (SELECT TOP 1 [s2].* FROM [cookTable] [s2]) [s]", result.Statement);
     }
 
     [Test]
@@ -469,7 +469,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] CROSS APPLY (SELECT [s3].* FROM [studentTable] [s3]) [s2]", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] CROSS APPLY (SELECT [s3].* FROM [cookTable] [s3]) [s2]", result.Statement);
     }
 
     [Test]
@@ -483,7 +483,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s2].* FROM [studentTable] [s] CROSS APPLY (SELECT [s3].* FROM [studentTable] [s3] " 
+      Assert.AreEqual ("SELECT [s2].* FROM [cookTable] [s] CROSS APPLY (SELECT [s3].* FROM [cookTable] [s3] " 
                        + "WHERE ((([s3].[IDColumn] IS NULL AND [s].[IDColumn] IS NULL) OR [s3].[IDColumn] = [s].[IDColumn]) AND ([s3].[IDColumn] > @1))) [s2]",
                        result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] {new CommandParameter ("@1", 3)}));
@@ -499,7 +499,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE [s].[IDColumn] IN (SELECT [s2].[IDColumn] FROM [cookTable] [s2])", result.Statement);
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -513,7 +513,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[IDColumn] FROM [studentTable] [s2])", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE @1 IN (SELECT [s2].[IDColumn] FROM [cookTable] [s2])", result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", 5) }));
     }
 
@@ -527,7 +527,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE @1 IN (SELECT [s2].[FirstNameColumn] FROM [studentTable] [s2])", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s] WHERE @1 IN (SELECT [s2].[FirstNameColumn] FROM [cookTable] [s2])", result.Statement);
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", "Hugo") }));
     }
 
@@ -539,7 +539,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT ([s].[FirstNameColumn] + [s].[NameColumn]) FROM [studentTable] [s]", result.Statement);    
+      Assert.AreEqual ("SELECT ([s].[FirstNameColumn] + [s].[NameColumn]) FROM [cookTable] [s]", result.Statement);    
     }
 
     [Test]
@@ -551,7 +551,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = " +
+      Assert.AreEqual ("SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = " +
                        "[#j0].[Kitchen_to_Cook_FK]", result.Statement);
     }
 
@@ -564,7 +564,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [#j0].[FirstNameColumn] FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = " +
+      Assert.AreEqual ("SELECT [#j0].[FirstNameColumn] FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = " +
                        "[#j0].[Kitchen_to_Cook_FK]", result.Statement);
     }
 
@@ -577,7 +577,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.Statement);
+      Assert.AreEqual ("SELECT [s].* FROM [cookTable] [s]", result.Statement);
     }
 
     [Test]
@@ -589,7 +589,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      const string sql = "SELECT [s].[FirstNameColumn] FROM [studentTable] [s] WHERE ([s].[IDColumn] > @1)";
+      const string sql = "SELECT [s].[FirstNameColumn] FROM [cookTable] [s] WHERE ([s].[IDColumn] > @1)";
       Assert.AreEqual (sql, result.Statement);
     }
 
@@ -599,7 +599,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Tuple<string, string>> query = SelectTestQueryGenerator.CreateSimpleQueryWithFieldProjection (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstNameColumn], [s].[NameColumn] FROM [studentTable] [s]"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s].[FirstNameColumn], [s].[NameColumn] FROM [cookTable] [s]"));
       Assert.That (result.SqlGenerationData.SelectEvaluation, Is.InstanceOfType (typeof (NewObject)));
     }
 
@@ -609,7 +609,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateMultiFromQuery_WithCalls (_source, _source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [studentTable] [s1], [studentTable] [s2]"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [cookTable] [s1], [cookTable] [s2]"));
     }
 
     [Test]
@@ -618,7 +618,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_VirtualColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [studentTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] WHERE ([#j0].[IDColumn] = @1)"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] WHERE ([#j0].[IDColumn] = @1)"));
       Assert.That (result.Parameters, Is.EqualTo (new[] {new CommandParameter("@1", 5)}));
     }
 
@@ -638,7 +638,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (_industrialSectorSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialTable] [sector], [studentTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialTable] [sector], [cookTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -648,7 +648,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndOptimizableJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailTable] [sd], [studentTable] [s1] WHERE (([sd].[Kitchen_to_Restaurant_FK] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sd].[Kitchen_to_Restaurant_FK] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailTable] [sd], [cookTable] [s1] WHERE (([sd].[Kitchen_to_Restaurant_FK] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sd].[Kitchen_to_Restaurant_FK] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -658,7 +658,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [studentTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [cookTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -669,7 +669,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       var expression = SelectTestQueryGenerator.CreateCountQueryExpression (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (expression);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT COUNT(*) FROM (SELECT [s].* FROM [studentTable] [s]) x"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT COUNT(*) FROM (SELECT [s].* FROM [cookTable] [s]) x"));
       Assert.That (result.Parameters, Is.Empty);
     }
   }

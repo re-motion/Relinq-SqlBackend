@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       Assert.That (_context.Count, Is.EqualTo (1));
       Assert.That (table, Is.Not.Null);
       Assert.That (table.Alias, Is.Null);
-      Assert.That (table.Name, Is.EqualTo ("studentTable"));
+      Assert.That (table.Name, Is.EqualTo ("cookTable"));
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       Assert.That (_context.Count, Is.EqualTo (2));
       Assert.That (table2, Is.Not.SameAs (table1));
       Assert.That (table1.Name, Is.EqualTo ("industrialTable"));
-      Assert.That (table2.Name, Is.EqualTo ("studentTable"));
+      Assert.That (table2.Name, Is.EqualTo ("cookTable"));
     }
 
     [Test]
@@ -183,7 +183,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       IQueryable querySource = ExpressionHelper.CreateStudentQueryable ();
 
       MainFromClause fromClause = ExpressionHelper.CreateMainFromClause_Int ("s1", typeof (Cook), querySource);
-      Assert.That (_context.GetColumnSource (fromClause), Is.EqualTo (new Table ("studentTable", "s1")));
+      Assert.That (_context.GetColumnSource (fromClause), Is.EqualTo (new Table ("cookTable", "s1")));
     }
 
     [Test]

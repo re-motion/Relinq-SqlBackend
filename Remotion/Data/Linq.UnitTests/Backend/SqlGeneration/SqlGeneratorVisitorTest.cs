@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       SqlGeneratorVisitor sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause, parsedQuery, 0);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("cookTable", "s2") }));
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitAdditionalFromClause (fromClause, parsedQuery, 0);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s1") }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("cookTable", "s1") }));
 
       var expectedLeftSideTable = new Table ("industrialTable", "sector");
       var expectedLeftSide = new Column (expectedLeftSideTable, "IDColumn");
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause, _queryModel);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s") }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("cookTable", "s") }));
     }
 
     [Test]
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitMainFromClause (fromClause, parsedQuery);
 
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("studentTable", "s2") }));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.FromSources, Is.EqualTo (new object[] { new Table ("cookTable", "s2") }));
 
       var expectedLeftSideTable = new Table ("industrialTable", "sector");
       var expectedLeftSide = new Column (expectedLeftSideTable, "IDColumn");
@@ -205,8 +205,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
           typeof (Tuple<string, string>).GetConstructors()[0],
           new IEvaluation[]
           {
-              new Column (new Table ("studentTable", "s"), "FirstNameColumn"),
-              new Column (new Table ("studentTable", "s"), "NameColumn")
+              new Column (new Table ("cookTable", "s"), "FirstNameColumn"),
+              new Column (new Table ("cookTable", "s"), "NameColumn")
           });
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (expectedNewObject));
     }
@@ -257,8 +257,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       PropertyInfo relationMember = typeof (Kitchen).GetProperty ("Cook");
       IColumnSource studentDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
-      Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null);
-      var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, studentDetailTable, studentTable);
+      Table cookTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null);
+      var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, studentDetailTable, cookTable);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
 
@@ -275,7 +275,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
-      Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (new Column (new Table ("studentTable", "s"), "*")));
+      Assert.That (sqlGeneratorVisitor.SqlGenerationData.SelectEvaluation, Is.EqualTo (new Column (new Table ("cookTable", "s"), "*")));
     }
 
     [Test]
@@ -308,7 +308,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       Assert.That (
                   sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (
                             new BinaryCondition (
-                                            new Column (new Table ("studentTable", "s"), "NameColumn"),
+                                            new Column (new Table ("cookTable", "s"), "NameColumn"),
                                                           new Constant ("Garcia"),
                                                                         BinaryCondition.ConditionKind.Equal)));
     }
@@ -328,11 +328,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       sqlGeneratorVisitor.VisitWhereClause (whereClause2, parsedQuery, 1);
 
       var condition1 = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "NameColumn"),
+          new Column (new Table ("cookTable", "s"), "NameColumn"),
           new Constant ("Garcia"),
           BinaryCondition.ConditionKind.Equal);
       var condition2 = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "FirstNameColumn"),
+          new Column (new Table ("cookTable", "s"), "FirstNameColumn"),
           new Constant ("Hugo"),
           BinaryCondition.ConditionKind.Equal);
       var combination12 = new ComplexCriterion (condition1, condition2, ComplexCriterion.JunctionKind.And);
@@ -341,7 +341,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       sqlGeneratorVisitor.VisitWhereClause (whereClause3, parsedQuery, 2);
 
       var condition3 = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "IDColumn"),
+          new Column (new Table ("cookTable", "s"), "IDColumn"),
           new Constant (100),
           BinaryCondition.ConditionKind.GreaterThan);
       var combination123 = new ComplexCriterion (combination12, condition3, ComplexCriterion.JunctionKind.And);

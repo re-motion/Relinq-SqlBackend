@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void VisitBinaryCondition ()
     {
       var binaryCondition = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "LastColumn"),
+          new Column (new Table ("cookTable", "s"), "LastColumn"),
           new Constant ("Garcia"),
           BinaryCondition.ConditionKind.Equal);
 

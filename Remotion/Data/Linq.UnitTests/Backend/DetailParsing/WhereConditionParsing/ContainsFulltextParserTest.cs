@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
 
       ICriterion actualCriterion = parser.Parse (methodCallExpression, ParseContext);
       ICriterion expectedCriterion = new BinaryCondition (
-          new Column (new Table ("studentTable", "s"), "FirstNameColumn"), new Constant (pattern), BinaryCondition.ConditionKind.ContainsFulltext);
+          new Column (new Table ("cookTable", "s"), "FirstNameColumn"), new Constant (pattern), BinaryCondition.ConditionKind.ContainsFulltext);
       Assert.That (actualCriterion, Is.EqualTo (expectedCriterion));
     }
   }
