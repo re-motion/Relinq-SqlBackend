@@ -262,7 +262,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Kitchen> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.AreEqual ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] "
+      Assert.AreEqual ("SELECT [sd].* FROM [kitchenTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] "
                        + "ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] ORDER BY [#j0].[FirstNameColumn] ASC",
                        result.Statement);
     }
@@ -275,7 +275,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
+                                    + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC";
       Assert.AreEqual (expectedString, result.Statement);
@@ -299,10 +299,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       const string expectedString = "SELECT [sdd1].* "
                                     + "FROM "
                                     + "[detailDetailTable] [sdd1] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd1].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
+                                    + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd1].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK], "
                                     + "[detailDetailTable] [sdd2] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j2] ON [sdd2].[Company_PK] = [#j2].[Company_to_Kitchen_FK] "
+                                    + "LEFT OUTER JOIN [kitchenTable] [#j2] ON [sdd2].[Company_PK] = [#j2].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC, [#j3].[FirstNameColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
@@ -325,7 +325,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       const string expectedString = "SELECT [sdd].* "
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
+                                    + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j0].[IDColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
@@ -347,7 +347,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       const string expectedString = "SELECT [#j1].[FirstNameColumn], [#j2].[IDColumn] "
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
+                                    + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [cookTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Company_PK] = [#j2].[Company_to_Restaurant_FK]";
 
@@ -364,7 +364,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
-      const string expectedString = "SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN "
+      const string expectedString = "SELECT [#j0].* FROM [kitchenTable] [sd] LEFT OUTER JOIN "
                                     + "[cookTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK]";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -410,7 +410,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
-      const string expectedString = "SELECT [sd].* FROM [detailTable] [sd] WHERE [sd].[Kitchen_to_Restaurant_FK] IS NOT NULL";
+      const string expectedString = "SELECT [sd].* FROM [kitchenTable] [sd] WHERE [sd].[Kitchen_to_Restaurant_FK] IS NOT NULL";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual (expectedString, result.Statement);
@@ -426,7 +426,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       
       const string expectedString = "SELECT [industrial].* FROM [industrialTable] [industrial] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [industrial].[Restaurant_PK] = [#j0].[Kitchen_to_Restaurant_FK] "
+                                    + "LEFT OUTER JOIN [kitchenTable] [#j0] ON [industrial].[Restaurant_PK] = [#j0].[Kitchen_to_Restaurant_FK] "
                                     + "WHERE [#j0].[IDColumn] IS NOT NULL";
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -551,7 +551,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [#j0].* FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = " +
+      Assert.AreEqual ("SELECT [#j0].* FROM [kitchenTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = " +
                        "[#j0].[Kitchen_to_Cook_FK]", result.Statement);
     }
 
@@ -564,7 +564,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
-      Assert.AreEqual ("SELECT [#j0].[FirstNameColumn] FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = " +
+      Assert.AreEqual ("SELECT [#j0].[FirstNameColumn] FROM [kitchenTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = " +
                        "[#j0].[Kitchen_to_Cook_FK]", result.Statement);
     }
 
@@ -618,7 +618,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_VirtualColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] WHERE ([#j0].[IDColumn] = @1)"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [kitchenTable] [sd] LEFT OUTER JOIN [cookTable] [#j0] ON [sd].[Kitchen_PK] = [#j0].[Kitchen_to_Cook_FK] WHERE ([#j0].[IDColumn] = @1)"));
       Assert.That (result.Parameters, Is.EqualTo (new[] {new CommandParameter("@1", 5)}));
     }
 
@@ -628,7 +628,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Kitchen> query = WhereTestQueryGenerator.CreateWhereQueryWithRelatedPrimaryKey_RealColumn (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [detailTable] [sd] WHERE ([sd].[Kitchen_to_Restaurant_FK] = @1)"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [sd].* FROM [kitchenTable] [sd] WHERE ([sd].[Kitchen_to_Restaurant_FK] = @1)"));
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", 5) }));
     }
 
@@ -648,7 +648,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndOptimizableJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailTable] [sd], [cookTable] [s1] WHERE (([sd].[Kitchen_to_Restaurant_FK] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sd].[Kitchen_to_Restaurant_FK] = [s1].[Cook_to_Restaurant_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [kitchenTable] [sd], [cookTable] [s1] WHERE (([sd].[Kitchen_to_Restaurant_FK] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sd].[Kitchen_to_Restaurant_FK] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 

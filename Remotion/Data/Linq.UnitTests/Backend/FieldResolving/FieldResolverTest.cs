@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       Assert.That (fieldDescriptor.Member, Is.EqualTo (_student_First_Property));
 
       IColumnSource expectedDetailDetailTable = fieldDescriptor.SourcePath.FirstSource;
-      var expectedDetailTable = new Table ("detailTable", null); // MainKitchen
+      var expectedDetailTable = new Table ("kitchenTable", null); // MainKitchen
       var join1 = new SingleJoin (
           new Column (expectedDetailDetailTable, "Company_PK"),
           new Column (expectedDetailTable, "Company_to_Kitchen_FK"));
@@ -225,12 +225,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_Expression, _context);
 
-      IColumnSource detailTable = _context.GetColumnSource (_studentDetailClause);
+      IColumnSource kitchenTable = _context.GetColumnSource (_studentDetailClause);
       Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
-      var join = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, detailTable, cookTable);
+      var join = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, kitchenTable, cookTable);
       var column = new Column (cookTable, "*");
 
-      var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (detailTable, new[] { join }), column);
+      var expected = new FieldDescriptor (_studentDetail_Student_Property, new FieldSourcePath (kitchenTable, new[] { join }), column);
       Assert.That (fieldDescriptor, Is.EqualTo (expected));
     }
 
@@ -243,10 +243,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
 
       IColumnSource detailDetailTable = _context.GetColumnSource (_studentDetailDetailClause);
-      Table detailTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
+      Table kitchenTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetailDetail_StudentDetail_Property, null);
       Table cookTable = StubDatabaseInfo.Instance.GetTableForRelation (_studentDetail_Student_Property, null);
-      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailDetail_StudentDetail_Property, detailDetailTable, detailTable);
-      var join2 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, detailTable, cookTable);
+      var join1 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetailDetail_StudentDetail_Property, detailDetailTable, kitchenTable);
+      var join2 = StubDatabaseInfo.Instance.GetJoinForMember (_studentDetail_Student_Property, kitchenTable, cookTable);
 
       var column = new Column (cookTable, "*");
 
