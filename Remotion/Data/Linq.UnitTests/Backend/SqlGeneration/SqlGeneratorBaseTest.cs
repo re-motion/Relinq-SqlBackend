@@ -165,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_CreatesAliases()
     {
-      IQueryable<Kitchen> source = ExpressionHelper.CreateStudentDetailQueryable();
+      IQueryable<Kitchen> source = ExpressionHelper.CreateKitchenQueryable();
       QueryModel query = ExpressionHelper.ParseQuery (JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilderMock, _fromBuilderMock, _whereBuilderMock, _orderByBuilderMock, ParseMode.TopLevelQuery);
 
@@ -180,7 +180,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void ProcessQuery_ReturnsSqlGenerationData ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
       QueryModel query = ExpressionHelper.ParseQuery (DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source));
       var generator = new SqlGeneratorMock (query, StubDatabaseInfo.Instance, _selectBuilderMock, _fromBuilderMock, _whereBuilderMock, _orderByBuilderMock, ParseMode.TopLevelQuery);
 

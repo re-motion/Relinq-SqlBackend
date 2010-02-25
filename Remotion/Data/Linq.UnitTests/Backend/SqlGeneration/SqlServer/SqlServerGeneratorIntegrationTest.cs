@@ -40,10 +40,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _source = ExpressionHelper.CreateStudentQueryable ();
-      _detailSource = ExpressionHelper.CreateStudentDetailQueryable ();
-      _industrialSectorSource = ExpressionHelper.CreateIndustrialSectorQueryable();
-      _detailDetailSource = ExpressionHelper.CreateStudentDetailDetailQueryable ();
+      _source = ExpressionHelper.CreateCookQueryable ();
+      _detailSource = ExpressionHelper.CreateKitchenQueryable ();
+      _industrialSectorSource = ExpressionHelper.CreateRestaurantQueryable();
+      _detailDetailSource = ExpressionHelper.CreateCompanyQueryable ();
       _sqlGenerator = new SqlServerGenerator (StubDatabaseInfo.Instance);
     }
 
@@ -374,7 +374,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void Select_WithDistinct ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source);
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -389,7 +389,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void Select_WithDistinctAndWhere ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateDisinctWithWhereQuery (source);
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -419,7 +419,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereJoin_WithRelationMember_VirtualSide ()
     {
-      IQueryable<Restaurant> source = ExpressionHelper.CreateIndustrialSectorQueryable ();
+      IQueryable<Restaurant> source = ExpressionHelper.CreateRestaurantQueryable ();
 
       IQueryable<Restaurant> query = WhereTestQueryGenerator.CreateRelationMemberVirtualSideWhereQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -449,7 +449,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInMainFromClause ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
 
       IQueryable<Cook> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInMainFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -462,7 +462,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInAdditionalFromClause ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
 
       IQueryable<Cook> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -475,7 +475,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void ComplexSubQueryInAdditionalFromClause ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
 
       IQueryable<Cook> query = SubQueryTestQueryGenerator.CreateComplexSubQueryInAdditionalFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -492,7 +492,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInWhereClause ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
 
       IQueryable<Cook> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -506,7 +506,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SubQueryWithConstantInWhereClause ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
 
       IQueryable<Cook> query = SubQueryTestQueryGenerator.CreateSubQueryWithConstantInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -520,7 +520,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SubQuerySelectingColumnsWithConstantInWhereClause ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
 
       IQueryable<Cook> query = SubQueryTestQueryGenerator.CreateSubQuerySelectingColumnsWithConstantInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -534,7 +534,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLet_Binary ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
       IQueryable<string > query = LetTestQueryGenerator.CreateSimpleLetClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -571,7 +571,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLet_WithTable ()
     {
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
       IQueryable<Cook> query = LetTestQueryGenerator.CreateLet_WithTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -584,7 +584,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void QueryWithMultiLet_Where ()
     {
       // from s in source let x = s.FirstName let y = s.ID where y > 1 select x
-      IQueryable<Cook> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Cook> source = ExpressionHelper.CreateCookQueryable ();
       IQueryable<string> query = LetTestQueryGenerator.CreateMultiLet_WithWhere (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 

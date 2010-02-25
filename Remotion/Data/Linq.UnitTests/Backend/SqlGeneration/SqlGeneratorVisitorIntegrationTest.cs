@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void VisitOrderByClause_WithNestedJoins ()
     {
       IQueryable<Company> query =
-          JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateStudentDetailDetailQueryable());
+          JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (ExpressionHelper.CreateCompanyQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       // Joins[sdd] = { (sdd -> MainKitchen -> Cook), (sdd -> Restaurant) }
 
       IQueryable<Company> query =
-          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateStudentDetailDetailQueryable());
+          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateCompanyQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
@@ -121,7 +121,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       // Joins[sdd] = { (sdd -> MainKitchen -> Cook) }
 
       IQueryable<Company> query =
-          JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateStudentDetailDetailQueryable());
+          JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateCompanyQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var detailParserRegistries = new DetailParserRegistries (StubDatabaseInfo.Instance, _parseMode);
@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       // Joins[sdd] = { (sdd -> MainKitchen -> Cook), (sdd -> MainKitchen -> Restaurant) }
 
       IQueryable<Company> query =
-          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateStudentDetailDetailQueryable());
+          JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateCompanyQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First();
@@ -197,7 +197,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       IQueryable<Company> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleKeys
-              (ExpressionHelper.CreateStudentDetailDetailQueryable(), ExpressionHelper.CreateStudentDetailDetailQueryable());
+              (ExpressionHelper.CreateCompanyQueryable(), ExpressionHelper.CreateCompanyQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
