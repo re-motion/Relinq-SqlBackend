@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
-      var source = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
+      var source = new ConstantTableSource (Expression.Constant ("Chef", typeof (string)));
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = source;
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);

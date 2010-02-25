@@ -40,19 +40,19 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DataObjectModel
     {
       Assert.That (
           StubDatabaseInfo.Instance.IsRelationMember (typeof (Student_Detail_Detail).GetProperty ("Student_Detail")), Is.True);
-      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student_Detail).GetProperty ("Student")), Is.True);
+      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student_Detail).GetProperty ("Chef")), Is.True);
     }
 
     [Test]
     public void IsRelationMember_False ()
     {
-      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student).GetProperty ("FirstName")), Is.False);
+      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Chef).GetProperty ("FirstName")), Is.False);
     }
 
     [Test]
     public void IsRelationMember_NonDBMember ()
     {
-      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Student).GetProperty ("NonDBStringProperty")), Is.False);
+      Assert.That (StubDatabaseInfo.Instance.IsRelationMember (typeof (Chef).GetProperty ("NonDBStringProperty")), Is.False);
     }
 
     [Test]

@@ -75,10 +75,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _studentDetailDetailClause = ExpressionHelper.CreateMainFromClause_Detail_Detail ();
       _studentDetailDetailReference = new QuerySourceReferenceExpression (_studentDetailDetailClause);
 
-      _student_ID_Property = typeof (Student).GetProperty ("ID");
-      _student_First_Property = typeof (Student).GetProperty ("FirstName");
-      _student_OtherStudent_Property = typeof (Student).GetProperty ("BuddyStudent");
-      _studentDetail_Student_Property = typeof (Student_Detail).GetProperty ("Student");
+      _student_ID_Property = typeof (Chef).GetProperty ("ID");
+      _student_First_Property = typeof (Chef).GetProperty ("FirstName");
+      _student_OtherStudent_Property = typeof (Chef).GetProperty ("BuddyChef");
+      _studentDetail_Student_Property = typeof (Student_Detail).GetProperty ("Chef");
       _studentDetailDetail_StudentDetail_Property = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
 
       _student_First_Expression = Expression.MakeMemberAccess (_studentReference, _student_First_Property);
@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_Join ()
     {
-      // sd.Student.FirstName
+      // sd.Chef.FirstName
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);
@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_DoubleJoin ()
     {
-      // sdd.Student_Detail.Student.FirstName
+      // sdd.Student_Detail.Chef.FirstName
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_First_Expression, _context);
@@ -166,7 +166,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
           new Column (expectedDetailDetailTable, "Student_Detail_Detail_PK"),
           new Column (expectedDetailTable, "Student_Detail_Detail_to_Student_Detail_FK"));
 
-      var expectedStudentTable = new Table ("studentTable", null); // Student
+      var expectedStudentTable = new Table ("studentTable", null); // Chef
       var join2 = new SingleJoin (
           new Column (expectedDetailTable, "Student_Detail_PK"), new Column (expectedStudentTable, "Student_Detail_to_Student_FK"));
 
@@ -176,7 +176,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
     [Test]
     [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = 
-        "'Remotion.Data.Linq.UnitTests.TestDomain.Student.FirstName' is not a relation member.")]
+        "'Remotion.Data.Linq.UnitTests.TestDomain.Chef.FirstName' is not a relation member.")]
     public void Resolve_Join_InvalidMember ()
     {
       // s.FirstName.Length
@@ -190,12 +190,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
 
     [Test]
     [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage =
-        "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBStringProperty' does not identify a queryable column.")]
+        "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Chef.NonDBStringProperty' does not identify a queryable column.")]
     public void Resolve_SimpleMemberAccess_InvalidField ()
     {
       Expression fieldExpression = Expression.MakeMemberAccess (
           _studentReference,
-          typeof (Student).GetProperty ("NonDBStringProperty"));
+          typeof (Chef).GetProperty ("NonDBStringProperty"));
 
       new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (fieldExpression, _context);
 
@@ -204,7 +204,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_UsesContext ()
     {
-      // sd.Student.FirstName
+      // sd.Chef.FirstName
 
       FieldDescriptor fieldDescriptor1 =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_First_Expression, _context);
@@ -220,7 +220,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_EntityField_Simple ()
     {
-      //sd.Student
+      //sd.Chef
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetail_Student_Expression, _context);
@@ -237,7 +237,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void Resolve_EntityField_Nested ()
     {
-      //sdd.Student_Detail.Student
+      //sdd.Student_Detail.Chef
 
       FieldDescriptor fieldDescriptor =
           new FieldResolver (StubDatabaseInfo.Instance, _policy).ResolveField (_studentDetailDetail_StudentDetail_Student_Expression, _context);
@@ -259,9 +259,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     {
       // from x in (...)
       // select x.ID
-      var fromClause = new AdditionalFromClause ("x", typeof (Student), new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student ()));
+      var fromClause = new AdditionalFromClause ("x", typeof (Chef), new SubQueryExpression (ExpressionHelper.CreateQueryModel_Student ()));
 
-      PropertyInfo member = typeof (Student).GetProperty ("ID");
+      PropertyInfo member = typeof (Chef).GetProperty ("ID");
       Expression fieldExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (fromClause), member);
 
       FieldDescriptor fieldDescriptor =

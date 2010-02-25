@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Student' "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Chef' "
         + "is not supported because it is a relation member.")]
     public void AdjustMemberInfosForRelation ()
     {

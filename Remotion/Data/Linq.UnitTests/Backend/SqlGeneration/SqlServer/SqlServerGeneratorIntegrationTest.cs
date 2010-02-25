@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
   [TestFixture]
   public class SqlServerGeneratorIntegrationTest
   {
-    private IQueryable<Student> _source;
+    private IQueryable<Chef> _source;
     private IQueryable<Student_Detail> _detailSource;
     private IQueryable<IndustrialSector> _industrialSectorSource;
     private IQueryable<Student_Detail_Detail> _detailDetailSource;
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleQuery_WithNullProjection ()
     {
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQueryWithNonDBProjection (_source);
+      IQueryable<Chef> query = SelectTestQueryGenerator.CreateSimpleQueryWithNonDBProjection (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT NULL FROM [studentTable] [s]"));
@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleQuery ()
     {
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (_source);
+      IQueryable<Chef> query = SelectTestQueryGenerator.CreateSimpleQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s]", result.Statement);
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleWhereQuery ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void MultiWhereQuery ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateMultiWhereQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -122,7 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithOrAndNot ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithOrAndNot (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryWithOrAndNot (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithComparisons ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithDifferentComparisons (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryWithDifferentComparisons (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithNullChecks ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryNullChecks (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryNullChecks (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithBooleanConstantTrue ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryBooleanConstantTrue (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryBooleanConstantTrue (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -189,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithBooleanConstantFalse ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryBooleanConstantFalse (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryBooleanConstantFalse (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithStartsWith ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithStartsWith (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryWithStartsWith (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] LIKE @1)",
@@ -215,7 +215,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void WhereQueryWithEndsWith ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateWhereQueryWithEndsWith (_source);
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateWhereQueryWithEndsWith (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] WHERE ([s].[FirstNameColumn] LIKE @1)",
@@ -227,7 +227,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleOrderByQuery ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (_source);
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
 
@@ -238,7 +238,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void ComplexOrderByQuery ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (_source);
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s1].* FROM [studentTable] [s1] ORDER BY [s1].[NameColumn] DESC, [s1].[FirstNameColumn] ASC",
@@ -248,7 +248,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void MultipleOrderBys ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateOrderByQueryWithMultipleOrderBys (_source);
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateOrderByQueryWithMultipleOrderBys (_source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.AreEqual ("SELECT [s].* FROM [studentTable] [s] ORDER BY [s].[NameColumn] ASC, "+
@@ -258,7 +258,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleImplicitJoin ()
     {
-      // from sd in source orderby sd.Student.FirstName select sd
+      // from sd in source orderby sd.Chef.FirstName select sd
       IQueryable<Student_Detail> query = JoinTestQueryGenerator.CreateSimpleImplicitOrderByJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -270,7 +270,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void NestedImplicitJoin ()
     {
-      // from sdd in source orderby sdd.Student_Detail.Student.FirstName select sdd
+      // from sdd in source orderby sdd.Student_Detail.Chef.FirstName select sdd
       IQueryable<Student_Detail_Detail> query = JoinTestQueryGenerator.CreateDoubleImplicitOrderByJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -286,9 +286,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     {
       // from sdd1 in ...
       // from sdd2 in ...
-      // order by sdd1.Student_Detail.Student.FirstName
-      // order by sdd2.Student_Detail.Student.FirstName
-      // order by sdd1.Student_Detail.Student.FirstName
+      // order by sdd1.Student_Detail.Chef.FirstName
+      // order by sdd2.Student_Detail.Chef.FirstName
+      // order by sdd1.Student_Detail.Chef.FirstName
       // select sdd1;
 
       IQueryable<Student_Detail_Detail> source1 = _detailDetailSource;
@@ -314,7 +314,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void JoinPartReuse ()
     {
       //from sdd in ...
-      //orderby sdd.Student_Detail.Student.FirstName
+      //orderby sdd.Student_Detail.Chef.FirstName
       //orderby sdd.Student_Detail.ID
       //select sdd;
 
@@ -337,7 +337,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void SelectJoin()
     {
       // from sdd in source 
-      // select new Tuple<string,int>{sdd.Student_Detail.Student.FirstName,sdd.IndustrialSector.ID}
+      // select new Tuple<string,int>{sdd.Student_Detail.Chef.FirstName,sdd.IndustrialSector.ID}
 
       IQueryable<Student_Detail_Detail> source = _detailDetailSource;
 
@@ -360,7 +360,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     {
       IQueryable<Student_Detail> source = _detailSource;
 
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateRelationMemberSelectQuery (source);
+      IQueryable<Chef> query = SelectTestQueryGenerator.CreateRelationMemberSelectQuery (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       
@@ -374,7 +374,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void Select_WithDistinct ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateSimpleDistinctQuery (source);
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -389,7 +389,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void Select_WithDistinctAndWhere ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<string> query = DistinctTestQueryGenerator.CreateDisinctWithWhereQuery (source);
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
@@ -434,7 +434,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Student' is not "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Chef' is not "
                                                                           + "supported because it is a relation member.")]
     public void OrderingJoin_WithRelationMember ()
     {
@@ -449,9 +449,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInMainFromClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
 
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInMainFromClause (source);
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInMainFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -462,9 +462,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInAdditionalFromClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
 
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (source);
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -475,9 +475,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void ComplexSubQueryInAdditionalFromClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
 
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateComplexSubQueryInAdditionalFromClause (source);
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateComplexSubQueryInAdditionalFromClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
 
@@ -492,9 +492,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SimpleSubQueryInWhereClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
 
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInWhereClause (source);
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -506,9 +506,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SubQueryWithConstantInWhereClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
 
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSubQueryWithConstantInWhereClause (source);
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateSubQueryWithConstantInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -520,9 +520,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void SubQuerySelectingColumnsWithConstantInWhereClause ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
 
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSubQuerySelectingColumnsWithConstantInWhereClause (source);
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateSubQuerySelectingColumnsWithConstantInWhereClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -534,7 +534,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLet_Binary ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<string > query = LetTestQueryGenerator.CreateSimpleLetClause (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -546,7 +546,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void QueryWithLetAndJoin_WithTable ()
     {
       IQueryable<Student_Detail> source = _detailSource;
-      IQueryable<Student> query = LetTestQueryGenerator.CreateLet_WithJoin_WithTable (source);
+      IQueryable<Chef> query = LetTestQueryGenerator.CreateLet_WithJoin_WithTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -571,8 +571,8 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithLet_WithTable ()
     {
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
-      IQueryable<Student> query = LetTestQueryGenerator.CreateLet_WithTable (source);
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> query = LetTestQueryGenerator.CreateLet_WithTable (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
@@ -584,7 +584,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     public void QueryWithMultiLet_Where ()
     {
       // from s in source let x = s.FirstName let y = s.ID where y > 1 select x
-      IQueryable<Student> source = ExpressionHelper.CreateStudentQueryable ();
+      IQueryable<Chef> source = ExpressionHelper.CreateStudentQueryable ();
       IQueryable<string> query = LetTestQueryGenerator.CreateMultiLet_WithWhere (source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -606,7 +606,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithMultiFromClauses_WithMethodCalls ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateMultiFromQuery_WithCalls (_source, _source);
+      IQueryable<Chef> query = FromTestQueryGenerator.CreateMultiFromQuery_WithCalls (_source, _source);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [studentTable] [s1], [studentTable] [s2]"));
@@ -635,7 +635,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithMemberQuerySource ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (_industrialSectorSource);
+      IQueryable<Chef> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (_industrialSectorSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialTable] [sector], [studentTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));
@@ -645,7 +645,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithMemberQuerySourceAndJoin_OptimizedAway ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndOptimizableJoin (_detailSource);
+      IQueryable<Chef> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndOptimizableJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailTable] [sd], [studentTable] [s1] WHERE (([sd].[Student_Detail_to_IndustrialSector_FK] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [sd].[Student_Detail_to_IndustrialSector_FK] = [s1].[Student_to_IndustrialSector_FK])"));
@@ -655,7 +655,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     [Test]
     public void QueryWithMemberQuerySourceAndJoin ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
+      IQueryable<Chef> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Student_Detail_Detail_PK] = [#j0].[Student_Detail_Detail_to_IndustrialSector_FK], [studentTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));

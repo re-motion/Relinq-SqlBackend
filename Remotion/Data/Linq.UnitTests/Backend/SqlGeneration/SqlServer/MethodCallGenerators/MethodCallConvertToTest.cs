@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
     public void ConvertIntToString ()
     {
       var methodInfo = typeof (Convert).GetMethod ("ToString",new[] {typeof(int) } );
-      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var column = new Column (new Table ("Chef", "s"), "FirstColumn");
       var arguments = new List<IEvaluation> { column };
       var methodCall = new MethodCall (methodInfo, null, arguments);
 
@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
     public void ConvertIntToBoolean ()
     {
       var methodInfo = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
-      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var column = new Column (new Table ("Chef", "s"), "FirstColumn");
       var arguments = new List<IEvaluation> { column };
       var methodCall = new MethodCall (methodInfo, null, arguments);
 

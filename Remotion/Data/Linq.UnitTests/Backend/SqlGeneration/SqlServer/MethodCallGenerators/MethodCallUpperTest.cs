@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer.MethodCal
     public void ToUpper ()
     {
       var methodInfo = typeof (string).GetMethod ("ToUpper", new Type[] { });
-      var column = new Column (new Table ("Student", "s"), "FirstColumn");
+      var column = new Column (new Table ("Chef", "s"), "FirstColumn");
       var arguments = new List<IEvaluation> ();
       var methodCall = new MethodCall (methodInfo, column, arguments);
       

@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
     private FieldDescriptor CreateFieldDescriptor (string tableName, string tableAlias, string columnName)
     {
       FieldSourcePath path = ExpressionHelper.GetPathForNewTable (tableName, tableAlias);
-      MemberInfo member = typeof (Student).GetProperty ("FirstName");
+      MemberInfo member = typeof (Chef).GetProperty ("FirstName");
       var column = new Column (path.FirstSource, columnName);
       return new FieldDescriptor (member, path, column);
     }

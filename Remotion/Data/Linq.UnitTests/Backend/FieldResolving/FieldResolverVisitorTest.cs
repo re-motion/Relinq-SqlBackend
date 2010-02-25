@@ -56,9 +56,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     [Test]
     public void NestedQuerySourceReferenceExpression ()
     {
-      Expression expressionTree = Expression.MakeMemberAccess (_studentReference, typeof (Student).GetProperty ("FirstName"));
+      Expression expressionTree = Expression.MakeMemberAccess (_studentReference, typeof (Chef).GetProperty ("FirstName"));
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
-      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("FirstName")));
+      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Chef).GetProperty ("FirstName")));
       Assert.That (result.JoinMembers, Is.Empty);
       Assert.That (result.QuerySourceReferenceExpression, Is.SameAs (_studentReference));
     }
@@ -67,12 +67,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
     public void NestedMembers ()
     {
       Expression expressionTree = Expression.MakeMemberAccess (
-          Expression.MakeMemberAccess (_studentDetailReference, typeof (Student_Detail).GetProperty ("Student")),
-          typeof (Student).GetProperty ("FirstName"));
+          Expression.MakeMemberAccess (_studentDetailReference, typeof (Student_Detail).GetProperty ("Chef")),
+          typeof (Chef).GetProperty ("FirstName"));
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
 
-      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Student).GetProperty ("FirstName")));
-      Assert.That (result.JoinMembers, Is.EqualTo (new object[] { typeof (Student_Detail).GetProperty ("Student") }));
+      Assert.That (result.AccessedMember, Is.EqualTo (typeof (Chef).GetProperty ("FirstName")));
+      Assert.That (result.JoinMembers, Is.EqualTo (new object[] { typeof (Student_Detail).GetProperty ("Chef") }));
       Assert.That (result.QuerySourceReferenceExpression, Is.SameAs (_studentDetailReference));
     }
 
@@ -81,40 +81,40 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
         + "can be resolved, found 'null'.")]
     public void InvalidExpression ()
     {
-      Expression expressionTree = Expression.Constant (null, typeof (Student));
+      Expression expressionTree = Expression.Constant (null, typeof (Chef));
       FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
     }
 
     [Test]
     public void VisitMemberExpression_OptimizesAccessToRelatedPrimaryKey ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Student.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Chef.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
-      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Student_Detail> (sd => sd.Student)));
+      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Student_Detail> (sd => sd.Chef)));
       Assert.IsEmpty (result.JoinMembers);
 
-      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Student> (_studentDetailClause, sd => sd.Student);
+      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Chef> (_studentDetailClause, sd => sd.Chef);
       CheckOptimization (result, optimizedExpressionTree);
     }
 
     [Test]
     public void VisitMemberExpression_AccessToRelatedPrimaryKey_OptimizeFalse ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Student.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Chef.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, false);
-      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Student> (s => s.ID)));
-      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Student) }));
+      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Chef> (s => s.ID)));
+      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Chef) }));
     }
 
     [Test]
     public void VisitMemberExpression_OptimzationWithRelatedPrimaryKeyOverSeveralSteps ()
     {
-      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Student.BuddyStudent.ID);
+      Expression expressionTree = ExpressionHelper.Resolve<Student_Detail, int> (_studentDetailClause, sd => sd.Chef.BuddyChef.ID);
       FieldAccessInfo result = FieldResolverVisitor.ParseFieldAccess (StubDatabaseInfo.Instance, expressionTree, true);
-      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Student> (s => s.BuddyStudent)));
-      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Student) }));
+      Assert.That (result.AccessedMember, Is.EqualTo (ExpressionHelper.GetMember<Chef> (s => s.BuddyChef)));
+      Assert.That (result.JoinMembers, Is.EqualTo (new[] { ExpressionHelper.GetMember<Student_Detail> (sd => sd.Chef) }));
 
-      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Student> (_studentDetailClause, sd => sd.Student.BuddyStudent);
+      Expression optimizedExpressionTree = ExpressionHelper.Resolve<Student_Detail, Chef> (_studentDetailClause, sd => sd.Chef.BuddyChef);
       CheckOptimization (result, optimizedExpressionTree);
     }
 

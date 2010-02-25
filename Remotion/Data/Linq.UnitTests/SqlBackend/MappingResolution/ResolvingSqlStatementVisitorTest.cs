@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      var source = new ConstantTableSource (Expression.Constant ("Student", typeof (string)));
+      var source = new ConstantTableSource (Expression.Constant ("Chef", typeof (string)));
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable);

@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     [Test]
     public void SimpleOrderingClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -54,14 +54,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
+      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("FirstName"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));
     }
 
     [Test]
     public void TwoOrderingClause_FirstClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -69,14 +69,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
+      var expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("FirstName"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));
     }
 
     [Test]
     public void TwoOrderingClause_SecondClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateTwoOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.Last ();
       var ordering = orderBy.Orderings.Last ();
@@ -84,14 +84,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("Name"));
+      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("Name"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Desc)));
     }
 
     [Test]
     public void ComplexOrderingClause_FirstOrdering ()
     {
-      IQueryable<Student> query =
+      IQueryable<Chef> query =
           MixedTestQueryGenerator.CreateMultiFromWhereOrderByQuery (ExpressionHelper.CreateStudentQueryable (), ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.Skip (2).First ();
@@ -100,14 +100,14 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
+      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("FirstName"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Asc)));
     }
 
     [Test]
     public void ComplexOrderingClause_SecondOrdering ()
     {
-      IQueryable<Student> query =
+      IQueryable<Chef> query =
           MixedTestQueryGenerator.CreateMultiFromWhereOrderByQuery (ExpressionHelper.CreateStudentQueryable (), ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.Skip (2).First ();
@@ -116,16 +116,16 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var parseContext = new ParseContext (parsedQuery, new List<FieldDescriptor> (), _joinedTableContext);
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
-      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, (FromClauseBase) parsedQuery.BodyClauses[0], typeof (Student).GetProperty ("Name"));
+      FieldDescriptor expectedFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_joinedTableContext, (FromClauseBase) parsedQuery.BodyClauses[0], typeof (Chef).GetProperty ("Name"));
       Assert.That (result, Is.EqualTo (new OrderingField (expectedFieldDescriptor, OrderingDirection.Desc)));
     }
 
     [Test]
-    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Student.NonDBStringProperty' "
+    [ExpectedException (typeof (FieldAccessResolveException), ExpectedMessage = "The member 'Remotion.Data.Linq.UnitTests.TestDomain.Chef.NonDBStringProperty' "
         + "does not identify a queryable column.")]
     public void OrderingClause_WithNonDBField ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateOrderByNonDBPropertyQuery (ExpressionHelper.CreateStudentQueryable ());
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateOrderByNonDBPropertyQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderBy = (OrderByClause) parsedQuery.BodyClauses.First ();
       var ordering = orderBy.Orderings.First ();
@@ -146,12 +146,12 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
       var result = _parser.Parse (ordering.Expression, parseContext, ordering.OrderingDirection);
 
       FromClauseBase fromClause = parsedQuery.MainFromClause;
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource sourceTable = _joinedTableContext.GetColumnSource (fromClause); // Student_Detail
-      Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Student
+      Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Chef
       var join = StubDatabaseInfo.Instance.GetJoinForMember (relationMember, sourceTable, relatedTable);
 
-      PropertyInfo orderingMember = typeof (Student).GetProperty ("FirstName");
+      PropertyInfo orderingMember = typeof (Chef).GetProperty ("FirstName");
       var path = new FieldSourcePath (sourceTable, new[] { join });
       var column = StubDatabaseInfo.Instance.GetColumnForMember (relatedTable, orderingMember);
       var expectedFieldDescriptor = new FieldDescriptor (orderingMember, path, column);
@@ -168,7 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Student' "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.Linq.UnitTests.TestDomain.Student_Detail.Chef' "
         + "is not supported because it is a relation member.")]
     public void OrderingOnRelationMemberThrows()
     {

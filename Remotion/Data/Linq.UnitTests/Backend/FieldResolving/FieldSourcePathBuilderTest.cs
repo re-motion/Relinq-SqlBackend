@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       _initialTable = new Table ("initial", "i");
 
       _studentDetailMember = typeof (Student_Detail_Detail).GetProperty ("Student_Detail");
-      _studentMember = typeof (Student_Detail).GetProperty ("Student");
+      _studentMember = typeof (Student_Detail).GetProperty ("Chef");
     }
 
     [Test]

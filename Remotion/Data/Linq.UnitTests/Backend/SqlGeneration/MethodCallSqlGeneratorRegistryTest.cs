@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void GetGeneratorForGenericMethodInfo ()
     {
-      IQueryable<Student> source = null;
+      IQueryable<Chef> source = null;
       var methodInfo = ReflectionUtility.GetMethod (() => source.Distinct());
 
       var methodInfoDistinct = (from m in typeof (Queryable).GetMethods()
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void GetGeneratorForMethodWithOneParameter ()
     {
-      IQueryable<Student> source = null;
+      IQueryable<Chef> source = null;
       var methodInfo = ReflectionUtility.GetMethod (() => source.Count());
 
       var methodInfoCount = (from m in typeof (Queryable).GetMethods()
@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void GetGeneratorForMethodWithTwoParameters ()
     {
-      IQueryable<Student> source = null;
+      IQueryable<Chef> source = null;
       var methodInfo = ReflectionUtility.GetMethod (() => source.Single (s => s.ID == 5));
 
       var methodInfoSingle = (from m in typeof (Queryable).GetMethods()

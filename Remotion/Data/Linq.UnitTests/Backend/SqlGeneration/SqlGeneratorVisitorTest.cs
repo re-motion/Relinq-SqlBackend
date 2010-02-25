@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitAdditionalFromClause ()
     {
-      IQueryable<Student> query = MixedTestQueryGenerator.CreateMultiFromWhereQuery (
+      IQueryable<Chef> query = MixedTestQueryGenerator.CreateMultiFromWhereQuery (
           ExpressionHelper.CreateStudentQueryable(), ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitAdditionalFromClause_WithMemberExpression ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateIndustrialSectorQueryable ());
+      IQueryable<Chef> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (ExpressionHelper.CreateIndustrialSectorQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitMainFromClause ()
     {
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       MainFromClause fromClause = parsedQuery.MainFromClause;
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitMainFromClause_WithMemberExpression ()
     {
-      IQueryable<Student> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource_InMainFromClauseOfSubQuery (ExpressionHelper.CreateIndustrialSectorQueryable ());
+      IQueryable<Chef> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource_InMainFromClauseOfSubQuery (ExpressionHelper.CreateIndustrialSectorQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = ((SubQueryExpression) ((AdditionalFromClause) parsedQuery.BodyClauses[0]).FromExpression).QueryModel.MainFromClause;
 
@@ -119,11 +119,11 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitOrderByClause ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateSimpleOrderByQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       FieldDescriptor expectedFieldDescriptor = 
-          ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
+          ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("FirstName"));
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
@@ -154,9 +154,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var orderBy = (OrderByClause) parsedQuery.BodyClauses[0];
       sqlGeneratorVisitor.VisitOrderByClause (orderBy, parsedQuery, 0);
 
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause);
-      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Chef
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, sourceTable, relatedTable);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));
@@ -167,13 +167,13 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitOrderByClause_Multiple ()
     {
-      IQueryable<Student> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
+      IQueryable<Chef> query = OrderByTestQueryGenerator.CreateThreeOrderByQuery (ExpressionHelper.CreateStudentQueryable ());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var orderByClause1 = (OrderByClause) parsedQuery.BodyClauses[0];
       var orderByClause2 = (OrderByClause) parsedQuery.BodyClauses[1];
 
-      FieldDescriptor firstFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("FirstName"));
-      FieldDescriptor lastFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Student).GetProperty ("Name"));
+      FieldDescriptor firstFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("FirstName"));
+      FieldDescriptor lastFieldDescriptor = ExpressionHelper.CreateFieldDescriptor (_context, parsedQuery.MainFromClause, typeof (Chef).GetProperty ("Name"));
 
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
 
@@ -214,7 +214,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitSelectClause_MethodCall ()
     {
-      IQueryable<Student> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = SelectTestQueryGenerator.CreateSimpleQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var selectClause = new SelectClause (Expression.Constant (0));
 
@@ -255,7 +255,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var selectClause = parsedQuery.SelectClause;
       sqlGeneratorVisitor.VisitSelectClause (selectClause, _queryModel);
 
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       Table studentTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null);
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, studentDetailTable, studentTable);
@@ -269,7 +269,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitSelectClause_WithNullProjection ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var selectClause = parsedQuery.SelectClause;
 
@@ -281,7 +281,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitAdditionalFromClause_WithSubQuery ()
     {
-      IQueryable<Student> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = SubQueryTestQueryGenerator.CreateSimpleSubQueryInAdditionalFromClause (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       var fromClause = (AdditionalFromClause) parsedQuery.BodyClauses[0];
 
@@ -296,7 +296,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitWhereClause ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateSimpleWhereQuery (ExpressionHelper.CreateStudentQueryable());
 
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
@@ -316,7 +316,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     [Test]
     public void VisitWhereClause_MultipleTimes ()
     {
-      IQueryable<Student> query = WhereTestQueryGenerator.CreateMultiWhereQuery (ExpressionHelper.CreateStudentQueryable());
+      IQueryable<Chef> query = WhereTestQueryGenerator.CreateMultiWhereQuery (ExpressionHelper.CreateStudentQueryable());
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
 
       var whereClause1 = (WhereClause) parsedQuery.BodyClauses[0];
@@ -367,9 +367,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       var sqlGeneratorVisitor = CreateSqlGeneratorVisitor (parsedQuery);
       sqlGeneratorVisitor.VisitWhereClause (whereClause, parsedQuery, 0);
 
-      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationMember = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource sourceTable = _context.GetColumnSource (parsedQuery.MainFromClause); // Student_Detail
-      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Student
+      Table relatedTable = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetTableForRelation (relationMember, null); // Chef
       var join = ((IDatabaseInfo) StubDatabaseInfo.Instance).GetJoinForMember (relationMember, sourceTable, relatedTable);
 
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Joins.Count, Is.EqualTo (1));

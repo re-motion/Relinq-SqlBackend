@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationMember1);
 
-      PropertyInfo relationMember2 = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationMember2 = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationMember2);
 
@@ -78,9 +78,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void MultipleJoinsForSameTable ()
     {
       // 1)
-      // order by sdd.Student_Detail.Student.FirstName
+      // order by sdd.Student_Detail.Chef.FirstName
       // order by sdd.IndustrialSector.ID
-      // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> IndustrialSector) }
+      // Joins[sdd] = { (sdd -> Student_Detail -> Chef), (sdd -> IndustrialSector) }
 
       IQueryable<Student_Detail_Detail> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleJoins (ExpressionHelper.CreateStudentDetailDetailQueryable());
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
-      PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
@@ -116,9 +116,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void OneJoinWithMultipleExpression ()
     {
       // 2)
-      // order by sdd.Student_Detail.Student.FirstName
-      // order by sdd.Student_Detail.Student.Name
-      // Joins[sdd] = { (sdd -> Student_Detail -> Student) }
+      // order by sdd.Student_Detail.Chef.FirstName
+      // order by sdd.Student_Detail.Chef.Name
+      // Joins[sdd] = { (sdd -> Student_Detail -> Chef) }
 
       IQueryable<Student_Detail_Detail> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinCheckingCorrectNumberOfEntries (ExpressionHelper.CreateStudentDetailDetailQueryable());
@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
-      PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
@@ -151,9 +151,9 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void JoinWithDifferentLevels ()
     {
       // 3)
-      // order by sdd.Student_Detail.Student.FirstName
+      // order by sdd.Student_Detail.Chef.FirstName
       // order by sdd.Student_Detail.IndustrialSector.ID
-      // Joins[sdd] = { (sdd -> Student_Detail -> Student), (sdd -> Student_Detail -> IndustrialSector) }
+      // Joins[sdd] = { (sdd -> Student_Detail -> Chef), (sdd -> Student_Detail -> IndustrialSector) }
 
       IQueryable<Student_Detail_Detail> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithDifferentLevels (ExpressionHelper.CreateStudentDetailDetailQueryable());
@@ -174,7 +174,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailDetailTable = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable, relationalMemberForFirstOrdering1);
 
-      PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationalMemberForFirstOrdering2 = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable, relationalMemberForFirstOrdering2);
 
@@ -190,10 +190,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
     public void JoinWithMultipleKeys ()
     {
       // 4)
-      // order by sdd1.Student_Detail.Student.FirstName
-      // order by sdd2.Student_Detail.Student.FirstName
-      // Joins[sdd1] = { (sdd1 -> Student_Detail -> Student) }
-      // Joins[sdd2] = { (sdd2 -> Student_Detail -> Student) }
+      // order by sdd1.Student_Detail.Chef.FirstName
+      // order by sdd2.Student_Detail.Chef.FirstName
+      // Joins[sdd1] = { (sdd1 -> Student_Detail -> Chef) }
+      // Joins[sdd2] = { (sdd2 -> Student_Detail -> Chef) }
 
       IQueryable<Student_Detail_Detail> query =
           JoinTestQueryGenerator.CreateImplicitOrderByJoinWithMultipleKeys
@@ -218,7 +218,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailDetailTable1 = _context.GetColumnSource (parsedQuery.MainFromClause);
       SingleJoin join1 = CreateJoin (studentDetailDetailTable1, relationalMemberFirstOrderBy1);
 
-      PropertyInfo relationalMemberFirstOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationalMemberFirstOrderBy2 = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable1 = join1.RightSide;
       SingleJoin join2 = CreateJoin (studentDetailTable1, relationalMemberFirstOrderBy2);
 
@@ -226,7 +226,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
       IColumnSource studentDetailDetailTable2 = _context.GetColumnSource ((AdditionalFromClause) parsedQuery.BodyClauses[0]);
       SingleJoin join3 = CreateJoin (studentDetailDetailTable2, relationalMemberSecondOrderBy1);
 
-      PropertyInfo relationalMemberSecondOrderBy2 = typeof (Student_Detail).GetProperty ("Student");
+      PropertyInfo relationalMemberSecondOrderBy2 = typeof (Student_Detail).GetProperty ("Chef");
       IColumnSource studentDetailTable2 = join3.RightSide;
       SingleJoin join4 = CreateJoin (studentDetailTable2, relationalMemberSecondOrderBy2);
 
@@ -240,7 +240,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
     private SingleJoin CreateJoin (IColumnSource sourceTable, MemberInfo relationMember)
     {
-      Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Student
+      Table relatedTable = StubDatabaseInfo.Instance.GetTableForRelation (relationMember, null); // Chef
       return StubDatabaseInfo.Instance.GetJoinForMember (relationMember, sourceTable, relatedTable);
     }
   }

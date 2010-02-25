@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.WhereConditionParsi
       _parserRegistry.RegisterParser (typeof (MemberExpression), new MemberExpressionParser (_resolver));
       _parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
 
-      _memberExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (_fromClause), typeof (Student).GetProperty ("FirstName"));
+      _memberExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (_fromClause), typeof (Chef).GetProperty ("FirstName"));
     }
 
     [Test]

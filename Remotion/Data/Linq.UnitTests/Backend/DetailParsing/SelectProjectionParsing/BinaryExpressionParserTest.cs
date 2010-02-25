@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.DetailParsing.SelectProjectionPar
                                                                     + "in select projection, found 'AddChecked'.")]
     public void CheckExceptionHandling ()
     {
-      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Student).GetProperty ("ID"));
+      MemberExpression memberExpression = Expression.MakeMemberAccess (StudentReference, typeof (Chef).GetProperty ("ID"));
       BinaryExpression binaryExpression = Expression.AddChecked (memberExpression, memberExpression);
       var binaryExpressionParser = new BinaryExpressionParser (_parserRegistry);
       binaryExpressionParser.Parse (binaryExpression, ParseContext);

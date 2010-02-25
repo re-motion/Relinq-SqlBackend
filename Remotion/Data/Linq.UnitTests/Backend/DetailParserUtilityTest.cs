@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected ParameterExpression for argument 0 of Select method call, found "
-        + "'ConstantExpression (TestQueryable<Student>())'.")]
+        + "'ConstantExpression (TestQueryable<Chef>())'.")]
     public void CheckParameterType_Fail ()
     {
       MethodCallExpression selectExpression = SelectTestQueryGenerator.CreateSimpleQuery_SelectExpression (ExpressionHelper.CreateStudentQueryable ());
