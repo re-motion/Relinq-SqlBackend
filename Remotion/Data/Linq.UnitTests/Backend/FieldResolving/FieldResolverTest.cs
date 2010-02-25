@@ -164,7 +164,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.FieldResolving
       var expectedDetailTable = new Table ("detailTable", null); // MainKitchen
       var join1 = new SingleJoin (
           new Column (expectedDetailDetailTable, "Company_PK"),
-          new Column (expectedDetailTable, "Student_Detail_Detail_to_Student_Detail_FK"));
+          new Column (expectedDetailTable, "Company_to_Kitchen_FK"));
 
       var expectedStudentTable = new Table ("studentTable", null); // Cook
       var join2 = new SingleJoin (

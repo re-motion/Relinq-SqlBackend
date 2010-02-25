@@ -275,7 +275,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
       const string expectedString = "SELECT [sdd].* FROM [detailDetailTable] [sdd] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC";
       Assert.AreEqual (expectedString, result.Statement);
@@ -299,10 +299,10 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       const string expectedString = "SELECT [sdd1].* "
                                     + "FROM "
                                     + "[detailDetailTable] [sdd1] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd1].[Company_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd1].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK], "
                                     + "[detailDetailTable] [sdd2] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j2] ON [sdd2].[Company_PK] = [#j2].[Student_Detail_Detail_to_Student_Detail_FK] "
+                                    + "LEFT OUTER JOIN [detailTable] [#j2] ON [sdd2].[Company_PK] = [#j2].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [studentTable] [#j3] ON [#j2].[Kitchen_PK] = [#j3].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j1].[FirstNameColumn] ASC, [#j3].[FirstNameColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
@@ -325,7 +325,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       const string expectedString = "SELECT [sdd].* "
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "ORDER BY [#j0].[IDColumn] ASC, [#j1].[FirstNameColumn] ASC";
 
@@ -347,7 +347,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       const string expectedString = "SELECT [#j1].[FirstNameColumn], [#j2].[IDColumn] "
                                     + "FROM "
                                     + "[detailDetailTable] [sdd] "
-                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Student_Detail_Detail_to_Student_Detail_FK] "
+                                    + "LEFT OUTER JOIN [detailTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Kitchen_FK] "
                                     + "LEFT OUTER JOIN [studentTable] [#j1] ON [#j0].[Kitchen_PK] = [#j1].[Kitchen_to_Cook_FK] "
                                     + "LEFT OUTER JOIN [industrialTable] [#j2] ON [sdd].[Company_PK] = [#j2].[Student_Detail_Detail_to_IndustrialSector_FK]";
 
