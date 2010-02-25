@@ -24,7 +24,7 @@ using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
-  public class SqlServerTextGeneratorTest
+  public class SqlStatementTextGeneratorTest
   {
     [Test]
     public void Build ()
@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       SqlStatement sqlStatement = new SqlStatement (columnListExpression, sqlTable);
       
-      SqlServerTextGenerator generator = new SqlServerTextGenerator();
+      var generator = new SqlStatementTextGenerator();
       var result = generator.Build (sqlStatement);
       Assert.That (result, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
