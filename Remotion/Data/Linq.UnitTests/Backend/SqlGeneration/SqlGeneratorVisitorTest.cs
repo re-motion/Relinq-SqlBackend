@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       var expectedLeftSideTable = new Table ("industrialTable", "sector");
       var expectedLeftSide = new Column (expectedLeftSideTable, "IDColumn");
-      var expectedRightSide = new Column (sqlGeneratorVisitor.SqlGenerationData.FromSources[0], "Student_to_IndustrialSector_FK");
+      var expectedRightSide = new Column (sqlGeneratorVisitor.SqlGenerationData.FromSources[0], "Cook_to_Restaurant_FK");
       var expectedCondition = new BinaryCondition (expectedLeftSide, expectedRightSide, BinaryCondition.ConditionKind.Equal);
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (expectedCondition));
     }
@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration
 
       var expectedLeftSideTable = new Table ("industrialTable", "sector");
       var expectedLeftSide = new Column (expectedLeftSideTable, "IDColumn");
-      var expectedRightSide = new Column (sqlGeneratorVisitor.SqlGenerationData.FromSources[0], "Student_to_IndustrialSector_FK");
+      var expectedRightSide = new Column (sqlGeneratorVisitor.SqlGenerationData.FromSources[0], "Cook_to_Restaurant_FK");
       var expectedCondition = new BinaryCondition (expectedLeftSide, expectedRightSide, BinaryCondition.ConditionKind.Equal);
       Assert.That (sqlGeneratorVisitor.SqlGenerationData.Criterion, Is.EqualTo (expectedCondition));
     }

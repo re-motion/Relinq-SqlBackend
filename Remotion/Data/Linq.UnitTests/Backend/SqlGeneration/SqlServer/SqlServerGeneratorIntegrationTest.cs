@@ -638,7 +638,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySource (_industrialSectorSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialTable] [sector], [studentTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [industrialTable] [sector], [studentTable] [s1] WHERE (([sector].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sector].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -648,7 +648,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndOptimizableJoin (_detailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailTable] [sd], [studentTable] [s1] WHERE (([sd].[Kitchen_to_Restaurant_FK] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [sd].[Kitchen_to_Restaurant_FK] = [s1].[Student_to_IndustrialSector_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailTable] [sd], [studentTable] [s1] WHERE (([sd].[Kitchen_to_Restaurant_FK] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [sd].[Kitchen_to_Restaurant_FK] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
@@ -658,7 +658,7 @@ namespace Remotion.Data.Linq.UnitTests.Backend.SqlGeneration.SqlServer
       IQueryable<Cook> query = FromTestQueryGenerator.CreateFromQueryWithMemberQuerySourceAndJoin (_detailDetailSource);
       QueryModel parsedQuery = ExpressionHelper.ParseQuery (query);
       CommandData result = _sqlGenerator.BuildCommand (parsedQuery);
-      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [studentTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Student_to_IndustrialSector_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Student_to_IndustrialSector_FK])"));
+      Assert.That (result.Statement, Is.EqualTo ("SELECT [s1].* FROM [detailDetailTable] [sdd] LEFT OUTER JOIN [industrialTable] [#j0] ON [sdd].[Company_PK] = [#j0].[Company_to_Restaurant_FK], [studentTable] [s1] WHERE (([#j0].[IDColumn] IS NULL AND [s1].[Cook_to_Restaurant_FK] IS NULL) OR [#j0].[IDColumn] = [s1].[Cook_to_Restaurant_FK])"));
       Assert.That (result.Parameters, Is.Empty);
     }
 
