@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept ()
     {
-      var expression = _tableReferenceExpression.Accept (new ExpressionTreeVisitorTest());
+      var expression = _tableReferenceExpression.Accept (new TestExpressionTreeVisitor());
       Assert.That (expression, Is.SameAs (_tableReferenceExpression));
     }
   }

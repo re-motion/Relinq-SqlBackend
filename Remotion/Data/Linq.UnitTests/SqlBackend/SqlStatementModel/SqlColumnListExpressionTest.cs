@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.TestUtilities;
 using Rhino.Mocks;
 
@@ -48,11 +49,35 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
           _tableReferenceExpression.Type, new[] { _columnExpression1, _columnExpression2, _columnExpression3 });
     }
 
+    // TODO: Test all other extension expressions accordingly
+
     [Test]
-    public void Accept ()
+    public void Accept_VisitorSupportingExpressionType ()
     {
-      var expression = _columnListExpression.Accept (new ExpressionTreeVisitorTest());
-      Assert.That (expression, Is.SameAs (_columnListExpression));
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnListExpression, ISqlColumnListExpressionVisitor> (
+          _columnListExpression, 
+          mock => mock.VisitSqlColumListExpression (_columnListExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      // TODO: Move to ExtensionExpressionTestHelper
+      var mockRepository = new MockRepository ();
+      var visitorMock = mockRepository.StrictMock<ExpressionTreeVisitor> ();
+
+      var returnedExpression = Expression.Constant (0);
+
+      visitorMock
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitUnknownExpression", _columnListExpression))
+          .Return (returnedExpression);
+      visitorMock.Replay ();
+
+      var expression = _columnListExpression.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+
+      Assert.That (expression, Is.SameAs (returnedExpression));
     }
 
     [Test]

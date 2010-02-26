@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept ()
     {
-      var expression = _columnExpression.Accept (new ExpressionTreeVisitorTest ());
+      var expression = _columnExpression.Accept (new TestExpressionTreeVisitor ());
       Assert.That (expression, Is.SameAs (_columnExpression));
     }
   }
