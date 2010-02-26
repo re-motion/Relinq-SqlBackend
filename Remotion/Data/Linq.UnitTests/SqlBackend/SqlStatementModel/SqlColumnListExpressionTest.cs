@@ -62,22 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_VisitorNotSupportingExpressionType ()
     {
-      // TODO: Move to ExtensionExpressionTestHelper
-      var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMock<ExpressionTreeVisitor> ();
-
-      var returnedExpression = Expression.Constant (0);
-
-      visitorMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitUnknownExpression", _columnListExpression))
-          .Return (returnedExpression);
-      visitorMock.Replay ();
-
-      var expression = _columnListExpression.Accept (visitorMock);
-
-      visitorMock.VerifyAllExpectations ();
-
-      Assert.That (expression, Is.SameAs (returnedExpression));
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_columnListExpression);
     }
 
     [Test]
