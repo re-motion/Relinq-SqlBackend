@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var expectedColumnListExpression = new SqlColumnListExpression (
           _tableReferenceExpression.Type, new[] { _columnExpression1, newColumnExpression, _columnExpression3 });
 
-      Assert.That (expression, Is.Not.EqualTo (_columnListExpression));
+      Assert.That (expression, Is.EqualTo (_columnListExpression));
       Assert.That (expression.Columns, Is.EqualTo (expectedColumnListExpression.Columns));
     }
   }
