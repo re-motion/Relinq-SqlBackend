@@ -49,8 +49,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
           _tableReferenceExpression.Type, new[] { _columnExpression1, _columnExpression2, _columnExpression3 });
     }
 
-    // TODO: Test all other extension expressions accordingly
-
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {

@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -41,11 +42,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     }
 
 
-    [Test]
-    public void Accept ()
+     [Test]
+    public void Accept_VisitorSupportingExpressionType ()
     {
-      var expression = _tableReferenceExpression.Accept (new TestExpressionTreeVisitor());
-      Assert.That (expression, Is.SameAs (_tableReferenceExpression));
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlTableReferenceExpression, ISqlExpressionVisitor> (
+          _tableReferenceExpression,
+          mock => mock.VisitSqlTableReferenceExpression (_tableReferenceExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_tableReferenceExpression);
     }
   }
 }

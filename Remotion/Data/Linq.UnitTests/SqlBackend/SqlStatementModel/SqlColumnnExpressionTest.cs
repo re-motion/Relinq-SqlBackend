@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -34,10 +34,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void Accept ()
+    public void Accept_VisitorSupportingExpressionType ()
     {
-      var expression = _columnExpression.Accept (new TestExpressionTreeVisitor ());
-      Assert.That (expression, Is.SameAs (_columnExpression));
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnExpression, ISqlColumnListExpressionVisitor> (
+          _columnExpression,
+          mock => mock.VisitSqlColumnExpression (_columnExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_columnExpression);
     }
   }
 }
