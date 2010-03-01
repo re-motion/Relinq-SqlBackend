@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
@@ -49,5 +50,34 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       sqlTable.TableSource = oldTableSource;
       sqlTable.TableSource = newTableSource;
     }
+
+    [Test]
+    public void GetOrAddJoin_NewEntry ()
+    {
+      var sqlTable = new SqlTable();
+      
+      var memberInfo = typeof (Cook).GetMember ("FirstName")[0];
+      var tableSource = new SqlTableSource (typeof (Cook), "table2", "s");
+
+      sqlTable.GetOrAddJoin (memberInfo, tableSource);
+      
+      var newTable = new SqlTable();
+      newTable.TableSource = tableSource;
+
+      Assert.That (sqlTable.GetOrAddJoin (memberInfo, tableSource).TableSource, Is.EqualTo (newTable.TableSource));
+    }
+
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Type mismatch between Cook and Int32.")]
+    [Test]
+    public void GetOrAddJoin_ThrowsException ()
+    {
+      var sqlTable = new SqlTable ();
+
+      var memberInfo = typeof (Cook).GetMember ("FirstName")[0];
+      var tableSource = new SqlTableSource (typeof (int), "table2", "s");
+
+      sqlTable.GetOrAddJoin (memberInfo, tableSource);
+    }
+
   }
 }
