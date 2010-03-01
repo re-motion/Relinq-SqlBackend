@@ -23,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
@@ -30,37 +31,52 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
   public class SqlSelectExpressionVisitorTest
   {
     private SqlPreparationContext _context;
+    private MainFromClause _mainFromClause;
+    private QuerySourceReferenceExpression _querySourceReferenceExpression;
+    private SqlTable _sqlTable;
+
 
     [SetUp]
     public void SetUp ()
     {
       _context = new SqlPreparationContext();
+      _mainFromClause = ClauseObjectMother.CreateMainFromClause ();
+      _querySourceReferenceExpression = new QuerySourceReferenceExpression (_mainFromClause);
+      var source = new ConstantTableSource ((ConstantExpression) _mainFromClause.FromExpression);
+      _sqlTable = new SqlTable ();
+      _sqlTable.TableSource = source;
+      _context.AddQuerySourceMapping (_mainFromClause, _sqlTable);
     }
 
     [Test]
     public void VisitQuerySourceReferenceExpression_CreatesSqlTableReferenceExpression ()
     {
-      var mainFromClause = ClauseObjectMother.CreateMainFromClause();
-      var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
+      var result = SqlSelectExpressionVisitor.TranslateExpression (_querySourceReferenceExpression, _context);
 
-      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression);
-      var sqlTable = new SqlTable();
-      sqlTable.TableSource = source;
-      _context.AddQuerySourceMapping (mainFromClause, sqlTable) ;
-      
-      var result = SqlSelectExpressionVisitor.TranslateSelectExpression (querySourceReferenceExpression, _context);
-
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (sqlTable));
+      Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
       Assert.That (result.Type, Is.SameAs (typeof (Cook[])));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+    public void VisitMemberExpression_CreatesSqlMemberExpression ()
+    {
+      Expression memberExpression = Expression.MakeMemberAccess (_querySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
+
+      var result = SqlSelectExpressionVisitor.TranslateExpression (memberExpression, _context);
+
+      Assert.That (result, Is.TypeOf (typeof(SqlMemberExpression)));
+      Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
+      Assert.That (result.Type, Is.SameAs (typeof (Cook[])));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage  =
         "The given expression type 'NotSupportedExpression' is not supported in select clauses. (Expression: '[2147483647]')")]
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
       var expression = new NotSupportedExpression (typeof (int));
-      SqlSelectExpressionVisitor.TranslateSelectExpression (expression, _context);
+      SqlSelectExpressionVisitor.TranslateExpression (expression, _context);
     }
 
   }

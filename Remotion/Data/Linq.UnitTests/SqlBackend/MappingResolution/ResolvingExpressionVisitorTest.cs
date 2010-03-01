@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
@@ -27,33 +28,47 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   public class ResolvingExpressionVisitorTest
   {
     private SqlStatementResolverStub _resolver;
+    private ConstantTableSource _source;
+    private SqlTable _sqlTable;
+    private SqlTableSource _constraint;
 
     [SetUp]
     public void SetUp ()
     {
       _resolver = new SqlStatementResolverStub();
+      _source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
+      _sqlTable = new SqlTable ();
+      _sqlTable.TableSource = _source;
+      _constraint = new SqlTableSource (typeof (string), "Table", "t");
     }
 
     [Test]
     public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
     {
-      var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = source;
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
 
-      var sqlColumnListExpression = ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (tableReferenceExpression, _resolver);
+      var sqlColumnListExpression = ResolvingExpressionVisitor.ResolveExpressions (tableReferenceExpression, _resolver);
 
-      var constraint = new SqlTableSource (typeof (string), "Table", "t");
-      
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
+      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
       
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].ColumnName, Is.EqualTo ("ID"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[1].ColumnName, Is.EqualTo ("Name"));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[2].ColumnName, Is.EqualTo ("City"));
+    }
+
+    [Test]
+    public void VisitSqlMemberExpression_CreatesSqlColumnExpression() 
+    {
+      var memberExpression = new SqlMemberExpression (_sqlTable, typeof (Cook).GetMember ("FirstName")[0]);
+
+      var sqlColumnExpression = ResolvingExpressionVisitor.ResolveExpressions (memberExpression, _resolver);
+
+      Assert.That (sqlColumnExpression, Is.TypeOf (typeof(SqlColumnExpression)));
+      Assert.That (((SqlColumnExpression) sqlColumnExpression).OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
+      Assert.That (((SqlColumnExpression) sqlColumnExpression).ColumnName, Is.EqualTo ("FirstName"));
     }
 
     [Test]
@@ -62,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (unknownExpression, _resolver);
+      ResolvingExpressionVisitor.ResolveExpressions (unknownExpression, _resolver);
     }
   }
 }

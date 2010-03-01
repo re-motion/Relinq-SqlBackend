@@ -42,5 +42,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
               new SqlColumnExpression (typeof (int), "t", "City")
           });
     }
+
+    public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression)
+    {
+      memberExpression.SqlTable.TableSource = new SqlTableSource(typeof(string), "Table", "t");
+      return new SqlColumnExpression (typeof (int), "t", "FirstName");
+    }
   }
 }
