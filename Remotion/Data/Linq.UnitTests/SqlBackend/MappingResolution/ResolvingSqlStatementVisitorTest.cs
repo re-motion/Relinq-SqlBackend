@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
@@ -37,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable);
+      _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable, new UniqueIdentifierGenerator());
       _resolver = new SqlStatementResolverStub();
       _sqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
     }

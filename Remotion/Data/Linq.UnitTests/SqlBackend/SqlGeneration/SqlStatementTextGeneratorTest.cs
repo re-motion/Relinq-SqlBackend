@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
@@ -41,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      SqlStatement sqlStatement = new SqlStatement (columnListExpression, sqlTable);
+      SqlStatement sqlStatement = new SqlStatement (columnListExpression, sqlTable, new UniqueIdentifierGenerator());
       
       var generator = new SqlStatementTextGenerator();
       var result = generator.Build (sqlStatement);
