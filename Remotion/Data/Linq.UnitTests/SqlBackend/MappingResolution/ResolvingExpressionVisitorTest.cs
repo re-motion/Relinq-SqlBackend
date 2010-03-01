@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
@@ -31,6 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     private ConstantTableSource _source;
     private SqlTable _sqlTable;
     private SqlTableSource _constraint;
+    private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
@@ -40,6 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _sqlTable = new SqlTable ();
       _sqlTable.TableSource = _source;
       _constraint = new SqlTableSource (typeof (string), "Table", "t");
+      _generator = new UniqueIdentifierGenerator();
     }
 
     [Test]
@@ -47,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
 
-      var sqlColumnListExpression = ResolvingExpressionVisitor.ResolveExpressions (tableReferenceExpression, _resolver);
+      var sqlColumnListExpression = ResolvingExpressionVisitor.ResolveExpressions (tableReferenceExpression, _resolver, _generator);
 
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
       Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
@@ -64,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var memberExpression = new SqlMemberExpression (_sqlTable, typeof (Cook).GetMember ("FirstName")[0]);
 
-      var sqlColumnExpression = ResolvingExpressionVisitor.ResolveExpressions (memberExpression, _resolver);
+      var sqlColumnExpression = ResolvingExpressionVisitor.ResolveExpressions (memberExpression, _resolver, _generator);
 
       Assert.That (sqlColumnExpression, Is.TypeOf (typeof(SqlColumnExpression)));
       Assert.That (((SqlColumnExpression) sqlColumnExpression).OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
@@ -77,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      ResolvingExpressionVisitor.ResolveExpressions (unknownExpression, _resolver);
+      ResolvingExpressionVisitor.ResolveExpressions (unknownExpression, _resolver, _generator);
     }
   }
 }

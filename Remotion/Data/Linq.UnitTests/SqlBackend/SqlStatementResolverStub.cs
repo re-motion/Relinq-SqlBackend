@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -43,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           });
     }
 
-    public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression)
+    public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
       memberExpression.SqlTable.TableSource = new SqlTableSource(typeof(string), "Table", "t");
       return new SqlColumnExpression (typeof (int), "t", "FirstName");
