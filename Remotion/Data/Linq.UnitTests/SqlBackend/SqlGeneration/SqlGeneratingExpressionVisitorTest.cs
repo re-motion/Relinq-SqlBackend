@@ -81,6 +81,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitConstantExpression_NullValue ()
+    {
+      var expression = Expression.Constant (null);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (null));
+    }
+
+    [Test]
     public void VisitConstantExpression_StringParameter ()
     {
       var expression = Expression.Constant ("Test");
