@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -57,6 +58,36 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText () , Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+    }
+
+    [Test]
+    public void VisitConstantExpression_TrueParameter ()
+    {
+      var expression = Expression.Constant (true);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void VisitConstantExpression_FalseParameter ()
+    {
+      var expression = Expression.Constant (false);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void VisitConstantExpression_StringParameter ()
+    {
+      var expression = Expression.Constant ("Test");
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo ("Test"));
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
