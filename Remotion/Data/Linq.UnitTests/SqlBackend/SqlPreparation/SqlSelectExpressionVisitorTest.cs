@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -68,6 +69,31 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (result, Is.TypeOf (typeof(SqlMemberExpression)));
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
       Assert.That (result.Type, Is.SameAs (typeof (Cook[])));
+    }
+
+    [Test]
+    public void VisitSeveralMemberExpression_CreateslSqlMemberExpressions ()
+    {
+      Kitchen[] kitchen = new Kitchen[1];
+      kitchen[0] = new Kitchen { Name = "Test" };
+
+      var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (kitchen));
+      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression);
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = source;
+      var context = new SqlPreparationContext ();
+      context.AddQuerySourceMapping (mainFromClause, sqlTable);
+      
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
+      MemberExpression innerExpression = Expression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetMember("Cook")[0]);
+      Expression outerExpression = Expression.MakeMemberAccess (innerExpression, typeof (Cook).GetProperty ("FirstName"));
+      
+      var result = SqlSelectExpressionVisitor.TranslateExpression (outerExpression, context);
+
+      var tableSource = ((SqlMemberExpression) result).SqlTable.TableSource;
+      
+      Assert.That (result, Is.TypeOf (typeof (SqlMemberExpression)));
+      Assert.That (tableSource, Is.EqualTo (source));
     }
 
     [Test]
