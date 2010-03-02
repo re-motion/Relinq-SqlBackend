@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -40,6 +41,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public static SqlTable CreateSqlTableWithSqlTableSource ()
     {
       var sqlTableSource = new SqlTableSource (typeof (string), "Table", "t");
+      var sqlTable = new SqlTable ();
+      sqlTable.TableSource = sqlTableSource;
+      return sqlTable;
+    }
+
+    public static SqlTable CreateSqlTableWithJoinedTableSource ()
+    {
+      var sqlTableSource = new JoinedTableSource (typeof (Cook).GetMember ("FirstName")[0]);
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = sqlTableSource;
       return sqlTable;
