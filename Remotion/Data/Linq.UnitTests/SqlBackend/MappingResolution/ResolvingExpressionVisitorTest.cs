@@ -38,10 +38,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _resolver = new SqlStatementResolverStub();
-      _source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
+      _source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)));
       _sqlTable = new SqlTable ();
       _sqlTable.TableSource = _source;
-      _constraint = new SqlTableSource (typeof (string), "Table", "t");
+      _constraint = new SqlTableSource (typeof (Cook), "Cook", "c");
       _generator = new UniqueIdentifierGenerator();
     }
 

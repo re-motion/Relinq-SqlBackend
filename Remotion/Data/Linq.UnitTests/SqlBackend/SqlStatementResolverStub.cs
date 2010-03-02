@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
@@ -33,21 +34,33 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
-      tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof(string), "Table", "t");
+      tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof(Cook), "Cook", "c");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
           new[]
           {
-              new SqlColumnExpression (typeof (int), "t", "ID"),
-              new SqlColumnExpression (typeof (int), "t", "Name"),
-              new SqlColumnExpression (typeof (int), "t", "City")
+              new SqlColumnExpression (typeof (Cook), "c", "ID"),
+              new SqlColumnExpression (typeof (Cook), "c", "Name"),
+              new SqlColumnExpression (typeof (Cook), "c", "City")
           });
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
-      memberExpression.SqlTable.TableSource = new SqlTableSource(typeof(string), "Table", "t");
-      return new SqlColumnExpression (typeof (int), "t", "FirstName");
+      var table = memberExpression.SqlTable.GetOrAddJoin(memberExpression.MemberInfo,memberExpression.SqlTable.TableSource);
+      if (table.TableSource != memberExpression.SqlTable.TableSource)
+      {
+        //join
+        memberExpression.SqlTable.TableSource = table.TableSource; 
+        return new SqlColumnExpression (typeof (Cook), generator.GetUniqueIdentifier("t"),"FirstName");
+      }
+      else
+      {
+        memberExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
+        return new SqlColumnExpression (typeof (Cook), "c", "FirstName");
+      }
+
+  
     }
   }
 }

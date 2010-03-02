@@ -22,6 +22,7 @@ using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
@@ -35,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
+     var source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)));
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable, new UniqueIdentifierGenerator());
@@ -55,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void VisitSelectProjection_CreatesSqlColumnListExpression ()
     {
       _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
-      var constraint = new SqlTableSource (typeof (string), "Table", "t");
+      var constraint = new SqlTableSource (typeof (Cook), "Cook", "c");
 
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (3));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));

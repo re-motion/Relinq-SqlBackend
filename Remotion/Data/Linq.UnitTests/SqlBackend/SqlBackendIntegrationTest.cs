@@ -23,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
@@ -32,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     [Test]
     public void SimpleSqlQuery ()
     {
-      var mainFromClause = new MainFromClause ("t", typeof (string), Expression.Constant ("Table"));
+      var mainFromClause = new MainFromClause ("t", typeof (Cook), Expression.Constant (new Cook { FirstName = "Test" }));
       var selectClause = ClauseObjectMother.CreateSelectClause (mainFromClause);
       var queryModel = new QueryModel (mainFromClause, selectClause);
       
@@ -46,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       var sqlTextGenerator = new SqlStatementTextGenerator();
       var result = sqlTextGenerator.Build (sqlStatement);
 
-      Assert.That (result, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+      Assert.That (result, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [Cook] AS [c]"));
     }
   }
 }
