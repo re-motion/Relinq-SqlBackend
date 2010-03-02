@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -27,21 +26,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlGeneratingExpressionVisitorTest
   {
-    private StringBuilder _sb;
+    private SqlCommandBuilder _commandBuilder;
 
     [SetUp]
     public void SetUp ()
     {
-      _sb = new StringBuilder ();
+      _commandBuilder = new SqlCommandBuilder();
     }
 
     [Test]
     public void GenerateSql_VisitSqlColumnExpression ()
     {
       var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID");
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _sb);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder);
 
-      Assert.That (_sb.ToString (), Is.EqualTo ("[s].[ID]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
     }
 
     [Test]
@@ -55,9 +54,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (string), "t", "Name"),
               new SqlColumnExpression (typeof (string), "t", "City")
           });
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _sb);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder);
 
-      Assert.That (_sb.ToString(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText () , Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
@@ -66,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_UnsupportedExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _sb);
+      SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _commandBuilder);
     }
 
 

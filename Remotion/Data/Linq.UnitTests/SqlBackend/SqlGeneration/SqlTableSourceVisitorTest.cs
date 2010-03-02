@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -27,12 +26,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlTableSourceVisitorTest
   {
-    private StringBuilder _sb;
+    private SqlCommandBuilder _commandBuilder;
 
     [SetUp]
     public void SetUp ()
     {
-      _sb = new StringBuilder();
+      _commandBuilder = new SqlCommandBuilder ();
     }
 
     [Test]
@@ -40,9 +39,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
 
-      Assert.That (_sb.ToString(), Is.EqualTo ("[Table] AS [t]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
 
     [Test]
@@ -54,9 +53,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource1, sqlTableSource2, "ID", "FK", typeof (int));
 
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
 
-      Assert.That (_sb.ToString (), Is.EqualTo (" JOIN [Table2] ON [t1].[ID] = [t2].[FK]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" JOIN [Table2] ON [t1].[ID] = [t2].[FK]"));
     }
 
     [Test]
@@ -65,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = new UnknownTableSource ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
     }
 
     [Test]
@@ -73,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_WithConstantTableSource_RaisesException ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
     }
 
     [Test]
@@ -81,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_JoinedTableSource ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
     }
 
     private class UnknownTableSource : AbstractTableSource
