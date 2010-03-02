@@ -46,6 +46,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_ForSqlJoinedTableSource ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
+      var sqlTableSource1 = new SqlTableSource (typeof (int), "Table1", "t1");
+      var sqlTableSource2 = new SqlTableSource (typeof (int), "Table2", "t2");
+
+      sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource1, sqlTableSource2, "ID", "FK", typeof (int));
+
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+
+      Assert.That (_sb.ToString (), Is.EqualTo (" JOIN [Table2] ON [t1].[ID] = [t2].[FK]"));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotImplementedException))]
     public void TranslateTableSource_WithUnknownTableSource ()
     {
@@ -59,6 +73,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_WithConstantTableSource_RaisesException ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
+      SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "JoinedTableSource is not valid at this point.")]
+    public void GenerateSql_JoinedTableSource ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource();
       SqlTableSourceVisitor.GenerateSql (sqlTable, _sb);
     }
 

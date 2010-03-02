@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
@@ -49,6 +50,24 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       sqlTable.TableSource = new UnknownTableSource();
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
       ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, resolver);
+    }
+
+    [Test]
+    public void ResolveJoinedTableSource ()
+    {
+      var joinedTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource();
+      var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
+
+      var kitchenSource = new SqlTableSource (typeof (Kitchen), "Kitchen", "k");
+      var cookSource = new SqlTableSource(typeof(Cook), "Cook", "c");
+      var sqlJoinedTableSource = new SqlJoinedTableSource (kitchenSource, cookSource, "ID", "KitchenID", typeof (Cook));
+
+      resolver.Expect (mock => mock.ResolveJoinedTableSource (Arg<SqlTable>.Is.Anything, Arg<SqlTable>.Is.Anything)).Return (sqlJoinedTableSource);
+
+      ResolvingTableSourceVisitor.ResolveTableSource (joinedTable, resolver);
+
+      Assert.That (joinedTable.TableSource, Is.TypeOf (typeof (SqlJoinedTableSource)));
+
     }
 
     private class UnknownTableSource : AbstractTableSource

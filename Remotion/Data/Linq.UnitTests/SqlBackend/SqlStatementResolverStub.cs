@@ -29,12 +29,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       var tableName = tableSource.ConstantExpression.Value.ToString();
       var tableAlias = tableName.Substring (0, 1).ToLower();
-      return new SqlTableSource (typeof(string), tableName, tableAlias);
+      return new SqlTableSource (typeof (string), tableName, tableAlias);
     }
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
-      tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof(Cook), "Cook", "c");
+      tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
           new[]
@@ -47,20 +47,23 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
-      var table = memberExpression.SqlTable.GetOrAddJoin(memberExpression.MemberInfo,memberExpression.SqlTable.TableSource);
+      var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, memberExpression.SqlTable.TableSource);
       if (table.TableSource != memberExpression.SqlTable.TableSource)
       {
-        //join
-        memberExpression.SqlTable.TableSource = table.TableSource; 
-        return new SqlColumnExpression (typeof (Cook), generator.GetUniqueIdentifier("t"),"FirstName");
+        memberExpression.SqlTable.TableSource = table.TableSource;
+        return new SqlColumnExpression (typeof (Cook), generator.GetUniqueIdentifier ("t"), "FirstName");
       }
       else
       {
         memberExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
         return new SqlColumnExpression (typeof (Cook), "c", "FirstName");
       }
+    }
 
-  
+    public SqlJoinedTableSource ResolveJoinedTableSource (SqlTable sourceSqlTable, SqlTable joinSqlTable)
+    {
+      return new SqlJoinedTableSource (
+          (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID", joinSqlTable.TableSource.Type);
     }
   }
 }
