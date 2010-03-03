@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     private class UnknownTableSource : AbstractTableSource
     {
 
-      public override Type Type
+      public override Type ItemType
       {
         get { return typeof (string); }
       }

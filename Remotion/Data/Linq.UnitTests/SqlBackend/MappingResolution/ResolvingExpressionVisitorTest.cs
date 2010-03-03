@@ -66,10 +66,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlMemberExpression_CreatesSqlColumnExpression() 
     {
-      var memberExpression = new SqlMemberExpression (_sqlTable, typeof (Cook).GetMember ("FirstName")[0]);
-
+      var memberInfo = typeof (Cook).GetProperty ("Substitution");
+      _sqlTable.TableSource = new JoinedTableSource (memberInfo);
+      var memberExpression = new SqlMemberExpression (_sqlTable, memberInfo);
       var sqlColumnExpression = ResolvingExpressionVisitor.ResolveExpressions (memberExpression, _resolver, _generator);
-
+      
       Assert.That (sqlColumnExpression, Is.TypeOf (typeof(SqlColumnExpression)));
       Assert.That (((SqlColumnExpression) sqlColumnExpression).OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
       Assert.That (((SqlColumnExpression) sqlColumnExpression).ColumnName, Is.EqualTo ("FirstName"));

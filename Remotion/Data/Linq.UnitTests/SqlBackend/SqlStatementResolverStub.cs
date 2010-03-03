@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       // TODO: Only create a join if memberExpression.Member refers to another entity (e.g. Cook.Substitution); for the join, create a new SqlJoinedTableSource, as in ResolveJoinedTableSource (extract similar code to separate method)
       // TODO: For all other members, simply return a new SqlColumnExpression indicating the property
-      var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, memberExpression.SqlTable.TableSource);
+      var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, (JoinedTableSource) memberExpression.SqlTable.TableSource);
 
       if (table.TableSource != memberExpression.SqlTable.TableSource)
       {
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       // TODO: extract primary and foreign key via joinedTableSource.MemberInfo - for Cook.Substitution, return "ID", "SubstitutionID"
       return new SqlJoinedTableSource (
-          (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID", joinSqlTable.TableSource.Type);
+          (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID", joinSqlTable.TableSource.ItemType);
     }
   }
 }

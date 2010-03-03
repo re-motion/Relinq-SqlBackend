@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTableWithJoinedTableSource ()
     {
-      var sqlTableSource = new JoinedTableSource (typeof (Cook).GetMember ("FirstName")[0]);
+      var sqlTableSource = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = sqlTableSource;
       return sqlTable;

@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     public void Initialize ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
-      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.Type));
+      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.ItemType));
     }
 
 
