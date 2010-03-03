@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
