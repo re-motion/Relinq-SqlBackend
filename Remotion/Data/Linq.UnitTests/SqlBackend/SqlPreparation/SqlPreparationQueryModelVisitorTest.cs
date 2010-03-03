@@ -25,7 +25,7 @@ using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
   [TestFixture]
-  public class SqlQueryModelVisitorTest
+  public class SqlPreparationQueryModelVisitorTest
   {
     private SelectClause _selectClause;
     private MainFromClause _mainFromClause;

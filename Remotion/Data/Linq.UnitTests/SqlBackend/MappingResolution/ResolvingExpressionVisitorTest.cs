@@ -76,12 +76,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), 
-        ExpectedMessage = "The given expression type 'NotSupportedExpression' is not supported in from clauses. (Expression: '[2147483647]')")]
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      ResolvingExpressionVisitor.ResolveExpressions (unknownExpression, _resolver, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpressions (unknownExpression, _resolver, _generator);
+
+      Assert.That (result, Is.EqualTo (unknownExpression));
     }
   }
 }

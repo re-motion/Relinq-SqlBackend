@@ -30,7 +30,7 @@ using Remotion.Data.Linq.Clauses;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
   [TestFixture]
-  public class SqlSelectExpressionVisitorTest
+  public class SqlPreparationExpressionVisitorTest
   {
     private SqlPreparationContext _context;
     private MainFromClause _mainFromClause;
@@ -110,12 +110,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     // TODO: Add test showing that MemberExpressions on non-QuerySourceReferenceExpressions (e.g. "constant".Length) are left unchanged
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage  =
-        "The given expression type 'NotSupportedExpression' is not supported in select clauses. (Expression: '[2147483647]')")]
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
       var expression = new NotSupportedExpression (typeof (int));
-      SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
+
+      Assert.That (result, Is.EqualTo (expression));
     }
 
   }
