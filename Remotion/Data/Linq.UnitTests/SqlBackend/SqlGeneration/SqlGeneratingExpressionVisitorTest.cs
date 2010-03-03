@@ -222,6 +222,39 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo (("(@1 OR @2)")));
     }
 
+    [Test]
+    public void VisitBinaryExpression_And ()
+    {
+      Expression binaryExpression = Expression.And (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 & @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Or ()
+    {
+      Expression binaryExpression = Expression.Or(_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 | @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_ExclusiveOr ()
+    {
+      Expression binaryExpression = Expression.ExclusiveOr(_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 ^ @2)")));
+    }
+
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
          "The expression '[2147483647]' cannot be translated to SQL text by this SQL generator. Expression type 'NotSupportedExpression' is not supported.")]
     [Test]
