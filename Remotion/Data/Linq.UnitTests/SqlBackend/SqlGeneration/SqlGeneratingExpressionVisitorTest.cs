@@ -255,6 +255,72 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo (("(@1 ^ @2)")));
     }
 
+    [Test]
+    public void VisitBinaryExpression_Equals ()
+    {
+      Expression binaryExpression = Expression.Equal (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 = @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_GreaterThan ()
+    {
+      Expression binaryExpression = Expression.GreaterThan (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 > @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_GreaterThanOrEqual ()
+    {
+      Expression binaryExpression = Expression.GreaterThanOrEqual (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 >= @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_LessThan ()
+    {
+      Expression binaryExpression = Expression.LessThan (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 < @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_LessThanOrEqual ()
+    {
+      Expression binaryExpression = Expression.LessThanOrEqual (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 <= @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NotEqual ()
+    {
+      Expression binaryExpression = Expression.NotEqual (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 <> @2)")));
+    }
+
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
          "The expression '[2147483647]' cannot be translated to SQL text by this SQL generator. Expression type 'NotSupportedExpression' is not supported.")]
     [Test]
