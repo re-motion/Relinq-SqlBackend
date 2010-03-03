@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
   public class SqlBackendIntegrationTest
   {
     // TODO: Change test to work as follows:
-    //   var query = from t in Cooks
+    //   var query = from t in _cooks
     //               select t;
     //   var result = GenerateSql (query.Expression); // calls ExpressionHelper.ParseQuery(), SqlQueryModelVisitor, ResolvingSqlStatementVisitor, and SqlStatementTextGenerator
     //   Assert.That (result.CommandText, Is.EqualTo ("..."));

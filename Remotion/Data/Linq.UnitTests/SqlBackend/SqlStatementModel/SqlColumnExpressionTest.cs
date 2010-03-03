@@ -21,9 +21,8 @@ using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  // TODO: Too many 'n'
   [TestFixture]
-  public class SqlColumnnExpressionTest
+  public class SqlColumnExpressionTest
   {
     private SqlColumnExpression _columnExpression;
 
