@@ -27,6 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
   {
     public virtual SqlTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
     {
+      // TODO: Use ItemType to infer a "table" name, e.g. CookTable for type Cook
       var tableName = tableSource.ConstantExpression.Value.ToString();
       var tableAlias = tableName.Substring (0, 1).ToLower();
       return new SqlTableSource (typeof (string), tableName, tableAlias);
@@ -34,6 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
+      // TODO: Check referenced table source item type, only return those columns for Cook; for other types, throw an exception
       tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
       return new SqlColumnListExpression (
           tableReferenceExpression.Type,
@@ -47,7 +49,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
+      // TODO: Only create a join if memberExpression.Member refers to another entity (e.g. Cook.Substitution); for the join, create a new SqlJoinedTableSource, as in ResolveJoinedTableSource (extract similar code to separate method)
+      // TODO: For all other members, simply return a new SqlColumnExpression indicating the property
       var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, memberExpression.SqlTable.TableSource);
+
       if (table.TableSource != memberExpression.SqlTable.TableSource)
       {
         memberExpression.SqlTable.TableSource = table.TableSource;
@@ -62,6 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public SqlJoinedTableSource ResolveJoinedTableSource (SqlTable sourceSqlTable, SqlTable joinSqlTable)
     {
+      // TODO: extract primary and foreign key via joinedTableSource.MemberInfo - for Cook.Substitution, return "ID", "SubstitutionID"
       return new SqlJoinedTableSource (
           (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID", joinSqlTable.TableSource.Type);
     }

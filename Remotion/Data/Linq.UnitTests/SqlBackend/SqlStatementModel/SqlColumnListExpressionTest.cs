@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string)));
+      var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string))); // TODO: Move to object mother
       var sqlTable = new SqlTable();
       sqlTable.TableSource = source;
       _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
@@ -71,6 +71,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       visitorMock.Expect (mock => mock.VisitExpression (_columnExpression2)).Return (_columnExpression2);
       visitorMock.Expect (mock => mock.VisitExpression (_columnExpression3)).Return (_columnExpression3);
       visitorMock.Replay();
+
+      // TODO: Add ExtensionExpressionTestHelper.CallVisitChildren method; use in all extension expression tests
       var expression = PrivateInvoke.InvokeNonPublicMethod (_columnListExpression, "VisitChildren", visitorMock);
       
       Assert.That (expression, Is.SameAs (_columnListExpression));
@@ -86,12 +88,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       visitorMock.Expect (mock => mock.VisitExpression (_columnExpression2)).Return (newColumnExpression);
       visitorMock.Expect (mock => mock.VisitExpression (_columnExpression3)).Return (_columnExpression3);
       visitorMock.Replay ();
+
+      // TODO: Add ExtensionExpressionTestHelper.CallVisitChildren method; use in all extension expression tests
       var expression = (SqlColumnListExpression) PrivateInvoke.InvokeNonPublicMethod (_columnListExpression, "VisitChildren", visitorMock);
 
+      // TODO: No need to create SqlColumnListExpression, only create: var expectedColumns = new[] { ... };
       var expectedColumnListExpression = new SqlColumnListExpression (
           _tableReferenceExpression.Type, new[] { _columnExpression1, newColumnExpression, _columnExpression3 });
 
-      Assert.That (expression, Is.EqualTo (_columnListExpression));
+      Assert.That (expression, Is.EqualTo (_columnListExpression)); // TODO: Should not be equal! Assert.That (..., Is.Not.SameAs (...)));
+      // TODO: Assert.That (expression.Type, Is.SameAs (_columnListExpression.Type));
       Assert.That (expression.Columns, Is.EqualTo (expectedColumnListExpression.Columns));
     }
   }

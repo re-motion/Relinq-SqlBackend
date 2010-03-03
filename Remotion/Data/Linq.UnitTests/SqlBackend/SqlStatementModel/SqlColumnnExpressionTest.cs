@@ -16,12 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
+  // TODO: Too many 'n'
   [TestFixture]
   public class SqlColumnnExpressionTest
   {

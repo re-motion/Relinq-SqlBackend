@@ -68,33 +68,45 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof(SqlMemberExpression)));
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
-      Assert.That (result.Type, Is.SameAs (typeof (Cook[])));
+      // TODO: Check Member
+      Assert.That (result.Type, Is.SameAs (typeof (Cook[]))); // TODO: should be typeof (string) because FirstName returns string
     }
 
     [Test]
-    public void VisitSeveralMemberExpression_CreateslSqlMemberExpressions ()
+    public void VisitSeveralMemberExpression_CreatesSqlMemberExpressions ()
     {
       Kitchen[] kitchen = new Kitchen[1];
       kitchen[0] = new Kitchen { Name = "Test" };
 
-      var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (kitchen));
-      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression);
+      var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (kitchen));  // TODO: Use ExpressionHelper.CreateMainFromClause_Kitchen
+      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression); // TODO: Add object mother method CreateSqlTable (mainFromClause)
       var sqlTable = new SqlTable ();
       sqlTable.TableSource = source;
       var context = new SqlPreparationContext ();
       context.AddQuerySourceMapping (mainFromClause, sqlTable);
       
+      // TODO: Use ExpressionHelper.Resolve<Kitchen, string> (mainFromClause, k => k.Cook.FirstName) to get the nested MemberExpression
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
       MemberExpression innerExpression = Expression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetMember("Cook")[0]);
       Expression outerExpression = Expression.MakeMemberAccess (innerExpression, typeof (Cook).GetProperty ("FirstName"));
-      
+
       var result = SqlSelectExpressionVisitor.TranslateExpression (outerExpression, context);
 
+      // TODO: Assert.That (result, Is.TypeOf (SqlMemberExpression));
+      // TODO: var expectedJoin = sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"));
+      // TODO: Assert.That (result.SqlTable, Is.SameAs (expectedJoin));
+      // TODO: Assert.That (result.Member, Is.EqualTo (typeof (Cook).GetProperty ("FirstName"));
+      //
+      // TODO: Assert.That (expectedJoin.TableSource, Is.TypeOf (JoinedTableSource));
+      // TODO: Assert.That (((JoinedTableSource) expectedJoin.TableSource).Member, Is.EqualTo (typeof (Kitchen).GetProperty ("Cook")));
+
+      // TODO: Remove this
       var tableSource = ((SqlMemberExpression) result).SqlTable.TableSource;
-      
       Assert.That (result, Is.TypeOf (typeof (SqlMemberExpression)));
       Assert.That (tableSource, Is.EqualTo (source));
     }
+
+    // TODO: Add test showing that MemberExpressions on non-QuerySourceReferenceExpressions (e.g. "constant".Length) are left unchanged
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage  =

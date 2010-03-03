@@ -27,9 +27,16 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
+  // TODO: Move to SqlGeneration namespace
   [TestFixture]
   public class SqlBackendIntegrationTest
   {
+    // TODO: Change test to work as follows:
+    //   var query = from t in Cooks
+    //               select t;
+    //   var result = GenerateSql (query.Expression); // calls ExpressionHelper.ParseQuery(), SqlQueryModelVisitor, ResolvingSqlStatementVisitor, and SqlStatementTextGenerator
+    //   Assert.That (result.CommandText, Is.EqualTo ("..."));
+    //
     [Test]
     public void SimpleSqlQuery ()
     {
@@ -49,5 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
       Assert.That (result, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [Cook] AS [c]"));
     }
+
+    // TODO: Add integration tests for all features implemented so far
   }
 }

@@ -56,14 +56,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       var sqlTable = new SqlTable();
       
-      var memberInfo = typeof (Cook).GetMember ("FirstName")[0];
+      var memberInfo = typeof (Cook).GetMember ("FirstName")[0]; // TODO: Use GetProperty instead, doesn't require indexer
       var tableSource = new SqlTableSource (typeof (Cook), "table2", "s");
 
       sqlTable.GetOrAddJoin (memberInfo, tableSource);
+
+      // TODO: Check return value: should be a SqlTable whose .TableSource, Is.SameAs (tableSource)
       
+      // TODO: Remove these lines; instead, add new test checking that when GetOrAddJoin is called twice with the same member, the same SqlTable is returned
       var newTable = new SqlTable();
       newTable.TableSource = tableSource;
-
       Assert.That (sqlTable.GetOrAddJoin (memberInfo, tableSource).TableSource, Is.EqualTo (newTable.TableSource));
     }
 

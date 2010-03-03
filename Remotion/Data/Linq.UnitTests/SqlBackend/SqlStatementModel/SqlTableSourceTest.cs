@@ -27,11 +27,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept ()
     {
+      // TODO: No sqlTable needed, just create SqlTableSource
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "table", "t");
 
       var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor> ();
       tableSourceVisitorMock.Expect (mock => mock.VisitSqlTableSource ((SqlTableSource) sqlTable.TableSource));
+      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitSqlTableSource is returned by Accept.
       sqlTable.TableSource.Accept (tableSourceVisitorMock);
       tableSourceVisitorMock.Replay ();
       tableSourceVisitorMock.VerifyAllExpectations ();

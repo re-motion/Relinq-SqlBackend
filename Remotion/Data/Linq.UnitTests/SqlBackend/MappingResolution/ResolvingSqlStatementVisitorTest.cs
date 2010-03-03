@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-     var source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)));
+      var source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook))); // TODO: Move to object mother
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable, new UniqueIdentifierGenerator());
