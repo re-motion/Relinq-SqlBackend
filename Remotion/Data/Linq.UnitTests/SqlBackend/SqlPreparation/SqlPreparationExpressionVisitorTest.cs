@@ -45,8 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _mainFromClause = ClauseObjectMother.CreateMainFromClause ();
       _querySourceReferenceExpression = new QuerySourceReferenceExpression (_mainFromClause);
       var source = new ConstantTableSource ((ConstantExpression) _mainFromClause.FromExpression);
-      _sqlTable = new SqlTable ();
-      _sqlTable.TableSource = source;
+      _sqlTable = new SqlTable (source);
       _context.AddQuerySourceMapping (_mainFromClause, _sqlTable);
     }
 
@@ -81,8 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (kitchen));  // TODO: Use ExpressionHelper.CreateMainFromClause_Kitchen
       var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression); // TODO: Add object mother method CreateSqlTable (mainFromClause)
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = source;
+      var sqlTable = new SqlTable (source);
       var context = new SqlPreparationContext ();
       context.AddQuerySourceMapping (mainFromClause, sqlTable);
       

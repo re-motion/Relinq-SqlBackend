@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -32,11 +31,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var sqlTable = new SqlTable();
       var oldTableSource = new SqlTableSource (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (oldTableSource);
       var newTableSource = new SqlTableSource (typeof (int), "table2", "s");
 
-      sqlTable.TableSource = oldTableSource;
       sqlTable.TableSource = newTableSource;
 
       Assert.That (sqlTable.TableSource.ItemType, Is.EqualTo (newTableSource.ItemType));
@@ -46,21 +44,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var sqlTable = new SqlTable ();
       var oldTableSource = new SqlTableSource (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (oldTableSource);
       var newTableSource = new SqlTableSource (typeof (string), "table2", "s");
 
-      sqlTable.TableSource = oldTableSource;
       sqlTable.TableSource = newTableSource;
     }
 
     [Test]
     public void GetOrAddJoin_NewEntry ()
     {
-      var sqlTable = new SqlTable();
-
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
       var tableSource = new JoinedTableSource (memberInfo);
+      var sqlTable = new SqlTable(tableSource);
       
       var table = sqlTable.GetOrAddJoin (memberInfo, tableSource);
 
@@ -73,11 +69,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void GetOrAddJoin_ThrowsException ()
     {
-      var sqlTable = new SqlTable ();
-
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
       var tableSource = new JoinedTableSource (typeof (Cook).GetProperty ("ID"));
 
+      var sqlTable = new SqlTable (tableSource);
+      
       sqlTable.GetOrAddJoin (memberInfo, tableSource);
     }
 

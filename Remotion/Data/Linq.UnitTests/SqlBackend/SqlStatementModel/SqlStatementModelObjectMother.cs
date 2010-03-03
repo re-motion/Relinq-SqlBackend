@@ -27,32 +27,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   {
     public static SqlTable CreateSqlTable (AbstractTableSource tableSource)
     {
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = tableSource;
+      var sqlTable = new SqlTable (tableSource);
       return sqlTable;
     }
 
     public static SqlTable CreateSqlTableWithConstantTableSource () 
     {
       var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = constantTableSource;
+      var sqlTable = new SqlTable (constantTableSource);
       return sqlTable;
     }
 
     public static SqlTable CreateSqlTableWithSqlTableSource ()
     {
       var sqlTableSource = new SqlTableSource (typeof (string), "Table", "t");
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = sqlTableSource;
+      var sqlTable = new SqlTable (sqlTableSource);
       return sqlTable;
     }
 
     public static SqlTable CreateSqlTableWithJoinedTableSource ()
     {
       var sqlTableSource = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = sqlTableSource;
+      var sqlTable = new SqlTable (sqlTableSource);
       return sqlTable;
     }
   }

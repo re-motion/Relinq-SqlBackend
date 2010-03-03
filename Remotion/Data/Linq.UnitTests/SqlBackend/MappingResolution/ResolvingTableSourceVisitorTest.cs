@@ -48,8 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotImplementedException))]
     public void ResolveConstantTableSource_WithUnknownTableSource ()
     {
-      var sqlTable = new SqlTable();
-      sqlTable.TableSource = new UnknownTableSource();
+      var sqlTable = new SqlTable(new UnknownTableSource());
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
       ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, resolver);
     }

@@ -63,8 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [ExpectedException (typeof (NotImplementedException))]
     public void TranslateTableSource_WithUnknownTableSource ()
     {
-      var sqlTable = new SqlTable ();
-      sqlTable.TableSource = new UnknownTableSource ();
+      var sqlTable = new SqlTable (new UnknownTableSource ());
       SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
     }
 

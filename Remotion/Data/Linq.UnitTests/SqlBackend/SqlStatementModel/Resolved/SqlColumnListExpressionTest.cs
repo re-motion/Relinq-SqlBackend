@@ -41,8 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
     public void SetUp ()
     {
       var source = new ConstantTableSource (Expression.Constant ("Cook", typeof (string))); // TODO: Move to object mother
-      var sqlTable = new SqlTable();
-      sqlTable.TableSource = source;
+      var sqlTable = new SqlTable (source);
       _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _columnExpression1 = new SqlColumnExpression (typeof (int), "t", "ID");
       _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name");
