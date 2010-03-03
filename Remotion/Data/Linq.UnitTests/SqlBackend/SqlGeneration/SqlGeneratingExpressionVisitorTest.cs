@@ -333,6 +333,58 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitBinaryExpression_EqualWithNullOnRightSide ()
+    {
+      Expression nullExpression = Expression.Constant (null);
+      Expression binaryExpression = Expression.Equal (_leftStringExpression, nullExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 IS NULL)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NotEqualWithNullOnRightSide ()
+    {
+      Expression nullExpression = Expression.Constant (null);
+      Expression binaryExpression = Expression.NotEqual (_leftStringExpression, nullExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 IS NOT NULL)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_EqualWithNullOnLeftSide ()
+    {
+      Expression nullExpression = Expression.Constant (null);
+      Expression binaryExpression = Expression.Equal (nullExpression,_rightStringExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 IS NULL)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NotEqualWithNullOnLeftSide ()
+    {
+      Expression nullExpression = Expression.Constant (null);
+      Expression binaryExpression = Expression.NotEqual (nullExpression, _rightStringExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 IS NOT NULL)")));
+    }
+
+    [Test]
     [ExpectedException(typeof(NotSupportedException))]
     public void NotSupportedNodeType ()
     {
