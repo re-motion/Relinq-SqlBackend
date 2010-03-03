@@ -51,8 +51,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       var sqlTableSource1 = new SqlTableSource (typeof (int), "Table1", "t1");
       var sqlTableSource2 = new SqlTableSource (typeof (int), "Table2", "t2");
+      var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "FK");
 
-      sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource1, sqlTableSource2, "ID", "FK");
+      sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource2, primaryColumn, foreignColumn);
 
       SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
 

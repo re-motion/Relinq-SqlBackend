@@ -61,7 +61,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       var kitchenSource = new SqlTableSource (typeof (Kitchen), "Kitchen", "k");
       var cookSource = new SqlTableSource(typeof(string), "Cook", "c");
-      var sqlJoinedTableSource = new SqlJoinedTableSource (kitchenSource, cookSource, "ID", "KitchenID");
+      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID");
+
+      var sqlJoinedTableSource = new SqlJoinedTableSource (cookSource, primaryColumn, foreignColumn);
 
       resolver.Expect (mock => mock.ResolveJoinedTableSource (Arg<SqlTable>.Is.Anything, Arg<SqlTable>.Is.Anything)).Return (sqlJoinedTableSource);
 

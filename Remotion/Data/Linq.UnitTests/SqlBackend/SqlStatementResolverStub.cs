@@ -69,8 +69,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     public SqlJoinedTableSource ResolveJoinedTableSource (SqlTable sourceSqlTable, SqlTable joinSqlTable)
     {
       // TODO: extract primary and foreign key via joinedTableSource.MemberInfo - for Cook.Substitution, return "ID", "SubstitutionID"
-      return new SqlJoinedTableSource (
-          (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID");
+      var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "KitchenID");
+      return new SqlJoinedTableSource ((SqlTableSource) joinSqlTable.TableSource, primaryColumn, foreignColumn);
     }
   }
 }
