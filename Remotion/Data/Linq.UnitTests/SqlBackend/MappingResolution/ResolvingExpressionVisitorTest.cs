@@ -22,6 +22,7 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
@@ -39,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _resolver = new SqlStatementResolverStub();
-      _source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)),typeof(Cook)); // TODO: Move to object mother
+      _source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
       _sqlTable = new SqlTable (_source);
       _constraint = new SqlTableSource (typeof (Cook), "Cook", "c");
       _generator = new UniqueIdentifierGenerator();

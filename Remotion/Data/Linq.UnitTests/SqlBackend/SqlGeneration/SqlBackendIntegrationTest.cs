@@ -25,9 +25,8 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
-  // TODO: Move to SqlGeneration namespace
   [TestFixture]
   public class SqlBackendIntegrationTest
   {

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -50,6 +51,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var sqlTableSource = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
       var sqlTable = new SqlTable (sqlTableSource);
       return sqlTable;
+    }
+
+    public static ConstantTableSource CreateConstantTableSource (MainFromClause mainFromClause)
+    {
+      return new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression, mainFromClause.ItemType);
+    }
+
+    public static ConstantTableSource CreateConstantTableSource_TypeIsString ()
+    {
+      return new ConstantTableSource (Expression.Constant ("Cook", typeof (string)), typeof (string));
+    }
+
+    public static ConstantTableSource CreateConstantTableSource_TypeIsCook ()
+    {
+      return new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)), typeof (Cook));
     }
   }
 }

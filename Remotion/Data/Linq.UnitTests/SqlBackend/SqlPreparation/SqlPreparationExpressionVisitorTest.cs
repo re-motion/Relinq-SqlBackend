@@ -63,13 +63,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void VisitMemberExpression_CreatesSqlMemberExpression ()
     {
       Expression memberExpression = Expression.MakeMemberAccess (_querySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
-
+      
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context);
 
       Assert.That (result, Is.TypeOf (typeof(SqlMemberExpression)));
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
-      // TODO: Check Member
-      Assert.That (result.Type, Is.SameAs (typeof (Cook))); // TODO: should be typeof (string) because FirstName returns string
+      Assert.That (result.Type, Is.SameAs (typeof (string)));
     }
 
     [Test]
@@ -79,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       kitchen[0] = new Kitchen { Name = "Test" };
 
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (kitchen));  // TODO: Use ExpressionHelper.CreateMainFromClause_Kitchen
-      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression,_mainFromClause.ItemType); // TODO: Add object mother method CreateSqlTable (mainFromClause)
+      var source = SqlStatementModelObjectMother.CreateConstantTableSource (_mainFromClause);
       var sqlTable = new SqlTable (source);
       var context = new SqlPreparationContext ();
       context.AddQuerySourceMapping (mainFromClause, sqlTable);
