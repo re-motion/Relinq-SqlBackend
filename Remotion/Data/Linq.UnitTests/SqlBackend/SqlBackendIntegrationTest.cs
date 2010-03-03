@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     // TODO: Change test to work as follows:
     //   var query = from t in _cooks
     //               select t;
-    //   var result = GenerateSql (query.Expression); // calls ExpressionHelper.ParseQuery(), SqlQueryModelVisitor, ResolvingSqlStatementVisitor, and SqlStatementTextGenerator
+    //   var result = GenerateSql (query.Expression); // calls ExpressionHelper.ParseQuery(), SqlPreparationQueryModelVisitor, ResolvingSqlStatementVisitor, and SqlStatementTextGenerator
     //   Assert.That (result.CommandText, Is.EqualTo ("..."));
     //
     [Test]
@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       var selectClause = ClauseObjectMother.CreateSelectClause (mainFromClause);
       var queryModel = new QueryModel (mainFromClause, selectClause);
       
-      var queryModelVisitor = new SqlQueryModelVisitor();
+      var queryModelVisitor = new SqlPreparationQueryModelVisitor();
       queryModelVisitor.VisitQueryModel (queryModel);
       var sqlStatement = queryModelVisitor.GetSqlStatement();
       

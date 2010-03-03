@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitQuerySourceReferenceExpression_CreatesSqlTableReferenceExpression ()
     {
-      var result = SqlSelectExpressionVisitor.TranslateExpression (_querySourceReferenceExpression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (_querySourceReferenceExpression, _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       Expression memberExpression = Expression.MakeMemberAccess (_querySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
 
-      var result = SqlSelectExpressionVisitor.TranslateExpression (memberExpression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context);
 
       Assert.That (result, Is.TypeOf (typeof(SqlMemberExpression)));
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       MemberExpression innerExpression = Expression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetMember("Cook")[0]);
       Expression outerExpression = Expression.MakeMemberAccess (innerExpression, typeof (Cook).GetProperty ("FirstName"));
 
-      var result = SqlSelectExpressionVisitor.TranslateExpression (outerExpression, context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (outerExpression, context);
 
       // TODO: Assert.That (result, Is.TypeOf (SqlMemberExpression));
       // TODO: var expectedJoin = sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"));
@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
       var expression = new NotSupportedExpression (typeof (int));
-      SqlSelectExpressionVisitor.TranslateExpression (expression, _context);
+      SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
     }
 
   }

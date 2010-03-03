@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     private SelectClause _selectClause;
     private MainFromClause _mainFromClause;
     private QueryModel _queryModel;
-    private SqlQueryModelVisitor _sqlQueryModelVisitor;
+    private SqlPreparationQueryModelVisitor _sqlPreparationQueryModelVisitor;
     
     [SetUp]
     public void SetUp ()
@@ -39,16 +39,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _selectClause = ClauseObjectMother.CreateSelectClause (_mainFromClause);
 
       _queryModel = new QueryModel (_mainFromClause, _selectClause);
-      _sqlQueryModelVisitor = new SqlQueryModelVisitor ();
+      _sqlPreparationQueryModelVisitor = new SqlPreparationQueryModelVisitor ();
     }
 
     [Test]
     public void VisitFromClause_CreatesFromExpression ()
     {
-      _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
-      _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
       
-      var result = _sqlQueryModelVisitor.GetSqlStatement();
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
       Assert.That (result.FromExpression, Is.Not.Null);
       Assert.That (result.FromExpression.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
@@ -60,23 +60,23 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitFromClause_AddMapping ()
     {
-      _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
-      _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
-      var result = _sqlQueryModelVisitor.GetSqlStatement();
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
-      Assert.That (_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
+      Assert.That (_sqlPreparationQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
       var expected = result.FromExpression;
-      Assert.That ((_sqlQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource(_mainFromClause)).TableSource, Is.SameAs (expected.TableSource));
+      Assert.That ((_sqlPreparationQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource(_mainFromClause)).TableSource, Is.SameAs (expected.TableSource));
     }
 
     [Test]
     public void VisitSelectClause_CreatesSelectProjection ()
     {
-      _sqlQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
-      _sqlQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
       
-      var result = _sqlQueryModelVisitor.GetSqlStatement ();
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
 
       Assert.That (result.SelectProjection, Is.Not.Null);
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
