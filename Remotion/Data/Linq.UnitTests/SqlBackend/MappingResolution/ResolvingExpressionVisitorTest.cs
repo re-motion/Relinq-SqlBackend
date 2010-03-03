@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _resolver = new SqlStatementResolverStub();
-      _source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook))); // TODO: Move to object mother
+      _source = new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)),typeof(Cook)); // TODO: Move to object mother
       _sqlTable = new SqlTable (_source);
       _constraint = new SqlTableSource (typeof (Cook), "Cook", "c");
       _generator = new UniqueIdentifierGenerator();

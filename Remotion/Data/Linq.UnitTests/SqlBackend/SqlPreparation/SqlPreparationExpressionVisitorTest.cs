@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _context = new SqlPreparationContext();
       _mainFromClause = ClauseObjectMother.CreateMainFromClause ();
       _querySourceReferenceExpression = new QuerySourceReferenceExpression (_mainFromClause);
-      var source = new ConstantTableSource ((ConstantExpression) _mainFromClause.FromExpression);
+      var source = new ConstantTableSource ((ConstantExpression) _mainFromClause.FromExpression,_mainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
       _context.AddQuerySourceMapping (_mainFromClause, _sqlTable);
     }
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
-      Assert.That (result.Type, Is.SameAs (typeof (Cook[])));
+      Assert.That (result.Type, Is.SameAs (typeof (Cook)));
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (result, Is.TypeOf (typeof(SqlMemberExpression)));
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
       // TODO: Check Member
-      Assert.That (result.Type, Is.SameAs (typeof (Cook[]))); // TODO: should be typeof (string) because FirstName returns string
+      Assert.That (result.Type, Is.SameAs (typeof (Cook))); // TODO: should be typeof (string) because FirstName returns string
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       kitchen[0] = new Kitchen { Name = "Test" };
 
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (kitchen));  // TODO: Use ExpressionHelper.CreateMainFromClause_Kitchen
-      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression); // TODO: Add object mother method CreateSqlTable (mainFromClause)
+      var source = new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression,_mainFromClause.ItemType); // TODO: Add object mother method CreateSqlTable (mainFromClause)
       var sqlTable = new SqlTable (source);
       var context = new SqlPreparationContext ();
       context.AddQuerySourceMapping (mainFromClause, sqlTable);

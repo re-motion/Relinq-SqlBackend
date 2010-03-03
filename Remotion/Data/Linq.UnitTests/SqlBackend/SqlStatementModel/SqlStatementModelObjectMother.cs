@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTableWithConstantTableSource () 
     {
-      var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)));
+      var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)),typeof(int));
       var sqlTable = new SqlTable (constantTableSource);
       return sqlTable;
     }
