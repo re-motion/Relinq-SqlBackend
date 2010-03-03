@@ -94,8 +94,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var expression = Expression.Constant (null);
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
-      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (null));
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (0));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("NULL"));
     }
 
     [Test]
@@ -382,6 +382,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var result = _commandBuilder.GetCommandText ();
 
       Assert.That (result, Is.EqualTo (("(@1 IS NOT NULL)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_AddWithNull ()
+    {
+      Expression nullExpression = Expression.Constant (null, typeof(string));
+      Expression binaryExpression = Expression.Coalesce (nullExpression, _rightStringExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      
+      var result = _commandBuilder.GetCommandText ();
+      Assert.That (result, Is.EqualTo (("(COALESCE (NULL, @1)")));
     }
 
     [Test]
