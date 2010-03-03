@@ -321,6 +321,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo (("(@1 <> @2)")));
     }
 
+    [Test]
+    public void VisitBinaryExpression_Coalesce ()
+    {
+      Expression binaryExpression = Expression.Coalesce (_leftStringExpression, _rightStringExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(COALESCE (@1, @2)")));
+    }
+
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
          "The expression '[2147483647]' cannot be translated to SQL text by this SQL generator. Expression type 'NotSupportedExpression' is not supported.")]
     [Test]
