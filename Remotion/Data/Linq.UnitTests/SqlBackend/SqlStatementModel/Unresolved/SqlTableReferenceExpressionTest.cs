@@ -17,10 +17,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
   public class SqlTableReferenceExpressionTest
@@ -41,10 +41,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     }
 
 
-     [Test]
+    [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlTableReferenceExpression, ISqlExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlTableReferenceExpression, IUnresolvedSqlExpressionVisitor> (
           _tableReferenceExpression,
           mock => mock.VisitSqlTableReferenceExpression (_tableReferenceExpression));
     }

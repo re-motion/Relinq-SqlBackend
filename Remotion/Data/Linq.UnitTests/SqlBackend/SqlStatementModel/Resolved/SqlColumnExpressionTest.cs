@@ -16,10 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
   public class SqlColumnExpressionTest
@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnExpression, ISqlColumnListExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnExpression, IResolvedSqlExpressionVisitor> (
           _columnExpression,
           mock => mock.VisitSqlColumnExpression (_columnExpression));
     }

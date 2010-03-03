@@ -17,26 +17,27 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class SqlTableSourceTest
+  public class JoinedTableSourceTest
   {
     [Test]
     public void Accept ()
     {
-      // TODO: No sqlTable needed, just create SqlTableSource
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      sqlTable.TableSource = new SqlTableSource (typeof (int), "table", "t");
+      // TODO: No sqlTable needed, only JoinedTableSource should be instantiated.
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource ();
 
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor> ();
-      tableSourceVisitorMock.Expect (mock => mock.VisitSqlTableSource ((SqlTableSource) sqlTable.TableSource));
-      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitSqlTableSource is returned by Accept.
+      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
+      tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource ((JoinedTableSource) sqlTable.TableSource));
+
+      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitJoinedTableSource is returned by Accept.
       sqlTable.TableSource.Accept (tableSourceVisitorMock);
-      tableSourceVisitorMock.Replay ();
-      tableSourceVisitorMock.VerifyAllExpectations ();
+      tableSourceVisitorMock.Replay();
+      tableSourceVisitorMock.VerifyAllExpectations();
     }
   }
 }

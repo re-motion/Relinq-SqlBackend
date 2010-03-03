@@ -17,26 +17,27 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class JoinedTableSourceTest
+  public class ConstantTableSourceTest
   {
     [Test]
     public void Accept ()
     {
-      // TODO: No sqlTable needed, only JoinedTableSource should be instantiated.
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource ();
-
+      // TODO: No sqlTable needed, only ConstantTableSource should be instantiated.
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
+      
       var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
-      tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource ((JoinedTableSource) sqlTable.TableSource));
+      tableSourceVisitorMock.Expect (mock => mock.VisitConstantTableSource ((ConstantTableSource) sqlTable.TableSource));
 
-      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitJoinedTableSource is returned by Accept.
+      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitConstantTableSource is returned by Accept.
       sqlTable.TableSource.Accept (tableSourceVisitorMock);
-      tableSourceVisitorMock.Replay();
-      tableSourceVisitorMock.VerifyAllExpectations();
+      tableSourceVisitorMock.Replay ();
+      tableSourceVisitorMock.VerifyAllExpectations ();
     }
   }
 }

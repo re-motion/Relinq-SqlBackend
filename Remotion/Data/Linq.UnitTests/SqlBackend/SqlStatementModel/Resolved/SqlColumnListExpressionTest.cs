@@ -20,11 +20,13 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.TestUtilities;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
   public class SqlColumnListExpressionTest
@@ -52,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnListExpression, ISqlColumnListExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnListExpression, IResolvedSqlExpressionVisitor> (
           _columnListExpression, 
           mock => mock.VisitSqlColumListExpression (_columnListExpression));
     }
