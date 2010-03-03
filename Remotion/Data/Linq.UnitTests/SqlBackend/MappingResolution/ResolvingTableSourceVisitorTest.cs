@@ -60,8 +60,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
 
       var kitchenSource = new SqlTableSource (typeof (Kitchen), "Kitchen", "k");
-      var cookSource = new SqlTableSource(typeof(Cook), "Cook", "c");
-      var sqlJoinedTableSource = new SqlJoinedTableSource (kitchenSource, cookSource, "ID", "KitchenID", typeof (string));
+      var cookSource = new SqlTableSource(typeof(string), "Cook", "c");
+      var sqlJoinedTableSource = new SqlJoinedTableSource (kitchenSource, cookSource, "ID", "KitchenID");
 
       resolver.Expect (mock => mock.ResolveJoinedTableSource (Arg<SqlTable>.Is.Anything, Arg<SqlTable>.Is.Anything)).Return (sqlJoinedTableSource);
 

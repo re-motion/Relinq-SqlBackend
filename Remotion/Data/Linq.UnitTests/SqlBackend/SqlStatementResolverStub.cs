@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       // TODO: extract primary and foreign key via joinedTableSource.MemberInfo - for Cook.Substitution, return "ID", "SubstitutionID"
       return new SqlJoinedTableSource (
-          (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID", joinSqlTable.TableSource.ItemType);
+          (SqlTableSource) sourceSqlTable.TableSource, (SqlTableSource) joinSqlTable.TableSource, "ID", "KitchenID");
     }
   }
 }

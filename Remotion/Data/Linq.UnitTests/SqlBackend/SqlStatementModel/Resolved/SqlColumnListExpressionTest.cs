@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City");
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
       _columnListExpression = new SqlColumnListExpression (_tableReferenceExpression.Type, _orginalColumns);
-      _originalColumnsReadonly = Array.AsReadOnly (_orginalColumns);
+      _originalColumnsReadonly = _columnListExpression.Columns;
     }
 
     [Test]
@@ -70,7 +70,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 
     //TODO: remove ignore
     [Test]
-    [Ignore("Activate tests when problem with AsReadOnly is solved.")]
     public void VisitChildren_NoColumnChanged ()
     {
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
@@ -79,7 +78,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 
       // TODO: Add ExtensionExpressionTestHelper.CallVisitChildren method; use in all extension expression tests
       var expression = PrivateInvoke.InvokeNonPublicMethod (_columnListExpression, "VisitChildren", visitorMock);
-      
+
+      visitorMock.VerifyAllExpectations();
       Assert.That (expression, Is.SameAs (_columnListExpression));
     }
 

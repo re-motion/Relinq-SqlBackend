@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var sqlTableSource1 = new SqlTableSource (typeof (int), "Table1", "t1");
       var sqlTableSource2 = new SqlTableSource (typeof (int), "Table2", "t2");
 
-      sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource1, sqlTableSource2, "ID", "FK", typeof (int));
+      sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource1, sqlTableSource2, "ID", "FK");
 
       SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
 
