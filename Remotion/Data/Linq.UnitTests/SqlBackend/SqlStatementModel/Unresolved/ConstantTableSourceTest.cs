@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
@@ -28,16 +29,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void Accept ()
     {
-      // TODO: No sqlTable needed, only ConstantTableSource should be instantiated.
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
-      
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
-      tableSourceVisitorMock.Expect (mock => mock.VisitConstantTableSource ((ConstantTableSource) sqlTable.TableSource));
+      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsInt();
 
-      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitConstantTableSource is returned by Accept.
-      sqlTable.TableSource.Accept (tableSourceVisitorMock);
+      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
+      tableSourceVisitorMock.Expect (mock => mock.VisitConstantTableSource (tableSource));
+
       tableSourceVisitorMock.Replay ();
+      tableSource.Accept (tableSourceVisitorMock);
       tableSourceVisitorMock.VerifyAllExpectations ();
+
     }
   }
 }

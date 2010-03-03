@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
@@ -28,15 +27,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void Accept ()
     {
-      // TODO: No sqlTable needed, only JoinedTableSource should be instantiated.
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource ();
+      var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_TypeIsString();
 
       var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
-      tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource ((JoinedTableSource) sqlTable.TableSource));
+      tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource (tableSource));
 
-      // TODO: wrong order of statements! First replay, then call method, then verify. Also check that return value of VisitJoinedTableSource is returned by Accept.
-      sqlTable.TableSource.Accept (tableSourceVisitorMock);
-      tableSourceVisitorMock.Replay();
+      tableSourceVisitorMock.Replay ();
+
+      tableSource.Accept (tableSourceVisitorMock);
       tableSourceVisitorMock.VerifyAllExpectations();
     }
   }

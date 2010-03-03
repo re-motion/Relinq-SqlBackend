@@ -67,5 +67,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       return new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)), typeof (Cook));
     }
+
+    public static ConstantTableSource CreateConstantTableSource_TypeIsInt ()
+    {
+      return new ConstantTableSource (Expression.Constant (1, typeof (int)), typeof (int));
+    }
+
+    public static JoinedTableSource CreateJoinedTableSource_TypeIsString ()
+    {
+      return new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
+    }
   }
 }

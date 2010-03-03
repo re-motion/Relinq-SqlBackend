@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
@@ -24,7 +23,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
-using Remotion.Data.Linq.UnitTests.TestUtilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
@@ -68,7 +66,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_columnListExpression);
     }
 
-    //TODO: remove ignore
     [Test]
     public void VisitChildren_NoColumnChanged ()
     {
@@ -76,9 +73,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (_originalColumnsReadonly);
       visitorMock.Replay();
 
-      // TODO: Add ExtensionExpressionTestHelper.CallVisitChildren method; use in all extension expression tests
-      var expression = PrivateInvoke.InvokeNonPublicMethod (_columnListExpression, "VisitChildren", visitorMock);
-
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_columnListExpression, visitorMock);
+      
       visitorMock.VerifyAllExpectations();
       Assert.That (expression, Is.SameAs (_columnListExpression));
     }
@@ -94,10 +90,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (Array.AsReadOnly(expectedColumns));
       visitorMock.Replay ();
 
-      // TODO: Add ExtensionExpressionTestHelper.CallVisitChildren method; use in all extension expression tests
-      var expression = (SqlColumnListExpression) PrivateInvoke.InvokeNonPublicMethod (_columnListExpression, "VisitChildren", visitorMock);
+      var expression = (SqlColumnListExpression) ExtensionExpressionTestHelper.CallVisitChildren (_columnListExpression, visitorMock);
 
-      Assert.That (expression, Is.Not.SameAs(_columnListExpression)); // TODO: Should not be equal! Assert.That (..., Is.Not.SameAs (...)));
+      Assert.That (expression, Is.Not.SameAs(_columnListExpression));
       Assert.That (expression.Type, Is.SameAs (_columnListExpression.Type));
       Assert.That (expression.Columns, Is.EqualTo (expectedColumns));
     }
