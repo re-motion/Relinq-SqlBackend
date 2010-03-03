@@ -29,14 +29,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   {
     private SqlCommandBuilder _commandBuilder;
     private Expression _leftIntegerExpression;
+    private Expression _leftStringExpression;
     private Expression _rightIntegerExpression;
+    private Expression _rightStringExpression;
 
     [SetUp]
     public void SetUp ()
     {
       _commandBuilder = new SqlCommandBuilder();
       _leftIntegerExpression = Expression.Constant (1);
+      _leftStringExpression = Expression.Constant ("Left");
       _rightIntegerExpression = Expression.Constant (2);
+      _rightStringExpression = Expression.Constant ("Right");
     }
 
     [Test]
@@ -190,6 +194,32 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var result = _commandBuilder.GetCommandText ();
 
       Assert.That (result, Is.EqualTo (("(@1 - @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_AndAlso ()
+    {
+      Expression expression = Expression.Constant (true);
+
+      Expression binaryExpression = Expression.AndAlso (expression, expression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 AND @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_OrElse ()
+    {
+      Expression expression = Expression.Constant (true);
+
+      Expression binaryExpression = Expression.OrElse (expression, expression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 OR @2)")));
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
