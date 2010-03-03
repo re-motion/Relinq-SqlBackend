@@ -52,11 +52,5 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (_sqlCommandBuilder.GetCommandParameters ()[0], Is.EqualTo (commandParameter)); 
     }
 
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Specific type of 'Cook' is not supported.")]
-    public void NotSupportedType ()
-    {
-      _sqlCommandBuilder.AddParameter (new Cook { FirstName = "Test"});
-    }
   }
 }
