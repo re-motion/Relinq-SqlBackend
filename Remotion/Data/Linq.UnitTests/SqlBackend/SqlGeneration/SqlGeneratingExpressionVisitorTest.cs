@@ -28,11 +28,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   public class SqlGeneratingExpressionVisitorTest
   {
     private SqlCommandBuilder _commandBuilder;
+    private Expression _leftIntegerExpression;
+    private Expression _rightIntegerExpression;
 
     [SetUp]
     public void SetUp ()
     {
       _commandBuilder = new SqlCommandBuilder();
+      _leftIntegerExpression = Expression.Constant (1);
+      _rightIntegerExpression = Expression.Constant (2);
     }
 
     [Test]
@@ -98,6 +102,94 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Add ()
+    {
+      Expression binaryExpression = Expression.Add (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText();
+
+      Assert.That (result, Is.EqualTo (("(@1 + @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Subtract ()
+    {
+      Expression binaryExpression = Expression.Subtract (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 - @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Multiply ()
+    {
+      Expression binaryExpression = Expression.Multiply (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 * @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Divide ()
+    {
+      Expression binaryExpression = Expression.Divide (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 / @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Modulo ()
+    {
+      Expression binaryExpression = Expression.Modulo (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 % @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_AddChecked ()
+    {
+      Expression binaryExpression = Expression.AddChecked (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 + @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_MultiplyChecked ()
+    {
+      Expression binaryExpression = Expression.MultiplyChecked (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 * @2)")));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_SubtractChecked ()
+    {
+      Expression binaryExpression = Expression.SubtractChecked (_leftIntegerExpression, _rightIntegerExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("(@1 - @2)")));
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
