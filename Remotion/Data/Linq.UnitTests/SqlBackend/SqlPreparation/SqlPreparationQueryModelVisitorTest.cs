@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
@@ -81,6 +82,55 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (result.SelectProjection, Is.Not.Null);
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That ((((SqlTableReferenceExpression) result.SelectProjection).SqlTable).TableSource, Is.EqualTo (result.FromExpression.TableSource));
+    }
+
+    [Test]
+    public void VisitResultOperator_Count ()
+    {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+
+      var countResultOperator = new CountResultOperator();
+      _sqlPreparationQueryModelVisitor.VisitResultOperator (countResultOperator, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
+
+      Assert.That (result.Count, Is.True);
+    }
+
+    [Test]
+    public void VisitResultOperator_Distinct ()
+    {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+
+      var distinctOperator = new DistinctResultOperator();
+      _sqlPreparationQueryModelVisitor.VisitResultOperator (distinctOperator, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+
+      Assert.That (result.Distinct, Is.True);
+    }
+
+    [Test]
+    [Ignore("TODO")]
+    public void VisitResultOperator_First ()
+    {
+
+    }
+
+    [Test]
+    [Ignore ("TODO")]
+    public void VisitResultOperator_Single ()
+    {
+
+    }
+
+    [Test]
+    [Ignore ("TODO")]
+    public void VisitResultOperator_Take ()
+    {
+
     }
   }
 }
