@@ -28,8 +28,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
   {
     public virtual AbstractTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
     {
-      // TODO: Use ItemType to infer a "table" name, e.g. CookTable for type Cook
-      var tableName = tableSource.ConstantExpression.Value.ToString();
+      var tableName = string.Format("{0}Table", tableSource.ItemType.Name);
       var tableAlias = tableName.Substring (0, 1).ToLower();
       return new SqlTableSource (typeof (string), tableName, tableAlias);
     }
