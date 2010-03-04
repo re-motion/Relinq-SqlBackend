@@ -73,10 +73,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public AbstractTableSource ResolveJoinedTableSource (JoinedTableSource tableSource)
     {
-      // TODO: extract primary and foreign key via joinedTableSource.MemberInfo - for Cook.Substitution, return "ID", "SubstitutionID"
-      var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "KitchenID");
-      return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+      if (tableSource.MemberInfo.Name == "Substitution")
+      {
+        var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
+        var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "SubstitutionID");
+        return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+      }
+      throw new NotSupportedException ("Only Cook.Substitution is supported.");
     }
   }
 }
