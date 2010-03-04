@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       var tableName = string.Format ("{0}Table", tableSource.ItemType.Name);
       var tableAlias = tableName.Substring (0, 1).ToLower();
-      return new SqlTableSource (typeof (string), tableName, tableAlias);
+      return new SqlTableSource (tableSource.ItemType, tableName, tableAlias);
     }
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
@@ -54,19 +54,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
-      if (memberExpression.MemberInfo == typeof (Cook).GetProperty ("Substitution"))
+      var joinedTableSource = memberExpression.SqlTable.TableSource as JoinedTableSource;
+      if(joinedTableSource!=null && joinedTableSource.MemberInfo.Name=="Substitution")
       {
         var sqlJoinedTableSource = ResolveJoinedTableSource ((JoinedTableSource) memberExpression.SqlTable.TableSource);
-
-        //var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, (JoinedTableSource) memberExpression.SqlTable.TableSource);
         memberExpression.SqlTable.TableSource = sqlJoinedTableSource;
-        return new SqlColumnExpression (typeof (Cook), generator.GetUniqueIdentifier ("t"), "FirstName");
+        return new SqlColumnExpression (typeof (Cook),  "c", "FirstName");
       }
       else
       {
         memberExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
         return new SqlColumnExpression (typeof (Cook), "c", "FirstName");
       }
+
+      
     }
 
     public AbstractTableSource ResolveJoinedTableSource (JoinedTableSource tableSource)
@@ -78,9 +79,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       if (tableSource.MemberInfo.Name == "Substitution")
       {
-        var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
-        var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "SubstitutionID");
-        return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+        var primaryColumn = new SqlColumnExpression (typeof (int), "c", "ID");
+        var foreignColumn = new SqlColumnExpression (typeof (int), "s", "SubstitutionID");
+        var newTableSource = new SqlTableSource (tableSource.ItemType, tableSource.MemberInfo.Name + "Table", "s");
+        return new SqlJoinedTableSource (newTableSource, primaryColumn, foreignColumn);
       }
       throw new NotSupportedException ("Only Cook.Substitution is supported.");
     }

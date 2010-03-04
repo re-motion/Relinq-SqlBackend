@@ -77,5 +77,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       return new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
     }
+
+    public static SqlTableSource CreateSqlTableSource_TypeIsInt ()
+    {
+      return new SqlTableSource (typeof (int), "table", "t");
+    }
   }
 }

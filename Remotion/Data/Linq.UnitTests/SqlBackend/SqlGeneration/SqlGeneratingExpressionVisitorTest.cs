@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -402,7 +403,46 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       BinaryExpression binaryExpression = Expression.Power (Expression.Constant (2D), Expression.Constant (3D));
       SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+    }
 
+    [Test]
+    public void VisitUnaryExpression_UnaryNot ()
+    {
+      var unaryNotExpression = Expression.Not (Expression.Constant (1));
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("NOT @1"));
+    }
+
+    [Test]
+    public void VisitUnaryExpression_UnaryNegate ()
+    {
+      var unaryNotExpression = Expression.Negate (Expression.Constant (1));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("-@1"));
+    }
+
+    [Test]
+    public void VisitUnaryExpression_UnaryPlus ()
+    {
+      var unaryNotExpression = Expression.UnaryPlus (Expression.Constant (1));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("+@1"));
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void VisitUnaryExpression_NotSupported ()
+    {
+      var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryExpression, _commandBuilder);
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =

@@ -15,47 +15,75 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.UnitTests.TestQueryGenerators;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
   public class SqlBackendIntegrationTest
   {
-    // TODO: Change test to work as follows:
-    //   var query = from t in _cooks
-    //               select t;
-    //   var result = GenerateSql (query.Expression); // calls ExpressionHelper.ParseQuery(), SqlPreparationQueryModelVisitor, ResolvingSqlStatementVisitor, and SqlStatementTextGenerator
-    //   Assert.That (result.CommandText, Is.EqualTo ("..."));
-    //
-    [Test]
-    public void SimpleSqlQuery ()
+    private IQueryable<Cook> _cooks;
+    private IQueryable<Kitchen> _kitchen;
+    
+    [SetUp]
+    public void SetUp ()
     {
-      var mainFromClause = new MainFromClause ("t", typeof (Cook), Expression.Constant (new Cook { FirstName = "Test" }));
-      var selectClause = ClauseObjectMother.CreateSelectClause (mainFromClause);
-      var queryModel = new QueryModel (mainFromClause, selectClause);
-      
-      var queryModelVisitor = new SqlPreparationQueryModelVisitor();
-      queryModelVisitor.VisitQueryModel (queryModel);
-      var sqlStatement = queryModelVisitor.GetSqlStatement();
-      
-      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub());
-      resolvingSqlStatementVisitor.VisitSqlStatement (sqlStatement);
+      _cooks = ExpressionHelper.CreateCookQueryable();
+      _kitchen = ExpressionHelper.CreateKitchenQueryable();
+    }
 
-      var sqlTextGenerator = new SqlStatementTextGenerator();
-      var result = sqlTextGenerator.Build (sqlStatement);
+    [Test]
+    public void SimpleSqlQuery_SelectAllFromQueryable ()
+    {
+      var queryable = SelectTestQueryGenerator.CreateSimpleQuery (_cooks);
+      var result = GenerateSql (queryable);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [Cook] AS [c]"));
     }
 
-    // TODO: Add integration tests for all features implemented so far
+    [Test]
+    public void SimpleSqlQuery_SelctPropertyFromQueryable ()
+    {
+      IQueryable<string> queryable = SelectTestQueryGenerator.CreateSimpleQueryWithProjection (_cooks);
+      var result = GenerateSql (queryable);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[FirstName] FROM [Cook] AS [c]"));
+    }
+
+    [Test]
+    public void SelectQuery_WithJoin ()
+    {
+      var queryable = from c in _cooks select c.Substitution.FirstName;
+      var result = GenerateSql (queryable);
+
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo (
+          "SELECT [c].[FirstName] FROM [CookTable] AS [c] JOIN [SubstitutionTable] AS [s] ON [c].[ID] = [s].[SubstitutionID]"));
+    }
+
+    private SqlCommand GenerateSql<T> (IQueryable<T> queryable)
+    {
+      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+
+      var queryModelVisitor = new SqlPreparationQueryModelVisitor();
+      queryModelVisitor.VisitQueryModel (queryModel);
+      var sqlStatement = queryModelVisitor.GetSqlStatement();
+
+      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub());
+      resolvingSqlStatementVisitor.VisitSqlStatement (sqlStatement);
+
+      var sqlTextGenerator = new SqlStatementTextGenerator();
+      return sqlTextGenerator.Build (sqlStatement);
+    }
+
+    
   }
 }

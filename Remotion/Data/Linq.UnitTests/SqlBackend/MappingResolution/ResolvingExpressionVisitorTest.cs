@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var sqlColumnExpression = ResolvingExpressionVisitor.ResolveExpressions (memberExpression, _resolver, _generator);
       
       Assert.That (sqlColumnExpression, Is.TypeOf (typeof(SqlColumnExpression)));
-      Assert.That (((SqlColumnExpression) sqlColumnExpression).OwningTableAlias, Is.EqualTo ("t0"));
+      Assert.That (((SqlColumnExpression) sqlColumnExpression).OwningTableAlias, Is.EqualTo ("c"));
       Assert.That (((SqlColumnExpression) sqlColumnExpression).ColumnName, Is.EqualTo ("FirstName"));
     }
 
