@@ -49,7 +49,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_ForSqlJoinedTableSource ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      var sqlTableSource1 = new SqlTableSource (typeof (int), "Table1", "t1");
       var sqlTableSource2 = new SqlTableSource (typeof (int), "Table2", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "FK");
@@ -58,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" JOIN [Table2] ON [t1].[ID] = [t2].[FK]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" JOIN [Table2] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
 
     [Test]
