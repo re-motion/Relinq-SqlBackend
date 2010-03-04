@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       
       var generator = new SqlStatementTextGenerator();
       var result = generator.Build (sqlStatement);
-      Assert.That (result, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
   }
 }

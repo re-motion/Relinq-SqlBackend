@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var sqlTextGenerator = new SqlStatementTextGenerator();
       var result = sqlTextGenerator.Build (sqlStatement);
 
-      Assert.That (result, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [Cook] AS [c]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [Cook] AS [c]"));
     }
 
     // TODO: Add integration tests for all features implemented so far
