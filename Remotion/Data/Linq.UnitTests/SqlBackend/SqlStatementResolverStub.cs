@@ -21,6 +21,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
@@ -35,16 +36,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
-      // TODO: Check referenced table source item type, only return those columns for Cook; for other types, throw an exception
-      tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
-      return new SqlColumnListExpression (
-          tableReferenceExpression.Type,
-          new[]
-          {
-              new SqlColumnExpression (typeof (Cook), "c", "ID"),
-              new SqlColumnExpression (typeof (Cook), "c", "Name"),
-              new SqlColumnExpression (typeof (Cook), "c", "City")
-          });
+      var tableSource = tableReferenceExpression.SqlTable.TableSource;
+      if (tableSource.ItemType == typeof(Cook))
+      {
+
+        tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
+        return new SqlColumnListExpression (
+            tableReferenceExpression.Type,
+            new[]
+            {
+                new SqlColumnExpression (typeof (Cook), "c", "ID"),
+                new SqlColumnExpression (typeof (Cook), "c", "Name"),
+                new SqlColumnExpression (typeof (Cook), "c", "City")
+            });
+      }
+      throw new ArgumentTypeException ("tableReferenceExpression.SqlTable.TableSource", typeof (Cook), tableSource.ItemType);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
