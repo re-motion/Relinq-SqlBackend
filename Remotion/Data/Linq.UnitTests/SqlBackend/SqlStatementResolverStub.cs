@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
   {
     public virtual AbstractTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
     {
-      var tableName = string.Format("{0}Table", tableSource.ItemType.Name);
+      var tableName = string.Format ("{0}Table", tableSource.ItemType.Name);
       var tableAlias = tableName.Substring (0, 1).ToLower();
       return new SqlTableSource (typeof (string), tableName, tableAlias);
     }
@@ -37,9 +37,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
       var tableSource = tableReferenceExpression.SqlTable.TableSource;
-      if (tableSource.ItemType == typeof(Cook))
+      if (tableSource.ItemType == typeof (Cook))
       {
-
         tableReferenceExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
         return new SqlColumnListExpression (
             tableReferenceExpression.Type,
@@ -55,13 +54,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
-      // TODO: Only create a join if memberExpression.Member refers to another entity (e.g. Cook.Substitution); for the join, create a new SqlJoinedTableSource, as in ResolveJoinedTableSource (extract similar code to separate method)
-      // TODO: For all other members, simply return a new SqlColumnExpression indicating the property
-      var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, (JoinedTableSource) memberExpression.SqlTable.TableSource);
-
-      if (table.TableSource != memberExpression.SqlTable.TableSource)
+      if (memberExpression.MemberInfo == typeof (Cook).GetProperty ("Substitution"))
       {
-        memberExpression.SqlTable.TableSource = table.TableSource;
+        var sqlJoinedTableSource = ResolveJoinedTableSource ((JoinedTableSource) memberExpression.SqlTable.TableSource);
+
+        //var table = memberExpression.SqlTable.GetOrAddJoin (memberExpression.MemberInfo, (JoinedTableSource) memberExpression.SqlTable.TableSource);
+        memberExpression.SqlTable.TableSource = sqlJoinedTableSource;
         return new SqlColumnExpression (typeof (Cook), generator.GetUniqueIdentifier ("t"), "FirstName");
       }
       else
@@ -72,6 +70,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     }
 
     public AbstractTableSource ResolveJoinedTableSource (JoinedTableSource tableSource)
+    {
+      return CreateSqlJoinedTableSource (tableSource);
+    }
+
+    private SqlJoinedTableSource CreateSqlJoinedTableSource (JoinedTableSource tableSource)
     {
       if (tableSource.MemberInfo.Name == "Substitution")
       {
