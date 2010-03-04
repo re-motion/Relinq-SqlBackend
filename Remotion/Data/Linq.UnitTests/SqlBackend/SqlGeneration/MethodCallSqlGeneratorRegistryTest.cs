@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
   public class DummyMetthodCallSqlGenerator : IMethodCallSqlGenerator
   {
-    public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder)
+    public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       throw new NotImplementedException();
     }
