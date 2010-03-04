@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -33,6 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     private Expression _leftStringExpression;
     private Expression _rightIntegerExpression;
     private Expression _rightStringExpression;
+    private MethodCallSqlGeneratorRegistry _methodCallRegistry;
 
     [SetUp]
     public void SetUp ()
@@ -42,13 +42,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       _leftStringExpression = Expression.Constant ("Left");
       _rightIntegerExpression = Expression.Constant (2);
       _rightStringExpression = Expression.Constant ("Right");
+      _methodCallRegistry = new MethodCallSqlGeneratorRegistry();
     }
 
     [Test]
     public void GenerateSql_VisitSqlColumnExpression ()
     {
       var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID");
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _methodCallRegistry);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
     }
@@ -64,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (string), "t", "Name"),
               new SqlColumnExpression (typeof (string), "t", "City")
           });
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder, _methodCallRegistry);
 
       Assert.That (_commandBuilder.GetCommandText () , Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
@@ -73,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_TrueParameter ()
     {
       var expression = Expression.Constant (true);
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
 
       Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
@@ -83,7 +84,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_FalseParameter ()
     {
       var expression = Expression.Constant (false);
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
 
       Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (0));
@@ -93,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_NullValue ()
     {
       var expression = Expression.Constant (null);
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
 
       Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (0));
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("NULL"));
@@ -103,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_StringParameter ()
     {
       var expression = Expression.Constant ("Test");
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
 
       Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo ("Test"));
@@ -113,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Add ()
     {
       Expression binaryExpression = Expression.Add (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText();
 
@@ -124,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Subtract ()
     {
       Expression binaryExpression = Expression.Subtract (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -135,7 +136,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Multiply ()
     {
       Expression binaryExpression = Expression.Multiply (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -146,7 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Divide ()
     {
       Expression binaryExpression = Expression.Divide (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -157,7 +158,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Modulo ()
     {
       Expression binaryExpression = Expression.Modulo (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -168,7 +169,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_AddChecked ()
     {
       Expression binaryExpression = Expression.AddChecked (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -179,7 +180,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_MultiplyChecked ()
     {
       Expression binaryExpression = Expression.MultiplyChecked (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -190,7 +191,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_SubtractChecked ()
     {
       Expression binaryExpression = Expression.SubtractChecked (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -203,7 +204,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression expression = Expression.Constant (true);
 
       Expression binaryExpression = Expression.AndAlso (expression, expression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -216,7 +217,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression expression = Expression.Constant (true);
 
       Expression binaryExpression = Expression.OrElse (expression, expression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -227,7 +228,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_And ()
     {
       Expression binaryExpression = Expression.And (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -238,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Or ()
     {
       Expression binaryExpression = Expression.Or(_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -249,7 +250,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_ExclusiveOr ()
     {
       Expression binaryExpression = Expression.ExclusiveOr(_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -260,7 +261,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Equals ()
     {
       Expression binaryExpression = Expression.Equal (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -271,7 +272,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_GreaterThan ()
     {
       Expression binaryExpression = Expression.GreaterThan (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -282,7 +283,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_GreaterThanOrEqual ()
     {
       Expression binaryExpression = Expression.GreaterThanOrEqual (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -293,7 +294,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_LessThan ()
     {
       Expression binaryExpression = Expression.LessThan (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -304,7 +305,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_LessThanOrEqual ()
     {
       Expression binaryExpression = Expression.LessThanOrEqual (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -315,7 +316,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_NotEqual ()
     {
       Expression binaryExpression = Expression.NotEqual (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -326,7 +327,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Coalesce ()
     {
       Expression binaryExpression = Expression.Coalesce (_leftStringExpression, _rightStringExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -339,7 +340,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression nullExpression = Expression.Constant (null);
       Expression binaryExpression = Expression.Equal (_leftStringExpression, nullExpression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -352,7 +353,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression nullExpression = Expression.Constant (null);
       Expression binaryExpression = Expression.NotEqual (_leftStringExpression, nullExpression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -365,7 +366,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression nullExpression = Expression.Constant (null);
       Expression binaryExpression = Expression.Equal (nullExpression,_rightStringExpression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -378,7 +379,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression nullExpression = Expression.Constant (null);
       Expression binaryExpression = Expression.NotEqual (nullExpression, _rightStringExpression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -391,7 +392,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Expression nullExpression = Expression.Constant (null, typeof(string));
       Expression binaryExpression = Expression.Coalesce (nullExpression, _rightStringExpression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
       
       var result = _commandBuilder.GetCommandText ();
       Assert.That (result, Is.EqualTo (("(COALESCE (NULL, @1)")));
@@ -402,14 +403,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void NotSupportedNodeType ()
     {
       BinaryExpression binaryExpression = Expression.Power (Expression.Constant (2D), Expression.Constant (3D));
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
     }
 
     [Test]
     public void VisitUnaryExpression_UnaryNot ()
     {
       var unaryNotExpression = Expression.Not (Expression.Constant (1));
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry);
       var result = _commandBuilder.GetCommandText ();
 
       Assert.That (result, Is.EqualTo ("NOT @1"));
@@ -420,7 +421,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var unaryNotExpression = Expression.Negate (Expression.Constant (1));
 
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry);
       var result = _commandBuilder.GetCommandText ();
 
       Assert.That (result, Is.EqualTo ("-@1"));
@@ -431,7 +432,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var unaryNotExpression = Expression.UnaryPlus (Expression.Constant (1));
 
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry);
       var result = _commandBuilder.GetCommandText ();
 
       Assert.That (result, Is.EqualTo ("+@1"));
@@ -442,7 +443,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitUnaryExpression_NotSupported ()
     {
       var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryExpression, _commandBuilder, _methodCallRegistry);
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
@@ -451,7 +452,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_UnsupportedExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _commandBuilder);
+      SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _commandBuilder, _methodCallRegistry);
     }
 
 
