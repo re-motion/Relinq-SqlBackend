@@ -39,9 +39,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var tableSource = new SqlTableSource (typeof (int), "Table", "t");
       resolver.Expect (mock => mock.ResolveConstantTableSource ((ConstantTableSource) sqlTable.TableSource)).Return (tableSource);
 
-      ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, resolver);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (tableSource, resolver);
 
-      Assert.That (sqlTable.TableSource, Is.TypeOf (typeof (SqlTableSource)));
+      Assert.That (result, Is.TypeOf (typeof (SqlTableSource)));
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var sqlTable = new SqlTable(new UnknownTableSource());
       var resolver = MockRepository.GenerateMock<ISqlStatementResolver>();
-      ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, resolver);
+      ResolvingTableSourceVisitor.ResolveTableSource (sqlTable.TableSource, resolver);
     }
 
     [Test]
@@ -66,11 +66,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       var sqlJoinedTableSource = new SqlJoinedTableSource (cookSource, primaryColumn, foreignColumn);
 
-      resolver.Expect (mock => mock.ResolveJoinedTableSource (Arg<SqlTable>.Is.Anything, Arg<SqlTable>.Is.Anything)).Return (sqlJoinedTableSource);
+      resolver.Expect (mock => mock.ResolveJoinedTableSource (Arg<JoinedTableSource>.Is.Anything)).Return (sqlJoinedTableSource);
 
-      ResolvingTableSourceVisitor.ResolveTableSource (joinedTable, resolver);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (joinedTable.TableSource, resolver);
 
-      Assert.That (joinedTable.TableSource, Is.TypeOf (typeof (SqlJoinedTableSource)));
+      Assert.That (result, Is.TypeOf (typeof (SqlJoinedTableSource)));
     }
 
     private class UnknownTableSource : AbstractTableSource

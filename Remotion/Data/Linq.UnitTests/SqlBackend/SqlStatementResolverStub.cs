@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
   public class SqlStatementResolverStub : ISqlStatementResolver
   {
-    public virtual SqlTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
+    public virtual AbstractTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
     {
       // TODO: Use ItemType to infer a "table" name, e.g. CookTable for type Cook
       var tableName = tableSource.ConstantExpression.Value.ToString();
@@ -66,12 +66,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       }
     }
 
-    public SqlJoinedTableSource ResolveJoinedTableSource (SqlTable sourceSqlTable, SqlTable joinSqlTable)
+    public AbstractTableSource ResolveJoinedTableSource (JoinedTableSource tableSource)
     {
       // TODO: extract primary and foreign key via joinedTableSource.MemberInfo - for Cook.Substitution, return "ID", "SubstitutionID"
       var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "KitchenID");
-      return new SqlJoinedTableSource ((SqlTableSource) joinSqlTable.TableSource, primaryColumn, foreignColumn);
+      return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
     }
   }
 }
