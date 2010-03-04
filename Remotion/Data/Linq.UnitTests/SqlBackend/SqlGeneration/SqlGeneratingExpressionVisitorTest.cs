@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
@@ -444,6 +445,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
       SqlGeneratingExpressionVisitor.GenerateSql (unaryExpression, _commandBuilder, _methodCallRegistry);
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_CallsGenerateSql ()
+    {
+      var method = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method);
+
+      var sqlGeneratorMock = MockRepository.GenerateMock<IMethodCallSqlGenerator>();
+      sqlGeneratorMock.Expect (mock => mock.GenerateSql (methodCallExpression, _commandBuilder));
+      _methodCallRegistry.Register (method, sqlGeneratorMock);
+
+      sqlGeneratorMock.Replay();
+      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, _methodCallRegistry);
+      sqlGeneratorMock.VerifyAllExpectations();
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
