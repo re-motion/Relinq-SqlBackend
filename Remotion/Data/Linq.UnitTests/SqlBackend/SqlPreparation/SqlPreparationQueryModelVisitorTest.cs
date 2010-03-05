@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -113,24 +114,58 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [Ignore("TODO")]
     public void VisitResultOperator_First ()
     {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
+      var firstOperator = new FirstResultOperator (false);
+      _sqlPreparationQueryModelVisitor.VisitResultOperator (firstOperator, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
+
+      Assert.That (((ConstantExpression)result.TopExpression).Value, Is.EqualTo (1));
     }
 
     [Test]
-    [Ignore ("TODO")]
     public void VisitResultOperator_Single ()
     {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
+      var singleOperator = new SingleResultOperator (false);
+      _sqlPreparationQueryModelVisitor.VisitResultOperator (singleOperator, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+
+      Assert.That (((ConstantExpression) result.TopExpression).Value, Is.EqualTo (1));
     }
 
     [Test]
-    [Ignore ("TODO")]
     public void VisitResultOperator_Take ()
     {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
+      var takeOperator = new TakeResultOperator(Expression.Constant(1));
+
+      _sqlPreparationQueryModelVisitor.VisitResultOperator (takeOperator, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+
+      Assert.That (((ConstantExpression) result.TopExpression).Value, Is.EqualTo (1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
+    public void VisitResultOperator_NotSupported ()
+    {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+
+      var defaultIfEmptyOperator = new DefaultIfEmptyResultOperator(Expression.Constant (1));
+
+      _sqlPreparationQueryModelVisitor.VisitResultOperator (defaultIfEmptyOperator, _queryModel, 0);
     }
   }
 }
