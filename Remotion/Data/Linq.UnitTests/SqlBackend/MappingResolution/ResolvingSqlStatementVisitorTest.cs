@@ -67,5 +67,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].ColumnName, Is.EqualTo ("Name"));
       Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].ColumnName, Is.EqualTo ("City"));
     }
+
+    [Test]
+    public void VisitTopExpression_CreatesConstantExpression ()
+    {
+      _sqlStatement.TopExpression = Expression.Constant (1);
+      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+
+      Assert.That (((ConstantExpression) _sqlStatement.TopExpression).Value, Is.EqualTo (1));
+    }
   }
 }
