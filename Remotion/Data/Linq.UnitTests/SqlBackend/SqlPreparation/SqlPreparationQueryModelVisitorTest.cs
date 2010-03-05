@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     private MainFromClause _mainFromClause;
     private QueryModel _queryModel;
     private SqlPreparationQueryModelVisitor _sqlPreparationQueryModelVisitor;
-    
+
     [SetUp]
     public void SetUp ()
     {
@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _selectClause = ClauseObjectMother.CreateSelectClause (_mainFromClause);
 
       _queryModel = new QueryModel (_mainFromClause, _selectClause);
-      _sqlPreparationQueryModelVisitor = new SqlPreparationQueryModelVisitor ();
+      _sqlPreparationQueryModelVisitor = new SqlPreparationQueryModelVisitor();
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
-      
+
       var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
       Assert.That (result.FromExpression, Is.Not.Null);
@@ -70,7 +70,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       Assert.That (_sqlPreparationQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
       var expected = result.FromExpression;
-      Assert.That ((_sqlPreparationQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource(_mainFromClause)).TableSource, Is.SameAs (expected.TableSource));
+      Assert.That (
+          (_sqlPreparationQueryModelVisitor.SqlPreparationContext.GetSqlTableForQuerySource (_mainFromClause)).TableSource,
+          Is.SameAs (expected.TableSource));
     }
 
     [Test]
@@ -78,8 +80,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
-      
-      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
       Assert.That (result.SelectProjection, Is.Not.Null);
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
@@ -109,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var distinctOperator = new DistinctResultOperator();
       _sqlPreparationQueryModelVisitor.VisitResultOperator (distinctOperator, _queryModel, 0);
 
-      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
       Assert.That (result.Distinct, Is.True);
     }
@@ -125,7 +127,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
-      Assert.That (((ConstantExpression)result.TopExpression).Value, Is.EqualTo (1));
+      Assert.That (((ConstantExpression) result.TopExpression).Value, Is.EqualTo (1));
     }
 
     [Test]
@@ -137,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var singleOperator = new SingleResultOperator (false);
       _sqlPreparationQueryModelVisitor.VisitResultOperator (singleOperator, _queryModel, 0);
 
-      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
       Assert.That (((ConstantExpression) result.TopExpression).Value, Is.EqualTo (1));
     }
@@ -148,11 +150,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
-      var takeOperator = new TakeResultOperator(Expression.Constant(1));
+      var takeOperator = new TakeResultOperator (Expression.Constant (1));
 
       _sqlPreparationQueryModelVisitor.VisitResultOperator (takeOperator, _queryModel, 0);
 
-      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
 
       Assert.That (((ConstantExpression) result.TopExpression).Value, Is.EqualTo (1));
     }
@@ -164,7 +166,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
 
-      var defaultIfEmptyOperator = new DefaultIfEmptyResultOperator(Expression.Constant (1));
+      var defaultIfEmptyOperator = new DefaultIfEmptyResultOperator (Expression.Constant (1));
 
       _sqlPreparationQueryModelVisitor.VisitResultOperator (defaultIfEmptyOperator, _queryModel, 0);
     }
@@ -185,7 +187,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentTypeException))]
+    public void VisitWhereClause_MulipleWhereClauses ()
+    {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      var whereClause = new WhereClause (Expression.Constant (true));
+      _queryModel.BodyClauses.Add (whereClause);
+      _queryModel.BodyClauses.Add (whereClause);
+
+      _sqlPreparationQueryModelVisitor.VisitWhereClause (whereClause, _queryModel, 0);
+      _sqlPreparationQueryModelVisitor.VisitWhereClause (whereClause, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+
+      var expression = Expression.And (Expression.Constant (true), Expression.Constant (true));
+
+      Assert.That (((ConstantExpression)((BinaryExpression)result.WhereCondition).Left).Value, Is.EqualTo (true));
+      Assert.That (((ConstantExpression) ((BinaryExpression) result.WhereCondition).Right).Value, Is.EqualTo (true));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException))]
     public void VisitWhereClause_WithoutCondition ()
     {
       _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
@@ -195,7 +217,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       _sqlPreparationQueryModelVisitor.VisitWhereClause (whereClause, _queryModel, 0);
 
-      _sqlPreparationQueryModelVisitor.GetSqlStatement ();
-      }
+      _sqlPreparationQueryModelVisitor.GetSqlStatement();
+    }
   }
 }
