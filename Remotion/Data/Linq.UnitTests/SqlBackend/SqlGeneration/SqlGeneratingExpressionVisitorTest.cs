@@ -203,6 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
     //example: (true AND true)
     [Test]
+    [Ignore ("Review special bool cases")]
     public void VisitBinaryExpression_AndAlso_Boolean ()
     {
       Expression expression = Expression.Constant (true);
@@ -217,6 +218,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
     //example: (true AND (1<2))
     [Test]
+    [Ignore("Review special bool cases")]
     public void VisitBinaryExpression ()
     {
       Expression expression = Expression.Constant (true);

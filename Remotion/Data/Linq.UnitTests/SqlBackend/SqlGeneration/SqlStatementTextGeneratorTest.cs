@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -133,6 +134,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var result = generator.Build (sqlStatement);
 
       Assert.That (result.CommandText, Is.EqualTo (""));
+    }
+
+    [Test]
+    public void Build_WithSingleWhereCondition ()
+    {
+      _sqlStatement.WhereCondition = Expression.Constant (true);
+
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (_sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE @1"));
+    }
+
+    [Test]
+    public void Build_WithMultipleWhereConditions ()
+    {
+      _sqlStatement.WhereCondition = Expression.AndAlso(Expression.Constant(true), Expression.AndAlso (Expression.Constant (true), Expression.Constant (true))); 
+      
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (_sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 AND (@2 AND @3))"));
     }
   }
 }

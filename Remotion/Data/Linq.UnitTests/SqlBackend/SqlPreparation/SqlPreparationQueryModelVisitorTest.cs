@@ -186,6 +186,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (((ConstantExpression) result.WhereCondition).Value, Is.EqualTo (true));
     }
 
+    //TODO: refactor test
     [Test]
     public void VisitWhereClause_MulipleWhereClauses ()
     {
@@ -200,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       var result = _sqlPreparationQueryModelVisitor.GetSqlStatement ();
 
-      var expression = Expression.And (Expression.Constant (true), Expression.Constant (true));
+      var expression = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
 
       Assert.That (((ConstantExpression)((BinaryExpression)result.WhereCondition).Left).Value, Is.EqualTo (true));
       Assert.That (((ConstantExpression) ((BinaryExpression) result.WhereCondition).Right).Value, Is.EqualTo (true));
