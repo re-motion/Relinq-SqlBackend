@@ -111,5 +111,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP(@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
+
+    //TODO: select CASE IsAdult When 1 THEN 1 ELSE 0 END from dbo.Person where (IsAdult = 1) ???
+    [Test]
+    [Ignore]
+    public void Build_WithColumnTypeBoolean ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
+      sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
+      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var columnListExpression = new SqlColumnListExpression (
+          tableReferenceExpression.Type,
+          new[]
+          {
+              new SqlColumnExpression (typeof (bool), "t", "IsBool")
+          });
+
+      var sqlStatement = new SqlStatement (columnListExpression, sqlTable, new UniqueIdentifierGenerator ());
+
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo (""));
+    }
   }
 }
