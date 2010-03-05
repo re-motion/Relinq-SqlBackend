@@ -30,13 +30,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   public class SqlBackendIntegrationTest
   {
     private IQueryable<Cook> _cooks;
-    private IQueryable<Kitchen> _kitchen;
-    
+
     [SetUp]
     public void SetUp ()
     {
       _cooks = ExpressionHelper.CreateCookQueryable();
-      _kitchen = ExpressionHelper.CreateKitchenQueryable();
     }
 
     [Test]
@@ -66,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (
           result.CommandText,
           Is.EqualTo (
-          "SELECT [c].[FirstName] FROM [CookTable] AS [c] JOIN [SubstitutionTable] AS [s] ON [c].[ID] = [s].[SubstitutionID]"));
+              "SELECT [c].[FirstName] FROM [CookTable] AS [c] JOIN [SubstitutionTable] AS [s] ON [c].[ID] = [s].[SubstitutionID]"));
     }
 
     private SqlCommand GenerateSql<T> (IQueryable<T> queryable)
@@ -84,7 +82,36 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       return sqlTextGenerator.Build (sqlStatement);
     }
 
-    
-    
+    //TODO: add several integration tests
+    //where conditions
+    //from c in _cooks where c.Name = "Huber" select c.FirstName
+    //from c in _cooks where c.Name = "Huber" && c.FirstName = "Sepp" select c;
+
+    //result operators
+    //(from c in _cooks select c).Count()
+    //(from c in _cooks select c).Distinct()
+    //(from c in _cooks select c).Take(5)
+    //(from c in _cooks select c).Take(c.ID)
+    //from k in _kitchen from c in k.Restaurant.Cooks.Take(k.RoomNumber) select c
+    //(from c in _cooks select c).Single()
+    //(from c in _cooks select c).First()
+
+    //constant expressions
+    //(from c in _cooks where c.IsFullTimeCook select c)
+    //(from c in _cooks where c.IsFullTimeCook == true select c)
+    //add tests for replacing true/false with 1/0
+
+    //binary expression
+    //(from c in _cooks where c.Name == null select c)
+    //(from c in _cooks where c.ID + c.ID select c)
+    // see SqlGeneratingExpressionVisitor.VisitBinaryExpressions for further tests
+
+    //unary expressions (unary plus, unary negate, unary not)
+    //(from c in _cooks where (-c.ID) == -1 select c)
+    //(from c in _cooks where !c.IsStarredCook == true select c)
+    //(from c in _cooks where (+c.ID) == -1 select c)
+
+    //method calls (review method)
+    //SqlStatementTextGenerator.GenerateSqlGeneratorRegistry
   }
 }

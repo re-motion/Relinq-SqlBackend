@@ -186,7 +186,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (((ConstantExpression) result.WhereCondition).Value, Is.EqualTo (true));
     }
 
-    //TODO: refactor test
+    //TODO: refactor test: make Assert.That so that expression is used
     [Test]
     public void VisitWhereClause_MulipleWhereClauses ()
     {
