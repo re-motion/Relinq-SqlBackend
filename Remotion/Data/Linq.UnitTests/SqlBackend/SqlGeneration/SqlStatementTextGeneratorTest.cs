@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -28,8 +29,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlStatementTextGeneratorTest
   {
-    [Test]
-    public void Build ()
+    private SqlStatement _sqlStatement;
+
+    [SetUp]
+    public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
       sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
@@ -43,11 +46,37 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      SqlStatement sqlStatement = new SqlStatement (columnListExpression, sqlTable, new UniqueIdentifierGenerator());
-      
+      _sqlStatement = new SqlStatement (columnListExpression, sqlTable, new UniqueIdentifierGenerator ());
+    }
+
+    [Test]
+    public void Build ()
+    {
       var generator = new SqlStatementTextGenerator();
-      var result = generator.Build (sqlStatement);
+      var result = generator.Build (_sqlStatement);
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException))]
+    public void Build_WithCountAndTop_ThrowsException ()
+    {
+      _sqlStatement.Count = true;
+      _sqlStatement.TopExpression = Expression.Constant (1);
+
+      var generator = new SqlStatementTextGenerator ();
+      generator.Build (_sqlStatement);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException))]
+    public void Build_WithCountAndDistinct_ThrowsException ()
+    {
+      _sqlStatement.Count = true;
+      _sqlStatement.Distinct = true;
+
+      var generator = new SqlStatementTextGenerator ();
+      generator.Build (_sqlStatement);
     }
   }
 }
