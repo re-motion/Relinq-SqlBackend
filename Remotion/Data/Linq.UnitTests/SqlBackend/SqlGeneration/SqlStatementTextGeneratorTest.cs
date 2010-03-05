@@ -78,5 +78,38 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var generator = new SqlStatementTextGenerator ();
       generator.Build (_sqlStatement);
     }
+
+    [Test]
+    public void Build_WithCountIsTrue ()
+    {
+      _sqlStatement.Count = true;
+
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (_sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT COUNT(*) FROM [Table] AS [t]"));
+    }
+
+    [Test]
+    public void Build_WithDistinctIsTrue ()
+    {
+      _sqlStatement.Distinct = true;
+
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (_sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+    }
+
+    [Test]
+    public void Build_WithTopExpression ()
+    {
+      _sqlStatement.TopExpression = Expression.Constant(5);
+
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (_sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP(@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+    }
   }
 }
