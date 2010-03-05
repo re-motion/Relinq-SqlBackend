@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
@@ -167,5 +168,34 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       _sqlPreparationQueryModelVisitor.VisitResultOperator (defaultIfEmptyOperator, _queryModel, 0);
     }
+
+    [Test]
+    public void VisitWhereClause_WithCondition ()
+    {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      var whereClause = new WhereClause (Expression.Constant (true));
+      _queryModel.BodyClauses.Add (whereClause);
+
+      _sqlPreparationQueryModelVisitor.VisitWhereClause (whereClause, _queryModel, 0);
+
+      var result = _sqlPreparationQueryModelVisitor.GetSqlStatement();
+
+      Assert.That (((ConstantExpression) result.WhereCondition).Value, Is.EqualTo (true));
+    }
+
+    [Test]
+    [ExpectedException(typeof(ArgumentTypeException))]
+    public void VisitWhereClause_WithoutCondition ()
+    {
+      _sqlPreparationQueryModelVisitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _sqlPreparationQueryModelVisitor.VisitSelectClause (_selectClause, _queryModel);
+      var whereClause = new WhereClause (Expression.Constant (1));
+      _queryModel.BodyClauses.Add (whereClause);
+
+      _sqlPreparationQueryModelVisitor.VisitWhereClause (whereClause, _queryModel, 0);
+
+      _sqlPreparationQueryModelVisitor.GetSqlStatement ();
+      }
   }
 }
