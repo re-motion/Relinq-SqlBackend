@@ -201,8 +201,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo (("(@1 - @2)")));
     }
 
+    //example: (true AND true)
     [Test]
-    public void VisitBinaryExpression_AndAlso ()
+    public void VisitBinaryExpression_AndAlso_Boolean ()
     {
       Expression expression = Expression.Constant (true);
 
@@ -211,9 +212,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       var result = _commandBuilder.GetCommandText();
 
-      Assert.That (result, Is.EqualTo (("(@1 AND @2)")));
+      Assert.That (result, Is.EqualTo (("@1=@2")));
     }
 
+    //example: (true AND (1<2))
+    [Test]
+    public void VisitBinaryExpression ()
+    {
+      Expression expression = Expression.Constant (true);
+      Expression innerBinaryExpression = Expression.LessThan (_leftIntegerExpression, _rightIntegerExpression);
+
+      Expression binaryExpression = Expression.AndAlso (expression, innerBinaryExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo (("@1=1  AND (@2 < @3)")));
+    }
+    
     [Test]
     public void VisitBinaryExpression_OrElse ()
     {
