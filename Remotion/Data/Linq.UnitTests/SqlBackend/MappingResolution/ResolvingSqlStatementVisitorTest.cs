@@ -76,5 +76,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       Assert.That (((ConstantExpression) _sqlStatement.TopExpression).Value, Is.EqualTo (1));
     }
+
+    [Test]
+    public void VisitWhereCondition_CreatesConstantExpression ()
+    {
+      _sqlStatement.WhereCondition = Expression.Constant (true);
+      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+
+      Assert.That (((ConstantExpression) _sqlStatement.WhereCondition).Value, Is.EqualTo (true));
+    }
   }
 }
