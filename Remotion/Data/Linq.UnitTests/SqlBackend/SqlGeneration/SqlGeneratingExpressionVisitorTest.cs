@@ -515,7 +515,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void VistMethodCallExpression_Remove ()
     {
-      var method = typeof (string).GetMethod ("Remove", new Type[] {typeof(int), typeof(int) });
+      var method = typeof (string).GetMethod ("Remove", new[] {typeof(int), typeof(int) });
       var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant(0), Expression.Constant(1));
 
       var registry = new MethodCallSqlGeneratorRegistry ();

@@ -23,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
@@ -34,11 +35,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithSqlTableSource();
       var columnListExpression = new SqlColumnListExpression (
-          tableReferenceExpression.Type,
+          typeof (Cook),
           new[]
           {
               new SqlColumnExpression (typeof (int), "t", "ID"),
@@ -50,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Build ()
+    public void Build_WithSelectAndFrom ()
     {
       var generator = new SqlStatementTextGenerator();
       var result = generator.Build (_sqlStatement);
@@ -58,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void Build_WithCountAndTop_ThrowsException ()
     {
       _sqlStatement.IsCountQuery = true;
@@ -69,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void Build_WithCountAndDistinct_ThrowsException ()
     {
       _sqlStatement.IsCountQuery = true;
@@ -112,9 +111,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP(@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
 
-    //TODO: select CASE IsAdult When 1 THEN 1 ELSE 0 END from dbo.Person where (IsAdult = 1) ???
     [Test]
-    [Ignore]
+    public void Build_WithDistinctAndTopExpression ()
+    {
+      _sqlStatement.IsDistinctQuery = true;
+      _sqlStatement.TopExpression = Expression.Constant (5);
+
+      var generator = new SqlStatementTextGenerator ();
+      var result = generator.Build (_sqlStatement);
+
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT TOP(@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+    }
+
+    [Test]
+    [Ignore ("TODO 2362: Support booleans in select projection; test with: select c.IsBool => SELECT c.IsBool; select c.FirstName IS NOT NULL => SELECT CASE WHEN c.FirstName IS NOT NULL THEN 1 ELSE 0.")]
     public void Build_WithColumnTypeBoolean ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
@@ -147,14 +157,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Build_WithMultipleWhereConditions ()
+    [Ignore ("TODO: 2364")]
+    public void GenerateSqlGeneratorRegistry ()
     {
-      _sqlStatement.WhereCondition = Expression.AndAlso(Expression.Constant(true), Expression.AndAlso (Expression.Constant (true), Expression.Constant (true))); 
-      
-      var generator = new SqlStatementTextGenerator ();
-      var result = generator.Build (_sqlStatement);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 AND (@2 AND @3))"));
+      Assert.Fail();
     }
   }
 }
