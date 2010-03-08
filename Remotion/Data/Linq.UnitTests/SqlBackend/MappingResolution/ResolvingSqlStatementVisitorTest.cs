@@ -32,23 +32,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   {
     private SqlStatement _sqlStatement;
     private SqlStatementResolverStub _resolver;
-    private ResolvingSqlStatementVisitor _sqlStatementVisitor;
+    private SqlMemberExpression _sqlMemberExpression;
+    private UniqueIdentifierGenerator _uniqueIdentifierGenerator;
 
     [SetUp]
     public void SetUp ()
     {
       var source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable);
+
+      _sqlMemberExpression = new SqlMemberExpression (sqlTable, typeof (Cook).GetProperty ("IsStarredCook"));
+      _sqlStatement = new SqlStatement (_sqlMemberExpression, sqlTable);
       _resolver = new SqlStatementResolverStub();
-      _sqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver, new UniqueIdentifierGenerator());
+      _uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
     }
 
     [Test]
     public void VisitFromExpression_ReplacesTableSource ()
     {
-      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
 
       Assert.That (_sqlStatement.FromExpression.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
     }
@@ -56,34 +58,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSelectProjection_CreatesSqlColumnListExpression ()
     {
-      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
-      var constraint = new SqlTableSource (typeof (Cook), "Cook", "c");
+      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
 
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns.Count, Is.EqualTo (3));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].OwningTableAlias, Is.EqualTo (constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[0].ColumnName, Is.EqualTo ("ID"));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[1].ColumnName, Is.EqualTo ("Name"));
-      Assert.That (((SqlColumnListExpression) _sqlStatement.SelectProjection).Columns[2].ColumnName, Is.EqualTo ("City"));
+      Assert.That (_sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
     [Test]
-    public void VisitTopExpression_CreatesConstantExpression ()
+    public void VisitTopExpression_ResolvesExpression ()
     {
-      _sqlStatement.TopExpression = Expression.Constant (1);
-      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+      _sqlStatement.TopExpression = _sqlMemberExpression;
+      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
 
-      Assert.That (((ConstantExpression) _sqlStatement.TopExpression).Value, Is.EqualTo (1));
+      Assert.That (_sqlStatement.TopExpression, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
     [Test]
-    public void VisitWhereCondition_CreatesConstantExpression ()
+    public void VisitWhereCondition_ResolvesExpression ()
     {
-      _sqlStatement.WhereCondition = Expression.Constant (true);
-      _sqlStatementVisitor.VisitSqlStatement (_sqlStatement);
+      _sqlStatement.WhereCondition = _sqlMemberExpression;
+      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
 
-      Assert.That (((ConstantExpression) _sqlStatement.WhereCondition).Value, Is.EqualTo (true));
+      Assert.That (_sqlStatement.WhereCondition, Is.TypeOf (typeof (SqlColumnExpression)));
     }
   }
 }

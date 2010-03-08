@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var queryable = SelectTestQueryGenerator.CreateSimpleQuery (_cooks);
       var result = GenerateSql (queryable);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [Cook] AS [c]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [CookTable] AS [c]"));
     }
 
     [Test]
@@ -52,10 +52,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       IQueryable<string> queryable = SelectTestQueryGenerator.CreateSimpleQueryWithProjection (_cooks);
       var result = GenerateSql (queryable);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[FirstName] FROM [Cook] AS [c]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[FirstNameColumn] FROM [CookTable] AS [c]"));
     }
 
     [Test]
+    [Ignore ("TODO: Fix stub implementation to correctly create the joins")]
     public void SelectQuery_WithJoin ()
     {
       var queryable = from c in _cooks select c.Substitution.FirstName;
@@ -115,8 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, new SqlPreparationContext());
 
-      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub (), new UniqueIdentifierGenerator());
-      resolvingSqlStatementVisitor.VisitSqlStatement (sqlStatement);
+      ResolvingSqlStatementVisitor.ResolveExpressions (sqlStatement, new SqlStatementResolverStub(), new UniqueIdentifierGenerator());
 
       var sqlTextGenerator = new SqlStatementTextGenerator ();
       return sqlTextGenerator.Build (sqlStatement);

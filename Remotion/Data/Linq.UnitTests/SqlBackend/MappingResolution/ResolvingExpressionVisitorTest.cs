@@ -20,69 +20,71 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
   public class ResolvingExpressionVisitorTest
   {
-    private SqlStatementResolverStub _resolver;
+    private ISqlStatementResolver _resolverMock;
     private ConstantTableSource _source;
     private SqlTable _sqlTable;
-    private SqlTableSource _constraint;
     private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new SqlStatementResolverStub();
+      _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
       _source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
       _sqlTable = new SqlTable (_source);
-      _constraint = new SqlTableSource (typeof (Cook), "Cook", "c");
       _generator = new UniqueIdentifierGenerator();
     }
 
     [Test]
-    public void VisitSqlTableReferenceExpression_CreatesSqlColumnListExpression ()
+    public void VisitSqlTableReferenceExpression_ResolvesExpression ()
     {
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
 
-      var sqlColumnListExpression = ResolvingExpressionVisitor.ResolveExpressions (tableReferenceExpression, _resolver, _generator);
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+          .Return (fakeResult);
 
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns.Count, Is.EqualTo (3));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].OwningTableAlias, Is.EqualTo (_constraint.TableAlias));
-      
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[0].ColumnName, Is.EqualTo ("ID"));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[1].ColumnName, Is.EqualTo ("Name"));
-      Assert.That (((SqlColumnListExpression) sqlColumnListExpression).Columns[2].ColumnName, Is.EqualTo ("City"));
+      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
+
+      Assert.That (result, Is.SameAs (fakeResult));
+      _resolverMock.VerifyAllExpectations();
     }
 
     [Test]
     public void VisitSqlMemberExpression_CreatesSqlColumnExpression() 
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      _sqlTable.TableSource = new JoinedTableSource (memberInfo);
       var memberExpression = new SqlMemberExpression (_sqlTable, memberInfo);
-      var sqlColumnExpression = ResolvingExpressionVisitor.ResolveExpressions (memberExpression, _resolver, _generator);
-      
-      Assert.That (sqlColumnExpression, Is.TypeOf (typeof(SqlColumnExpression)));
-      Assert.That (((SqlColumnExpression) sqlColumnExpression).OwningTableAlias, Is.EqualTo ("c"));
-      Assert.That (((SqlColumnExpression) sqlColumnExpression).ColumnName, Is.EqualTo ("FirstName"));
+
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveMemberExpression (memberExpression, _generator))
+          .Return (fakeResult);
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator);
+
+      Assert.That (result, Is.SameAs (fakeResult));
+      _resolverMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void UnknownExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      var result = ResolvingExpressionVisitor.ResolveExpressions (unknownExpression, _resolver, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (unknownExpression, _resolverMock, _generator);
 
-      Assert.That (result, Is.EqualTo (unknownExpression));
+      Assert.That (result, Is.SameAs (unknownExpression));
     }
   }
 }
