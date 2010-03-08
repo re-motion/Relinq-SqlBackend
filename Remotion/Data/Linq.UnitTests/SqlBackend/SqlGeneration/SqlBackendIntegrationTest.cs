@@ -67,20 +67,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               "SELECT [c].[FirstName] FROM [CookTable] AS [c] JOIN [SubstitutionTable] AS [s] ON [c].[ID] = [s].[SubstitutionID]"));
     }
 
-    private SqlCommand GenerateSql<T> (IQueryable<T> queryable)
-    {
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+    //[Test]
+    //public void SelectQuuery_WithWhereCondition ()
+    //{
+    //  var queryable = from c in _cooks where c.Name == "Huber" select c.FirstName;
+    //  //var queryable = from c in _cooks select c.FirstName + c.Name;
+    //  var result = GenerateSql (queryable);
 
-      var queryModelVisitor = new SqlPreparationQueryModelVisitor();
-      queryModelVisitor.VisitQueryModel (queryModel);
-      var sqlStatement = queryModelVisitor.GetSqlStatement();
-
-      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub());
-      resolvingSqlStatementVisitor.VisitSqlStatement (sqlStatement);
-
-      var sqlTextGenerator = new SqlStatementTextGenerator();
-      return sqlTextGenerator.Build (sqlStatement);
-    }
+    //  Assert.That (result.CommandText, Is.EqualTo (""));
+    //}
 
     //TODO: add several integration tests
     //where conditions
@@ -113,5 +108,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
     //method calls (review method)
     //SqlStatementTextGenerator.GenerateSqlGeneratorRegistry
+
+    private SqlCommand GenerateSql<T> (IQueryable<T> queryable)
+    {
+      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+
+      var queryModelVisitor = new SqlPreparationQueryModelVisitor ();
+      queryModelVisitor.VisitQueryModel (queryModel);
+      var sqlStatement = queryModelVisitor.GetSqlStatement ();
+
+      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub ());
+      resolvingSqlStatementVisitor.VisitSqlStatement (sqlStatement);
+
+      var sqlTextGenerator = new SqlStatementTextGenerator ();
+      return sqlTextGenerator.Build (sqlStatement);
+    }
   }
+
+
 }

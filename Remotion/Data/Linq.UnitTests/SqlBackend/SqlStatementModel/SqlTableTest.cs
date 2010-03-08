@@ -63,7 +63,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       Assert.That (table.TableSource, Is.SameAs (tableSource));
     }
 
-    // TODO: add new test checking that when GetOrAddJoin is called twice with the same member, the same SqlTable is returned
+    [Test]
+    public void GetOrddJoin_GetEntry_WithNewTableSourceForMember ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("FirstName");
+      var expectedTableSource = new JoinedTableSource (memberInfo);
+      var newTableSource = new JoinedTableSource (memberInfo);
+      var sqlTable = new SqlTable (expectedTableSource);
+
+      sqlTable.GetOrAddJoin (memberInfo, expectedTableSource);
+
+      Assert.That (sqlTable.GetOrAddJoin (memberInfo, newTableSource).TableSource, Is.SameAs (expectedTableSource));
+    }
 
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Type mismatch between String and Int32.")]
     [Test]
