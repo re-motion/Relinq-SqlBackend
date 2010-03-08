@@ -40,9 +40,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable, new UniqueIdentifierGenerator());
+      _sqlStatement = new SqlStatement (tableReferenceExpression, sqlTable);
       _resolver = new SqlStatementResolverStub();
-      _sqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver);
+      _sqlStatementVisitor = new ResolvingSqlStatementVisitor (_resolver, new UniqueIdentifierGenerator());
     }
 
     [Test]

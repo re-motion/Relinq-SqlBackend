@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _context = new SqlPreparationContext();
-      _mainFromClause = ClauseObjectMother.CreateMainFromClause();
+      _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _querySourceReferenceExpression = new QuerySourceReferenceExpression (_mainFromClause);
       var source = new ConstantTableSource ((ConstantExpression) _mainFromClause.FromExpression, _mainFromClause.ItemType);
       _sqlTable = new SqlTable (source);

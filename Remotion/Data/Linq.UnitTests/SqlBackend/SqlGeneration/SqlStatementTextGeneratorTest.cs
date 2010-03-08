@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _sqlStatement = new SqlStatement (columnListExpression, sqlTable, new UniqueIdentifierGenerator ());
+      _sqlStatement = new SqlStatement (columnListExpression, sqlTable);
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [ExpectedException (typeof (ArgumentException))]
     public void Build_WithCountAndTop_ThrowsException ()
     {
-      _sqlStatement.Count = true;
+      _sqlStatement.IsCountQuery = true;
       _sqlStatement.TopExpression = Expression.Constant (1);
 
       var generator = new SqlStatementTextGenerator ();
@@ -72,8 +72,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [ExpectedException (typeof (ArgumentException))]
     public void Build_WithCountAndDistinct_ThrowsException ()
     {
-      _sqlStatement.Count = true;
-      _sqlStatement.Distinct = true;
+      _sqlStatement.IsCountQuery = true;
+      _sqlStatement.IsDistinctQuery = true;
 
       var generator = new SqlStatementTextGenerator ();
       generator.Build (_sqlStatement);
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void Build_WithCountIsTrue ()
     {
-      _sqlStatement.Count = true;
+      _sqlStatement.IsCountQuery = true;
 
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
@@ -93,7 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void Build_WithDistinctIsTrue ()
     {
-      _sqlStatement.Distinct = true;
+      _sqlStatement.IsDistinctQuery = true;
 
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
@@ -127,7 +127,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (bool), "t", "IsBool")
           });
 
-      var sqlStatement = new SqlStatement (columnListExpression, sqlTable, new UniqueIdentifierGenerator ());
+      var sqlStatement = new SqlStatement (columnListExpression, sqlTable);
 
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (sqlStatement);

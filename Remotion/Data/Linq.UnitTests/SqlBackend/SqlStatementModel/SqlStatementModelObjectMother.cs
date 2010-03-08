@@ -82,5 +82,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       return new SqlTableSource (typeof (int), "table", "t");
     }
+
+    public static SqlStatement CreateSqlStatement ()
+    {
+      var sqlTable = CreateSqlTableWithConstantTableSource();
+      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), sqlTable);
+    }
   }
 }

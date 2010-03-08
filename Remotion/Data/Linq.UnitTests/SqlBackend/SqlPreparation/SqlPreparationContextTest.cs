@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _context = new SqlPreparationContext();
-      _source = ClauseObjectMother.CreateMainFromClause ();
+      _source = ExpressionHelper.CreateMainFromClause_Cook();
       var source = new ConstantTableSource (Expression.Constant (1, typeof (int)),typeof(int));
       _sqlTable = new SqlTable (source);
     }
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [ExpectedException (typeof(KeyNotFoundException))]
     public void GetSqlTableForQuerySource_Throws_WhenSourceNotAdded ()
     {
-      _source = ClauseObjectMother.CreateMainFromClause ();
+      _source = ExpressionHelper.CreateMainFromClause_Cook();
       _context.GetSqlTableForQuerySource (_source);
     }
 

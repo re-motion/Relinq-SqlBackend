@@ -16,22 +16,20 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.UnitTests.TestDomain;
+using NUnit.Framework;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  public class ClauseObjectMother
+  [TestFixture]
+  public class SqlStatementTest
   {
-    public static MainFromClause CreateMainFromClause ()
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException))]
+    public void WhereCondition_ChecksType ()
     {
-      return new MainFromClause ("x", typeof (Cook), Expression.Constant (new Cook[0]));
-    }
-
-    public static SelectClause CreateSelectClause (MainFromClause mainFromClause)
-    {
-      return new SelectClause (new QuerySourceReferenceExpression (mainFromClause));
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
+      sqlStatement.WhereCondition = Expression.Constant (1);
     }
   }
 }

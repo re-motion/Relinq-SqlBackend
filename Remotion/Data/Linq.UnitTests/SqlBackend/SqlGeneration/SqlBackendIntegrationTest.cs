@@ -113,11 +113,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
 
-      var queryModelVisitor = new SqlPreparationQueryModelVisitor ();
-      queryModelVisitor.VisitQueryModel (queryModel);
-      var sqlStatement = queryModelVisitor.GetSqlStatement ();
+      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, new SqlPreparationContext());
 
-      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub ());
+      var resolvingSqlStatementVisitor = new ResolvingSqlStatementVisitor (new SqlStatementResolverStub (), new UniqueIdentifierGenerator());
       resolvingSqlStatementVisitor.VisitSqlStatement (sqlStatement);
 
       var sqlTextGenerator = new SqlStatementTextGenerator ();
