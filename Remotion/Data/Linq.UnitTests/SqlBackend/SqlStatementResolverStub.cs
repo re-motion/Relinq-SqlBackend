@@ -57,23 +57,23 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
       throw new NotSupportedException ("Cannot resolve member: " + memberExpression.MemberInfo);
 
-      //var joinedTableSource = memberExpression.SqlTable.TableSource as JoinedTableSource;
+      //var joinedTableSource = memberExpression.SqlTable.JoinInfo as JoinedTableSource;
       //if(joinedTableSource!=null && joinedTableSource.MemberInfo.Name=="Substitution")
       //{
-      //  var sqlJoinedTableSource = ResolveJoinedTableSource ((JoinedTableSource) memberExpression.SqlTable.TableSource);
-      //  memberExpression.SqlTable.TableSource = sqlJoinedTableSource;
+      //  var sqlJoinedTableSource = ResolveJoinedTableSource ((JoinedTableSource) memberExpression.SqlTable.JoinInfo);
+      //  memberExpression.SqlTable.JoinInfo = sqlJoinedTableSource;
       //  return new SqlColumnExpression (typeof (Cook),  "c", "FirstName");
       //}
       //else
       //{
-      //  memberExpression.SqlTable.TableSource = new SqlTableSource (typeof (Cook), "Cook", "c");
+      //  memberExpression.SqlTable.JoinInfo = new SqlTableSource (typeof (Cook), "Cook", "c");
       //  return new SqlColumnExpression (typeof (Cook), "c", "FirstName");
       //}
 
      
     }
 
-    public AbstractTableSource ResolveJoinedTableSource (JoinedTableSource tableSource)
+    public AbstractJoinInfo ResolveJoinedTableSource (JoinedTableSource tableSource)
     {
       return CreateSqlJoinedTableSource (tableSource);
     }
@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 new SqlColumnExpression (typeof (string), tableSource.TableAlias, "City")
             });
       }
-      throw new ArgumentTypeException ("tableReferenceExpression.SqlTable.TableSource", typeof (Cook), tableSource.ItemType);
+      throw new ArgumentTypeException ("tableReferenceExpression.SqlTable.JoinInfo", typeof (Cook), tableSource.ItemType);
     }
   }
 }

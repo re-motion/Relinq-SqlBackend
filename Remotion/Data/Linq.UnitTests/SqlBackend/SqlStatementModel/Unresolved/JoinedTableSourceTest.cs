@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     {
       var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_KitchenCook();
 
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
+      var tableSourceVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor>();
       tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource (tableSource));
 
       tableSourceVisitorMock.Replay ();

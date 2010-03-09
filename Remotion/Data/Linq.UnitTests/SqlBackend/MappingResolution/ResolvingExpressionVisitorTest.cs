@@ -196,8 +196,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
 
       _resolverMock.VerifyAllExpectations();
-      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, new JoinedTableSource (_kitchenCookMember));
-      Assert.That (join.TableSource, Is.SameAs (_sqlJoinedTableSource));
+      var join = _sqlTable.GetJoin (_kitchenCookMember);
+      Assert.That (join.JoinInfo, Is.SameAs (_sqlJoinedTableSource));
     }
 
     [Test]

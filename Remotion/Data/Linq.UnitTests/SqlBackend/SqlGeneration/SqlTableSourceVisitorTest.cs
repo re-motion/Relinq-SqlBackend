@@ -20,7 +20,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
@@ -48,16 +50,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForSqlJoinedTableSource ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      var sqlTableSource2 = new SqlTableSource (typeof (int), "Table2", "t2");
+      var originalTable = new SqlTable (new SqlTableSource (typeof (Kitchen), "KitchenTable", "k"));
+
+      var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
+      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, new JoinedTableSource (kitchenCookMember));
+
+      var foreignTableSource = new SqlTableSource (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "FK");
 
-      sqlTable.TableSource = new SqlJoinedTableSource (sqlTableSource2, primaryColumn, foreignColumn);
+      joinedTable.JoinInfo = new SqlJoinedTableSource (foreignTableSource, primaryColumn, foreignColumn);
 
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
+      SqlTableSourceVisitor.GenerateSql (originalTable, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" JOIN [Table2] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
 
     [Test]
@@ -80,8 +86,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "JoinedTableSource is not valid at this point.")]
     public void GenerateSql_JoinedTableSource ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
+      var originalTable = new SqlTable (new SqlTableSource (typeof (Cook), "CookTable", "c"));
+
+      var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
+      originalTable.GetOrAddJoin (kitchenCookMember, new JoinedTableSource (kitchenCookMember));
+
+      SqlTableSourceVisitor.GenerateSql (originalTable, _commandBuilder);
     }
   }
 }

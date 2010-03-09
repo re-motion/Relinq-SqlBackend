@@ -46,11 +46,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return sqlTable;
     }
 
-    public static SqlTable CreateSqlTableWithJoinedTableSource ()
+    public static SqlJoinedTable CreateSqlJoinedTableWithJoinedTableSource ()
     {
-      var sqlTableSource = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
-      var sqlTable = new SqlTable (sqlTableSource);
-      return sqlTable;
+      var joinInfo = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
+      return new SqlJoinedTable (joinInfo);
     }
 
     public static ConstantTableSource CreateConstantTableSource (MainFromClause mainFromClause)
@@ -95,6 +94,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
       var tableSource = new SqlTableSource (typeof (Cook), "CookTable", "s");
       return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+    }
+
+    public static SqlTable CreateSqlTable_TypeIsCook ()
+    {
+      return new SqlTable (CreateConstantTableSource_TypeIsCook());
     }
   }
 }

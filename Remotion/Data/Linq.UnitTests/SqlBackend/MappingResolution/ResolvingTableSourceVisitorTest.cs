@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveJoinedTableSource ()
+    public void ResolveJoinInfo_ResolvesJoinedTableSource ()
     {
       var cookSource = new SqlTableSource (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
@@ -114,14 +114,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Return (sqlJoinedTableSource);
       _resolverMock.Replay();
 
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedTableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveJoinInfo (_joinedTableSource, _resolverMock);
 
       Assert.That (result, Is.SameAs (sqlJoinedTableSource));
       _resolverMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void ResolveJoinedTableSource_AndRevisitsResult ()
+    public void ResolveJoinInfo_ResolvesJoinedTableSource_AndRevisitsResult ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var unresolvedResult = new JoinedTableSource (memberInfo);
@@ -141,21 +141,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       }
       _resolverMock.Replay ();
 
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedTableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveJoinInfo (_joinedTableSource, _resolverMock);
 
       Assert.That (result, Is.SameAs (resolvedResult));
       _resolverMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void ResolveJoinedTableSource_AndRevisitsResult_OnlyIfDifferent ()
+    public void ResolveJoinInfo_ResolvesJoinedTableSource_AndRevisitsResult_OnlyIfDifferent ()
     {
       _resolverMock
           .Expect (mock => mock.ResolveJoinedTableSource (_joinedTableSource))
           .Return (_joinedTableSource);
       _resolverMock.Replay ();
      
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedTableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveJoinInfo (_joinedTableSource, _resolverMock);
 
       Assert.That (result, Is.SameAs (_joinedTableSource));
       _resolverMock.VerifyAllExpectations ();

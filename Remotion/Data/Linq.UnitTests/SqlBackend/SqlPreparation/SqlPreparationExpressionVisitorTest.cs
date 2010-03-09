@@ -95,8 +95,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var join = sqlTable.GetJoin (kitchenCookMember);
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (join));
 
-      Assert.That (join.TableSource, Is.TypeOf (typeof (JoinedTableSource)));
-      Assert.That (((JoinedTableSource) join.TableSource).MemberInfo, Is.EqualTo (kitchenCookMember));
+      Assert.That (join.JoinInfo, Is.TypeOf (typeof (JoinedTableSource)));
+      Assert.That (((JoinedTableSource) join.JoinInfo).MemberInfo, Is.EqualTo (kitchenCookMember));
     }
 
     [Test]
