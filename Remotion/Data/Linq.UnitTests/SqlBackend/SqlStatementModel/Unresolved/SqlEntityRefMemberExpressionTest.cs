@@ -32,6 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
   {
     private SqlTable _sqlTable;
     private PropertyInfo _memberInfo;
+    private SqlEntityRefMemberExpression _expression;
 
     [SetUp]
     public void SetUp ()
@@ -39,19 +40,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
       var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (tableSource);
       _memberInfo = typeof (Cook).GetProperty ("FirstName");
+      _expression = new SqlEntityRefMemberExpression (_sqlTable, _memberInfo);
     }
 
     [Test]
     public void Initialization_TypeInferredFromMemberType ()
     {
-      var expression = new SqlEntityRefMemberExpression (_sqlTable, _memberInfo);
+      var expression = _expression;
       Assert.That (expression.Type, Is.SameAs (typeof (string)));
     }
 
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var expression = new SqlEntityRefMemberExpression (_sqlTable, _memberInfo);
+      var expression = _expression;
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
       visitorMock.Replay();
       
@@ -59,6 +61,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 
       Assert.That (result, Is.SameAs (expression));
       visitorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityRefMemberExpression, IUnresolvedSqlExpressionVisitor> (
+          _expression,
+          mock => mock.VisitSqlEntityRefMemberExpression (_expression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
     }
   }
 }

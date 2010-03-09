@@ -50,6 +50,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "IsStarredCook":
           case "FirstName":
             return CreateColumn (memberType, memberExpression.SqlTable, memberExpression.MemberInfo.Name + "Column");
+          case "Substitution":
+            throw new NotImplementedException ("TODO"); // Integration test: select cook.Substitution; select cook.Substitution.FirstName; select cook.Substitution.Substitution.FirstName
         }
       }
 

@@ -61,6 +61,43 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitSqlTableReferenceExpression_ResolvesExpression_AndRevisitsResult ()
+    {
+      var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
+      var unresolvedResult = new SqlTableReferenceExpression (_sqlTable);
+      var resolvedResult = Expression.Constant (0);
+
+      using (_resolverMock.GetMockRepository ().Ordered ())
+      {
+        _resolverMock
+            .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+            .Return (unresolvedResult);
+        _resolverMock
+            .Expect (mock => mock.ResolveTableReferenceExpression (unresolvedResult))
+            .Return (resolvedResult);
+      }
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
+
+      Assert.That (result, Is.SameAs (resolvedResult));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression_ResolvesExpression_AndRevisitsResult_OnlyIfDifferent ()
+    {
+      var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+          .Return (tableReferenceExpression);
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
+
+      Assert.That (result, Is.SameAs (tableReferenceExpression));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void VisitSqlMemberExpression_CreatesSqlColumnExpression() 
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
@@ -75,6 +112,47 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator);
 
       Assert.That (result, Is.SameAs (fakeResult));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void VisitSqlMemberExpression_ResolvesExpression_AndRevisitsResult ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("FirstName");
+      var sqlMemberExpression = new SqlMemberExpression (_sqlTable, memberInfo);
+
+      var unresolvedResult = new SqlMemberExpression(_sqlTable, memberInfo);
+      var resolvedResult = Expression.Constant (0);
+
+      using (_resolverMock.GetMockRepository ().Ordered ())
+      {
+        _resolverMock
+            .Expect (mock => mock.ResolveMemberExpression(sqlMemberExpression, _generator))
+            .Return (unresolvedResult);
+        _resolverMock
+            .Expect (mock => mock.ResolveMemberExpression (unresolvedResult, _generator))
+            .Return (resolvedResult);
+      }
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlMemberExpression, _resolverMock, _generator);
+
+      Assert.That (result, Is.SameAs (resolvedResult));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void VisitSqlMemberExpression_ResolvesExpression_AndRevisitsResult_OnlyIfDifferent ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("FirstName");
+      var sqlMemberExpression = new SqlMemberExpression (_sqlTable, memberInfo);
+      
+      _resolverMock
+          .Expect (mock => mock.ResolveMemberExpression(sqlMemberExpression, _generator))
+          .Return (sqlMemberExpression);
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlMemberExpression, _resolverMock, _generator);
+
+      Assert.That (result, Is.SameAs (sqlMemberExpression));
       _resolverMock.VerifyAllExpectations ();
     }
 
