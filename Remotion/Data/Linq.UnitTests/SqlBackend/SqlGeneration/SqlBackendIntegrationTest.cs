@@ -43,7 +43,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var queryable = SelectTestQueryGenerator.CreateSimpleQuery (_cooks);
       var result = GenerateSql (queryable);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[ID],[c].[Name],[c].[City] FROM [CookTable] AS [c]"));
+      var expected = 
+          "SELECT [c].[ID],[c].[FirstName],[c].[Name],[c].[IsStarredCook],[c].[IsFullTimeCook],[c].[SubstitutionID] "
+          + "FROM [CookTable] AS [c]";
+      Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
     [Test]
@@ -52,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       IQueryable<string> queryable = SelectTestQueryGenerator.CreateSimpleQueryWithProjection (_cooks);
       var result = GenerateSql (queryable);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[FirstNameColumn] FROM [CookTable] AS [c]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [c].[FirstName] FROM [CookTable] AS [c]"));
     }
 
     [Test]
@@ -79,6 +82,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     //}
 
     //TODO: add several integration tests
+
+    // Integration test: select cook.Substitution; select cook.Substitution.FirstName; select cook.Substitution.Substitution.FirstName
+
     //where conditions
     //from c in _cooks where c.Name = "Huber" select c.FirstName
     //from c in _cooks where c.Name = "Huber" && c.FirstName = "Sepp" select c;

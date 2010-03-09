@@ -21,7 +21,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.TestDomain;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
@@ -29,9 +28,52 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
   {
     public virtual AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo)
     {
-      var tableName = string.Format ("{0}Table", tableInfo.ItemType.Name);
-      var tableAlias = tableName.Substring (0, 1).ToLower();
-      return new ResolvedTableInfo (tableInfo.ItemType, tableName, tableAlias);
+      switch (tableInfo.ItemType.Name)
+      {
+        case "Cook":
+        case "Kitchen":
+        case "Restaurant":
+        case "Compyany":
+          return CreateResolvedTableInfo (tableInfo.ItemType);
+      }
+
+      throw new NotSupportedException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
+    }
+
+    public AbstractJoinInfo ResolveJoinInfo (SqlTableBase originatingTable, UnresolvedJoinInfo joinInfo)
+    {
+      if (joinInfo.MemberInfo.DeclaringType == typeof (Cook))
+      {
+        switch (joinInfo.MemberInfo.Name)
+        {
+          case "Substitution":
+            return CreateResolvedJoinInfo (
+                originatingTable.GetResolvedTableInfo(),
+                "ID",
+                CreateResolvedTableInfo (joinInfo.ItemType),
+                "SubstitutionID");
+        }
+      }
+      else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
+      {
+        switch (joinInfo.MemberInfo.Name)
+        {
+          case "Cook":
+            return CreateResolvedJoinInfo (
+                originatingTable.GetResolvedTableInfo(),
+                "ID",
+                CreateResolvedTableInfo (joinInfo.ItemType),
+                "CookID");
+          case "Restaurant":
+            return CreateResolvedJoinInfo (
+                originatingTable.GetResolvedTableInfo(),
+                "RestaurantID",
+                CreateResolvedTableInfo (joinInfo.ItemType),
+                "ID");
+        }
+      }
+
+      throw new NotSupportedException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
     }
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
@@ -47,27 +89,30 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       {
         switch (memberExpression.MemberInfo.Name)
         {
-          case "IsStarredCook":
           case "FirstName":
-            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name + "Column");
+          case "Name":
+          case "IsFullTimeCook":
+          case "IsStarredCook":
+            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Substitution":
-            throw new NotImplementedException ("TODO"); // Integration test: select cook.Substitution; select cook.Substitution.FirstName; select cook.Substitution.Substitution.FirstName
+            return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
+        }
+      }
+      else if (memberExpression.MemberInfo.DeclaringType == typeof (Kitchen))
+      {
+        switch (memberExpression.MemberInfo.Name)
+        {
+          case "ID":
+          case "Name":
+          case "RoomNumber":
+            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+          case "Cook":
+          case "Restaurant":
+            return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
       }
 
       throw new NotSupportedException ("Cannot resolve member: " + memberExpression.MemberInfo);
-    }
-
-    public AbstractJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo)
-    {
-      if (joinInfo.MemberInfo.Name == "Substitution")
-      {
-        var primaryColumn = new SqlColumnExpression (typeof (int), "c", "ID");
-        var foreignColumn = new SqlColumnExpression (typeof (int), "s", "SubstitutionID");
-        var foreignTableInfo = new ResolvedTableInfo (joinInfo.ItemType, joinInfo.MemberInfo.Name + "Table", "s");
-        return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
-      }
-      throw new NotSupportedException ("Only Cook.Substitution is supported.");
     }
 
     private SqlColumnExpression CreateColumn (Type columnType, ResolvedTableInfo resolvedTableInfo, string columnName)
@@ -83,12 +128,52 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
             entityType,
             new[]
             {
-                new SqlColumnExpression (typeof (int), tableInfo.TableAlias, "ID"),
-                new SqlColumnExpression (typeof (string), tableInfo.TableAlias, "Name"),
-                new SqlColumnExpression (typeof (string), tableInfo.TableAlias, "City")
+                CreateColumn (typeof (int), tableInfo, "ID"),
+                CreateColumn (typeof (string), tableInfo, "FirstName"),
+                CreateColumn (typeof (string), tableInfo, "Name"),
+                CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
+                CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
+                CreateColumn (typeof (int), tableInfo, "SubstitutionID")
             });
       }
-      throw new ArgumentTypeException ("tableReferenceExpression.SqlTable.JoinInfo", typeof (Cook), tableInfo.ItemType);
+      else if (tableInfo.ItemType == typeof (Kitchen))
+      {
+        return new SqlColumnListExpression (
+            entityType,
+            new[]
+            {
+                CreateColumn (typeof (int), tableInfo, "ID"),
+                CreateColumn (typeof (int), tableInfo, "CookID"),
+                CreateColumn (typeof (string), tableInfo, "Name"),
+                CreateColumn (typeof (int), tableInfo, "RestaurantID"),
+            });
+      }
+      else if (tableInfo.ItemType == typeof (Restaurant))
+      {
+        return new SqlColumnListExpression (
+            entityType,
+            new[]
+            {
+                CreateColumn (typeof (int), tableInfo, "ID"),
+                CreateColumn (typeof (int), tableInfo, "CookID"),
+                CreateColumn (typeof (string), tableInfo, "Name"),
+            });
+      }
+      throw new NotSupportedException ("The type " + tableInfo.ItemType + " is not a queryable type.");
+    }
+
+    private ResolvedTableInfo CreateResolvedTableInfo (Type entityType)
+    {
+      return new ResolvedTableInfo (entityType, entityType.Name + "Table", entityType.Name[0].ToString().ToLower());
+    }
+
+    private AbstractJoinInfo CreateResolvedJoinInfo (
+        ResolvedTableInfo originatingTableInfo, string primaryKeyName, ResolvedTableInfo foreignTableInfo, string foreignKeyName)
+    {
+      var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName);
+      var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName);
+
+      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
   }
 }
