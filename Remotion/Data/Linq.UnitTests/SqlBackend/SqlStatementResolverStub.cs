@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         case "Kitchen":
         case "Restaurant":
         case "Compyany":
-          return CreateResolvedTableInfo (tableInfo.ItemType);
+          return CreateResolvedTableInfo (tableInfo.ItemType, generator);
       }
 
       throw new NotSupportedException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
             return CreateResolvedJoinInfo (
                 originatingTable.GetResolvedTableInfo(),
                 "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType),
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutionID");
         }
       }
@@ -62,13 +62,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
             return CreateResolvedJoinInfo (
                 originatingTable.GetResolvedTableInfo(),
                 "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType),
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "CookID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
                 originatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
-                CreateResolvedTableInfo (joinInfo.ItemType),
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
         }
       }
@@ -162,9 +162,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("The type " + tableInfo.ItemType + " is not a queryable type.");
     }
 
-    private ResolvedTableInfo CreateResolvedTableInfo (Type entityType)
+    private ResolvedTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
     {
-      return new ResolvedTableInfo (entityType, entityType.Name + "Table", entityType.Name[0].ToString().ToLower());
+      return new ResolvedTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier("t"));
     }
 
     private AbstractJoinInfo CreateResolvedJoinInfo (
