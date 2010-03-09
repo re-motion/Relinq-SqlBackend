@@ -177,7 +177,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
 
-      Assert.That (_sqlTable.JoinedTables.ContainsKey (_kitchenCookMember), Is.True);
+      Assert.That (_sqlTable.GetJoin (_kitchenCookMember), Is.Not.Null);
     }
 
     [Test]
