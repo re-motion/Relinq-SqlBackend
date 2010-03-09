@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
@@ -32,22 +31,24 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   {
     private ISqlStatementResolver _resolverMock;
     private UnresolvedTableInfo _unresolvedTableInfo;
+    private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
       _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook ();
+      _generator = new UniqueIdentifierGenerator();
     }
 
     [Test]
     public void ResolveTableInfo ()
     {
       var resolvedTableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
-      _resolverMock.Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo)).Return (resolvedTableInfo);
+      _resolverMock.Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator)).Return (resolvedTableInfo);
       _resolverMock.Replay ();
 
-      var result = ResolvingTableInfoVisitor.ResolveTableInfo (resolvedTableInfo, _resolverMock);
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (resolvedTableInfo, _resolverMock, _generator);
 
       Assert.That (result, Is.SameAs (resolvedTableInfo));
     }
@@ -61,15 +62,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
-            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
             .Return (unresolvedResult);
         _resolverMock
-            .Expect (mock => mock.ResolveTableInfo (unresolvedResult))
+            .Expect (mock => mock.ResolveTableInfo (unresolvedResult, _generator))
             .Return (resolvedResult);
       }
       _resolverMock.Replay ();
 
-      var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock);
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock, _generator);
 
       Assert.That (result, Is.SameAs (resolvedResult));
       _resolverMock.VerifyAllExpectations();
@@ -79,11 +80,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void ResolveTableInfo_AndRevisitsResult_OnlyIfDifferent ()
     {
       _resolverMock
-          .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
+          .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
           .Return (_unresolvedTableInfo);
       _resolverMock.Replay ();
 
-      var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock);
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock, _generator);
 
       Assert.That (result, Is.SameAs (_unresolvedTableInfo));
       _resolverMock.VerifyAllExpectations();

@@ -57,9 +57,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _generator))
           .Return (fakeResult);
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
 
@@ -77,13 +77,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
-            .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+            .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _generator))
             .Return (unresolvedResult);
         _resolverMock
-            .Expect (mock => mock.ResolveTableReferenceExpression (unresolvedResult))
+            .Expect (mock => mock.ResolveTableReferenceExpression (unresolvedResult, _generator))
             .Return (resolvedResult);
       }
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
 
@@ -96,9 +96,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _generator))
           .Return (tableReferenceExpression);
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
 
@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveMemberExpression (unresolvedResult, _generator))
             .Return (resolvedResult);
       }
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlMemberExpression, _resolverMock, _generator);
 
@@ -160,7 +160,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (sqlMemberExpression, _generator))
           .Return (sqlMemberExpression);
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlMemberExpression, _resolverMock, _generator);
 
@@ -184,12 +184,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void VisitSqlEntityRefMemberExpression_ResolvesJoin ()
     {
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
-      
+
       _resolverMock
-            .Expect (mock => mock.ResolveJoinInfo (
-                Arg.Is(_sqlTable),
-                Arg<UnresolvedJoinInfo>.Matches (ts => ts.MemberInfo == _kitchenCookMember && ts.ItemType == typeof (Cook))))
-            .Return (_resolvedJoinInfo);
+          .Expect (
+          mock => mock.ResolveJoinInfo (
+                      Arg.Is (_sqlTable),
+                      Arg<UnresolvedJoinInfo>.Matches (ts => ts.MemberInfo == _kitchenCookMember && ts.ItemType == typeof (Cook)),
+                      Arg.Is (_generator)))
+          .Return (_resolvedJoinInfo);
       _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
@@ -208,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       var columnListExpression = new SqlColumnListExpression (typeof (Cook));
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything))
+          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_generator)))
           .Return (columnListExpression);
       _resolverMock.Replay();
 
@@ -224,15 +226,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
       var join = _sqlTable.GetOrAddJoin (_kitchenCookMember);
 
-      StubResolveTableInfo ();
+      StubResolveTableInfo();
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Matches (tableRef => tableRef.SqlTable == join)))
+          .Expect (
+          mock =>
+          mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Matches (tableRef => tableRef.SqlTable == join), Arg.Is (_generator)))
           .Return (new SqlColumnListExpression (typeof (Cook)));
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -247,7 +251,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     private void StubResolveTableInfo ()
     {
       _resolverMock
-          .Stub (stub => stub.ResolveJoinInfo (Arg<SqlTableBase>.Is.Anything, Arg<UnresolvedJoinInfo>.Is.Anything))
+          .Stub (stub => stub.ResolveJoinInfo (Arg<SqlTableBase>.Is.Anything, Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
           .Return (_resolvedJoinInfo);
     }
   }

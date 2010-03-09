@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
   public class SqlStatementResolverStub : ISqlStatementResolver
   {
-    public virtual AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo)
+    public virtual AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       switch (tableInfo.ItemType.Name)
       {
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
     }
 
-    public AbstractJoinInfo ResolveJoinInfo (SqlTableBase originatingTable, UnresolvedJoinInfo joinInfo)
+    public AbstractJoinInfo ResolveJoinInfo (SqlTableBase originatingTable, UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
       if (joinInfo.MemberInfo.DeclaringType == typeof (Cook))
       {
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
     }
 
-    public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
+    public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
       return CreateColumnList (tableReferenceExpression.Type, resolvedTableInfo);
