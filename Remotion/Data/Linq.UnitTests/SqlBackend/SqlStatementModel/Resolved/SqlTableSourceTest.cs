@@ -16,8 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
@@ -36,6 +36,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       tableSource.Accept (tableSourceVisitorMock);
       
       tableSourceVisitorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetResolvedTableSource ()
+    {
+      var tableSource = SqlStatementModelObjectMother.CreateSqlTableSource_TypeIsInt();
+      
+      var result = tableSource.GetResolvedTableSource ();
+
+      Assert.That (result, Is.SameAs (tableSource));
     }
   }
 }

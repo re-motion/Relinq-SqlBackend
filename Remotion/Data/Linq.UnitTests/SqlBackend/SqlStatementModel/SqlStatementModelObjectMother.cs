@@ -88,5 +88,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var sqlTable = CreateSqlTableWithConstantTableSource();
       return new SqlStatement (new SqlTableReferenceExpression (sqlTable), sqlTable);
     }
+
+    public static SqlJoinedTableSource CreateSqlJoinedTableSource ()
+    {
+      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
+      var tableSource = new SqlTableSource (typeof (Cook), "CookTable", "s");
+      return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+    }
   }
 }

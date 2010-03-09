@@ -32,26 +32,30 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
   public class SqlPreparationExpressionVisitorTest
   {
     private SqlPreparationContext _context;
-    private MainFromClause _mainFromClause;
-    private QuerySourceReferenceExpression _querySourceReferenceExpression;
+    
+    private MainFromClause _cookMainFromClause;
+    private QuerySourceReferenceExpression _cookQuerySourceReferenceExpression;
+    
+    private MainFromClause _kitchenMainFromClause;
+    
     private SqlTable _sqlTable;
-
 
     [SetUp]
     public void SetUp ()
     {
       _context = new SqlPreparationContext();
-      _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
-      _querySourceReferenceExpression = new QuerySourceReferenceExpression (_mainFromClause);
-      var source = new ConstantTableSource ((ConstantExpression) _mainFromClause.FromExpression, _mainFromClause.ItemType);
+      _cookMainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
+      _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
+      _kitchenMainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
+      var source = new ConstantTableSource ((ConstantExpression) _cookMainFromClause.FromExpression, _cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
-      _context.AddQuerySourceMapping (_mainFromClause, _sqlTable);
+      _context.AddQuerySourceMapping (_cookMainFromClause, _sqlTable);
     }
 
     [Test]
     public void VisitQuerySourceReferenceExpression_CreatesSqlTableReferenceExpression ()
     {
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (_querySourceReferenceExpression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (_cookQuerySourceReferenceExpression, _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
@@ -61,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitMemberExpression_CreatesSqlMemberExpression ()
     {
-      Expression memberExpression = Expression.MakeMemberAccess (_querySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
+      Expression memberExpression = Expression.MakeMemberAccess (_cookQuerySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context);
 
@@ -73,28 +77,26 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitSeveralMemberExpression_CreatesSqlMemberExpressions ()
     {
-      Kitchen[] kitchen = new Kitchen[1];
-      kitchen[0] = new Kitchen { Name = "Test" };
+      var expression = ExpressionHelper.Resolve<Kitchen, string> (_kitchenMainFromClause, k => k.Cook.FirstName);
 
-      var mainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen();
-      var source = SqlStatementModelObjectMother.CreateConstantTableSource (_mainFromClause);
+      var source = SqlStatementModelObjectMother.CreateConstantTableSource (_kitchenMainFromClause);
       var sqlTable = new SqlTable (source);
-      var context = new SqlPreparationContext();
-      context.AddQuerySourceMapping (mainFromClause, sqlTable);
 
-      var expression = ExpressionHelper.Resolve<Kitchen, string> (mainFromClause, k => k.Cook.FirstName);
+      _context.AddQuerySourceMapping (_kitchenMainFromClause, sqlTable);
 
-      var result = (SqlMemberExpression) SqlPreparationExpressionVisitor.TranslateExpression (expression, context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
 
-      var resultTable = result.SqlTable;
-      var resultTableSource = (JoinedTableSource) resultTable.TableSource;
-      var expectedJoin = sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"), resultTableSource);
-
+      var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
+      var cookFirstNameMember = typeof (Cook).GetProperty ("FirstName");
+      
       Assert.That (result, Is.TypeOf (typeof (SqlMemberExpression)));
-      Assert.That (resultTable, Is.SameAs (expectedJoin));
-      Assert.That (result.MemberInfo, Is.EqualTo (typeof (Cook).GetProperty ("FirstName")));
-      Assert.That (expectedJoin.TableSource, Is.TypeOf (typeof (JoinedTableSource)));
-      Assert.That (((JoinedTableSource) expectedJoin.TableSource).MemberInfo, Is.EqualTo (typeof (Kitchen).GetProperty ("Cook")));
+      Assert.That (((SqlMemberExpression) result).MemberInfo, Is.EqualTo (cookFirstNameMember));
+
+      var join = sqlTable.GetJoin (kitchenCookMember);
+      Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (join));
+
+      Assert.That (join.TableSource, Is.TypeOf (typeof (JoinedTableSource)));
+      Assert.That (((JoinedTableSource) join.TableSource).MemberInfo, Is.EqualTo (kitchenCookMember));
     }
 
     [Test]

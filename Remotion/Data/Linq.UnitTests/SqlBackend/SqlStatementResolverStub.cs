@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -37,7 +36,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
-      return CreateColumnList (tableReferenceExpression.Type, (SqlTableSource) tableReferenceExpression.SqlTable.TableSource);
+      var resolvedTableSource = tableReferenceExpression.SqlTable.GetResolvedTableSource();
+      return CreateColumnList (tableReferenceExpression.Type, resolvedTableSource);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "IsStarredCook":
           case "FirstName":
-            return CreateColumn (memberType, memberExpression.SqlTable, memberExpression.MemberInfo.Name + "Column");
+            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableSource(), memberExpression.MemberInfo.Name + "Column");
           case "Substitution":
             throw new NotImplementedException ("TODO"); // Integration test: select cook.Substitution; select cook.Substitution.FirstName; select cook.Substitution.Substitution.FirstName
         }
@@ -90,9 +90,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("Only Cook.Substitution is supported.");
     }
 
-    private SqlColumnExpression CreateColumn (Type columnType, SqlTable sqlTable, string columnName)
+    private SqlColumnExpression CreateColumn (Type columnType, SqlTableSource sqlTableSource, string columnName)
     {
-      return new SqlColumnExpression (columnType, ((SqlTableSource) sqlTable.TableSource).TableAlias, columnName);
+      return new SqlColumnExpression (columnType, sqlTableSource.TableAlias, columnName);
     }
 
     private Expression CreateColumnList (Type entityType, SqlTableSource tableSource)

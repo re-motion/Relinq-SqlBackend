@@ -160,19 +160,5 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (_joinedTableSource));
       _resolverMock.VerifyAllExpectations ();
     }
-
-
-    private class UnknownTableSource : AbstractTableSource
-    {
-      public override Type ItemType
-      {
-        get { return typeof (string); }
-      }
-
-      public override AbstractTableSource Accept (ITableSourceVisitor visitor)
-      {
-        throw new NotImplementedException();
-      }
-    }
   }
 }

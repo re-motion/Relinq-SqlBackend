@@ -16,9 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
@@ -37,7 +35,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
       tableSourceVisitorMock.Replay ();
       tableSource.Accept (tableSourceVisitorMock);
       tableSourceVisitorMock.VerifyAllExpectations ();
+    }
 
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")]
+    public void GetResolvedTableSource_Throws ()
+    {
+      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsInt ();
+      tableSource.GetResolvedTableSource();
     }
   }
 }

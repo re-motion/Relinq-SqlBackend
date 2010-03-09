@@ -47,10 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _sqlTable = new SqlTable (_source);
       _generator = new UniqueIdentifierGenerator();
 
-      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
-      var tableSource = new SqlTableSource (typeof (Cook), "CookTable", "s");
-      _sqlJoinedTableSource = new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+      _sqlJoinedTableSource = SqlStatementModelObjectMother.CreateSqlJoinedTableSource();
 
       _kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
     }

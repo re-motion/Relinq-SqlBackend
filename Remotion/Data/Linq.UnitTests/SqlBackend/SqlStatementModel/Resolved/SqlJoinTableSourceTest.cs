@@ -15,17 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 {
-  /// <summary>
-  /// <see cref="AbstractTableSource"/> represents the actual data in a <see cref="SqlTable"/>.
-  /// </summary>
-  public abstract class AbstractTableSource
+  [TestFixture]
+  public class SqlJoinTableSourceTest
   {
-    public abstract Type ItemType { get; }
-    public abstract AbstractTableSource Accept (ITableSourceVisitor visitor);
-    public abstract SqlTableSource GetResolvedTableSource ();
+    [Test]
+    public void GetResolvedTableSource ()
+    {
+      var tableSource = SqlStatementModelObjectMother.CreateSqlJoinedTableSource ();
+
+      var result = tableSource.GetResolvedTableSource ();
+
+      Assert.That (result, Is.SameAs (tableSource.ForeignTableSource));
+    }
   }
 }

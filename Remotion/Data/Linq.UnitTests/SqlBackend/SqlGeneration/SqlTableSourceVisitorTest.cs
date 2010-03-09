@@ -83,19 +83,5 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource();
       SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
     }
-
-    private class UnknownTableSource : AbstractTableSource
-    {
-
-      public override Type ItemType
-      {
-        get { return typeof (string); }
-      }
-
-      public override AbstractTableSource Accept (ITableSourceVisitor visitor)
-      {
-        throw new NotImplementedException ();
-      }
-    }
   }
 }

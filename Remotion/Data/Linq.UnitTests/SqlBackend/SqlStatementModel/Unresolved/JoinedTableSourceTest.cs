@@ -37,5 +37,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
       tableSource.Accept (tableSourceVisitorMock);
       tableSourceVisitorMock.VerifyAllExpectations();
     }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This join has not yet been resolved; call the resolution step first.")]
+    public void GetResolvedTableSource_Throws ()
+    {
+      var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_KitchenCook ();
+      tableSource.GetResolvedTableSource ();
+    }
   }
 }
