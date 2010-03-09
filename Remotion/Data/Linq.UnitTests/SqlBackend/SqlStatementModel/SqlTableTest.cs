@@ -31,64 +31,24 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldTableSource = new SqlTableSource (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (oldTableSource);
-      var newTableSource = new SqlTableSource (typeof (int), "table2", "s");
+      var oldTableInfo = new ResolvedTableInfo (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (oldTableInfo);
+      var newTableInfo = new ResolvedTableInfo (typeof (int), "table2", "s");
 
-      sqlTable.TableSource = newTableSource;
+      sqlTable.TableInfo = newTableInfo;
 
-      Assert.That (sqlTable.TableSource.ItemType, Is.EqualTo (newTableSource.ItemType));
+      Assert.That (sqlTable.TableInfo.ItemType, Is.EqualTo (newTableInfo.ItemType));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldTableSource = new SqlTableSource (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (oldTableSource);
-      var newTableSource = new SqlTableSource (typeof (string), "table2", "s");
+      var oldTableInfo = new ResolvedTableInfo (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (oldTableInfo);
+      var newTableInfo = new ResolvedTableInfo (typeof (string), "table2", "s");
 
-      sqlTable.TableSource = newTableSource;
+      sqlTable.TableInfo = newTableInfo;
     }
-
-    [Test]
-    public void GetOrAddJoin_NewEntry ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook();
-
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var joinedTableSource = new JoinedTableSource (memberInfo);
-
-      var joinedTable = sqlTable.GetOrAddJoin (memberInfo, joinedTableSource);
-      Assert.That (joinedTable.JoinInfo, Is.SameAs (joinedTableSource));
-    }
-
-    [Test]
-    public void GetOrAddJoin_GetEntry_Twice ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook ();
-
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var originalJoinedTableSource = new JoinedTableSource (memberInfo);
-
-      var joinedTable1 = sqlTable.GetOrAddJoin (memberInfo, originalJoinedTableSource);
-      var joinedTable2 = sqlTable.GetOrAddJoin (memberInfo, new JoinedTableSource (memberInfo));
-
-      Assert.That (joinedTable2, Is.SameAs (joinedTable1));
-      Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinedTableSource));
-    }
-
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Type mismatch between String and Int32.")]
-    [Test]
-    public void GetOrAddJoin_ThrowsException ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var tableSource = new JoinedTableSource (typeof (Cook).GetProperty ("ID"));
-
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook();
-
-      sqlTable.GetOrAddJoin (memberInfo, tableSource);
-    }
-
   }
 }

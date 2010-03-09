@@ -30,14 +30,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [SetUp]
     public void SetUp ()
     {
-      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource());
+      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo());
     }
 
     [Test]
     public void Initialize ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
-      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.ItemType));
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
+      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableInfo.ItemType));
     }
 
 

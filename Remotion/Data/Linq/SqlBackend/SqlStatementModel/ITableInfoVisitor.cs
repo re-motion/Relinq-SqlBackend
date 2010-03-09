@@ -14,23 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  [TestFixture]
-  public class SqlJoinTableSourceTest
+  /// <summary>
+  /// Provides a visitor for implementations of <see cref="AbstractTableInfo"/>.
+  /// </summary>
+  public interface ITableInfoVisitor
   {
-    [Test]
-    public void GetResolvedTableSource ()
-    {
-      var tableSource = SqlStatementModelObjectMother.CreateSqlJoinedTableSource ();
-
-      var result = tableSource.GetResolvedTableSource ();
-
-      Assert.That (result, Is.SameAs (tableSource.ForeignTableSource));
-    }
+    AbstractTableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo);
+    AbstractTableInfo VisitResolvedTableInfo (ResolvedTableInfo tableInfo);
   }
 }

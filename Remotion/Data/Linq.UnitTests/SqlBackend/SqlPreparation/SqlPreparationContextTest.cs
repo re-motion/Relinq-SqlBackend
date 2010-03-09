@@ -23,7 +23,6 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
@@ -39,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       _context = new SqlPreparationContext();
       _source = ExpressionHelper.CreateMainFromClause_Cook();
-      var source = new ConstantTableSource (Expression.Constant (1, typeof (int)),typeof(int));
+      var source = new UnresolvedTableInfo (Expression.Constant (1, typeof (int)),typeof(int));
       _sqlTable = new SqlTable (source);
     }
 

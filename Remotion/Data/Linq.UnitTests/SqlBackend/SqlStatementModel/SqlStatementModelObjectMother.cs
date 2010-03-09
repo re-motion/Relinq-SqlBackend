@@ -26,79 +26,79 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
   public class SqlStatementModelObjectMother
   {
-    public static SqlTable CreateSqlTable (AbstractTableSource tableSource)
-    {
-      var sqlTable = new SqlTable (tableSource);
-      return sqlTable;
-    }
-
-    public static SqlTable CreateSqlTableWithConstantTableSource () 
-    {
-      var constantTableSource = new ConstantTableSource (Expression.Constant (1, typeof (int)),typeof(int));
-      var sqlTable = new SqlTable (constantTableSource);
-      return sqlTable;
-    }
-
-    public static SqlTable CreateSqlTableWithSqlTableSource ()
-    {
-      var sqlTableSource = new SqlTableSource (typeof (string), "Table", "t");
-      var sqlTable = new SqlTable (sqlTableSource);
-      return sqlTable;
-    }
-
-    public static SqlJoinedTable CreateSqlJoinedTableWithJoinedTableSource ()
-    {
-      var joinInfo = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
-      return new SqlJoinedTable (joinInfo);
-    }
-
-    public static ConstantTableSource CreateConstantTableSource (MainFromClause mainFromClause)
-    {
-      return new ConstantTableSource ((ConstantExpression) mainFromClause.FromExpression, mainFromClause.ItemType);
-    }
-
-    public static ConstantTableSource CreateConstantTableSource_TypeIsString ()
-    {
-      return new ConstantTableSource (Expression.Constant ("Cook", typeof (string)), typeof (string));
-    }
-
-    public static ConstantTableSource CreateConstantTableSource_TypeIsCook ()
-    {
-      return new ConstantTableSource (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)), typeof (Cook));
-    }
-
-    public static ConstantTableSource CreateConstantTableSource_TypeIsInt ()
-    {
-      return new ConstantTableSource (Expression.Constant (1, typeof (int)), typeof (int));
-    }
-
-    public static JoinedTableSource CreateJoinedTableSource_KitchenCook ()
-    {
-      return new JoinedTableSource (typeof (Kitchen).GetProperty ("Cook"));
-    }
-
-    public static SqlTableSource CreateSqlTableSource_TypeIsInt ()
-    {
-      return new SqlTableSource (typeof (int), "table", "t");
-    }
-
     public static SqlStatement CreateSqlStatement ()
     {
-      var sqlTable = CreateSqlTableWithConstantTableSource();
+      var sqlTable = CreateSqlTable_WithUnresolvedTableInfo ();
       return new SqlStatement (new SqlTableReferenceExpression (sqlTable), sqlTable);
     }
 
-    public static SqlJoinedTableSource CreateSqlJoinedTableSource ()
+    public static SqlTable CreateSqlTable ()
     {
-      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
-      var tableSource = new SqlTableSource (typeof (Cook), "CookTable", "s");
-      return new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+      return CreateSqlTable_TypeIsCook();
+    }
+
+    public static SqlTable CreateSqlTable (AbstractTableInfo tableInfo)
+    {
+      var sqlTable = new SqlTable (tableInfo);
+      return sqlTable;
     }
 
     public static SqlTable CreateSqlTable_TypeIsCook ()
     {
-      return new SqlTable (CreateConstantTableSource_TypeIsCook());
+      return new SqlTable (CreateUnresolvedTableInfo_TypeIsCook ());
+    }
+
+    public static SqlTable CreateSqlTable_WithUnresolvedTableInfo () 
+    {
+      var unresolvedTableInfo = new UnresolvedTableInfo (Expression.Constant (1, typeof (int)),typeof(int));
+      var sqlTable = new SqlTable (unresolvedTableInfo);
+      return sqlTable;
+    }
+
+    public static SqlTable CreateSqlTable_WithResolvedTableInfo ()
+    {
+      var resolvedTableInfo = new ResolvedTableInfo (typeof (string), "Table", "t");
+      var sqlTable = new SqlTable (resolvedTableInfo);
+      return sqlTable;
+    }
+
+    public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
+    {
+      var joinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("FirstName"));
+      return new SqlJoinedTable (joinInfo);
+    }
+
+    public static UnresolvedTableInfo CreateUnresolvedTableInfo ()
+    {
+      return CreateUnresolvedTableInfo_TypeIsCook();
+    }
+
+    public static UnresolvedTableInfo CreateUnresolvedTableInfo_TypeIsKitchen ()
+    {
+      return new UnresolvedTableInfo (Expression.Constant (new Kitchen[0]), typeof (Kitchen));
+    }
+
+    public static UnresolvedTableInfo CreateUnresolvedTableInfo_TypeIsCook ()
+    {
+      return new UnresolvedTableInfo (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)), typeof (Cook));
+    }
+
+    public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
+    {
+      return new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"));
+    }
+
+    public static ResolvedTableInfo CreateResolvedTableInfo ()
+    {
+      return new ResolvedTableInfo (typeof (int), "table", "t");
+    }
+
+    public static ResolvedJoinInfo CreateResolvedJoinInfo ()
+    {
+      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
+      var foreignTableInfo = new ResolvedTableInfo (typeof (Cook), "CookTable", "s");
+      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
   }
 }

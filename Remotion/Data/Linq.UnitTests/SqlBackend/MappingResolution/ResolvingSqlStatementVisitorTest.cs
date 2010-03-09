@@ -38,8 +38,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      var source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (source);
+      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (tableInfo);
 
       _sqlMemberExpression = new SqlMemberExpression (sqlTable, typeof (Cook).GetProperty ("IsStarredCook"));
       _sqlStatement = new SqlStatement (_sqlMemberExpression, sqlTable);
@@ -48,11 +48,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitFromExpression_ReplacesTableSource ()
+    public void VisitFromExpression_ResolvesTableInfo ()
     {
       ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
 
-      Assert.That (_sqlStatement.FromExpression.TableSource, Is.InstanceOfType (typeof (SqlTableSource)));
+      Assert.That (_sqlStatement.FromExpression.TableInfo, Is.InstanceOfType (typeof (ResolvedTableInfo)));
     }
 
     [Test]

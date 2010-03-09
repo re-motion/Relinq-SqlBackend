@@ -27,7 +27,7 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
-  public class SqlTableSourceVisitorTest
+  public class SqlTableAndJoinTextGeneratorTest
   {
     private SqlCommandBuilder _commandBuilder;
 
@@ -38,60 +38,52 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_ForSqlTableSource ()
+    public void GenerateSql_ForTable ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
+      sqlTable.TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
 
     [Test]
-    public void GenerateSql_ForSqlJoinedTableSource ()
+    public void GenerateSql_ForJoinedTable ()
     {
-      var originalTable = new SqlTable (new SqlTableSource (typeof (Kitchen), "KitchenTable", "k"));
+      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "k"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, new JoinedTableSource (kitchenCookMember));
+      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, new UnresolvedJoinInfo (kitchenCookMember));
 
-      var foreignTableSource = new SqlTableSource (typeof (Cook), "CookTable", "t2");
+      var foreignTableSource = new ResolvedTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "FK");
 
-      joinedTable.JoinInfo = new SqlJoinedTableSource (foreignTableSource, primaryColumn, foreignColumn);
+      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
 
-      SqlTableSourceVisitor.GenerateSql (originalTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
 
     [Test]
-    [ExpectedException (typeof (NotImplementedException))]
-    public void TranslateTableSource_WithUnknownTableSource ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedTableInfo is not valid at this point.")]
+    public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
     {
-      var sqlTable = new SqlTable (new UnknownTableSource ());
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "ConstantTableSource is not valid at this point.")]
-    public void GenerateSql_WithConstantTableSource_RaisesException ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedJoinInfo is not valid at this point.")]
+    public void GenerateSql_WithUnresolvedJoinInfo ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      SqlTableSourceVisitor.GenerateSql (sqlTable, _commandBuilder);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "JoinedTableSource is not valid at this point.")]
-    public void GenerateSql_JoinedTableSource ()
-    {
-      var originalTable = new SqlTable (new SqlTableSource (typeof (Cook), "CookTable", "c"));
+      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Cook), "CookTable", "c"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      originalTable.GetOrAddJoin (kitchenCookMember, new JoinedTableSource (kitchenCookMember));
+      originalTable.GetOrAddJoin (kitchenCookMember, new UnresolvedJoinInfo (kitchenCookMember));
 
-      SqlTableSourceVisitor.GenerateSql (originalTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
     }
   }
 }

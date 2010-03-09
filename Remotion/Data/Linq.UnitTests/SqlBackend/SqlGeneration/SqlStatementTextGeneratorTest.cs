@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithSqlTableSource();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
       var columnListExpression = new SqlColumnListExpression (
           typeof (Cook),
           new[]
@@ -127,8 +127,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Ignore ("TODO 2362: Support booleans in select projection; test with: select c.IsBool => SELECT c.IsBool; select c.FirstName IS NOT NULL => SELECT CASE WHEN c.FirstName IS NOT NULL THEN 1 ELSE 0.")]
     public void Build_WithColumnTypeBoolean ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource ();
-      sqlTable.TableSource = new SqlTableSource (typeof (int), "Table", "t");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
+      sqlTable.TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       var columnListExpression = new SqlColumnListExpression (
           tableReferenceExpression.Type,

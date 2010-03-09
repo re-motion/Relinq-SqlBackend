@@ -16,36 +16,34 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class SqlTableSourceTest
+  public class UnresolvedJoinInfoTest
   {
     [Test]
     public void Accept ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateSqlTableSource_TypeIsInt();
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor> ();
-      tableSourceVisitorMock.Expect (mock => mock.VisitSqlTableSource (tableSource));
-      
-      tableSourceVisitorMock.Replay ();
-      tableSource.Accept (tableSourceVisitorMock);
-      
-      tableSourceVisitorMock.VerifyAllExpectations ();
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
+
+      var joinInfoVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor>();
+      joinInfoVisitorMock.Expect (mock => mock.VisitUnresolvedJoinInfo (joinInfo));
+
+      joinInfoVisitorMock.Replay ();
+
+      joinInfo.Accept (joinInfoVisitorMock);
+      joinInfoVisitorMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetResolvedTableSource ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This join has not yet been resolved; call the resolution step first.")]
+    public void GetResolvedTableInfo_Throws ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateSqlTableSource_TypeIsInt();
-      
-      var result = tableSource.GetResolvedTableSource ();
-
-      Assert.That (result, Is.SameAs (tableSource));
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
+      joinInfo.GetResolvedTableInfo ();
     }
   }
 }

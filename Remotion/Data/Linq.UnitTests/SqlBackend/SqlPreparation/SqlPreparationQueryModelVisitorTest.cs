@@ -53,9 +53,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
 
       Assert.That (result.FromExpression, Is.Not.Null);
-      Assert.That (result.FromExpression.TableSource, Is.TypeOf (typeof (ConstantTableSource)));
+      Assert.That (result.FromExpression.TableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
       Assert.That (
-          ((ConstantTableSource) result.FromExpression.TableSource).ConstantExpression,
+          ((UnresolvedTableInfo) result.FromExpression.TableInfo).ConstantExpression,
           Is.SameAs (_mainFromClause.FromExpression));
     }
 

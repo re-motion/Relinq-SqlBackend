@@ -30,9 +30,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldJoinInfo = new JoinedTableSource (typeof (Kitchen).GetProperty ("Cook"));
+      var oldJoinInfo = new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"));
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new JoinedTableSource (typeof (Cook).GetProperty ("Substitution"));
+      var newJoinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("Substitution"));
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
@@ -43,49 +43,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldJoinInfo = new JoinedTableSource (typeof (Kitchen).GetProperty ("Cook"));
+      var oldJoinInfo = new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"));
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
+      var newJoinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("FirstName"));
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }
-
-    [Test]
-    public void GetOrAddJoin_NewEntry ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var tableSource = new JoinedTableSource (memberInfo);
-      var sqlJoinedTable = new SqlJoinedTable(tableSource);
-      
-      var table = sqlJoinedTable.GetOrAddJoin (memberInfo, tableSource);
-
-      Assert.That (table.JoinInfo, Is.SameAs (tableSource));
-    }
-
-    [Test]
-    public void GetOrddJoin_GetEntry_WithNewTableSourceForMember ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var expectedTableSource = new JoinedTableSource (memberInfo);
-      var newTableSource = new JoinedTableSource (memberInfo);
-      var sqlJoinedTable = new SqlJoinedTable (expectedTableSource);
-
-      sqlJoinedTable.GetOrAddJoin (memberInfo, expectedTableSource);
-
-      Assert.That (sqlJoinedTable.GetOrAddJoin (memberInfo, newTableSource).JoinInfo, Is.SameAs (expectedTableSource));
-    }
-
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Type mismatch between String and Int32.")]
-    [Test]
-    public void GetOrAddJoin_ThrowsException ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var tableSource = new JoinedTableSource (typeof (Cook).GetProperty ("ID"));
-
-      var sqlJoinedTable = new SqlJoinedTable (tableSource);
-      
-      sqlJoinedTable.GetOrAddJoin (memberInfo, tableSource);
-    }
-
   }
 }

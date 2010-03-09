@@ -16,33 +16,36 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class ConstantTableSourceTest
+  public class ResolvedTableInfoTest
   {
     [Test]
     public void Accept ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsInt();
-
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
-      tableSourceVisitorMock.Expect (mock => mock.VisitConstantTableSource (tableSource));
-
-      tableSourceVisitorMock.Replay ();
-      tableSource.Accept (tableSourceVisitorMock);
-      tableSourceVisitorMock.VerifyAllExpectations ();
+      var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
+      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor> ();
+      tableInfoVisitorMock.Expect (mock => mock.VisitResolvedTableInfo (tableInfo));
+      
+      tableInfoVisitorMock.Replay ();
+      tableInfo.Accept (tableInfoVisitorMock);
+      
+      tableInfoVisitorMock.VerifyAllExpectations ();
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")]
-    public void GetResolvedTableSource_Throws ()
+    public void GetResolvedTableInfo ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsInt ();
-      tableSource.GetResolvedTableSource();
+      var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
+      
+      var result = tableInfo.GetResolvedTableInfo ();
+
+      Assert.That (result, Is.SameAs (tableInfo));
     }
   }
 }

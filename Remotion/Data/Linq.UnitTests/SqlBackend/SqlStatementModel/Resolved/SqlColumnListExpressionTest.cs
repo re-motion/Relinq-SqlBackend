@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
@@ -41,8 +40,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
     [SetUp]
     public void SetUp ()
     {
-      var source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsString ();
-      var sqlTable = new SqlTable (source);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook();
+
       _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _columnExpression1 = new SqlColumnExpression (typeof (int), "t", "ID");
       _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name");

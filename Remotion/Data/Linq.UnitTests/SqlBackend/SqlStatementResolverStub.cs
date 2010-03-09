@@ -27,17 +27,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
   public class SqlStatementResolverStub : ISqlStatementResolver
   {
-    public virtual AbstractTableSource ResolveConstantTableSource (ConstantTableSource tableSource)
+    public virtual AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo)
     {
-      var tableName = string.Format ("{0}Table", tableSource.ItemType.Name);
+      var tableName = string.Format ("{0}Table", tableInfo.ItemType.Name);
       var tableAlias = tableName.Substring (0, 1).ToLower();
-      return new SqlTableSource (tableSource.ItemType, tableName, tableAlias);
+      return new ResolvedTableInfo (tableInfo.ItemType, tableName, tableAlias);
     }
 
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression)
     {
-      var resolvedTableSource = tableReferenceExpression.SqlTable.GetResolvedTableSource();
-      return CreateColumnList (tableReferenceExpression.Type, resolvedTableSource);
+      var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
+      return CreateColumnList (tableReferenceExpression.Type, resolvedTableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -49,66 +49,46 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "IsStarredCook":
           case "FirstName":
-            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableSource(), memberExpression.MemberInfo.Name + "Column");
+            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name + "Column");
           case "Substitution":
             throw new NotImplementedException ("TODO"); // Integration test: select cook.Substitution; select cook.Substitution.FirstName; select cook.Substitution.Substitution.FirstName
         }
       }
 
       throw new NotSupportedException ("Cannot resolve member: " + memberExpression.MemberInfo);
-
-      //var joinedTableSource = memberExpression.SqlTable.JoinInfo as JoinedTableSource;
-      //if(joinedTableSource!=null && joinedTableSource.MemberInfo.Name=="Substitution")
-      //{
-      //  var sqlJoinedTableSource = ResolveJoinedTableSource ((JoinedTableSource) memberExpression.SqlTable.JoinInfo);
-      //  memberExpression.SqlTable.JoinInfo = sqlJoinedTableSource;
-      //  return new SqlColumnExpression (typeof (Cook),  "c", "FirstName");
-      //}
-      //else
-      //{
-      //  memberExpression.SqlTable.JoinInfo = new SqlTableSource (typeof (Cook), "Cook", "c");
-      //  return new SqlColumnExpression (typeof (Cook), "c", "FirstName");
-      //}
-
-     
     }
 
-    public AbstractJoinInfo ResolveJoinedTableSource (JoinedTableSource tableSource)
+    public AbstractJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo)
     {
-      return CreateSqlJoinedTableSource (tableSource);
-    }
-
-    private SqlJoinedTableSource CreateSqlJoinedTableSource (JoinedTableSource tableSource)
-    {
-      if (tableSource.MemberInfo.Name == "Substitution")
+      if (joinInfo.MemberInfo.Name == "Substitution")
       {
         var primaryColumn = new SqlColumnExpression (typeof (int), "c", "ID");
         var foreignColumn = new SqlColumnExpression (typeof (int), "s", "SubstitutionID");
-        var newTableSource = new SqlTableSource (tableSource.ItemType, tableSource.MemberInfo.Name + "Table", "s");
-        return new SqlJoinedTableSource (newTableSource, primaryColumn, foreignColumn);
+        var foreignTableInfo = new ResolvedTableInfo (joinInfo.ItemType, joinInfo.MemberInfo.Name + "Table", "s");
+        return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
       }
       throw new NotSupportedException ("Only Cook.Substitution is supported.");
     }
 
-    private SqlColumnExpression CreateColumn (Type columnType, SqlTableSource sqlTableSource, string columnName)
+    private SqlColumnExpression CreateColumn (Type columnType, ResolvedTableInfo resolvedTableInfo, string columnName)
     {
-      return new SqlColumnExpression (columnType, sqlTableSource.TableAlias, columnName);
+      return new SqlColumnExpression (columnType, resolvedTableInfo.TableAlias, columnName);
     }
 
-    private Expression CreateColumnList (Type entityType, SqlTableSource tableSource)
+    private Expression CreateColumnList (Type entityType, ResolvedTableInfo tableInfo)
     {
-      if (tableSource.ItemType == typeof (Cook))
+      if (tableInfo.ItemType == typeof (Cook))
       {
         return new SqlColumnListExpression (
             entityType,
             new[]
             {
-                new SqlColumnExpression (typeof (int), tableSource.TableAlias, "ID"),
-                new SqlColumnExpression (typeof (string), tableSource.TableAlias, "Name"),
-                new SqlColumnExpression (typeof (string), tableSource.TableAlias, "City")
+                new SqlColumnExpression (typeof (int), tableInfo.TableAlias, "ID"),
+                new SqlColumnExpression (typeof (string), tableInfo.TableAlias, "Name"),
+                new SqlColumnExpression (typeof (string), tableInfo.TableAlias, "City")
             });
       }
-      throw new ArgumentTypeException ("tableReferenceExpression.SqlTable.JoinInfo", typeof (Cook), tableSource.ItemType);
+      throw new ArgumentTypeException ("tableReferenceExpression.SqlTable.JoinInfo", typeof (Cook), tableInfo.ItemType);
     }
   }
 }

@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
       _kitchenMainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
-      var source = new ConstantTableSource ((ConstantExpression) _cookMainFromClause.FromExpression, _cookMainFromClause.ItemType);
+      var source = new UnresolvedTableInfo ((ConstantExpression) _cookMainFromClause.FromExpression, _cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
       _context.AddQuerySourceMapping (_cookMainFromClause, _sqlTable);
     }
@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       var expression = ExpressionHelper.Resolve<Kitchen, string> (_kitchenMainFromClause, k => k.Cook.FirstName);
 
-      var source = SqlStatementModelObjectMother.CreateConstantTableSource (_kitchenMainFromClause);
+      var source = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsKitchen ();
       var sqlTable = new SqlTable (source);
 
       _context.AddQuerySourceMapping (_kitchenMainFromClause, sqlTable);
@@ -95,8 +95,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var join = sqlTable.GetJoin (kitchenCookMember);
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (join));
 
-      Assert.That (join.JoinInfo, Is.TypeOf (typeof (JoinedTableSource)));
-      Assert.That (((JoinedTableSource) join.JoinInfo).MemberInfo, Is.EqualTo (kitchenCookMember));
+      Assert.That (join.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
+      Assert.That (((UnresolvedJoinInfo) join.JoinInfo).MemberInfo, Is.EqualTo (kitchenCookMember));
     }
 
     [Test]

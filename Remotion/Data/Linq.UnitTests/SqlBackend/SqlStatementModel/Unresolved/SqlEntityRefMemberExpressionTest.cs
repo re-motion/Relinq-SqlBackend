@@ -37,8 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [SetUp]
     public void SetUp ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
-      _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (tableSource);
+      _sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       _memberInfo = typeof (Cook).GetProperty ("FirstName");
       _expression = new SqlEntityRefMemberExpression (_sqlTable, _memberInfo);
     }
@@ -46,20 +45,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void Initialization_TypeInferredFromMemberType ()
     {
-      var expression = _expression;
-      Assert.That (expression.Type, Is.SameAs (typeof (string)));
+      Assert.That (_expression.Type, Is.SameAs (typeof (string)));
     }
 
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var expression = _expression;
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
       visitorMock.Replay();
       
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
 
-      Assert.That (result, Is.SameAs (expression));
+      Assert.That (result, Is.SameAs (_expression));
       visitorMock.VerifyAllExpectations();
     }
 

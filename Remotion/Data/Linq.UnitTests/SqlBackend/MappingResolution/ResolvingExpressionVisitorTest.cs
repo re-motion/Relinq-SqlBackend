@@ -33,21 +33,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   public class ResolvingExpressionVisitorTest
   {
     private ISqlStatementResolver _resolverMock;
-    private ConstantTableSource _source;
     private SqlTable _sqlTable;
     private UniqueIdentifierGenerator _generator;
-    private SqlJoinedTableSource _sqlJoinedTableSource;
+    private ResolvedJoinInfo _resolvedJoinInfo;
     private PropertyInfo _kitchenCookMember;
 
     [SetUp]
     public void SetUp ()
     {
       _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
-      _source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
-      _sqlTable = new SqlTable (_source);
+      _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       _generator = new UniqueIdentifierGenerator();
 
-      _sqlJoinedTableSource = SqlStatementModelObjectMother.CreateSqlJoinedTableSource();
+      _resolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
 
       _kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
     }
@@ -175,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
 
-      StubResolveJoinedTableSource();
+      StubResolveTableInfo();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
 
@@ -188,16 +186,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
       
       _resolverMock
-            .Expect (mock => mock.ResolveJoinedTableSource (
-                Arg<JoinedTableSource>.Matches (ts => ts.MemberInfo == _kitchenCookMember && ts.ItemType == typeof (Cook))))
-            .Return (_sqlJoinedTableSource);
+            .Expect (mock => mock.ResolveJoinInfo (
+                Arg<UnresolvedJoinInfo>.Matches (ts => ts.MemberInfo == _kitchenCookMember && ts.ItemType == typeof (Cook))))
+            .Return (_resolvedJoinInfo);
       _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
 
       _resolverMock.VerifyAllExpectations();
       var join = _sqlTable.GetJoin (_kitchenCookMember);
-      Assert.That (join.JoinInfo, Is.SameAs (_sqlJoinedTableSource));
+      Assert.That (join.JoinInfo, Is.SameAs (_resolvedJoinInfo));
     }
 
     [Test]
@@ -205,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
 
-      StubResolveJoinedTableSource();
+      StubResolveTableInfo();
 
       var columnListExpression = new SqlColumnListExpression (typeof (Cook));
       _resolverMock
@@ -223,9 +221,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void VisitSqlEntityRefMemberExpression_TableReferenceRefersToJoin ()
     {
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
-      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, new JoinedTableSource (_kitchenCookMember));
+      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, new UnresolvedJoinInfo (_kitchenCookMember));
 
-      StubResolveJoinedTableSource ();
+      StubResolveTableInfo ();
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Matches (tableRef => tableRef.SqlTable == join)))
@@ -245,11 +243,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (unknownExpression));
     }
 
-    private void StubResolveJoinedTableSource ()
+    private void StubResolveTableInfo ()
     {
       _resolverMock
-          .Stub (stub => stub.ResolveJoinedTableSource (Arg<JoinedTableSource>.Is.Anything))
-          .Return (_sqlJoinedTableSource);
+          .Stub (stub => stub.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything))
+          .Return (_resolvedJoinInfo);
     }
   }
 }
