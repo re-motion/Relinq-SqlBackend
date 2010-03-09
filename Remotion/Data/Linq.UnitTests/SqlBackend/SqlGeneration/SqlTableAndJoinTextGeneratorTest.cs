@@ -20,7 +20,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
@@ -53,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "k"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, new UnresolvedJoinInfo (kitchenCookMember));
+      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember);
 
       var foreignTableSource = new ResolvedTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
@@ -81,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Cook), "CookTable", "c"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      originalTable.GetOrAddJoin (kitchenCookMember, new UnresolvedJoinInfo (kitchenCookMember));
+      originalTable.GetOrAddJoin (kitchenCookMember);
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
     }

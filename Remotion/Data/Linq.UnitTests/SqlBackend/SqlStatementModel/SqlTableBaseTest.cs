@@ -31,10 +31,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook();
 
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var joinedTableSource = new UnresolvedJoinInfo (memberInfo);
 
-      var joinedTable = sqlTable.GetOrAddJoin (memberInfo, joinedTableSource);
-      Assert.That (joinedTable.JoinInfo, Is.SameAs (joinedTableSource));
+      var joinedTable = sqlTable.GetOrAddJoin (memberInfo);
+      Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
+      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
     }
 
     [Test]
@@ -43,26 +43,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook ();
 
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var originalJoinedTableSource = new UnresolvedJoinInfo (memberInfo);
 
-      var joinedTable1 = sqlTable.GetOrAddJoin (memberInfo, originalJoinedTableSource);
-      var joinedTable2 = sqlTable.GetOrAddJoin (memberInfo, new UnresolvedJoinInfo (memberInfo));
+      var joinedTable1 = sqlTable.GetOrAddJoin (memberInfo);
+      var originalJoinInfo = joinedTable1.JoinInfo;
+
+      var joinedTable2 = sqlTable.GetOrAddJoin (memberInfo);
 
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
-      Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinedTableSource));
+      Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
     }
-
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Type mismatch between String and Int32.")]
-    [Test]
-    public void GetOrAddJoin_ThrowsException ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var tableSource = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("ID"));
-
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook();
-
-      sqlTable.GetOrAddJoin (memberInfo, tableSource);
-    }
-
   }
 }

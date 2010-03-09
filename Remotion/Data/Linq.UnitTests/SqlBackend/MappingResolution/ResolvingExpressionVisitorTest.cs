@@ -221,7 +221,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void VisitSqlEntityRefMemberExpression_TableReferenceRefersToJoin ()
     {
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
-      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, new UnresolvedJoinInfo (_kitchenCookMember));
+      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember);
 
       StubResolveTableInfo ();
 
