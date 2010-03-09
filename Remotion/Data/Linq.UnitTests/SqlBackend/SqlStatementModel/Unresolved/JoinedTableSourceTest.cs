@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void Accept ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_TypeIsString();
+      var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_KitchenCook();
 
       var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
       tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource (tableSource));

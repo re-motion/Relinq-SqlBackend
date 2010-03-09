@@ -73,9 +73,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return new ConstantTableSource (Expression.Constant (1, typeof (int)), typeof (int));
     }
 
-    public static JoinedTableSource CreateJoinedTableSource_TypeIsString ()
+    public static JoinedTableSource CreateJoinedTableSource_KitchenCook ()
     {
-      return new JoinedTableSource (typeof (Cook).GetProperty ("FirstName"));
+      return new JoinedTableSource (typeof (Kitchen).GetProperty ("Cook"));
     }
 
     public static SqlTableSource CreateSqlTableSource_TypeIsInt ()

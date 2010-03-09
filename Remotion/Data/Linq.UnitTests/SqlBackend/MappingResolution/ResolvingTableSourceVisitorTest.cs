@@ -32,26 +32,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   public class ResolvingTableSourceVisitorTest
   {
     private ISqlStatementResolver _resolverMock;
-    private SqlTable _constantSqlTable;
-    private SqlTable _joinedSqlTable;
+    private ConstantTableSource _constantTableSource;
+    private JoinedTableSource _joinedTableSource;
 
     [SetUp]
     public void SetUp ()
     {
       _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
-      _constantSqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
-      _joinedSqlTable = SqlStatementModelObjectMother.CreateSqlTableWithJoinedTableSource();
+      _constantTableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook ();
+      _joinedTableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_KitchenCook();
     }
 
     [Test]
     public void ResolveConstantTableSource ()
     {
       var tableSource = new SqlTableSource (typeof (int), "Table", "t");
-      _resolverMock.Expect (mock => mock.ResolveConstantTableSource ((ConstantTableSource) _constantSqlTable.TableSource)).Return (tableSource);
+      _resolverMock.Expect (mock => mock.ResolveConstantTableSource (_constantTableSource)).Return (tableSource);
+      _resolverMock.Replay ();
 
       var result = ResolvingTableSourceVisitor.ResolveTableSource (tableSource, _resolverMock);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlTableSource)));
+      Assert.That (result, Is.SameAs (tableSource));
     }
 
     [Test]
@@ -63,14 +64,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
-            .Expect (mock => mock.ResolveConstantTableSource ((ConstantTableSource) _constantSqlTable.TableSource))
+            .Expect (mock => mock.ResolveConstantTableSource (_constantTableSource))
             .Return (unresolvedResult);
         _resolverMock
             .Expect (mock => mock.ResolveConstantTableSource (unresolvedResult))
             .Return (resolvedResult);
       }
+      _resolverMock.Replay ();
 
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_constantSqlTable.TableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (_constantTableSource, _resolverMock);
 
       Assert.That (result, Is.SameAs (resolvedResult));
       _resolverMock.VerifyAllExpectations();
@@ -80,12 +82,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void ResolveConstantTableSource_AndRevisitsResult_OnlyIfDifferent ()
     {
       _resolverMock
-          .Expect (mock => mock.ResolveConstantTableSource ((ConstantTableSource) _constantSqlTable.TableSource))
-          .Return (_constantSqlTable.TableSource);
+          .Expect (mock => mock.ResolveConstantTableSource (_constantTableSource))
+          .Return (_constantTableSource);
+      _resolverMock.Replay ();
 
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_constantSqlTable.TableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (_constantTableSource, _resolverMock);
 
-      Assert.That (result, Is.SameAs (_constantSqlTable.TableSource));
+      Assert.That (result, Is.SameAs (_constantTableSource));
       _resolverMock.VerifyAllExpectations();
     }
 
@@ -100,18 +103,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void ResolveJoinedTableSource ()
     {
-      var kitchenSource = new SqlTableSource (typeof (Kitchen), "Kitchen", "k");
       var cookSource = new SqlTableSource (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID");
 
       var sqlJoinedTableSource = new SqlJoinedTableSource (cookSource, primaryColumn, foreignColumn);
 
-      _resolverMock.Expect (mock => mock.ResolveJoinedTableSource (Arg<JoinedTableSource>.Is.Anything)).Return (sqlJoinedTableSource);
+      _resolverMock
+          .Expect (mock => mock.ResolveJoinedTableSource (Arg<JoinedTableSource>.Is.Anything))
+          .Return (sqlJoinedTableSource);
+      _resolverMock.Replay();
 
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedSqlTable.TableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedTableSource, _resolverMock);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlJoinedTableSource)));
+      Assert.That (result, Is.SameAs (sqlJoinedTableSource));
+      _resolverMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -127,14 +133,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
-            .Expect (mock => mock.ResolveJoinedTableSource ((JoinedTableSource) _joinedSqlTable.TableSource))
+            .Expect (mock => mock.ResolveJoinedTableSource (_joinedTableSource))
             .Return (unresolvedResult);
         _resolverMock
             .Expect (mock => mock.ResolveJoinedTableSource (unresolvedResult))
             .Return (resolvedResult);
       }
+      _resolverMock.Replay ();
 
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedSqlTable.TableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedTableSource, _resolverMock);
 
       Assert.That (result, Is.SameAs (resolvedResult));
       _resolverMock.VerifyAllExpectations();
@@ -144,12 +151,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void ResolveJoinedTableSource_AndRevisitsResult_OnlyIfDifferent ()
     {
       _resolverMock
-          .Expect (mock => mock.ResolveJoinedTableSource ((JoinedTableSource) _joinedSqlTable.TableSource))
-          .Return (_joinedSqlTable.TableSource);
+          .Expect (mock => mock.ResolveJoinedTableSource (_joinedTableSource))
+          .Return (_joinedTableSource);
+      _resolverMock.Replay ();
      
-      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedSqlTable.TableSource, _resolverMock);
+      var result = ResolvingTableSourceVisitor.ResolveTableSource (_joinedTableSource, _resolverMock);
 
-      Assert.That (result, Is.SameAs (_joinedSqlTable.TableSource));
+      Assert.That (result, Is.SameAs (_joinedTableSource));
       _resolverMock.VerifyAllExpectations ();
     }
 

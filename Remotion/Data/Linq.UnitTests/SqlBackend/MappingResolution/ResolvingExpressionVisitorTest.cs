@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -35,6 +36,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     private ConstantTableSource _source;
     private SqlTable _sqlTable;
     private UniqueIdentifierGenerator _generator;
+    private SqlJoinedTableSource _sqlJoinedTableSource;
+    private PropertyInfo _kitchenCookMember;
 
     [SetUp]
     public void SetUp ()
@@ -43,6 +46,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _source = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsCook();
       _sqlTable = new SqlTable (_source);
       _generator = new UniqueIdentifierGenerator();
+
+      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
+      var tableSource = new SqlTableSource (typeof (Cook), "CookTable", "s");
+      _sqlJoinedTableSource = new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+
+      _kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
     }
 
     [Test]
@@ -54,6 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
           .Return (fakeResult);
+      _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
 
@@ -77,6 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveTableReferenceExpression (unresolvedResult))
             .Return (resolvedResult);
       }
+      _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
 
@@ -91,6 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
           .Return (tableReferenceExpression);
+      _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
 
@@ -109,6 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (memberExpression, _generator))
           .Return (fakeResult);
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator);
 
@@ -134,6 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveMemberExpression (unresolvedResult, _generator))
             .Return (resolvedResult);
       }
+      _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlMemberExpression, _resolverMock, _generator);
 
@@ -150,6 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (sqlMemberExpression, _generator))
           .Return (sqlMemberExpression);
+      _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlMemberExpression, _resolverMock, _generator);
 
@@ -158,30 +174,69 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlEntityRefMemberExpression_ResolvesExpression ()
+    public void VisitSqlEntityRefMemberExpression_CreatesJoin ()
     {
-      var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, memberInfo);
-      var primaryColumn = new SqlColumnExpression (typeof (int), "c", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
-      var tableSource = new SqlTableSource (typeof(Cook), "CookTable", "s");
-      var expectedSqlJoinedTableSource = new SqlJoinedTableSource (tableSource, primaryColumn, foreignColumn);
+      var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
 
-      using (_resolverMock.GetMockRepository ().Ordered ())
-      {
-        _resolverMock
-            .Expect (mock => mock.ResolveJoinedTableSource (Arg<JoinedTableSource>.Is.Anything))
-            .Return (expectedSqlJoinedTableSource);
+      StubResolveJoinedTableSource();
 
-        _resolverMock
-            .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything))
-            .Return (new SqlColumnListExpression (typeof (Cook)));
-      }
+      ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
+
+      Assert.That (_sqlTable.JoinedTables.ContainsKey (_kitchenCookMember), Is.True);
+    }
+
+    [Test]
+    public void VisitSqlEntityRefMemberExpression_ResolvesJoin ()
+    {
+      var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
+      
+      _resolverMock
+            .Expect (mock => mock.ResolveJoinedTableSource (
+                Arg<JoinedTableSource>.Matches (ts => ts.MemberInfo == _kitchenCookMember && ts.ItemType == typeof (Cook))))
+            .Return (_sqlJoinedTableSource);
+      _resolverMock.Replay();
+
+      ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
+
+      _resolverMock.VerifyAllExpectations();
+      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, new JoinedTableSource (_kitchenCookMember));
+      Assert.That (join.TableSource, Is.SameAs (_sqlJoinedTableSource));
+    }
+
+    [Test]
+    public void VisitSqlEntityRefMemberExpression_CreatesAndResolvesTableReference ()
+    {
+      var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
+
+      StubResolveJoinedTableSource();
+
+      var columnListExpression = new SqlColumnListExpression (typeof (Cook));
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything))
+          .Return (columnListExpression);
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlColumnListExpression)));
       _resolverMock.VerifyAllExpectations();
+
+      Assert.That (result, Is.SameAs (columnListExpression));
+    }
+
+    [Test]
+    public void VisitSqlEntityRefMemberExpression_TableReferenceRefersToJoin ()
+    {
+      var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
+      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, new JoinedTableSource (_kitchenCookMember));
+
+      StubResolveJoinedTableSource ();
+
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Matches (tableRef => tableRef.SqlTable == join)))
+          .Return (new SqlColumnListExpression (typeof (Cook)));
+      _resolverMock.Replay ();
+
+      ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
+      _resolverMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -191,6 +246,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (unknownExpression, _resolverMock, _generator);
 
       Assert.That (result, Is.SameAs (unknownExpression));
+    }
+
+    private void StubResolveJoinedTableSource ()
+    {
+      _resolverMock
+          .Stub (stub => stub.ResolveJoinedTableSource (Arg<JoinedTableSource>.Is.Anything))
+          .Return (_sqlJoinedTableSource);
     }
   }
 }
