@@ -106,6 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "Name":
           case "IsFullTimeCook":
           case "IsStarredCook":
+          case "Weight":
             return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Substitution":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);

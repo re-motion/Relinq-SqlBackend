@@ -33,6 +33,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    public void CountWithProperty ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Count (),
+          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void CountWithPredicate ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Count (name => name != null),
+          "SELECT COUNT(*) FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
+    }
+
+    [Test]
     public void SimpleDistinct ()
     {
       CheckQuery (
@@ -49,10 +65,66 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter("@1", 5));
     }
 
-    //TODO: add further result operator tests:
-    //(from c in _cooks select c).Take(c.ID)
-    //from k in _kitchen from c in k.Restaurant.Cooks.Take(k.RoomNumber) select c
-    //(from c in _cooks select c).Single()
-    //(from c in _cooks select c).First()
+    [Test]
+    [Ignore ("TODO 2408")]
+    public void TakeWithMemberExpression ()
+    {
+      CheckQuery (
+          () => (from k in Kitchens from c in k.Restaurant.Cooks.Take (k.RoomNumber) select k.Name),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 5));
+    }
+
+    [Test]
+    public void First()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).First(),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).FirstOrDefault (),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+    }
+
+    [Test]
+    public void First_WithPredicate ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).First (fn => fn != null),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
+          new CommandParameter ("@1", 1));
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).FirstOrDefault (fn => fn != null),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
+          new CommandParameter ("@1", 1));
+    }
+
+    [Test]
+    public void Single ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Single (),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).SingleOrDefault (),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+    }
+
+    [Test]
+    public void Single_WithPredicate ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Single (fn => fn != null),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
+          new CommandParameter ("@1", 1));
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).SingleOrDefault (fn => fn != null),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
+          new CommandParameter ("@1", 1));
+    }
   }
 }

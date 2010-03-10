@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -23,15 +26,65 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   public class UnaryExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 2399")]
-    public void TODO ()
+    public void UnaryPlus ()
     {
-      
+      var parameter = Expression.Parameter (typeof (Cook), "c");
+      var weight = Expression.MakeMemberAccess (parameter, typeof (Cook).GetProperty ("Weight"));
+      var selector = Expression.Lambda<Func<Cook, double>> (Expression.UnaryPlus (weight), parameter);
+      var query = Cooks.Select (selector); // from c in Cooks select +c.Weight - C# compiler optimizes '+' away
+
+      CheckQuery (
+         query,
+         "SELECT +[t0].[Weight] FROM [CookTable] AS [t0]"
+         );
     }
 
-    //unary expressions (unary plus, unary negate, unary not)
-    //(from c in _cooks where (-c.ID) == -1 select c)
-    //(from c in _cooks where !c.IsStarredCook == true select c)
-    //(from c in _cooks where (+c.ID) == -1 select c)
+    [Test]
+    public void UnaryNegate ()
+    {
+      CheckQuery (
+         from c in Cooks select -c.ID,
+         "SELECT -[t0].[ID] FROM [CookTable] AS [t0]"
+         );
+    }
+
+    [Test]
+    public void UnaryNot ()
+    {
+      CheckQuery (
+         from c in Cooks where !(c.FirstName == null) select c.ID,
+         "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[FirstName] IS NULL)"
+         );
+    }
+
+    [Test]
+    [Ignore ("TODO 2362")]
+    public void UnaryNot_OnColumn ()
+    {
+      CheckQuery (
+         from c in Cooks where !c.IsStarredCook select c.ID,
+         "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[IsStarredCool] = 1)"
+         );
+    }
+
+    [Test]
+    [Ignore ("TODO 2362")]
+    public void UnaryNot_OnSelectedColumn ()
+    {
+      CheckQuery (
+         from c in Cooks select !c.IsStarredCook,
+         "SELECT CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END FROM [CookTable] AS [t0]"
+         );
+    }
+
+    [Test]
+    [Ignore ("TODO 2362")]
+    public void BitwiseNot ()
+    {
+      CheckQuery (
+         from c in Cooks select ~c.ID,
+         "SELECT ~[t0].[ID] FROM [CookTable] AS [t0]"
+         );
+    }
   }
 }
