@@ -90,15 +90,31 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static ResolvedTableInfo CreateResolvedTableInfo ()
     {
-      return new ResolvedTableInfo (typeof (int), "table", "t");
+      return CreateResolvedTableInfo_TypeIsCook();
+    }
+
+    public static ResolvedTableInfo CreateResolvedTableInfo_TypeIsCook ()
+    {
+      return new ResolvedTableInfo (typeof (Cook), "table", "t");
     }
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo ()
     {
+      return CreateResolvedJoinInfo_TypeIsCook();
+    }
+
+    public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type)
+    {
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
-      var foreignTableInfo = new ResolvedTableInfo (typeof (Cook), "CookTable", "s");
+      var foreignTableInfo = new ResolvedTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+    }
+
+    // TODO: Inline
+    public static ResolvedJoinInfo CreateResolvedJoinInfo_TypeIsCook ()
+    {
+      return CreateResolvedJoinInfo (typeof (Cook));
     }
   }
 }

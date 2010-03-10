@@ -36,8 +36,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      _cooks = ExpressionHelper.CreateCookQueryable ();
-      _kitchens = ExpressionHelper.CreateKitchenQueryable ();
+      _cooks = ExpressionHelper.CreateCookQueryable();
+      _kitchens = ExpressionHelper.CreateKitchenQueryable();
     }
 
     [Test]
@@ -46,8 +46,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var queryable = from s in _cooks select s;
       var result = GenerateSql (queryable.Expression);
 
-      const string expected = "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutionID] "
-                              + "FROM [CookTable] AS [t0]";
+      const string expected =
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          + "FROM [CookTable] AS [t0]";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
@@ -67,62 +68,63 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var queryable = from k in _kitchens select k.Cook;
       var result = GenerateSql (queryable.Expression);
 
-      const string expected = "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutionID] "
-          + "FROM [KitchenTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[CookID]";
+      const string expected =
+          "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
+          + "FROM [KitchenTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 1399")]
     public void SimpleSqlQuery_ChainedPropertySelect_EndingWithSimpleProperty ()
     {
       var queryable = from k in _kitchens select k.Cook.FirstName;
       var result = GenerateSql (queryable.Expression);
 
-      Console.WriteLine (result.CommandText);
-      const string expected = "?";
+      const string expected = "SELECT [t1].[FirstName] FROM [KitchenTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 1399")]
     public void SelectQuery_ChainedPropertySelect_WithSameType ()
     {
       var queryable = from c in _cooks select c.Substitution.FirstName;
       var result = GenerateSql (queryable.Expression);
 
-      Assert.That (
-          result.CommandText,
-          Is.EqualTo (
-              "SELECT [c].[FirstName] FROM [CookTable] AS [c] JOIN [SubstitutionTable] AS [s] ON [c].[ID] = [s].[SubstitutionID]"));
+      const string expected = "SELECT [t1].[FirstName] FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]";
+      Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 1399")]
+    [Ignore ("TODO 2399")]
     public void SimpleSqlQuery_ChainedPropertySelect_EndingWithEntityProperty ()
     {
       var queryable = from k in _kitchens select k.Restaurant.SubKitchen.Cook;
       var result = GenerateSql (queryable.Expression);
 
       Console.WriteLine (result.CommandText);
-      const string expected = "?";
+      const string expected =
+          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          + "FROM [KitchenTable] AS [t0] JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID]";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 1399")]
+    [Ignore ("TODO 2407")]
     public void SimpleSqlQuery_ChainedPropertySelectAndWhere_SamePathTwice ()
     {
       var queryable = from k in _kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook;
       var result = GenerateSql (queryable.Expression);
 
       Console.WriteLine (result.CommandText);
-      const string expected = "?";
+      const string expected =
+          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          + "FROM [KitchenTable] AS [t0] JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] " 
+          + "WHERE ([t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] IS NOT NULL)";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 1399")]
+    [Ignore ("TODO 2399")]
     public void SimpleSqlQuery_ChainedPropertySelectAndWhere_PartialPathTwice ()
     {
       var queryable = from k in _kitchens where k.Restaurant.SubKitchen.Restaurant != null select k.Restaurant.SubKitchen.Cook;
@@ -141,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       const string expected = "SELECT @1 FROM [KitchenTable] AS [t0]";
       Assert.That (result.CommandText, Is.EqualTo (expected));
-      Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter("@1", "hugo") }));
+      Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", "hugo") }));
     }
 
     [Test]
@@ -187,14 +189,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result.Parameters, Is.EqualTo (new[] { new CommandParameter ("@1", "Huber") }));
     }
 
-    //TODO: add several integration tests
-
-    // Integration test: select cook.Substitution; select cook.Substitution.FirstName; select cook.Substitution.Substitution.FirstName
-
-    //where conditions
-    //from c in _cooks where c.Name = "Huber" select c.FirstName
-    //from c in _cooks where c.Name = "Huber" && c.FirstName = "Sepp" select c;
-
     //result operators
     //(from c in _cooks select c).Count()
     //(from c in _cooks select c).Distinct()
@@ -204,15 +198,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     //(from c in _cooks select c).Single()
     //(from c in _cooks select c).First()
 
-    //constant expressions
+    //where conditions
+    //from c in _cooks where c.Name = "Huber" select c.FirstName
+    //from c in _cooks where c.Name = "Huber" && c.FirstName = "Sepp" select c;
     //(from c in _cooks where c.IsFullTimeCook select c)
-    //(from c in _cooks where c.IsFullTimeCook == true select c)
-    //add tests for replacing true/false with 1/0
+    //(from c in _cooks where true select c)
+    //(from c in _cooks where false select c)
 
     //binary expression
     //(from c in _cooks where c.Name == null select c)
     //(from c in _cooks where c.ID + c.ID select c)
     // see SqlGeneratingExpressionVisitor.VisitBinaryExpressions for further tests
+    //(from c in _cooks where c.IsFullTimeCook == true select c)
+    //(from c in _cooks where c.IsFullTimeCook == false select c)
 
     //unary expressions (unary plus, unary negate, unary not)
     //(from c in _cooks where (-c.ID) == -1 select c)
@@ -230,10 +228,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       ResolvingSqlStatementVisitor.ResolveExpressions (sqlStatement, new SqlStatementResolverStub(), new UniqueIdentifierGenerator());
 
-      var sqlTextGenerator = new SqlStatementTextGenerator ();
+      var sqlTextGenerator = new SqlStatementTextGenerator();
       return sqlTextGenerator.Build (sqlStatement);
     }
   }
-
-
 }

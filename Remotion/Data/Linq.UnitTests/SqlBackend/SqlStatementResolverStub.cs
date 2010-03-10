@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 originatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "SubstitutionID");
+                "SubstitutedID");
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -63,13 +63,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 originatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "CookID");
+                "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
                 originatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
+        }
+      }
+      else if (joinInfo.MemberInfo.DeclaringType == typeof (Restaurant))
+      {
+        switch (joinInfo.MemberInfo.Name)
+        {
+          case "SubKitchen":
+            return CreateResolvedJoinInfo (
+               originatingTable.GetResolvedTableInfo (),
+               "ID",
+               CreateResolvedTableInfo (joinInfo.ItemType, generator),
+               "RestaurantID");
         }
       }
 
@@ -111,6 +123,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
       }
+      else if (memberExpression.MemberInfo.DeclaringType == typeof (Restaurant))
+      {
+        switch (memberExpression.MemberInfo.Name)
+        {
+          case "ID":
+            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo (), memberExpression.MemberInfo.Name);
+          case "SubKitchen":
+            return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
+        }
+      }
 
       throw new NotSupportedException ("Cannot resolve member: " + memberExpression.MemberInfo);
     }
@@ -133,7 +155,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
                 CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
                 CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
-                CreateColumn (typeof (int), tableInfo, "SubstitutionID")
+                CreateColumn (typeof (int), tableInfo, "SubstitutedID"),
+                CreateColumn (typeof (int), tableInfo, "KitchenID")
             });
       }
       else if (tableInfo.ItemType == typeof (Kitchen))
@@ -146,6 +169,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 CreateColumn (typeof (int), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
                 CreateColumn (typeof (int), tableInfo, "RestaurantID"),
+                CreateColumn (typeof (int), tableInfo, "SubKitchenID"),
             });
       }
       else if (tableInfo.ItemType == typeof (Restaurant))

@@ -24,61 +24,193 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   [TestFixture]
   public class ResolvingSqlStatementVisitorTest
   {
-    private SqlStatement _sqlStatement;
-    private SqlStatementResolverStub _resolver;
-    private SqlMemberExpression _sqlMemberExpression;
+    private ISqlStatementResolver _resolverMock;
     private UniqueIdentifierGenerator _uniqueIdentifierGenerator;
+    
+    private TestableResolvingSqlStatementVisitor _visitor;
+
+    private UnresolvedTableInfo _unresolvedTableInfo;
+    private SqlTable _sqlTable;
+    private ResolvedTableInfo _fakeResolvedTableInfo;
 
     [SetUp]
     public void SetUp ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook();
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (tableInfo);
-
-      _sqlMemberExpression = new SqlMemberExpression (sqlTable, typeof (Cook).GetProperty ("IsStarredCook"));
-      _sqlStatement = new SqlStatement (_sqlMemberExpression, sqlTable);
-      _resolver = new SqlStatementResolverStub();
+      _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
       _uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
+
+      _visitor = new TestableResolvingSqlStatementVisitor (_resolverMock, _uniqueIdentifierGenerator);
+
+      _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook ();
+      _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
+      _fakeResolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo_TypeIsCook ();
     }
 
     [Test]
-    public void VisitFromExpression_ResolvesTableInfo ()
+    public void VisitSqlTable_ResolvesTableInfo ()
     {
-      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
+      _resolverMock
+          .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
+          .Return (_fakeResolvedTableInfo);
+      _resolverMock.Replay();
+      
+      _visitor.VisitSqlTable (_sqlTable);
 
-      Assert.That (_sqlStatement.FromExpression.TableInfo, Is.InstanceOfType (typeof (ResolvedTableInfo)));
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeResolvedTableInfo));
     }
 
     [Test]
-    public void VisitSelectProjection_CreatesSqlColumnListExpression ()
+    public void VisitSqlTable_ResolvesJoinInfo ()
     {
-      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      var join = _sqlTable.GetOrAddJoin (memberInfo);
 
-      Assert.That (_sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));
+      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo_TypeIsCook();
+
+      using (_resolverMock.GetMockRepository ().Ordered ())
+      {
+        _resolverMock
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
+            .Return (_fakeResolvedTableInfo);
+        _resolverMock
+            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, (UnresolvedJoinInfo) join.JoinInfo, _uniqueIdentifierGenerator))
+            .Return (fakeResolvedJoinInfo);
+      }
+      _resolverMock.Replay ();
+
+      _visitor.VisitSqlTable (_sqlTable);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (join.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
+    }
+
+    [Test]
+    public void VisitSqlTable_ResolvesJoinInfo_Multiple ()
+    {
+      var join1 = _sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"));
+      var join2 = _sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Restaurant"));
+
+      var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
+      var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Restaurant));
+
+      using (_resolverMock.GetMockRepository ().Ordered ())
+      {
+        _resolverMock
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
+            .Return (_fakeResolvedTableInfo);
+        _resolverMock
+            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, (UnresolvedJoinInfo) join1.JoinInfo, _uniqueIdentifierGenerator))
+            .Return (fakeResolvedJoinInfo1);
+        _resolverMock
+            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, (UnresolvedJoinInfo) join2.JoinInfo, _uniqueIdentifierGenerator))
+            .Return (fakeResolvedJoinInfo2);
+      }
+      _resolverMock.Replay ();
+
+      _visitor.VisitSqlTable (_sqlTable);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
+      Assert.That (join2.JoinInfo, Is.SameAs (fakeResolvedJoinInfo2));
+    }
+
+    [Test]
+    public void VisitSqlTable_ResolvesJoinInfo_Recursive ()
+    {
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      var join1 = _sqlTable.GetOrAddJoin (memberInfo);
+      var join2 = join1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"));
+      var join3 = join1.GetOrAddJoin (typeof (Cook).GetProperty ("Name"));
+
+      var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo_TypeIsCook ();
+      var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo_TypeIsCook ();
+      var fakeResolvedJoinInfo3 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (string));
+
+      using (_resolverMock.GetMockRepository ().Ordered ())
+      {
+        _resolverMock
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
+            .Return (_fakeResolvedTableInfo);
+        _resolverMock
+            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, (UnresolvedJoinInfo) join1.JoinInfo, _uniqueIdentifierGenerator))
+            .Return (fakeResolvedJoinInfo1);
+        _resolverMock
+            .Expect (mock => mock.ResolveJoinInfo (join1, (UnresolvedJoinInfo) join2.JoinInfo, _uniqueIdentifierGenerator))
+            .Return (fakeResolvedJoinInfo2);
+        _resolverMock
+            .Expect (mock => mock.ResolveJoinInfo (join1, (UnresolvedJoinInfo) join3.JoinInfo, _uniqueIdentifierGenerator))
+            .Return (fakeResolvedJoinInfo3);
+      }
+      _resolverMock.Replay ();
+
+      _visitor.VisitSqlTable (_sqlTable);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
+      Assert.That (join2.JoinInfo, Is.SameAs (fakeResolvedJoinInfo2));
+      Assert.That (join3.JoinInfo, Is.SameAs (fakeResolvedJoinInfo3));
+    }
+
+    [Test]
+    public void VisitSelectProjection_ResolvesExpression ()
+    {
+      var expression = new SqlTableReferenceExpression(_sqlTable);
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock.Replay();
+
+      var result = _visitor.VisitSelectProjection(expression);
+
+      _resolverMock.VerifyAllExpectations();
+
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
     public void VisitTopExpression_ResolvesExpression ()
     {
-      _sqlStatement.TopExpression = _sqlMemberExpression;
-      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
+      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
 
-      Assert.That (_sqlStatement.TopExpression, Is.TypeOf (typeof (SqlColumnExpression)));
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _visitor.VisitTopExpression(expression);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
     public void VisitWhereCondition_ResolvesExpression ()
     {
-      _sqlStatement.WhereCondition = _sqlMemberExpression;
-      ResolvingSqlStatementVisitor.ResolveExpressions (_sqlStatement, _resolver, _uniqueIdentifierGenerator);
+      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
 
-      Assert.That (_sqlStatement.WhereCondition, Is.TypeOf (typeof (SqlColumnExpression)));
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _visitor.VisitWhereCondition (expression);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (fakeResult));
     }
   }
 }
