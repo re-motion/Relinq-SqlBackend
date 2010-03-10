@@ -18,22 +18,12 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
   [TestFixture]
-  public class SqlBackendIntegrationTest : SqlBackendIntegrationTestBase
+  public class MemberChainingSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
-    [Test]
-    public void SimpleSqlQuery_SimpleEntitySelect ()
-    {
-      CheckQuery (
-          from s in Cooks select s,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          + "FROM [CookTable] AS [t0]");
-    }
-
     [Test]
     public void SimpleSqlQuery_SimplePropertySelect ()
     {
@@ -102,80 +92,5 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           + "WHERE ([t3].[ID] = @1)",
           new CommandParameter("@1", 0));
     }
-
-    [Test]
-    public void SimpleSqlQuery_ConstantSelect ()
-    {
-      CheckQuery (
-          from k in Kitchens select "hugo",
-          "SELECT @1 FROM [KitchenTable] AS [t0]",
-          new CommandParameter ("@1", "hugo"));
-    }
-
-    [Test]
-    public void SimpleSqlQuery_NullSelect ()
-    {
-      CheckQuery (
-          Kitchens.Select<Kitchen, object> (k => null),
-          "SELECT NULL FROM [KitchenTable] AS [t0]");
-    }
-
-    [Test]
-    public void SimpleSqlQuery_TrueSelect ()
-    {
-      CheckQuery (
-          from k in Kitchens select true,
-          "SELECT @1 FROM [KitchenTable] AS [t0]",
-          new CommandParameter ("@1", 1));
-    }
-
-    [Test]
-    public void SimpleSqlQuery_FalseSelect ()
-    {
-      CheckQuery (
-          from k in Kitchens select false,
-          "SELECT @1 FROM [KitchenTable] AS [t0]",
-          new CommandParameter ("@1", 0));
-    }
-
-    [Test]
-    public void SelectQuery_WithWhereCondition ()
-    {
-      CheckQuery (
-          from c in Cooks where c.Name == "Huber" select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
-          new CommandParameter ("@1", "Huber"));
-    }
-
-    //result operators
-    //(from c in _cooks select c).Count()
-    //(from c in _cooks select c).Distinct()
-    //(from c in _cooks select c).Take(5)
-    //(from c in _cooks select c).Take(c.ID)
-    //from k in _kitchen from c in k.Restaurant.Cooks.Take(k.RoomNumber) select c
-    //(from c in _cooks select c).Single()
-    //(from c in _cooks select c).First()
-
-    //where conditions
-    //from c in _cooks where c.Name = "Huber" select c.FirstName
-    //from c in _cooks where c.Name = "Huber" && c.FirstName = "Sepp" select c;
-    //(from c in _cooks where c.IsFullTimeCook select c)
-    //(from c in _cooks where true select c)
-    //(from c in _cooks where false select c)
-
-    //binary expression
-    //(from c in _cooks where c.Name == null select c)
-    //(from c in _cooks where c.ID + c.ID select c)
-    // see SqlGeneratingExpressionVisitor.VisitBinaryExpressions for further tests
-    //(from c in _cooks where c.IsFullTimeCook == true select c)
-    //(from c in _cooks where c.IsFullTimeCook == false select c)
-
-    //unary expressions (unary plus, unary negate, unary not)
-    //(from c in _cooks where (-c.ID) == -1 select c)
-    //(from c in _cooks where !c.IsStarredCook == true select c)
-    //(from c in _cooks where (+c.ID) == -1 select c)
-
-    //method calls (review method)
-    //SqlStatementTextGenerator.GenerateSqlGeneratorRegistry
   }
 }
