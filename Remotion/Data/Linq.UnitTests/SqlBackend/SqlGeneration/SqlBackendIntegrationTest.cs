@@ -95,16 +95,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [Ignore ("TODO 2399")]
     public void SimpleSqlQuery_ChainedPropertySelect_EndingWithEntityProperty ()
     {
       var queryable = from k in _kitchens select k.Restaurant.SubKitchen.Cook;
       var result = GenerateSql (queryable.Expression);
 
-      Console.WriteLine (result.CommandText);
       const string expected =
           "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
-          + "FROM [KitchenTable] AS [t0] JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID]";
+          + "FROM [KitchenTable] AS [t0] "
+          + "JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
+          + "JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
+          + "JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID]";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 
@@ -124,14 +125,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [Ignore ("TODO 2399")]
     public void SimpleSqlQuery_ChainedPropertySelectAndWhere_PartialPathTwice ()
     {
-      var queryable = from k in _kitchens where k.Restaurant.SubKitchen.Restaurant != null select k.Restaurant.SubKitchen.Cook;
+      var queryable = from k in _kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook;
       var result = GenerateSql (queryable.Expression);
 
-      Console.WriteLine (result.CommandText);
-      const string expected = "?";
+      const string expected =
+          "SELECT [t4].[ID],[t4].[FirstName],[t4].[Name],[t4].[IsStarredCook],[t4].[IsFullTimeCook],[t4].[SubstitutedID],[t4].[KitchenID] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
+          + "JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
+          + "JOIN [RestaurantTable] AS [t3] ON [t2].[RestaurantID] = [t3].[ID] "
+          + "JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] "
+          + "WHERE ([t3].[ID] = @1)";
       Assert.That (result.CommandText, Is.EqualTo (expected));
     }
 

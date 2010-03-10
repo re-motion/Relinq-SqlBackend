@@ -33,13 +33,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      _commandBuilder = new SqlCommandBuilder ();
+      _commandBuilder = new SqlCommandBuilder();
     }
 
     [Test]
     public void GenerateSql_ForTable ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       sqlTable.TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder);
 
@@ -49,27 +49,42 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForJoinedTable ()
     {
-      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "k"));
+      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember);
 
-      var foreignTableSource = new ResolvedTableInfo (typeof (Cook), "CookTable", "t2");
-      var primaryColumn = new SqlColumnExpression (typeof (int), "t1", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (int), "t2", "FK");
-
-      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
+      joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+    }
+
+    [Test]
+    public void GenerateSql_ForJoinedTable_Recursive ()
+    {
+      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+
+      var joinedTable1 = originalTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"));
+      var joinedTable2 = joinedTable1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"));
+
+      joinedTable1.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
+      joinedTable2.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+
+      Assert.That (
+          _commandBuilder.GetCommandText (), 
+          Is.EqualTo (
+              "[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK] JOIN [CookTable2] AS [t3] ON [t2].[ID2] = [t3].[FK2]"));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedTableInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder);
     }
 
@@ -83,6 +98,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       originalTable.GetOrAddJoin (kitchenCookMember);
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+    }
+
+    private ResolvedJoinInfo CreateResolvedJoinInfo (
+        Type type, string originalTableAlias, string leftSideKeyName, string joinedTableName, string joinedTableAlias, string rightSideKeyName)
+    {
+      var foreignTableSource = new ResolvedTableInfo (type, joinedTableName, joinedTableAlias);
+      var primaryColumn = new SqlColumnExpression (typeof (int), originalTableAlias, leftSideKeyName);
+      var foreignColumn = new SqlColumnExpression (typeof (int), joinedTableAlias, rightSideKeyName);
+      return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
     }
   }
 }
