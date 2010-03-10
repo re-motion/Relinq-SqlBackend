@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
@@ -28,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void GetOrAddJoin_NewEntry ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
 
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
 
@@ -40,7 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void GetOrAddJoin_GetEntry_Twice ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_TypeIsCook ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
 
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
 

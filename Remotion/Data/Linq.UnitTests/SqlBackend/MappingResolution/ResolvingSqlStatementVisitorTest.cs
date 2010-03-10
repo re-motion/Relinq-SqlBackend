@@ -48,9 +48,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       _visitor = new TestableResolvingSqlStatementVisitor (_resolverMock, _uniqueIdentifierGenerator);
 
-      _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook ();
+      _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
-      _fakeResolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo_TypeIsCook ();
+      _fakeResolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var join = _sqlTable.GetOrAddJoin (memberInfo);
 
-      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo_TypeIsCook();
+      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
       using (_resolverMock.GetMockRepository ().Ordered ())
       {
@@ -130,8 +130,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var join2 = join1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"));
       var join3 = join1.GetOrAddJoin (typeof (Cook).GetProperty ("Name"));
 
-      var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo_TypeIsCook ();
-      var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo_TypeIsCook ();
+      var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
+      var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo3 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (string));
 
       using (_resolverMock.GetMockRepository ().Ordered ())

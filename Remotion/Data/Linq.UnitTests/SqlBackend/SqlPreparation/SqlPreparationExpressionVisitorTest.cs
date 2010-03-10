@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       var expression = ExpressionHelper.Resolve<Kitchen, string> (_kitchenMainFromClause, k => k.Cook.FirstName);
 
-      var source = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsKitchen ();
+      var source = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Kitchen));
       var sqlTable = new SqlTable (source);
 
       _context.AddQuerySourceMapping (_kitchenMainFromClause, sqlTable);

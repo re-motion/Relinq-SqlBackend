@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -34,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTable ()
     {
-      return CreateSqlTable_TypeIsCook();
+      return CreateSqlTable (typeof (Cook));
     }
 
     public static SqlTable CreateSqlTable (AbstractTableInfo tableInfo)
@@ -43,9 +42,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return sqlTable;
     }
 
-    public static SqlTable CreateSqlTable_TypeIsCook ()
+    public static SqlTable CreateSqlTable (Type type)
     {
-      return new SqlTable (CreateUnresolvedTableInfo_TypeIsCook ());
+      return new SqlTable (CreateUnresolvedTableInfo (type));
     }
 
     public static SqlTable CreateSqlTable_WithUnresolvedTableInfo () 
@@ -70,17 +69,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static UnresolvedTableInfo CreateUnresolvedTableInfo ()
     {
-      return CreateUnresolvedTableInfo_TypeIsCook();
+      return CreateUnresolvedTableInfo (typeof (Cook));
     }
 
-    public static UnresolvedTableInfo CreateUnresolvedTableInfo_TypeIsKitchen ()
+    public static UnresolvedTableInfo CreateUnresolvedTableInfo (Type type)
     {
-      return new UnresolvedTableInfo (Expression.Constant (new Kitchen[0]), typeof (Kitchen));
-    }
-
-    public static UnresolvedTableInfo CreateUnresolvedTableInfo_TypeIsCook ()
-    {
-      return new UnresolvedTableInfo (Expression.Constant (new Cook { FirstName = "Test" }, typeof (Cook)), typeof (Cook));
+      var array = Array.CreateInstance (type, 0);
+      return new UnresolvedTableInfo (Expression.Constant (array), type);
     }
 
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
@@ -90,17 +85,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static ResolvedTableInfo CreateResolvedTableInfo ()
     {
-      return CreateResolvedTableInfo_TypeIsCook();
+      return CreateResolvedTableInfo (typeof (Cook));
     }
 
-    public static ResolvedTableInfo CreateResolvedTableInfo_TypeIsCook ()
+    public static ResolvedTableInfo CreateResolvedTableInfo (Type type)
     {
-      return new ResolvedTableInfo (typeof (Cook), "table", "t");
+      return new ResolvedTableInfo (type, "table", "t");
     }
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo ()
     {
-      return CreateResolvedJoinInfo_TypeIsCook();
+      return CreateResolvedJoinInfo (typeof (Cook));
     }
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type)
@@ -109,12 +104,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
       var foreignTableInfo = new ResolvedTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
-    }
-
-    // TODO: Inline
-    public static ResolvedJoinInfo CreateResolvedJoinInfo_TypeIsCook ()
-    {
-      return CreateResolvedJoinInfo (typeof (Cook));
     }
   }
 }

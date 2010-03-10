@@ -17,6 +17,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
@@ -27,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void Accept ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook();
+      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
 
       var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
       tableInfoVisitorMock.Expect (mock => mock.VisitUnresolvedTableInfo (tableInfo));
