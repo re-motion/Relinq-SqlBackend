@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -23,16 +25,31 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   public class ResultOperatorsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 2399")]
-    public void TODO ()
+    public void SimpleCount ()
     {
-      
+      CheckQuery (
+          () => (from c in Cooks select c).Count(),
+          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
     }
 
-    //result operators
-    //(from c in _cooks select c).Count()
-    //(from c in _cooks select c).Distinct()
-    //(from c in _cooks select c).Take(5)
+    [Test]
+    public void SimpleDistinct ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Distinct (),
+          "SELECT DISTINCT [t0].[FirstName] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void SimpleTake ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Take (5),
+          "SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter("@1", 5));
+    }
+
+    //TODO: add further result operator tests:
     //(from c in _cooks select c).Take(c.ID)
     //from k in _kitchen from c in k.Restaurant.Cooks.Take(k.RoomNumber) select c
     //(from c in _cooks select c).Single()

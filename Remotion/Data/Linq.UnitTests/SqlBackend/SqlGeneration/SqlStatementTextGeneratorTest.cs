@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP(@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP (@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT TOP(@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
 
     [Test]

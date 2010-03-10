@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   public class BinaryExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    public void EqualsExpression ()
+    public void EqualExpression ()
     {
       CheckQuery (
           from c in Cooks where c.Name == "Huber" select c.FirstName,
@@ -34,19 +34,55 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2399")]
-    public void TODO ()
+    public void EqualsAndAlsoExpression ()
     {
-      
+      CheckQuery (
+          from c in Cooks where c.Name == "Huber" && c.FirstName == "Sepp" select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = @1) AND ([t0].[FirstName] = @2))",
+          new CommandParameter ("@1", "Huber"),
+          new CommandParameter ("@2", "Sepp"));
     }
 
-    //binary expression
-    //(from c in _cooks where c.Name == null select c)
-    //(from c in _cooks where c.ID + c.ID select c)
-    // see SqlGeneratingExpressionVisitor.VisitBinaryExpressions for further tests
-    //(from c in _cooks where c.IsFullTimeCook == true select c)
-    //(from c in _cooks where c.IsFullTimeCook == false select c)
-    //from c in _cooks where c.Name = "Huber" select c.FirstName
-    //from c in _cooks where c.Name = "Huber" && c.FirstName = "Sepp" select c;
+    [Test]
+    public void EqualsExpressionWithNull ()
+    {
+      CheckQuery (
+          from c in Cooks where c.Name == null select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NULL)"
+         );
+    }
+
+    [Test]
+    public void GreaterThanExpressionInWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks where c.ID > 0 select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] > @1)",
+          new CommandParameter("@1", 0)
+         );
+    }
+
+    [Test]
+    public void BooleanTrueExpressionInWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks where c.IsFullTimeCook == true select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = @1)",
+          new CommandParameter ("@1", 1)
+         );
+    }
+
+    [Test]
+    public void BooleanFalseExpressionInWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks where c.IsFullTimeCook == false select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = @1)",
+          new CommandParameter ("@1", 0)
+         );
+    }
+
+
+    //TODO: see SqlGeneratingExpressionVisitor.VisitBinaryExpressions for further tests
   }
 }

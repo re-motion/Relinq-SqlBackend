@@ -68,5 +68,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
     }
+
+    protected void CheckQuery<T> (Expression<Func<T>> queryLambda, string expectedStatement, params CommandParameter[] expectedParameters)
+    {
+      var result = GenerateSql (queryLambda.Body);
+
+      Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
+      Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
+    }
   }
 }

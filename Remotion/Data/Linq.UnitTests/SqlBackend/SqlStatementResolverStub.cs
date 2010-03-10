@@ -101,6 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       {
         switch (memberExpression.MemberInfo.Name)
         {
+          case "ID":
           case "FirstName":
           case "Name":
           case "IsFullTimeCook":

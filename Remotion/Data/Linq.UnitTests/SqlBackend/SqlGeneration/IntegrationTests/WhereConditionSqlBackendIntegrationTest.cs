@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -24,14 +26,44 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   {
     [Test]
     [Ignore ("TODO 2399")]
-    public void TODO ()
+    public void BooleanColumn ()
     {
-
+      CheckQuery (
+          from c in Cooks where c.IsFullTimeCook select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE [t0].[IsFullTimeCook] = 1"
+          );
     }
 
-    //where conditions
-    //(from c in _cooks where c.IsFullTimeCook select c)
-    //(from c in _cooks where true select c)
-    //(from c in _cooks where false select c)
+    [Test]
+    [Ignore ("TODO 2399")]
+    public void True ()
+    {
+      CheckQuery (
+          from c in Cooks where true select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE @1 = 1",
+          new CommandParameter ("@1", 1)
+          );
+    }
+
+    [Test]
+    [Ignore ("TODO 2399")]
+    public void False ()
+    {
+      CheckQuery (
+          from c in Cooks where false select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE @1 = 1",
+          new CommandParameter ("@1", 0)
+          );
+    }
+
+    [Test]
+    public void BinaryExpression ()
+    {
+      CheckQuery (
+          from c in Cooks where c.FirstName == "hugo" select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1)",
+          new CommandParameter ("@1", "hugo")
+          );
+    }
   }
 }
