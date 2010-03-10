@@ -145,13 +145,32 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void Coalesce ()
     {
       CheckQuery (
           from c in Cooks select c.FirstName ?? "hugo",
           "SELECT (COALESCE ([t0].[FirstName], @1)) FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "hugo")
+          );
+    }
+
+    [Test]
+    public void StringConcatenation ()
+    {
+      CheckQuery (
+          from c in Cooks select c.FirstName + "Test",
+          "SELECT ([t0].[FirstName] + @1) FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", "Test")
+          );
+      CheckQuery (
+          from c in Cooks select c.FirstName + 10,
+          "SELECT ([t0].[FirstName] + @1) FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 10)
+          );
+      CheckQuery (
+          from c in Cooks select c.FirstName + " " + c.Name,
+          "SELECT (([t0].[FirstName] + @1) + [t0].[Name]) FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", " ")
           );
     }
 
