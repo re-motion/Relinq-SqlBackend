@@ -29,7 +29,7 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
-  public class SqlExpressionContextExpressionVisitorTest
+  public class SqlContextExpressionVisitorTest
   {
     private TestableSqlExpressionContextExpressionVisitor _visitor;
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var constant = Expression.Constant (0);
 
-      var result = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (constant, SqlExpressionContext.PredicateRequired);
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (constant, SqlExpressionContext.PredicateRequired);
 
       var expectedExpression = Expression.Equal (constant, new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
 
-      var result = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.PredicateRequired);
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.PredicateRequired);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var column = new SqlColumnExpression (typeof (bool), "x", "y");
 
-      var result = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (column, SqlExpressionContext.PredicateRequired);
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (column, SqlExpressionContext.PredicateRequired);
 
       var expectedExpression = Expression.Equal (new SqlColumnExpression (typeof (int), "x", "y"), new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -77,8 +77,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var constantTrue = Expression.Constant (true);
       var constantFalse = Expression.Constant (false);
 
-      var resultTrue = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (constantTrue, SqlExpressionContext.PredicateRequired);
-      var resultFalse = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (constantFalse, SqlExpressionContext.PredicateRequired);
+      var resultTrue = SqlContextExpressionVisitor.ApplySqlExpressionContext (constantTrue, SqlExpressionContext.PredicateRequired);
+      var resultFalse = SqlContextExpressionVisitor.ApplySqlExpressionContext (constantFalse, SqlExpressionContext.PredicateRequired);
 
       var expectedExpressionTrue = Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionTrue, resultTrue);
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (string));
 
-      SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.PredicateRequired);
+      SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.PredicateRequired);
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var constant = Expression.Constant (0);
 
-      var result = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (constant, SqlExpressionContext.ValueRequired);
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (constant, SqlExpressionContext.ValueRequired);
 
       Assert.That (constant, Is.SameAs (result));
     }
@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
 
-      var result = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.ValueRequired);
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.ValueRequired);
 
       var expectedExpression = new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var column = new SqlColumnExpression (typeof (bool), "x", "y");
 
-      var result = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (column, SqlExpressionContext.ValueRequired);
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (column, SqlExpressionContext.ValueRequired);
 
       var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y");
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -135,8 +135,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var constantTrue = Expression.Constant (true);
       var constantFalse = Expression.Constant (false);
 
-      var resultTrue = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (constantTrue, SqlExpressionContext.ValueRequired);
-      var resultFalse = SqlExpressionContextExpressionVisitor.ApplySqlExpressionContext (constantFalse, SqlExpressionContext.ValueRequired);
+      var resultTrue = SqlContextExpressionVisitor.ApplySqlExpressionContext (constantTrue, SqlExpressionContext.ValueRequired);
+      var resultFalse = SqlContextExpressionVisitor.ApplySqlExpressionContext (constantFalse, SqlExpressionContext.ValueRequired);
 
       var expectedExpressionTrue = Expression.Constant (1);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionTrue, resultTrue);

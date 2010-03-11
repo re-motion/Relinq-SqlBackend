@@ -19,7 +19,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 {
-  public class TestableSqlExpressionContextExpressionVisitor : SqlExpressionContextExpressionVisitor
+  public class TestableSqlExpressionContextExpressionVisitor : SqlContextExpressionVisitor
   {
     public new Expression VisitBinaryExpression (BinaryExpression expression)
     {
