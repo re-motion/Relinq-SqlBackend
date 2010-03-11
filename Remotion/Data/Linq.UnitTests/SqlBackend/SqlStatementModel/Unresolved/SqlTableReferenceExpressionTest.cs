@@ -40,7 +40,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
       Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableInfo.ItemType));
     }
 
-
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
