@@ -248,6 +248,62 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     }
 
     [Test]
+    public void Convert_WithValueSemantics_UnaryBoolExpression_ConvertedToCaseWhen_OperandConvertedToPredicate ()
+    {
+      var unaryExpression = Expression.Not (Expression.Constant (true));
+
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.ValueRequired);
+
+      var expectedExpression = new SqlCaseExpression (
+          Expression.Not (Expression.Equal (Expression.Constant (1), Expression.Constant (1))), 
+          Expression.Constant (1), 
+          Expression.Constant (0));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void Convert_WithPredicateSemantics_UnaryBoolExpression_Unchanged_OperandConvertedToPredicate ()
+    {
+      var unaryExpression = Expression.Not (Expression.Constant (true));
+
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.PredicateRequired);
+
+      var expectedExpression = Expression.Not (Expression.Equal (Expression.Constant (1), Expression.Constant (1)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "'Convert' expressions are not supported with boolean type.")]
+    public void Convert_BooleanConvertUnaryExpression_NotSupported ()
+    {
+      var unaryExpression = Expression.Convert (Expression.Constant (true), typeof (bool));
+
+      BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.ValueRequired);
+    }
+
+    [Test]
+    public void Convert_WithValueSemantics_ValueUnaryExpression_Unchanged ()
+    {
+      var unaryExpression = Expression.Not (Expression.Constant (5));
+
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.ValueRequired);
+
+      Assert.That (result, Is.SameAs (unaryExpression));
+    }
+
+    [Test]
+    public void Convert_WithValueSemantics_ValueUnaryExpression_ChangedWhenInnerExpressionReplaced ()
+    {
+      var unaryExpression = Expression.Not (Expression.Convert (Expression.Constant (true), typeof (int)));
+
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.ValueRequired);
+
+      var expectedExpression = Expression.Not (Expression.Convert (Expression.Constant (1), typeof (int)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
     public void Convert_WithValueSemantics_SqlColumnList_Unchanged ()
     {
       var columnList = new SqlColumnListExpression (typeof (Cook));
@@ -277,9 +333,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     }
 
     private void CheckLeftRightValueConverted (
-   BinaryExpression binaryExpression,
-   BinaryExpression expectedBinaryExpression,
-   BooleanSemanticsKind semanticsKind)
+       BinaryExpression binaryExpression,
+       BinaryExpression expectedBinaryExpression,
+       BooleanSemanticsKind semanticsKind)
     {
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binaryExpression, semanticsKind);
 
