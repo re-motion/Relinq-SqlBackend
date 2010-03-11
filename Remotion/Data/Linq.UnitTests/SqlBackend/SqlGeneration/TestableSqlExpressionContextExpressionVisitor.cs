@@ -15,28 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration.BooleanSemantics;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 {
-  public class TestableBooleanSemanticsConverter : BooleanSemanticsExpressionConverter
+  public class TestableSqlExpressionContextExpressionVisitor : SqlExpressionContextExpressionVisitor
   {
-    public TestableBooleanSemanticsConverter (BooleanSemanticsKind initialSemantics)
-        : base (initialSemantics)
-    {
-    }
-
-    public new Expression VisitConstantExpression (ConstantExpression expression)
-    {
-      return base.VisitConstantExpression (expression);
-    }
-
-    public new Expression VisitSqlColumnExpression (SqlColumnExpression expression)
-    {
-      return base.VisitSqlColumnExpression (expression);
-    }
-
     public new Expression VisitBinaryExpression (BinaryExpression expression)
     {
       return base.VisitBinaryExpression (expression);
@@ -45,11 +29,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     public new Expression VisitUnaryExpression (UnaryExpression expression)
     {
       return base.VisitUnaryExpression (expression);
-    }
-
-    public new Expression VisitSqlColumnListExpression (SqlColumnListExpression expression)
-    {
-      return (((IResolvedSqlExpressionVisitor) this)).VisitSqlColumnListExpression (expression);
     }
   }
 }
