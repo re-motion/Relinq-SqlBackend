@@ -62,6 +62,24 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_ForJoinedTable_ValueSemantics ()
+    {
+      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+
+      var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
+      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember);
+
+      var foreignTableSource = new ResolvedTableInfo (typeof (Cook), "CookTable", "t2");
+      var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK");
+      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+    }
+
+    [Test]
     public void GenerateSql_ForJoinedTable_Recursive ()
     {
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));

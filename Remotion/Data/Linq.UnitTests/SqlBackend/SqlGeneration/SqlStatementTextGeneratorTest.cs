@@ -124,36 +124,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [Ignore ("TODO 2362: Support booleans in select projection; test with: select c.IsBool => SELECT c.IsBool; select c.FirstName IS NOT NULL => SELECT CASE WHEN c.FirstName IS NOT NULL THEN 1 ELSE 0.")]
-    public void Build_WithColumnTypeBoolean ()
+    public void Build_Select_HasValueSemantics ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
-      sqlTable.TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      var columnListExpression = new SqlColumnListExpression (
-          tableReferenceExpression.Type,
-          new[]
-          {
-              new SqlColumnExpression (typeof (bool), "t", "IsBool")
-          });
-
-      var sqlStatement = new SqlStatement (columnListExpression, sqlTable);
+      _sqlStatement.SelectProjection = Expression.Equal (Expression.Constant (0), Expression.Constant (1));
 
       var generator = new SqlStatementTextGenerator ();
-      var result = generator.Build (sqlStatement);
+      var result = generator.Build (_sqlStatement);
 
-      Assert.That (result.CommandText, Is.EqualTo (""));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN @3 ELSE @4 END FROM [Table] AS [t]"));
     }
 
     [Test]
-    public void Build_WithSingleWhereCondition ()
+    public void Build_WithSingleWhereCondition_PredicateSemantics ()
     {
       _sqlStatement.WhereCondition = Expression.Constant (true);
 
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE @1"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 = @2)"));
     }
 
     [Test]

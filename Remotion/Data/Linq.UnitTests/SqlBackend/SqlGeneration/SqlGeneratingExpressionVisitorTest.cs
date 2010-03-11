@@ -20,8 +20,10 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration.BooleanSemantics;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -32,9 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   {
     private SqlCommandBuilder _commandBuilder;
     private Expression _leftIntegerExpression;
-    private Expression _leftStringExpression;
     private Expression _rightIntegerExpression;
-    private Expression _rightStringExpression;
     private MethodCallSqlGeneratorRegistry _methodCallRegistry;
 
     [SetUp]
@@ -42,9 +42,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _commandBuilder = new SqlCommandBuilder();
       _leftIntegerExpression = Expression.Constant (1);
-      _leftStringExpression = Expression.Constant ("Left");
+      Expression.Constant ("Left");
       _rightIntegerExpression = Expression.Constant (2);
-      _rightStringExpression = Expression.Constant ("Right");
+      Expression.Constant ("Right");
       _methodCallRegistry = new MethodCallSqlGeneratorRegistry();
     }
 
@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_VisitSqlColumnExpression ()
     {
       var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID");
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(sqlColumnExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (string), "t", "Name"),
               new SqlColumnExpression (typeof (string), "t", "City")
           });
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(sqlColumnListExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_TrueParameter ()
     {
       var expression = Expression.Constant (true);
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(expression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (1));
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_FalseParameter ()
     {
       var expression = Expression.Constant (false);
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(expression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (0));
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_NullValue ()
     {
       var expression = Expression.Constant (null);
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(expression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (0));
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("NULL"));
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitConstantExpression_StringParameter ()
     {
       var expression = Expression.Constant ("Test");
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(expression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo ("Test"));
@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitBinaryExpression ()
     {
       Expression binaryExpression = Expression.Add (_leftIntegerExpression, _rightIntegerExpression);
-      SqlGeneratingExpressionVisitor.GenerateSql (binaryExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(binaryExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
       var result = _commandBuilder.GetCommandText ();
 
@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitUnaryExpression_UnaryNot ()
     {
       var unaryNotExpression = Expression.Not (Expression.Constant (1));
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(unaryNotExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
       var result = _commandBuilder.GetCommandText();
 
       Assert.That (result, Is.EqualTo ("NOT @1"));
@@ -139,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var unaryNotExpression = Expression.Negate (Expression.Constant (1));
 
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(unaryNotExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
       var result = _commandBuilder.GetCommandText();
 
       Assert.That (result, Is.EqualTo ("-@1"));
@@ -150,7 +150,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var unaryNotExpression = Expression.UnaryPlus (Expression.Constant (1));
 
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(unaryNotExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
       var result = _commandBuilder.GetCommandText();
 
       Assert.That (result, Is.EqualTo ("+@1"));
@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void VisitUnaryExpression_NotSupported ()
     {
       var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
-      SqlGeneratingExpressionVisitor.GenerateSql (unaryExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(unaryExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
     }
 
     [Test]
@@ -176,7 +176,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       _methodCallRegistry.Register (method, sqlGeneratorMock);
 
       sqlGeneratorMock.Replay();
-      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(methodCallExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
       sqlGeneratorMock.VerifyAllExpectations();
     }
 
@@ -189,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var registry = new MethodCallSqlGeneratorRegistry();
       registry.Register (method, new MethodCallUpper());
 
-      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, registry);
+      SqlGeneratingExpressionVisitor.GenerateSql(methodCallExpression, _commandBuilder, registry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("UPPER(@1)"));
     }
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var registry = new MethodCallSqlGeneratorRegistry ();
       registry.Register (method, new MethodCallLower ());
 
-      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, registry);
+      SqlGeneratingExpressionVisitor.GenerateSql(methodCallExpression, _commandBuilder, registry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("LOWER(@1)"));
     }
@@ -217,9 +217,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var registry = new MethodCallSqlGeneratorRegistry ();
       registry.Register (method, new MethodCallRemove ());
 
-      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, registry);
+      SqlGeneratingExpressionVisitor.GenerateSql(methodCallExpression, _commandBuilder, registry, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("STUFF(@1,@2,@3,LEN(@4), \"\")"));
+    }
+
+    [Test]
+    public void VistSqlCaseExpression ()
+    {
+      var caseExpression = new SqlCaseExpression (
+          Expression.Equal (Expression.Constant (2), Expression.Constant (2)), 
+          Expression.Constant (0), 
+          Expression.Constant (1));
+
+      SqlGeneratingExpressionVisitor.GenerateSql(caseExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN @3 ELSE @4 END"));
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
@@ -229,7 +242,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_UnsupportedExpression ()
     {
       var unknownExpression = new NotSupportedExpression (typeof (int));
-      SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _commandBuilder, _methodCallRegistry);
+      SqlGeneratingExpressionVisitor.GenerateSql(unknownExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
+    }
+
+    [Test]
+    public void GenerateSql_BoolExpression_ValueSemantics ()
+    {
+      var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
+      SqlGeneratingExpressionVisitor.GenerateSql (boolExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN @3 ELSE @4 END"));
+    }
+
+    [Test]
+    public void GenerateSql_BoolExpression_PredicateSemantics ()
+    {
+      var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
+      SqlGeneratingExpressionVisitor.GenerateSql (boolExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.PredicateRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1 = @2)"));
     }
   }
 }

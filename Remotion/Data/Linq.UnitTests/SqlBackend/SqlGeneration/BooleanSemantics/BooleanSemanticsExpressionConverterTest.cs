@@ -324,6 +324,36 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     }
 
     [Test]
+    public void Convert_SqlCaseExpression_ConvertsTestToPredicate ()
+    {
+      var caseExpression = new SqlCaseExpression (Expression.Constant (true), Expression.Constant (0), Expression.Constant (1));
+      
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (caseExpression, BooleanSemanticsKind.ValueRequired);
+
+      var expectedExpression = new SqlCaseExpression (
+        Expression.Equal (Expression.Constant (1), Expression.Constant (1)), 
+        Expression.Constant (0), 
+        Expression.Constant (1));
+      
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void Convert_SqlCaseExpression_ConvertsValuesToValues ()
+    {
+      var caseExpression = new SqlCaseExpression (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
+
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (caseExpression, BooleanSemanticsKind.ValueRequired);
+
+      var expectedExpression = new SqlCaseExpression (
+        Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
+        Expression.Constant (1),
+        Expression.Constant (0));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Expression type 'Remotion.Data.Linq.UnitTests.SqlBackend.NotSupportedExpression' was not expected to have boolean type.")]
     public void Convert_WithValueSemantics_AnyOtherExpression_ThrowsWhenBool ()
