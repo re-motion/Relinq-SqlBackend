@@ -30,39 +30,39 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
   public class BooleanSemanticsExpressionConverterTest
   {
     [Test]
-    public void EnsureValueSemantics_ConstantTrue_ConvertedToIntOne ()
+    public void Convert_WithValueSemantics_ConstantTrue_ConvertedToIntOne ()
     {
       var constantTrue = Expression.Constant (true);
       
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (constantTrue);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (constantTrue, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = Expression.Constant (1);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
-    public void EnsureValueSemantics_ConstantFalse_ConvertedToIntZero ()
+    public void Convert_WithValueSemantics_ConstantFalse_ConvertedToIntZero ()
     {
       var constantFalse = Expression.Constant (false);
 
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (constantFalse);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (constantFalse, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = Expression.Constant (0);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
-    public void EnsureValueSemantics_NonBoolean_Unchanged ()
+    public void Convert_WithValueSemantics_NonBoolean_Unchanged ()
     {
       var constant = Expression.Constant (0);
       var column = new SqlColumnExpression (typeof (string), "x", "y");
       var columnList = new SqlColumnListExpression (typeof (Cook));
       var binary = BinaryExpression.And (Expression.Constant (5), Expression.Constant (5));
 
-      var result1 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (constant);
-      var result2 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (column);
-      var result3 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (columnList);
-      var result4 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binary);
+      var result1 = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (constant, BooleanSemanticsKind.ValueRequired);
+      var result2 = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (column, BooleanSemanticsKind.ValueRequired);
+      var result3 = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (columnList, BooleanSemanticsKind.ValueRequired);
+      var result4 = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binary, BooleanSemanticsKind.ValueRequired);
 
       Assert.That (result1, Is.SameAs (constant));
       Assert.That (result2, Is.SameAs (column));
@@ -71,33 +71,33 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     }
 
     [Test]
-    public void EnsureValueSemantics_BoolColumn_ConvertedToIntColumn ()
+    public void Convert_WithValueSemantics_BoolColumn_ConvertedToIntColumn ()
     {
       var column = new SqlColumnExpression (typeof (bool), "x", "y");
 
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (column);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (column, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y");
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
-    public void EnsureValueSemantics_BinaryBoolExpression_ConvertedToCaseWhen ()
+    public void Convert_WithValueSemantics_BinaryBoolExpression_ConvertedToCaseWhen ()
     {
       var binaryExpression = Expression.Equal (Expression.Constant (0), Expression.Constant (0));
 
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binaryExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = new SqlCaseExpression (binaryExpression, Expression.Constant (1), Expression.Constant (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
-    public void EnsureValueSemantics_BinaryBoolExpression_ConvertsLeftRightToValue_ForEqual ()
+    public void Convert_WithValueSemantics_BinaryBoolExpression_ConvertsLeftRightToValue_ForEqual ()
     {
       var binaryExpression = Expression.Equal (Expression.Constant (true), Expression.Constant (false));
 
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binaryExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedBinaryExpression = Expression.Equal (Expression.Constant (1), Expression.Constant (0));
       var expectedExpression = new SqlCaseExpression (expectedBinaryExpression, Expression.Constant (1), Expression.Constant (0));
@@ -105,11 +105,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     }
 
     [Test]
-    public void EnsureValueSemantics_BinaryBoolExpression_ConvertsLeftRightToValue_ForNotEqual ()
+    public void Convert_WithValueSemantics_BinaryBoolExpression_ConvertsLeftRightToValue_ForNotEqual ()
     {
       var binaryExpression = Expression.NotEqual (Expression.Constant (true), Expression.Constant (false));
 
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binaryExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedBinaryExpression = Expression.NotEqual (Expression.Constant (1), Expression.Constant (0));
       var expectedExpression = new SqlCaseExpression (expectedBinaryExpression, Expression.Constant (1), Expression.Constant (0));
@@ -118,11 +118,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
     [Test]
     [Ignore ("TODO 2362, add And (with booleans), OrElse, Or (with booleans), ExclusiveOr (with booleans)")]
-    public void EnsureValueSemantics_BinaryBoolExpression_ConvertsLeftRightToPredicate_ForAndAlso ()
+    public void Convert_WithValueSemantics_BinaryBoolExpression_ConvertsLeftRightToPredicate_ForAndAlso ()
     {
       var binaryExpression = Expression.AndAlso (Expression.Constant (true), Expression.Constant (false));
 
-      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binaryExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedBinaryExpression = 
           Expression.AndAlso (
@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     public void UnexpectedExpression ()
     {
       var expression = new NotSupportedExpression (typeof (bool));
-      BooleanSemanticsExpressionConverter.EnsureValueSemantics (expression);
+      BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (expression, BooleanSemanticsKind.ValueRequired);
     }
   }
 }
