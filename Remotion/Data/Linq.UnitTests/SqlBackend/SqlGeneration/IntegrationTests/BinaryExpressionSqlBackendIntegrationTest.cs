@@ -87,7 +87,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void Equals_WithBinaryRightSide ()
     {
       CheckQuery (

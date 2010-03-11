@@ -104,6 +104,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitLiteralExpression ()
+    {
+      var expression = new SqlLiteralExpression (5);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("5"));
+      Assert.That (_commandBuilder.GetCommandParameters (), Is.Empty);
+    }
+
+    [Test]
     public void VisitConstantExpression_StringParameter ()
     {
       var expression = Expression.Constant ("Test");
@@ -251,7 +262,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
       SqlGeneratingExpressionVisitor.GenerateSql (boolExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN @3 ELSE @4 END"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
     }
 
     [Test]

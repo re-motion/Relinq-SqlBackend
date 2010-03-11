@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.SqlSpecificE
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlCaseExpression, ISqlSpecificExpressionVisitor> (
           _caseExpression,
-          mock => mock.VisitSqlCaseExpressionExpression (_caseExpression));
+          mock => mock.VisitSqlCaseExpression (_caseExpression));
     }
 
     [Test]

@@ -131,7 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN @3 ELSE @4 END FROM [Table] AS [t]"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN 1 ELSE 0 END FROM [Table] AS [t]"));
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var generator = new SqlStatementTextGenerator ();
       var result = generator.Build (_sqlStatement);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 = @2)"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 = 1)"));
     }
 
     [Test]

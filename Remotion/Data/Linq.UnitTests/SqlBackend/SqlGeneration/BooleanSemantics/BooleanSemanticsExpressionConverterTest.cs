@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (constantTrue, BooleanSemanticsKind.PredicateRequired);
 
-      var expectedExpression = Expression.Equal (Expression.Constant (1), Expression.Constant (1));
+      var expectedExpression = Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (constantTrue, BooleanSemanticsKind.PredicateRequired);
 
-      var expectedExpression = Expression.Equal (Expression.Constant (0), Expression.Constant (1));
+      var expectedExpression = Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (column, BooleanSemanticsKind.PredicateRequired);
 
-      var expectedExpression = Expression.Equal (new SqlColumnExpression (typeof (int), "x", "y"), Expression.Constant (1));
+      var expectedExpression = Expression.Equal (new SqlColumnExpression (typeof (int), "x", "y"), new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (binaryExpression, BooleanSemanticsKind.ValueRequired);
 
-      var expectedExpression = new SqlCaseExpression (binaryExpression, Expression.Constant (1), Expression.Constant (0));
+      var expectedExpression = new SqlCaseExpression (binaryExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -171,8 +171,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var expression = Expression.AndAlso (Expression.Constant (true), Expression.Constant (false));
       var expectedExpression = Expression.AndAlso (
-              Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
-              Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
+              Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
+              Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
 
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.PredicateRequired);
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.ValueRequired);
@@ -183,8 +183,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var expression = Expression.OrElse (Expression.Constant (true), Expression.Constant (false));
       var expectedExpression = Expression.OrElse (
-              Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
-              Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
+              Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
+              Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
 
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.PredicateRequired);
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.ValueRequired);
@@ -195,8 +195,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var expression = Expression.And (Expression.Constant (true), Expression.Constant (false));
       var expectedExpression = Expression.And (
-              Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
-              Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
+              Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
+              Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
 
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.PredicateRequired);
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.ValueRequired);
@@ -207,8 +207,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var expression = Expression.Or (Expression.Constant (true), Expression.Constant (false));
       var expectedExpression = Expression.Or (
-              Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
-              Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
+              Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
+              Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
 
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.PredicateRequired);
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.ValueRequired);
@@ -219,8 +219,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var expression = Expression.ExclusiveOr (Expression.Constant (true), Expression.Constant (false));
       var expectedExpression = Expression.ExclusiveOr (
-              Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
-              Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
+              Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
+              Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
 
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.PredicateRequired);
       CheckLeftRightValueConverted (expression, expectedExpression, BooleanSemanticsKind.ValueRequired);
@@ -255,9 +255,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = new SqlCaseExpression (
-          Expression.Not (Expression.Equal (Expression.Constant (1), Expression.Constant (1))), 
-          Expression.Constant (1), 
-          Expression.Constant (0));
+          Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))), 
+          new SqlLiteralExpression (1),
+          new SqlLiteralExpression (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -268,7 +268,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (unaryExpression, BooleanSemanticsKind.PredicateRequired);
 
-      var expectedExpression = Expression.Not (Expression.Equal (Expression.Constant (1), Expression.Constant (1)));
+      var expectedExpression = Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -331,7 +331,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (caseExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = new SqlCaseExpression (
-        Expression.Equal (Expression.Constant (1), Expression.Constant (1)), 
+        Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
         Expression.Constant (0), 
         Expression.Constant (1));
       
@@ -346,7 +346,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
       var result = BooleanSemanticsExpressionConverter.ConvertBooleanExpressions (caseExpression, BooleanSemanticsKind.ValueRequired);
 
       var expectedExpression = new SqlCaseExpression (
-        Expression.Equal (Expression.Constant (1), Expression.Constant (1)),
+        Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
         Expression.Constant (1),
         Expression.Constant (0));
 
@@ -371,7 +371,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 
       Expression expectedExpression;
       if (semanticsKind == BooleanSemanticsKind.ValueRequired)
-        expectedExpression = new SqlCaseExpression (expectedBinaryExpression, Expression.Constant (1), Expression.Constant (0));
+        expectedExpression = new SqlCaseExpression (expectedBinaryExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
       else
         expectedExpression = expectedBinaryExpression;
 
