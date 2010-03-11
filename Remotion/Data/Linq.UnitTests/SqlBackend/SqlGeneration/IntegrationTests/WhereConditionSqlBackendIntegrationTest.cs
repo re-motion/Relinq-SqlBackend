@@ -25,33 +25,30 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   public class WhereConditionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 2399")]
     public void BooleanColumn ()
     {
       CheckQuery (
           from c in Cooks where c.IsFullTimeCook select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE [t0].[IsFullTimeCook] = 1"
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = 1)"
           );
     }
 
     [Test]
-    [Ignore ("TODO 2399")]
     public void True ()
     {
       CheckQuery (
           from c in Cooks where true select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE @1 = 1",
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 1)
           );
     }
 
     [Test]
-    [Ignore ("TODO 2399")]
     public void False ()
     {
       CheckQuery (
           from c in Cooks where false select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE @1 = 1",
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 0)
           );
     }
