@@ -138,11 +138,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void VisitUnaryExpression_UnaryNot ()
     {
-      var unaryNotExpression = Expression.Not (Expression.Constant (1));
-      SqlGeneratingExpressionVisitor.GenerateSql(unaryNotExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
+      var unaryNotExpression = Expression.Not (Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("hugo")));
+      SqlGeneratingExpressionVisitor.GenerateSql(unaryNotExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.PredicateRequired);
       var result = _commandBuilder.GetCommandText();
 
-      Assert.That (result, Is.EqualTo ("NOT @1"));
+      Assert.That (result, Is.EqualTo ("NOT (@1 = @2)"));
+    }
+
+    [Test]
+    public void VisitUnaryExpression_UnaryNot_WithBitwiseNot ()
+    {
+      var unaryNotExpression = Expression.Not (Expression.Constant (1));
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("~@1"));
     }
 
     [Test]

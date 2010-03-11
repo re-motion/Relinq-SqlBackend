@@ -144,6 +144,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    public void AndAlso_OrElse_WithTrueFalse ()
+    {
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      CheckQuery (
+          from c in Cooks where ((c.Name == "Huber") && true) || (false && (c.Name == "Huber")) select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND (@2 = 1)) OR ((@3 = 1) AND ([t0].[Name] = @4)))",
+          new CommandParameter ("@1", "Huber"),
+          new CommandParameter ("@2", 1),
+          new CommandParameter ("@3", 0),
+          new CommandParameter ("@4", "Huber"));
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
+    }
+
+    [Test]
     public void Coalesce ()
     {
       CheckQuery (
@@ -244,7 +258,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void Power ()
     {
       var parameter = Expression.Parameter (typeof (Cook), "c");
@@ -254,8 +267,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 
       CheckQuery (
           query,
-          "SELECT POWER ([t0].[ID],@1) FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", 3)
+          "SELECT (POWER ([t0].[Weight], @1)) FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 3.0)
           );
     }
 

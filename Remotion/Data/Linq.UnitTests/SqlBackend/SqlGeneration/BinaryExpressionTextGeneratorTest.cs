@@ -30,9 +30,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     private SqlCommandBuilder _commandBuilder;
     
     private Expression _leftIntegerExpression;
-    private Expression _leftStringExpression;
     private Expression _rightIntegerExpression;
+
+    private Expression _leftDoubleExpression;
+    private Expression _rightDoubleExpression;
+
+    private Expression _leftStringExpression;
     private Expression _rightStringExpression;
+    
     private Expression _nullExpression;
     private Expression _trueExpression;
     private Expression _falseExpression;
@@ -58,6 +63,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           .Stub (stub => stub.VisitExpression (_rightIntegerExpression))
           .WhenCalled (mi => _commandBuilder.Append ("right"))
           .Return (_rightIntegerExpression);
+
+      _leftDoubleExpression = Expression.Constant (1D);
+      _expressionVisitorStub
+          .Stub (stub => stub.VisitExpression (_leftDoubleExpression))
+          .WhenCalled (mi => _commandBuilder.Append ("leftDouble"))
+          .Return (_leftDoubleExpression);
+
+      _rightDoubleExpression = Expression.Constant (2D);
+      _expressionVisitorStub
+          .Stub (stub => stub.VisitExpression (_rightDoubleExpression))
+          .WhenCalled (mi => _commandBuilder.Append ("rightDouble"))
+          .Return (_rightDoubleExpression);
 
       _leftStringExpression = Expression.Constant ("Left");
       _expressionVisitorStub
@@ -394,10 +411,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitBinaryExpression_Power ()
+    {
+      var binaryExpression = Expression.Power(_leftDoubleExpression, _rightDoubleExpression);
+
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+      Assert.That (result, Is.EqualTo ("POWER (leftDouble, rightDouble)"));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void NotSupportedNodeType ()
     {
-      var binaryExpression = Expression.Power (Expression.Constant (2D), Expression.Constant (3D));
+      var binaryExpression = Expression.ArrayIndex (Expression.Constant (new[] { 1, 2, 3}), Expression.Constant (10));
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
     }
   }

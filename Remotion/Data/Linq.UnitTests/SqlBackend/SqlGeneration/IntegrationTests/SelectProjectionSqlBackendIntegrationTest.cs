@@ -70,13 +70,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void BooleanConditions ()
     {
       CheckQuery (
           from k in Kitchens select k.Name == "SpecialKitchen",
-          "SELECT CASE WHEN [t0].[Name] = @1 THEN 1 ELSE 0 END FROM [KitchenTable] AS [t0]",
-          new CommandParameter ("@1", 0));
+          "SELECT CASE WHEN ([t0].[Name] = @1) THEN 1 ELSE 0 END FROM [KitchenTable] AS [t0]",
+          new CommandParameter ("@1", "SpecialKitchen"));
     }
   }
 }

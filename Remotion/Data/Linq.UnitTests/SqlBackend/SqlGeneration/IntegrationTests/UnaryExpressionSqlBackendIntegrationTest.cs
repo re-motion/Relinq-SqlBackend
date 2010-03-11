@@ -58,17 +58,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void UnaryNot_OnColumn ()
     {
       CheckQuery (
          from c in Cooks where !c.IsStarredCook select c.ID,
-         "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[IsStarredCool] = 1)"
+         "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[IsStarredCook] = 1)"
          );
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void UnaryNot_OnSelectedColumn ()
     {
       CheckQuery (
@@ -78,7 +76,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2362")]
     public void BitwiseNot ()
     {
       CheckQuery (
