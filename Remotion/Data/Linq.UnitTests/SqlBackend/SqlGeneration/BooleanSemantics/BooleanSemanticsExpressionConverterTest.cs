@@ -27,14 +27,14 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
 {
   [TestFixture]
-  public class ValueSemanticsExpressionConverterTest
+  public class BooleanSemanticsExpressionConverterTest
   {
     [Test]
     public void EnsureValueSemantics_ConstantTrue_ConvertedToIntOne ()
     {
       var constantTrue = Expression.Constant (true);
       
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (constantTrue);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (constantTrue);
 
       var expectedExpression = Expression.Constant (1);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var constantFalse = Expression.Constant (false);
 
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (constantFalse);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (constantFalse);
 
       var expectedExpression = Expression.Constant (0);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -59,10 +59,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
       var columnList = new SqlColumnListExpression (typeof (Cook));
       var binary = BinaryExpression.And (Expression.Constant (5), Expression.Constant (5));
 
-      var result1 = ValueSemanticsExpressionConverter.EnsureValueSemantics (constant);
-      var result2 = ValueSemanticsExpressionConverter.EnsureValueSemantics (column);
-      var result3 = ValueSemanticsExpressionConverter.EnsureValueSemantics (columnList);
-      var result4 = ValueSemanticsExpressionConverter.EnsureValueSemantics (binary);
+      var result1 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (constant);
+      var result2 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (column);
+      var result3 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (columnList);
+      var result4 = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binary);
 
       Assert.That (result1, Is.SameAs (constant));
       Assert.That (result2, Is.SameAs (column));
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var column = new SqlColumnExpression (typeof (bool), "x", "y");
 
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (column);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (column);
 
       var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y");
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var binaryExpression = Expression.Equal (Expression.Constant (0), Expression.Constant (0));
 
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
 
       var expectedExpression = new SqlCaseExpression (binaryExpression, Expression.Constant (1), Expression.Constant (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var binaryExpression = Expression.Equal (Expression.Constant (true), Expression.Constant (false));
 
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
 
       var expectedBinaryExpression = Expression.Equal (Expression.Constant (1), Expression.Constant (0));
       var expectedExpression = new SqlCaseExpression (expectedBinaryExpression, Expression.Constant (1), Expression.Constant (0));
@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var binaryExpression = Expression.NotEqual (Expression.Constant (true), Expression.Constant (false));
 
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
 
       var expectedBinaryExpression = Expression.NotEqual (Expression.Constant (1), Expression.Constant (0));
       var expectedExpression = new SqlCaseExpression (expectedBinaryExpression, Expression.Constant (1), Expression.Constant (0));
@@ -122,7 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     {
       var binaryExpression = Expression.AndAlso (Expression.Constant (true), Expression.Constant (false));
 
-      var result = ValueSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
+      var result = BooleanSemanticsExpressionConverter.EnsureValueSemantics (binaryExpression);
 
       var expectedBinaryExpression = 
           Expression.AndAlso (
@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics
     public void UnexpectedExpression ()
     {
       var expression = new NotSupportedExpression (typeof (bool));
-      ValueSemanticsExpressionConverter.EnsureValueSemantics (expression);
+      BooleanSemanticsExpressionConverter.EnsureValueSemantics (expression);
     }
   }
 }
