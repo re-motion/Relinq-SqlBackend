@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
-      var expression = new NotSupportedExpression (typeof (int));
+      var expression = new CustomExpression (typeof (int));
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
 
       Assert.That (result, Is.EqualTo (expression));

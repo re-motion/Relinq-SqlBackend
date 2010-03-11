@@ -242,7 +242,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void UnknownExpression ()
     {
-      var unknownExpression = new NotSupportedExpression (typeof (int));
+      var unknownExpression = new CustomExpression (typeof (int));
       var result = ResolvingExpressionVisitor.ResolveExpression (unknownExpression, _resolverMock, _generator);
 
       Assert.That (result, Is.SameAs (unknownExpression));

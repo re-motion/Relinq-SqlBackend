@@ -257,12 +257,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The expression '[2147483647]' cannot be translated to SQL text by this SQL generator. Expression type 'NotSupportedExpression' is not supported."
+        "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."
         )]
     [Test]
     public void GenerateSql_UnsupportedExpression ()
     {
-      var unknownExpression = new NotSupportedExpression (typeof (int));
+      var unknownExpression = new CustomExpression (typeof (int));
       SqlGeneratingExpressionVisitor.GenerateSql(unknownExpression, _commandBuilder, _methodCallRegistry, BooleanSemanticsKind.ValueRequired);
     }
 

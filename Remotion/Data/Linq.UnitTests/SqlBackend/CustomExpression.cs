@@ -21,9 +21,9 @@ using Remotion.Data.Linq.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
-  public class NotSupportedExpression : ExtensionExpression
+  public class CustomExpression : ExtensionExpression
   {
-    public NotSupportedExpression (Type type)
+    public CustomExpression (Type type)
         : base (type)
     {
     }
@@ -31,6 +31,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
+    }
+
+    public override string ToString ()
+    {
+      return "CustomExpression";
     }
   }
 }
