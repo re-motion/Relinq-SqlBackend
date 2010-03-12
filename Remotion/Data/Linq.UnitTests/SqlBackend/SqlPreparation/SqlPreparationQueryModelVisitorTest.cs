@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
   public class SqlPreparationQueryModelVisitorTest
   {
     private SqlPreparationContext _context;
+    private DefaultSqlPreparationStage _defaultStage;
 
     private SelectClause _selectClause;
     private MainFromClause _mainFromClause;
@@ -40,6 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _context = new SqlPreparationContext ();
+      _defaultStage = new DefaultSqlPreparationStage (_context);
 
       _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _selectClause = ExpressionHelper.CreateSelectClause (_mainFromClause);
@@ -49,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitFromClause_CreatesFromExpression ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.FromExpressions.Count, Is.EqualTo(1));
       Assert.That (result.FromExpressions[0], Is.Not.Null);
@@ -66,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
       _queryModel.BodyClauses.Add (additionalFromClause);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.FromExpressions.Count, Is.EqualTo (2));
       Assert.That (result.FromExpressions[1], Is.Not.Null);
@@ -79,7 +81,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitFromClause_AddMapping ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
       Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (result.FromExpressions[0]));
@@ -88,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitResultOperator_NoWhereClause ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
       Assert.That (result.WhereCondition, Is.Null);
     }
 
@@ -99,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var whereClause = new WhereClause (predicate);
       _queryModel.BodyClauses.Add (whereClause);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.WhereCondition, Is.SameAs (predicate));
     }
@@ -113,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var whereClause = new WhereClause (isStarredExpression);
       _queryModel.BodyClauses.Add (whereClause);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.WhereCondition, Is.Not.SameAs (isStarredExpression));
       Assert.That (result.WhereCondition, Is.TypeOf (typeof (SqlMemberExpression)));
@@ -131,7 +133,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var whereClause2 = new WhereClause (predicate2);
       _queryModel.BodyClauses.Add (whereClause2);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
       Assert.That (((BinaryExpression) result.WhereCondition).Left, Is.SameAs (predicate1));
@@ -141,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitSelectClause_CreatesSelectProjection ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.SelectProjection, Is.Not.Null);
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
@@ -151,7 +153,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitResultOperator_NoCount ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
       Assert.That (result.IsCountQuery, Is.False);
     }
     
@@ -161,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var countResultOperator = new CountResultOperator ();
       _queryModel.ResultOperators.Add (countResultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.IsCountQuery, Is.True);
     }
@@ -169,7 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitResultOperator_NoDistinct ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
       Assert.That (result.IsDistinctQuery, Is.False);
     }
 
@@ -179,7 +181,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var distinctResultOperator = new DistinctResultOperator ();
       _queryModel.ResultOperators.Add (distinctResultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.IsDistinctQuery, Is.True);
     }
@@ -187,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitResultOperator_NoTop ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
       Assert.That (result.TopExpression, Is.Null);
     }
 
@@ -197,7 +199,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var resultOperator = new FirstResultOperator (false);
       _queryModel.ResultOperators.Add (resultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.TopExpression, Is.Not.Null);
       Assert.That (result.TopExpression, Is.TypeOf (typeof (ConstantExpression)));
@@ -210,7 +212,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var resultOperator = new SingleResultOperator (false);
       _queryModel.ResultOperators.Add (resultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.TopExpression, Is.Not.Null);
       Assert.That (result.TopExpression, Is.TypeOf (typeof (ConstantExpression)));
@@ -224,7 +226,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var resultOperator = new TakeResultOperator (takeExpression);
       _queryModel.ResultOperators.Add (resultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.TopExpression, Is.SameAs (takeExpression));
     }
@@ -236,7 +238,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var resultOperator = new TakeResultOperator (idExpression);
       _queryModel.ResultOperators.Add (resultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.TopExpression, Is.Not.Null);
       Assert.That (result.TopExpression, Is.Not.SameAs (idExpression));
@@ -251,7 +253,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var resultOperator = new DefaultIfEmptyResultOperator (Expression.Constant (1));
       _queryModel.ResultOperators.Add (resultOperator);
 
-      SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+      SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
     }
   }
 }

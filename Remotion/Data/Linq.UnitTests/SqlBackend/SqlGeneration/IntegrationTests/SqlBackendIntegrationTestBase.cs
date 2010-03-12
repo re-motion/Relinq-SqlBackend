@@ -60,7 +60,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     {
       var queryModel = ExpressionHelper.ParseQuery (expression);
 
-      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, new SqlPreparationContext());
+      SqlPreparationContext preparationContext = new SqlPreparationContext();
+      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
+          queryModel, 
+          preparationContext, 
+          new DefaultSqlPreparationStage (preparationContext));
 
       ResolvingSqlStatementVisitor.ResolveExpressions (sqlStatement, new SqlStatementResolverStub(), new UniqueIdentifierGenerator());
 
