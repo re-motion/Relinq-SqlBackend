@@ -23,7 +23,6 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
@@ -52,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
 
-      Assert.That (result.FromExpressions.Length, Is.EqualTo(1));
+      Assert.That (result.FromExpressions.Count, Is.EqualTo(1));
       Assert.That (result.FromExpressions[0], Is.Not.Null);
       Assert.That (result.FromExpressions[0].TableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
       Assert.That (
@@ -69,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
 
-      Assert.That (result.FromExpressions.Length, Is.EqualTo (2));
+      Assert.That (result.FromExpressions.Count, Is.EqualTo (2));
       Assert.That (result.FromExpressions[1], Is.Not.Null);
       Assert.That (result.FromExpressions[1].TableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
       Assert.That (

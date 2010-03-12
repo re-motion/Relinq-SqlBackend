@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -24,11 +25,33 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   public class AdditionalFromClausesSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    public void SimpleAdditionalFromClause ()
+    public void SimpleAdditionalFromClause_TwoTables ()
     {
       CheckQuery (
          from s in Cooks from k in Kitchens select s.Name,
          "SELECT [t0].[Name] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1]");
     }
+
+    [Test]
+    public void SimpleAdditionalFromClause_ThreeTables ()
+    {
+      CheckQuery (
+         from s in Cooks from k in Kitchens from r in Restaurants select k.Name,
+         "SELECT [t1].[Name] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] CROSS JOIN [RestaurantTable] AS [t2]");
+    }
+
+    [Test]
+    public void SimpleAdditionalFromClause_WithJoins ()
+    {
+      CheckQuery (
+         from s in Cooks from k in Kitchens where s.Substitution.Name=="Hugo" select k.Cook.FirstName,
+         "SELECT [t3].[FirstName] "
+         + "FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
+         + "CROSS JOIN [KitchenTable] AS [t2] JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
+         + "WHERE ([t1].[Name] = @1)",
+         new CommandParameter("@1", "Hugo")
+         );
+    }
+    
   }
 }

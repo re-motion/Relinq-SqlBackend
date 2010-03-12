@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   {
     private IQueryable<Cook> _cooks;
     private IQueryable<Kitchen> _kitchens;
+    private IQueryable<Restaurant> _restaurants;
 
     public IQueryable<Cook> Cooks
     {
@@ -42,11 +43,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       get { return _kitchens; }
     }
 
+    public IQueryable<Restaurant> Restaurants
+    {
+      get { return _restaurants; }
+    }
+
     [SetUp]
     public virtual void SetUp ()
     {
       _cooks = ExpressionHelper.CreateCookQueryable();
       _kitchens = ExpressionHelper.CreateKitchenQueryable();
+      _restaurants = ExpressionHelper.CreateRestaurantQueryable ();
     }
 
     protected SqlCommand GenerateSql (Expression expression)
