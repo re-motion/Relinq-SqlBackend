@@ -52,6 +52,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
+          case "Assistants":
+            return CreateResolvedJoinInfo (
+                originatingTable.GetResolvedTableInfo (),
+                "ID",
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "AssistedID");
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -82,6 +88,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                "ID",
                CreateResolvedTableInfo (joinInfo.ItemType, generator),
                "RestaurantID");
+          case "Cooks":
+            return CreateResolvedJoinInfo (
+                originatingTable.GetResolvedTableInfo (),
+                "ID",
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "RestaurantID");
         }
       }
 

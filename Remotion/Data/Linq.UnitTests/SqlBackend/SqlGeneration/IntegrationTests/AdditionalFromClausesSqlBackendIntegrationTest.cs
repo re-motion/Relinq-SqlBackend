@@ -52,6 +52,31 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
          new CommandParameter("@1", "Hugo")
          );
     }
+
+    [Test]
+    [Ignore ("TODO 2403")]
+    public void AdditionalFromClause_WithMemberAccess ()
+    {
+      CheckQuery (
+         from s in Cooks from a in s.Assistants select a.Name,
+         "SELECT [t1].[Name] "
+         + "FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID] ",
+         new CommandParameter ("@1", "Hugo")
+         );
+    }
+
+    [Test]
+    [Ignore ("TODO 2403")]
+    public void AdditionalFromClause_WithMemberAccess_AndCrossJoin ()
+    {
+      CheckQuery (
+         from s in Cooks from a in s.Assistants from r in Restaurants from c in r.Cooks where a.Name != null select c.Name,
+         "SELECT [t3].[Name] "
+         + "FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID] "
+         + "CROSS JOIN [RestaurantTable] AS [t2] JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[RestuarantID] "
+         + "WHERE ([t1].[Name] IS NOT NULL)"
+         );
+    }
     
   }
 }
