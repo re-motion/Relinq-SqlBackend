@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
 
-      var joinedTable = sqlTable.GetOrAddJoin (memberInfo);
+      var joinedTable = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
       Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
     }
@@ -45,10 +45,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
 
-      var joinedTable1 = sqlTable.GetOrAddJoin (memberInfo);
+      var joinedTable1 = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
       var originalJoinInfo = joinedTable1.JoinInfo;
 
-      var joinedTable2 = sqlTable.GetOrAddJoin (memberInfo);
+      var joinedTable2 = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
 
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));

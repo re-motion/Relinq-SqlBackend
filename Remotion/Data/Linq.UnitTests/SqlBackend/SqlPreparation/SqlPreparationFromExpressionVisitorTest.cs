@@ -15,14 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
 using System.Linq.Expressions;
+using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.TestDomain;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
@@ -33,9 +33,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void GetTableForFromExpression_ConstantExpression_ReturnsUnresolvedTable ()
     {
       var expression = Expression.Constant (new Cook[0]);
-      var fromClause = new MainFromClause ("itemName", typeof (Cook), expression);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromClause (fromClause);
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook));
 
       Assert.That (result, Is.TypeOf (typeof (SqlTable)));
 
@@ -44,6 +43,39 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       Assert.That (((UnresolvedTableInfo) tableInfo).ConstantExpression, Is.SameAs (expression));
       Assert.That (tableInfo.ItemType, Is.SameAs (typeof (Cook)));
+    }
+
+    [Test]
+    public void GetTableForFromExpression_SqlMemberExpression_ReturnsJoinedTable ()
+    {
+      // from r in Restaurant => sqlTable 
+      // from c in r.Cooks => MemberExpression (QSRExpression (r), "Cooks") => SqlMemberExpression (sqlTable, "Cooks") => Join: sqlTable.Cooks
+
+      var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
+      var sqlMemberExpression = new SqlMemberExpression (sqlTable, memberInfo);
+
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlMemberExpression, typeof (Cook));
+
+      Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (result, Is.SameAs (sqlTable.GetJoin (memberInfo)));
+
+      var joinInfo = ((SqlJoinedTable) result).JoinInfo;
+      Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
+
+      Assert.That (((UnresolvedJoinInfo) joinInfo).MemberInfo, Is.EqualTo (memberInfo));
+      Assert.That (((UnresolvedJoinInfo) joinInfo).Cardinality, Is.EqualTo (JoinCardinality.Many));
+      Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "Expressions of type 'CustomExpression' cannot be used as the FromExpressions of a from clause.")]
+    public void GetTableForFromExpression_UnsupportedExpression_Throws ()
+    {
+      var customExpression = new CustomExpression (typeof (Cook[]));
+
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (customExpression, typeof (Cook));
     }
   }
 }

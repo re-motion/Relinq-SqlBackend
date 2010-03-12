@@ -16,7 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
@@ -24,6 +28,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
   [TestFixture]
   public class UnresolvedJoinInfoTest
   {
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
+        "Expected a type implementing IEnumerable<T>, but found 'Remotion.Data.Linq.UnitTests.TestDomain.Cook'.\r\nParameter name: memberInfo")]
+    public void Initialization_CardinalityMany_NonEnumerable_Throws ()
+    {
+      new UnresolvedJoinInfo (typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
+    }
+
+    [Test]
+    public void ItemType_CardinalityOne ()
+    {
+      var joinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
+    }
+
+    [Test]
+    public void ItemType_CardinalityMany ()
+    {
+      var joinInfo = new UnresolvedJoinInfo (typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
+      Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
+    }
+
     [Test]
     public void Accept ()
     {

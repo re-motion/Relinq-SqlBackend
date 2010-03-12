@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember);
+      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
 
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember);
+      var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
 
       var foreignTableSource = new ResolvedTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID");
@@ -95,8 +95,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
-      var joinedTable1 = originalTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"));
-      var joinedTable2 = joinedTable1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"));
+      var joinedTable1 = originalTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var joinedTable2 = joinedTable1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       joinedTable1.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
       joinedTable2.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
@@ -124,7 +124,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Cook), "CookTable", "c"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      originalTable.GetOrAddJoin (kitchenCookMember);
+      originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
 
       SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
     }

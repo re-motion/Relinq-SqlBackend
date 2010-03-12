@@ -189,9 +189,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Expect (
           mock => mock.ResolveJoinInfo (
                       Arg.Is (_sqlTable),
-                      Arg<UnresolvedJoinInfo>.Matches (ts => ts.MemberInfo == _kitchenCookMember && ts.ItemType == typeof (Cook)),
+                      Arg<UnresolvedJoinInfo>.Matches (ts => ts.MemberInfo == _kitchenCookMember),
                       Arg.Is (_generator)))
-          .Return (_resolvedJoinInfo);
+          .Return (_resolvedJoinInfo)
+          .WhenCalled (
+          mi =>
+          {
+            var joinInfo = (UnresolvedJoinInfo) mi.Arguments[1];
+            Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
+            Assert.That (joinInfo.Cardinality, Is.EqualTo (JoinCardinality.One));
+          });
       _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);
@@ -224,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void VisitSqlEntityRefMemberExpression_TableReferenceRefersToJoin ()
     {
       var sqlEntityRefMemberExpression = new SqlEntityRefMemberExpression (_sqlTable, _kitchenCookMember);
-      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember);
+      var join = _sqlTable.GetOrAddJoin (_kitchenCookMember, JoinCardinality.One);
 
       StubResolveTableInfo();
 
