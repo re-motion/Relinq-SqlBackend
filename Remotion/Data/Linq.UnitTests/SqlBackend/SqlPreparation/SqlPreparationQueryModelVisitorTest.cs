@@ -181,6 +181,31 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
       Assert.That (_context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlTable));
     }
+
+    [Test]
+    public void VisitAdditionalFromClause_DoesNotStoreSqlTableWhenJoinWasCreated ()
+    {
+      var fakeSqlTableForMainFromClause = SqlStatementModelObjectMother.CreateSqlTable ();
+      _visitor.SqlTables.Add (fakeSqlTableForMainFromClause);
+
+      var constantExpression = Expression.Constant (0);
+      var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
+      _queryModel.BodyClauses.Add (additionalFromClause);
+
+      var preparedExpression = Expression.Constant (0);
+      var preparedSqlJoinedTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
+
+      _stageMock.Expect (mock => mock.PrepareFromExpression (additionalFromClause.FromExpression)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.GetTableForFromExpression (preparedExpression, typeof (int))).Return (preparedSqlJoinedTable);
+
+      _stageMock.Replay ();
+
+      _visitor.VisitAdditionalFromClause (additionalFromClause, _queryModel, 0);
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (_visitor.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause }));
+      Assert.That (_context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlJoinedTable));
+    }
     
     [Test]
     public void VisitWhereClause_WithCondition ()
