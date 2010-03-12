@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public static SqlStatement CreateSqlStatement ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo ();
-      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), sqlTable);
+      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable });
     }
 
     public static SqlTable CreateSqlTable ()
@@ -56,7 +56,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo ()
     {
-      var resolvedTableInfo = new ResolvedTableInfo (typeof (string), "Table", "t");
+      return CreateSqlTable_WithResolvedTableInfo ("Table", "t");
+    }
+
+    public static SqlTable CreateSqlTable_WithResolvedTableInfo (string tableName, string tableAlias)
+    {
+      var resolvedTableInfo = new ResolvedTableInfo (typeof (string), tableName, tableAlias);
       var sqlTable = new SqlTable (resolvedTableInfo);
       return sqlTable;
     }

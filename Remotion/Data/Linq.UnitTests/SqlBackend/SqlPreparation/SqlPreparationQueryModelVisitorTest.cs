@@ -52,11 +52,29 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
 
-      Assert.That (result.FromExpression, Is.Not.Null);
-      Assert.That (result.FromExpression.TableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
+      Assert.That (result.FromExpressions.Length, Is.EqualTo(1));
+      Assert.That (result.FromExpressions[0], Is.Not.Null);
+      Assert.That (result.FromExpressions[0].TableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
       Assert.That (
-          ((UnresolvedTableInfo) result.FromExpression.TableInfo).ConstantExpression,
+          ((UnresolvedTableInfo) result.FromExpressions[0].TableInfo).ConstantExpression,
           Is.SameAs (_mainFromClause.FromExpression));
+    }
+
+    [Test]
+    public void VistAdditionalFromClause_CreatesFromExpression ()
+    {
+      var constantExpression = Expression.Constant (0);
+      var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
+      _queryModel.BodyClauses.Add (additionalFromClause);
+
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
+
+      Assert.That (result.FromExpressions.Length, Is.EqualTo (2));
+      Assert.That (result.FromExpressions[1], Is.Not.Null);
+      Assert.That (result.FromExpressions[1].TableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
+      Assert.That (
+          ((UnresolvedTableInfo) result.FromExpressions[1].TableInfo).ConstantExpression,
+          Is.SameAs (constantExpression));
     }
 
     [Test]
@@ -65,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context);
 
       Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
-      Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (result.FromExpression));
+      Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (result.FromExpressions[0]));
     }
 
     [Test]

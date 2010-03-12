@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _sqlStatement = new SqlStatement (columnListExpression, sqlTable);
+      _sqlStatement = new SqlStatement (columnListExpression, new[] { sqlTable });
     }
 
     [Test]

@@ -41,9 +41,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       sqlTable.TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { sqlTable }, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
+    }
+
+    [Test]
+    public void GenerateSql_ForSeveralTables ()
+    {
+      var sqlTable1 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo("Table1", "t1");
+      var sqlTable2 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo("Table2", "t2");
+      var sqlTable3 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table3", "t3");
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { sqlTable1, sqlTable2, sqlTable3 }, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table1] AS [t1] CROSS JOIN [Table2] AS [t2] CROSS JOIN [Table3] AS [t3]"));
     }
 
     [Test]
@@ -56,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
@@ -74,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK");
       joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
@@ -90,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       joinedTable1.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
       joinedTable2.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
 
       Assert.That (
           _commandBuilder.GetCommandText (), 
@@ -103,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { sqlTable }, _commandBuilder);
     }
 
     [Test]
@@ -115,7 +126,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       originalTable.GetOrAddJoin (kitchenCookMember);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder);
+      SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (
