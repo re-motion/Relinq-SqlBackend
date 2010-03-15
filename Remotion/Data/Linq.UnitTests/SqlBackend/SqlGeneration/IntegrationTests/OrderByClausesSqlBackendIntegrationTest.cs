@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   {
 
     [Test]
-    public void SimpleOrderBy_OneOrderByClause ()
+    public void OneOrderByClause ()
     {
       CheckQuery (
          from s in Cooks orderby s.Name select s.Name,
@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    public void SimpleOrderBy_SeveralOrderByClauses ()
+    public void SeveralOrderings ()
     {
       CheckQuery (
          from s in Cooks orderby s.Name, s.FirstName descending, s.Weight select s.Name,
@@ -42,12 +42,47 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    public void OrderBy_WithConstantexpression ()
+    public void SeveralOrderByClauses ()
+    {
+      CheckQuery (
+         from s in Cooks 
+         orderby s.Name, s.FirstName descending, s.Weight
+         orderby s.ID, s.IsFullTimeCook descending 
+         select s.Name,
+         "SELECT [t0].[Name] FROM [CookTable] AS [t0] "
+         + "ORDER BY [t0].[ID] ASC, [t0].[IsFullTimeCook] DESC, [t0].[Name] ASC, [t0].[FirstName] DESC, [t0].[Weight] ASC");
+    }
+
+    [Test]
+    public void SeveralOrderByClauses_SeparatedByOtherClauses ()
+    {
+      CheckQuery (
+         from s in Cooks
+         orderby s.Name
+         where s.FirstName != null
+         orderby s.ID
+         select s.Name,
+         "SELECT [t0].[Name] FROM [CookTable] AS [t0] "
+         + "WHERE ([t0].[FirstName] IS NOT NULL) "
+         + "ORDER BY [t0].[ID] ASC, [t0].[Name] ASC");
+    }
+
+    [Test]
+    public void WithConstantExpression ()
     {
       CheckQuery (
          from s in Cooks orderby 1 select s.Name,
          "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY (SELECT @1) ASC",
          new CommandParameter("@1", 1));
+    }
+
+    [Test]
+    public void WithConstantExpression_InComplexExpression ()
+    {
+      CheckQuery (
+         from s in Cooks orderby s.Name + " " + s.FirstName select s.Name,
+         "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY (([t0].[Name] + @1) + [t0].[FirstName]) ASC",
+         new CommandParameter ("@1", " "));
     }
 
   }

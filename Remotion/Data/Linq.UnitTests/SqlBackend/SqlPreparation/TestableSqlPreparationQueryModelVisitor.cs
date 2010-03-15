@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -37,6 +38,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public new Expression WhereCondition
     {
       get { return base.WhereCondition; }
+    }
+
+    public new List<Ordering> OrderByClauses
+    {
+      get { return base.OrderByClauses; }
     }
 
     public new bool IsCountQuery
