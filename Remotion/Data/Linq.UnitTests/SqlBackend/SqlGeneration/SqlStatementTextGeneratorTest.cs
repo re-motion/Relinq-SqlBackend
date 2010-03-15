@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
-      var columnListExpression = new SqlColumnListExpression (
+      var columnListExpression = new SqlEntityExpression (
           typeof (Cook),
           new[]
           {

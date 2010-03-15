@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
   [TestFixture]
   public class SqlColumnListExpressionTest
   {
-    private SqlColumnListExpression _columnListExpression;
+    private SqlEntityExpression _entityExpression;
     private SqlColumnExpression _columnExpression1;
     private SqlColumnExpression _columnExpression2;
     private SqlColumnExpression _columnExpression3;
@@ -49,22 +49,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name");
       _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City");
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _columnListExpression = new SqlColumnListExpression (_tableReferenceExpression.Type, _orginalColumns);
-      _originalColumnsReadonly = _columnListExpression.Columns;
+      _entityExpression = new SqlEntityExpression (_tableReferenceExpression.Type, _orginalColumns);
+      _originalColumnsReadonly = _entityExpression.Columns;
     }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnListExpression, IResolvedSqlExpressionVisitor> (
-          _columnListExpression, 
-          mock => mock.VisitSqlColumnListExpression (_columnListExpression));
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityExpression, IResolvedSqlExpressionVisitor> (
+          _entityExpression, 
+          mock => mock.VisitSqlColumnListExpression (_entityExpression));
     }
 
     [Test]
     public void Accept_VisitorNotSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_columnListExpression);
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_entityExpression);
     }
 
     [Test]
@@ -74,10 +74,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (_originalColumnsReadonly);
       visitorMock.Replay();
 
-      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_columnListExpression, visitorMock);
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
       
       visitorMock.VerifyAllExpectations();
-      Assert.That (expression, Is.SameAs (_columnListExpression));
+      Assert.That (expression, Is.SameAs (_entityExpression));
     }
 
     [Test]
@@ -91,10 +91,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (Array.AsReadOnly(expectedColumns));
       visitorMock.Replay ();
 
-      var expression = (SqlColumnListExpression) ExtensionExpressionTestHelper.CallVisitChildren (_columnListExpression, visitorMock);
+      var expression = (SqlEntityExpression) ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
 
-      Assert.That (expression, Is.Not.SameAs(_columnListExpression));
-      Assert.That (expression.Type, Is.SameAs (_columnListExpression.Type));
+      Assert.That (expression, Is.Not.SameAs(_entityExpression));
+      Assert.That (expression.Type, Is.SameAs (_entityExpression.Type));
       Assert.That (expression.Columns, Is.EqualTo (expectedColumns));
     }
   }

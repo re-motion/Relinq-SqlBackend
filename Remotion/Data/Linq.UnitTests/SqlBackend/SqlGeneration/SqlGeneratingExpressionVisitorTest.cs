@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnListExpression ()
     {
-      var sqlColumnListExpression = new SqlColumnListExpression (
+      var sqlColumnListExpression = new SqlEntityExpression (
           typeof (Cook),
           new[]
           {

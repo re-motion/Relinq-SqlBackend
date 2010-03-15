@@ -160,7 +160,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       if (tableInfo.ItemType == typeof (Cook))
       {
-        return new SqlColumnListExpression (
+        return new SqlEntityExpression (
             entityType,
             new[]
             {
@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       }
       else if (tableInfo.ItemType == typeof (Kitchen))
       {
-        return new SqlColumnListExpression (
+        return new SqlEntityExpression (
             entityType,
             new[]
             {
@@ -188,7 +188,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       }
       else if (tableInfo.ItemType == typeof (Restaurant))
       {
-        return new SqlColumnListExpression (
+        return new SqlEntityExpression (
             entityType,
             new[]
             {
