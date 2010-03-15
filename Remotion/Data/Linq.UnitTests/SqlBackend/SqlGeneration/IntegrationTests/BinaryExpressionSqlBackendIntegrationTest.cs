@@ -291,5 +291,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", 10)
           );
     }
+
+    [Test]
+    public void Equals_EntityComparisonWithNull ()
+    {
+      CheckQuery (
+          from k in Kitchens where k.Cook == null select k.Name,
+          "SELECT [t0].[Name] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
+          + "WHERE ([t1].[ID] IS NULL)");
+    }
   }
 }

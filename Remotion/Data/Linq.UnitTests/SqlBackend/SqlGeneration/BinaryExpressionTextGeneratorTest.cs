@@ -207,9 +207,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo ("left - right"));
     }
 
-    //example: (true AND true)
     [Test]
-    [Ignore ("Review special bool cases")]
     public void VisitBinaryExpression_AndAlso_Boolean ()
     {
       var binaryExpression = Expression.AndAlso (_trueExpression, _trueExpression);
@@ -217,7 +215,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       var result = _commandBuilder.GetCommandText ();
 
-      Assert.That (result, Is.EqualTo (("true=true")));
+      Assert.That (result, Is.EqualTo (("true AND true")));
     }
 
     //example: (true AND (1<2))

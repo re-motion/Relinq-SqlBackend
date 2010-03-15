@@ -70,12 +70,29 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2407")]
     public void SimpleSqlQuery_ChainedPropertySelectAndWhere_SamePathTwice ()
     {
       CheckQuery (
           from k in Kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook,
-          "?");
+          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
+          + "WHERE ([t3].[ID] IS NOT NULL)");
+    }
+
+    [Test]
+    public void Equals_EntityComparison ()
+    {
+      CheckQuery (
+          from k in Kitchens where k.Cook == k.Restaurant.SubKitchen.Cook select k.Name,
+          "SELECT [t0].[Name] FROM [KitchenTable] AS [t0] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
+          + "LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON [t0].[ID] = [t3].[KitchenID] "
+          + "WHERE ([t3].[ID] = [t4].[ID])");
     }
 
     [Test]
