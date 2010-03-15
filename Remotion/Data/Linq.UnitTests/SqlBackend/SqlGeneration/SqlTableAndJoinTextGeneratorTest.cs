@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       SqlTableAndJoinTextGenerator.GenerateSql (new[] { originalTable }, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
     }
 
     [Test]
@@ -106,7 +106,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (
           _commandBuilder.GetCommandText (), 
           Is.EqualTo (
-              "[KitchenTable] AS [t1] JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK] JOIN [CookTable2] AS [t3] ON [t2].[ID2] = [t3].[FK2]"));
+              "[KitchenTable] AS [t1] LEFT OUTER JOIN "
+             +"[CookTable] AS [t2] ON [t1].[ID] = [t2].[FK] LEFT OUTER JOIN "
+             +"[CookTable2] AS [t3] ON [t2].[ID2] = [t3].[FK2]"));
     }
 
     [Test]

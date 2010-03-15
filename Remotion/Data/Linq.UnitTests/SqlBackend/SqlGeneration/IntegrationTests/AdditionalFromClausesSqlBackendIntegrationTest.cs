@@ -46,8 +46,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
          from s in Cooks from k in Kitchens where s.Substitution.Name=="Hugo" select k.Cook.FirstName,
          "SELECT [t3].[FirstName] "
-         + "FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
-         + "CROSS JOIN [KitchenTable] AS [t2] JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
+         + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
+         + "CROSS JOIN [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
          + "WHERE ([t1].[Name] = @1)",
          new CommandParameter("@1", "Hugo")
          );
@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
          from s in Cooks from a in s.Assistants select a.Name,
          "SELECT [t1].[Name] "
-         + "FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID]"
+         + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID]"
          );
     }
 
@@ -69,8 +69,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
          from s in Cooks from a in s.Assistants from r in Restaurants from c in r.Cooks where a.Name != null select c.Name,
          "SELECT [t3].[Name] "
-         + "FROM [CookTable] AS [t0] JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID] "
-         + "CROSS JOIN [RestaurantTable] AS [t2] JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[RestaurantID] "
+         + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID] "
+         + "CROSS JOIN [RestaurantTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[RestaurantID] "
          + "WHERE ([t1].[Name] IS NOT NULL)"
          );
     }
