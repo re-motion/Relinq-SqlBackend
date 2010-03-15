@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
@@ -30,6 +31,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
       sqlStatement.WhereCondition = Expression.Constant (1);
+    }
+
+    [Test]
+    public void WhereCondition_CanBeSetToNull ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement ();
+      sqlStatement.WhereCondition = Expression.Constant (true);
+      sqlStatement.WhereCondition = null;
+
+      Assert.That (sqlStatement.WhereCondition, Is.Null);
     }
   }
 }
