@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -38,6 +39,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
          from s in Cooks orderby s.Name, s.FirstName descending, s.Weight select s.Name,
          "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC, [t0].[FirstName] DESC, [t0].[Weight] ASC");
+    }
+
+    [Test]
+    public void OrderBy_WithConstantexpression ()
+    {
+      CheckQuery (
+         from s in Cooks orderby 1 select s.Name,
+         "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY (SELECT @1) ASC",
+         new CommandParameter("@1", 1));
     }
 
   }
