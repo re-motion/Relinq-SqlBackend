@@ -160,11 +160,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     {
       if (tableInfo.ItemType == typeof (Cook))
       {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
+            primaryKeyColumn,
             new[]
             {
-                CreateColumn (typeof (int), tableInfo, "ID"),
+                primaryKeyColumn,
                 CreateColumn (typeof (string), tableInfo, "FirstName"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
                 CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
@@ -175,11 +177,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       }
       else if (tableInfo.ItemType == typeof (Kitchen))
       {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
+            primaryKeyColumn,
             new[]
             {
-                CreateColumn (typeof (int), tableInfo, "ID"),
+                primaryKeyColumn,
                 CreateColumn (typeof (int), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
                 CreateColumn (typeof (int), tableInfo, "RestaurantID"),
@@ -188,11 +192,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       }
       else if (tableInfo.ItemType == typeof (Restaurant))
       {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
+            primaryKeyColumn,
             new[]
             {
-                CreateColumn (typeof (int), tableInfo, "ID"),
+                primaryKeyColumn,
                 CreateColumn (typeof (int), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });

@@ -39,11 +39,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID");
       var columnListExpression = new SqlEntityExpression (
           typeof (Cook),
+          primaryKeyColumn,
           new[]
           {
-              new SqlColumnExpression (typeof (int), "t", "ID"),
+              primaryKeyColumn,
               new SqlColumnExpression (typeof (int), "t", "Name"),
               new SqlColumnExpression (typeof (int), "t", "City")
           });

@@ -29,7 +29,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class SqlColumnListExpressionTest
+  public class SqlEntityExpressionTest
   {
     private SqlEntityExpression _entityExpression;
     private SqlColumnExpression _columnExpression1;
@@ -49,8 +49,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
       _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name");
       _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City");
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _entityExpression = new SqlEntityExpression (_tableReferenceExpression.Type, _orginalColumns);
-      _originalColumnsReadonly = _entityExpression.Columns;
+      _entityExpression = new SqlEntityExpression (_tableReferenceExpression.Type, _columnExpression1, _orginalColumns);
+      _originalColumnsReadonly = _entityExpression.ProjectionColumns;
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 
       Assert.That (expression, Is.Not.SameAs(_entityExpression));
       Assert.That (expression.Type, Is.SameAs (_entityExpression.Type));
-      Assert.That (expression.Columns, Is.EqualTo (expectedColumns));
+      Assert.That (expression.ProjectionColumns, Is.EqualTo (expectedColumns));
     }
   }
 }

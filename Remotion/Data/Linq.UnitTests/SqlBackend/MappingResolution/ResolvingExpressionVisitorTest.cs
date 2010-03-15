@@ -215,7 +215,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       StubResolveTableInfo();
 
-      var columnListExpression = new SqlEntityExpression (typeof (Cook));
+      var columnListExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression(typeof(int), "c", "ID"));
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_generator)))
           .Return (columnListExpression);
@@ -239,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Expect (
           mock =>
           mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Matches (tableRef => tableRef.SqlTable == join), Arg.Is (_generator)))
-          .Return (new SqlEntityExpression (typeof (Cook)));
+          .Return (new SqlEntityExpression (typeof (Cook), new SqlColumnExpression(typeof(int), "c", "ID")));
       _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator);

@@ -60,11 +60,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnListExpression ()
     {
+      var primaryKeyColumn = new SqlColumnExpression (typeof (string), "t", "ID");
       var sqlColumnListExpression = new SqlEntityExpression (
           typeof (Cook),
+          primaryKeyColumn,
           new[]
           {
-              new SqlColumnExpression (typeof (string), "t", "ID"),
+              primaryKeyColumn,
               new SqlColumnExpression (typeof (string), "t", "Name"),
               new SqlColumnExpression (typeof (string), "t", "City")
           });
