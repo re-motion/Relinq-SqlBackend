@@ -47,5 +47,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       return base.VisitWhereCondition (whereCondition);
     }
+
+    public new Expression VisitOrderingExpression (Expression orderByExpression)
+    {
+      return base.VisitOrderingExpression (orderByExpression);
+    }
   }
 }

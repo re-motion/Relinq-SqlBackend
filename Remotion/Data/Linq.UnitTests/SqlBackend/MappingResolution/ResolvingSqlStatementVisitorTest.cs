@@ -212,5 +212,23 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
+
+    [Test]
+    public void VisitOrderExpression_ResolvesExpression ()
+    {
+      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _visitor.VisitOrderingExpression (expression);
+
+      _resolverMock.VerifyAllExpectations();
+
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
   }
 }
