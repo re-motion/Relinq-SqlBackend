@@ -20,7 +20,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Rhino.Mocks;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
@@ -41,6 +43,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     private Expression _nullExpression;
     private Expression _trueExpression;
     private Expression _falseExpression;
+
+    private Expression _sqlEntityExpression;
     
     private BinaryExpressionTextGenerator _generator;
     private ExpressionTreeVisitor _expressionVisitorStub;
@@ -105,6 +109,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           .Stub (stub => stub.VisitExpression (_falseExpression))
           .WhenCalled (mi => _commandBuilder.Append ("false"))
           .Return (_falseExpression);
+
+      _sqlEntityExpression = new SqlEntityExpression(typeof(string), new SqlColumnExpression(typeof(int), "c", "ID"));
+      _expressionVisitorStub
+          .Stub (stub => stub.VisitExpression (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn))
+          .WhenCalled (mi => _commandBuilder.Append ("[c].[ID]"))
+          .Return (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn);
       
       _generator = new BinaryExpressionTextGenerator (_commandBuilder, _expressionVisitorStub);
     }
@@ -421,6 +431,39 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo ("POWER (leftDouble, rightDouble)"));
     }
 
+    [Test]
+    public void VisitBinaryExpression_EntityComparison ()
+    {
+      var binaryExpression = Expression.Equal (_sqlEntityExpression, _sqlEntityExpression);
+
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+      Assert.That (result, Is.EqualTo ("[c].[ID] = [c].[ID]"));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_EntityComparisonWithNullOnRightSide ()
+    {
+      var binaryExpression = Expression.Equal (_nullExpression, _sqlEntityExpression);
+
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText();
+      Assert.That (result, Is.EqualTo ("[c].[ID] IS NULL"));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_EntityComparisonWithNullOnLeftSide ()
+    {
+      var binaryExpression = Expression.Equal (_sqlEntityExpression, _nullExpression);
+
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+      Assert.That (result, Is.EqualTo ("[c].[ID] IS NULL"));
+    }
+    
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void NotSupportedNodeType ()
