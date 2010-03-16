@@ -287,26 +287,31 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitOrderByClause_Multiple ()
     {
-      // TODO Review 2401: Add some orderings to the _visitor.Orderings list before executing the VisitOrderByClause method. Then, in the assertion, check that the new orderings were _inserted before_ the existing ones (in the correct order).
+      var preparedOrderingExpression1 = Expression.Constant ("column1");
+      var preparedOrderingExpression2 = Expression.Constant ("column2");
+      var preparedOrderingExpression3 = Expression.Constant ("column3");
+ 
+      var ordering1 = new Ordering (preparedOrderingExpression1, OrderingDirection.Asc);
+      var ordering2 = new Ordering (preparedOrderingExpression2, OrderingDirection.Asc);
+      var ordering3 = new Ordering (preparedOrderingExpression3, OrderingDirection.Desc);
+      
+      _visitor.Orderings.Add (ordering1);
+      
+      _orderByClause.Orderings.Add (ordering2);
+      _orderByClause.Orderings.Add (ordering3);
 
-      _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
-      _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
-
-      // TODO Review 2401: Don't prepare the orderings, prepare the expressions - those are passed to the visitor methods
-      var preparedOrdering1 = new Ordering (Expression.Constant ("column1"), OrderingDirection.Asc);
-      var preparedOrdering2 = new Ordering (Expression.Constant ("column2"), OrderingDirection.Asc);
-
-      _stageMock.Expect (mock => mock.PrepareOrderByExpression (_orderByClause.Orderings[0].Expression)).Return (preparedOrdering1.Expression);
-      _stageMock.Expect (mock => mock.PrepareOrderByExpression (_orderByClause.Orderings[1].Expression)).Return (preparedOrdering2.Expression);
+      _stageMock.Expect (mock => mock.PrepareOrderByExpression (_orderByClause.Orderings[0].Expression)).Return (preparedOrderingExpression2);
+      _stageMock.Expect (mock => mock.PrepareOrderByExpression (_orderByClause.Orderings[1].Expression)).Return (preparedOrderingExpression3);
       _stageMock.Replay ();
 
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (_visitor.Orderings, Is.Not.Null);
-      Assert.That (_visitor.Orderings.Count, Is.EqualTo (2));
-      Assert.That (_visitor.Orderings[0].Expression, Is.SameAs (preparedOrdering1.Expression));
-      Assert.That (_visitor.Orderings[1].Expression, Is.SameAs (preparedOrdering2.Expression));
+      Assert.That (_visitor.Orderings.Count, Is.EqualTo (3));
+      Assert.That (_visitor.Orderings[0].Expression, Is.SameAs (preparedOrderingExpression2));
+      Assert.That (_visitor.Orderings[1].Expression, Is.SameAs (preparedOrderingExpression3));
+      Assert.That (_visitor.Orderings[2].Expression, Is.SameAs (preparedOrderingExpression1));
     }
 
     [Test]
