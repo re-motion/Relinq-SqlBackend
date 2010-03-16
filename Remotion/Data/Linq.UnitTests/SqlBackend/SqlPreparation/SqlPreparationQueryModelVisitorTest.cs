@@ -287,10 +287,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitOrderByClause_Multiple ()
     {
+      // TODO Review 2401: Add some orderings to the _visitor.OrderByClauses list before executing the VisitOrderByClause method. Then, in the assertion, check that the new orderings were _inserted before_ the existing ones (in the correct order).
+
+      _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
+      _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
+
+      // TODO Review 2401: Don't prepare the orderings, prepare the expressions - those are passed to the visitor methods
       var preparedOrdering1 = new Ordering (Expression.Constant ("column1"), OrderingDirection.Asc);
       var preparedOrdering2 = new Ordering (Expression.Constant ("column2"), OrderingDirection.Asc);
-      _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
-      _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
 
       _stageMock.Expect (mock => mock.PrepareOrderByExpression (_orderByClause.Orderings[0].Expression)).Return (preparedOrdering1.Expression);
       _stageMock.Expect (mock => mock.PrepareOrderByExpression (_orderByClause.Orderings[1].Expression)).Return (preparedOrdering2.Expression);
