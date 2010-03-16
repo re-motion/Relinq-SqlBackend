@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForFromTable ()
     {
-      _stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables);
+      _stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table] AS [t]"));
     }
