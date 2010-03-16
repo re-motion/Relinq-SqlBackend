@@ -28,6 +28,11 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
+  // TODO Review 2457: Try to refactor the tests to directly call the BuildSelectPart, BuildFromPart, etc. methods instead of Build()
+  // TODO Review 2457: Currently, the tests integrate all of SqlStatementTextGenerator's functionality at once; e.g., the Build_WithMultipleOrderByClauses test needs to handle Select and Where expressions as well as orderings
+  // TODO Review 2457: By calling BuildOrderByPart, the test could concentrate on what it's actually testing
+  // TODO Review 2457: Add a TestableSqlStatementTextGenerator that adds the methods in public form, delegating to the protected base methods
+  // TODO Review 2457: For the Build() method itself, create three tests: one with only select and from clause, one with a where clause, and one with an orderby clause
   [TestFixture]
   public class SqlStatementTextGeneratorTest
   {
@@ -208,7 +213,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new Ordering[] { orderByClause });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause });
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
@@ -234,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var columnExpression3 = new SqlColumnExpression (typeof (string), "t", "City");
       var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
       
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new Ordering[] { orderByClause1, orderByClause2, orderByClause3 });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause1, orderByClause2, orderByClause3 });
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
