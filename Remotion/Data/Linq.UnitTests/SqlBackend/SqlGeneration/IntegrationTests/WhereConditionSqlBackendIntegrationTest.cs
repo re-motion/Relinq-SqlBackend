@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -60,6 +61,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           from c in Cooks where c.FirstName == "hugo" select c.FirstName,
           "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1)",
           new CommandParameter ("@1", "hugo")
+          );
+    }
+
+    [Test]
+    public void EntityConstantExpression_ConstantCookEntity ()
+    {
+      var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
+      CheckQuery (
+          from c in Cooks where c.ID == cook.ID select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          new CommandParameter("@1", 5)
+          );
+    }
+
+    [Test]
+    public void EntityConstantExpression_WithConstant ()
+    {
+      const int id = 5;
+      CheckQuery (
+          from c in Cooks where c.ID == id select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          new CommandParameter ("@1", 5)
           );
     }
   }

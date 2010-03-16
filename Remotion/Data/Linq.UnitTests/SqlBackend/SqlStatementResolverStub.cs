@@ -151,6 +151,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("Cannot resolve member: " + memberExpression.MemberInfo);
     }
 
+    public Expression ResolveConstantExpression (ConstantExpression constantExpression)
+    {
+      if (constantExpression.Value is Cook)
+        return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, "5");
+      else
+        return constantExpression;
+    }
+
     private SqlColumnExpression CreateColumn (Type columnType, ResolvedTableInfo resolvedTableInfo, string columnName)
     {
       return new SqlColumnExpression (columnType, resolvedTableInfo.TableAlias, columnName);

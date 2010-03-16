@@ -75,6 +75,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_VisitSqlEntityConstantExpresion ()
+    {
+      var entityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), "5");
+
+      SqlGeneratingExpressionVisitor.GenerateSql (entityConstantExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("5"));
+    }
+
+    [Test]
     public void VisitConstantExpression_TrueParameter ()
     {
       var expression = Expression.Constant (true);
