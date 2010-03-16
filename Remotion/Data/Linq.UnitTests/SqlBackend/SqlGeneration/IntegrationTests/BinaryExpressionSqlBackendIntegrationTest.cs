@@ -300,5 +300,49 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT [t0].[Name] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
           + "WHERE ([t1].[ID] IS NULL)");
     }
+
+
+    [Test]
+    public void EntityConstantExpression_WithIDMember ()
+    {
+      var cook = new Cook () { ID = 5, Name = "Maier", FirstName = "Hugo" };
+      CheckQuery (
+          from c in Cooks where c.ID == cook.ID select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          new CommandParameter ("@1", 5)
+          );
+    }
+
+    [Test]
+    public void EntityConstantExpression_WithReference ()
+    {
+      var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
+      CheckQuery (
+          from c in Cooks where c == cook select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          new CommandParameter ("@1", cook.ID)
+          );
+    }
+    
+    [Test]
+    public void EntityConstantExpression_WithNull ()
+    {
+      var cook = new Cook () { ID = 5, Name = "Maier", FirstName = "Hugo" };
+      CheckQuery (
+          from c in Cooks where c == null select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)"
+          );
+    }
+
+    [Test]
+    public void EntityConstantExpression_WithConstantID ()
+    {
+      const int id = 5;
+      CheckQuery (
+          from c in Cooks where c.ID == id select c.FirstName,
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          new CommandParameter ("@1", 5)
+          );
+    }
   }
 }

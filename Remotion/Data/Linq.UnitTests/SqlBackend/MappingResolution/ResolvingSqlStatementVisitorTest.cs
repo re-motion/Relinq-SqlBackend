@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   {
     private ISqlStatementResolver _resolverMock;
     private UniqueIdentifierGenerator _uniqueIdentifierGenerator;
-    
+
     private TestableResolvingSqlStatementVisitor _visitor;
 
     private UnresolvedTableInfo _unresolvedTableInfo;
@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
-      _uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
+      _uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
 
       _visitor = new TestableResolvingSqlStatementVisitor (_resolverMock, _uniqueIdentifierGenerator);
 
@@ -60,10 +60,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
           .Return (_fakeResolvedTableInfo);
       _resolverMock.Replay();
-      
+
       _visitor.VisitSqlTable (_sqlTable);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
       Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeResolvedTableInfo));
     }
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
-      using (_resolverMock.GetMockRepository ().Ordered ())
+      using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
@@ -84,11 +84,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveJoinInfo (_sqlTable, (UnresolvedJoinInfo) join.JoinInfo, _uniqueIdentifierGenerator))
             .Return (fakeResolvedJoinInfo);
       }
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       _visitor.VisitSqlTable (_sqlTable);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
       Assert.That (join.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Restaurant));
 
-      using (_resolverMock.GetMockRepository ().Ordered ())
+      using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
@@ -113,11 +113,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveJoinInfo (_sqlTable, (UnresolvedJoinInfo) join2.JoinInfo, _uniqueIdentifierGenerator))
             .Return (fakeResolvedJoinInfo2);
       }
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       _visitor.VisitSqlTable (_sqlTable);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
       Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
       Assert.That (join2.JoinInfo, Is.SameAs (fakeResolvedJoinInfo2));
     }
@@ -134,7 +134,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo3 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (string));
 
-      using (_resolverMock.GetMockRepository ().Ordered ())
+      using (_resolverMock.GetMockRepository().Ordered())
       {
         _resolverMock
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
@@ -149,11 +149,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveJoinInfo (join1, (UnresolvedJoinInfo) join3.JoinInfo, _uniqueIdentifierGenerator))
             .Return (fakeResolvedJoinInfo3);
       }
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       _visitor.VisitSqlTable (_sqlTable);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
       Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
       Assert.That (join2.JoinInfo, Is.SameAs (fakeResolvedJoinInfo2));
       Assert.That (join3.JoinInfo, Is.SameAs (fakeResolvedJoinInfo3));
@@ -162,15 +162,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void VisitSelectProjection_ResolvesExpression ()
     {
-      var expression = new SqlTableReferenceExpression(_sqlTable);
+      var expression = new SqlTableReferenceExpression (_sqlTable);
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
           .Return (fakeResult);
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = _visitor.VisitSelectProjection(expression);
+      var result = _visitor.VisitSelectProjection (expression);
 
       _resolverMock.VerifyAllExpectations();
 
@@ -186,11 +189,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
           .Return (fakeResult);
-      _resolverMock.Replay ();
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
+      _resolverMock.Replay();
 
-      var result = _visitor.VisitTopExpression(expression);
+      var result = _visitor.VisitTopExpression (expression);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
@@ -204,11 +210,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
           .Return (fakeResult);
-      _resolverMock.Replay ();
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
+      _resolverMock.Replay();
 
       var result = _visitor.VisitWhereCondition (expression);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
@@ -222,7 +231,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
           .Return (fakeResult);
-      _resolverMock.Replay ();
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
+      _resolverMock.Replay();
 
       var result = _visitor.VisitOrderingExpression (expression);
 

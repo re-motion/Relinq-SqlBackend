@@ -63,31 +63,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", "hugo")
           );
     }
-
-    // TODO Review 2442: Move the following two tests to the BinaryExpression integration test file
-
-    [Test]
-    // TODO Review 2442: Rename to ..._WithIDMember; write an additional test that actually compares the cook, not the ID; also write a test that compares the cook to null
-    public void EntityConstantExpression_ConstantCookEntity ()
-    {
-      var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
-      CheckQuery (
-          from c in Cooks where c.ID == cook.ID select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
-          new CommandParameter("@1", 5)
-          );
-    }
-
-    [Test]
-    // TODO Review 2442: Rename to ..._WithConstantID
-    public void EntityConstantExpression_WithConstant ()
-    {
-      const int id = 5;
-      CheckQuery (
-          from c in Cooks where c.ID == id select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
-          new CommandParameter ("@1", 5)
-          );
-    }
+    
   }
 }

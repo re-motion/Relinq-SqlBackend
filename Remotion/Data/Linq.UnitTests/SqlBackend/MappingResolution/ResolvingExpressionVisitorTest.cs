@@ -59,6 +59,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _generator))
           .Return (fakeResult);
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator);
@@ -81,6 +84,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Return (unresolvedResult);
         _resolverMock
             .Expect (mock => mock.ResolveTableReferenceExpression (unresolvedResult, _generator))
+            .Return (resolvedResult);
+        _resolverMock
+            .Expect (mock => mock.ResolveConstantExpression (resolvedResult))
             .Return (resolvedResult);
       }
       _resolverMock.Replay();
@@ -117,6 +123,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (memberExpression, _generator))
           .Return (fakeResult);
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator);
@@ -141,6 +150,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Return (unresolvedResult);
         _resolverMock
             .Expect (mock => mock.ResolveMemberExpression (unresolvedResult, _generator))
+            .Return (resolvedResult);
+        _resolverMock
+            .Expect (mock => mock.ResolveConstantExpression (resolvedResult))
             .Return (resolvedResult);
       }
       _resolverMock.Replay();
