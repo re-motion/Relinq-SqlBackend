@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
       if (constantExpression.Value is Cook)
-        return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, "5");
+        return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, "5"); // TODO Review 2442: Use cook's ID instead of "5"
       else
         return constantExpression;
     }

@@ -64,7 +64,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           );
     }
 
+    // TODO Review 2442: Move the following two tests to the BinaryExpression integration test file
+
     [Test]
+    // TODO Review 2442: Rename to ..._WithIDMember; write an additional test that actually compares the cook, not the ID; also write a test that compares the cook to null
     public void EntityConstantExpression_ConstantCookEntity ()
     {
       var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
@@ -76,6 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    // TODO Review 2442: Rename to ..._WithConstantID
     public void EntityConstantExpression_WithConstant ()
     {
       const int id = 5;
