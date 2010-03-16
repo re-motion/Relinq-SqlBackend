@@ -24,6 +24,7 @@ using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using NUnit.Framework.SyntaxHelpers;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
@@ -50,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           });
 
       _stage = new DefaultMappingResolutionStage();
-      _sqlStatement = new SqlStatement (columnListExpression, new[] { sqlTable });
+      _sqlStatement = new SqlStatement (columnListExpression, new[] { sqlTable }, new Ordering[]{});
       _commandBuilder = new SqlCommandBuilder ();
     }
     
@@ -58,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForFromTable ()
     {
-      _stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.FromExpressions);
+      _stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table] AS [t]"));
     }

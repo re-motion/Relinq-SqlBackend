@@ -40,9 +40,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       get { return base.WhereCondition; }
     }
 
-    public new List<Ordering> OrderByClauses
+    public new List<Ordering> Orderings
     {
-      get { return base.OrderByClauses; }
+      get { return base.Orderings; }
     }
 
     public new bool IsCountQuery

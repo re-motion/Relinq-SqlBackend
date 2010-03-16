@@ -20,6 +20,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
@@ -28,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     public static SqlStatement CreateSqlStatement ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo ();
-      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable });
+      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[]{});
     }
 
     public static SqlTable CreateSqlTable ()

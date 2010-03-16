@@ -63,8 +63,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (result.WhereCondition, Is.Null);
-      Assert.That (result.FromExpressions.Count, Is.EqualTo (1));
-      Assert.That (result.FromExpressions[0].TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
+      Assert.That (result.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (result.SqlTables[0].TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
       Assert.That (result.TopExpression, Is.Null);
       Assert.That (result.IsCountQuery, Is.False);
       Assert.That (result.IsDistinctQuery, Is.False);
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
 
       Assert.That (result.WhereCondition, Is.Not.Null);
-      Assert.That (result.FromExpressions.Count, Is.EqualTo (2));
+      Assert.That (result.SqlTables.Count, Is.EqualTo (2));
     }
 
     [Test]
@@ -279,15 +279,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.OrderByClauses, Is.Not.Null);
-      Assert.That (_visitor.OrderByClauses.Count, Is.EqualTo (1));
-      Assert.That (_visitor.OrderByClauses[0].Expression, Is.SameAs (preparedOrdering.Expression));
+      Assert.That (_visitor.Orderings, Is.Not.Null);
+      Assert.That (_visitor.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_visitor.Orderings[0].Expression, Is.SameAs (preparedOrdering.Expression));
     }
 
     [Test]
     public void VisitOrderByClause_Multiple ()
     {
-      // TODO Review 2401: Add some orderings to the _visitor.OrderByClauses list before executing the VisitOrderByClause method. Then, in the assertion, check that the new orderings were _inserted before_ the existing ones (in the correct order).
+      // TODO Review 2401: Add some orderings to the _visitor.Orderings list before executing the VisitOrderByClause method. Then, in the assertion, check that the new orderings were _inserted before_ the existing ones (in the correct order).
 
       _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
       _orderByClause.Orderings.Add (ExpressionHelper.CreateOrdering ());
@@ -303,10 +303,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
       _stageMock.VerifyAllExpectations ();
-      Assert.That (_visitor.OrderByClauses, Is.Not.Null);
-      Assert.That (_visitor.OrderByClauses.Count, Is.EqualTo (2));
-      Assert.That (_visitor.OrderByClauses[0].Expression, Is.SameAs (preparedOrdering1.Expression));
-      Assert.That (_visitor.OrderByClauses[1].Expression, Is.SameAs (preparedOrdering2.Expression));
+      Assert.That (_visitor.Orderings, Is.Not.Null);
+      Assert.That (_visitor.Orderings.Count, Is.EqualTo (2));
+      Assert.That (_visitor.Orderings[0].Expression, Is.SameAs (preparedOrdering1.Expression));
+      Assert.That (_visitor.Orderings[1].Expression, Is.SameAs (preparedOrdering2.Expression));
     }
 
     [Test]

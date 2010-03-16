@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "Expressions of type 'CustomExpression' cannot be used as the FromExpressions of a from clause.")]
+        "Expressions of type 'CustomExpression' cannot be used as the SqlTables of a from clause.")]
     public void GetTableForFromExpression_UnsupportedExpression_Throws ()
     {
       var customExpression = new CustomExpression (typeof (Cook[]));
