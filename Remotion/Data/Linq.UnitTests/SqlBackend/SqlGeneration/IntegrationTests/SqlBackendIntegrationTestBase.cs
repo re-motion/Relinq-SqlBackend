@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       ResolvingSqlStatementVisitor.ResolveExpressions (sqlStatement, new SqlStatementResolverStub(), new UniqueIdentifierGenerator());
 
       var sqlTextGenerator = new SqlStatementTextGenerator();
-      return sqlTextGenerator.Build (sqlStatement);
+      return sqlTextGenerator.Build (sqlStatement, new SqlCommandBuilder());
     }
 
     protected void CheckQuery<T> (IQueryable<T> queryable, string expectedStatement, params CommandParameter[] expectedParameters)

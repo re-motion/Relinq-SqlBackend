@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       _sqlStatement.TopExpression = Expression.Constant (5);
       _stage.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("TOP (@1) "));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (5));
     }
@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       
       _stage.GenerateTextForOrderByExpression (_commandBuilder, expression);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo("(SELECT @1)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo("@1"));
       Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
     }
@@ -117,11 +117,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[ID]"));
     }
 
-    
-
     [Test]
     public void GenerateTextForSqlStatement ()
     {
+
     }
   }
 }

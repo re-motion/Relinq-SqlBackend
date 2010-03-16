@@ -32,6 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   {
     private SqlStatement _sqlStatement;
     private SqlStatementTextGenerator _generator;
+    private SqlCommandBuilder _commandBuilder;
 
     [SetUp]
     public void SetUp ()
@@ -50,12 +51,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       _generator = new SqlStatementTextGenerator();
       _sqlStatement = new SqlStatement (columnListExpression, new[] { sqlTable });
+      _commandBuilder = new SqlCommandBuilder();
     }
 
     [Test]
     public void Build_WithSelectAndFrom ()
     {
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
 
@@ -66,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       _sqlStatement.IsCountQuery = true;
       _sqlStatement.TopExpression = Expression.Constant (1);
 
-      _generator.Build (_sqlStatement);
+      _generator.Build (_sqlStatement, _commandBuilder);
     }
 
     [Test]
@@ -76,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       _sqlStatement.IsCountQuery = true;
       _sqlStatement.IsDistinctQuery = true;
 
-      _generator.Build (_sqlStatement);
+      _generator.Build (_sqlStatement, _commandBuilder);
     }
 
     [Test]
@@ -84,7 +86,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _sqlStatement.IsCountQuery = true;
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT COUNT(*) FROM [Table] AS [t]"));
     }
@@ -94,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _sqlStatement.IsDistinctQuery = true;
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
@@ -104,7 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _sqlStatement.TopExpression = Expression.Constant(5);
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP (@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
@@ -115,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       _sqlStatement.IsDistinctQuery = true;
       _sqlStatement.TopExpression = Expression.Constant (5);
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
@@ -125,7 +127,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _sqlStatement.SelectProjection = Expression.Equal (Expression.Constant (0), Expression.Constant (1));
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN 1 ELSE 0 END FROM [Table] AS [t]"));
     }
@@ -135,7 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _sqlStatement.WhereCondition = Expression.Constant (true);
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 = 1)"));
     }
@@ -147,7 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
       _sqlStatement.OrderByClauses.Add (orderByClause);
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] ORDER BY [t].[Name] ASC"));
     }
@@ -165,7 +167,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
       _sqlStatement.OrderByClauses.Add (orderByClause3);
 
-      var result = _generator.Build (_sqlStatement);
+      var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] "
                                                     + "ORDER BY [t].[ID] ASC, [t].[Name] DESC, [t].[City] DESC"));
