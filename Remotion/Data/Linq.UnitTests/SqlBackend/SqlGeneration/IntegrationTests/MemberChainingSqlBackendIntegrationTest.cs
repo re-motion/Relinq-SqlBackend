@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    public void SimpleSqlQuery_ChainedPropertySelectAndWhere_SamePathTwice ()
+    public void ChainedPropertySelectAndWhere_SamePathTwice ()
     {
       CheckQuery (
           from k in Kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook,
@@ -82,6 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           + "WHERE ([t3].[ID] IS NOT NULL)");
     }
 
+    // TODO Review 2407: Move to BinaryExpression integration test
     [Test]
     public void Equals_EntityComparison ()
     {
@@ -96,7 +97,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    public void SimpleSqlQuery_ChainedPropertySelectAndWhere_PartialPathTwice ()
+    public void ChainedPropertySelectAndWhere_PartialPathTwice ()
     {
       CheckQuery (
           from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook,
