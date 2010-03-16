@@ -77,5 +77,26 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       SqlPreparationFromExpressionVisitor.GetTableForFromExpression (customExpression, typeof (Cook));
     }
+
+    [ExpectedException(typeof(NotSupportedException))]
+    [Test]
+    public void VisitTableReferenceExpression_ThrowsNotSupportException ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof(int));
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof(Cook));
+    }
+
+    [ExpectedException (typeof (NotSupportedException))]
+    [Test]
+    public void VisitEntityRefMemberExpression_ThrowsNotSupportException ()
+    {
+       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
+      var expression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook));
+    }
   }
 }
