@@ -15,24 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
+using Rhino.Mocks;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
-  /// <summary>
-  /// Provides entry points for all transformations that occur during the SQL preparation phase.
-  /// </summary>
-  public interface ISqlPreparationStage
+  [TestFixture]
+  public class SqlSubStatementExpressionTest
   {
-    Expression PrepareSelectExpression (Expression expression);
-    Expression PrepareWhereExpression (Expression expression);
-    Expression PrepareTopExpression (Expression expression);
-    Expression PrepareFromExpression (Expression expression);
-    Expression PrepareOrderByExpression (Expression expression);
+    [Test]
+    public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
+    {
+      var expression = new SqlSubStatementExpression (SqlStatementModelObjectMother.CreateSqlStatement(), typeof (int));
 
-    SqlTableBase GetTableForFromExpression (Expression fromExpression, Type itemType);
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      visitorMock.Replay ();
 
-    SqlStatement PrepareSqlStatement (QueryModel queryModel);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (expression, visitorMock);
+
+      Assert.That (result, Is.SameAs (expression));
+      visitorMock.VerifyAllExpectations ();
+    }
   }
 }

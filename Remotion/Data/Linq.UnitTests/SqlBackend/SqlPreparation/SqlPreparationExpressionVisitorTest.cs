@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
@@ -39,10 +40,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     private MainFromClause _kitchenMainFromClause;
     
     private SqlTable _sqlTable;
+    private ISqlPreparationStage _stageMock;
 
     [SetUp]
     public void SetUp ()
     {
+      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
       _context = new SqlPreparationContext();
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
@@ -55,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitQuerySourceReferenceExpression_CreatesSqlTableReferenceExpression ()
     {
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (_cookQuerySourceReferenceExpression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (_cookQuerySourceReferenceExpression, _context, _stageMock);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
@@ -67,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       Expression memberExpression = Expression.MakeMemberAccess (_cookQuerySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock);
 
       Assert.That (result, Is.TypeOf (typeof (SqlMemberExpression)));
       Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
@@ -84,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       _context.AddQuerySourceMapping (_kitchenMainFromClause, sqlTable);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock);
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var cookFirstNameMember = typeof (Cook).GetProperty ("FirstName");
@@ -104,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void VisitMemberExpression_NonQuerySourceReferenceExpression ()
     {
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant ("Test"), typeof (string).GetProperty("Length"));
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock);
 
       Assert.That (result, Is.EqualTo (memberExpression));
     }
@@ -114,9 +117,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
       var expression = new CustomExpression (typeof (int));
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock);
 
       Assert.That (result, Is.EqualTo (expression));
+    }
+
+    [Test]
+    public void VisitSubQueryExpression ()
+    {
+      var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
+      var expression = new SubQueryExpression(querModel);
+      var fakeSqlStatement = new SqlStatement (Expression.Constant (0), new SqlTable[] { }, new Ordering[] { });
+
+      _stageMock
+          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Return (fakeSqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf(typeof(SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
     }
   }
 }

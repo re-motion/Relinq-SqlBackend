@@ -95,5 +95,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlTable)));
     }
+
+    [Test]
+    public void PrepareSqlStatement ()
+    {
+      var queryModel = ExpressionHelper.CreateQueryModel_Cook();
+
+      var result = _stage.PrepareSqlStatement(queryModel);
+
+      Assert.That (result, Is.Not.Null);
+    }
   }
 }
