@@ -28,16 +28,11 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
-  // TODO Review 2457: Try to refactor the tests to directly call the BuildSelectPart, BuildFromPart, etc. methods instead of Build()
-  // TODO Review 2457: Currently, the tests integrate all of SqlStatementTextGenerator's functionality at once; e.g., the Build_WithMultipleOrderByClauses test needs to handle Select and Where expressions as well as orderings
-  // TODO Review 2457: By calling BuildOrderByPart, the test could concentrate on what it's actually testing
-  // TODO Review 2457: Add a TestableSqlStatementTextGenerator that adds the methods in public form, delegating to the protected base methods
-  // TODO Review 2457: For the Build() method itself, create three tests: one with only select and from clause, one with a where clause, and one with an orderby clause
   [TestFixture]
   public class SqlStatementTextGeneratorTest
   {
     private SqlStatement _sqlStatement;
-    private SqlStatementTextGenerator _generator;
+    private TestableSqlStatementTextGenerator _generator;
     private SqlCommandBuilder _commandBuilder;
     private ISqlGenerationStage _stageMock;
     private SqlEntityExpression _columnListExpression;
@@ -59,9 +54,191 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           });
 
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
-      _generator = new SqlStatementTextGenerator(_stageMock);
+      _generator = new TestableSqlStatementTextGenerator(_stageMock);
       _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new Ordering[] { });
       _commandBuilder = new SqlCommandBuilder();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithSelect ()
+    {
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
+     _stageMock.Replay ();
+
+      _generator.BuildSelectPart(_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildFromPart_WithFrom ()
+    {
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
+      _stageMock.Replay ();
+
+      _generator.BuildFromPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table] AS [t]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void BuildSelectPart_WithCountAndTop_ThrowsException ()
+    {
+      _sqlStatement.IsCountQuery = true;
+      _sqlStatement.TopExpression = Expression.Constant (1);
+
+      _generator.BuildSelectPart(_sqlStatement, _commandBuilder);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void BuildSelectPart_WithCountAndDistinct_ThrowsException ()
+    {
+      _sqlStatement.IsCountQuery = true;
+      _sqlStatement.IsDistinctQuery = true;
+
+      _generator.BuildSelectPart(_sqlStatement, _commandBuilder);
+    }
+
+    [Test]
+    public void BuildSelectPart_WithCountIsTrue ()
+    {
+      _sqlStatement.IsCountQuery = true;
+
+      _generator.BuildSelectPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("COUNT(*)"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithDistinctIsTrue ()
+    {
+      _sqlStatement.IsDistinctQuery = true;
+
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.Replay ();
+
+      _generator.BuildSelectPart(_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("DISTINCT [t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithTopExpression ()
+    {
+      _sqlStatement.TopExpression = Expression.Constant(5);
+
+      _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.Replay ();
+
+      _generator.BuildSelectPart(_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithDistinctAndTopExpression ()
+    {
+      _sqlStatement.IsDistinctQuery = true;
+      _sqlStatement.TopExpression = Expression.Constant (5);
+
+      _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.Replay ();
+
+      _generator.BuildSelectPart(_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.VerifyAllExpectations ();
+
+    }
+
+    [Test]
+    public void BuildSelectPart_HasValueSemantics ()
+    {
+      _sqlStatement.SelectProjection = Expression.Equal (Expression.Constant (0), Expression.Constant (1));
+
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
+      _stageMock.Replay ();
+
+      _generator.BuildSelectPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildWhere_WithSingleWhereCondition_PredicateSemantics ()
+    {
+      _sqlStatement.WhereCondition = Expression.Constant (true);
+
+      _stageMock.Expect (mock => mock.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition))
+       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("(@1 = 1)"));
+      _stageMock.Replay ();
+
+      _generator.BuildWherePart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 = 1)"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildOrderBy_WithSingleOrderByClause ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
+      var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
+
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause });
+
+      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
+       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name]"));
+      _stageMock.Replay ();
+
+      _generator.BuildOrderByPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[Name] ASC"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildOrderBy_WithMultipleOrderByClauses ()
+    {
+      var columnExpression1 = new SqlColumnExpression (typeof (string), "t", "ID");
+      var orderByClause1 = new Ordering (columnExpression1, OrderingDirection.Asc);
+      var columnExpression2 = new SqlColumnExpression (typeof (string), "t", "Name");
+      var orderByClause2 = new Ordering (columnExpression2, OrderingDirection.Desc);
+      var columnExpression3 = new SqlColumnExpression (typeof (string), "t", "City");
+      var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
+      
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause1, orderByClause2, orderByClause3 });
+
+      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
+       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[1].Expression))
+       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name]"));
+      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[2].Expression))
+       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[City]"));
+      _stageMock.Replay ();
+
+      _generator.BuildOrderByPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID] ASC, [t].[Name] DESC, [t].[City] DESC"));
+      _stageMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -69,7 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable(_commandBuilder, _sqlStatement.SqlTables[0], true))
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Replay ();
 
@@ -80,116 +257,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void Build_WithCountAndTop_ThrowsException ()
-    {
-      _sqlStatement.IsCountQuery = true;
-      _sqlStatement.TopExpression = Expression.Constant (1);
-
-      _generator.Build (_sqlStatement, _commandBuilder);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void Build_WithCountAndDistinct_ThrowsException ()
-    {
-      _sqlStatement.IsCountQuery = true;
-      _sqlStatement.IsDistinctQuery = true;
-
-      _generator.Build (_sqlStatement, _commandBuilder);
-    }
-
-    [Test]
-    public void Build_WithCountIsTrue ()
-    {
-      _sqlStatement.IsCountQuery = true;
-
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
-      _stageMock.Replay ();
-
-      var result = _generator.Build (_sqlStatement, _commandBuilder);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT COUNT(*) FROM [Table] AS [t]"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void Build_WithDistinctIsTrue ()
-    {
-      _sqlStatement.IsDistinctQuery = true;
-
-      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
-      _stageMock.Replay ();
-
-      var result = _generator.Build (_sqlStatement, _commandBuilder);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void Build_WithTopExpression ()
-    {
-      _sqlStatement.TopExpression = Expression.Constant(5);
-
-      _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
-      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
-      _stageMock.Replay ();
-
-      var result = _generator.Build (_sqlStatement, _commandBuilder);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT TOP (@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void Build_WithDistinctAndTopExpression ()
-    {
-      _sqlStatement.IsDistinctQuery = true;
-      _sqlStatement.TopExpression = Expression.Constant (5);
-
-      _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
-      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
-      _stageMock.Replay ();
-
-      var result = _generator.Build (_sqlStatement, _commandBuilder);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
-      _stageMock.VerifyAllExpectations ();
-
-    }
-
-    [Test]
-    public void Build_Select_HasValueSemantics ()
-    {
-      _sqlStatement.SelectProjection = Expression.Equal (Expression.Constant (0), Expression.Constant (1));
-
-      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
-      _stageMock.Replay ();
-
-      var result = _generator.Build (_sqlStatement, _commandBuilder);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN 1 ELSE 0 END FROM [Table] AS [t]"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void Build_WithSingleWhereCondition_PredicateSemantics ()
+    public void Build_WithWhereCondition_PredicateSemantics ()
     {
       _sqlStatement.WhereCondition = Expression.Constant (true);
 
@@ -208,7 +276,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Build_WithSingleOrderByClause ()
+    public void Build_WithOrderByClause ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
@@ -226,37 +294,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var result = _generator.Build (_sqlStatement, _commandBuilder);
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] ORDER BY [t].[Name] ASC"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void Build_WithMultipleOrderByClauses ()
-    {
-      var columnExpression1 = new SqlColumnExpression (typeof (string), "t", "ID");
-      var orderByClause1 = new Ordering (columnExpression1, OrderingDirection.Asc);
-      var columnExpression2 = new SqlColumnExpression (typeof (string), "t", "Name");
-      var orderByClause2 = new Ordering (columnExpression2, OrderingDirection.Desc);
-      var columnExpression3 = new SqlColumnExpression (typeof (string), "t", "City");
-      var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
-      
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause1, orderByClause2, orderByClause3 });
-
-      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
-      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
-       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
-      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[1].Expression))
-       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name]"));
-      _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[2].Expression))
-       .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[City]"));
-      _stageMock.Replay ();
-
-      var result = _generator.Build (_sqlStatement, _commandBuilder);
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] "
-                                                    + "ORDER BY [t].[ID] ASC, [t].[Name] DESC, [t].[City] DESC"));
       _stageMock.VerifyAllExpectations ();
     }
 
