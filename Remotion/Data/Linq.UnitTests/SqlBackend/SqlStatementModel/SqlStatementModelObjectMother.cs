@@ -38,6 +38,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[]{});
     }
 
+    public static SqlStatement CreateSqlStatement_Resolved (Type type)
+    {
+      var sqlTable = CreateSqlTable_WithResolvedTableInfo(type);
+      return new SqlStatement (CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { });
+    }
+
     public static SqlTable CreateSqlTable ()
     {
       return CreateSqlTable (typeof (Cook));
@@ -71,9 +77,21 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return CreateSqlTable_WithResolvedTableInfo ("Table", "t");
     }
 
+    public static SqlTable CreateSqlTable_WithResolvedTableInfo (Type type)
+    {
+      return CreateSqlTable_WithResolvedTableInfo (type, "Table", "t");
+    }
+
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (string tableName, string tableAlias)
     {
       var resolvedTableInfo = new ResolvedTableInfo (typeof (string), tableName, tableAlias);
+      var sqlTable = new SqlTable (resolvedTableInfo);
+      return sqlTable;
+    }
+
+    public static SqlTable CreateSqlTable_WithResolvedTableInfo (Type type, string tableName, string tableAlias)
+    {
+      var resolvedTableInfo = new ResolvedTableInfo (type, tableName, tableAlias);
       var sqlTable = new SqlTable (resolvedTableInfo);
       return sqlTable;
     }
@@ -121,6 +139,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
       var foreignTableInfo = new ResolvedTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+    }
+
+    public static SqlEntityExpression CreateSqlEntityExpression (Type type)
+    {
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID");
+      return new SqlEntityExpression (
+          type,
+          primaryKeyColumn,
+          new[]
+          {
+              primaryKeyColumn,
+              new SqlColumnExpression (typeof (int), "t", "Name"),
+              new SqlColumnExpression (typeof (int), "t", "City")
+          });
     }
   }
 }
