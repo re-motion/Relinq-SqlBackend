@@ -29,10 +29,10 @@ using Remotion.Data.Linq.Clauses;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
   [TestFixture]
-  public class DefaultMappingResolutionStageTest
+  public class DefaultSqlGenerationStageTest
   {
     private SqlStatement _sqlStatement;
-    private DefaultMappingResolutionStage _stage;
+    private DefaultSqlGenerationStage _stage;
     private SqlCommandBuilder _commandBuilder;
 
     [SetUp]
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _stage = new DefaultMappingResolutionStage();
+      _stage = new DefaultSqlGenerationStage();
       _sqlStatement = new SqlStatement (columnListExpression, new[] { sqlTable }, new Ordering[]{});
       _commandBuilder = new SqlCommandBuilder ();
     }
@@ -118,10 +118,11 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[ID]"));
     }
 
+    [Ignore("TODO: add test")]
     [Test]
     public void GenerateTextForSqlStatement ()
     {
-
+      Assert.Fail();
     }
   }
 }
