@@ -34,13 +34,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     private SqlStatement _sqlStatement;
     private DefaultSqlGenerationStage _stage;
     private SqlCommandBuilder _commandBuilder;
+    private SqlEntityExpression _columnListExpression;
 
     [SetUp]
     public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID");
-      var columnListExpression = new SqlEntityExpression (
+      _columnListExpression = new SqlEntityExpression (
           typeof (Cook),
           primaryKeyColumn,
           new[]
@@ -51,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           });
 
       _stage = new DefaultSqlGenerationStage();
-      _sqlStatement = new SqlStatement (columnListExpression, new[] { sqlTable }, new Ordering[]{});
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[]{});
       _commandBuilder = new SqlCommandBuilder ();
     }
     
@@ -118,11 +119,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[ID]"));
     }
 
-    [Ignore("TODO: add test")]
     [Test]
     public void GenerateTextForSqlStatement ()
     {
-      Assert.Fail();
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
+      sqlStatement.SelectProjection = _columnListExpression;
+      sqlStatement.SqlTables[0].TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
+
+      _stage.GenerateTextForSqlStatement (_commandBuilder, sqlStatement);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
   }
 }

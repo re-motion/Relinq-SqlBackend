@@ -26,6 +26,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 {
   public class SqlStatementModelObjectMother
   {
+    public static SqlStatement CreateSqlStatementWithCook ()
+    {
+      var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof(Cook));
+      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { });
+    }
+
     public static SqlStatement CreateSqlStatement ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo ();
@@ -50,7 +56,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTable_WithUnresolvedTableInfo () 
     {
-      var unresolvedTableInfo = new UnresolvedTableInfo (Expression.Constant (1, typeof (int)),typeof(int));
+      return CreateSqlTable_WithUnresolvedTableInfo (typeof (int));
+    }
+
+    public static SqlTable CreateSqlTable_WithUnresolvedTableInfo (Type type)
+    {
+      var unresolvedTableInfo = new UnresolvedTableInfo (Expression.Constant (1, typeof(int)), type);
       var sqlTable = new SqlTable (unresolvedTableInfo);
       return sqlTable;
     }

@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -170,11 +171,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (fakeResolvedJoinInfo));
     }
 
-    [Ignore("TODO: add test")]
     [Test]
     public void ResolveSqlStatement ()
     {
-      Assert.Fail();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof(Cook));
+      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var sqlStatement = new SqlStatement (tableReferenceExpression, new[] { sqlTable }, new Ordering[] { });
+      var fakeEntityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+
+      _resolverMock
+          .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) sqlStatement.SqlTables[0].TableInfo, _uniqueIdentifierGenerator))
+          .Return (_fakeResolvedTableInfo);
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _uniqueIdentifierGenerator))
+          .Return (fakeEntityExpression);
+      _resolverMock.Replay();
+      
+      _stage.ResolveSqlStatement (sqlStatement);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (sqlStatement.SqlTables[0].TableInfo, Is.SameAs (_fakeResolvedTableInfo));
+      Assert.That (sqlStatement.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
   }
 }

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.UnitTests.Clauses.Expressions;
 using Rhino.Mocks;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -27,18 +28,38 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlSubStatementExpressionTest
   {
+    private SqlSubStatementExpression _expression;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _expression = new SqlSubStatementExpression (SqlStatementModelObjectMother.CreateSqlStatement (), typeof (int));
+    }
+
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var expression = new SqlSubStatementExpression (SqlStatementModelObjectMother.CreateSqlStatement(), typeof (int));
-
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
       visitorMock.Replay ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
 
-      Assert.That (result, Is.SameAs (expression));
+      Assert.That (result, Is.SameAs (_expression));
       visitorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlSubStatementExpression, ISqlSubStatementExpressionVisitor> (
+          _expression,
+          mock => mock.VisitSqlSubStatementExpression(_expression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
     }
   }
 }
