@@ -23,8 +23,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
   public class TestableResolvingSqlStatementVisitor : ResolvingSqlStatementVisitor
   {
-    public TestableResolvingSqlStatementVisitor (ISqlStatementResolver resolver, UniqueIdentifierGenerator uniqueIdentifierGenerator)
-        : base(resolver, uniqueIdentifierGenerator)
+    public TestableResolvingSqlStatementVisitor (IMappingResolutionStage stage)
+        : base(stage)
     {
     }
 

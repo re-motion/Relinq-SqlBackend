@@ -66,7 +66,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           preparationContext, 
           new DefaultSqlPreparationStage (preparationContext));
 
-      ResolvingSqlStatementVisitor.ResolveExpressions (sqlStatement, new SqlStatementResolverStub(), new UniqueIdentifierGenerator());
+      var resolver = new SqlStatementResolverStub();
+      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
+      var stage = new DefaultMappingResolutionStage(resolver, uniqueIdentifierGenerator);
+      ResolvingSqlStatementVisitor.ResolveExpressions (stage, sqlStatement);
 
       var sqlTextGenerator = new SqlStatementTextGenerator(new DefaultSqlGenerationStage());
       return sqlTextGenerator.Build (sqlStatement, new SqlCommandBuilder());

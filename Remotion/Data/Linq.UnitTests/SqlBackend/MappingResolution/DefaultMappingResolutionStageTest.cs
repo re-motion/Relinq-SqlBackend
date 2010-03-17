@@ -94,6 +94,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolveOrderingExpression ()
+    {
+      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock
+        .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+        .Return (fakeResult);
+      _resolverMock.Replay();
+
+      var result = _stage.ResolveOrderingExpression (expression);
+
+      _resolverMock.VerifyAllExpectations();
+
+      Assert.That (result, Is.SameAs (fakeResult));
+    
+    }
+
+    [Test]
     public void ResolveTopExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
