@@ -48,13 +48,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                (SimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                (SimpleTableInfo) originatingTable.GetResolvedTableInfo (),
+                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo (),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "AssistedID");
@@ -66,13 +66,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                (SimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                (SimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
@@ -84,13 +84,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-               (SimpleTableInfo) originatingTable.GetResolvedTableInfo (),
+               (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo (),
                "ID",
                CreateResolvedTableInfo (joinInfo.ItemType, generator),
                "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                (SimpleTableInfo) originatingTable.GetResolvedTableInfo (),
+                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo (),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      return CreateColumnList (tableReferenceExpression.Type, (SimpleTableInfo) resolvedTableInfo);
+      return CreateColumnList (tableReferenceExpression.Type, (ResolvedSimpleTableInfo) resolvedTableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
-            return CreateColumn (memberType, (SimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, (ResolvedSimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Substitution":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
@@ -131,7 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "ID":
           case "Name":
           case "RoomNumber":
-            return CreateColumn (memberType, (SimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, (ResolvedSimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Cook":
           case "Restaurant":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
@@ -142,7 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         switch (memberExpression.MemberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, (SimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo (), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, (ResolvedSimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo (), memberExpression.MemberInfo.Name);
           case "SubKitchen":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
@@ -159,12 +159,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         return constantExpression;
     }
 
-    private SqlColumnExpression CreateColumn (Type columnType, SimpleTableInfo simpleTableInfo, string columnName)
+    private SqlColumnExpression CreateColumn (Type columnType, ResolvedSimpleTableInfo resolvedSimpleTableInfo, string columnName)
     {
-      return new SqlColumnExpression (columnType, simpleTableInfo.TableAlias, columnName);
+      return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName);
     }
 
-    private Expression CreateColumnList (Type entityType, SimpleTableInfo tableInfo)
+    private Expression CreateColumnList (Type entityType, ResolvedSimpleTableInfo tableInfo)
     {
       if (tableInfo.ItemType == typeof (Cook))
       {
@@ -214,13 +214,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("The type " + tableInfo.ItemType + " is not a queryable type.");
     }
 
-    private SimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
+    private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
     {
-      return new SimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier("t"));
+      return new ResolvedSimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier("t"));
     }
 
     private AbstractJoinInfo CreateResolvedJoinInfo (
-        SimpleTableInfo originatingTableInfo, string primaryKeyName, SimpleTableInfo foreignTableInfo, string foreignKeyName)
+        ResolvedSimpleTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName)
     {
       var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName);
       var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName);

@@ -84,14 +84,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (string tableName, string tableAlias)
     {
-      var resolvedTableInfo = new SimpleTableInfo (typeof (string), tableName, tableAlias);
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (string), tableName, tableAlias);
       var sqlTable = new SqlTable (resolvedTableInfo);
       return sqlTable;
     }
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (Type type, string tableName, string tableAlias)
     {
-      var resolvedTableInfo = new SimpleTableInfo (type, tableName, tableAlias);
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (type, tableName, tableAlias);
       var sqlTable = new SqlTable (resolvedTableInfo);
       return sqlTable;
     }
@@ -118,14 +118,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
-    public static SimpleTableInfo CreateResolvedTableInfo ()
+    public static ResolvedSimpleTableInfo CreateResolvedTableInfo ()
     {
       return CreateResolvedTableInfo (typeof (Cook));
     }
 
-    public static SimpleTableInfo CreateResolvedTableInfo (Type type)
+    public static ResolvedSimpleTableInfo CreateResolvedTableInfo (Type type)
     {
-      return new SimpleTableInfo (type, "table", "t");
+      return new ResolvedSimpleTableInfo (type, "table", "t");
     }
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo ()
@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
-      var foreignTableInfo = new SimpleTableInfo (type, "Table", "s");
+      var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 

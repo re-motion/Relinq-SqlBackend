@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo ()
     {
-      var resolvedTableInfo = new SimpleTableInfo (typeof (int), "Table", "t");
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       _resolverMock.Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator)).Return (resolvedTableInfo);
       _resolverMock.Replay ();
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void ResolveTableInfo_AndRevisitsResult ()
     {
       var unresolvedResult = new UnresolvedTableInfo (Expression.Constant (0), typeof (int));
-      var resolvedResult = new SimpleTableInfo (typeof (int), "Table", "t");
+      var resolvedResult = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
 
       using (_resolverMock.GetMockRepository().Ordered())
       {

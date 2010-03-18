@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
-    private SimpleTableInfo _fakeSimpleTableInfo;
+    private ResolvedSimpleTableInfo _fakeResolvedSimpleTableInfo;
     private IMappingResolutionStage _stageMock;
 
     [SetUp]
@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
-      _fakeSimpleTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
+      _fakeResolvedSimpleTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
     }
 
     [Test]
@@ -55,13 +55,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       _stageMock
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
-          .Return (_fakeSimpleTableInfo);
+          .Return (_fakeResolvedSimpleTableInfo);
       _stageMock.Replay();
 
       _visitor.VisitSqlTable (_sqlTable);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeSimpleTableInfo));
+      Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       {
         _stageMock
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
-            .Return (_fakeSimpleTableInfo);
+            .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
             .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join.JoinInfo))
             .Return (fakeResolvedJoinInfo);
@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       {
         _stageMock
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
-            .Return (_fakeSimpleTableInfo);
+            .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
             .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join1.JoinInfo))
             .Return (fakeResolvedJoinInfo1);
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       {
         _stageMock
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
-            .Return (_fakeSimpleTableInfo);
+            .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
             .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join1.JoinInfo))
             .Return (fakeResolvedJoinInfo1);

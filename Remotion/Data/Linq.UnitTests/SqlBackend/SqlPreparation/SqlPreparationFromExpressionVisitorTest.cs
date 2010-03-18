@@ -121,8 +121,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       
       SqlTable result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlSubStatementExpression, typeof (Cook), _stageMock, _generator);
 
-      Assert.That (result.TableInfo, Is.InstanceOfType(typeof (SubStatementTableInfo)));
-      var condition = (SubStatementTableInfo)result.TableInfo;
+      Assert.That (result.TableInfo, Is.InstanceOfType(typeof (ResolvedSubStatementTableInfo)));
+      var condition = (ResolvedSubStatementTableInfo)result.TableInfo;
       Assert.That (condition.SqlStatement, Is.EqualTo (sqlStatement));
       Assert.That (condition.TableAlias, Is.EqualTo ("q0"));
       Assert.That (condition.ItemType, Is.EqualTo (sqlSubStatementExpression.Type));
