@@ -68,11 +68,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 
       var resolver = new SqlStatementResolverStub();
       var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
-      var stage = new DefaultMappingResolutionStage(resolver, uniqueIdentifierGenerator);
-      ResolvingSqlStatementVisitor.ResolveExpressions (stage, sqlStatement); // TODO Review 2418: Use stage.ResolveSqlStatement instead. This is how the concrete LINQ provider will use the backend.
+      var mappingResolutionStage = new DefaultMappingResolutionStage(resolver, uniqueIdentifierGenerator);
+      mappingResolutionStage.ResolveSqlStatement (sqlStatement);
 
-      var sqlTextGenerator = new SqlStatementTextGenerator (new DefaultSqlGenerationStage ()); // TODO Review 2418: Use stage.ResolveSqlStatement instead. This is how the concrete LINQ provider will use the backend.
-      return sqlTextGenerator.Build (sqlStatement, new SqlCommandBuilder ()); // TODO Review 2418: Use stage.GenerateTextForSqlStatement instead. This is how the concrete LINQ provider will use the backend.
+      var commandBuilder = new SqlCommandBuilder ();
+      var sqlGenerationStage = new DefaultSqlGenerationStage();
+      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
+
+      return new SqlCommand (commandBuilder.GetCommandText(), commandBuilder.GetCommandParameters());
     }
 
     protected void CheckQuery<T> (IQueryable<T> queryable, string expectedStatement, params CommandParameter[] expectedParameters)
