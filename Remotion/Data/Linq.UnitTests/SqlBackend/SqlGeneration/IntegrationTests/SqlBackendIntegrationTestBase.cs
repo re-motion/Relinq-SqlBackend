@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     {
       var queryModel = ExpressionHelper.ParseQuery (expression);
 
-      SqlPreparationContext preparationContext = new SqlPreparationContext();
+      var preparationContext = new SqlPreparationContext();
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
           queryModel, 
           preparationContext, 
@@ -69,10 +69,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       var resolver = new SqlStatementResolverStub();
       var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
       var stage = new DefaultMappingResolutionStage(resolver, uniqueIdentifierGenerator);
-      ResolvingSqlStatementVisitor.ResolveExpressions (stage, sqlStatement);
+      ResolvingSqlStatementVisitor.ResolveExpressions (stage, sqlStatement); // TODO Review 2418: Use stage.ResolveSqlStatement instead. This is how the concrete LINQ provider will use the backend.
 
-      var sqlTextGenerator = new SqlStatementTextGenerator(new DefaultSqlGenerationStage());
-      return sqlTextGenerator.Build (sqlStatement, new SqlCommandBuilder());
+      var sqlTextGenerator = new SqlStatementTextGenerator (new DefaultSqlGenerationStage ()); // TODO Review 2418: Use stage.ResolveSqlStatement instead. This is how the concrete LINQ provider will use the backend.
+      return sqlTextGenerator.Build (sqlStatement, new SqlCommandBuilder ()); // TODO Review 2418: Use stage.GenerateTextForSqlStatement instead. This is how the concrete LINQ provider will use the backend.
     }
 
     protected void CheckQuery<T> (IQueryable<T> queryable, string expectedStatement, params CommandParameter[] expectedParameters)
