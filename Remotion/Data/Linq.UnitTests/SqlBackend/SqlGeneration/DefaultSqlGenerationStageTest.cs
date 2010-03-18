@@ -129,5 +129,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
+
+    [Test]
+    public void GenerateTextForJoinKeyExpression ()
+    {
+      var expression = new SqlColumnExpression (typeof (int), "c", "ID");
+
+      _stage.GenerateTextForJoinKeyExpression(_commandBuilder, expression);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[ID]"));
+    }
   }
 }

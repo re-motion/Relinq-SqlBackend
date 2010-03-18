@@ -218,22 +218,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo (("true AND true")));
     }
 
-    //example: (true AND (1<2))
-    [Test]
-    [Ignore ("Review special bool cases")] // TODO Review 2456: Enable and fix test
-    public void VisitBinaryExpression_AndAlso_ComplexExpression ()
-    {
-      Expression innerBinaryExpression = Expression.LessThan (_leftIntegerExpression, _rightIntegerExpression);
-
-      var binaryExpression = Expression.AndAlso (_trueExpression, innerBinaryExpression);
-
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
-
-      var result = _commandBuilder.GetCommandText ();
-
-      Assert.That (result, Is.EqualTo (("left=1  AND (right < @3)")));
-    }
-
     [Test]
     public void VisitBinaryExpression_OrElse ()
     {
