@@ -48,13 +48,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                originatingTable.GetResolvedTableInfo(),
+                (SimpleTableInfo) originatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                originatingTable.GetResolvedTableInfo (),
+                (SimpleTableInfo) originatingTable.GetResolvedTableInfo (),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "AssistedID");
@@ -66,13 +66,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                originatingTable.GetResolvedTableInfo(),
+                (SimpleTableInfo) originatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                originatingTable.GetResolvedTableInfo(),
+                (SimpleTableInfo) originatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
@@ -84,13 +84,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-               originatingTable.GetResolvedTableInfo (),
+               (SimpleTableInfo) originatingTable.GetResolvedTableInfo (),
                "ID",
                CreateResolvedTableInfo (joinInfo.ItemType, generator),
                "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                originatingTable.GetResolvedTableInfo (),
+                (SimpleTableInfo) originatingTable.GetResolvedTableInfo (),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
     public virtual Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      return CreateColumnList (tableReferenceExpression.Type, resolvedTableInfo);
+      return CreateColumnList (tableReferenceExpression.Type, (SimpleTableInfo) resolvedTableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
-            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, (SimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Substitution":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
@@ -131,7 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "ID":
           case "Name":
           case "RoomNumber":
-            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, (SimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Cook":
           case "Restaurant":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
@@ -142,7 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         switch (memberExpression.MemberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo (), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, (SimpleTableInfo) memberExpression.SqlTable.GetResolvedTableInfo (), memberExpression.MemberInfo.Name);
           case "SubKitchen":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
