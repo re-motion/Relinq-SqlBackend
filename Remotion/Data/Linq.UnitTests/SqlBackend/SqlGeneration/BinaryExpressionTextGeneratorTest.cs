@@ -220,7 +220,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 
     //example: (true AND (1<2))
     [Test]
-    [Ignore ("Review special bool cases")]
+    [Ignore ("Review special bool cases")] // TODO Review 2456: Enable and fix test
     public void VisitBinaryExpression_AndAlso_ComplexExpression ()
     {
       Expression innerBinaryExpression = Expression.LessThan (_leftIntegerExpression, _rightIntegerExpression);

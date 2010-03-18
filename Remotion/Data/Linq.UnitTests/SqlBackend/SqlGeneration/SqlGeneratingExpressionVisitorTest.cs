@@ -94,6 +94,37 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_BoolExpression_ValueSemantics ()
+    {
+      var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          boolExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
+    }
+
+    [Test]
+    public void GenerateSql_BoolExpression_PredicateSemantics ()
+    {
+      var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          boolExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1 = @2)"));
+    }
+
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."
+        )]
+    [Test]
+    public void GenerateSql_UnsupportedExpression ()
+    {
+      var unknownExpression = new CustomExpression (typeof (int));
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          unknownExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+    }
+
+    [Test]
     public void VisitConstantExpression_TrueParameter ()
     {
       var expression = Expression.Constant (true);
@@ -282,37 +313,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           caseExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN (@1 = @2) THEN @3 ELSE @4 END"));
-    }
-
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."
-        )]
-    [Test]
-    public void GenerateSql_UnsupportedExpression ()
-    {
-      var unknownExpression = new CustomExpression (typeof (int));
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          unknownExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
-    }
-
-    [Test]
-    public void GenerateSql_BoolExpression_ValueSemantics ()
-    {
-      var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          boolExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
-    }
-
-    [Test]
-    public void GenerateSql_BoolExpression_PredicateSemantics ()
-    {
-      var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          boolExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 = @2)"));
     }
 
     [Test]
