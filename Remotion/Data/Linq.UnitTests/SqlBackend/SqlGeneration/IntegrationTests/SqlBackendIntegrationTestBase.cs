@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
 
-      return new SqlCommand (commandBuilder.GetCommandText(), commandBuilder.GetCommandParameters());
+      return commandBuilder.GetCommand();
     }
 
     protected void CheckQuery<T> (IQueryable<T> queryable, string expectedStatement, params CommandParameter[] expectedParameters)
