@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   [TestFixture]
   public class ResolvingJoinInfoVisitorTest
   {
-    private ISqlStatementResolver _resolverMock;
+    private IMappingResolver _resolverMock;
     private UnresolvedJoinInfo _unresolvedJoinInfo;
     private SqlTable _originatingTable;
     private UniqueIdentifierGenerator _generator;
@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
+      _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       _originatingTable = SqlStatementModelObjectMother.CreateSqlTable ();
       _generator = new UniqueIdentifierGenerator ();

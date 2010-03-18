@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf(typeof(SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
-      // TODO Review 2454: Check expression type, should be same as expression.Type
+      Assert.That (result.Type, Is.EqualTo(expression.Type));
     }
   }
 }

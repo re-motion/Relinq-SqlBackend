@@ -21,7 +21,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 {
-  public class TestableResolvingSqlStatementVisitor : ResolvingSqlStatementVisitor
+  public class TestableResolvingSqlStatementVisitor : SqlStatementResolver
   {
     public TestableResolvingSqlStatementVisitor (IMappingResolutionStage stage)
         : base(stage)

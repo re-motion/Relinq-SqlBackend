@@ -30,14 +30,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   [TestFixture]
   public class ResolvingTableInfoVisitorTest
   {
-    private ISqlStatementResolver _resolverMock;
+    private IMappingResolver _resolverMock;
     private UnresolvedTableInfo _unresolvedTableInfo;
     private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
+      _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _generator = new UniqueIdentifierGenerator();
     }

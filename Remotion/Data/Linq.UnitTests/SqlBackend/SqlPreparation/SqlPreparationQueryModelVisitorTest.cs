@@ -148,7 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
 
       _stageMock.Expect (mock => mock.PrepareFromExpression (_mainFromClause.FromExpression)).Return (preparedExpression);
-      _stageMock.Expect (mock => mock.GetTableForFromExpression (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
       
       _stageMock.Replay();
       
@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
 
       _stageMock.Expect (mock => mock.PrepareFromExpression (additionalFromClause.FromExpression)).Return (preparedExpression);
-      _stageMock.Expect (mock => mock.GetTableForFromExpression (preparedExpression, typeof (int))).Return (preparedSqlTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlTable);
 
       _stageMock.Replay ();
 
@@ -198,7 +198,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var preparedSqlJoinedTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
 
       _stageMock.Expect (mock => mock.PrepareFromExpression (additionalFromClause.FromExpression)).Return (preparedExpression);
-      _stageMock.Expect (mock => mock.GetTableForFromExpression (preparedExpression, typeof (int))).Return (preparedSqlJoinedTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlJoinedTable);
 
       _stageMock.Replay ();
 

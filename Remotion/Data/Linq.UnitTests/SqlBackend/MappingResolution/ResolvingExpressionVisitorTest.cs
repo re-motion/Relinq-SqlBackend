@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
   [TestFixture]
   public class ResolvingExpressionVisitorTest
   {
-    private ISqlStatementResolver _resolverMock;
+    private IMappingResolver _resolverMock;
     private SqlTable _sqlTable;
     private UniqueIdentifierGenerator _generator;
     private ResolvedJoinInfo _resolvedJoinInfo;
@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
-      _resolverMock = MockRepository.GenerateMock<ISqlStatementResolver>();
+      _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       _generator = new UniqueIdentifierGenerator();
 

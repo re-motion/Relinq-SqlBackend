@@ -24,7 +24,7 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
-  public class SqlStatementResolverStub : ISqlStatementResolver
+  public class MappingResolverStub : IMappingResolver
   {
     public virtual AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
