@@ -79,6 +79,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     [Ignore("TODO: Subquery with Contains")]
     public void Contains ()
     {
+      CheckQuery (
+          from c in Cooks where (from k in Cooks select k.Substitution).Contains (c) select c.FirstName, 
+          "SELECT [c].[FirstName] FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [k].[ID] FROM [CookTable] AS [t1])"); //@1 = [c].[ID]
     }
   }
 }

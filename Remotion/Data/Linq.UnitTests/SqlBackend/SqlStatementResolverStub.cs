@@ -159,12 +159,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         return constantExpression;
     }
 
-    private SqlColumnExpression CreateColumn (Type columnType, ResolvedTableInfo resolvedTableInfo, string columnName)
+    private SqlColumnExpression CreateColumn (Type columnType, SimpleTableInfo simpleTableInfo, string columnName)
     {
-      return new SqlColumnExpression (columnType, resolvedTableInfo.TableAlias, columnName);
+      return new SqlColumnExpression (columnType, simpleTableInfo.TableAlias, columnName);
     }
 
-    private Expression CreateColumnList (Type entityType, ResolvedTableInfo tableInfo)
+    private Expression CreateColumnList (Type entityType, SimpleTableInfo tableInfo)
     {
       if (tableInfo.ItemType == typeof (Cook))
       {
@@ -214,13 +214,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new NotSupportedException ("The type " + tableInfo.ItemType + " is not a queryable type.");
     }
 
-    private ResolvedTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
+    private SimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
     {
-      return new ResolvedTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier("t"));
+      return new SimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier("t"));
     }
 
     private AbstractJoinInfo CreateResolvedJoinInfo (
-        ResolvedTableInfo originatingTableInfo, string primaryKeyName, ResolvedTableInfo foreignTableInfo, string foreignKeyName)
+        SimpleTableInfo originatingTableInfo, string primaryKeyName, SimpleTableInfo foreignTableInfo, string foreignKeyName)
     {
       var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName);
       var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName);

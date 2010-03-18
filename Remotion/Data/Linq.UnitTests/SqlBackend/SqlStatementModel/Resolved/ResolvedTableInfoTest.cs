@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
     {
       var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
       var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor> ();
-      tableInfoVisitorMock.Expect (mock => mock.VisitResolvedTableInfo (tableInfo));
+      tableInfoVisitorMock.Expect (mock => mock.VisitSimpleTableInfo (tableInfo));
       
       tableInfoVisitorMock.Replay ();
       tableInfo.Accept (tableInfoVisitorMock);

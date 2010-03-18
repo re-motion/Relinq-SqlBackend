@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     public void GenerateSql_ForTable ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
-      sqlTable.TableInfo = new ResolvedTableInfo (typeof (int), "Table", "t");
+      sqlTable.TableInfo = new SimpleTableInfo (typeof (int), "Table", "t");
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable , _commandBuilder, _stageMock, true);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForJoinedTable ()
     {
-      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+      var originalTable = new SqlTable (new SimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
@@ -80,12 +80,12 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForJoinedTable_ValueSemantics ()
     {
-      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+      var originalTable = new SqlTable (new SimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
 
-      var foreignTableSource = new ResolvedTableInfo (typeof (Cook), "CookTable", "t2");
+      var foreignTableSource = new SimpleTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK");
       joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForJoinedTable_Recursive ()
     {
-      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+      var originalTable = new SqlTable (new SimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
 
       var joinedTable1 = originalTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var joinedTable2 = joinedTable1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedJoinInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedJoinInfo ()
     {
-      var originalTable = new SqlTable (new ResolvedTableInfo (typeof (Cook), "CookTable", "c"));
+      var originalTable = new SqlTable (new SimpleTableInfo (typeof (Cook), "CookTable", "c"));
 
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
@@ -139,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     private ResolvedJoinInfo CreateResolvedJoinInfo (
         Type type, string originalTableAlias, string leftSideKeyName, string joinedTableName, string joinedTableAlias, string rightSideKeyName)
     {
-      var foreignTableSource = new ResolvedTableInfo (type, joinedTableName, joinedTableAlias);
+      var foreignTableSource = new SimpleTableInfo (type, joinedTableName, joinedTableAlias);
       var primaryColumn = new SqlColumnExpression (typeof (int), originalTableAlias, leftSideKeyName);
       var foreignColumn = new SqlColumnExpression (typeof (int), joinedTableAlias, rightSideKeyName);
       return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);

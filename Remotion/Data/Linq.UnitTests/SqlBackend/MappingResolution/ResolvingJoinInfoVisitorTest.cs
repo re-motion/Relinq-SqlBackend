@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void ResolveJoinInfo_ResolvesJoinInfo ()
     {
-      var foreignTableInfo = new ResolvedTableInfo (typeof (string), "Cook", "c");
+      var foreignTableInfo = new SimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID");
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var unresolvedResult = new UnresolvedJoinInfo (memberInfo, JoinCardinality.One);
 
-      var foreignTableInfo = new ResolvedTableInfo (typeof (Cook), "CookTable", "s");
+      var foreignTableInfo = new SimpleTableInfo (typeof (Cook), "CookTable", "s");
       var resolvedResult = new ResolvedJoinInfo (
           foreignTableInfo, new SqlColumnExpression (typeof (int), "c", "ID"), new SqlColumnExpression (typeof (int), "s", "ID"));
 

@@ -31,9 +31,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldTableInfo = new ResolvedTableInfo (typeof (int), "table1", "t");
+      var oldTableInfo = new SimpleTableInfo (typeof (int), "table1", "t");
       var sqlTable = new SqlTable (oldTableInfo);
-      var newTableInfo = new ResolvedTableInfo (typeof (int), "table2", "s");
+      var newTableInfo = new SimpleTableInfo (typeof (int), "table2", "s");
 
       sqlTable.TableInfo = newTableInfo;
 
@@ -44,9 +44,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldTableInfo = new ResolvedTableInfo (typeof (int), "table1", "t");
+      var oldTableInfo = new SimpleTableInfo (typeof (int), "table1", "t");
       var sqlTable = new SqlTable (oldTableInfo);
-      var newTableInfo = new ResolvedTableInfo (typeof (string), "table2", "s");
+      var newTableInfo = new SimpleTableInfo (typeof (string), "table2", "s");
 
       sqlTable.TableInfo = newTableInfo;
     }

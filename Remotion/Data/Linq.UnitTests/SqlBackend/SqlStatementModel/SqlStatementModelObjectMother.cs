@@ -84,14 +84,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (string tableName, string tableAlias)
     {
-      var resolvedTableInfo = new ResolvedTableInfo (typeof (string), tableName, tableAlias);
+      var resolvedTableInfo = new SimpleTableInfo (typeof (string), tableName, tableAlias);
       var sqlTable = new SqlTable (resolvedTableInfo);
       return sqlTable;
     }
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (Type type, string tableName, string tableAlias)
     {
-      var resolvedTableInfo = new ResolvedTableInfo (type, tableName, tableAlias);
+      var resolvedTableInfo = new SimpleTableInfo (type, tableName, tableAlias);
       var sqlTable = new SqlTable (resolvedTableInfo);
       return sqlTable;
     }
@@ -118,14 +118,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
       return new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
-    public static ResolvedTableInfo CreateResolvedTableInfo ()
+    public static SimpleTableInfo CreateResolvedTableInfo ()
     {
       return CreateResolvedTableInfo (typeof (Cook));
     }
 
-    public static ResolvedTableInfo CreateResolvedTableInfo (Type type)
+    public static SimpleTableInfo CreateResolvedTableInfo (Type type)
     {
-      return new ResolvedTableInfo (type, "table", "t");
+      return new SimpleTableInfo (type, "table", "t");
     }
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo ()
@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     {
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
-      var foreignTableInfo = new ResolvedTableInfo (type, "Table", "s");
+      var foreignTableInfo = new SimpleTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 

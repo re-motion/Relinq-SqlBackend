@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     {
       var result = GenerateSql (queryable.Expression);
 
-      Console.WriteLine (result.CommandText); //TODO: comment
+      //Console.WriteLine (result.CommandText);
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
     }

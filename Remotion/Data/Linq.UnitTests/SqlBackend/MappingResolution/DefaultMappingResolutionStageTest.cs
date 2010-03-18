@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     private UniqueIdentifierGenerator _uniqueIdentifierGenerator;
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
-    private ResolvedTableInfo _fakeResolvedTableInfo;
+    private SimpleTableInfo _fakeSimpleTableInfo;
     private DefaultMappingResolutionStage _stage;
 
     [SetUp]
@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
-      _fakeResolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
+      _fakeSimpleTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
 
       _stage = new DefaultMappingResolutionStage (_resolverMock, _uniqueIdentifierGenerator);
     }
@@ -142,13 +142,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     {
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
-          .Return (_fakeResolvedTableInfo);
+          .Return (_fakeSimpleTableInfo);
       _resolverMock.Replay ();
 
       var result = _stage.ResolveTableInfo (_sqlTable.TableInfo);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_fakeResolvedTableInfo));
+      Assert.That (result, Is.SameAs (_fakeSimpleTableInfo));
     }
 
     [Test]
@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) sqlStatement.SqlTables[0].TableInfo, _uniqueIdentifierGenerator))
-          .Return (_fakeResolvedTableInfo);
+          .Return (_fakeSimpleTableInfo);
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _uniqueIdentifierGenerator))
           .Return (fakeEntityExpression);
@@ -190,7 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _stage.ResolveSqlStatement (sqlStatement);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (sqlStatement.SqlTables[0].TableInfo, Is.SameAs (_fakeResolvedTableInfo));
+      Assert.That (sqlStatement.SqlTables[0].TableInfo, Is.SameAs (_fakeSimpleTableInfo));
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
   }
