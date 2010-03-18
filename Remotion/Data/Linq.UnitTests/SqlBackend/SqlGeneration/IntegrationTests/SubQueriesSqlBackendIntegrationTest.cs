@@ -24,6 +24,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   [TestFixture]
   public class SubQueriesSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
+    // TODO 2458: Add integration tests for dependent subqueries: Access variables (from items, let items) defined in the outer query from the inner one
+    // TODO 2458: Also try dependent subqueries in subqueries, accessing variables from outermost and middle query
+
     [Test]
     public void InWhereCondition_First ()
     {
@@ -50,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
          "SELECT [t0].[Name] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT COUNT(*) FROM [KitchenTable] AS [t1]))");
     }
 
-    [Test]
+    [Test] // TODO 2458: This is a bad test because it produces bad SQL. Expect a NotSupportedException and ignore this test with a "TODO 2469" message. Then add a test selecting Count() or something similar.
     public void InSelectProjection ()
     {
       CheckQuery (
