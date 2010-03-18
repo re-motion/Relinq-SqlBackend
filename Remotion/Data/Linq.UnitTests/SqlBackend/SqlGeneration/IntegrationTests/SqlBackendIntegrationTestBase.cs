@@ -61,13 +61,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
       var queryModel = ExpressionHelper.ParseQuery (expression);
 
       var preparationContext = new SqlPreparationContext();
+      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
           queryModel, 
-          preparationContext, 
-          new DefaultSqlPreparationStage (preparationContext));
+          preparationContext,
+          new DefaultSqlPreparationStage (preparationContext, uniqueIdentifierGenerator));
 
       var resolver = new MappingResolverStub();
-      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
       var mappingResolutionStage = new DefaultMappingResolutionStage(resolver, uniqueIdentifierGenerator);
       mappingResolutionStage.ResolveSqlStatement (sqlStatement);
 

@@ -41,12 +41,14 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     
     private TestableSqlPreparationQueryModelVisitor _visitor;
     private ISqlPreparationStage _stageMock;
+    private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
+      _generator = new UniqueIdentifierGenerator();
       _context = new SqlPreparationContext ();
-      _defaultStage = new DefaultSqlPreparationStage (_context);
+      _defaultStage = new DefaultSqlPreparationStage (_context, _generator);
 
       _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _selectClause = ExpressionHelper.CreateSelectClause (_mainFromClause);

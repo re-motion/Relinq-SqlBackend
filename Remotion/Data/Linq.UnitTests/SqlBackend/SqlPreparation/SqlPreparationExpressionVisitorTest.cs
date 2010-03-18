@@ -127,14 +127,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
       var expression = new SubQueryExpression(querModel);
-      var fakeSqlStatement = new SqlStatement (Expression.Constant (0), new SqlTable[] { }, new Ordering[] { });
+      var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
 
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (querModel))
           .Return (fakeSqlStatement);
+      _stageMock.Replay();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock);
 
+      _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf(typeof(SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));

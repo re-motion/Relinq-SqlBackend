@@ -18,23 +18,37 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
   [TestFixture]
   public class SqlPreparationFromExpressionVisitorTest
   {
+    private ISqlPreparationStage _stageMock;
+    private UniqueIdentifierGenerator _generator;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _generator = new UniqueIdentifierGenerator();
+    }
+
     [Test]
     public void GetTableForFromExpression_ConstantExpression_ReturnsUnresolvedTable ()
     {
       var expression = Expression.Constant (new Cook[0]);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook));
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTable)));
 
@@ -55,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
       var sqlMemberExpression = new SqlMemberExpression (sqlTable, memberInfo);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlMemberExpression, typeof (Cook));
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlMemberExpression, typeof (Cook), _stageMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
       Assert.That (result, Is.SameAs (sqlTable.GetJoin (memberInfo)));
@@ -75,7 +89,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       var customExpression = new CustomExpression (typeof (Cook[]));
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (customExpression, typeof (Cook));
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (customExpression, typeof (Cook), _stageMock, _generator);
     }
 
     [ExpectedException(typeof(NotSupportedException))]
@@ -85,7 +99,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof(int));
       var expression = new SqlTableReferenceExpression (sqlTable);
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof(Cook));
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof(Cook), _stageMock, _generator);
     }
 
     [ExpectedException (typeof (NotSupportedException))]
@@ -96,7 +110,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
       var expression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook));
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
+    }
+
+    [Test]
+    public void VisitSubQueryExpression ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      
+      SqlTable result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlSubStatementExpression, typeof (Cook), _stageMock, _generator);
+
+      Assert.That (result.TableInfo, Is.InstanceOfType(typeof (SubStatementTableInfo)));
+      var condition = (SubStatementTableInfo)result.TableInfo;
+      Assert.That (condition.SqlStatement, Is.EqualTo (sqlStatement));
+      Assert.That (condition.TableAlias, Is.EqualTo ("q0"));
+      Assert.That (condition.ItemType, Is.EqualTo (sqlSubStatementExpression.Type));
     }
   }
 }
