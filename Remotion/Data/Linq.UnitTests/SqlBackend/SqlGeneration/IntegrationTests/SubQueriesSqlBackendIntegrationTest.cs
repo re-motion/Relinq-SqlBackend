@@ -24,9 +24,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
   [TestFixture]
   public class SubQueriesSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
-    // TODO 2458: Add integration tests for dependent subqueries: Access variables (from items, let items) defined in the outer query from the inner one
-    // TODO 2458: Also try dependent subqueries in subqueries, accessing variables from outermost and middle query
-
     [Test]
     public void InWhereCondition_First ()
     {
@@ -53,8 +50,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
          "SELECT [t0].[Name] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT COUNT(*) FROM [KitchenTable] AS [t1]))");
     }
 
-    [Test] // TODO 2458: This is a bad test because it produces bad SQL. Expect a NotSupportedException and ignore this test with a "TODO 2469" message. Then add a test selecting Count() or something similar.
-    public void InSelectProjection ()
+    [Test]
+    public void InSelectProjection_Count ()
+    {
+      CheckQuery (
+          from c in Cooks select (from k in Kitchens select k.Name).Count(),
+         "SELECT (SELECT COUNT(*) FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    [Ignore("TODO: 2469")]
+    public void InSelectProjection_ThrowsNotSupportedException ()
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name),
@@ -76,6 +82,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           from c in Cooks where c.ID== (from k in Kitchens where k.ID == (from r in Restaurants select r).Count() select k).Count () select c.Name,
          "SELECT [t0].[Name] FROM [CookTable] AS [t0] "
         +"WHERE ([t0].[ID] = (SELECT COUNT(*) FROM [KitchenTable] AS [t1] WHERE ([t1].[ID] = (SELECT COUNT(*) FROM [RestaurantTable] AS [t2]))))");
+    }
+
+    [Test]
+    [Ignore ("TODO: 2461")]
+    public void DependentSubQueryInSubQuery ()
+    {
+      CheckQuery (
+          from r in Restaurants where r.ID == (from c in r.Cooks where c.ID == (from a in c.Assistants select a).Count () select c).Count () select r.ID,
+         "SELECT [t0].[ID] FROM [RestaurantTable] AS [t0] "
+         +"LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[RestaurantID] "
+         +"LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[AssistedID] "
+         +"WHERE ([t0].[ID] = (SELECT COUNT(*) FROM  WHERE ([t1].[ID] = (SELECT COUNT(*) FROM ))))");
     }
 
     [Test]
