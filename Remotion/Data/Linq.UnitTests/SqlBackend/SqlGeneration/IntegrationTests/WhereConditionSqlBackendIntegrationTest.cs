@@ -63,6 +63,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", "hugo")
           );
     }
-    
+
   }
 }
