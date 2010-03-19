@@ -151,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSubStatementTableInfo ()
+    public void VisitSubStatementTableInfo_WithFirstIsFalse ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var resolvedSubTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "cook", sqlStatement);
@@ -167,7 +167,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY (XXX) AS [cook]"));
     }
 
-    // TODO Review 2460: Add test for VisitSubStatementTableInfo with first == true
+    [Test]
+    public void VisitSubStatementTableInfo_WithFirstIsTrue ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "cook", sqlStatement);
+      var sqlTable = new SqlTable (resolvedSubTableInfo);
+
+      _stageMock
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
+
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, true);
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
+    }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedTableInfo is not valid at this point.")]

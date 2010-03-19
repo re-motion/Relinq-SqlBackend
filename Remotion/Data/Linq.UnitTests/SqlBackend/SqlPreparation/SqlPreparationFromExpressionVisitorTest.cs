@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
+using System.Collections.Generic;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 {
@@ -112,10 +113,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSubQueryExpression () // TODO Review 2460: Rename to VisitSqlSubStatementExpression
+    public void VisitSqlSubStatementExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook)); // TODO Review 2460: Should be typeof (IEnumerable<Cook>) or similar
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (IEnumerable<Cook>));
       
       var result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
           sqlSubStatementExpression, 
@@ -127,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var condition = (ResolvedSubStatementTableInfo)result.TableInfo;
       Assert.That (condition.SqlStatement, Is.EqualTo (sqlStatement));
       Assert.That (condition.TableAlias, Is.EqualTo ("q0"));
-      Assert.That (condition.ItemType, Is.EqualTo (sqlSubStatementExpression.Type)); // TODO Review 2460: Should be typeof (Cook).
+      Assert.That (condition.ItemType.GetGenericArguments()[0], Is.EqualTo(typeof(Cook)));
     }
   }
 }
