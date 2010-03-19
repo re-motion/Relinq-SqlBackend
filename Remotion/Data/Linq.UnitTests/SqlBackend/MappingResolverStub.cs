@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -38,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           return CreateResolvedTableInfo (tableInfo.ItemType, generator);
       }
 
-      throw new NotSupportedException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
+      throw new UnmappedItemException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
     }
 
     public AbstractJoinInfo ResolveJoinInfo (SqlTableBase originatingTable, UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
@@ -98,7 +99,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         }
       }
 
-      throw new NotSupportedException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
+      throw new UnmappedItemException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
     }
 
     public virtual Expression ResolveTableReferenceExpression (
@@ -152,7 +153,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         }
       }
 
-      throw new NotSupportedException ("Cannot resolve member: " + memberExpression.MemberInfo);
+      throw new UnmappedItemException ("Cannot resolve member: " + memberExpression.MemberInfo);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
@@ -216,7 +217,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });
       }
-      throw new NotSupportedException ("The type " + ((AbstractTableInfo) tableInfo).ItemType + " is not a queryable type.");
+      throw new UnmappedItemException ("The type " + ((AbstractTableInfo) tableInfo).ItemType + " is not a queryable type.");
     }
 
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
