@@ -161,10 +161,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, true);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false);
       _stageMock.VerifyAllExpectations ();
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY (XXX) AS cook"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY (XXX) AS [cook]"));
     }
 
     [Test]

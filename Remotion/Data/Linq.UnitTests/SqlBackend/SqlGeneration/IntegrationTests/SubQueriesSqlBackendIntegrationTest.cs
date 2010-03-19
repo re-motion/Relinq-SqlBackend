@@ -59,6 +59,38 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    public void SubQueryInMainFromClause ()
+    {
+      CheckQuery (from s in (from s2 in Cooks select s2).Take (1) select s,
+        "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "
+        + "FROM "
+        +"(SELECT TOP (@1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
+        +"FROM [CookTable] AS [t1]) AS [q0]",
+        new CommandParameter("@1", 1));
+    }
+
+    [Test]
+    public void SubQueryInAdditionalFromClause ()
+    {
+      CheckQuery (from s in Cooks from s2 in (from s3 in Cooks select s3) select s.FirstName,
+        "SELECT [t1].[FirstName] FROM [CookTable] AS [t1] CROSS APPLY "
+        +"(SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID] "
+        +"FROM [CookTable] AS [t2]) AS [q0]");
+    }
+
+    [Test]
+    public void ComplexSubQueryInAdditionalFromClause ()
+    {
+      CheckQuery (from s in Cooks from s2 in (from s3 in Cooks where s3.ID == s.ID && s3.ID > 3 select s3) select s2.FirstName, 
+      "SELECT [q0].[FirstName] FROM [CookTable] AS [t1] CROSS APPLY "
+      +"(SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID] "
+      +"FROM [CookTable] AS [t2] "
+      +"WHERE (([t2].[ID] = [t1].[ID]) AND ([t2].[ID] > @1))) AS [q0]",
+      new CommandParameter("@1",3));
+      
+    }
+
+    [Test]
     [Ignore("TODO: 2469")]
     public void InSelectProjection_ThrowsNotSupportedException ()
     {
