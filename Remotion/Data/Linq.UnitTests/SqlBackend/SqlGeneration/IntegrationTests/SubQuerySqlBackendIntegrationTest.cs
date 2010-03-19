@@ -21,9 +21,8 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
-  // TODO Review 2469: Rename to SubQuerySqlBackendIntegrationTest
   [TestFixture]
-  public class SubQueriesSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
+  public class SubQuerySqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
     public void InWhereCondition_First ()
