@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -23,7 +24,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Parsing;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.BooleanSemantics;
+using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
 {
@@ -339,6 +342,16 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       var result = _visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "subquery selects a collection where a single value is expected.")]
+    public void ApplySqlExpressionContext_SqlSubStatementExpression_ThrowsException ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<Cook>));
+      var sqlSubStatementExpression = new SqlSubStatementExpression(sqlStatement, typeof(IQueryable<Cook>));
+
+      SqlContextExpressionVisitor.ApplySqlExpressionContext (sqlSubStatementExpression, SqlExpressionContext.ValueRequired);
     }
   }
 }

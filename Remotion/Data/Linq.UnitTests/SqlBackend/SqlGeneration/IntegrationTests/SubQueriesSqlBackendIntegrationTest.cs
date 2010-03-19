@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void SubQueryInMainFromClause ()
     {
-      CheckQuery (from s in (from s2 in Cooks select s2).Take (1) select s,
+      CheckQuery (from s in (from s2 in Cooks select s2).Take(1) select s,
         "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "
         + "FROM "
         +"(SELECT TOP (@1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
@@ -91,12 +91,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO: 2469")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "subquery selects a collection where a single value is expected.")]
     public void InSelectProjection_ThrowsNotSupportedException ()
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name),
          "SELECT (SELECT [t1].[Name] FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void InSelectProjection_WithSingleValue ()
+    {
+      CheckQuery (
+          from c in Cooks select (from k in Kitchens select k.Name).Count(),
+         "SELECT (SELECT COUNT(*) FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -117,7 +125,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO: 2461")]
     public void DependentSubQueryInSubQuery ()
     {
       CheckQuery (
