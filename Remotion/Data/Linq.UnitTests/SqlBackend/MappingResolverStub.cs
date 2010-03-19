@@ -105,18 +105,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      //if (resolvedTableInfo is ResolvedSimpleTableInfo)
       return CreateColumnList (tableReferenceExpression.Type, resolvedTableInfo);
-      //else
-      //{
-      //  var columnExpression = new SqlColumnExpression (
-      //            ((ResolvedSubStatementTableInfo) resolvedTableInfo).ItemType,
-      //            ((ResolvedSubStatementTableInfo) resolvedTableInfo).TableAlias,
-      //            memberExpression.MemberInfo.Name);
-      //  return new SqlEntityExpression (typeof (Cook), columnExpression, columnExpression);
-      //  //return new SqlSubStatementExpression (
-      //    //  ((ResolvedSubStatementTableInfo) resolvedTableInfo).SqlStatement, ((ResolvedSubStatementTableInfo) resolvedTableInfo).ItemType);
-      //}
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
