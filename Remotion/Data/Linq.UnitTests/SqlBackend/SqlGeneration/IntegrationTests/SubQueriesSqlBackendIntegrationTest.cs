@@ -21,6 +21,7 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
 {
+  // TODO Review 2469: Rename to SubQuerySqlBackendIntegrationTest
   [TestFixture]
   public class SubQueriesSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
@@ -99,6 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
          "SELECT (SELECT [t1].[Name] FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
     }
 
+    // TODO Review 2469: Duplicate
     [Test]
     public void InSelectProjection_WithSingleValue ()
     {
@@ -133,7 +135,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
          +"LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[RestaurantID] "
          +"LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[AssistedID] "
          +"WHERE ([t0].[ID] = (SELECT COUNT(*) FROM  WHERE ([t1].[ID] = (SELECT COUNT(*) FROM ))))");
+      // TODO Review 2469: Query statement is wrong - FROM clauses are empty
     }
+
+    // TODO Review 2469: Please check the SQL generated in these tests using SQL Server Management Studio to be sure they are valid SQL
 
     [Test]
     [Ignore("TODO: Subquery with Contains")]
