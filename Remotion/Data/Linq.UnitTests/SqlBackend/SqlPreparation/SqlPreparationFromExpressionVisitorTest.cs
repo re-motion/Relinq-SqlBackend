@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var condition = (ResolvedSubStatementTableInfo)result.TableInfo;
       Assert.That (condition.SqlStatement, Is.EqualTo (sqlStatement));
       Assert.That (condition.TableAlias, Is.EqualTo ("q0"));
-      Assert.That (condition.ItemType.GetGenericArguments()[0], Is.EqualTo(typeof(Cook)));
+      Assert.That (condition.ItemType, Is.EqualTo(typeof(Cook)));
     }
   }
 }
