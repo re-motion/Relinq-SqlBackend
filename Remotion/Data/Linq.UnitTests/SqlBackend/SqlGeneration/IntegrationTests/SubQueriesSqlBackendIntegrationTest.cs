@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "subquery selects a collection where a single value is expected.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void InSelectProjection_ThrowsNotSupportedException ()
     {
       CheckQuery (

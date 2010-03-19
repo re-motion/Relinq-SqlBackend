@@ -345,7 +345,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "subquery selects a collection where a single value is expected.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void ApplySqlExpressionContext_SqlSubStatementExpression_ThrowsException ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<Cook>));
