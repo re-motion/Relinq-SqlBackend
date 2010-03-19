@@ -132,17 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
-            if (memberExpression.SqlTable.GetResolvedTableInfo() is ResolvedSimpleTableInfo)
-              return CreateColumn (
-                  memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
-            else
-            {
-              var columnExpression = new SqlColumnExpression (
-                  memberType,
-                  ((ResolvedSubStatementTableInfo) memberExpression.SqlTable.GetResolvedTableInfo()).TableAlias,
-                  memberExpression.MemberInfo.Name);
-              return new SqlEntityExpression (typeof (Cook), columnExpression, columnExpression);
-            }
+            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
           case "Substitution":
             return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
         }
@@ -209,7 +199,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 CreateColumn (typeof (int), tableInfo, "KitchenID")
             });
       }
-      else if (((AbstractTableInfo) tableInfo).ItemType == typeof (Kitchen))
+      else if (type == typeof (Kitchen) || type == typeof (IQueryable<Kitchen>))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
@@ -224,7 +214,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
                 CreateColumn (typeof (int), tableInfo, "SubKitchenID"),
             });
       }
-      else if (((AbstractTableInfo) tableInfo).ItemType == typeof (Restaurant))
+      else if (type == typeof (Restaurant) || type == typeof (IQueryable<Restaurant>))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
