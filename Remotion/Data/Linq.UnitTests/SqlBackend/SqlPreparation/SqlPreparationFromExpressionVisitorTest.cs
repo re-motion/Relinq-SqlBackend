@@ -18,8 +18,6 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -106,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     [Test]
     public void VisitEntityRefMemberExpression_ThrowsNotSupportException ()
     {
-       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
+      var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
       var expression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
 
@@ -114,18 +112,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSubQueryExpression ()
+    public void VisitSubQueryExpression () // TODO Review 2460: Rename to VisitSqlSubStatementExpression
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook)); // TODO Review 2460: Should be typeof (IEnumerable<Cook>) or similar
       
-      SqlTable result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlSubStatementExpression, typeof (Cook), _stageMock, _generator);
+      var result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+          sqlSubStatementExpression, 
+          typeof (Cook), 
+          _stageMock, 
+          _generator);
 
       Assert.That (result.TableInfo, Is.InstanceOfType(typeof (ResolvedSubStatementTableInfo)));
       var condition = (ResolvedSubStatementTableInfo)result.TableInfo;
       Assert.That (condition.SqlStatement, Is.EqualTo (sqlStatement));
       Assert.That (condition.TableAlias, Is.EqualTo ("q0"));
-      Assert.That (condition.ItemType, Is.EqualTo (sqlSubStatementExpression.Type));
+      Assert.That (condition.ItemType, Is.EqualTo (sqlSubStatementExpression.Type)); // TODO Review 2460: Should be typeof (Cook).
     }
   }
 }

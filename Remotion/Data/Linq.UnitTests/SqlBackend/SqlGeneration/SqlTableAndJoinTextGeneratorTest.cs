@@ -167,6 +167,8 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY (XXX) AS [cook]"));
     }
 
+    // TODO Review 2460: Add test for VisitSubStatementTableInfo with first == true
+
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedTableInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
