@@ -202,14 +202,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _resolverMock
           .Expect (
           mock => mock.ResolveJoinInfo (
-                      Arg.Is (_sqlTable),
                       Arg<UnresolvedJoinInfo>.Matches (ts => ts.MemberInfo == _kitchenCookMember),
                       Arg.Is (_generator)))
           .Return (_resolvedJoinInfo)
           .WhenCalled (
           mi =>
           {
-            var joinInfo = (UnresolvedJoinInfo) mi.Arguments[1];
+            var joinInfo = (UnresolvedJoinInfo) mi.Arguments[0];
             Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
             Assert.That (joinInfo.Cardinality, Is.EqualTo (JoinCardinality.One));
           });
@@ -272,7 +271,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     private void StubResolveTableInfo ()
     {
       _resolverMock
-          .Stub (stub => stub.ResolveJoinInfo (Arg<SqlTableBase>.Is.Anything, Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
+          .Stub (stub => stub.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
           .Return (_resolvedJoinInfo);
     }
 

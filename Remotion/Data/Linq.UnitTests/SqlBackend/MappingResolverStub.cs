@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new UnmappedItemException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
     }
 
-    public AbstractJoinInfo ResolveJoinInfo (SqlTableBase originatingTable, UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
+    public AbstractJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
       if (joinInfo.MemberInfo.DeclaringType == typeof (Cook))
       {
@@ -50,13 +50,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "AssistedID");
@@ -68,13 +68,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
@@ -86,13 +86,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) originatingTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");

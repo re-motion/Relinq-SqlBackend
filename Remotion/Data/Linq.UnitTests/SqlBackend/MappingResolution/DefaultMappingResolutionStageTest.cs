@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
       _resolverMock
-            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, joinInfo, _uniqueIdentifierGenerator))
+            .Expect (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
             .Return (fakeResolvedJoinInfo);
       _resolverMock.Replay ();
 
