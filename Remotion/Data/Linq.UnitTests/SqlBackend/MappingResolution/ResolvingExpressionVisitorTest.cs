@@ -268,13 +268,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (unknownExpression));
     }
 
-    private void StubResolveTableInfo ()
-    {
-      _resolverMock
-          .Stub (stub => stub.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
-          .Return (_resolvedJoinInfo);
-    }
-
     [Test]
     public void VisitSqlSubStatementExpression ()
     {
@@ -289,6 +282,29 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (expression));
       _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void VisitUnresolvedJoinConditionExpression ()
+    {
+      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var expression = new UnresolvedJoinConditionExpression (joinInfo);
+
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo (joinInfo))
+          .Return (_resolvedJoinInfo);
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _generator, _stageMock);
+
+      Assert.That (((BinaryExpression) result).Left, Is.EqualTo (_resolvedJoinInfo.PrimaryColumn));
+      Assert.That (((BinaryExpression) result).Right, Is.EqualTo (_resolvedJoinInfo.ForeignColumn));
+    }
+
+    private void StubResolveTableInfo ()
+    {
+      _resolverMock
+          .Stub (stub => stub.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
+          .Return (_resolvedJoinInfo);
     }
   }
 }

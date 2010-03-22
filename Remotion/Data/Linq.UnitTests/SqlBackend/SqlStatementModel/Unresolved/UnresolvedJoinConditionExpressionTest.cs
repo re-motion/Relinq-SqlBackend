@@ -51,5 +51,19 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
       Assert.That (result, Is.SameAs (_expression));
       visitorMock.VerifyAllExpectations ();
     }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<UnresolvedJoinConditionExpression, IUnresolvedSqlExpressionVisitor> (
+          _expression,
+          mock => mock.VisitUnresolvedJoinConditionExpression (_expression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
+    }
   }
 }
