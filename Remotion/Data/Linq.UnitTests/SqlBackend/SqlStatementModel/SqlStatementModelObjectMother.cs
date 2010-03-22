@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
     {
-      var joinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var joinInfo = new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
       return new SqlJoinedTable (joinInfo);
     }
 
@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
 
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
     {
-      return new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      return new UnresolvedJoinInfo (TODO, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
     public static ResolvedSimpleTableInfo CreateResolvedTableInfo ()

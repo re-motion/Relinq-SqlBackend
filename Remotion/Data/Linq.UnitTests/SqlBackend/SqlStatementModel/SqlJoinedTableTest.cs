@@ -30,9 +30,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var newJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
@@ -43,9 +43,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new UnresolvedJoinInfo (typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var newJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }

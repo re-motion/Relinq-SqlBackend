@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var unresolvedResult = new UnresolvedJoinInfo (memberInfo, JoinCardinality.One);
+      var unresolvedResult = new UnresolvedJoinInfo (TODO, memberInfo, JoinCardinality.One);
 
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "s");
       var resolvedResult = new ResolvedJoinInfo (
