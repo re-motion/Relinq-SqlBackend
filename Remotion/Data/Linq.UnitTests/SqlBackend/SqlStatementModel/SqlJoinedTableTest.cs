@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.TestDomain;
@@ -27,12 +29,20 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlJoinedTableTest
   {
+    private SqlTable _sqlTable;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (Expression.Constant ("test"),typeof(Cook)));
+    }
+
     [Test]
     public void SameType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var newJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
@@ -43,9 +53,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var newJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }

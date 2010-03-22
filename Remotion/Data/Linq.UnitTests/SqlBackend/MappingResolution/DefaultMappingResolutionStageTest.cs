@@ -165,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Return (fakeResolvedJoinInfo);
       _resolverMock.Replay ();
 
-      var result = _stage.ResolveJoinInfo (_sqlTable, joinInfo);
+      var result = _stage.ResolveJoinInfo (joinInfo);
 
       _resolverMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResolvedJoinInfo));

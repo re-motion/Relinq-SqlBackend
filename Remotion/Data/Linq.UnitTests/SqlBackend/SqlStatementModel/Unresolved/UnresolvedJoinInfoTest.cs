@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -28,25 +29,33 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
   [TestFixture]
   public class UnresolvedJoinInfoTest
   {
+    private SqlTable _sqlTable;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (Expression.Constant ("Test"), typeof (Cook)));
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
         "Expected a type implementing IEnumerable<T>, but found 'Remotion.Data.Linq.UnitTests.TestDomain.Cook'.\r\nParameter name: memberInfo")]
     public void Initialization_CardinalityMany_NonEnumerable_Throws ()
     {
-      new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
+      new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
     }
 
     [Test]
     public void ItemType_CardinalityOne ()
     {
-      var joinInfo = new UnresolvedJoinInfo (TODO, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 
     [Test]
     public void ItemType_CardinalityMany ()
     {
-      var joinInfo = new UnresolvedJoinInfo (TODO, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
+      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 

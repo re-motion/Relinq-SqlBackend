@@ -15,12 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -34,7 +36,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     private UnresolvedJoinInfo _unresolvedJoinInfo;
     private SqlTable _originatingTable;
     private UniqueIdentifierGenerator _generator;
+    private SqlTable _sqlTable;
 
+    
     [SetUp]
     public void SetUp ()
     {
@@ -42,6 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       _originatingTable = SqlStatementModelObjectMother.CreateSqlTable ();
       _generator = new UniqueIdentifierGenerator ();
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (Expression.Constant ("Test"), typeof (Cook)));
     }
 
     [Test]
@@ -68,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var unresolvedResult = new UnresolvedJoinInfo (TODO, memberInfo, JoinCardinality.One);
+      var unresolvedResult = new UnresolvedJoinInfo (_sqlTable, memberInfo, JoinCardinality.One);
 
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "s");
       var resolvedResult = new ResolvedJoinInfo (
@@ -94,14 +99,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult_OnlyIfDifferent ()
     {
+      var resolvedJoinInfo = new ResolvedJoinInfo (
+          new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
+          new SqlColumnExpression (typeof (string), "c", "ID"),
+          new SqlColumnExpression (typeof (string), "c", "ID"));
       _resolverMock
           .Expect (mock => mock.ResolveJoinInfo (_originatingTable, _unresolvedJoinInfo, _generator))
-          .Return (_unresolvedJoinInfo);
+          .Return (resolvedJoinInfo);
       _resolverMock.Replay ();
 
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_originatingTable, _unresolvedJoinInfo, _resolverMock, _generator);
 
-      Assert.That (result, Is.SameAs (_unresolvedJoinInfo));
+      Assert.That (result, Is.SameAs (resolvedJoinInfo));
       _resolverMock.VerifyAllExpectations ();
     }
   }

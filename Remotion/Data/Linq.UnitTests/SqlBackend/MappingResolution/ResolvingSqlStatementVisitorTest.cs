@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join.JoinInfo))
             .Return (fakeResolvedJoinInfo);
       }
       _stageMock.Replay();
@@ -104,10 +104,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join1.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join1.JoinInfo))
             .Return (fakeResolvedJoinInfo1);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join2.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join2.JoinInfo))
             .Return (fakeResolvedJoinInfo2);
       }
       _stageMock.Replay();
@@ -137,13 +137,13 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (_sqlTable, join1.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join1.JoinInfo))
             .Return (fakeResolvedJoinInfo1);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join1, join2.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join2.JoinInfo))
             .Return (fakeResolvedJoinInfo2);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join1, join3.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join3.JoinInfo))
             .Return (fakeResolvedJoinInfo3);
       }
       _stageMock.Replay();
