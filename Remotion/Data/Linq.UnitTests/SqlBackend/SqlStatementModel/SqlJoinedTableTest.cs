@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (Expression.Constant ("test"),typeof(Cook)));
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof(Cook)));
     }
 
     [Test]

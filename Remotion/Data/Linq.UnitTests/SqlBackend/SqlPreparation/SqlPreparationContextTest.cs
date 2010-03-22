@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       _context = new SqlPreparationContext();
       _source = ExpressionHelper.CreateMainFromClause_Cook();
-      var source = new UnresolvedTableInfo (Expression.Constant (1, typeof (int)),typeof(int));
+      var source = new UnresolvedTableInfo (typeof(int));
       _sqlTable = new SqlTable (source);
     }
 

@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo_AndRevisitsResult ()
     {
-      var unresolvedResult = new UnresolvedTableInfo (Expression.Constant (0), typeof (int));
+      var unresolvedResult = new UnresolvedTableInfo (typeof (int));
       var resolvedResult = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
 
       using (_resolverMock.GetMockRepository().Ordered())

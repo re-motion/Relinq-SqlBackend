@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _context = new SqlPreparationContext();
 
       var querySource = ExpressionHelper.CreateMainFromClause_Cook();
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (Expression.Constant (new Cook[0]), typeof (Cook)));
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
 
       _context.AddQuerySourceMapping (querySource, _sqlTable);
 

@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
       _kitchenMainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen ();
-      var source = new UnresolvedTableInfo ((ConstantExpression) _cookMainFromClause.FromExpression, _cookMainFromClause.ItemType);
+      var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
       _context.AddQuerySourceMapping (_cookMainFromClause, _sqlTable);
     }

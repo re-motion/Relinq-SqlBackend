@@ -54,7 +54,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       var tableInfo = ((SqlTable) result).TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
 
-      Assert.That (((UnresolvedTableInfo) tableInfo).ConstantExpression, Is.SameAs (expression));
       Assert.That (tableInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 
