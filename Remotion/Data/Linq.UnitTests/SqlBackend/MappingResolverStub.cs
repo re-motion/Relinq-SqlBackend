@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       throw new UnmappedItemException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
     }
 
-    public AbstractJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
+    public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
       if (joinInfo.MemberInfo.DeclaringType == typeof (Cook))
       {
@@ -225,7 +225,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend
       return new ResolvedSimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier ("t"));
     }
 
-    private AbstractJoinInfo CreateResolvedJoinInfo (
+    private ResolvedJoinInfo CreateResolvedJoinInfo (
         ResolvedSimpleTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName)
     {
       var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName);
