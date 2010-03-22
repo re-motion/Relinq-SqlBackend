@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
@@ -187,30 +188,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitAdditionalFromClause_DoesNotStoreSqlTableWhenJoinWasCreated ()
+    public void VisitMainFromClause_AddWhereConditionAndCreatesNewSqlTable ()
     {
-      var fakeSqlTableForMainFromClause = SqlStatementModelObjectMother.CreateSqlTable ();
-      _visitor.SqlTables.Add (fakeSqlTableForMainFromClause);
-
       var constantExpression = Expression.Constant (0);
       var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
-      _queryModel.BodyClauses.Add (additionalFromClause);
 
       var preparedExpression = Expression.Constant (0);
-      var preparedSqlJoinedTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo ();
 
       _stageMock.Expect (mock => mock.PrepareFromExpression (additionalFromClause.FromExpression)).Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlJoinedTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlTable);
 
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _visitor.VisitAdditionalFromClause (additionalFromClause, _queryModel, 0);
-      _stageMock.VerifyAllExpectations ();
 
-      Assert.That (_visitor.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause }));
-      Assert.That (_context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlJoinedTable));
+      _stageMock.VerifyAllExpectations();
+
+      Assert.That (_visitor.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_visitor.WhereCondition, Is.TypeOf (typeof (UnresolvedJoinConditionExpression)));
     }
-    
+
     [Test]
     public void VisitWhereClause_WithCondition ()
     {
@@ -376,6 +374,27 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (_visitor.TopExpression, Is.SameAs (preparedExpression));
     }
 
+    [Test]
+    public void AddWhereCondition_SingleWhereCondition ()
+    {
+      var expression = Expression.Constant ("whereTest");
+      _visitor.AddWhereCondition (expression);
+
+      Assert.That (_visitor.WhereCondition, Is.EqualTo(expression));
+    }
+
+    [Test]
+    public void AddWhereCondition_MultipleWhereCondition ()
+    {
+      var expression1 = Expression.Constant (true);
+      _visitor.AddWhereCondition (expression1);
+      var expression2 = Expression.Constant (false);
+      _visitor.AddWhereCondition (expression2);
+
+      Assert.That (((BinaryExpression) _visitor.WhereCondition).Left, Is.EqualTo (expression1));
+      Assert.That (((BinaryExpression) _visitor.WhereCondition).Right, Is.EqualTo (expression2));
+    }
+    
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
     public void VisitResultOperator_NotSupported ()

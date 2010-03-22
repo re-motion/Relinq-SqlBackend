@@ -64,5 +64,10 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     {
       get { return base.SqlTables; }
     }
+
+    public new void AddWhereCondition (Expression translatedExpression)
+    {
+      base.AddWhereCondition (translatedExpression);
+    }
   }
 }
