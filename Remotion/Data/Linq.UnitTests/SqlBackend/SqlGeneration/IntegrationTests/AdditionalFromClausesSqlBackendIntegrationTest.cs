@@ -54,6 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO: remove ignore when task COMMONS-2489 is completed & adapt sql text")]
     public void AdditionalFromClause_WithMemberAccess ()
     {
       CheckQuery (
@@ -64,6 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO: remove ignore when task COMMONS-2489 is completed & adapt sql text")]
     public void AdditionalFromClause_WithMemberAccess_AndCrossJoin ()
     {
       CheckQuery (
