@@ -15,9 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
@@ -25,6 +29,15 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlStatementTest
   {
+    [Test]
+    [ExpectedException(typeof(ArgumentEmptyException))]
+    public void EmptyCheck ()
+    {
+      var unresolvedTableInfo = new UnresolvedTableInfo (typeof(int));
+      var sqlTable = new SqlTable (unresolvedTableInfo);
+      new SqlStatement (new SqlTableReferenceExpression (sqlTable), new SqlTableBase[] { }, new Ordering[] { });
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
