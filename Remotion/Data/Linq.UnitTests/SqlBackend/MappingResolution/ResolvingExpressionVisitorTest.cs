@@ -284,22 +284,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
     }
 
-    //[Test]
-    //public void VisitUnresolvedJoinConditionExpression ()
-    //{
-    //  var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
-    //  var expression = new JoinConditionExpression (joinInfo);
-
-    //  _stageMock
-    //      .Expect (mock => mock.ResolveJoinInfo (joinInfo))
-    //      .Return (_resolvedJoinInfo);
-
-    //  var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _generator, _stageMock);
-
-    //  Assert.That (((BinaryExpression) result).Left, Is.EqualTo (_resolvedJoinInfo.PrimaryColumn));
-    //  Assert.That (((BinaryExpression) result).Right, Is.EqualTo (_resolvedJoinInfo.ForeignColumn));
-    //}
-
     private void StubResolveTableInfo ()
     {
       _resolverMock
