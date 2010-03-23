@@ -288,7 +288,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
     //public void VisitUnresolvedJoinConditionExpression ()
     //{
     //  var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
-    //  var expression = new UnresolvedJoinConditionExpression (joinInfo);
+    //  var expression = new JoinConditionExpression (joinInfo);
 
     //  _stageMock
     //      .Expect (mock => mock.ResolveJoinInfo (joinInfo))

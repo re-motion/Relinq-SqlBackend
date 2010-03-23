@@ -206,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (_visitor.WhereCondition, Is.TypeOf (typeof (UnresolvedJoinConditionExpression)));
+      Assert.That (_visitor.WhereCondition, Is.TypeOf (typeof (JoinConditionExpression)));
     }
 
     [Test]
