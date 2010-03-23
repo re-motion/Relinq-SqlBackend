@@ -26,44 +26,44 @@ using Remotion.Data.Linq.UnitTests.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
-  [TestFixture]
-  public class UnresolvedJoinConditionExpressionTest
-  {
-    private UnresolvedJoinConditionExpression _expression;
+  //[TestFixture]
+  //public class UnresolvedJoinConditionExpressionTest
+  //{
+  //  private UnresolvedJoinConditionExpression _expression;
 
-    [SetUp]
-    public void SetUp ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
-      _expression =
-          new UnresolvedJoinConditionExpression (new UnresolvedJoinInfo (sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One));
-    }
+  //  [SetUp]
+  //  public void SetUp ()
+  //  {
+  //    var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
+  //    _expression =
+  //        new UnresolvedJoinConditionExpression (new UnresolvedJoinInfo (sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One));
+  //  }
 
 
-    [Test]
-    public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
-    {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      visitorMock.Replay ();
+  //  [Test]
+  //  public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
+  //  {
+  //    var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+  //    visitorMock.Replay ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+  //    var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
 
-      Assert.That (result, Is.SameAs (_expression));
-      visitorMock.VerifyAllExpectations ();
-    }
+  //    Assert.That (result, Is.SameAs (_expression));
+  //    visitorMock.VerifyAllExpectations ();
+  //  }
 
-    [Test]
-    public void Accept_VisitorSupportingExpressionType ()
-    {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<UnresolvedJoinConditionExpression, IUnresolvedSqlExpressionVisitor> (
-          _expression,
-          mock => mock.VisitUnresolvedJoinConditionExpression (_expression));
-    }
+  //  //[Test]
+  //  //public void Accept_VisitorSupportingExpressionType ()
+  //  //{
+  //  //  ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<UnresolvedJoinConditionExpression, IUnresolvedSqlExpressionVisitor> (
+  //  //      _expression,
+  //  //      mock => mock.VisitUnresolvedJoinConditionExpression (_expression));
+  //  //}
 
-    [Test]
-    public void Accept_VisitorNotSupportingExpressionType ()
-    {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
-    }
-  }
+  //  [Test]
+  //  public void Accept_VisitorNotSupportingExpressionType ()
+  //  {
+  //    ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
+  //  }
+  //}
 }

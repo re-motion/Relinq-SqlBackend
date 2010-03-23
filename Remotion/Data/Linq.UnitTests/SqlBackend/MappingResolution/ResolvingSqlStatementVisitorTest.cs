@@ -167,7 +167,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = _visitor.VisitSelectProjection (expression);
+      var result = _visitor.ResolveSelectProjection (expression);
 
       _stageMock.VerifyAllExpectations();
 
@@ -185,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = _visitor.VisitTopExpression (expression);
+      var result = _visitor.ResolveTopExpression (expression);
 
       _stageMock.VerifyAllExpectations();
 
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = _visitor.VisitWhereCondition (expression);
+      var result = _visitor.ResolveWhereCondition (expression);
 
       _stageMock.VerifyAllExpectations();
 
@@ -221,7 +221,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = _visitor.VisitOrderingExpression (expression);
+      var result = _visitor.ResolveOrderingExpression (expression);
 
       _stageMock.VerifyAllExpectations();
 
