@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -329,6 +330,22 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
           subStatementExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT [t].[Name] FROM [Table] AS [t])"));
+    }
+
+    [Test]
+    public void VisitJoinConditionExpression ()
+    {
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var primaryColumn = new SqlColumnExpression (typeof (Cook), "c", "ID");
+      var foreignColumn = new SqlColumnExpression (typeof (Cook), "a", "FK");
+      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, primaryColumn, foreignColumn);
+      var sqlTable = new SqlJoinedTable (joinInfo);
+      var joinConditionExpression = new JoinConditionExpression (sqlTable);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          joinConditionExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("([c].[ID] = [a].[FK])"));
     }
   }
 }

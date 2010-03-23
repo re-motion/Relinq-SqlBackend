@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<JoinConditionExpression, IResolvedSqlExpressionVisitor> (
           _expression,
-          mock => mock.VisitUnresolvedJoinConditionExpression (_expression));
+          mock => mock.VisitJoinConditionExpression (_expression));
     }
 
     [Test]
