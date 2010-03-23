@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
     public new Expression VisitSelectProjection (Expression selectProjection)
     {
-      return base.VisitSelectProjection (selectProjection);
+      return base.ResolveSelectProjection (selectProjection);
     }
 
     public new void ResolveSqlTable (SqlTable sqlTable)
@@ -40,17 +40,17 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
 
     public new Expression VisitTopExpression (Expression topExpression)
     {
-      return base.VisitTopExpression (topExpression);
+      return base.ResolveTopExpression (topExpression);
     }
 
     public new Expression VisitWhereCondition (Expression whereCondition)
     {
-      return base.VisitWhereCondition (whereCondition);
+      return base.ResolveWhereCondition (whereCondition);
     }
 
     public new Expression VisitOrderingExpression (Expression orderByExpression)
     {
-      return base.VisitOrderingExpression (orderByExpression);
+      return base.ResolveOrderingExpression (orderByExpression);
     }
   }
 }
