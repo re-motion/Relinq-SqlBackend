@@ -110,17 +110,6 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
     }
 
-    //[ExpectedException (typeof (NotSupportedException))]
-    //[Test]
-    //public void VisitUnresolvedJoinConditionExpression_ThrowsNotSupportException ()
-    //{
-    //  var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
-    //  var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
-    //  var expression = new JoinConditionExpression (sqlTable);
-
-    //  SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
-    //}
-
     [Test]
     public void VisitSqlSubStatementExpression ()
     {
