@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
       sqlStatement.SelectProjection = _columnListExpression;
-      sqlStatement.SqlTables[0].TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
 
       _stage.GenerateTextForSqlStatement (_commandBuilder, sqlStatement);
 

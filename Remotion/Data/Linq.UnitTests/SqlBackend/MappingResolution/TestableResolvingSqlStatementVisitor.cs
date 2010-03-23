@@ -33,9 +33,9 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       return base.VisitSelectProjection (selectProjection);
     }
 
-    public new void VisitSqlTable (SqlTable sqlTable)
+    public new void ResolveSqlTable (SqlTable sqlTable)
     {
-      base.VisitSqlTable (sqlTable);
+      base.ResolveSqlTable (sqlTable);
     }
 
     public new Expression VisitTopExpression (Expression topExpression)

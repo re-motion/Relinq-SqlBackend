@@ -180,7 +180,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       var fakeEntityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) sqlStatement.SqlTables[0].TableInfo, _uniqueIdentifierGenerator))
+          .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
           .Return (_fakeResolvedSimpleTableInfo);
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _uniqueIdentifierGenerator))
@@ -190,7 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       _stage.ResolveSqlStatement (sqlStatement);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (sqlStatement.SqlTables[0].TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
+      Assert.That (((SqlTable) sqlStatement.SqlTables[0]).TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
   }

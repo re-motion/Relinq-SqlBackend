@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
           .Return (_fakeResolvedSimpleTableInfo);
       _stageMock.Replay();
 
-      _visitor.VisitSqlTable (_sqlTable);
+      _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       }
       _stageMock.Replay();
 
-      _visitor.VisitSqlTable (_sqlTable);
+      _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (join.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       }
       _stageMock.Replay();
 
-      _visitor.VisitSqlTable (_sqlTable);
+      _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
@@ -148,7 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.MappingResolution
       }
       _stageMock.Replay();
 
-      _visitor.VisitSqlTable (_sqlTable);
+      _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));

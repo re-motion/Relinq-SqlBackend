@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (result.SqlTables[0].TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
+      Assert.That (((SqlTable) result.SqlTables[0]).TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
       Assert.That (result.TopExpression, Is.Null);
       Assert.That (result.IsCountQuery, Is.False);
       Assert.That (result.IsDistinctQuery, Is.False);

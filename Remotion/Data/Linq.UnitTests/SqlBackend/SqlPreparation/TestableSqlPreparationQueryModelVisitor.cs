@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
       get { return base.TopExpression; }
     }
 
-    public new List<SqlTable> SqlTables
+    public new List<SqlTableBase> SqlTables
     {
       get { return base.SqlTables; }
     }
