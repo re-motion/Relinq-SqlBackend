@@ -31,35 +31,32 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
   public class MethodCallSqlGeneratorRegistryTest
   {
     [Test]
-    public void RegisterNewMethod ()
+    public void Register_NewMethod ()
     {
-      MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      var generator = new DummyMetthodCallSqlGenerator();
+      MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }); // TODO Review 2364: Make methodInfo a field
+      var generator = new DummyMetthodCallSqlGenerator (); // TODO Review 2364: Typo, rename - consider using stub instead of creating a dummy implementation (MockRepository.GenerateStub)
 
-      var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
+      var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry (); // TODO Review 2364: Field?
 
       methodCallSqlGeneratorRegistry.Register (methodInfo, generator);
 
-      IMethodCallSqlGenerator expectedGenerator = methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
-
-      Assert.That (generator, Is.EqualTo (expectedGenerator));
+      var expectedGenerator = methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
+      Assert.That (generator, Is.EqualTo (expectedGenerator)); // TODO Review 2364: Use SameAs - references should be checked here.
     }
 
     [Test]
-    public void RegisterMethodTwice ()
+    public void Register_MethodTwice ()
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       var generator = new DummyMetthodCallSqlGenerator();
 
       var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
-
       methodCallSqlGeneratorRegistry.Register (methodInfo, generator);
 
       var generator2 = new DummyMetthodCallSqlGenerator();
       methodCallSqlGeneratorRegistry.Register (methodInfo, generator2);
 
-      IMethodCallSqlGenerator expectedGenerator = methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
-
+      var expectedGenerator = methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
       Assert.That (generator, Is.Not.EqualTo (expectedGenerator));
       Assert.That (generator2, Is.EqualTo (expectedGenerator));
     }
@@ -67,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method System.String.Concat is not supported by this code "
                                                                            + "generator, and no custom generator has been registered.")]
-    public void DontFindGenerator_Exception ()
+    public void GetGenerator_DontFindGenerator_Exception ()
     {
       MethodInfo methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
 
@@ -77,23 +74,23 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GetGeneratorForGenericMethodInfo ()
+    public void GetGenerator_ForGenericMethodInfo ()
     {
-      IQueryable<Cook> source = null;
-      var methodInfo = ReflectionUtility.GetMethod (() => source.Distinct());
+      var genericMethodDefinition = (from m in typeof (Queryable).GetMethods()
+                                     where m.Name == "Distinct" && m.GetParameters().Length == 1
+                                     select m).Single();
+      var closedGenericMethod = genericMethodDefinition.MakeGenericMethod (typeof (Cook));
 
-      var methodInfoDistinct = (from m in typeof (Queryable).GetMethods()
-                                where m.Name == "Distinct" && m.GetParameters().Length == 1
-                                select m).Single();
-      var registry = new MethodCallSqlGeneratorRegistry();
+      var registry = new MethodCallSqlGeneratorRegistry ();
       var generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator>();
-      registry.Register (methodInfoDistinct, generatorStub);
+      registry.Register (genericMethodDefinition, generatorStub);
 
-      var expectedGenerator = registry.GetGenerator (methodInfo);
+      var expectedGenerator = registry.GetGenerator (closedGenericMethod);
 
       Assert.That (expectedGenerator, Is.SameAs (generatorStub));
     }
 
+    // TODO Review 2364: This test doesn't seem to test anything new?
     [Test]
     public void GetGeneratorForMethodWithOneParameter ()
     {
@@ -113,6 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
       Assert.That (expectedGenerator, Is.SameAs (generatorStub));
     }
 
+    // TODO Review 2364: This test doesn't seem to test anything new?
     [Test]
     public void GetGeneratorForMethodWithTwoParameters ()
     {
@@ -133,6 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
   }
 
+  // TODO Review 2364: Move to separate file (or remove and use stubs instead).
   public class DummyMetthodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
