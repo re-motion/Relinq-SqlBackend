@@ -163,6 +163,25 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitMainFromClause_CreatesFromExpressionWith ()
+    {
+      var preparedExpression = Expression.Constant (0);
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
+      var joinConditionExpression = new JoinConditionExpression (preparedSqlTable);
+
+      _stageMock.Expect (mock => mock.PrepareFromExpression (_mainFromClause.FromExpression)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+
+      _stageMock.Replay ();
+
+      _visitor.VisitMainFromClause (_mainFromClause, _queryModel);
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (_visitor.WhereCondition.Type, Is.EqualTo (joinConditionExpression.Type));
+      Assert.That (_visitor.SqlTables.Count, Is.EqualTo (1));
+    }
+
+    [Test]
     public void VisitAdditionalFromClause_CreatesFromExpression ()
     {
       var fakeSqlTableForMainFromClause = SqlStatementModelObjectMother.CreateSqlTable();
@@ -404,5 +423,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlPreparation
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
     }
+
+    
   }
 }
