@@ -117,15 +117,18 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO Review 2461: check from clauses - create dummy tables (to be discussed)")]
     public void DependentSubQueryInSubQuery ()
     {
       CheckQuery (
           from r in Restaurants where r.ID == (from c in r.Cooks where c.ID == (from a in c.Assistants select a).Count () select c).Count () select r.ID,
-         "SELECT [t0].[ID] FROM [RestaurantTable] AS [t0] "
-         +"LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[RestaurantID] "
-         +"LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[AssistedID] "
-         +"WHERE ([t0].[ID] = (SELECT COUNT(*) FROM  WHERE ([t1].[ID] = (SELECT COUNT(*) FROM ))))");
+         "SELECT [t0].[ID] "
+          +"FROM [RestaurantTable] AS [t0] "
+          +"WHERE ([t0].[ID] = "
+          +"(SELECT COUNT(*) FROM [CookTable] AS [t1] "
+          +"WHERE "
+          +"(([t0].[ID] = [t1].[RestaurantID]) AND "
+          +"([t1].[ID] = (SELECT COUNT(*) FROM [CookTable] AS [t2] "
+          +"WHERE ([t1].[ID] = [t2].[AssistedID]))))))");
     }
 
     [Test]

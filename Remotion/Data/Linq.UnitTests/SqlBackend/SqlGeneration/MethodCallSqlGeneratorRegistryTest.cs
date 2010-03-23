@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method System.String.Concat is not supported by this code "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.String.Concat' is not supported by this code "
                                                                            + "generator, and no custom generator has been registered.")]
     public void GetGenerator_DontFindGenerator_Exception ()
     {

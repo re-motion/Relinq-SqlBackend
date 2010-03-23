@@ -54,27 +54,28 @@ namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO: remove ignore when task COMMONS-2489 is completed & adapt sql text")]
     public void AdditionalFromClause_WithMemberAccess ()
     {
       CheckQuery (
          from s in Cooks from a in s.Assistants select a.Name,
-         "SELECT [t1].[Name] "
-         + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID]"
+         "SELECT [t1].[Name] FROM [CookTable] AS [t0] "
+         +"CROSS JOIN [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])"
          );
     }
 
     [Test]
-    [Ignore ("TODO: remove ignore when task COMMONS-2489 is completed & adapt sql text")]
     public void AdditionalFromClause_WithMemberAccess_AndCrossJoin ()
     {
       CheckQuery (
          from s in Cooks from a in s.Assistants from r in Restaurants from c in r.Cooks where a.Name != null select c.Name,
-         "SELECT [t3].[Name] "
-         + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[AssistedID] "
-         + "CROSS JOIN [RestaurantTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[RestaurantID] "
-         + "WHERE ([t1].[Name] IS NOT NULL)"
-         );
+         "SELECT [t3].[Name] FROM [CookTable] AS [t0] "
+         +"CROSS JOIN [CookTable] AS [t1] "
+         +"CROSS JOIN [RestaurantTable] AS [t2] "
+         +"CROSS JOIN [CookTable] AS [t3] "
+         +"WHERE "
+         +"((([t0].[ID] = [t1].[AssistedID]) AND "
+         +"([t2].[ID] = [t3].[RestaurantID])) AND "
+         +"([t1].[Name] IS NOT NULL))");
     }
     
   }
