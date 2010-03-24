@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.UnitTests.TestUtilities;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend
