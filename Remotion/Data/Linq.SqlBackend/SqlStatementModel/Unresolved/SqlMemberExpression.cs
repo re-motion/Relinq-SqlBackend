@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _memberInfo; }
     }
 
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
     }

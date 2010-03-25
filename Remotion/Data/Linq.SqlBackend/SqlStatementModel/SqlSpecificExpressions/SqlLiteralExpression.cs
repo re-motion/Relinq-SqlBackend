@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _value; }
     }
 
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
     }
