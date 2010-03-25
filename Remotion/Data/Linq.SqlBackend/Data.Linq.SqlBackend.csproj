@@ -110,6 +110,7 @@
     <Compile Include="SqlStatementModel\Unresolved\IUnresolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Unresolved\JoinConditionExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlEntityRefMemberExpression.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\SqlInExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlMemberExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlTableReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedJoinInfo.cs" />
