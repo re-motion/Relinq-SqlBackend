@@ -15,39 +15,36 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  [TestFixture]
-  public class SqlCommandBuilderTest
+  public struct CommandParameter
   {
-    private SqlCommandBuilder _sqlCommandBuilder;
+    private readonly string _name;
+    private readonly object _value;
 
-    [SetUp]
-    public void SetUp ()
+    public CommandParameter (string name, object value)
     {
-      _sqlCommandBuilder = new SqlCommandBuilder();
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      _name = name;
+      _value = value;
     }
 
-    [Test]
-    public void GetCommandText ()
+    public string Name
     {
-      _sqlCommandBuilder.Append ("Test");
-
-      Assert.That (_sqlCommandBuilder.GetCommandText(), Is.EqualTo ("Test"));
+      get { return _name; }
     }
 
-    [Test]
-    public void GetCommandParameters ()
+    public object Value
     {
-      var commandParameter = new CommandParameter ("@1", "value");
-      _sqlCommandBuilder.AddParameter ("value");
+      get { return _value; }
+    }
 
-      Assert.That (_sqlCommandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
-      Assert.That (_sqlCommandBuilder.GetCommandParameters()[0], Is.EqualTo (commandParameter));
+    public override string ToString ()
+    {
+      return Name + "=" + Value;
     }
   }
 }
