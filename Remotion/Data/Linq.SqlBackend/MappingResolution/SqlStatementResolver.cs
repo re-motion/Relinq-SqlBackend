@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     protected void ResolveJoinedTable (SqlJoinedTable joinedTable)
     {
-      joinedTable.JoinInfo = _stage.ResolveJoinInfo ((UnresolvedJoinInfo) joinedTable.JoinInfo);
+      joinedTable.JoinInfo = _stage.ResolveJoinInfo ((UnresolvedJoinInfo) joinedTable.JoinInfo); // TODO Review 2486: Change _stage.ResolveJoinInfo to take an AbstractJoinInfo; remove cast (in the future, we will probably add other kinds of join infos)
     }
 
     protected virtual void ResolveSqlStatement (SqlStatement sqlStatement)
