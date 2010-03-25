@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -43,13 +42,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var visitor = new SqlPreparationQueryModelVisitor (preparationContext, stage);
       queryModel.Accept (visitor);
+      
       return visitor.GetSqlStatement();
     }
 
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    private readonly List<SqlTableBase> _sqlTables;
-    private readonly List<Ordering> _orderings;
+    protected SqlStatementBuilder SqlStatementBuilder { get; private set; } 
 
     protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage)
     {
@@ -59,8 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _context = context;
       _stage = stage;
 
-      _sqlTables = new List<SqlTableBase>();
-      _orderings = new List<Ordering>();
+      SqlStatementBuilder = new SqlStatementBuilder ();
     }
 
     public SqlPreparationContext Context
@@ -73,40 +71,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       get { return _stage; }
     }
 
-    protected Expression ProjectionExpression { get; set; }
-    protected Expression WhereCondition { get; set; }
-    protected bool IsCountQuery { get; set; }
-    protected bool IsDistinctQuery { get; set; }
-    protected Expression TopExpression { get; set; }
-
-    protected List<SqlTableBase> SqlTables
+    public SqlStatement GetSqlStatement ()
     {
-      get { return _sqlTables; }
+      return SqlStatementBuilder.GetSqlStatement ();
     }
-
-    protected List<Ordering> Orderings
-    {
-      get { return _orderings; }
-    }
-
-    public virtual SqlStatement GetSqlStatement ()
-    {
-      var sqlStatement = new SqlStatement (ProjectionExpression, _sqlTables, _orderings);
-
-      sqlStatement.IsCountQuery = IsCountQuery;
-      sqlStatement.IsDistinctQuery = IsDistinctQuery;
-      sqlStatement.WhereCondition = WhereCondition;
-      sqlStatement.TopExpression = TopExpression;
-
-      return sqlStatement;
-    }
-
+    
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      Debug.Assert (_sqlTables.Count == 0);
+      Debug.Assert (SqlStatementBuilder.SqlTables.Count == 0);
 
       AddFromClause (fromClause);
     }
@@ -130,7 +105,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      ProjectionExpression = _stage.PrepareSelectExpression (selectClause.Selector);
+      SqlStatementBuilder.ProjectionExpression = _stage.PrepareSelectExpression (selectClause.Selector);
     }
 
     public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
@@ -141,7 +116,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var orderings = from ordering in orderByClause.Orderings
                       let orderByExpression = _stage.PrepareOrderByExpression (ordering.Expression)
                       select new Ordering (orderByExpression, ordering.OrderingDirection);
-      _orderings.InsertRange (0, orderings);
+      SqlStatementBuilder.Orderings.InsertRange (0, orderings);
     }
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
@@ -150,21 +125,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       if (resultOperator is CountResultOperator)
-        IsCountQuery = true;
+        SqlStatementBuilder.IsCountQuery = true;
       else if (resultOperator is DistinctResultOperator)
       {
-        if (TopExpression != null)
+        if (SqlStatementBuilder.TopExpression != null)
           throw new NotImplementedException ("Distinct after Take is not yet implemented. TODO 2370");
-        IsDistinctQuery = true;
+        SqlStatementBuilder.IsDistinctQuery = true;
       }
       else if (resultOperator is FirstResultOperator)
-        TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
+        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
       else if (resultOperator is SingleResultOperator)
-        TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
+        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
       else if (resultOperator is TakeResultOperator)
       {
         var expression = ((TakeResultOperator) resultOperator).Count;
-        TopExpression = _stage.PrepareTopExpression (expression);
+        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (expression);
       }
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
@@ -172,10 +147,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected void AddWhereCondition (Expression translatedExpression)
     {
-      if (WhereCondition != null)
-        WhereCondition = Expression.AndAlso (WhereCondition, translatedExpression);
+      if (SqlStatementBuilder.WhereCondition != null)
+        SqlStatementBuilder.WhereCondition = Expression.AndAlso (SqlStatementBuilder.WhereCondition, translatedExpression);
       else
-        WhereCondition = translatedExpression;
+        SqlStatementBuilder.WhereCondition = translatedExpression;
     }
 
     private void AddFromClause (FromClauseBase fromClause)
@@ -188,14 +163,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         _context.AddQuerySourceMapping (fromClause, sqlJoinedTable);
         AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-        _sqlTables.Add (sqlJoinedTable);
+        SqlStatementBuilder.SqlTables.Add (sqlJoinedTable);
       }
       else
       {
         _context.AddQuerySourceMapping (fromClause, sqlTableOrJoin);
         var topLevelSqlTable = sqlTableOrJoin as SqlTable;
         if (topLevelSqlTable != null)
-          _sqlTables.Add (topLevelSqlTable);
+          SqlStatementBuilder.SqlTables.Add (topLevelSqlTable);
       }
     }
   }

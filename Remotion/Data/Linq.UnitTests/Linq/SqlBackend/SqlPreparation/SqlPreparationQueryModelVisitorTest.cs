@@ -159,7 +159,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
       Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (preparedSqlTable));
     }
 
@@ -178,15 +178,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.WhereCondition.Type, Is.EqualTo (joinConditionExpression.Type));
-      Assert.That (_visitor.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition.Type, Is.EqualTo (joinConditionExpression.Type));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
     }
 
     [Test]
     public void VisitAdditionalFromClause_CreatesFromExpression ()
     {
       var fakeSqlTableForMainFromClause = SqlStatementModelObjectMother.CreateSqlTable();
-      _visitor.SqlTables.Add (fakeSqlTableForMainFromClause);
+      _visitor.SqlStatementBuilder.SqlTables.Add (fakeSqlTableForMainFromClause);
 
       var constantExpression = Expression.Constant (0);
       var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitAdditionalFromClause (additionalFromClause, _queryModel, 0);
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
       Assert.That (_context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlTable));
     }
 
@@ -225,8 +225,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (_visitor.WhereCondition, Is.TypeOf (typeof (JoinConditionExpression)));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (JoinConditionExpression)));
     }
 
     [Test]
@@ -244,7 +244,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitWhereClause (whereClause, _queryModel, 0);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.WhereCondition, Is.SameAs (preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (preparedExpression));
     }
 
     [Test]
@@ -268,9 +268,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitWhereClause (whereClause2, _queryModel, 1);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
-      Assert.That (((BinaryExpression) _visitor.WhereCondition).Left, Is.SameAs (preparedExpression1));
-      Assert.That (((BinaryExpression) _visitor.WhereCondition).Right, Is.SameAs (preparedExpression2));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
+      Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Left, Is.SameAs (preparedExpression1));
+      Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Right, Is.SameAs (preparedExpression2));
     }
 
     [Test]
@@ -284,7 +284,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitSelectClause (_selectClause, _queryModel);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.ProjectionExpression, Is.SameAs (preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.ProjectionExpression, Is.SameAs (preparedExpression));
     }
 
     [Test]
@@ -299,9 +299,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.Orderings, Is.Not.Null);
-      Assert.That (_visitor.Orderings.Count, Is.EqualTo (1));
-      Assert.That (_visitor.Orderings[0].Expression, Is.SameAs (preparedOrdering.Expression));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings, Is.Not.Null);
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0].Expression, Is.SameAs (preparedOrdering.Expression));
     }
 
     [Test]
@@ -315,7 +315,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var ordering2 = new Ordering (preparedOrderingExpression2, OrderingDirection.Asc);
       var ordering3 = new Ordering (preparedOrderingExpression3, OrderingDirection.Desc);
 
-      _visitor.Orderings.Add (ordering1);
+      _visitor.SqlStatementBuilder.Orderings.Add (ordering1);
 
       _orderByClause.Orderings.Add (ordering2);
       _orderByClause.Orderings.Add (ordering3);
@@ -327,11 +327,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.Orderings, Is.Not.Null);
-      Assert.That (_visitor.Orderings.Count, Is.EqualTo (3));
-      Assert.That (_visitor.Orderings[0].Expression, Is.SameAs (preparedOrderingExpression2));
-      Assert.That (_visitor.Orderings[1].Expression, Is.SameAs (preparedOrderingExpression3));
-      Assert.That (_visitor.Orderings[2].Expression, Is.SameAs (preparedOrderingExpression1));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings, Is.Not.Null);
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (3));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0].Expression, Is.SameAs (preparedOrderingExpression2));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[1].Expression, Is.SameAs (preparedOrderingExpression3));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[2].Expression, Is.SameAs (preparedOrderingExpression1));
     }
 
     [Test]
@@ -352,7 +352,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.TopExpression, Is.SameAs (preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
     }
 
     [Test]
@@ -373,7 +373,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.TopExpression, Is.SameAs (preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
     }
 
     [Test]
@@ -391,7 +391,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (_visitor.TopExpression, Is.SameAs (preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
     }
 
     [Test]
@@ -400,7 +400,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = Expression.Constant ("whereTest");
       _visitor.AddWhereCondition (expression);
 
-      Assert.That (_visitor.WhereCondition, Is.EqualTo (expression));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.EqualTo (expression));
     }
 
     [Test]
@@ -411,8 +411,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression2 = Expression.Constant (false);
       _visitor.AddWhereCondition (expression2);
 
-      Assert.That (((BinaryExpression) _visitor.WhereCondition).Left, Is.EqualTo (expression1));
-      Assert.That (((BinaryExpression) _visitor.WhereCondition).Right, Is.EqualTo (expression2));
+      Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Left, Is.EqualTo (expression1));
+      Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Right, Is.EqualTo (expression2));
     }
 
     [Test]

@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -30,39 +28,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
     }
 
-    public new Expression ProjectionExpression
+    public new SqlStatementBuilder SqlStatementBuilder
     {
-      get { return base.ProjectionExpression; }
-    }
-
-    public new Expression WhereCondition
-    {
-      get { return base.WhereCondition; }
-    }
-
-    public new List<Ordering> Orderings
-    {
-      get { return base.Orderings; }
-    }
-
-    public new bool IsCountQuery
-    {
-      get { return base.IsCountQuery; }
-    }
-
-    public new bool IsDistinctQuery
-    {
-      get { return base.IsDistinctQuery; }
-    }
-
-    public new Expression TopExpression
-    {
-      get { return base.TopExpression; }
-    }
-
-    public new List<SqlTableBase> SqlTables
-    {
-      get { return base.SqlTables; }
+      get { return base.SqlStatementBuilder; }
     }
 
     public new void AddWhereCondition (Expression translatedExpression)
