@@ -70,6 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlMemberExpression, typeof (Cook), _stageMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
+      // TODO Review 2487: Assert that result was not added to sqlTable.JoinedTables
 
       var joinInfo = ((SqlJoinedTable) result).JoinInfo;
       Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
