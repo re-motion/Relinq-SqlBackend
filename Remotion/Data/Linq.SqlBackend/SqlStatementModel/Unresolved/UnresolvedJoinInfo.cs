@@ -47,6 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
         _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (memberReturnType, "memberInfo");
     }
 
+    // TODO Review 2486: Rename to "LeftSideTable" or "OriginatingTable" or something similar; also rename field and ctor parameter
     public SqlTableBase SqlTable
     {
       get { return _sqlTable; }

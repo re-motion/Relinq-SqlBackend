@@ -36,6 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var joinedTable = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
       Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
+      // TODO Review 2486: Add check for joinedTable.JoinInfo.SqlTable
     }
 
     [Test]

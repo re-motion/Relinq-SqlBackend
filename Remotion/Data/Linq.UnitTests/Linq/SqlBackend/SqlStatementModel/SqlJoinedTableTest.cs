@@ -34,13 +34,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook))); // TODO Review 2486: Use object mother
     }
 
     [Test]
     public void SameType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One); // TODO Review 2486: use kitchen table here
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
       var newJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One); // TODO Review 2486: use kitchen table here
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
       var newJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 

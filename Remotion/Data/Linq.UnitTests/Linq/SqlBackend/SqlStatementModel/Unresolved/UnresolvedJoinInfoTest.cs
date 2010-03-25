@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook))); // TODO Review 2486: use object mother
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void ItemType_CardinalityMany ()
     {
-      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
+      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many); // TODO Review 2486: use restaurant table here
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 

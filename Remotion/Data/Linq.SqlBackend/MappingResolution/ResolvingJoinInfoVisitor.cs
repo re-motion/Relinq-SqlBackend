@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       var visitor = new ResolvingJoinInfoVisitor (resolver, generator);
-      return (ResolvedJoinInfo) (joinInfo.Accept (visitor));
+      return (ResolvedJoinInfo) joinInfo.Accept (visitor);
     }
 
     protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator)
