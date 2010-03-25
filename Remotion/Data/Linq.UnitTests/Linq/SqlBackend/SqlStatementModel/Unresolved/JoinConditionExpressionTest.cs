@@ -36,8 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
-      _expression =
-          new JoinConditionExpression (sqlTable);
+      _expression = new JoinConditionExpression (sqlTable);
     }
 
 

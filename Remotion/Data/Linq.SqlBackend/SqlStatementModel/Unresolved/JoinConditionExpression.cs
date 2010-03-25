@@ -21,23 +21,23 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved // TODO Review 2487: Move to SqlStatementModel namespace
 {
   /// <summary>
   /// <see cref="JoinConditionExpression"/> represents the data source defined by a member access in the from part of a linq expression.
   /// </summary>
   public class JoinConditionExpression : ExtensionExpression
   {
-    private readonly SqlJoinedTable _sqlTable;
+    private readonly SqlJoinedTable _sqlTable; // TODO Review 2487: Rename to joinedTable; also rename ctor parameter
 
-    public JoinConditionExpression (SqlJoinedTable sqlTable) : base(typeof(bool))
+    public JoinConditionExpression (SqlJoinedTable sqlTable) : base (typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
       _sqlTable = sqlTable;
     }
 
-    public SqlJoinedTable JoinTable
+    public SqlJoinedTable JoinTable // TODO Review 2487: Rename to JoinedTable
     {
       get { return _sqlTable; }
     }

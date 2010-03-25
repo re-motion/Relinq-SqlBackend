@@ -59,5 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }
+
+    // TODO Review 2487: Test Accept
   }
 }

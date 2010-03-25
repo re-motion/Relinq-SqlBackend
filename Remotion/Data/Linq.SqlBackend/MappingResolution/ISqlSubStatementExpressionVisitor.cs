@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.SqlBackend.MappingResolution
+namespace Remotion.Data.Linq.SqlBackend.MappingResolution // TODO Review 2487: Move to SqlStatementModel namespace
 {
   /// <summary>
   /// Defines a custom visit method for <see cref="SqlSubStatementExpression"/> <see cref="ExtensionExpression"/> instances.

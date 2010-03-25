@@ -34,8 +34,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("statement", statement);
       
-      var visitor = new SqlStatementResolver (stage);
-      visitor.ResolveSqlStatement (statement);
+      var resolver = new SqlStatementResolver (stage);
+      resolver.ResolveSqlStatement (statement);
     }
 
     protected SqlStatementResolver (IMappingResolutionStage stage)
@@ -43,16 +43,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("stage", stage);
       
       _stage = stage;
-    }
-
-    void ISqlTableBaseVisitor.VisitSqlTable (SqlTable sqlTable)
-    {
-      ResolveSqlTable (sqlTable);
-    }
-
-    void ISqlTableBaseVisitor.VisitSqlJoinTable (SqlJoinedTable sqlTable)
-    {
-      ResolveJoinedTable (sqlTable);
     }
 
     protected Expression ResolveSelectProjection (Expression selectProjection) 
@@ -68,6 +58,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       
       sqlTable.TableInfo = _stage.ResolveTableInfo (sqlTable.TableInfo);
       ResolveJoins (sqlTable);
+    }
+
+    protected virtual void ResolveJoinedTable (SqlJoinedTable joinedTable)
+    {
+      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+
+      joinedTable.JoinInfo = _stage.ResolveJoinInfo ((UnresolvedJoinInfo) joinedTable.JoinInfo); // TODO Review 2486: Change _stage.ResolveJoinInfo to take an AbstractJoinInfo; remove cast (in the future, we will probably add other kinds of join infos)
+      // TODO Review 2487: Must resolve joins of joined table!
     }
 
     protected Expression ResolveWhereCondition (Expression whereCondition)
@@ -91,22 +89,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return _stage.ResolveTopExpression (topExpression);
     }
 
-    private void ResolveJoins (SqlTableBase sqlTable)
-    {
-      foreach (var joinedTable in sqlTable.JoinedTables)
-      {
-        ResolveJoinedTable(joinedTable);
-        ResolveJoins (joinedTable);
-      }
-    }
-
-    protected void ResolveJoinedTable (SqlJoinedTable joinedTable)
-    {
-      joinedTable.JoinInfo = _stage.ResolveJoinInfo ((UnresolvedJoinInfo) joinedTable.JoinInfo); // TODO Review 2486: Change _stage.ResolveJoinInfo to take an AbstractJoinInfo; remove cast (in the future, we will probably add other kinds of join infos)
-    }
-
     protected virtual void ResolveSqlStatement (SqlStatement sqlStatement)
     {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+
       foreach (var sqlTable in sqlStatement.SqlTables)
         sqlTable.Accept (this);
         
@@ -125,6 +111,23 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       }
     }
 
-    
+    void ISqlTableBaseVisitor.VisitSqlTable (SqlTable sqlTable)
+    {
+      ResolveSqlTable (sqlTable);
+    }
+
+    void ISqlTableBaseVisitor.VisitSqlJoinTable (SqlJoinedTable sqlTable)
+    {
+      ResolveJoinedTable (sqlTable);
+    }
+
+    private void ResolveJoins (SqlTableBase sqlTable)
+    {
+      foreach (var joinedTable in sqlTable.JoinedTables)
+      {
+        ResolveJoinedTable (joinedTable);
+        ResolveJoins (joinedTable); // TODO Review 2487: This recursive call should be in ResolveJoinedTable
+      }
+    }
   }
 }

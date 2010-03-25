@@ -428,6 +428,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.AddWhereCondition (expression1);
       var expression2 = Expression.Constant (false);
       _visitor.AddWhereCondition (expression2);
+      
+      // TODO Review 2487: Check that WhereCondition.NodeType is equal to And
 
       Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Left, Is.EqualTo (expression1));
       Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Right, Is.EqualTo (expression2));

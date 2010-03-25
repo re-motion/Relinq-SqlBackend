@@ -22,6 +22,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public interface ISqlTableBaseVisitor
   {
     void VisitSqlTable (SqlTable sqlTable);
-    void VisitSqlJoinTable (SqlJoinedTable sqlTable);
+    void VisitSqlJoinTable (SqlJoinedTable sqlTable); // TODO Review 2487: Rename to VisitSqlJoinedTable
   }
 }
