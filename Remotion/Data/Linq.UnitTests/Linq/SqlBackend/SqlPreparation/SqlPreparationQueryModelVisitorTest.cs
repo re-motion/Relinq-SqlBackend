@@ -394,6 +394,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
     }
 
+    //[Test]
+    //public void VisitResultOperator_Contains ()
+    //{
+    //  var containsExpression = Expression.Constant (2);
+    //  var resultOperator = new ContainsResultOperator (containsExpression);
+    //  _queryModel.ResultOperators.Add (resultOperator);
+    //  var preparedExpression = Expression.Constant (null, typeof (Cook));
+
+    //  _stageMock.Expect (mock => mock.PrepareInExpression (conatainsExpression)).Return (preparedExpression);
+    //  _stageMock.Replay ();
+
+    //  _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
+
+    //  _stageMock.VerifyAllExpectations ();
+
+    //  Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+    //}
+
     [Test]
     public void AddWhereCondition_SingleWhereCondition ()
     {
