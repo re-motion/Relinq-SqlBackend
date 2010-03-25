@@ -36,6 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <param name="generator">The <see cref="UniqueIdentifierGenerator"/> which is used to generate unique identifiers for a 
     /// resolved <see cref="AbstractTableInfo"/>.</param>
     /// <returns>The method returns <see cref="AbstractTableInfo"/> which represents a sql table with all needed information.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedTableInfo"/> cannot be resolved to a mapped database item.</exception>
     AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
@@ -46,6 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// The <see cref="UnresolvedTableInfo"/> has to be resolved to get the appropriate sql table.</param>
     /// <param name="generator">The <see cref="UniqueIdentifierGenerator"/> which is used to generate unique identifiers for resolved <see cref="AbstractJoinInfo"/>.</param>
     /// <returns>The method returns <see cref="ResolvedJoinInfo"/> which represents a sql join between two sql tables.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.</exception>
     ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
@@ -56,6 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// The expression represents the reference to a sql table.</param>
     /// <param name="generator">TODO: generator is never used. remove? </param>
     /// <returns>The method returns a <see cref="SqlEntityExpression"/> which contains all columns of the referenced sql table.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="SqlTableReferenceExpression"/> cannot be resolved to a mapped database item.</exception>
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator);
     
     /// <summary>
@@ -66,6 +69,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <param name="generator">TODO: generator is never used. remove? </param>
     /// <returns>The method returns a <see cref="SqlColumnExpression"/> for simple columns or a
     /// <see cref="SqlEntityExpression"/> for members representing an entity.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="SqlMemberExpression"/> cannot be resolved to a mapped database item.</exception>
     Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator);
 
     /// <summary>
