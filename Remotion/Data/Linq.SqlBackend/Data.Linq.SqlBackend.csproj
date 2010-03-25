@@ -57,6 +57,7 @@
     <Compile Include="MappingResolution\SqlStatementResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlGeneration\BinaryExpressionTextGenerator.cs" />
+    <Compile Include="SqlGeneration\CommandParameter.cs" />
     <Compile Include="SqlGeneration\DefaultSqlGenerationStage.cs" />
     <Compile Include="SqlGeneration\IMethodCallSqlGenerator.cs" />
     <Compile Include="SqlGeneration\ISqlGenerationStage.cs" />
