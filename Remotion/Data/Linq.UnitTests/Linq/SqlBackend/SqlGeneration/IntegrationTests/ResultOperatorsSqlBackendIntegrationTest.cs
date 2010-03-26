@@ -128,15 +128,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("TODO 2494 should work after removing bug ")]
     public void Contains ()
     {
-     CheckQuery (
+      CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2).Contains (s) select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
           +"FROM [CookTable] AS [t0] "
           +"WHERE [t0].[ID] "
-          +"IN ((SELECT [t1].[ID] FROM [CookTable] AS [t1]))");
+          +"IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
     }
   }
 }

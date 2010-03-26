@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -183,6 +184,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
     {
+      var newExpression = EnsureSingleValueSemantics(expression.LeftExpression);
+      
+      if (newExpression != expression.LeftExpression)
+        return new SqlInExpression (newExpression, expression.RightExpression);
       return expression;
     }
 

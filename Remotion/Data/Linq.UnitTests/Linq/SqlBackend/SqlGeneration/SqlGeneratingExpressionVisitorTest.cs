@@ -351,12 +351,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlInExpression ()
     {
-      var sqlInExpression = new SqlInExpression (Expression.Constant (1), Expression.Constant (2));
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
+      var sqlSubStatementExpression = new SqlSubStatementExpression(sqlStatement, typeof(Cook));
+      var sqlInExpression = new SqlInExpression (Expression.Constant (1), sqlSubStatementExpression);
 
+      _stageMock
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
+      
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (@2)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (test)"));
 
     }
   }

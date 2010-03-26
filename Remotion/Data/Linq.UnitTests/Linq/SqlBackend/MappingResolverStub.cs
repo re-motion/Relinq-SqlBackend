@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      return CreateColumnList (tableReferenceExpression.Type, resolvedTableInfo);
+      return CreateEntityExpression (tableReferenceExpression.Type, resolvedTableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -168,12 +168,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName);
     }
 
-    private Expression CreateColumnList (Type entityType, IResolvedTableInfo tableInfo)
+    private Expression CreateEntityExpression (Type entityType, IResolvedTableInfo tableInfo)
     {
       Type type = ((AbstractTableInfo) tableInfo).ItemType;
       if (type == typeof (Cook) || type == typeof (IQueryable<Cook>))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int?), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
             primaryKeyColumn,
@@ -184,23 +184,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
                 CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
                 CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
-                CreateColumn (typeof (int), tableInfo, "SubstitutedID"),
-                CreateColumn (typeof (int), tableInfo, "KitchenID")
+                CreateColumn (typeof (int?), tableInfo, "SubstitutedID"),
+                CreateColumn (typeof (int?), tableInfo, "KitchenID")
             });
       }
       else if (type == typeof (Kitchen) || type == typeof (IQueryable<Kitchen>))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int?), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
             primaryKeyColumn,
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo, "CookID"),
+                CreateColumn (typeof (int?), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
-                CreateColumn (typeof (int), tableInfo, "RestaurantID"),
-                CreateColumn (typeof (int), tableInfo, "SubKitchenID"),
+                CreateColumn (typeof (int?), tableInfo, "RestaurantID"),
+                CreateColumn (typeof (int?), tableInfo, "SubKitchenID"),
             });
       }
       else if (type == typeof (Restaurant) || type == typeof (IQueryable<Restaurant>))
@@ -212,7 +212,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo, "CookID"),
+                CreateColumn (typeof (int?), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });
       }

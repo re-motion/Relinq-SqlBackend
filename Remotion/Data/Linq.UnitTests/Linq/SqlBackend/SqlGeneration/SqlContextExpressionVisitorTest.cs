@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -379,6 +380,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (IQueryable<Cook>));
 
       SqlContextExpressionVisitor.ApplySqlExpressionContext (sqlSubStatementExpression, SqlExpressionContext.ValueRequired);
+    }
+
+    [Test]
+    public void VisitSqlInExpression ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
+      var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var sqlInExpression = new SqlInExpression (Expression.Constant (1), expression);
+
+      var result = _visitor.VisitSqlInExpression (sqlInExpression);
+
+      var rightExpression = new SqlColumnExpression (typeof (int), "c", "ID");
+      
+      
     }
   }
 }

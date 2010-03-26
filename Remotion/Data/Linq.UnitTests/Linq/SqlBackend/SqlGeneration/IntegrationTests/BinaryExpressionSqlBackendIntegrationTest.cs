@@ -293,7 +293,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2494 add after refactoring")]
     public void Equals_EntityComparisonWithNull ()
     {
       CheckQuery (
@@ -327,7 +326,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2494 add after refactoring")]
     public void EntityConstantExpression_WithNull ()
     {
       var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
