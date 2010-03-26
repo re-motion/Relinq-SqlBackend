@@ -24,6 +24,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   public enum SqlExpressionContext
   {
     ValueRequired,
-    PredicateRequired
+    PredicateRequired,
+    SingleValueRequired
   }
 }

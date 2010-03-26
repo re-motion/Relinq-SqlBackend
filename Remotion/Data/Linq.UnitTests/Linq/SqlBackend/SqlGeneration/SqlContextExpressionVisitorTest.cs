@@ -89,6 +89,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void EnsureSingleValueSemantics_WithSqlEntityExpression ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
+      var entityExpression = new SqlEntityExpression (typeof (Cook), columnExpression);
+
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (entityExpression, SqlExpressionContext.SingleValueRequired);
+
+      Assert.That (result, Is.TypeOf (typeof(SqlColumnExpression)));
+      Assert.That (result, Is.SameAs (columnExpression));
+    }
+
+    [Test]
+    public void EnsureSingleValueSemantics_WithoutSqlEntityExpression ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
+
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (columnExpression, SqlExpressionContext.SingleValueRequired);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
+      Assert.That (result, Is.SameAs (columnExpression));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot convert an expression of type 'System.String' to a boolean expression.")]
     public void Convert_WithPredicateSemantics_OtherExpression_Throws ()

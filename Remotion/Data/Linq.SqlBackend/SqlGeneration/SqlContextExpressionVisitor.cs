@@ -46,19 +46,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var result = s_visitorInstance.VisitExpression (expression);
 
       if (initialSemantics == SqlExpressionContext.ValueRequired)
-      {
         return EnsureValueSemantics (result);
-      }
       else if (initialSemantics == SqlExpressionContext.PredicateRequired)
         return EnsurePredicateSemantics (result);
+      else if(initialSemantics == SqlExpressionContext.SingleValueRequired)
+        return EnsureSingleValueSemantics (result);
       else
         throw new NotImplementedException ("Invalid enum value: " + initialSemantics);
     }
 
-    // TODO: Add EnsureSingleValueSemantics (...)
-    // TODO: entityExpression = expression as SqlEntityExpression; if (entityExpression != null) { return entityExpression.PrimaryKeyColumn; }
-    // TODO: Else call EnsureValueSemtantics
-
+    private static Expression EnsureSingleValueSemantics (Expression expression)
+    {
+      var entityExpression = expression as SqlEntityExpression;
+      if (entityExpression != null)
+        return entityExpression.PrimaryKeyColumn;
+      else
+        return EnsureValueSemantics (expression);
+    }
+    
     private static Expression EnsureValueSemantics (Expression expression)
     {
       if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
