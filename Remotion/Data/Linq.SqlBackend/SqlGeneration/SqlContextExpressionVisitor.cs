@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -173,6 +174,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     Expression ISqlSpecificExpressionVisitor.VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
       return VisitUnknownExpression (expression);
+    }
+
+    public Expression VisitSqlInExpression (SqlInExpression expression)
+    {
+      throw new NotImplementedException();
     }
 
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)

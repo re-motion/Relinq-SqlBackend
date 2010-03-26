@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
@@ -26,5 +27,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     Expression VisitSqlCaseExpression (SqlCaseExpression expression);
     Expression VisitSqlLiteralExpression (SqlLiteralExpression expression);
+    Expression VisitSqlInExpression (SqlInExpression expression);
   }
 }

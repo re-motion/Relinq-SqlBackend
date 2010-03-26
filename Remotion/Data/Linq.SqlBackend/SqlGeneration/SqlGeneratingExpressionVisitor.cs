@@ -137,6 +137,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public Expression VisitSqlInExpression (SqlInExpression expression)
+    {
+      throw new NotImplementedException();
+    }
+
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
       _commandBuilder.Append ("(");

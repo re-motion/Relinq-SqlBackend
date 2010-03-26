@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -29,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// format.
   /// </summary>
   public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor
-  { 
+  {
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
 
@@ -48,7 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      
+
       _context = context;
       _stage = stage;
     }
@@ -56,7 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
+
       var referencedTable = _context.GetSqlTableForQuerySource (expression.ReferencedQuerySource);
       return new SqlTableReferenceExpression (referencedTable);
     }
@@ -70,7 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // then newExpression1.Cook => newExpression2 (SqlMemberExpression)
       // then newExpression2.FirstName => result (SqlMemberExpression)
       var newExpression = VisitExpression (expression.Expression);
-      
+
       // kitchen case: newExpression is a SqlTableReferenceExpression (kitchenTable)
       // create a SqlMemberExpression (kitchenTable, "Cook")
       var newExpressionAsTableReference = newExpression as SqlTableReferenceExpression;
@@ -87,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (newExpressionAsSqlMemberExpression != null)
       {
         var originalSqlTable = newExpressionAsSqlMemberExpression.SqlTable; // kitchenTable
-        
+
         // create cookTable via join
         var join = originalSqlTable.GetOrAddJoin (newExpressionAsSqlMemberExpression.MemberInfo, JoinCardinality.One); // "Cook"
 
@@ -98,6 +100,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
+      if (expression.QueryModel.ResultOperators.Count>0 && expression.QueryModel.ResultOperators.Last () is ContainsResultOperator)
+      {
+        var itemExpression = ((ContainsResultOperator) expression.QueryModel.ResultOperators.Last()).Item;
+        expression.QueryModel.ResultOperators.Remove (expression.QueryModel.ResultOperators.Last());
+        var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
+        var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type);
+        return new SqlInExpression (subStatementExpression, itemExpression);
+      }
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
       return new SqlSubStatementExpression (sqlStatement, expression.Type);
     }
