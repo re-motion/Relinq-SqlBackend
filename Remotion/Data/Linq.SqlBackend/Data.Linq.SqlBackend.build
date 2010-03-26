@@ -38,6 +38,7 @@
       <sources failonempty="true">
         <include name="*.cs"/>
         <include name="MappingResolution/**/*.cs"/>
+        <include name="Properties/**/*.cs" />
         <include name="SqlGeneration/**/*.cs"/>
         <include name="SqlPreparation/**/*.cs"/>
         <include name="SqlStatementModel/**/*.cs"/>
@@ -46,8 +47,6 @@
       <references failonempty="true">
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Core.dll"/>
-        <include asis="true" name="System.Data.dll"/>
-        <include asis="true" name="System.Data.DataSetExtensions.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.Linq.dll"/>
       </references>
     </csc>
