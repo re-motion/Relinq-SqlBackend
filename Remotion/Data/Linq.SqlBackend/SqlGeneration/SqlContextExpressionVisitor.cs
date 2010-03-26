@@ -132,8 +132,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
     {
       var testPredicate = ApplySqlExpressionContext (expression.TestPredicate, SqlExpressionContext.PredicateRequired);
-      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.ValueRequired);
-      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.ValueRequired);
+      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.SingleValueRequired);
+      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.SingleValueRequired);
 
       if (testPredicate != expression.TestPredicate || thenValue != expression.ThenValue || elseValue != expression.ElseValue)
         return new SqlCaseExpression (testPredicate, thenValue, elseValue);
@@ -155,7 +155,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       if (left != expression.Left || right != expression.Right)
         expression = Expression.MakeBinary (expression.NodeType, left, right);
-
+      
       return expression;
     }
 
@@ -192,7 +192,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         case ExpressionType.NotEqual:
         case ExpressionType.Equal:
-          return SqlExpressionContext.ValueRequired;
+          return SqlExpressionContext.SingleValueRequired;
 
         case ExpressionType.AndAlso:
         case ExpressionType.OrElse:
@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           throw new NotSupportedException (message);
 
         default:
-          return SqlExpressionContext.ValueRequired;
+          return SqlExpressionContext.SingleValueRequired;
       }
     }
   }

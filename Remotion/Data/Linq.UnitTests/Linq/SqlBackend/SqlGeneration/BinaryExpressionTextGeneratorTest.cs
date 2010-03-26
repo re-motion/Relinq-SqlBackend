@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _sqlEntityExpression = new SqlEntityExpression (typeof (string), new SqlColumnExpression (typeof (int), "c", "ID"));
       _expressionVisitorStub
-          .Stub (stub => stub.VisitExpression (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn))
+          .Stub (stub => stub.VisitExpression (_sqlEntityExpression))
           .WhenCalled (mi => _commandBuilder.Append ("[c].[ID]"))
           .Return (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn);
 
@@ -418,7 +418,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var binaryExpression = Expression.Equal (_sqlEntityExpression, _sqlEntityExpression);
 
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
-
+      
       var result = _commandBuilder.GetCommandText();
       Assert.That (result, Is.EqualTo ("[c].[ID] = [c].[ID]"));
     }

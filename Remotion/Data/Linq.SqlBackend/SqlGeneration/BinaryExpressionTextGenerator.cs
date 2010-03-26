@@ -110,9 +110,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     private void VisitEqualsOperand (Expression expression)
     {
-      if (expression is SqlEntityExpression)
-        _expressionVisitor.VisitExpression (((SqlEntityExpression) expression).PrimaryKeyColumn);
-      else
+      //if (expression is SqlEntityExpression)
+        //_expressionVisitor.VisitExpression (((SqlEntityExpression) expression).PrimaryKeyColumn);
+      //else
         _expressionVisitor.VisitExpression (expression);
     }
 
