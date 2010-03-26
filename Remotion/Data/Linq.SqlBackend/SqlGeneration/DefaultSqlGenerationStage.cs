@@ -44,53 +44,53 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable);
     }
 
-    public void GenerateTextForSelectExpression (SqlCommandBuilder commandBuilder, Expression expression)
+    public void GenerateTextForSelectExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, SqlExpressionContext.ValueRequired, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
     }
 
-    public void GenerateTextForWhereExpression (SqlCommandBuilder commandBuilder, Expression expression)
+    public void GenerateTextForWhereExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, SqlExpressionContext.PredicateRequired, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
     }
 
-    public void GenerateTextForOrderByExpression (SqlCommandBuilder commandBuilder, Expression expression)
+    public void GenerateTextForOrderByExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, SqlExpressionContext.SingleValueRequired, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
     }
 
-    public void GenerateTextForTopExpression (SqlCommandBuilder commandBuilder, Expression expression)
+    public void GenerateTextForTopExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, SqlExpressionContext.SingleValueRequired, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
     }
 
-    public void GenerateTextForSqlStatement (SqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
+    public void GenerateTextForSqlStatement (SqlCommandBuilder commandBuilder, SqlStatement sqlStatement, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
-      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder);
+      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, selectedSqlContext);
     }
 
-    public void GenerateTextForJoinKeyExpression (SqlCommandBuilder commandBuilder, Expression expression)
+    public void GenerateTextForJoinKeyExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, SqlExpressionContext.SingleValueRequired, this);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
     }
 
     protected virtual MethodCallSqlGeneratorRegistry GenerateSqlGeneratorRegistry ()

@@ -35,12 +35,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage = stage;
     }
 
-    public void Build (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder)
+    public void Build (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       
       commandBuilder.Append ("SELECT ");
-      BuildSelectPart (sqlStatement, commandBuilder);
+      BuildSelectPart (sqlStatement, commandBuilder, selectedSqlContext);
       //if (sqlStatement.SqlTables.Count > 0) //TODO: 2493
       //{
         commandBuilder.Append (" FROM ");
@@ -49,16 +49,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if ((sqlStatement.WhereCondition != null))
       {
         commandBuilder.Append (" WHERE ");
-        BuildWherePart (sqlStatement, commandBuilder);
+        BuildWherePart (sqlStatement, commandBuilder, SqlExpressionContext.PredicateRequired);
       }
       if (sqlStatement.Orderings.Count > 0)
       {
         commandBuilder.Append (" ORDER BY ");
-        BuildOrderByPart (sqlStatement, commandBuilder);
+        BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
       }
     }
 
-    protected virtual void BuildSelectPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder)
+    protected virtual void BuildSelectPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -79,10 +79,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         if (sqlStatement.TopExpression != null)
         {
           commandBuilder.Append ("TOP (");
-          _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression);
+          _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression, selectedSqlContext);
           commandBuilder.Append (") ");
         }
-        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection, selectedSqlContext);
       }
     }
 
@@ -99,15 +99,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    protected virtual void BuildWherePart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder)
+    protected virtual void BuildWherePart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition);
+      _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition, selectedSqlContext);
     }
 
-    protected virtual void BuildOrderByPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder)
+    protected virtual void BuildOrderByPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -120,12 +120,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
         if (orderByClause.Expression.NodeType != ExpressionType.Constant)
         {
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
+          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression, selectedSqlContext);
         }
         else
         {
           commandBuilder.Append ("(SELECT ");
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
+          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression, selectedSqlContext);
           commandBuilder.Append (")");
         }
         commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString ().ToUpper ()));

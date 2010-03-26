@@ -323,7 +323,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var subStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SELECT [t].[Name] FROM [Table] AS [t]"));
 
       SqlGeneratingExpressionVisitor.GenerateSql (

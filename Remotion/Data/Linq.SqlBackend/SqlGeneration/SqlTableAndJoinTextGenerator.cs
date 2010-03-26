@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
 
       _commandBuilder.Append ("(");
-      _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
+      _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement, SqlExpressionContext.ValueRequired);
       _commandBuilder.Append (")");
       _commandBuilder.Append (" AS ");
       _commandBuilder.Append ("[");
@@ -111,9 +111,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.Append (" ON ");
 
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.PrimaryColumn);
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.PrimaryColumn, SqlExpressionContext.ValueRequired);
       _commandBuilder.Append (" = ");
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.ForeignColumn);
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.ForeignColumn, SqlExpressionContext.ValueRequired);
       return tableSource;
     }
 

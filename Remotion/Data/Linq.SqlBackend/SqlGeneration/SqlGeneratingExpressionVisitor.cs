@@ -208,7 +208,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       _commandBuilder.Append ("(");
-      _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement);
+      _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement, SqlExpressionContext.ValueRequired);
       _commandBuilder.Append (")");
       return expression;
     }

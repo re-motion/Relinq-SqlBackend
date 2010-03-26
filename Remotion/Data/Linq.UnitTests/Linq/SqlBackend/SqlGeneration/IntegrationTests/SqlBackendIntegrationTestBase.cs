@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       var commandBuilder = new SqlCommandBuilder();
       var sqlGenerationStage = new DefaultSqlGenerationStage();
-      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
+      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
 
       return commandBuilder.GetCommand();
     }

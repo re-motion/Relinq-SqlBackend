@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForSelectExpression ()
     {
-      _stage.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
+      _stage.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForTopExpression ()
     {
       _sqlStatement.TopExpression = Expression.Constant (5);
-      _stage.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression);
+      _stage.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _sqlStatement.WhereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
 
-      _stage.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition);
+      _stage.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition, SqlExpressionContext.PredicateRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("((@1 = 1) AND (@2 = 1))"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (2));
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.Constant (1);
 
-      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression);
+      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
@@ -113,7 +113,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new SqlColumnExpression (typeof (int), "c", "ID");
 
-      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression);
+      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[ID]"));
     }
@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       sqlStatement.SelectProjection = _columnListExpression;
       ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
 
-      _stage.GenerateTextForSqlStatement (_commandBuilder, sqlStatement);
+      _stage.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
     }
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new SqlColumnExpression (typeof (int), "c", "ID");
 
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, expression);
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, expression, SqlExpressionContext.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[ID]"));
     }
