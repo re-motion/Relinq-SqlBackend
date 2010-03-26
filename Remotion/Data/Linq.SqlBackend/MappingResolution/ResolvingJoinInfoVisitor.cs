@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public AbstractJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      var result = _resolver.ResolveJoinInfo (joinInfo, _generator); 
+      var result = _resolver.ResolveJoinInfo (joinInfo, _generator);
       return result.Accept (this);
     }
 

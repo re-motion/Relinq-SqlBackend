@@ -62,8 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
     }
 
-    // TODO Review 2486: Rename this test to ..._AndRevisitsResult - it does not test that the visitor only revisits the result if it is different; (in fact, the visitor _does_ revisit the result even if it is the same; it causes a stack overflow)
-    // TODO Review 2486: Add a new test: if the same unresolved join info is returned that was passed in to the _resolver, the VisitUnresolvedJoinInfo method should throw an exception
+    // TODO Review 2486: Rename this test to ..._AndRevisitsResult - it does not test that the visitor only revisits the result if it is different)
     [Test]
     public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult_OnlyIfDifferent ()
     {

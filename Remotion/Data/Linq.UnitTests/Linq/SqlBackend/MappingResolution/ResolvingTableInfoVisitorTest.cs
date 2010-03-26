@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveTableInfo ()
+    public void ResolveTableInfo_Unresolved ()
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       _resolverMock.Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator)).Return (resolvedTableInfo);
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveTableInfo_AndRevisitsResult ()
+    public void ResolveTableInfo_Unresolved_RevisitsResult ()
     {
       var unresolvedResult = new UnresolvedTableInfo (typeof (int));
       var resolvedResult = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveTableInfo_AndRevisitsResult_OnlyIfDifferent ()
+    public void ResolveTableInfo_Unresolved_RevisitsResult_OnlyIfDifferent ()
     {
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveTableInfo_VisitSubStatementTableInfo ()
+    public void ResolveTableInfo_SubStatementTableInfo ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
 
@@ -109,5 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (sqlSubStatementTableInfo));
     }
+
+    // TODO Review 2437: Test for ResolveTableInfo with SimpleTableInfo is missing.
   }
 }

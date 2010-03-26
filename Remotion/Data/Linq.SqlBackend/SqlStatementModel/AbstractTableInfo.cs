@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="AbstractTableInfo"/> represents the actual data in a <see cref="SqlTable"/>.
   /// </summary>
-  public abstract class AbstractTableInfo
+  public abstract class AbstractTableInfo // TODO Review 2437: Change to be an interface: ITableInfo. Derive IResolvedTableInfo from ITableInfo.
   {
     public abstract Type ItemType { get; }
     public abstract IResolvedTableInfo GetResolvedTableInfo ();
