@@ -168,6 +168,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var preparedFromExpression = _stage.PrepareFromExpression (fromClause.FromExpression);
       var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, fromClause.ItemType);
 
+      // TODO Review 2488: These two blocks can be unified (AddQuerySourceMapping, SqlTables.Add)
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
       {

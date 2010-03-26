@@ -77,7 +77,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       // Note: This is a case where the SQL preparation stage already generates a resolved table info (including a table alias) rather than passing
       // on an unresolved table info to the mapping resolution stage. Should we ever have the need to resolve subqueries in the mapping resolution 
-      // stage, we should refactor this into an UnresolvedSubStatemenTableInfo.
+      // stage, we should refactor this into an UnresolvedSubStatemenTableInfo. (Of course, the statement inside the ResolvedSubStatementTableInfo is 
+      // resolved anyway.)
       
       var type = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "expression");
       var tableInfo = new ResolvedSubStatementTableInfo (type, _generator.GetUniqueIdentifier ("q"), expression.SqlStatement);

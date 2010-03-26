@@ -21,6 +21,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
+  // TODO Review 2488: Rename to TestableSqlStatementResolver
   public class TestableResolvingSqlStatementVisitor : SqlStatementResolver
   {
     public TestableResolvingSqlStatementVisitor (IMappingResolutionStage stage)

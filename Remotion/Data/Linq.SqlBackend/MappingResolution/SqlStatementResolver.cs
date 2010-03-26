@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ResolveJoins (sqlTable);
     }
 
-    protected virtual void ResolveJoinedTable (SqlJoinedTable joinedTable)
+    protected void ResolveJoinedTable (SqlJoinedTable joinedTable)
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return _stage.ResolveTopExpression (topExpression);
     }
 
-    protected virtual void ResolveSqlStatement (SqlStatement sqlStatement)
+    protected void ResolveSqlStatement (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 

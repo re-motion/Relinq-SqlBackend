@@ -28,6 +28,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
+  // TODO Review 2488: Rename test to match class name
   [TestFixture]
   public class ResolvingSqlStatementVisitorTest
   {
@@ -50,6 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _fakeResolvedSimpleTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
     }
 
+    // TODO Review 2488: Rename test methods: Resolve... instead of Visit...
     [Test]
     public void VisitSqlTable_ResolvesTableInfo ()
     {
@@ -227,5 +229,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
+
+    // TODO Review 2488: Test missing! ResolveJoinedTable, sqlTable.Accept (_visitor) => sql table is resolved; sqlJoinedTable.Accept => joined table is resolved; ResolveSqlStatement with sql table and joined table resolves both
   }
 }
