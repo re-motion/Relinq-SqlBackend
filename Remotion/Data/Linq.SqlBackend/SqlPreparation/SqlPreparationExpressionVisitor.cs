@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         expression.QueryModel.ResultOperators.Remove (expression.QueryModel.ResultOperators.Last());
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
         var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type);
-        return new SqlInExpression (subStatementExpression, itemExpression);
+        return new SqlInExpression (itemExpression, subStatementExpression);
       }
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
       return new SqlSubStatementExpression (sqlStatement, expression.Type);

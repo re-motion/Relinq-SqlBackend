@@ -165,9 +165,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (SqlInExpression)));
-      Assert.That (((SqlInExpression) result).LeftExpression, Is.TypeOf (typeof(SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) ((SqlInExpression) result).LeftExpression).SqlStatement, Is.EqualTo (fakeSqlStatement));
-      Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs(constantExpression));
+      Assert.That (((SqlInExpression) result).RightExpression, Is.TypeOf (typeof(SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) ((SqlInExpression) result).RightExpression).SqlStatement, Is.EqualTo (fakeSqlStatement));
+      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs(constantExpression));
       Assert.That (result.Type, Is.EqualTo (((SqlInExpression) result).RightExpression.Type));
     }
   }
