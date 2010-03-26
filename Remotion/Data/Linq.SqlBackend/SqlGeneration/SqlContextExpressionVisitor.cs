@@ -183,7 +183,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
     {
-      throw new NotImplementedException();
+      return expression;
     }
 
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)

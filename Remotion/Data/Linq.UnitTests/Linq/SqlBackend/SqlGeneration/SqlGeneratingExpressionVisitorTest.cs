@@ -347,5 +347,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("([c].[ID] = [a].[FK])"));
     }
+
+    [Test]
+    public void VisitSqlInExpression ()
+    {
+      var sqlInExpression = new SqlInExpression (Expression.Constant (1), Expression.Constant (2));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (@2)"));
+
+    }
   }
 }

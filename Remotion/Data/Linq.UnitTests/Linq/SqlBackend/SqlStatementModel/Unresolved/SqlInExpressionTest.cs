@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
@@ -63,6 +64,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       Assert.That (result, Is.Not.SameAs (_expression));
       Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
       Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs (newRightExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlInExpression, ISqlSpecificExpressionVisitor> (
+          _expression,
+          mock => mock.VisitSqlInExpression(_expression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
     }
   }
 }

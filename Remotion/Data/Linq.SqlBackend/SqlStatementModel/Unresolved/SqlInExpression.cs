@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
@@ -57,7 +58,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      throw new NotImplementedException();
+      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlInExpression (this);
+      else
+        return base.Accept (visitor);
     }
   }
 }

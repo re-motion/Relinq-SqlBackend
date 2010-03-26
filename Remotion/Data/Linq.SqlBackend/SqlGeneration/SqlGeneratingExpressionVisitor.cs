@@ -133,13 +133,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       _commandBuilder.Append (expression.Value.ToString());
       return expression;
     }
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      VisitExpression (expression.LeftExpression);
+      _commandBuilder.Append (" IN (");
+      VisitExpression (expression.RightExpression);
+      _commandBuilder.Append (")");
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
