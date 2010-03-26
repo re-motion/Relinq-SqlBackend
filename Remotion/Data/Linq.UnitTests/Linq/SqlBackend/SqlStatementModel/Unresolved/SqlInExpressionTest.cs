@@ -29,26 +29,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   public class SqlInExpressionTest
   {
     private SqlInExpression _expression;
+    private ConstantExpression _leftExpression;
+    private ConstantExpression _rightExpression;
+
 
     [SetUp]
     public void SetUp ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      _expression = new SqlInExpression (sqlStatement, Expression.Constant (1));
+      _leftExpression = Expression.Constant (1);
+      _rightExpression = Expression.Constant (2);
+
+      _expression = new SqlInExpression (_leftExpression, _rightExpression);
     }
 
     [Test]
-    public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
+    public void VisitChildren_ReturnsNewSqlInExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      visitorMock.Replay ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var newLeftExpression = Expression.Constant (3);
+      var newRightExpression = Expression.Constant (4);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_leftExpression))
+          .Return (newLeftExpression);
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_rightExpression))
+          .Return (newRightExpression);
+      visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
 
-      Assert.That (result, Is.SameAs (_expression));
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.VerifyAllExpectations();
+      Assert.That (result, Is.Not.SameAs (_expression));
+      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
+      Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs (newRightExpression));
     }
-
-
   }
 }

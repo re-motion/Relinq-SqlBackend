@@ -395,6 +395,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [Ignore("TODO: 2492 - refactor after supporting contains")]
     public void VisitResultOperator_Contains ()
     {
       var containsExpression = Expression.Constant (2);

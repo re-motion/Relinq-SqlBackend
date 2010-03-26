@@ -24,32 +24,35 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   public class SqlInExpression : ExtensionExpression
   {
-    private readonly SqlStatement _sqlStatement;
-    private readonly Expression _itemExpression;
+    private readonly Expression _leftExpression;
+    private readonly Expression _rightExpression;
 
-    public SqlInExpression (SqlStatement sqlStatement, Expression itemExpression)
-        : base(itemExpression.Type)
+    public SqlInExpression (Expression leftExpression, Expression rightExpression)
+        : base(rightExpression.Type)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("itemExpression", itemExpression);
+      ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
+      ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
 
-      _itemExpression = itemExpression;
-      _sqlStatement = sqlStatement;
+      _leftExpression = leftExpression;
+      _rightExpression = rightExpression;
     }
 
-    public SqlStatement SqlStatement
+    public Expression LeftExpression
     {
-      get { return _sqlStatement; }
+      get { return _leftExpression; }
     }
 
-    public Expression ItemExpression
+    public Expression RightExpression
     {
-      get { return _itemExpression; }
+      get { return _rightExpression; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      return this;
+      var newLeftExpression = visitor.VisitExpression (_leftExpression);
+      var newRightExpression = visitor.VisitExpression (_rightExpression);
+
+      return new SqlInExpression (newLeftExpression, newRightExpression);
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)

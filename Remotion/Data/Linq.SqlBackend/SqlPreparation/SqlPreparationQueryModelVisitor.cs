@@ -141,16 +141,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var expression = ((TakeResultOperator) resultOperator).Count;
         SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (expression);
       }
-      else if (resultOperator is ContainsResultOperator)
-      {
-        var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        var sqlStatement = SqlStatementBuilder.GetSqlStatement();
+      //else if (resultOperator is ContainsResultOperator) TODO: 2492
+      //{
+      //  var itemExpression = ((ContainsResultOperator) resultOperator).Item;
+      //  var sqlStatement = SqlStatementBuilder.GetSqlStatement();
 
-        SqlStatementBuilder = new SqlStatementBuilder ();
-        var sqlInExpression = new SqlInExpression (sqlStatement, _stage.PrepareItemExpression (itemExpression));
+      //  SqlStatementBuilder = new SqlStatementBuilder ();
+      //  var sqlInExpression = new SqlInExpression (sqlStatement, _stage.PrepareItemExpression (itemExpression));
 
-        SqlStatementBuilder.ProjectionExpression = sqlInExpression;
-      }
+      //  SqlStatementBuilder.ProjectionExpression = sqlInExpression;
+      //}
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
     }
