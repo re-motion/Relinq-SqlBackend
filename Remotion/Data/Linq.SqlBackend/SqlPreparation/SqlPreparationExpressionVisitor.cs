@@ -103,6 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (expression.QueryModel.ResultOperators.Count>0 && expression.QueryModel.ResultOperators.Last () is ContainsResultOperator)
       {
         var itemExpression = ((ContainsResultOperator) expression.QueryModel.ResultOperators.Last()).Item;
+        itemExpression = _stage.PrepareItemExpression (itemExpression);
         expression.QueryModel.ResultOperators.Remove (expression.QueryModel.ResultOperators.Last());
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
         var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type);
