@@ -41,8 +41,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       
       commandBuilder.Append ("SELECT ");
       BuildSelectPart (sqlStatement, commandBuilder);
-      commandBuilder.Append (" FROM ");
-      BuildFromPart (sqlStatement, commandBuilder);
+      //if (sqlStatement.SqlTables.Count > 0) //TODO: 2493
+      //{
+        commandBuilder.Append (" FROM ");
+        BuildFromPart (sqlStatement, commandBuilder);
+      //}
       if ((sqlStatement.WhereCondition != null))
       {
         commandBuilder.Append (" WHERE ");

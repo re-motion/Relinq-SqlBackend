@@ -88,6 +88,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void PrepareItemExpression ()
+    {
+      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression);
+
+      var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
     public void GetTableForFromExpression ()
     {
       var fromExpression = Expression.Constant (new Cook[0]);

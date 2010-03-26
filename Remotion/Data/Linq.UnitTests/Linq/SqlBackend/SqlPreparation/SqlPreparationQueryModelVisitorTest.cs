@@ -394,23 +394,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
     }
 
-    //[Test]
-    //public void VisitResultOperator_Contains ()
-    //{
-    //  var containsExpression = Expression.Constant (2);
-    //  var resultOperator = new ContainsResultOperator (containsExpression);
-    //  _queryModel.ResultOperators.Add (resultOperator);
-    //  var preparedExpression = Expression.Constant (null, typeof (Cook));
+    [Test]
+    public void VisitResultOperator_Contains ()
+    {
+      var containsExpression = Expression.Constant (2);
+      var resultOperator = new ContainsResultOperator (containsExpression);
+      _queryModel.ResultOperators.Add (resultOperator);
+      var preparedExpression = Expression.Constant (new Cook(), typeof (Cook));
 
-    //  _stageMock.Expect (mock => mock.PrepareInExpression (conatainsExpression)).Return (preparedExpression);
-    //  _stageMock.Replay ();
+      _visitor.SqlStatementBuilder.ProjectionExpression = Expression.Constant (1);
+      _visitor.SqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
 
-    //  _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
+      _stageMock.Expect (mock => mock.PrepareItemExpression(containsExpression)).Return (preparedExpression);
+      _stageMock.Replay ();
 
-    //  _stageMock.VerifyAllExpectations ();
+      var sqlStatementBuilder = _visitor.SqlStatementBuilder;
 
-    //  Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-    //}
+      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
+
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (_visitor.SqlStatementBuilder.ProjectionExpression, Is.TypeOf(typeof(SqlInExpression)));
+      Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (sqlStatementBuilder));
+    }
 
     [Test]
     public void AddWhereCondition_SingleWhereCondition ()

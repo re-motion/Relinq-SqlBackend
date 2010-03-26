@@ -30,7 +30,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     Expression PrepareTopExpression (Expression expression);
     Expression PrepareFromExpression (Expression expression);
     Expression PrepareOrderByExpression (Expression expression);
+    Expression PrepareItemExpression (Expression expression);
     SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType);
     SqlStatement PrepareSqlStatement (QueryModel queryModel);
+
   }
 }
