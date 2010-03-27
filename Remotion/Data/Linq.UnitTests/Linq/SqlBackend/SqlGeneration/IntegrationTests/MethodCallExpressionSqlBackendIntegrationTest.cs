@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   public class MethodCallExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void Like ()
     {
       //CheckQuery (
@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void Contains ()
     {
       CheckQuery (
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Only expressions that can be evaluated locally can be used as the argument for Contains.")]
     public void Contains_Unevaluatable ()
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void StartsWith ()
     {
       CheckQuery (
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Only expressions that can be evaluated locally can be used as the argument for StartsWith.")]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void StartsWith_Unevaluatable ()
     {
       CheckQuery (
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void EndsWith ()
     {
       CheckQuery (
@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Only expressions that can be evaluated locally can be used as the argument for EndsWith.")]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void EndsWith_Unevaluatable ()
     {
       CheckQuery (
@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO ????")]
+    [Ignore ("TODO 2490")]
     public void Convert ()
     {
       // Test convert for different type combinations
@@ -145,7 +145,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void Remove ()
     {
       CheckQuery (
@@ -162,7 +162,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void Substring ()
     {
       CheckQuery (
@@ -179,13 +179,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void ContainsFulltext ()
     {
     }
 
     [Test]
-    [Ignore ("TODO 2364")]
+    [Ignore ("TODO 2490")]
     public void ContainsFreetext ()
     {
     }
