@@ -49,11 +49,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _foreignTableInfo; }
     }
 
+    // TODO Review 2439: Rename to LeftKeyColumn - it's not always the primary key
     public SqlColumnExpression PrimaryColumn
     {
       get { return _primaryColumn; }
     }
 
+    // TODO Review 2439: Rename to RightKeyColumn - it's not always the foreign key
     public SqlColumnExpression ForeignColumn
     {
       get { return _foreignColumn; }
