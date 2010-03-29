@@ -94,6 +94,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 2542")]
+    public void SubQueryInFromClause_SelectingColumn ()
+    {
+      CheckQuery (
+          from s in (from s2 in Cooks select s2.FirstName).Take (1) select s,
+          "SELECT [q0].[value] FROM (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]",
+          new CommandParameter ("@1", 1));
+    }
+
+    [Test]
+    [Ignore ("TODO 2542")]
+    public void SubQueryInFromClause_SelectingSingleValue ()
+    {
+      CheckQuery (
+          from s in (from s2 in Cooks select s2.ID + s2.ID).Take (1) select s,
+          "SELECT [q0].[value] FROM (SELECT TOP (@1) ([t1].[ID] + [t1].[ID]) AS value FROM [CookTable] AS [t1]) AS [q0]",
+          new CommandParameter ("@1", 1));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void InSelectProjection_ThrowsNotSupportedException ()
     {
