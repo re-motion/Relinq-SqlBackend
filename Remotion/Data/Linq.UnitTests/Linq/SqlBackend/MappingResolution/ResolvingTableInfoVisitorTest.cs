@@ -34,6 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private UnresolvedTableInfo _unresolvedTableInfo;
     private UniqueIdentifierGenerator _generator;
     private IMappingResolutionStage _stageMock;
+    private ResolvedSimpleTableInfo _resolvedTableInfo;
 
     [SetUp]
     public void SetUp ()
@@ -41,6 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
       _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
+      _resolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
       _generator = new UniqueIdentifierGenerator();
     }
 
@@ -56,40 +58,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (resolvedTableInfo));
     }
 
-    [Test]
-    public void ResolveTableInfo_Unresolved_RevisitsResult ()
-    {
-      var unresolvedResult = new UnresolvedTableInfo (typeof (int));
-      var resolvedResult = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-
-      using (_resolverMock.GetMockRepository().Ordered())
-      {
-        _resolverMock
-            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
-            .Return (unresolvedResult);
-        _resolverMock
-            .Expect (mock => mock.ResolveTableInfo (unresolvedResult, _generator))
-            .Return (resolvedResult);
-      }
-      _resolverMock.Replay();
-
-      var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock, _generator, _stageMock);
-
-      Assert.That (result, Is.SameAs (resolvedResult));
-      _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
+   [Test]
     public void ResolveTableInfo_Unresolved_RevisitsResult_OnlyIfDifferent ()
     {
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
-          .Return (_unresolvedTableInfo);
+          .Return (_resolvedTableInfo);
       _resolverMock.Replay();
 
       var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock, _generator, _stageMock);
 
-      Assert.That (result, Is.SameAs (_unresolvedTableInfo));
+      Assert.That (result, Is.SameAs (_resolvedTableInfo));
       _resolverMock.VerifyAllExpectations();
     }
 

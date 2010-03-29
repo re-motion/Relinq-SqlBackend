@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <returns>An <see cref="IResolvedTableInfo"/> instance representing the  <paramref name="tableInfo"/> in the database.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedTableInfo"/> cannot be resolved to a mapped database item.</exception>
     // TODO Review 2437: For consistency with ResolveJoinInfo, change to return IResolvedTableInfo.
-    AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
+    IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
     /// Takes an <see cref="UnresolvedJoinInfo"/> and an <see cref="UniqueIdentifierGenerator"/> to generate a 

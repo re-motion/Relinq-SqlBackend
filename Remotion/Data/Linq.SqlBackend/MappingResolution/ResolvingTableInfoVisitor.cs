@@ -57,10 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       var result =  _resolver.ResolveTableInfo (tableInfo, _generator);
-      if (result == tableInfo) // TODO Review 2437: When ResolveTableInfo is changed to return IResolvedTableInfo, this part is no longer needed. The else part must stay.
-        return result; 
-      else
-        return result.Accept (this);
+      return result.Accept (this);
     }
 
     public AbstractTableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)

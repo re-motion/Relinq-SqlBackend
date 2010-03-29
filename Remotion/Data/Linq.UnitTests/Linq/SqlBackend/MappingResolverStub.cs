@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
 {
   public class MappingResolverStub : IMappingResolver
   {
-    public virtual AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
+    public virtual IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       switch (tableInfo.ItemType.Name)
       {
