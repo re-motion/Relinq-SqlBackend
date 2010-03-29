@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly Expression _rightExpression;
 
     public SqlInExpression (Expression leftExpression, Expression rightExpression)
-        : base(rightExpression.Type)
+        : base(typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
       ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);

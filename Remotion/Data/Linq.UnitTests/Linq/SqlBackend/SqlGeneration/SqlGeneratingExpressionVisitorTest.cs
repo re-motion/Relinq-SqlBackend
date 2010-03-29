@@ -362,8 +362,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (test)"));
-
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN @1 IN (test) THEN 1 ELSE 0 END"));
     }
   }
 }
