@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="ResolvedSubStatementTableInfo"/> represents the data source defined by a table of a subquery in a relational database.
   /// </summary>
-  public class ResolvedSubStatementTableInfo : AbstractTableInfo, IResolvedTableInfo
+  public class ResolvedSubStatementTableInfo : ITableInfo, IResolvedTableInfo
   {
     private readonly Type _itemType;
     private readonly string _tableAlias;
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       _itemType = itemType;
     }
 
-    public override Type ItemType
+    public virtual Type ItemType
     {
       get { return _itemType; }
     }
@@ -54,12 +54,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _sqlStatement; }
     }
 
-    public override IResolvedTableInfo GetResolvedTableInfo ()
+    public virtual IResolvedTableInfo GetResolvedTableInfo ()
     {
       return this;
     }
 
-    public override AbstractTableInfo Accept (ITableInfoVisitor visitor)
+    public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return visitor.VisitSubStatementTableInfo(this);

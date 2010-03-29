@@ -82,7 +82,7 @@
     <Compile Include="SqlPreparation\SqlPreparationFromExpressionVisitor.cs" />
     <Compile Include="SqlPreparation\SqlPreparationQueryModelVisitor.cs" />
     <Compile Include="SqlStatementModel\IJoinInfo.cs" />
-    <Compile Include="SqlStatementModel\AbstractTableInfo.cs" />
+    <Compile Include="SqlStatementModel\ITableInfo.cs" />
     <Compile Include="SqlStatementModel\IJoinInfoVisitor.cs" />
     <Compile Include="SqlStatementModel\ITableInfoVisitor.cs" />
     <Compile Include="SqlStatementModel\JoinCardinality.cs" />

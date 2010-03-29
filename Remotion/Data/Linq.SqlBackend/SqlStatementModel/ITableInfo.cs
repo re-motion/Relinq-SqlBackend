@@ -20,12 +20,12 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="AbstractTableInfo"/> represents the actual data in a <see cref="SqlTable"/>.
+  /// <see cref="ITableInfo"/> represents the actual data in a <see cref="SqlTable"/>.
   /// </summary>
-  public abstract class AbstractTableInfo // TODO Review 2437: Change to be an interface: ITableInfo. Derive IResolvedTableInfo from ITableInfo.
+  public interface ITableInfo
   {
-    public abstract Type ItemType { get; }
-    public abstract IResolvedTableInfo GetResolvedTableInfo ();
-    public abstract AbstractTableInfo Accept (ITableInfoVisitor visitor);
+    Type ItemType { get; }
+    IResolvedTableInfo GetResolvedTableInfo ();
+    ITableInfo Accept (ITableInfoVisitor visitor);
   }
 }

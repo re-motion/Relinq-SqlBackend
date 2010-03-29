@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// <see cref="UnresolvedTableInfo"/> holds a <see cref="ConstantExpression"/> representing the data source defined by a LINQ query.
   /// </summary>
-  public class UnresolvedTableInfo : AbstractTableInfo
+  public class UnresolvedTableInfo : ITableInfo
   {
     private readonly Type _itemType;
 
@@ -35,18 +35,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       _itemType = itemType;
     }
 
-    public override Type ItemType
+    public virtual Type ItemType
     {
       get { return _itemType;  }
     }
 
-    public override AbstractTableInfo Accept (ITableInfoVisitor visitor)
+    public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return visitor.VisitUnresolvedTableInfo (this);
     }
 
-    public override IResolvedTableInfo GetResolvedTableInfo ()
+    public virtual IResolvedTableInfo GetResolvedTableInfo ()
     {
       throw new InvalidOperationException ("This table has not yet been resolved; call the resolution step first.");
     }

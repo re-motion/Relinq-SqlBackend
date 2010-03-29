@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public AbstractTableInfo ResolveTableInfo (AbstractTableInfo tableInfo)
+    public ITableInfo ResolveTableInfo (ITableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 

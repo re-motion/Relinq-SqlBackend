@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public virtual Type ItemType
     {
-      get { return ((AbstractTableInfo) _foreignTableInfo).ItemType; }
+      get { return ((ITableInfo) _foreignTableInfo).ItemType; }
     }
 
     public IResolvedTableInfo ForeignTableInfo

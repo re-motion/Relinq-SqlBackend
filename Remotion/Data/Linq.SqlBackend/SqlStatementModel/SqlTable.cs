@@ -26,9 +26,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlTable : SqlTableBase
   {
-    private AbstractTableInfo _tableInfo;
+    private ITableInfo _tableInfo;
 
-    public SqlTable (AbstractTableInfo tableInfo) 
+    public SqlTable (ITableInfo tableInfo) 
         : base (tableInfo.ItemType)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       _tableInfo = tableInfo;
     }
 
-    public AbstractTableInfo TableInfo
+    public ITableInfo TableInfo
     {
       get { return _tableInfo; }
       set

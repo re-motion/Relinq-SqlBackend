@@ -31,8 +31,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
 
-    // TODO Review 2437: Change ResolveTableInfo to return IResolvedTableInfo. Also change the stage method's return type to IResolvedTableInfo. (Change AbstractTableInfo to be an interface first.)
-    public static AbstractTableInfo ResolveTableInfo (AbstractTableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    // TODO Review 2437: Change ResolveTableInfo to return IResolvedTableInfo. Also change the stage method's return type to IResolvedTableInfo. (Change ITableInfo to be an interface first.)
+    public static ITableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -53,20 +53,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _stage= stage;
     }
 
-    public AbstractTableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
+    public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       var result =  _resolver.ResolveTableInfo (tableInfo, _generator);
       return result.Accept (this);
     }
 
-    public AbstractTableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
+    public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       return tableInfo;
     }
 
-    public AbstractTableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
+    public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 

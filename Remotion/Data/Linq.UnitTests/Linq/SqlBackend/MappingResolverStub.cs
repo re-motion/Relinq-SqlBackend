@@ -170,7 +170,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
 
     private Expression CreateEntityExpression (Type entityType, IResolvedTableInfo tableInfo)
     {
-      Type type = ((AbstractTableInfo) tableInfo).ItemType;
+      Type type = ((ITableInfo) tableInfo).ItemType;
       if (type == typeof (Cook) || type == typeof (IQueryable<Cook>))
       {
         var primaryKeyColumn = CreateColumn (typeof (int?), tableInfo, "ID");
@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });
       }
-      throw new UnmappedItemException ("The type " + ((AbstractTableInfo) tableInfo).ItemType + " is not a queryable type.");
+      throw new UnmappedItemException ("The type " + ((ITableInfo) tableInfo).ItemType + " is not a queryable type.");
     }
 
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)

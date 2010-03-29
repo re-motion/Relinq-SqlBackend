@@ -36,7 +36,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as table aliases.</param>
     /// <returns>An <see cref="IResolvedTableInfo"/> instance representing the  <paramref name="tableInfo"/> in the database.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedTableInfo"/> cannot be resolved to a mapped database item.</exception>
-    // TODO Review 2437: For consistency with ResolveJoinInfo, change to return IResolvedTableInfo.
     IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>

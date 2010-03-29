@@ -62,12 +62,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _first = first;
     }
 
-    public AbstractTableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
+    public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
     }
 
-    public AbstractTableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
+    public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       if (!_first)
       {
@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableInfo;
     }
 
-    public AbstractTableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
+    public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
       if (!_first)
       {
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       _commandBuilder.Append (" LEFT OUTER JOIN ");
 
-      ((AbstractTableInfo) tableSource.ForeignTableInfo).Accept (this);
+      ((ITableInfo) tableSource.ForeignTableInfo).Accept (this);
 
       _commandBuilder.Append (" ON ");
 

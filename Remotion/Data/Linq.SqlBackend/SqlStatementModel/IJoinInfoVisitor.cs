@@ -20,7 +20,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Provides a visitor for implementations of <see cref="AbstractTableInfo"/>.
+  /// Provides a visitor for implementations of <see cref="ITableInfo"/>.
   /// </summary>
   public interface IJoinInfoVisitor
   {

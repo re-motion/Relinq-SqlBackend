@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="ResolvedSimpleTableInfo"/> represents the data source defined by a table in a relational database.
   /// </summary>
-  public class ResolvedSimpleTableInfo : AbstractTableInfo, IResolvedTableInfo
+  public class ResolvedSimpleTableInfo : ITableInfo, IResolvedTableInfo
   {
     private readonly Type _itemType;
     private readonly string _tableName;
@@ -49,18 +49,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _tableAlias; }
     }
 
-    public override Type ItemType
+    public virtual Type ItemType
     {
       get { return _itemType; }
     }
 
-    public override AbstractTableInfo Accept (ITableInfoVisitor visitor)
+    public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return visitor.VisitSimpleTableInfo (this);
     }
 
-    public override IResolvedTableInfo GetResolvedTableInfo ()
+    public virtual IResolvedTableInfo GetResolvedTableInfo ()
     {
       return this;
     }

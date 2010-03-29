@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return CreateSqlTable (typeof (Cook));
     }
 
-    public static SqlTable CreateSqlTable (AbstractTableInfo tableInfo)
+    public static SqlTable CreateSqlTable (ITableInfo tableInfo)
     {
       var sqlTable = new SqlTable (tableInfo);
       return sqlTable;

@@ -21,9 +21,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="IResolvedTableInfo"/> provides nested members and methods for all kinds of tables. 
   /// </summary>
-  public interface IResolvedTableInfo
+  public interface IResolvedTableInfo : ITableInfo
   {
-    AbstractTableInfo Accept (ITableInfoVisitor visitor);
     string TableAlias { get; }
   }
 }

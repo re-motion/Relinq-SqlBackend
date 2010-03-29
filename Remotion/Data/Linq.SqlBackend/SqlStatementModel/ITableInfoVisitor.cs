@@ -20,12 +20,12 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Provides a visitor for implementations of <see cref="AbstractTableInfo"/>.
+  /// Provides a visitor for implementations of <see cref="ITableInfo"/>.
   /// </summary>
   public interface ITableInfoVisitor
   {
-    AbstractTableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo);
-    AbstractTableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo);
-    AbstractTableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo);
+    ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo);
+    ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo);
+    ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo);
   }
 }
