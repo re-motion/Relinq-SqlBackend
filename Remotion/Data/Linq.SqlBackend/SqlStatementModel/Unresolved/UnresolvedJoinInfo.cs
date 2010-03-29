@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// <see cref="UnresolvedJoinInfo"/> represents the data source defined by a member access in a LINQ expression.
   /// </summary>
-  public class UnresolvedJoinInfo : AbstractJoinInfo
+  public class UnresolvedJoinInfo : IJoinInfo
   {
     private readonly MemberInfo _memberInfo;
     private readonly JoinCardinality _cardinality;
@@ -63,18 +63,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _cardinality; }
     }
 
-    public override Type ItemType
+    public virtual Type ItemType
     {
       get { return _itemType; }
     }
 
-    public override AbstractJoinInfo Accept (IJoinInfoVisitor visitor)
+    public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return visitor.VisitUnresolvedJoinInfo (this);
     }
 
-   public override IResolvedTableInfo GetResolvedTableInfo ()
+   public virtual IResolvedTableInfo GetResolvedTableInfo ()
     {
       throw new InvalidOperationException ("This join has not yet been resolved; call the resolution step first.");
     }

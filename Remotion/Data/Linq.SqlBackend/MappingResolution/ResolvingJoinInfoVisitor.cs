@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
 
-    public static ResolvedJoinInfo ResolveJoinInfo (AbstractJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator)
+    public static ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -49,14 +49,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _generator = generator;
     }
 
-    public AbstractJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
+    public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       var result = _resolver.ResolveJoinInfo (joinInfo, _generator);
       return result.Accept (this);
     }
 
-    public AbstractJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
+    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       return joinInfo;

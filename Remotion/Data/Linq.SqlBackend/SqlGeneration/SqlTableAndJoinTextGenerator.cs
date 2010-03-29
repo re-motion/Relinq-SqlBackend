@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableInfo;
     }
 
-    public AbstractJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo tableSource)
+    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo tableSource)
     {
       _commandBuilder.Append (" LEFT OUTER JOIN ");
 
@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableSource;
     }
 
-    public AbstractJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
+    public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
     {
       throw new InvalidOperationException ("UnresolvedJoinInfo is not valid at this point.");
     }

@@ -20,12 +20,12 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="AbstractJoinInfo"/> defines the details about a <see cref="SqlJoinedTable"/>.
+  /// <see cref="IJoinInfo"/> defines the details about a <see cref="SqlJoinedTable"/>.
   /// </summary>
-  public abstract class AbstractJoinInfo // TODO Review 2437: Refactor this to be an interface: IJoinInfo.
+  public interface IJoinInfo
   {
-    public abstract Type ItemType { get; }
-    public abstract AbstractJoinInfo Accept (IJoinInfoVisitor visitor);
-    public abstract IResolvedTableInfo GetResolvedTableInfo ();
+    Type ItemType { get; }
+    IJoinInfo Accept (IJoinInfoVisitor visitor);
+    IResolvedTableInfo GetResolvedTableInfo ();
   }
 }

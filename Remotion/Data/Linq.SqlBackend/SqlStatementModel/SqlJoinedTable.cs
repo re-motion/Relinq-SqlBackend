@@ -26,9 +26,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlJoinedTable : SqlTableBase
   {
-    private AbstractJoinInfo _joinInfo;
+    private IJoinInfo _joinInfo;
 
-    public SqlJoinedTable (AbstractJoinInfo joinInfo)
+    public SqlJoinedTable (IJoinInfo joinInfo)
         : base (joinInfo.ItemType)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       _joinInfo = joinInfo;
     }
 
-    public AbstractJoinInfo JoinInfo
+    public IJoinInfo JoinInfo
     {
       get { return _joinInfo; }
       set

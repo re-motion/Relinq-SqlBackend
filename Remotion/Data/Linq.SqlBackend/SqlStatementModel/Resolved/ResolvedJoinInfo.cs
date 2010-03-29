@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="ResolvedJoinInfo"/> represents a join between two database tables.
   /// </summary>
-  public class ResolvedJoinInfo : AbstractJoinInfo
+  public class ResolvedJoinInfo : IJoinInfo
   {
     private readonly IResolvedTableInfo _foreignTableInfo;
     private readonly SqlColumnExpression _primaryColumn;
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       _foreignColumn = foreignColumn;
     }
 
-    public override Type ItemType
+    public virtual Type ItemType
     {
       get { return ((AbstractTableInfo) _foreignTableInfo).ItemType; }
     }
@@ -61,13 +61,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _foreignColumn; }
     }
 
-    public override AbstractJoinInfo Accept (IJoinInfoVisitor visitor)
+    public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return visitor.VisitResolvedJoinInfo (this);
     }
 
-   public override IResolvedTableInfo GetResolvedTableInfo ()
+   public virtual IResolvedTableInfo GetResolvedTableInfo ()
     {
       return ForeignTableInfo;
     }

@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface IJoinInfoVisitor
   {
-    AbstractJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo);
-    AbstractJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo);
+    IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo);
+    IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo);
   }
 }
