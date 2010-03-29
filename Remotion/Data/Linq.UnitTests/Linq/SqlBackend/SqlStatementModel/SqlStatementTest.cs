@@ -30,15 +30,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   public class SqlStatementTest
   {
     [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
-    public void EmptyCheck ()
-    {
-      var unresolvedTableInfo = new UnresolvedTableInfo (typeof (int));
-      var sqlTable = new SqlTable (unresolvedTableInfo);
-      new SqlStatement (new SqlTableReferenceExpression (sqlTable), new SqlTableBase[] { }, new Ordering[] { });
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
     {

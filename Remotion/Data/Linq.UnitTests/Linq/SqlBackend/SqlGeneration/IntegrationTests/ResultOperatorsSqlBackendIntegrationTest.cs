@@ -175,5 +175,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter("@1", 23));
     }
 
+    [Test]
+    [Ignore("TODO: 2492")]
+    public void Contains_InTopLevel ()
+    {
+      var cook = new Cook () { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
+      CheckQuery (
+          ( () => (from s in Cooks select s).Contains(cook)),
+          "");
+    }
+
   }
 }

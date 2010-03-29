@@ -395,7 +395,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [Ignore("TODO: 2492 - refactor after supporting contains")]
     public void VisitResultOperator_Contains ()
     {
       var containsExpression = Expression.Constant (2);
@@ -416,6 +415,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations ();
 
       Assert.That (_visitor.SqlStatementBuilder.ProjectionExpression, Is.TypeOf(typeof(SqlInExpression)));
+      Assert.That (((SqlInExpression) _visitor.SqlStatementBuilder.ProjectionExpression).LeftExpression, Is.SameAs (preparedExpression));
+      Assert.That (((SqlInExpression) _visitor.SqlStatementBuilder.ProjectionExpression).RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (sqlStatementBuilder));
     }
 

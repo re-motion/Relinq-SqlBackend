@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
       ArgumentUtility.CheckNotNull ("sqlTables", sqlTables);
       ArgumentUtility.CheckNotNull ("orderings", orderings);
-      ArgumentUtility.CheckNotEmpty ("sqlTables", sqlTables);
+      //ArgumentUtility.CheckNotEmpty ("sqlTables", sqlTables);
 
       _selectProjection = selectProjection;
       _sqlTables = sqlTables.ToArray();

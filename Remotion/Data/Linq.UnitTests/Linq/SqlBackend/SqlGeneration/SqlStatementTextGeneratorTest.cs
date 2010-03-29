@@ -86,6 +86,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void BuildFromPart_NoTables_CreateNoFromPart ()
+    {
+      _sqlStatement = new SqlStatement (_columnListExpression, new SqlTable[] { }, new Ordering[] { });
+
+      _stageMock.Replay ();
+
+      _generator.BuildFromPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (""));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void BuildSelectPart_WithCountAndTop_ThrowsException ()
     {
