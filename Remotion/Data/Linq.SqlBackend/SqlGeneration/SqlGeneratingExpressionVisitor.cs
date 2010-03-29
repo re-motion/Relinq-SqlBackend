@@ -111,8 +111,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var whereExpression = Expression.Equal (
-          ((ResolvedJoinInfo) expression.JoinTable.JoinInfo).PrimaryColumn, // TODO Review 2487: Add GetResolvedJoinInfo method on IJoinInfo. Implement in ResolvedJoinInfo to return itself; implement in UnresolvedJoinInfo to throw an exception similar to UnresolvedTableInfo.GetResolvedTableInfo
-          ((ResolvedJoinInfo) expression.JoinTable.JoinInfo).ForeignColumn);
+          ((ResolvedJoinInfo) expression.JoinTable.JoinInfo).LeftKeyColumn, // TODO Review 2487: Add GetResolvedJoinInfo method on IJoinInfo. Implement in ResolvedJoinInfo to return itself; implement in UnresolvedJoinInfo to throw an exception similar to UnresolvedTableInfo.GetResolvedTableInfo
+          ((ResolvedJoinInfo) expression.JoinTable.JoinInfo).RightKeyColumn);
       return VisitExpression (whereExpression);
     }
 

@@ -25,23 +25,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   public class ResolvedJoinInfo : IJoinInfo
   {
     private readonly IResolvedTableInfo _foreignTableInfo;
-    private readonly SqlColumnExpression _primaryColumn;
-    private readonly SqlColumnExpression _foreignColumn;
+    private readonly SqlColumnExpression _leftKeyColumn;
+    private readonly SqlColumnExpression _rightKeyColumn;
 
-    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, SqlColumnExpression primaryColumn, SqlColumnExpression foreignColumn)
+    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, SqlColumnExpression leftKeyColumn, SqlColumnExpression rightKeyColumn)
     {
       ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
-      ArgumentUtility.CheckNotNull ("primaryColumn", primaryColumn);
-      ArgumentUtility.CheckNotNull ("foreignColumn", foreignColumn);
+      ArgumentUtility.CheckNotNull ("leftKeyColumn", leftKeyColumn);
+      ArgumentUtility.CheckNotNull ("rightKeyColumn", rightKeyColumn);
       
       _foreignTableInfo = foreignTableInfo;
-      _primaryColumn = primaryColumn;
-      _foreignColumn = foreignColumn;
+      _leftKeyColumn = leftKeyColumn;
+      _rightKeyColumn = rightKeyColumn;
     }
 
     public virtual Type ItemType
     {
-      get { return ((ITableInfo) _foreignTableInfo).ItemType; }
+      get { return _foreignTableInfo.ItemType; }
     }
 
     public IResolvedTableInfo ForeignTableInfo
@@ -49,16 +49,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _foreignTableInfo; }
     }
 
-    // TODO Review 2439: Rename to LeftKeyColumn - it's not always the primary key
-    public SqlColumnExpression PrimaryColumn
+    public SqlColumnExpression LeftKeyColumn
     {
-      get { return _primaryColumn; }
+      get { return _leftKeyColumn; }
     }
 
-    // TODO Review 2439: Rename to RightKeyColumn - it's not always the foreign key
-    public SqlColumnExpression ForeignColumn
+    public SqlColumnExpression RightKeyColumn
     {
-      get { return _foreignColumn; }
+      get { return _rightKeyColumn; }
     }
 
     public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
