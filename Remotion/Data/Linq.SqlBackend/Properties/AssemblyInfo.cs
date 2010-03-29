@@ -24,7 +24,7 @@ using System.Reflection;
 //
 
 [assembly: AssemblyTitle("Remotion Linq SqlBackend Library")]
-[assembly: AssemblyDescription("Framework for calling linq queries on sql server.")]
+[assembly: AssemblyDescription ("Framework for calling linq queries on sql server.")]
 [assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: debug")]
 [assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
 [assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
@@ -44,4 +44,4 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.13.50.2")]
+[assembly: AssemblyVersion("1.13.52.2")]
