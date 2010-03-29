@@ -31,15 +31,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
 
-    // TODO Review 2437: Change ResolveTableInfo to return IResolvedTableInfo. Also change the stage method's return type to IResolvedTableInfo. (Change ITableInfo to be an interface first.)
-    public static ITableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    public static IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       var visitor = new ResolvingTableInfoVisitor (resolver, generator, stage);
-      return tableInfo.Accept (visitor);
+      return (IResolvedTableInfo) tableInfo.Accept (visitor);
     }
 
     protected ResolvingTableInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)

@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ResolveWhereExpression (Expression expression);
     Expression ResolveOrderingExpression (Expression expression);
     Expression ResolveTopExpression (Expression expression);
-    ITableInfo ResolveTableInfo (ITableInfo tableInfo);
+    IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo);
     ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo);
     void ResolveSqlStatement (SqlStatement sqlStatement);
   }

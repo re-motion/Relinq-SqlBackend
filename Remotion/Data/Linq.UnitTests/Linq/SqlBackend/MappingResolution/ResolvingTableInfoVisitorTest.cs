@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -35,6 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private UniqueIdentifierGenerator _generator;
     private IMappingResolutionStage _stageMock;
     private ResolvedSimpleTableInfo _resolvedTableInfo;
+    private SqlStatement _sqlStatement;
 
     [SetUp]
     public void SetUp ()
@@ -44,6 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _resolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
       _generator = new UniqueIdentifierGenerator();
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
     }
 
     [Test]
@@ -75,12 +77,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo_SubStatementTableInfo ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
-
-      var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "c", sqlStatement);
+      var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "c", _sqlStatement);
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (sqlStatement));
+          .Expect (mock => mock.ResolveSqlStatement (_sqlStatement));
       _resolverMock.Replay();
 
       var result = ResolvingTableInfoVisitor.ResolveTableInfo (sqlSubStatementTableInfo, _resolverMock, _generator, _stageMock);
@@ -89,6 +89,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (sqlSubStatementTableInfo));
     }
 
-    // TODO Review 2437: Test for ResolveTableInfo with SimpleTableInfo is missing.
+    [Test]
+    public void ResolveTableInfo_SimpleTableInfo ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (simpleTableInfo, _resolverMock, _generator, _stageMock);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (simpleTableInfo));
+    }
+
   }
 }
