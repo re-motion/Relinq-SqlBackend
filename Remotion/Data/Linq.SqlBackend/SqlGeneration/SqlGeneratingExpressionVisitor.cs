@@ -145,7 +145,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       VisitExpression (expression.LeftExpression);
       _commandBuilder.Append (" IN (");
-      var statement = ((SqlSubStatementExpression)expression.RightExpression).SqlStatement;
+      var statement = ((SqlSubStatementExpression) expression.RightExpression).SqlStatement;
       _stage.GenerateTextForSqlStatement (_commandBuilder, statement, SqlExpressionContext.SingleValueRequired);
       _commandBuilder.Append (")");
       return expression;

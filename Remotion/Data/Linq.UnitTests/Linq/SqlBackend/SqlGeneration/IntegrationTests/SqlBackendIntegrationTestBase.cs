@@ -82,7 +82,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       var result = GenerateSql (queryable.Expression);
 
-      //Console.WriteLine (result.CommandText);
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
     }

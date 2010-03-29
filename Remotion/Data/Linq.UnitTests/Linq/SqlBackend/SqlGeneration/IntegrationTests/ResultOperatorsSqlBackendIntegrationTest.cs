@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -128,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void Contains ()
+    public void Contains_WithQuery ()
     {
       CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2).Contains (s) select s,
@@ -137,5 +138,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           +"WHERE [t0].[ID] "
           +"IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
     }
+
+    [Test]
+    public void Contains_WithConstant ()
+    {
+      var cook = new Cook() { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
+      CheckQuery (
+          from s in Cooks where (from s2 in Cooks select s2).Contains (cook) select s,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])",
+          new CommandParameter("@1", 23));
+    }
+
+    [Test]
+    public void Contains_WithConstantAndDependentQuery ()
+    {
+      var cook = new Cook () { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
+      CheckQuery (
+          from s in Cooks where s.Assistants.Contains (cook) select s,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID]))",
+          new CommandParameter("@1", 23));
+    }
+
   }
 }
