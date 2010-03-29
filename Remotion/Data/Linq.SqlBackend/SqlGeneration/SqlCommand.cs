@@ -23,6 +23,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// <summary>
   /// <see cref="SqlCommand"/> contains the SQL command text and parameters generated for a LINQ query.
   /// </summary>
+  // TODO Review 2440: Rename to SqlCommandData - a sqlCommand class already exists in ADO.NET.
   public struct SqlCommand
   {
     private readonly string _commandText;
