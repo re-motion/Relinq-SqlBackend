@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override void Accept (ISqlTableBaseVisitor visitor)
     {
-      visitor.VisitSqlJoinTable (this);
+      visitor.VisitSqlJoinedTable (this);
     }
 
     public override IResolvedTableInfo GetResolvedTableInfo ()

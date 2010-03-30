@@ -19,10 +19,12 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -62,6 +64,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }
 
-    // TODO Review 2487: Test Accept
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
+
+      var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor> ();
+      visitorMock.Expect (mock => mock.VisitSqlJoinedTable (sqlJoinedTable));
+      visitorMock.Replay ();
+
+      sqlJoinedTable.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+    }
   }
 }

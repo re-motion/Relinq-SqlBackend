@@ -17,38 +17,57 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
   [TestFixture]
   public class SqlTableTest
   {
+    private ResolvedSimpleTableInfo _oldTableInfo;
+    private ResolvedSimpleTableInfo _newTableInfo;
+    private SqlTable _sqlTable;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
+      _newTableInfo = new ResolvedSimpleTableInfo (typeof (string), "table2", "s");
+      _sqlTable = new SqlTable (_oldTableInfo);
+    }
+
     [Test]
     public void SameType ()
     {
-      var oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (oldTableInfo);
       var newTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table2", "s");
+      _sqlTable.TableInfo = newTableInfo;
 
-      sqlTable.TableInfo = newTableInfo;
-
-      Assert.That (sqlTable.TableInfo.ItemType, Is.EqualTo (newTableInfo.ItemType));
+      Assert.That (_sqlTable.TableInfo.ItemType, Is.EqualTo (newTableInfo.ItemType));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (oldTableInfo);
-      var newTableInfo = new ResolvedSimpleTableInfo (typeof (string), "table2", "s");
-
-      sqlTable.TableInfo = newTableInfo;
+      _sqlTable.TableInfo = _newTableInfo;
     }
 
-    // TODO Review 2487: Test Accept
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor>();
+      visitorMock.Expect (mock => mock.VisitSqlTable (_sqlTable));
+      visitorMock.Replay();
+
+      _sqlTable.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations();
+    }
+
   }
 }

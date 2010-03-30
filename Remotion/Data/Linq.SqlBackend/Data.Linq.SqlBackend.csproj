@@ -45,7 +45,7 @@
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
-    <Compile Include="MappingResolution\ISqlSubStatementExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\ISqlSubStatementExpressionVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />
     <Compile Include="MappingResolution\ResolvingExpressionVisitor.cs" />
     <Compile Include="MappingResolution\ResolvingJoinInfoVisitor.cs" />

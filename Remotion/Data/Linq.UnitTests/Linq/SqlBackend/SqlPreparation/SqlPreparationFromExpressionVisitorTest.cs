@@ -26,6 +26,7 @@ using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
@@ -70,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlMemberExpression, typeof (Cook), _stageMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
-      // TODO Review 2487: Assert that result was not added to sqlTable.JoinedTables
+      Assert.That (sqlTable.JoinedTables.ToArray().Contains (result), Is.False);
 
       var joinInfo = ((SqlJoinedTable) result).JoinInfo;
       Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));

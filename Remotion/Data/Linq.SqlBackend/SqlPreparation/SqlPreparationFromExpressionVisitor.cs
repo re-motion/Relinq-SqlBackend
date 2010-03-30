@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;

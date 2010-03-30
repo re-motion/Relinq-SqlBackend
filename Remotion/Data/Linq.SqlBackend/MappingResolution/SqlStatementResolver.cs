@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ResolveSqlTable (sqlTable);
     }
 
-    void ISqlTableBaseVisitor.VisitSqlJoinTable (SqlJoinedTable sqlTable)
+    void ISqlTableBaseVisitor.VisitSqlJoinedTable (SqlJoinedTable sqlTable)
     {
       ResolveJoinedTable (sqlTable);
     }

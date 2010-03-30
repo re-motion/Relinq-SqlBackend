@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
