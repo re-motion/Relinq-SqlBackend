@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     [SetUp]
     public void SetUp ()
     {
-      _sqlIsNotNullExpression = new SqlIsNotNullExpression();
+      _sqlIsNotNullExpression = new SqlIsNotNullExpression(Expression.Constant(1),Expression.Constant(2));
     }
 
     [Test]

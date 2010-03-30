@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
@@ -26,9 +27,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public class SqlIsNotNullExpression : ExtensionExpression
   {
-    public SqlIsNotNullExpression ()
+    private readonly Expression _leftExpression;
+    private readonly Expression _rightExpression;
+
+    public SqlIsNotNullExpression (Expression leftExpression, Expression rightExpression)
         : base(typeof(object))
     {
+      ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
+      ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
+
+      _leftExpression = leftExpression;
+      _rightExpression = rightExpression;      
+    }
+
+    public Expression LeftExpression
+    {
+      get { return _leftExpression; }
+    }
+
+    public Expression RightExpression
+    {
+      get { return _rightExpression; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -38,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException(); //visitor.VisitSqlIsNotNullExpression
     }
   }
 }

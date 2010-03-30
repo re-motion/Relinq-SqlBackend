@@ -42,6 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void CountWithPredicate ()
     {
       CheckQuery (
@@ -104,6 +105,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void First_WithPredicate ()
     {
       CheckQuery (
@@ -130,6 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void Single_WithPredicate ()
     {
       CheckQuery (

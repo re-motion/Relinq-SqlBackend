@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
@@ -32,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     [SetUp]
     public void SetUp ()
     {
-      _sqlIsNullExpression = new SqlIsNullExpression ();
+      _sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant(1),Expression.Constant(2));
     }
 
     [Test]

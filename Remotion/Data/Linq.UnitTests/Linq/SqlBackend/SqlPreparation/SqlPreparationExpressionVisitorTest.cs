@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -177,5 +178,42 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result.Type, Is.EqualTo (typeof(bool)));
     }
 
+    [Test]
+    public void VisitBinaryExpression_ReturnsSqlIsNullExpression ()
+    {
+      var leftExpression = Expression.Constant (null);
+      var rightExpression = Expression.Constant ("1");
+      var binaryExpression = Expression.Equal (leftExpression, rightExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
+      Assert.That (((SqlIsNullExpression) result).LeftExpression, Is.SameAs (leftExpression));
+      Assert.That (((SqlIsNullExpression) result).RightExpression, Is.SameAs (rightExpression));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_ReturnsSqlIsNotNullExpression ()
+    {
+      var leftExpression = Expression.Constant (null);
+      var rightExpression = Expression.Constant ("1");
+      var binaryExpression = Expression.NotEqual (leftExpression, rightExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock);
+
+
+      Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
+      Assert.That (((SqlIsNotNullExpression) result).LeftExpression, Is.SameAs (leftExpression));
+      Assert.That (((SqlIsNotNullExpression) result).RightExpression, Is.SameAs (rightExpression));
+    }
+
+    [Test]
+    public void VisitBinaryExpression ()
+    {
+      var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock);
+
+      Assert.That (result, Is.SameAs(binaryExpression));
+    }
   }
 }

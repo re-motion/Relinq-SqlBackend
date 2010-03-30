@@ -21,6 +21,7 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -113,6 +114,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
       return new SqlSubStatementExpression (sqlStatement, expression.Type);
+    }
+
+    protected override Expression VisitBinaryExpression (BinaryExpression expression)
+    {
+      if (expression.NodeType == ExpressionType.Equal || expression.NodeType == ExpressionType.NotEqual)
+      {
+        if (((expression.Left is ConstantExpression) && ((ConstantExpression) expression.Left).Value == null)
+          || ((expression.Right is ConstantExpression) && ((ConstantExpression) expression.Right).Value == null))
+        {
+          if (expression.NodeType == ExpressionType.Equal)
+            return new SqlIsNullExpression (expression.Left, expression.Right);
+          else
+            return new SqlIsNotNullExpression (expression.Left, expression.Right);
+        }
+      }
+      return base.VisitBinaryExpression(expression);
     }
   }
 }
