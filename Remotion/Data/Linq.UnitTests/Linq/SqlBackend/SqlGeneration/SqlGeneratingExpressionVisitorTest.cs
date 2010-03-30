@@ -62,7 +62,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
 
-    // TODO Review 2533: Missing test for * column
+    [Test]
+    public void GenerateSql_VisitSqlColumnExpressionWithStart ()
+    {
+      var sqlColumnExpression = new SqlColumnExpression (typeof (Cook), "c", "*");
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlColumnExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].*"));
+    }
 
     [Test]
     public void GenerateSql_VisitSqlColumnListExpression ()
