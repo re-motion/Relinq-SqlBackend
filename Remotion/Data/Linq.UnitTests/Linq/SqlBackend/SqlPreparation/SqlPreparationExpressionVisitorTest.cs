@@ -188,9 +188,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
-      Assert.That (((SqlIsNullExpression) result).LeftExpression, Is.SameAs (leftExpression));
-      Assert.That (((SqlIsNullExpression) result).RightExpression, Is.SameAs (rightExpression));
+      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (leftExpression));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
+
+    [Test]
+    public void VisitBinaryExpression_ReturnsSqlIsNullExpressionWithCorrectPropertyOrder ()
+    {
+      var rightExpression = Expression.Constant (null);
+      var leftExpression = Expression.Constant ("1");
+      var binaryExpression = Expression.Equal (leftExpression, rightExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
+      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (rightExpression));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (leftExpression));
+    }
+
 
     [Test]
     public void VisitBinaryExpression_ReturnsSqlIsNotNullExpression ()
@@ -203,8 +218,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
-      Assert.That (((SqlIsNotNullExpression) result).LeftExpression, Is.SameAs (leftExpression));
-      Assert.That (((SqlIsNotNullExpression) result).RightExpression, Is.SameAs (rightExpression));
+      Assert.That (((SqlIsNotNullExpression) result).NullExpression, Is.SameAs (leftExpression));
+      Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
 
     [Test]

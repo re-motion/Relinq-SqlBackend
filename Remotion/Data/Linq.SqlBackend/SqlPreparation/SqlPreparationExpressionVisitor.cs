@@ -124,9 +124,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           || ((expression.Right is ConstantExpression) && ((ConstantExpression) expression.Right).Value == null))
         {
           if (expression.NodeType == ExpressionType.Equal)
-            return new SqlIsNullExpression (expression.Left, expression.Right);
+              return ((ConstantExpression) expression.Left).Value == null
+                       ? new SqlIsNullExpression (expression.Left, expression.Right)
+                       : new SqlIsNullExpression (expression.Right, expression.Left);
           else
-            return new SqlIsNotNullExpression (expression.Left, expression.Right);
+              return ((ConstantExpression) expression.Left).Value == null
+                       ? new SqlIsNotNullExpression (expression.Left, expression.Right)
+                       : new SqlIsNotNullExpression (expression.Right, expression.Left);
         }
       }
       return base.VisitBinaryExpression(expression);

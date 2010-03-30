@@ -27,27 +27,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public class SqlIsNotNullExpression : ExtensionExpression
   {
-    private readonly Expression _leftExpression;
-    private readonly Expression _rightExpression;
+    private readonly Expression _nullExpression;
+    private readonly Expression _expression;
 
-    public SqlIsNotNullExpression (Expression leftExpression, Expression rightExpression)
+    public SqlIsNotNullExpression (Expression nullExpression, Expression expression)
         : base(typeof(object))
     {
-      ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
-      ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
+      ArgumentUtility.CheckNotNull ("nullExpression", nullExpression);
+      ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _leftExpression = leftExpression;
-      _rightExpression = rightExpression;      
+      _nullExpression = nullExpression;
+      _expression = expression;      
     }
 
-    public Expression LeftExpression
+    public Expression NullExpression
     {
-      get { return _leftExpression; }
+      get { return _nullExpression; }
     }
 
-    public Expression RightExpression
+    public Expression Expression
     {
-      get { return _rightExpression; }
+      get { return _expression; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)

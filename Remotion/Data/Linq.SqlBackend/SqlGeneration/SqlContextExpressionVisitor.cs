@@ -190,6 +190,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    {
+      throw new NotImplementedException();
+    }
+
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)
     {
       switch (expressionType)

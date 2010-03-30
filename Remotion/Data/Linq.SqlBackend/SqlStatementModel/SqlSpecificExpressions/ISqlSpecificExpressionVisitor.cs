@@ -28,5 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     Expression VisitSqlCaseExpression (SqlCaseExpression expression);
     Expression VisitSqlLiteralExpression (SqlLiteralExpression expression);
     Expression VisitSqlInExpression (SqlInExpression expression);
+    Expression VisitSqlIsNullExpression (SqlIsNullExpression expression);
+    Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression);
   }
 }

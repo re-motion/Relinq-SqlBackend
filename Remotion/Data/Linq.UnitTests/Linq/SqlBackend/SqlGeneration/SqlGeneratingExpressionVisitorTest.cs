@@ -374,5 +374,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (test)"));
     }
+
+    //[Test]
+    //public void VisitSqlIsNullExpression ()
+    //{
+    //  var leftExpression = Expression.Constant("test");
+    //  var rightExpression = Expression.Constant (null);
+    //  var sqlIsNullExpression = new SqlIsNullExpression (leftExpression, rightExpression);
+
+    //  SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+    //  Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test IS NULL"));
+
+    //}
+
+    //[Test]
+    //public void VisitSqlIsNotNullExpression ()
+    //{
+      
+    //}
+
   }
 }
