@@ -85,20 +85,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
-    // TODO Review 2492: This test doesn't make much sense because BuildFromPart won't be called without tables anyway
-    [Test]
-    public void BuildFromPart_NoTables_CreateNoFromPart ()
-    {
-      _sqlStatement = new SqlStatement (_columnListExpression, new SqlTable[] { }, new Ordering[] { });
-
-      _stageMock.Replay ();
-
-      _generator.BuildFromPart (_sqlStatement, _commandBuilder);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (""));
-      _stageMock.VerifyAllExpectations ();
-    }
-
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void BuildSelectPart_WithCountAndTop_ThrowsException ()
@@ -270,7 +256,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
-    // TODO Review 2492: Add a test with select and no from
+    [Test]
+    public void Build_WithSelectAndNoFrom ()
+    {
+      _sqlStatement = new SqlStatement(_columnListExpression, new SqlTable[] { }, new Ordering[] { });
+      _sqlStatement.SelectProjection = Expression.Constant ("test");
+
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.Replay ();
+
+      _generator.Build(_sqlStatement,_commandBuilder, SqlExpressionContext.ValueRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.VerifyAllExpectations ();
+    }
 
     [Test]
     public void Build_WithWhereCondition_PredicateSemantics ()

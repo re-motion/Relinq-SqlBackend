@@ -21,7 +21,6 @@ using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  // TODO Review 2492: Add tests for the GetStatement method
   /// <summary>
   /// <see cref="SqlStatementBuilder"/> holds the specific SQL statement data and populates a build method.
   /// </summary>
@@ -33,8 +32,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public bool IsDistinctQuery { get; set; }
     public Expression TopExpression { get; set; }
 
-    public List<SqlTableBase> SqlTables { get; set; } // TODO Review 2492: Remove setter, lists can be modified using Add/Remove/etc.
-    public List<Ordering> Orderings { get; set; } // TODO Review 2492: Remove setter, lists can be modified using Add/Remove/etc.
+    public List<SqlTableBase> SqlTables { get; private set; }
+    public List<Ordering> Orderings { get; private set; }
 
     public SqlStatementBuilder ()
     {

@@ -149,10 +149,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else if (resultOperator is ContainsResultOperator) 
       {
-        // TODO Review 2492: Add a protected method called GetStatementAndResetBuilder containing the following two lines. Add a separate test for it.
-        var sqlSubStatement = SqlStatementBuilder.GetSqlStatement();
-        _sqlStatementBuilder = new SqlStatementBuilder ();
-
+        var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
         var sqlInExpression = new SqlInExpression (_stage.PrepareItemExpression (itemExpression), subStatementExpression);
@@ -161,6 +158,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
+    }
+
+    protected virtual SqlStatement GetStatementAndResetBuilder ()
+    {
+      var sqlSubStatement = SqlStatementBuilder.GetSqlStatement ();
+      _sqlStatementBuilder = new SqlStatementBuilder ();
+      return sqlSubStatement;
     }
 
     protected void AddWhereCondition (Expression translatedExpression)

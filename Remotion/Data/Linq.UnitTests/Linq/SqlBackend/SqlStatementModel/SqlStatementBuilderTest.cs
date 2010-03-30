@@ -16,31 +16,29 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
-  public class TestableSqlPreparationQueryModelVisitor : SqlPreparationQueryModelVisitor
+  [TestFixture]
+  public class SqlStatementBuilderTest
   {
-    public TestableSqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage)
-        : base (context, stage)
+    [Test]
+    public void GetSqlStatement ()
     {
-    }
+      var statementBuilder = new SqlStatementBuilder();
+      var constantExpression = Expression.Constant ("test");
+      statementBuilder.ProjectionExpression = constantExpression;
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      statementBuilder.SqlTables.Add (sqlTable);
 
-    public new SqlStatementBuilder SqlStatementBuilder
-    {
-      get { return base.SqlStatementBuilder; }
-    }
+      var result = statementBuilder.GetSqlStatement();
 
-    public new void AddWhereCondition (Expression translatedExpression)
-    {
-      base.AddWhereCondition (translatedExpression);
-    }
-
-    public new SqlStatement GetStatementAndResetBuilder ()
-    {
-      return base.GetStatementAndResetBuilder ();
+      Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
+      Assert.That (result.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
     }
   }
 }
