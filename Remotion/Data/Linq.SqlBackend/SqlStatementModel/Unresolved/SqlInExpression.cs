@@ -23,6 +23,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
+  /// <summary>
+  /// Represents a SQL "a IN b" expression.
+  /// </summary>
   public class SqlInExpression : ExtensionExpression
   {
     private readonly Expression _leftExpression;
@@ -53,6 +56,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       var newLeftExpression = visitor.VisitExpression (_leftExpression);
       var newRightExpression = visitor.VisitExpression (_rightExpression);
 
+      // TODO Review 2493: Only create a new SqlInExpression if the newLeftExpression != _leftExpression or the _newRightExpression != _rightExpression.
       return new SqlInExpression (newLeftExpression, newRightExpression);
     }
 

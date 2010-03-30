@@ -43,6 +43,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       _expression = new SqlInExpression (_leftExpression, _rightExpression);
     }
 
+    // TODO Review 2493: Add Initialization test showing that type is always bool
+
     [Test]
     public void VisitChildren_ReturnsNewSqlInExpression ()
     {

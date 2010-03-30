@@ -151,28 +151,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
       var constantExpression = Expression.Constant (new Kitchen());
       var containsResultOperator = new ContainsResultOperator (constantExpression);
-      var fakeConstantExpression = Expression.Constant (new Kitchen());
       querModel.ResultOperators.Add (containsResultOperator);
+      
       var expression = new SubQueryExpression (querModel);
+      var fakeConstantExpression = Expression.Constant (new Kitchen ());
       var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
 
       _stageMock
           .Expect (mock => mock.PrepareItemExpression (constantExpression))
           .Return (fakeConstantExpression);
       _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches(q=> q.ResultOperators.Count == 0)))
+          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches(q => q.ResultOperators.Count == 0)))
           .Return (fakeSqlStatement);
       _stageMock.Replay ();
       
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock);
 
       _stageMock.VerifyAllExpectations ();
+
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (SqlInExpression)));
       Assert.That (((SqlInExpression) result).RightExpression, Is.TypeOf (typeof(SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) ((SqlInExpression) result).RightExpression).SqlStatement, Is.EqualTo (fakeSqlStatement));
-      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs(fakeConstantExpression));
-      Assert.That (result.Type, Is.EqualTo (((SqlInExpression) result).RightExpression.Type));
+      Assert.That (((SqlSubStatementExpression) ((SqlInExpression) result).RightExpression).SqlStatement, Is.SameAs (fakeSqlStatement));
+      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (fakeConstantExpression));
+      Assert.That (result.Type, Is.EqualTo (((SqlInExpression) result).RightExpression.Type)); // TODO Review 2493: Should be: result.Type, Is.SameAs (typeof (bool))
     }
+
+    // TODO Review 2493: Add a test with a result operator that is not a ContainsResultOperator
+
   }
 }
