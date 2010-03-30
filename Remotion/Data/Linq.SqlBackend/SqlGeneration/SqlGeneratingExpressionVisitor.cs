@@ -91,7 +91,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var prefix = expression.OwningTableAlias;
       var columnName = expression.ColumnName;
-      _commandBuilder.AppendFormat ("[{0}].[{1}]", prefix, columnName);
+      if (columnName == "*")
+        _commandBuilder.AppendFormat ("[{0}].{1}", prefix, columnName);
+      else
+        _commandBuilder.AppendFormat ("[{0}].[{1}]", prefix, columnName);
 
       return expression;
     }
