@@ -85,6 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
+    // TODO Review 2492: This test doesn't make much sense because BuildFromPart won't be called without tables anyway
     [Test]
     public void BuildFromPart_NoTables_CreateNoFromPart ()
     {
@@ -269,6 +270,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
+    // TODO Review 2492: Add a test with select and no from
+
     [Test]
     public void Build_WithWhereCondition_PredicateSemantics ()
     {
@@ -313,7 +316,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [Ignore ("TODO: 2364")]
+    [Ignore ("TODO 2364")]
     public void GenerateSqlGeneratorRegistry ()
     {
       Assert.Fail();

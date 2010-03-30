@@ -48,7 +48,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    protected SqlStatementBuilder SqlStatementBuilder { get; private set; } 
+    
+    private SqlStatementBuilder _sqlStatementBuilder;
 
     protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage)
     {
@@ -58,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _context = context;
       _stage = stage;
 
-      SqlStatementBuilder = new SqlStatementBuilder ();
+      _sqlStatementBuilder = new SqlStatementBuilder ();
     }
 
     public SqlPreparationContext Context
@@ -71,6 +72,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       get { return _stage; }
     }
 
+    protected SqlStatementBuilder SqlStatementBuilder
+    {
+      get { return _sqlStatementBuilder; }
+    }
+
     public SqlStatement GetSqlStatement ()
     {
       return SqlStatementBuilder.GetSqlStatement ();
@@ -80,8 +86,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-
-      Debug.Assert (SqlStatementBuilder.SqlTables.Count == 0);
 
       AddFromClause (fromClause);
     }
@@ -96,8 +100,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
     {
+      ArgumentUtility.CheckNotNull ("whereClause", whereClause);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
       var translatedExpression = _stage.PrepareWhereExpression (whereClause.Predicate);
-      AddWhereCondition(translatedExpression);
+      AddWhereCondition (translatedExpression);
     }
 
     public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
@@ -143,13 +150,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else if (resultOperator is ContainsResultOperator) 
       {
-        var itemExpression = ((ContainsResultOperator) resultOperator).Item;
+        // TODO Review 2492: Add a protected method called GetStatementAndResetBuilder containing the following two lines. Add a separate test for it.
         var sqlSubStatement = SqlStatementBuilder.GetSqlStatement();
+        _sqlStatementBuilder = new SqlStatementBuilder ();
 
+        var itemExpression = ((ContainsResultOperator) resultOperator).Item;
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
         var sqlInExpression = new SqlInExpression (_stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
-        SqlStatementBuilder = new SqlStatementBuilder ();
         SqlStatementBuilder.ProjectionExpression = sqlInExpression;
       }
       else

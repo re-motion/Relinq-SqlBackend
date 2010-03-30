@@ -397,27 +397,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitResultOperator_Contains ()
     {
-      var containsExpression = Expression.Constant (2);
-      var resultOperator = new ContainsResultOperator (containsExpression);
+      var itemExpression = Expression.Constant (2);
+      var resultOperator = new ContainsResultOperator (itemExpression);
       _queryModel.ResultOperators.Add (resultOperator);
-      var preparedExpression = Expression.Constant (new Cook(), typeof (Cook));
 
       _visitor.SqlStatementBuilder.ProjectionExpression = Expression.Constant (1);
       _visitor.SqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
 
-      _stageMock.Expect (mock => mock.PrepareItemExpression(containsExpression)).Return (preparedExpression);
+      var preparedExpression = Expression.Constant (new Cook(), typeof (Cook));
+      _stageMock.Expect (mock => mock.PrepareItemExpression(itemExpression)).Return (preparedExpression);
       _stageMock.Replay ();
 
-      var sqlStatementBuilder = _visitor.SqlStatementBuilder;
+      var oldSqlStatementBuilder = _visitor.SqlStatementBuilder;
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
       _stageMock.VerifyAllExpectations ();
 
-      Assert.That (_visitor.SqlStatementBuilder.ProjectionExpression, Is.TypeOf(typeof(SqlInExpression)));
+      Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (oldSqlStatementBuilder));
+      Assert.That (_visitor.SqlStatementBuilder.ProjectionExpression, Is.TypeOf (typeof (SqlInExpression)));
       Assert.That (((SqlInExpression) _visitor.SqlStatementBuilder.ProjectionExpression).LeftExpression, Is.SameAs (preparedExpression));
       Assert.That (((SqlInExpression) _visitor.SqlStatementBuilder.ProjectionExpression).RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (sqlStatementBuilder));
+      // TODO Review 2492: Check that projection and tables of substatement match projection and tables of oldSqlStatementBuilder
     }
 
     [Test]
