@@ -62,9 +62,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
     }
 
-    // TODO Review 2486: Rename this test to ..._AndRevisitsResult - it does not test that the visitor only revisits the result if it is different)
     [Test]
-    public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult_OnlyIfDifferent ()
+    public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult()
     {
       var resolvedJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),

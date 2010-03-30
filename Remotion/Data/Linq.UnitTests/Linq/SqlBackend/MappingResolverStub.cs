@@ -49,13 +49,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "AssistedID");
@@ -67,13 +67,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
@@ -85,13 +85,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.SqlTable.GetResolvedTableInfo(),
+                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");

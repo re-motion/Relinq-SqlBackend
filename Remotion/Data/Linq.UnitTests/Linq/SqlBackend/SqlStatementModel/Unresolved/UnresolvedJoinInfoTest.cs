@@ -29,12 +29,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   [TestFixture]
   public class UnresolvedJoinInfoTest
   {
-    private SqlTable _sqlTable;
+    private SqlTable _cookTable;
 
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook))); // TODO Review 2486: use object mother
+      _cookTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
     }
 
     [Test]
@@ -42,20 +42,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
         "Expected a type implementing IEnumerable<T>, but found 'Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain.Cook'.\r\nParameter name: memberInfo")]
     public void Initialization_CardinalityMany_NonEnumerable_Throws ()
     {
-      new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
+      new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
     }
 
     [Test]
     public void ItemType_CardinalityOne ()
     {
-      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var joinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 
     [Test]
     public void ItemType_CardinalityMany ()
     {
-      var joinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many); // TODO Review 2486: use restaurant table here
+      var restaurantTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Restaurant));
+      var joinInfo = new UnresolvedJoinInfo (restaurantTable, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 

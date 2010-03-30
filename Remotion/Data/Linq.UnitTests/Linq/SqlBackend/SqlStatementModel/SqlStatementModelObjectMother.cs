@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
     {
-      var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook))); // TODO Review 2486: This is not correct, to join on Kitchen.Cook, the left side table must be of type Kitchen (we might add a type check in the future)
+      var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Kitchen)));
       return new UnresolvedJoinInfo (sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 

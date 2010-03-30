@@ -29,20 +29,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlJoinedTableTest
   {
-    private SqlTable _sqlTable;
+    private SqlTable _cookTable;
+    private SqlTable _kitchenTable;
 
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook))); // TODO Review 2486: Use object mother
+      _cookTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
+      _kitchenTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Kitchen));
     }
 
     [Test]
     public void SameType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One); // TODO Review 2486: use kitchen table here
+      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var newJoinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
@@ -53,9 +55,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One); // TODO Review 2486: use kitchen table here
+      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
-      var newJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var newJoinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }

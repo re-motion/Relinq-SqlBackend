@@ -29,14 +29,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly MemberInfo _memberInfo;
     private readonly JoinCardinality _cardinality;
     private readonly Type _itemType;
-    private readonly SqlTableBase _sqlTable;
+    private readonly SqlTableBase _originatingTable;
 
-    public UnresolvedJoinInfo (SqlTableBase sqlTable, MemberInfo memberInfo, JoinCardinality cardinality)
+    public UnresolvedJoinInfo (SqlTableBase originatingTable, MemberInfo memberInfo, JoinCardinality cardinality)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("originatingTable", originatingTable);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      _sqlTable = sqlTable;
+      _originatingTable = originatingTable;
       _memberInfo = memberInfo;
       _cardinality = cardinality;
 
@@ -47,10 +47,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
         _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (memberReturnType, "memberInfo");
     }
 
-    // TODO Review 2486: Rename to "LeftSideTable" or "OriginatingTable" or something similar; also rename field and ctor parameter
-    public SqlTableBase SqlTable
+    public SqlTableBase OriginatingTable
     {
-      get { return _sqlTable; }
+      get { return _originatingTable; }
     }
 
     public MemberInfo MemberInfo
