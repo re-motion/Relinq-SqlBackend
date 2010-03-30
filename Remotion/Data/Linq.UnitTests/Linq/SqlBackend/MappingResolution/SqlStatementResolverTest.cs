@@ -28,11 +28,10 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
-  // TODO Review 2488: Rename test to match class name
   [TestFixture]
-  public class ResolvingSqlStatementVisitorTest
+  public class SqlStatementResolverTest
   {
-    private TestableResolvingSqlStatementVisitor _visitor;
+    private TestableSqlStatementResolver _visitor;
 
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
@@ -44,16 +43,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       _stageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
 
-      _visitor = new TestableResolvingSqlStatementVisitor (_stageMock);
+      _visitor = new TestableSqlStatementResolver (_stageMock);
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
       _fakeResolvedSimpleTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
     }
 
-    // TODO Review 2488: Rename test methods: Resolve... instead of Visit...
     [Test]
-    public void VisitSqlTable_ResolvesTableInfo ()
+    public void ResolveSqlTable_ResolvesTableInfo ()
     {
       _stageMock
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
@@ -67,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlTable_ResolvesJoinInfo ()
+    public void ResolveSqlTable_ResolvesJoinInfo ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var join = _sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
@@ -92,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlTable_ResolvesJoinInfo_Multiple ()
+    public void ResolveSqlTable_ResolvesJoinInfo_Multiple ()
     {
       var join1 = _sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var join2 = _sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Restaurant"), JoinCardinality.One);
@@ -122,7 +120,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlTable_ResolvesJoinInfo_Recursive ()
+    public void ResolveSqlTable_ResolvesJoinInfo_Recursive ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var join1 = _sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
@@ -159,7 +157,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSelectProjection_ResolvesExpression ()
+    public void ResolveSelectProjection_ResolvesExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
       var fakeResult = Expression.Constant (0);
@@ -177,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitTopExpression_ResolvesExpression ()
+    public void ResolveTopExpression_ResolvesExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
       var fakeResult = Expression.Constant (0);
@@ -195,7 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitWhereCondition_ResolvesExpression ()
+    public void ResolveWhereCondition_ResolvesExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
       var fakeResult = Expression.Constant (0);
@@ -213,7 +211,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitOrderExpression_ResolvesExpression ()
+    public void ResolveOrderingExpression_ResolvesExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
       var fakeResult = Expression.Constant (0);
@@ -230,6 +228,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
-    // TODO Review 2488: Test missing! ResolveJoinedTable, sqlTable.Accept (_visitor) => sql table is resolved; sqlJoinedTable.Accept => joined table is resolved; ResolveSqlStatement with sql table and joined table resolves both
+    [Test]
+    public void ResolveJoinedTable ()
+    {
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
+      var joinedTable = new SqlJoinedTable (joinInfo);
+
+      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
+      
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo (joinInfo))
+          .Return (fakeJoinInfo);
+      _stageMock.Replay();
+
+      _visitor.ResolveJoinedTable (joinedTable);
+
+      Assert.That (joinedTable.JoinInfo, Is.SameAs (fakeJoinInfo));
+    }
   }
 }

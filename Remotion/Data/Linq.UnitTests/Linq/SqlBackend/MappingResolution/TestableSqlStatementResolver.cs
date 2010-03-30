@@ -21,10 +21,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
-  // TODO Review 2488: Rename to TestableSqlStatementResolver
-  public class TestableResolvingSqlStatementVisitor : SqlStatementResolver
+  public class TestableSqlStatementResolver : SqlStatementResolver
   {
-    public TestableResolvingSqlStatementVisitor (IMappingResolutionStage stage)
+    public TestableSqlStatementResolver (IMappingResolutionStage stage)
         : base (stage)
     {
     }
@@ -52,6 +51,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public new Expression ResolveOrderingExpression (Expression orderByExpression)
     {
       return base.ResolveOrderingExpression (orderByExpression);
+    }
+
+    public new void ResolveJoinedTable (SqlJoinedTable joinedTable)
+    {
+      base.ResolveJoinedTable (joinedTable);
     }
   }
 }

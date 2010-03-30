@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -177,21 +176,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var preparedFromExpression = _stage.PrepareFromExpression (fromClause.FromExpression);
       var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, fromClause.ItemType);
 
-      // TODO Review 2488: These two blocks can be unified (AddQuerySourceMapping, SqlTables.Add)
+      _context.AddQuerySourceMapping (fromClause, sqlTableOrJoin);
+
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
-      {
-        _context.AddQuerySourceMapping (fromClause, sqlJoinedTable);
         AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-        SqlStatementBuilder.SqlTables.Add (sqlJoinedTable);
-      }
-      else
-      {
-        _context.AddQuerySourceMapping (fromClause, sqlTableOrJoin);
-        var topLevelSqlTable = sqlTableOrJoin as SqlTable;
-        if (topLevelSqlTable != null)
-          SqlStatementBuilder.SqlTables.Add (topLevelSqlTable);
-      }
+      
+      SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
     }
   }
 }
