@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void Contains_WithConstant ()
     {
-      var cook = new Cook() { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
+      var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2).Contains (cook) select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
@@ -167,7 +167,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void Contains_WithConstantAndDependentQuery ()
     {
-      var cook = new Cook () { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
+      var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           from s in Cooks where s.Assistants.Contains (cook) select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
@@ -176,9 +176,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void Contains_InTopLevel ()
+    public void Contains_onTopLevel ()
     {
-      var cook = new Cook () { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
+      var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           ( () => (from s in Cooks select s).Contains(cook)),
           "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END",
