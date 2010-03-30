@@ -64,8 +64,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      joinedTable.JoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo); 
-      // TODO Review 2487: Must resolve joins of joined table!
+      joinedTable.JoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo);
+
+      foreach (var table in joinedTable.JoinedTables)
+        ResolveJoinedTable (table);
     }
 
     protected Expression ResolveWhereCondition (Expression whereCondition)
@@ -126,7 +128,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       foreach (var joinedTable in sqlTable.JoinedTables)
       {
         ResolveJoinedTable (joinedTable);
-        ResolveJoins (joinedTable); // TODO Review 2487: This recursive call should be in ResolveJoinedTable
       }
     }
   }
