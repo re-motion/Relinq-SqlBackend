@@ -28,6 +28,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     Expression VisitSqlEntityExpression (SqlEntityExpression expression);
     Expression VisitSqlColumnExpression (SqlColumnExpression expression);
     Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression);
-    Expression VisitJoinConditionExpression (JoinConditionExpression expression); // TODO Review 2487: Move to separate IJoinConditionExpressionVisitor interface in SqlStatementModel namespace
   }
 }

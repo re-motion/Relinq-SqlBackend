@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<JoinConditionExpression, IResolvedSqlExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<JoinConditionExpression, IJoinConditionExpressionVisitor> (
           _expression,
           mock => mock.VisitJoinConditionExpression (_expression));
     }

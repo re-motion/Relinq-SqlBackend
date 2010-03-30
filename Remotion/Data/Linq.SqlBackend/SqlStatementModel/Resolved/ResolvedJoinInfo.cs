@@ -65,9 +65,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       return visitor.VisitResolvedJoinInfo (this);
     }
 
-   public virtual IResolvedTableInfo GetResolvedTableInfo ()
+    public ResolvedJoinInfo GetResolvedJoinInfo ()
     {
-      return ForeignTableInfo;
+      return this;
     }
   }
 }

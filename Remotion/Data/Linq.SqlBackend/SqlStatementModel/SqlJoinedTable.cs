@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override IResolvedTableInfo GetResolvedTableInfo ()
     {
-      return JoinInfo.GetResolvedTableInfo();
+      return JoinInfo.GetResolvedJoinInfo().ForeignTableInfo;
     }
   }
 }

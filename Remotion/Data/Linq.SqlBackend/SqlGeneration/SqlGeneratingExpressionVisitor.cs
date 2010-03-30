@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// <see cref="SqlGeneratingExpressionVisitor"/> implements <see cref="ThrowingExpressionTreeVisitor"/> and <see cref="IResolvedSqlExpressionVisitor"/>.
   /// </summary>
   public class SqlGeneratingExpressionVisitor
-      : ThrowingExpressionTreeVisitor, IResolvedSqlExpressionVisitor, ISqlSpecificExpressionVisitor, ISqlSubStatementExpressionVisitor
+      : ThrowingExpressionTreeVisitor, IResolvedSqlExpressionVisitor, ISqlSpecificExpressionVisitor, ISqlSubStatementExpressionVisitor, IJoinConditionExpressionVisitor
   {
     public static void GenerateSql (
         Expression expression,
@@ -113,8 +113,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var whereExpression = Expression.Equal (
-          ((ResolvedJoinInfo) expression.JoinedTable.JoinInfo).LeftKeyColumn, // TODO Review 2487: Add GetResolvedJoinInfo method on IJoinInfo. Implement in ResolvedJoinInfo to return itself; implement in UnresolvedJoinInfo to throw an exception similar to UnresolvedTableInfo.GetResolvedTableInfo
-          ((ResolvedJoinInfo) expression.JoinedTable.JoinInfo).RightKeyColumn);
+          expression.JoinedTable.JoinInfo.GetResolvedJoinInfo().LeftKeyColumn,
+          expression.JoinedTable.JoinInfo.GetResolvedJoinInfo().RightKeyColumn);
       return VisitExpression (whereExpression);
     }
 

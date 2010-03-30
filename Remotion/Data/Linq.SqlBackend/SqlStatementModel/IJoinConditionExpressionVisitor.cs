@@ -15,22 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  [TestFixture]
-  public class ResolvedJoinInfoTest
+  /// <summary>
+  /// <see cref="IJoinConditionExpressionVisitor"/> provides a method to resolve join conditions and returns sql specific text.
+  /// </summary>
+  public interface IJoinConditionExpressionVisitor
   {
-    [Test]
-    public void GetResolvedTableInfo ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-
-      var result = joinInfo.GetResolvedJoinInfo().ForeignTableInfo;
-
-      Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
-    }
+    Expression VisitJoinConditionExpression (JoinConditionExpression expression);
   }
 }
