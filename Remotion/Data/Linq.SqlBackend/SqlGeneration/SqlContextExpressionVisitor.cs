@@ -184,9 +184,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
     {
-      // TODO Review 2494: Use ApplySqlExpressionContext instead for symmetry with the other Visit methods
-      var newExpression = EnsureSingleValueSemantics (expression.LeftExpression);
-      
+      var newExpression = ApplySqlExpressionContext (expression.LeftExpression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.LeftExpression)
         return new SqlInExpression (newExpression, expression.RightExpression);
       return expression;

@@ -170,7 +170,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result, Is.SameAs (columnExpression));
     }
 
-    // TODO Review 2494: Add test showing that boolean expression is converted with single value semantics
+    [Test]
+    public void VisitExpression_BooleanExpression ()
+    {
+      var expression = Expression.Equal (Expression.Constant (true), Expression.Constant (false));
+      Expression result = SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
+
+      Assert.That (result, Is.TypeOf(typeof(SqlCaseExpression)));
+    }
 
     [Test]
     public void VisitExpression_Null_Ignored ()
@@ -384,9 +391,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlContextExpressionVisitor.ApplySqlExpressionContext (sqlSubStatementExpression, SqlExpressionContext.ValueRequired);
     }
 
-    // TODO Review 2494: Test incomplete, implementation code shouldn't even exist...
     [Test]
-    public void VisitSqlInExpression ()
+    public void VisitSqlInExpression_NoSqlEntityExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
       var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
@@ -394,9 +400,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var result = _visitor.VisitSqlInExpression (sqlInExpression);
 
-      var rightExpression = new SqlColumnExpression (typeof (int), "c", "ID");
-      
-      
+      Assert.That (result, Is.TypeOf (typeof (SqlInExpression)));
+      Assert.That (result, Is.SameAs (sqlInExpression));
+    }
+
+    [Test]
+    public void VisitSqlInExpression_WithSqlEnitiyExpression ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
+      var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var sqlInExpression = new SqlInExpression (entityExpression, expression);
+
+      var result = _visitor.VisitSqlInExpression (sqlInExpression);
+
+      Assert.That (result, Is.Not.SameAs (sqlInExpression));
     }
   }
 }

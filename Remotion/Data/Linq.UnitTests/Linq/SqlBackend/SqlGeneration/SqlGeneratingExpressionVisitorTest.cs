@@ -333,7 +333,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var subStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SELECT [t].[Name] FROM [Table] AS [t]"));
 
       SqlGeneratingExpressionVisitor.GenerateSql (
@@ -370,9 +370,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
       
       SqlGeneratingExpressionVisitor.GenerateSql (
-          sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock); // TODO Review 2494: Use PredicateRequired to avoid testing the SqlContextExpressionVisitor in the same test
+          sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN @1 IN (test) THEN 1 ELSE 0 END"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (test)"));
     }
   }
 }
