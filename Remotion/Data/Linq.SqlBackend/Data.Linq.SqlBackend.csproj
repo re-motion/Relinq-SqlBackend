@@ -98,6 +98,8 @@
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNotNullExpression.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLiteralExpression.cs" />
     <Compile Include="SqlStatementModel\SqlStatement.cs" />
     <Compile Include="SqlStatementModel\SqlStatementBuilder.cs" />
