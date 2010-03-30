@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var prefix = expression.OwningTableAlias;
       var columnName = expression.ColumnName;
       if (columnName == "*")
-        _commandBuilder.AppendFormat ("[{0}].{1}", prefix, columnName);
+        _commandBuilder.AppendFormat ("[{0}].*", prefix);
       else
         _commandBuilder.AppendFormat ("[{0}].[{1}]", prefix, columnName);
 

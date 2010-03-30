@@ -62,6 +62,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
 
+    // TODO Review 2533: Missing test for * column
+
     [Test]
     public void GenerateSql_VisitSqlColumnListExpression ()
     {
