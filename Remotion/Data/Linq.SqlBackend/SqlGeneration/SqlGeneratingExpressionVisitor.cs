@@ -144,6 +144,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.LeftExpression);
+
+      // TODO Review 2494: Remove parentheses, cast, and manual call to GenerateTextForSqlStatement. Instead, use VisitExpression (expression.RightExpression).
       _commandBuilder.Append (" IN (");
       var statement = ((SqlSubStatementExpression) expression.RightExpression).SqlStatement;
       _stage.GenerateTextForSqlStatement (_commandBuilder, statement, SqlExpressionContext.SingleValueRequired);
@@ -217,6 +219,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       _commandBuilder.Append ("(");
+      // TODO Review 2494: Change expression context to SingleValueRequired - sub-statements with entities aren't allowed
       _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement, SqlExpressionContext.ValueRequired);
       _commandBuilder.Append (")");
       return expression;

@@ -44,6 +44,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable);
     }
 
+    // TODO Review 2494: Add a single protected virtual method GenerateTextForExpression (SqlCommandBuilder, Expression, SqlExpressionContext); call that method from all GenerateTextFor...Expression methods
+    // TODO Review 2494: Rewrite the tests for DefaultSqlGenerationStage using a partial mock that intercepts GenerateTextForExpression
+
     public void GenerateTextForSelectExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);

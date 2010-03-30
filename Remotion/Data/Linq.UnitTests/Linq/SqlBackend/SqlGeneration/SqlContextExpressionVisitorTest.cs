@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithPredicateSemantics_IntExpression_ConvertedToBool ()
+    public void ApplySqlExpressionContext_WithPredicateSemantics_IntExpression_ConvertedToBool ()
     {
       var constant = Expression.Constant (0);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithPredicateSemantics_BoolExpression_LeftAlone ()
+    public void ApplySqlExpressionContext_WithPredicateSemantics_BoolExpression_LeftAlone ()
     {
       var expression = new CustomExpression (typeof (bool));
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithPredicateSemantics_BoolColumn ()
+    public void ApplySqlExpressionContext_WithPredicateSemantics_BoolColumn ()
     {
       var column = new SqlColumnExpression (typeof (bool), "x", "y");
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithPredicateSemantics_BoolConstant ()
+    public void ApplySqlExpressionContext_WithPredicateSemantics_BoolConstant ()
     {
       var constantTrue = Expression.Constant (true);
       var constantFalse = Expression.Constant (false);
@@ -90,32 +90,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void EnsureSingleValueSemantics_WithSqlEntityExpression ()
-    {
-      var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
-      var entityExpression = new SqlEntityExpression (typeof (Cook), columnExpression);
-
-      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (entityExpression, SqlExpressionContext.SingleValueRequired);
-
-      Assert.That (result, Is.TypeOf (typeof(SqlColumnExpression)));
-      Assert.That (result, Is.SameAs (columnExpression));
-    }
-
-    [Test]
-    public void EnsureSingleValueSemantics_WithoutSqlEntityExpression ()
-    {
-      var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
-
-      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (columnExpression, SqlExpressionContext.SingleValueRequired);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
-      Assert.That (result, Is.SameAs (columnExpression));
-    }
-
-    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot convert an expression of type 'System.String' to a boolean expression.")]
-    public void Convert_WithPredicateSemantics_OtherExpression_Throws ()
+    public void ApplySqlExpressionContext_WithPredicateSemantics_OtherExpression_Throws ()
     {
       var expression = new CustomExpression (typeof (string));
 
@@ -123,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithValueSemantics_ValueExpression_LeftAlone ()
+    public void ApplySqlExpressionContext_WithValueSemantics_ValueExpression_LeftAlone ()
     {
       var constant = Expression.Constant (0);
 
@@ -133,7 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithValueSemantics_BoolExpression_Converted ()
+    public void ApplySqlExpressionContext_WithValueSemantics_BoolExpression_Converted ()
     {
       var expression = new CustomExpression (typeof (bool));
 
@@ -144,7 +121,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithValueSemantics_BoolColumn ()
+    public void ApplySqlExpressionContext_WithValueSemantics_BoolColumn ()
     {
       var column = new SqlColumnExpression (typeof (bool), "x", "y");
 
@@ -155,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Convert_WithValueSemantics_BoolConstant ()
+    public void ApplySqlExpressionContext_WithValueSemantics_BoolConstant ()
     {
       var constantTrue = Expression.Constant (true);
       var constantFalse = Expression.Constant (false);
@@ -169,6 +146,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expectedExpressionFalse = Expression.Constant (0);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionFalse, resultFalse);
     }
+
+    [Test]
+    public void ApplySqlExpressionContext_WithSingleValueSemantics_WithSqlEntityExpression ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
+      var entityExpression = new SqlEntityExpression (typeof (Cook), columnExpression);
+
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (entityExpression, SqlExpressionContext.SingleValueRequired);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
+      Assert.That (result, Is.SameAs (columnExpression));
+    }
+
+    [Test]
+    public void ApplySqlExpressionContext_WithSingleValueSemantics_WithoutSqlEntityExpression ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
+
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (columnExpression, SqlExpressionContext.SingleValueRequired);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
+      Assert.That (result, Is.SameAs (columnExpression));
+    }
+
+    // TODO Review 2494: Add test showing that boolean expression is converted with single value semantics
 
     [Test]
     public void VisitExpression_Null_Ignored ()
@@ -382,6 +384,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlContextExpressionVisitor.ApplySqlExpressionContext (sqlSubStatementExpression, SqlExpressionContext.ValueRequired);
     }
 
+    // TODO Review 2494: Test incomplete, implementation code shouldn't even exist...
     [Test]
     public void VisitSqlInExpression ()
     {

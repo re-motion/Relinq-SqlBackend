@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
@@ -23,8 +24,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public enum SqlExpressionContext
   {
+    /// <summary>
+    /// A single value or an entity is required; boolean expressions need to be converted using CASE WHEN.
+    /// </summary>
     ValueRequired,
+    /// <summary>
+    /// A single value is required; boolean expressions need to be converted using CASE WHEN, of <see cref="SqlEntityExpression"/> instances, only 
+    /// the primary key is used.
+    /// </summary>
+    SingleValueRequired,
+    /// <summary>
+    /// A predicate is required; non-boolean expressions need to be converted, e.g., by comparing them to the literal value 1.
+    /// </summary>
     PredicateRequired,
-    SingleValueRequired
   }
 }

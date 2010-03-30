@@ -110,6 +110,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     private void VisitEqualsOperand (Expression expression)
     {
+      // TODO Review 2494: Remove comment, inline method
       //if (expression is SqlEntityExpression)
         //_expressionVisitor.VisitExpression (((SqlEntityExpression) expression).PrimaryKeyColumn);
       //else

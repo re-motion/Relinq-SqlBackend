@@ -360,7 +360,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
       
       SqlGeneratingExpressionVisitor.GenerateSql (
-          sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+          sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock); // TODO Review 2494: Use PredicateRequired to avoid testing the SqlContextExpressionVisitor in the same test
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN @1 IN (test) THEN 1 ELSE 0 END"));
     }

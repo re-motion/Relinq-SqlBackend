@@ -48,23 +48,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       if (initialSemantics == SqlExpressionContext.ValueRequired)
         return EnsureValueSemantics (result);
+      else if (initialSemantics == SqlExpressionContext.SingleValueRequired)
+        return EnsureSingleValueSemantics (result);
       else if (initialSemantics == SqlExpressionContext.PredicateRequired)
         return EnsurePredicateSemantics (result);
-      else if(initialSemantics == SqlExpressionContext.SingleValueRequired)
-        return EnsureSingleValueSemantics (result);
       else
         throw new NotImplementedException ("Invalid enum value: " + initialSemantics);
     }
 
-    private static Expression EnsureSingleValueSemantics (Expression expression)
-    {
-      var entityExpression = expression as SqlEntityExpression;
-      if (entityExpression != null)
-        return entityExpression.PrimaryKeyColumn;
-      else
-        return EnsureValueSemantics (expression);
-    }
-    
     private static Expression EnsureValueSemantics (Expression expression)
     {
       if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
@@ -83,6 +74,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         return expression;
       }
+    }
+
+    private static Expression EnsureSingleValueSemantics (Expression expression)
+    {
+      var entityExpression = expression as SqlEntityExpression;
+      if (entityExpression != null)
+        return entityExpression.PrimaryKeyColumn;
+      else
+        return EnsureValueSemantics (expression);
     }
 
     private static Expression EnsurePredicateSemantics (Expression expression)
@@ -184,7 +184,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
     {
-      var newExpression = EnsureSingleValueSemantics(expression.LeftExpression);
+      // TODO Review 2494: Use ApplySqlExpressionContext instead for symmetry with the other Visit methods
+      var newExpression = EnsureSingleValueSemantics (expression.LeftExpression);
       
       if (newExpression != expression.LeftExpression)
         return new SqlInExpression (newExpression, expression.RightExpression);
