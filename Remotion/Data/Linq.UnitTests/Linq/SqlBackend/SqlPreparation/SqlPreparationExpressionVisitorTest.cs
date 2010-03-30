@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSubQueryExpression ()
+    public void VisitSubQueryExpression_NoContains ()
     {
       var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
       var expression = new SubQueryExpression (querModel);
@@ -174,10 +174,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlInExpression) result).RightExpression, Is.TypeOf (typeof(SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) ((SqlInExpression) result).RightExpression).SqlStatement, Is.SameAs (fakeSqlStatement));
       Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (fakeConstantExpression));
-      Assert.That (result.Type, Is.EqualTo (((SqlInExpression) result).RightExpression.Type)); // TODO Review 2493: Should be: result.Type, Is.SameAs (typeof (bool))
+      Assert.That (result.Type, Is.EqualTo (typeof(bool)));
     }
-
-    // TODO Review 2493: Add a test with a result operator that is not a ContainsResultOperator
 
   }
 }

@@ -100,16 +100,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
-      // TODO Review 2493: Use indexing instead of Last(), only retrieve the operator once, cast it via "as" instead of "is" + Cast. (Performance)
-      // TODO Review 2493: e.g.:
-      // var lastOperatorIndex = expression.QueryModel.ResultOperators.Count - 1;
-      // var containsOperator = lastOperatorIndex >= 0 ? expression.QueryModel.ResultOperators[lastOperatorIndex] as ContainsResultOperator : null;
-      // if (containsOperator != null)
-      if (expression.QueryModel.ResultOperators.Count > 0 && expression.QueryModel.ResultOperators.Last () is ContainsResultOperator)
+      var lastOperatorIndex = expression.QueryModel.ResultOperators.Count - 1;
+      var containsOperator = lastOperatorIndex >= 0 ? expression.QueryModel.ResultOperators[lastOperatorIndex] as ContainsResultOperator : null;
+      if (containsOperator != null)
       {
         var itemExpression = ((ContainsResultOperator) expression.QueryModel.ResultOperators.Last()).Item;
         itemExpression = _stage.PrepareItemExpression (itemExpression);
-        expression.QueryModel.ResultOperators.Remove (expression.QueryModel.ResultOperators.Last ()); // TODO Review 2493: Use RemoveAt here
+        expression.QueryModel.ResultOperators.RemoveAt (lastOperatorIndex);
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
         var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type);
         return new SqlInExpression (itemExpression, subStatementExpression);
