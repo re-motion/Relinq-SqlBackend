@@ -21,6 +21,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -39,6 +40,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       _methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
       _generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator>();
+    }
+
+    [Test]
+    public void CreateDefault ()
+    {
+      MethodCallSqlGeneratorRegistry registry = MethodCallSqlGeneratorRegistry.CreateDefault ();
+
+      AssertAllMethodsRegistered (registry, typeof (ContainsMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (ConvertMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (EndsWithMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (LowerMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (RemoveMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (StartsWithMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (SubstringMethodCallSqlGenerator));
+      AssertAllMethodsRegistered (registry, typeof (UpperMethodCallSqlGenerator));
+    }
+
+    private void AssertAllMethodsRegistered (MethodCallSqlGeneratorRegistry registry, Type type)
+    {
+      var methodInfos = (MethodInfo[]) type.GetField ("SupportedMethods").GetValue (null);
+      Assert.That (methodInfos.Length, Is.GreaterThan (0));
+
+      foreach (var methodInfo in methodInfos)
+        Assert.That (registry.GetGenerator (methodInfo), Is.TypeOf(type));
     }
 
     [Test]

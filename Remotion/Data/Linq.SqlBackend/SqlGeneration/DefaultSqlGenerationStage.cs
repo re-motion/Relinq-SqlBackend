@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -30,10 +28,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     private readonly MethodCallSqlGeneratorRegistry _registry;
 
-    public DefaultSqlGenerationStage ()
+    public DefaultSqlGenerationStage (MethodCallSqlGeneratorRegistry registry)
     {
+      ArgumentUtility.CheckNotNull ("registry", registry);
       // ReSharper disable DoNotCallOverridableMethodsInConstructor
-      _registry = GenerateSqlGeneratorRegistry();
+      _registry = registry;
       // ReSharper restore DoNotCallOverridableMethodsInConstructor
     }
 
@@ -97,51 +96,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
     }
 
-    protected virtual MethodCallSqlGeneratorRegistry GenerateSqlGeneratorRegistry ()
-    {
-      var registry = new MethodCallSqlGeneratorRegistry();
-
-      // TODO Review 2364: Then, add an automatic registration facility; see MethodCallExpressionNodeTypeRegistry.CreateDefault. 
-      // (Create instances of the types using Activator.CreateInstance().)
-      // TODO Review 2364: Remove this method, instead inject the MethodCallExpressionNodeTypeRegistry via the ctor. 
-      //Adapt usage in integration tests to supply the result of MethodCallExpressionNodeTypeRegistry.CreateDefault().
-
-      var containsMethod = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
-      var endsWithMethod = typeof (string).GetMethod ("EndsWith", new[] { typeof (string) });
-      var lowerMethod = typeof (string).GetMethod ("ToLower", new Type[] { });
-      var removeMethod = typeof (string).GetMethod ("Remove", new[] { typeof (int) });
-      var startsWithMethod = typeof (string).GetMethod ("StartsWith", new[] { typeof (string) });
-      var substringMethod = typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) });
-      var toUpperMethod = typeof (string).GetMethod ("ToUpper", new Type[] { });
-
-      var convertToStringMethod = typeof (Convert).GetMethod ("ToString", new[] { typeof (int) });
-      var convertToBoolMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
-      var convertToInt64Method = typeof (Convert).GetMethod ("ToInt64", new[] { typeof (int) });
-      var convertToDateTimeMethod = typeof (Convert).GetMethod ("ToDateTime", new[] { typeof (int) });
-      var convertToDoubleMethod = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
-      var convertToIntMethod = typeof (Convert).GetMethod ("ToInt32", new[] { typeof (int) });
-      var convertToDecimalMethod = typeof (Convert).GetMethod ("ToDecimal", new[] { typeof (int) });
-      var convertToCharMethod = typeof (Convert).GetMethod ("ToChar", new[] { typeof (int) });
-      var convertToByteMethod = typeof (Convert).GetMethod ("ToByte", new[] { typeof (int) });
-
-      registry.Register (containsMethod, new ContainsMethodCallSqlGenerator());
-      registry.Register (convertToStringMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToBoolMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToInt64Method, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToDateTimeMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToDoubleMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToIntMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToDecimalMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToCharMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (convertToByteMethod, new ConvertMethodCallSqlGenerator());
-      registry.Register (endsWithMethod, new EndsWithMethodCallSqlGenerator());
-      registry.Register (lowerMethod, new LowerMethodCallSqlGenerator());
-      registry.Register (removeMethod, new RemoveMethodCallSqlGenerator());
-      registry.Register (startsWithMethod, new StartsWithMethodCallSqlGenerator());
-      registry.Register (substringMethod, new SubstringMethodCallSqlGenerator());
-      registry.Register (toUpperMethod, new UpperMethodCallSqlGenerator());
-
-      return registry;
-    }
   }
 }
