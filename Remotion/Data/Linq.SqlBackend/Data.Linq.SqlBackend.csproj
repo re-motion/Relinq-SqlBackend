@@ -45,6 +45,15 @@
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
+    <Compile Include="SqlGeneration\IMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\IndexOfMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\LowerMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\RemoveMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\ReplaceMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\StartsWithMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\SubstringMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\MethodCallTransformers\UpperMethodCallTransformer.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementExpressionVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />

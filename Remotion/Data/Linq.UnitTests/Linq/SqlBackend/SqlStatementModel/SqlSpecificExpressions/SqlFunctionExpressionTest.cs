@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     [SetUp]
     public void SetUp ()
     {
-      _sqlFunctionExpression = new SqlFunctionExpression (typeof (string), "Test", Expression.Constant (1), Expression.Constant (2));
+      _sqlFunctionExpression = new SqlFunctionExpression (typeof (string), "Test", Expression.Constant("test"), Expression.Constant (1), Expression.Constant (2));
     }
 
     [Test]
@@ -43,11 +43,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       var expression = Expression.Constant (3);
 
       visitorMock
+          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
+          .Return (_sqlFunctionExpression.Prefix);
+      visitorMock
           .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[0]))
           .Return (expression);
       visitorMock
           .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[1]))
           .Return (expression);
+      visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlFunctionExpression, visitorMock);
 

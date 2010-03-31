@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     [ExpectedException (typeof (ArgumentTypeException))]
     public void Initialization_ChecksType ()
     {
-      new SqlLiteralExpression ("test");
+      new SqlLiteralExpression (true);
     }
 
     [Test]

@@ -29,17 +29,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public class SqlFunctionExpression : ExtensionExpression
   {
-    private string _sqlFunctioName;
-    private Expression[] _args;
+    private readonly string _sqlFunctioName;
+    private readonly Expression _prefix;
+    private readonly Expression[] _args;
 
-    public SqlFunctionExpression (Type type, string sqlFunctioName, params Expression[] args)
+    public SqlFunctionExpression (Type type, string sqlFunctioName, Expression prefix, params Expression[] args)
         : base (type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("sqlFunctioName", sqlFunctioName);
+      ArgumentUtility.CheckNotNull ("prefix", prefix);
 
       _args = args;
       _sqlFunctioName = sqlFunctioName;
+      _prefix = prefix;
     }
 
     public string SqlFunctioName
@@ -52,15 +55,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _args; }
     }
 
+    public Expression Prefix
+    {
+      get { return _prefix; }
+    }
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newArgList = new List<Expression>();
 
+      var newPrefix = visitor.VisitExpression (_prefix);
+
       foreach (var expression in Args)
         newArgList.Add (visitor.VisitExpression (expression));
 
-      if (_args.ToList() != newArgList)
-        return new SqlFunctionExpression (Type, _sqlFunctioName, newArgList.ToArray());
+      if ((_args.ToList() != newArgList) || (_prefix != newPrefix))
+        return new SqlFunctionExpression (Type, _sqlFunctioName, _prefix, newArgList.ToArray());
       else
         return this;
     }
