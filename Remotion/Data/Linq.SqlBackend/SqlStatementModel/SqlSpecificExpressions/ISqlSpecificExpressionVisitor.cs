@@ -30,5 +30,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     Expression VisitSqlInExpression (SqlInExpression expression);
     Expression VisitSqlIsNullExpression (SqlIsNullExpression expression);
     Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression);
+    Expression VisitSqlFunctionExpression (SqlFunctionExpression expression);
   }
 }

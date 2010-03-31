@@ -27,8 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
   public class IndexOfMethodCallTransformerTest
   {
     [Test]
-    [Ignore ("TODO Implement Accept method of SqlFunctionExpression")]
-    public void Transform ()
+    public void Transform_WithOneArgument_TypeString ()
     {
       var method = typeof (string).GetMethod ("IndexOf", new [] { typeof(string) });
       var objectExpression = Expression.Constant ("Test");
@@ -46,6 +45,160 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
 
       var fakeResult = new SqlCaseExpression (testPredicate, new SqlLiteralExpression (0), elseValue);
       
+      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+    }
+
+    [Test]
+    public void Transform_WithOneArgument_TypeChar ()
+    {
+      var method = typeof (string).GetMethod ("IndexOf", new[] { typeof (char) });
+      var objectExpression = Expression.Constant ("Test");
+
+      var argument1 = Expression.Constant ('e');
+      var expression = Expression.Call (objectExpression, method, argument1);
+      var transformer = new IndexOfMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var lenExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
+      var testPredicate = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
+      var charIndexExpression = new SqlFunctionExpression (
+          expression.Type, "CHARINDEX", argument1, objectExpression);
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
+
+      var fakeResult = new SqlCaseExpression (testPredicate, new SqlLiteralExpression (0), elseValue);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+    }
+
+    [Test]
+    public void Transform_WithTwoArgument_TypeString ()
+    {
+      var method = typeof (string).GetMethod ("IndexOf", new[] { typeof (string), typeof(int) });
+      var objectExpression = Expression.Constant ("Test");
+
+      var argument1 = Expression.Constant ("es");
+      var argument2 = Expression.Constant (2);
+      var expression = Expression.Call (objectExpression, method, argument1, argument2);
+      var transformer = new IndexOfMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
+
+      var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
+
+      var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
+      var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
+      var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
+
+      var charIndexExpression = new SqlFunctionExpression (
+          expression.Type, "CHARINDEX",argument1, objectExpression, startIndexExpression);
+
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
+
+      var fakeResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+    }
+
+    [Test]
+    public void Transform_WithTwoArgument_TypeChar ()
+    {
+      var method = typeof (string).GetMethod ("IndexOf", new[] { typeof (char), typeof (int) });
+      var objectExpression = Expression.Constant ("Test");
+
+      var argument1 = Expression.Constant ('e');
+      var argument2 = Expression.Constant (2);
+      var expression = Expression.Call (objectExpression, method, argument1, argument2);
+      var transformer = new IndexOfMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
+
+      var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
+
+      var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
+      var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
+      var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
+
+      var charIndexExpression = new SqlFunctionExpression (
+          expression.Type, "CHARINDEX", argument1, objectExpression, startIndexExpression);
+
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
+
+      var fakeResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+    }
+
+    [Test]
+    public void Transform_WithThreeArgument_TypeString ()
+    {
+      var method = typeof (string).GetMethod ("IndexOf", new[] { typeof (string), typeof (int), typeof(int) });
+      var objectExpression = Expression.Constant ("Test");
+
+      var argument1 = Expression.Constant ("es");
+      var argument2 = Expression.Constant (2);
+      var argument3 = Expression.Constant (1);
+      var expression = Expression.Call (objectExpression, method, argument1, argument2, argument3);
+      var transformer = new IndexOfMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
+
+      var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
+
+      var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
+      var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
+      var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
+
+      var startAddCountExpression = Expression.Add (argument2, argument3);
+      var substringExpression = new SqlFunctionExpression (typeof (string), "SUBSTRING", objectExpression, new SqlLiteralExpression (1), startAddCountExpression);
+
+      var charIndexExpression = new SqlFunctionExpression (
+          expression.Type, "CHARINDEX", argument1, substringExpression, startIndexExpression);
+
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
+
+      var fakeResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+    }
+
+    [Test]
+    public void Transform_WithThreeArgument_TypeChar ()
+    {
+      var method = typeof (string).GetMethod ("IndexOf", new[] { typeof (char), typeof (int), typeof (int) });
+      var objectExpression = Expression.Constant ("Test");
+
+      var argument1 = Expression.Constant ('c');
+      var argument2 = Expression.Constant (2);
+      var argument3 = Expression.Constant (1);
+      var expression = Expression.Call (objectExpression, method, argument1, argument2, argument3);
+      var transformer = new IndexOfMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
+
+      var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
+
+      var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
+      var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
+      var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
+
+      var startAddCountExpression = Expression.Add (argument2, argument3);
+      var substringExpression = new SqlFunctionExpression (typeof (string), "SUBSTRING", objectExpression, new SqlLiteralExpression (1), startAddCountExpression);
+
+      var charIndexExpression = new SqlFunctionExpression (
+          expression.Type, "CHARINDEX", argument1, substringExpression, startIndexExpression);
+
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
+
+      var fakeResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }
 

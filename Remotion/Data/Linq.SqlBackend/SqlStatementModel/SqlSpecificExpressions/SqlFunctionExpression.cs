@@ -77,7 +77,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      throw new NotImplementedException();
+      //TODO: add tests
+      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlFunctionExpression (this);
+      else
+        return base.Accept (visitor);
     }
   }
 }
