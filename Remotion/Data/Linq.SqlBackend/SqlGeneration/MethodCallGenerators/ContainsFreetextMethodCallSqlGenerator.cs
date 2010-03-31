@@ -22,9 +22,9 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallEndsWith"/> implements <see cref="IMethodCallSqlGenerator"/> for the string endswith method.
+  /// <see cref="ContainsFreetextMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the ContainsFreetext method.
   /// </summary>
-  public class MethodCallEndsWith : IMethodCallSqlGenerator
+  public class ContainsFreetextMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
 
-      commandBuilder.Append ("LIKE(%");
+      commandBuilder.Append ("FREETEXT (");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
       commandBuilder.Append (")");
     }

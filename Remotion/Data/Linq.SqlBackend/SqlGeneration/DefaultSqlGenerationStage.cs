@@ -124,22 +124,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var convertToCharMethod = typeof (Convert).GetMethod ("ToChar", new[] { typeof (int) });
       var convertToByteMethod = typeof (Convert).GetMethod ("ToByte", new[] { typeof (int) });
 
-      registry.Register (containsMethod, new MethodCallContains());
-      registry.Register (convertToStringMethod, new MethodCallConvert());
-      registry.Register (convertToBoolMethod, new MethodCallConvert());
-      registry.Register (convertToInt64Method, new MethodCallConvert());
-      registry.Register (convertToDateTimeMethod, new MethodCallConvert());
-      registry.Register (convertToDoubleMethod, new MethodCallConvert());
-      registry.Register (convertToIntMethod, new MethodCallConvert());
-      registry.Register (convertToDecimalMethod, new MethodCallConvert());
-      registry.Register (convertToCharMethod, new MethodCallConvert());
-      registry.Register (convertToByteMethod, new MethodCallConvert());
-      registry.Register (endsWithMethod, new MethodCallEndsWith());
-      registry.Register (lowerMethod, new MethodCallLower());
-      registry.Register (removeMethod, new MethodCallRemove());
-      registry.Register (startsWithMethod, new MethodCallStartsWith());
-      registry.Register (substringMethod, new MethodCallSubstring());
-      registry.Register (toUpperMethod, new MethodCallUpper());
+      registry.Register (containsMethod, new ContainsMethodCallSqlGenerator());
+      registry.Register (convertToStringMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToBoolMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToInt64Method, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToDateTimeMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToDoubleMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToIntMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToDecimalMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToCharMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (convertToByteMethod, new ConvertMethodCallSqlGenerator());
+      registry.Register (endsWithMethod, new EndsWithMethodCallSqlGenerator());
+      registry.Register (lowerMethod, new LowerMethodCallSqlGenerator());
+      registry.Register (removeMethod, new RemoveMethodCallSqlGenerator());
+      registry.Register (startsWithMethod, new StartsWithMethodCallSqlGenerator());
+      registry.Register (substringMethod, new SubstringMethodCallSqlGenerator());
+      registry.Register (toUpperMethod, new UpperMethodCallSqlGenerator());
 
       return registry;
     }

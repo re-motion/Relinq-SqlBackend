@@ -277,7 +277,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method);
 
       var registry = new MethodCallSqlGeneratorRegistry();
-      registry.Register (method, new MethodCallUpper());
+      registry.Register (method, new UpperMethodCallSqlGenerator());
 
       SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, registry, SqlExpressionContext.ValueRequired, _stageMock);
 
@@ -291,7 +291,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method);
 
       var registry = new MethodCallSqlGeneratorRegistry();
-      registry.Register (method, new MethodCallLower());
+      registry.Register (method, new LowerMethodCallSqlGenerator());
 
       SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, registry, SqlExpressionContext.ValueRequired, _stageMock);
 
@@ -305,7 +305,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (0), Expression.Constant (1));
 
       var registry = new MethodCallSqlGeneratorRegistry();
-      registry.Register (method, new MethodCallRemove());
+      registry.Register (method, new RemoveMethodCallSqlGenerator());
 
       SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, registry, SqlExpressionContext.ValueRequired, _stageMock);
 

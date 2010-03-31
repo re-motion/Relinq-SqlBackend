@@ -22,9 +22,9 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallStartsWith"/> implements <see cref="IMethodCallSqlGenerator"/> for the string startswith method.
+  /// <see cref="StartsWithMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the string startswith method.
   /// </summary>
-  public class MethodCallStartsWith : IMethodCallSqlGenerator
+  public class StartsWithMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {

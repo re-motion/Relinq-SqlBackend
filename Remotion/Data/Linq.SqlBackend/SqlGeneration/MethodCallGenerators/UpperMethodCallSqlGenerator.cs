@@ -22,17 +22,16 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallContainsFulltext"/> implements <see cref="IMethodCallSqlGenerator"/> for the ContainsFulltext method.
+  /// <see cref="UpperMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the string upper method.
   /// </summary>
-  public class MethodCallContainsFulltext : IMethodCallSqlGenerator
+  public class UpperMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
 
-      commandBuilder.Append ("FULLTEXT (");
+      commandBuilder.Append ("UPPER(");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
       commandBuilder.Append (")");
     }
