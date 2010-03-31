@@ -24,19 +24,22 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// Represents a SQL "a IN b" expression.
+  /// Represents a SQL "a OPERATOR b" expression.
   /// </summary>
   public class SqlBinaryOperatorExpression : ExtensionExpression
   {
+    private readonly string _binaryOperator;
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
-    public SqlBinaryOperatorExpression (Expression leftExpression, Expression rightExpression)
+    public SqlBinaryOperatorExpression (string binaryOperator, Expression leftExpression, Expression rightExpression)
         : base(typeof(bool))
     {
+      ArgumentUtility.CheckNotNull ("binaryOperator", binaryOperator);
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
       ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
 
+      _binaryOperator = binaryOperator;
       _leftExpression = leftExpression;
       _rightExpression = rightExpression;
     }
@@ -51,13 +54,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _rightExpression; }
     }
 
+    public string BinaryOperator
+    {
+      get { return _binaryOperator; }
+    }
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newLeftExpression = visitor.VisitExpression (_leftExpression);
       var newRightExpression = visitor.VisitExpression (_rightExpression);
 
       if(newLeftExpression!=_leftExpression || newRightExpression!=_rightExpression)
-        return new SqlBinaryOperatorExpression (newLeftExpression, newRightExpression);
+        return new SqlBinaryOperatorExpression (_binaryOperator, newLeftExpression, newRightExpression);
       else
         return this;
     }

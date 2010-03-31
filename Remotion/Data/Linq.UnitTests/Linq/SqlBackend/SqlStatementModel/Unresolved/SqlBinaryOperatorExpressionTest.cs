@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       _leftExpression = Expression.Constant (1);
       _rightExpression = Expression.Constant (2);
 
-      _expression = new SqlBinaryOperatorExpression (_leftExpression, _rightExpression);
+      _expression = new SqlBinaryOperatorExpression ("Operator", _leftExpression, _rightExpression);
     }
 
     [Test]

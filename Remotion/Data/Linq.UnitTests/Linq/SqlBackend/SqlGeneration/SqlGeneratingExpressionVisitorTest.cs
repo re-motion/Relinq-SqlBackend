@@ -363,7 +363,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var sqlSubStatementExpression = new SqlSubStatementExpression(sqlStatement, typeof(Cook));
-      var sqlInExpression = new SqlBinaryOperatorExpression (Expression.Constant (1), sqlSubStatementExpression);
+      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock
           .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))

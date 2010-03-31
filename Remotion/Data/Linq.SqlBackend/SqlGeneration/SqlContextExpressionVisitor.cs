@@ -185,7 +185,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var newExpression = ApplySqlExpressionContext (expression.LeftExpression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.LeftExpression)
-        return new SqlBinaryOperatorExpression (newExpression, expression.RightExpression);
+        return new SqlBinaryOperatorExpression (expression.BinaryOperator, newExpression, expression.RightExpression);
       return expression;
     }
 

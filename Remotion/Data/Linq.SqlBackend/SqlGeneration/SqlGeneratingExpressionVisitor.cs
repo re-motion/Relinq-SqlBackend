@@ -146,9 +146,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.LeftExpression);
-
-      _commandBuilder.Append (" IN ");
+      _commandBuilder.Append (string.Format(" {0} ", expression.BinaryOperator));
       VisitExpression (expression.RightExpression);
+
       return expression;
     }
 
