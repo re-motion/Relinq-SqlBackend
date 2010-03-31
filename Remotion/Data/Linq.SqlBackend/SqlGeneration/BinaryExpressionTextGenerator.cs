@@ -69,10 +69,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       switch (expression.NodeType)
       {
         case ExpressionType.Equal:
-          GenerateSqlForEqualityOperator (expression.Left, expression.Right, "=", "IS NULL");
+          GenerateSqlForEqualityOperator (expression.Left, expression.Right, "=");
           break;
         case ExpressionType.NotEqual:
-          GenerateSqlForEqualityOperator (expression.Left, expression.Right, "<>", "IS NOT NULL");
+          GenerateSqlForEqualityOperator (expression.Left, expression.Right, "<>");
           break;
         case ExpressionType.Coalesce:
         case ExpressionType.Power:
@@ -84,37 +84,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    private void GenerateSqlForEqualityOperator (Expression left, Expression right, string ordinaryOperator, string nullOperator)
+    private void GenerateSqlForEqualityOperator (Expression left, Expression right, string ordinaryOperator)
     {
-      if (IsNullConstant (left))
-      {
-        VisitEqualsOperand(right);
-        _commandBuilder.Append (" ");
-        _commandBuilder.Append (nullOperator);
-      }
-      else if (IsNullConstant (right))
-      {
-        VisitEqualsOperand (left);
-        _commandBuilder.Append (" ");
-        _commandBuilder.Append (nullOperator);
-      }
-      else
-      {
-        VisitEqualsOperand (left);
-        _commandBuilder.Append (" ");
-        _commandBuilder.Append (ordinaryOperator);
-        _commandBuilder.Append (" ");
-        VisitEqualsOperand (right);
-      }
-    }
-
-    private void VisitEqualsOperand (Expression expression)
-    {
-      // TODO Review 2494: Remove comment, inline method
-      //if (expression is SqlEntityExpression)
-        //_expressionVisitor.VisitExpression (((SqlEntityExpression) expression).PrimaryKeyColumn);
-      //else
-        _expressionVisitor.VisitExpression (expression);
+      _expressionVisitor.VisitExpression (left);
+      _commandBuilder.Append (" ");
+      _commandBuilder.Append (ordinaryOperator);
+      _commandBuilder.Append (" ");
+      _expressionVisitor.VisitExpression (right);
     }
 
     private void GenerateSqlForPrefixOperator (Expression left, Expression right, ExpressionType nodeType)
@@ -146,16 +122,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         throw new NotSupportedException ("The binary operator '" + nodeType + "' is not supported.");
       return operatorString;
     }
-
-    private bool IsNullConstant (Expression expression)
-    {
-      var constantExpression = expression as ConstantExpression;
-      if (constantExpression != null)
-      {
-        if (constantExpression.Value == null)
-          return true;
-      }
-      return false;
-    }
+    
   }
 }

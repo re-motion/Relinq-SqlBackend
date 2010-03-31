@@ -194,7 +194,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.Expression)
-        return new SqlIsNullExpression (new SqlLiteralExpression(0), newExpression);
+        return new SqlIsNullExpression (newExpression is ConstantExpression ? new SqlLiteralExpression(0) : expression.NullExpression, newExpression);
       return expression;
     }
 
@@ -202,7 +202,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.Expression)
-        return new SqlIsNotNullExpression (new SqlLiteralExpression (0), newExpression);
+        return new SqlIsNotNullExpression (newExpression is ConstantExpression ? new SqlLiteralExpression (0) : expression.NullExpression, newExpression);
       return expression;
     }
 

@@ -338,57 +338,57 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo ("COALESCE (leftString, rightString)"));
     }
 
-    [Test]
-    public void VisitBinaryExpression_EqualWithNullOnRightSide ()
-    {
-      Expression nullExpression = Expression.Constant (null);
-      var binaryExpression = Expression.Equal (_leftStringExpression, nullExpression);
+    //[Test]
+    //public void VisitBinaryExpression_EqualWithNullOnRightSide ()
+    //{
+    //  Expression nullExpression = Expression.Constant (null);
+    //  var binaryExpression = Expression.Equal (_leftStringExpression, nullExpression);
 
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+    //  _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
+    //  var result = _commandBuilder.GetCommandText();
 
-      Assert.That (result, Is.EqualTo ("leftString IS NULL"));
-    }
+    //  Assert.That (result, Is.EqualTo ("leftString IS NULL"));
+    //}
 
-    [Test]
-    public void VisitBinaryExpression_NotEqualWithNullOnRightSide ()
-    {
-      Expression nullExpression = Expression.Constant (null);
-      var binaryExpression = Expression.NotEqual (_leftStringExpression, nullExpression);
+    //[Test]
+    //public void VisitBinaryExpression_NotEqualWithNullOnRightSide ()
+    //{
+    //  Expression nullExpression = Expression.Constant (null);
+    //  var binaryExpression = Expression.NotEqual (_leftStringExpression, nullExpression);
 
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+    //  _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
+    //  var result = _commandBuilder.GetCommandText();
 
-      Assert.That (result, Is.EqualTo ("leftString IS NOT NULL"));
-    }
+    //  Assert.That (result, Is.EqualTo ("leftString IS NOT NULL"));
+    //}
 
-    [Test]
-    public void VisitBinaryExpression_EqualWithNullOnLeftSide ()
-    {
-      Expression nullExpression = Expression.Constant (null);
-      var binaryExpression = Expression.Equal (nullExpression, _rightStringExpression);
+    //[Test]
+    //public void VisitBinaryExpression_EqualWithNullOnLeftSide ()
+    //{
+    //  Expression nullExpression = Expression.Constant (null);
+    //  var binaryExpression = Expression.Equal (nullExpression, _rightStringExpression);
 
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+    //  _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
+    //  var result = _commandBuilder.GetCommandText();
 
-      Assert.That (result, Is.EqualTo ("rightString IS NULL"));
-    }
+    //  Assert.That (result, Is.EqualTo ("rightString IS NULL"));
+    //}
 
-    [Test]
-    public void VisitBinaryExpression_NotEqualWithNullOnLeftSide ()
-    {
-      Expression nullExpression = Expression.Constant (null);
-      var binaryExpression = Expression.NotEqual (nullExpression, _rightStringExpression);
+    //[Test]
+    //public void VisitBinaryExpression_NotEqualWithNullOnLeftSide ()
+    //{
+    //  Expression nullExpression = Expression.Constant (null);
+    //  var binaryExpression = Expression.NotEqual (nullExpression, _rightStringExpression);
 
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+    //  _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
+    //  var result = _commandBuilder.GetCommandText();
 
-      Assert.That (result, Is.EqualTo ("rightString IS NOT NULL"));
-    }
+    //  Assert.That (result, Is.EqualTo ("rightString IS NOT NULL"));
+    //}
 
     [Test]
     public void VisitBinaryExpression_AddWithNull ()
@@ -397,7 +397,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
+      var result = _commandBuilder.GetCommandText ();
       Assert.That (result, Is.EqualTo ("COALESCE (NULL, rightString)"));
     }
 
@@ -423,27 +423,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result, Is.EqualTo ("[c].[ID] = [c].[ID]"));
     }
 
-    [Test]
-    public void VisitBinaryExpression_EntityComparisonWithNullOnRightSide ()
-    {
-      var binaryExpression = Expression.Equal (_nullExpression, _sqlEntityExpression);
+    //[Test]
+    //public void VisitBinaryExpression_EntityComparisonWithNullOnRightSide ()
+    //{
+    //  var binaryExpression = Expression.Equal (_nullExpression, _sqlEntityExpression);
 
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+    //  _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
-      Assert.That (result, Is.EqualTo ("[c].[ID] IS NULL"));
-    }
+    //  var result = _commandBuilder.GetCommandText();
+    //  Assert.That (result, Is.EqualTo ("[c].[ID] IS NULL"));
+    //}
 
-    [Test]
-    public void VisitBinaryExpression_EntityComparisonWithNullOnLeftSide ()
-    {
-      var binaryExpression = Expression.Equal (_sqlEntityExpression, _nullExpression);
+    //[Test]
+    //public void VisitBinaryExpression_EntityComparisonWithNullOnLeftSide ()
+    //{
+    //  var binaryExpression = Expression.Equal (_sqlEntityExpression, _nullExpression);
 
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+    //  _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      var result = _commandBuilder.GetCommandText();
-      Assert.That (result, Is.EqualTo ("[c].[ID] IS NULL"));
-    }
+    //  var result = _commandBuilder.GetCommandText();
+    //  Assert.That (result, Is.EqualTo ("[c].[ID] IS NULL"));
+    //}
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]

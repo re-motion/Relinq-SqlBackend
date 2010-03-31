@@ -156,9 +156,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
       _commandBuilder.Append (IsNullConstant(expression.NullExpression) ? " IS " : " = ");
       VisitExpression (expression.NullExpression);
+      _commandBuilder.Append (")");
 
       return expression;
     }
@@ -167,9 +169,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
       _commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS NOT " : " <> ");
       VisitExpression (expression.NullExpression);
+      _commandBuilder.Append (")");
 
       return expression;
     }

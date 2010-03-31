@@ -40,7 +40,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void Equals_NotEquals_WithNull ()
     {
       CheckQuery (
@@ -294,7 +293,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void Equals_EntityComparisonWithNull ()
     {
       CheckQuery (
@@ -328,7 +326,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void EntityConstantExpression_WithNull ()
     {
       var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };

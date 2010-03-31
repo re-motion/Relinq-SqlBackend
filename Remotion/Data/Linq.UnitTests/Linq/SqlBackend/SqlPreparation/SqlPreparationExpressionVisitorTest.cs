@@ -205,8 +205,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (rightExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (leftExpression));
     }
-
-
+    
     [Test]
     public void VisitBinaryExpression_ReturnsSqlIsNotNullExpression ()
     {

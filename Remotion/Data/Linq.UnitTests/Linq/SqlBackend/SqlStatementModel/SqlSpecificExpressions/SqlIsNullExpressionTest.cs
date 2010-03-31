@@ -37,15 +37,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void VisitChildren_ReturnsThis ()
+    public void VisitChildren ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      visitorMock.Replay ();
+      var expression = Expression.Constant (3);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_sqlIsNullExpression.Expression))
+          .Return (expression);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_sqlIsNullExpression));
+      Assert.That (result, Is.Not.SameAs (_sqlIsNullExpression));
+      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (_sqlIsNullExpression.NullExpression));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (expression));
     }
 
     [Test]

@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     private readonly Expression _expression;
 
     public SqlIsNotNullExpression (Expression nullExpression, Expression expression)
-        : base(typeof(object))
+        : base(typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("nullExpression", nullExpression);
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -52,7 +52,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      return this;
+      var newExpression = visitor.VisitExpression (_expression);
+
+      if (newExpression != _expression)
+        return new SqlIsNotNullExpression (_nullExpression, newExpression);
+      else
+        return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)

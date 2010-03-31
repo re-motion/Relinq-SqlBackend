@@ -124,16 +124,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           || ((expression.Right is ConstantExpression) && ((ConstantExpression) expression.Right).Value == null))
         {
           if (expression.NodeType == ExpressionType.Equal)
-              return ((ConstantExpression) expression.Left).Value == null
-                       ? new SqlIsNullExpression (expression.Left, expression.Right)
-                       : new SqlIsNullExpression (expression.Right, expression.Left);
+              return (IsNullConstant(expression.Left))
+                       ? new SqlIsNullExpression (expression.Left, VisitExpression(expression.Right))
+                       : new SqlIsNullExpression (expression.Right, VisitExpression(expression.Left));
           else
-              return ((ConstantExpression) expression.Left).Value == null
-                       ? new SqlIsNotNullExpression (expression.Left, expression.Right)
-                       : new SqlIsNotNullExpression (expression.Right, expression.Left);
+            return (IsNullConstant (expression.Left))
+                       ? new SqlIsNotNullExpression (expression.Left, VisitExpression(expression.Right))
+                       : new SqlIsNotNullExpression (expression.Right, VisitExpression(expression.Left));
         }
       }
       return base.VisitBinaryExpression(expression);
+    }
+
+    private bool IsNullConstant (Expression expression)
+    {
+      var constantExpression = expression as ConstantExpression;
+      if (constantExpression != null)
+      {
+        if (constantExpression.Value == null)
+          return true;
+      }
+      return false;
     }
   }
 }

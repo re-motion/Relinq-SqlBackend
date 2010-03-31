@@ -64,7 +64,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("TODO 2528 uncomment after refactoring SqlGeneratingExpressionVisitor")]
     public void AdditionalFromClause_WithMemberAccess_AndCrossJoin ()
     {
       CheckQuery (
