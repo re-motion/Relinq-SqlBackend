@@ -27,9 +27,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class SqlInExpressionTest
+  public class SqlBinaryOperatorExpressionTest
   {
-    private SqlInExpression _expression;
+    private SqlBinaryOperatorExpression _expression;
     private ConstantExpression _leftExpression;
     private ConstantExpression _rightExpression;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       _leftExpression = Expression.Constant (1);
       _rightExpression = Expression.Constant (2);
 
-      _expression = new SqlInExpression (_leftExpression, _rightExpression);
+      _expression = new SqlBinaryOperatorExpression (_leftExpression, _rightExpression);
     }
 
     [Test]
@@ -68,14 +68,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
 
       visitorMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (_expression));
-      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
-      Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs (newRightExpression));
+      Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
+      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.SameAs (newRightExpression));
     }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlInExpression, ISqlSpecificExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlBinaryOperatorExpression, ISqlSpecificExpressionVisitor> (
           _expression,
           mock => mock.VisitSqlInExpression(_expression));
     }

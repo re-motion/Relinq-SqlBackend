@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      throw new NotImplementedException(); //TODO: refactor SqlInExpression
+      throw new NotImplementedException(); //TODO: refactor SqlBinaryOperatorExpression
     }
   }
 }

@@ -26,12 +26,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// Represents a SQL "a IN b" expression.
   /// </summary>
-  public class SqlInExpression : ExtensionExpression
+  public class SqlBinaryOperatorExpression : ExtensionExpression
   {
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
-    public SqlInExpression (Expression leftExpression, Expression rightExpression)
+    public SqlBinaryOperatorExpression (Expression leftExpression, Expression rightExpression)
         : base(typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       var newRightExpression = visitor.VisitExpression (_rightExpression);
 
       if(newLeftExpression!=_leftExpression || newRightExpression!=_rightExpression)
-        return new SqlInExpression (newLeftExpression, newRightExpression);
+        return new SqlBinaryOperatorExpression (newLeftExpression, newRightExpression);
       else
         return this;
     }

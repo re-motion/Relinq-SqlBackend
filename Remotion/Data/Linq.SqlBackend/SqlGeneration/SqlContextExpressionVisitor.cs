@@ -182,11 +182,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return VisitUnknownExpression (expression);
     }
 
-    public Expression VisitSqlInExpression (SqlInExpression expression)
+    public Expression VisitSqlInExpression (SqlBinaryOperatorExpression expression)
     {
       var newExpression = ApplySqlExpressionContext (expression.LeftExpression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.LeftExpression)
-        return new SqlInExpression (newExpression, expression.RightExpression);
+        return new SqlBinaryOperatorExpression (newExpression, expression.RightExpression);
       return expression;
     }
 

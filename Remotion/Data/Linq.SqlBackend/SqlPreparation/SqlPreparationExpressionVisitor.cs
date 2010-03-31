@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         expression.QueryModel.ResultOperators.RemoveAt (lastOperatorIndex);
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
         var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type);
-        return new SqlInExpression (itemExpression, subStatementExpression);
+        return new SqlBinaryOperatorExpression (itemExpression, subStatementExpression);
       }
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
       return new SqlSubStatementExpression (sqlStatement, expression.Type);

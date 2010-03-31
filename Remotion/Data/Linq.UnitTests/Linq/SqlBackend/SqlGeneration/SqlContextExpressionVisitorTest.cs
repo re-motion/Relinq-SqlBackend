@@ -396,11 +396,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
       var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
-      var sqlInExpression = new SqlInExpression (Expression.Constant (1), expression);
+      var sqlInExpression = new SqlBinaryOperatorExpression (Expression.Constant (1), expression);
 
       var result = _visitor.VisitSqlInExpression (sqlInExpression);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlInExpression)));
+      Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (result, Is.SameAs (sqlInExpression));
     }
 
@@ -410,7 +410,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
       var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
-      var sqlInExpression = new SqlInExpression (entityExpression, expression);
+      var sqlInExpression = new SqlBinaryOperatorExpression (entityExpression, expression);
 
       var result = _visitor.VisitSqlInExpression (sqlInExpression);
 

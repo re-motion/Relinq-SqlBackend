@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
-        var sqlInExpression = new SqlInExpression (_stage.PrepareItemExpression (itemExpression), subStatementExpression);
+        var sqlInExpression = new SqlBinaryOperatorExpression (_stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.ProjectionExpression = sqlInExpression;
       }
