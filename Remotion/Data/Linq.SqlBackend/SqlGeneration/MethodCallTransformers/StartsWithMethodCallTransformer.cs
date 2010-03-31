@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
@@ -29,11 +28,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      //ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      //var searchExpression = Expression.Constant (string.Format("'{0}%'", methodCallExpression.Object));
-      //return new SqlFunctionExpression (methodCallExpression.Type, "LIKE", methodCallExpression.Object, searchExpression);
-      throw new NotImplementedException();
+      var rightExpression = Expression.Constant (string.Format ("{0}%", methodCallExpression.Arguments[0]));
+
+      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }
   }
 }

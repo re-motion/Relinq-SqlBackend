@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
@@ -29,7 +30,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      throw new NotImplementedException(); //TODO: refactor SqlBinaryOperatorExpression
+      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
+      var rightExpression = Expression.Constant (string.Format ("%{0}", methodCallExpression.Arguments[0]));
+
+      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }
   }
 }
