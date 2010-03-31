@@ -9,6 +9,7 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
+using System.Linq;
 
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
@@ -16,6 +17,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallG
   [TestFixture]
   public class UpperMethodCallSqlGeneratorTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          UpperMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("ToUpper", new Type[] { })));
+    }
+
     [Test]
     public void GenerateSql_Upper ()
     {

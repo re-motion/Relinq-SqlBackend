@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
@@ -26,6 +27,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
   /// </summary>
   public class ContainsFreetextMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
+    public static readonly MethodInfo[] SupportedMethods =
+        new MethodInfo[]
+        {
+        };
+
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);

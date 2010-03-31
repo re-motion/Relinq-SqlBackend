@@ -22,12 +22,20 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
   public class EndsWithMethodCallSqlGeneratorTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          EndsWithMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("EndsWith", new[] { typeof (string) })));
+    }
+
     [Test]
     public void GenerateSql_EndsWith ()
     {

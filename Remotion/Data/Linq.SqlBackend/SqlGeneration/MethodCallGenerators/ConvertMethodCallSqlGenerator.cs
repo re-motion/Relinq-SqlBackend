@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
@@ -27,7 +28,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
   /// </summary>
   public class ConvertMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
-    private Dictionary<Type, string> _mappingTypes;
+    public static readonly MethodInfo[] SupportedMethods =
+        new[]
+        {
+            typeof (Convert).GetMethod ("ToString", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToInt64", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToDateTime", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToInt32", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToDecimal", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToChar", new[] { typeof (int) }),
+            typeof (Convert).GetMethod ("ToByte", new[] { typeof (int) })
+        };
+
+    private readonly Dictionary<Type, string> _mappingTypes;
 
     public ConvertMethodCallSqlGenerator ()
     {

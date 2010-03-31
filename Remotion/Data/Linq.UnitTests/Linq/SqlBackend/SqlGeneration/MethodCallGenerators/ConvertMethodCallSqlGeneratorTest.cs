@@ -22,12 +22,37 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
   public class ConvertMethodCallSqlGeneratorTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToInt64", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToDateTime", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToInt32", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToDecimal", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToChar", new[] { typeof (int) })));
+      Assert.IsTrue (
+        ConvertMethodCallSqlGenerator.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToByte", new[] { typeof (int) })));
+
+    }
+
     [Test]
     public void GenerateSql ()
     {
