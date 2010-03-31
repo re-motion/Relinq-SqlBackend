@@ -154,12 +154,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      VisitExpression (expression.Expression);
+      _commandBuilder.Append (IsNullConstant(expression.NullExpression) ? " IS " : " = ");
+      VisitExpression (expression.NullExpression);
+
+      return expression;
     }
 
     public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      VisitExpression (expression.Expression);
+      _commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS NOT " : " <> ");
+      VisitExpression (expression.NullExpression);
+
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
@@ -231,6 +243,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement, SqlExpressionContext.SingleValueRequired);
       _commandBuilder.Append (")");
       return expression;
+    }
+
+    private bool IsNullConstant (Expression expression)
+    {
+      var constantExpression = expression as ConstantExpression;
+      if (constantExpression != null)
+      {
+        if (constantExpression.Value == null)
+          return true;
+      }
+      return false;
     }
   }
 }

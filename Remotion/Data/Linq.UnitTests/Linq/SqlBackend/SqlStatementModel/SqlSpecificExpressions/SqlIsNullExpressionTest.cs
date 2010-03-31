@@ -47,5 +47,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (_sqlIsNullExpression));
     }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlIsNullExpression, ISqlSpecificExpressionVisitor> (
+          _sqlIsNullExpression,
+          mock => mock.VisitSqlIsNullExpression (_sqlIsNullExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlIsNullExpression);
+    }
+
   }
 }

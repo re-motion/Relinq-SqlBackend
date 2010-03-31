@@ -416,5 +416,49 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (result, Is.Not.SameAs (sqlInExpression));
     }
+
+    [Test]
+    public void VisitSqlIsNullExpression ()
+    {
+      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (null), Expression.Constant (1));
+
+      var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
+
+      Assert.That (result, Is.SameAs (sqlIsNullExpression));
+    }
+
+    [Test]
+    public void VisitSqlIsNullExpression_NewExpression ()
+    {
+      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (null), Expression.Constant (true));
+
+      var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
+      
+      Assert.That (result, Is.Not.SameAs (sqlIsNullExpression));
+      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.TypeOf (typeof(SqlLiteralExpression)));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
+    }
+
+    [Test]
+    public void VisitSqlIsNotNullExpression ()
+    {
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (null), Expression.Constant (1));
+
+      var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
+
+      Assert.That (result, Is.SameAs (sqlIsNotNullExpression));
+    }
+
+    [Test]
+    public void VisitSqlIsNotNullExpression_NewExpression ()
+    {
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (null), Expression.Constant (true));
+
+      var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
+
+      Assert.That (result, Is.Not.SameAs (sqlIsNotNullExpression));
+      Assert.That (((SqlIsNotNullExpression) result).NullExpression, Is.TypeOf (typeof (SqlLiteralExpression)));
+      Assert.That (((SqlIsNotNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
+    }
   }
 }

@@ -192,12 +192,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
     {
-      throw new NotImplementedException();
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
+      if (newExpression != expression.Expression)
+        return new SqlIsNullExpression (new SqlLiteralExpression(0), newExpression);
+      return expression;
     }
 
     public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
-      throw new NotImplementedException();
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
+      if (newExpression != expression.Expression)
+        return new SqlIsNotNullExpression (new SqlLiteralExpression (0), newExpression);
+      return expression;
     }
 
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)

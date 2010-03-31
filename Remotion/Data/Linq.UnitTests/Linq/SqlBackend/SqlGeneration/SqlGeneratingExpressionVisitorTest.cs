@@ -375,24 +375,53 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (test)"));
     }
 
-    //[Test]
-    //public void VisitSqlIsNullExpression ()
-    //{
-    //  var leftExpression = Expression.Constant("test");
-    //  var rightExpression = Expression.Constant (null);
-    //  var sqlIsNullExpression = new SqlIsNullExpression (leftExpression, rightExpression);
+    [Test]
+    public void VisitSqlIsNullExpression ()
+    {
+      var expression = Expression.Constant ("test");
+      var nullExpression = Expression.Constant (null);
+      var sqlIsNullExpression = new SqlIsNullExpression (nullExpression, expression);
 
-    //  SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
 
-    //  Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test IS NULL"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IS NULL"));
+    }
 
-    //}
+    [Test]
+    public void VisitSqlIsNullExpression_BooleanValue ()
+    {
+      var expression = Expression.Constant (true);
+      var nullExpression = Expression.Constant (null);
+      var sqlIsNullExpression = new SqlIsNullExpression (nullExpression, expression);
 
-    //[Test]
-    //public void VisitSqlIsNotNullExpression ()
-    //{
-      
-    //}
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 = 0"));
+    }
+
+    [Test]
+    public void VisitSqlIsNotNullExpression ()
+    {
+      var expression = Expression.Constant ("test");
+      var nullExpression = Expression.Constant (null);
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (nullExpression, expression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNotNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IS NOT NULL"));
+    }
+
+    [Test]
+    public void VisitSqlIsNotNullExpression_BooleanValue ()
+    {
+      var expression = Expression.Constant (true);
+      var nullExpression = Expression.Constant (null);
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (nullExpression, expression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNotNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 <> 0"));
+    }
 
   }
 }
