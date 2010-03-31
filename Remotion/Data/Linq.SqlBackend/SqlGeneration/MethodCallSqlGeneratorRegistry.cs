@@ -41,6 +41,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _generators[methodInfo] = generator;
     }
 
+    public void Register (IEnumerable<MethodInfo> methodInfos, IMethodCallSqlGenerator generator)
+    {
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("methodInfos", methodInfos);
+
+      foreach (var methodInfo in methodInfos)
+      {
+        _generators[methodInfo] = generator;
+      }
+    }
+
     public IMethodCallSqlGenerator GetGenerator (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);

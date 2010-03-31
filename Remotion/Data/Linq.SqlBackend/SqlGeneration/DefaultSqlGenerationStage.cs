@@ -101,14 +101,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var registry = new MethodCallSqlGeneratorRegistry();
 
-      // TODO Review 2364: Add (and test) an overload of MethodCallSqlGeneratorRegistry.Register that takes an IEnumerable<MethodInfo>. 
-      // That overload should iterate over the methods and register each of them with the given instance.
       // TODO Review 2364: Then, add an automatic registration facility; see MethodCallExpressionNodeTypeRegistry.CreateDefault. 
       // (Create instances of the types using Activator.CreateInstance().)
       // TODO Review 2364: Remove this method, instead inject the MethodCallExpressionNodeTypeRegistry via the ctor. 
       //Adapt usage in integration tests to supply the result of MethodCallExpressionNodeTypeRegistry.CreateDefault().
 
-      //TODO: Convert methods with all overloads needed
       var containsMethod = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
       var endsWithMethod = typeof (string).GetMethod ("EndsWith", new[] { typeof (string) });
       var lowerMethod = typeof (string).GetMethod ("ToLower", new Type[] { });

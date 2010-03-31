@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -60,6 +61,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expectedGenerator = _methodCallSqlGeneratorRegistry.GetGenerator (_methodInfo);
       Assert.That (_generatorStub, Is.Not.EqualTo (expectedGenerator));
       Assert.That (generatorStub, Is.EqualTo (expectedGenerator));
+    }
+
+    [Test]
+    public void Register_SeveralMethodInfos ()
+    {
+      var methodInfo = typeof (string).GetMethod ("EndsWith", new[] { typeof (string) });
+      IEnumerable<MethodInfo> methodInfos = new List<MethodInfo> { _methodInfo, methodInfo };
+      _methodCallSqlGeneratorRegistry.Register (methodInfos, _generatorStub);
+
+      var expectedGenerator = _methodCallSqlGeneratorRegistry.GetGenerator (_methodInfo);
+      Assert.That (_generatorStub, Is.SameAs (expectedGenerator));
+
+      var expectedGenerator2 = _methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
+      Assert.That (_generatorStub, Is.SameAs (expectedGenerator2));
     }
 
     [Test]
