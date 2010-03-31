@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlBinaryOperatorExpression, ISqlSpecificExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlInExpression(_expression));
+          mock => mock.VisitSqlBinaryOperatorExpression(_expression));
     }
 
     [Test]

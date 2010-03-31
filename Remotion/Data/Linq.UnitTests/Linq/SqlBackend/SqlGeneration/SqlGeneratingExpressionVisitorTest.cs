@@ -359,7 +359,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlInExpression ()
+    public void VisitSqlBinaryOperatorExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var sqlSubStatementExpression = new SqlSubStatementExpression(sqlStatement, typeof(Cook));

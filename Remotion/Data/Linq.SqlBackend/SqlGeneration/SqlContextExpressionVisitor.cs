@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -182,7 +181,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return VisitUnknownExpression (expression);
     }
 
-    public Expression VisitSqlInExpression (SqlBinaryOperatorExpression expression)
+    public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
       var newExpression = ApplySqlExpressionContext (expression.LeftExpression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.LeftExpression)

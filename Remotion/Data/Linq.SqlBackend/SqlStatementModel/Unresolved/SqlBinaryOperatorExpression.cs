@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlInExpression (this);
+        return specificVisitor.VisitSqlBinaryOperatorExpression (this);
       else
         return base.Accept (visitor);
     }
