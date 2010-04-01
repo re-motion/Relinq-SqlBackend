@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -33,38 +32,28 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   public class SqlGeneratingExpressionVisitor
       : ThrowingExpressionTreeVisitor, IResolvedSqlExpressionVisitor, ISqlSpecificExpressionVisitor, ISqlSubStatementExpressionVisitor, IJoinConditionExpressionVisitor
   {
-    public static void GenerateSql (
-        Expression expression,
-        SqlCommandBuilder commandBuilder,
-        MethodCallTransformerRegistry methodCallRegistry,
-        SqlExpressionContext context,
-        ISqlGenerationStage stage)
+    public static void GenerateSql (Expression expression, SqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       var expressionWithBooleanSemantics = SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, context);
 
-      var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, methodCallRegistry, stage);
+      var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expressionWithBooleanSemantics);
     }
 
     private readonly SqlCommandBuilder _commandBuilder;
-    private readonly MethodCallTransformerRegistry _methodCallRegistry;
     private readonly BinaryExpressionTextGenerator _binaryExpressionTextGenerator;
     private readonly ISqlGenerationStage _stage;
 
-    protected SqlGeneratingExpressionVisitor (
-        SqlCommandBuilder commandBuilder, MethodCallTransformerRegistry methodCallRegistry, ISqlGenerationStage stage)
+    protected SqlGeneratingExpressionVisitor (SqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       _commandBuilder = commandBuilder;
-      _methodCallRegistry = methodCallRegistry;
       _binaryExpressionTextGenerator = new BinaryExpressionTextGenerator (commandBuilder, this);
       _stage = stage;
     }
@@ -225,15 +214,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
 
       VisitExpression (expression.Operand);
-
-      return expression;
-    }
-
-    //TODO: 2511 remove method
-    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
-    {
-      var generator = _methodCallRegistry.GetGenerator (expression.Method);
-      generator.GenerateSql (expression, _commandBuilder, this);
 
       return expression;
     }

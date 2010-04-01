@@ -27,13 +27,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class DefaultSqlGenerationStage : ISqlGenerationStage
   {
-    private readonly MethodCallTransformerRegistry _registry;
-
     public DefaultSqlGenerationStage (MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("registry", registry);
       // ReSharper disable DoNotCallOverridableMethodsInConstructor
-      _registry = registry;
       // ReSharper restore DoNotCallOverridableMethodsInConstructor
     }
 
@@ -53,7 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, selectedSqlContext, this);
     }
 
     public void GenerateTextForWhereExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
@@ -61,7 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, selectedSqlContext, this);
     }
 
     public void GenerateTextForOrderByExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
@@ -69,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, selectedSqlContext, this);
     }
 
     public void GenerateTextForTopExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
@@ -77,7 +74,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, selectedSqlContext, this);
     }
 
     public void GenerateTextForSqlStatement (SqlCommandBuilder commandBuilder, SqlStatement sqlStatement, SqlExpressionContext selectedSqlContext)
@@ -94,7 +91,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, _registry, selectedSqlContext, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, selectedSqlContext, this);
     }
 
   }
