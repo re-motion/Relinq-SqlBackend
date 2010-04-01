@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -33,7 +35,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
 
-    public static Expression ResolveExpression (Expression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    public static Expression ResolveExpression (
+        Expression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -55,22 +58,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _generator = generator;
       _stage = stage;
     }
-    
+
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newExpression = _resolver.ResolveTableReferenceExpression (expression, _generator);
-      if (newExpression == expression) 
+      if (newExpression == expression)
         return expression;
       else
         return VisitExpression (newExpression);
     }
 
-    public Expression VisitSqlMemberExpression(SqlMemberExpression expression)
+    public Expression VisitSqlMemberExpression (SqlMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
+
       var newExpression = _resolver.ResolveMemberExpression (expression, _generator);
       if (newExpression == expression)
         return expression;
@@ -105,8 +108,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
-      throw new NotImplementedException();
-    }
+      ArgumentUtility.CheckNotNull ("expression", expression);
 
+      var newPrefixExpression = ResolveExpression (expression.Prefix, _resolver, _generator, _stage);
+      List<Expression> newArguments = new List<Expression>();
+
+      foreach (var arg in expression.Args)
+        newArguments.Add (ResolveExpression (arg, _resolver, _generator, _stage));
+      
+      if ((expression.Prefix != newPrefixExpression) || (expression.Args.ToList() != newArguments))
+        return new SqlFunctionExpression (expression.Type, expression.SqlFunctioName, newPrefixExpression, newArguments.ToArray());
+
+      return expression;
+    }
   }
 }

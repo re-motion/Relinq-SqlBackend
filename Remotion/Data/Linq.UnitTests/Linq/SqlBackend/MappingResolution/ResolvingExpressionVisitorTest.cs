@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -282,6 +283,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (expression));
       _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void VisitSqlFunctionExpression ()
+    {
+      var prefixExpression = Expression.Constant ("test");
+      var argumentExpression = Expression.Constant (1);
+      var sqlFunctionExpression = new SqlFunctionExpression (typeof (int), "FUNCNAME", prefixExpression, argumentExpression);
+
+      var resolvedExpression = Expression.Constant("resolved");
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (prefixExpression))
+          .Return(resolvedExpression);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (argumentExpression))
+          .Return (resolvedExpression);
+      _resolverMock.Replay();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlFunctionExpression, _resolverMock, _generator, _stageMock);
+      
+      Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
+      Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (resolvedExpression));
+      Assert.That (((SqlFunctionExpression) result).Args[0], Is.SameAs (resolvedExpression));
+      _resolverMock.VerifyAllExpectations();
     }
 
     private void StubResolveTableInfo ()

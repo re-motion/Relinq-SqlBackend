@@ -149,13 +149,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
       var instanceExpression = VisitExpression (expression.Object);
-      List<Expression> arguments = new List<Expression> ();
+      List<Expression> arguments = new List<Expression>();
       foreach (var argument in expression.Arguments)
-      {
         arguments.Add (VisitExpression (argument));
-      }
       var newExpression = Expression.Call (instanceExpression, expression.Method, arguments);
-      return _registry.GetTransformer (expression.Method).Transform (newExpression);
+
+      if ((expression.Object != instanceExpression) || (expression.Arguments.ToList() != arguments))
+        return _registry.GetTransformer (expression.Method).Transform (newExpression);
+
+      return _registry.GetTransformer (expression.Method).Transform (expression);
     }
 
     private bool IsNullConstant (Expression expression)
