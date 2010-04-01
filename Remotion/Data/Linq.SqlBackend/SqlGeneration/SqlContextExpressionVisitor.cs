@@ -205,12 +205,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
-    {
-      //TODO check ApplySqlExpressionContext if any boolean value is possible
-      return expression;
-    }
-
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)
     {
       switch (expressionType)

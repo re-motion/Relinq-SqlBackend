@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
@@ -58,6 +59,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.Not.SameAs (_sqlFunctionExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlFunctionExpression, ISqlSubStatementExpressionVisitor> (
+          _sqlFunctionExpression,
+          mock => mock.VisitSqlFunctionExpression (_sqlFunctionExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlFunctionExpression);
     }
 
 

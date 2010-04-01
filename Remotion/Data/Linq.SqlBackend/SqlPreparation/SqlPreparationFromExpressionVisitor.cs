@@ -20,6 +20,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -100,6 +101,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    {
+      return base.VisitUnknownExpression (expression);
+    }
+
+    Expression ISqlSubStatementExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
       return base.VisitUnknownExpression (expression);
     }
