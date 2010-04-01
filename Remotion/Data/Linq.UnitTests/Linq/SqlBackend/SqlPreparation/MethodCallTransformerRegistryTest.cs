@@ -26,10 +26,10 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   [TestFixture]
-  public class MethodCallSqlGeneratorRegistryTest
+  public class MethodCallTransformerRegistryTest
   {
     private MethodInfo _methodInfo;
     private MethodCallTransformerRegistry _methodCallTransformerRegistry;
