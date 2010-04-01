@@ -231,5 +231,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.SameAs (binaryExpression));
     }
+
+    [Test]
+    public void VisitMethodCallExpression ()
+    {
+      var method = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var constantExpression = Expression.Constant ("Test");
+      var methodCallExpression = Expression.Call (constantExpression, method);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
+      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
+      Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (constantExpression));
+      Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (0));
+    }
   }
 }

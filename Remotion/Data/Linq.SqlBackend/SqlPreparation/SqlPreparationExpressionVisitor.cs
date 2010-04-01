@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -35,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    private MethodCallTransformerRegistry _registry;
+    private readonly MethodCallTransformerRegistry _registry;
 
     public static Expression TranslateExpression (
         Expression projection, SqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
@@ -147,7 +148,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
-      return base.VisitMethodCallExpression (expression);
+      var instanceExpression = VisitExpression (expression.Object);
+      List<Expression> arguments = new List<Expression> ();
+      foreach (var argument in expression.Arguments)
+      {
+        arguments.Add (VisitExpression (argument));
+      }
+      var newExpression = Expression.Call (instanceExpression, expression.Method, arguments);
+      return _registry.GetTransformer (expression.Method).Transform (newExpression);
     }
 
     private bool IsNullConstant (Expression expression)
