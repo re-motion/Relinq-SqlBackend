@@ -23,16 +23,16 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ContainsFulltextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the contains fulltext extension method.
+  /// <see cref="ContainsFreetextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the contains freetext extension method.
   /// </summary>
-  public class ContainsFulltextMethodCallTransformer : IMethodCallTransformer
+  public class ContainsFreetextMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods = new MethodInfo[] { };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       if (methodCallExpression.Arguments.Count == 2)
-        return new SqlFunctionExpression (typeof (bool), "CONTAINS", methodCallExpression.Object, methodCallExpression.Arguments[1]);
+        return new SqlFunctionExpression (typeof (bool), "FREETEXT", methodCallExpression.Object, methodCallExpression.Arguments[1]);
       else if (methodCallExpression.Arguments.Count == 3)
       {
         if (!(methodCallExpression.Arguments[2] is ConstantExpression))
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             new SqlLiteralExpression (string.Format ("LANGUAGE {0}", ((ConstantExpression) methodCallExpression.Arguments[2]).Value));
 
         return new SqlFunctionExpression (
-            typeof (bool), "CONTAINS", methodCallExpression.Object, methodCallExpression.Arguments[1], languageExpression);
+            typeof (bool), "FREETEXT", methodCallExpression.Object, methodCallExpression.Arguments[1], languageExpression);
       }
       else
       {

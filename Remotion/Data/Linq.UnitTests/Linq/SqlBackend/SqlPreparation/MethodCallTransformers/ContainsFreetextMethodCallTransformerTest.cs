@@ -26,28 +26,28 @@ using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class ContainsFulltextMethodCallTransformerTest
+  public class ContainsFreetextMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsEmpty (ContainsFulltextMethodCallTransformer.SupportedMethods);
+      Assert.IsEmpty (ContainsFreetextMethodCallTransformer.SupportedMethods);
     }
 
     [Test]
     public void Transform_OneArgument ()
     {
       var method = typeof (StringExtensions).GetMethod (
-          "ContainsFulltext", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof(string) }, null);
+          "ContainsFulltext", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null);
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("es");
       var expression = Expression.Call (objectExpression, method, objectExpression, argument1);
-      var transformer = new ContainsFulltextMethodCallTransformer();
+      var transformer = new ContainsFreetextMethodCallTransformer ();
 
       var result = transformer.Transform (expression);
 
       var rightExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
-      var fakeResult = new SqlFunctionExpression (typeof (bool), "CONTAINS", objectExpression, rightExpression);
+      var fakeResult = new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, rightExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }
@@ -56,12 +56,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void Transform_TwoArguments ()
     {
       var method = typeof (StringExtensions).GetMethod (
-        "ContainsFulltext", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string), typeof(string) }, null);
+        "ContainsFulltext", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string), typeof (string) }, null);
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("es");
       var language = Expression.Constant ("language");
       var expression = Expression.Call (objectExpression, method, objectExpression, argument1, language);
-      var transformer = new ContainsFulltextMethodCallTransformer();
+      var transformer = new ContainsFreetextMethodCallTransformer ();
 
       var result = transformer.Transform (expression);
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var languageExpression = new SqlLiteralExpression ("LANGUAGE language");
 
       var fakeResult =
-          new SqlFunctionExpression (typeof (bool), "CONTAINS", objectExpression, argumentExpression, languageExpression);
+          new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, argumentExpression, languageExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }

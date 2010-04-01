@@ -46,6 +46,7 @@
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
     <Compile Include="SqlGeneration\IMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFreetextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFulltextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EscapeUtility.cs" />
