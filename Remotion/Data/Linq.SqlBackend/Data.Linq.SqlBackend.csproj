@@ -46,6 +46,7 @@
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
     <Compile Include="SqlGeneration\IMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFulltextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EscapeUtility.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\IndexOfMethodCallTransformer.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="SqlStatementModel\Unresolved\SqlTableReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedTableInfo.cs" />
+    <Compile Include="StringExtensions.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
