@@ -15,41 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class EndsWithMethodCallTransformerTest
+  public class StartsWithMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          EndsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("EndsWith", new Type[] { typeof (string) })));
+          StartsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("StartsWith", new[] { typeof (string) })));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("EndsWith", new Type[] { typeof (string) });
+      var method = typeof (string).GetMethod ("StartsWith", new Type[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("test");
       var expression = Expression.Call (objectExpression, method, argument1);
-      var transformer = new EndsWithMethodCallTransformer ();
+      var transformer = new StartsWithMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var rightExpression = Expression.Constant (string.Format ("'%{0}'", argument1));
+      var rightExpression = Expression.Constant (string.Format ("'{0}%'", argument1));
 
       var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }
-    
   }
 }

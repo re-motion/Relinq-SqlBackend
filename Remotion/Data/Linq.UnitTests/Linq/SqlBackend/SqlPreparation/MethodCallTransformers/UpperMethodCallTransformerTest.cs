@@ -22,33 +22,32 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class ReplaceMethodCallTransformerTest
+  public class UpperMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          ReplaceMethodCallTransformer.SupportedMethods.Contains (
-              typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) })));
+          UpperMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToUpper", new Type[] { })));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) });
-      var objectExpression = Expression.Constant ("TAst");
-      var expression = Expression.Call (objectExpression, method, Expression.Constant ("A"), Expression.Constant ("B"));
-      var transformer = new ReplaceMethodCallTransformer();
+      var method = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var objectExpression = Expression.Constant ("Test");
+      var expression = Expression.Call (objectExpression, method);
+      var transformer = new UpperMethodCallTransformer();
       var result = transformer.Transform (expression);
 
       Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
       Assert.That (result.Type, Is.EqualTo (typeof (string)));
-      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("REPLACE"));
+      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
       Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
-      Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (2));
+      Assert.That (((SqlFunctionExpression) result).Args, Is.Empty);
     }
   }
 }

@@ -22,35 +22,37 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class SubstringMethodCallTransformerTest
+  public class RemoveMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (SubstringMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int) })));
-      Assert.IsTrue (SubstringMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) })));
+      Assert.IsTrue (
+          RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Remove", new[] { typeof (int) })));
+      Assert.IsTrue (
+          RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Remove", new[] { typeof (int), typeof (int) })));
     }
 
     [Test]
     public void Transform_WithOneArgument ()
     {
-      var method = typeof (string).GetMethod ("Substring", new Type[] { typeof (int) });
+      var method = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method, Expression.Constant (1));
 
-      var transformer = new SubstringMethodCallTransformer ();
+      var transformer = new RemoveMethodCallTransformer();
       var result = transformer.Transform (expression);
 
       var fakeResult = new SqlFunctionExpression (
-            expression.Type,
-            "SUBSTRING",
-            objectExpression,
-            Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
-            new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression)
-        );
+          expression.Type,
+          "STUFF",
+          objectExpression,
+          Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
+          new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression),
+          new SqlLiteralExpression ("''"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }
@@ -58,20 +60,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
     [Test]
     public void Transform_WithTwoArgument ()
     {
-      var method = typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) });
+      var method = typeof (string).GetMethod ("Remove", new Type[] { typeof (int), typeof (int) });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method, Expression.Constant (1), Expression.Constant (3));
 
-      var transformer = new SubstringMethodCallTransformer ();
+      var transformer = new RemoveMethodCallTransformer();
       var result = transformer.Transform (expression);
 
       var fakeResult = new SqlFunctionExpression (
-            expression.Type,
-            "SUBSTRING",
-            objectExpression,
-            Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
-            Expression.Constant (3)
-      );
+          expression.Type,
+          "STUFF",
+          objectExpression,
+          Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
+          Expression.Constant (3),
+          new SqlLiteralExpression ("''"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }

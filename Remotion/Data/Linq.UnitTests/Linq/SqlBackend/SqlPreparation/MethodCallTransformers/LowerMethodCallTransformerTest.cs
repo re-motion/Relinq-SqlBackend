@@ -15,37 +15,37 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class UpperMethodCallTransformerTest
+  public class LowerMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          UpperMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToUpper", new Type[] { })));
+          LowerMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToLower", new Type[] { })));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var method = typeof (string).GetMethod ("ToLower", new Type[] { });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method);
-      var transformer = new UpperMethodCallTransformer();
+      var transformer = new LowerMethodCallTransformer ();
       var result = transformer.Transform (expression);
 
       Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
       Assert.That (result.Type, Is.EqualTo (typeof (string)));
-      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
+      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("LOWER"));
       Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
       Assert.That (((SqlFunctionExpression) result).Args, Is.Empty);
     }
