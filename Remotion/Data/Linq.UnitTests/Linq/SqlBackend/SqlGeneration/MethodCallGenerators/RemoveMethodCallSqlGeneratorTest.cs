@@ -24,33 +24,33 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class LowerMethodCallSqlGeneratorTest
+  public class RemoveMethodCallSqlGeneratorTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          LowerMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("ToLower", new Type[] { })));
+          RemoveMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Remove", new[] { typeof (int) })));
     }
 
     [Test]
-    public void GenerateSql_Lower ()
+    public void GenerateSql_Remove ()
     {
-      var method = typeof (string).GetMethod ("ToLower", new Type[] { });
-      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method);
+      var method = typeof (string).GetMethod ("Remove", new Type[] { typeof (int), typeof (int) });
+      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (0), Expression.Constant (1));
 
       var commandBuilder = new SqlCommandBuilder();
 
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new LowerMethodCallSqlGenerator();
+      var methodCallUpper = new RemoveMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("LOWER()"));
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("STUFF(,,,LEN(), \"\")"));
     }
   }
 }

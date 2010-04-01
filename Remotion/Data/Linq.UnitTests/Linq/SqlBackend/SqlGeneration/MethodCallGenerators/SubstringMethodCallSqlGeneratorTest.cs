@@ -24,22 +24,22 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class RemoveMethodCallSqlGeneratorTest
+  public class SubstringMethodCallSqlGeneratorTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          RemoveMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Remove", new[] { typeof (int) })));
+          SubstringMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) })));
     }
 
     [Test]
-    public void GenerateSql_Remove ()
+    public void GenerateSql_Substring ()
     {
-      var method = typeof (string).GetMethod ("Remove", new Type[] { typeof (int), typeof (int) });
+      var method = typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) });
       var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (0), Expression.Constant (1));
 
       var commandBuilder = new SqlCommandBuilder();
@@ -47,10 +47,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new RemoveMethodCallSqlGenerator();
+      var methodCallUpper = new SubstringMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("STUFF(,,,LEN(), \"\")"));
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("SUBSTRING(,,)"));
     }
   }
 }

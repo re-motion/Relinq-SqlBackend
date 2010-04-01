@@ -24,7 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
   public class ContainsMethodCallSqlGeneratorTest
