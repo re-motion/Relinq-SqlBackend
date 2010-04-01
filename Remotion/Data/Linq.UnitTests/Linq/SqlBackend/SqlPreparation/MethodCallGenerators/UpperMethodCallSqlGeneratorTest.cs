@@ -12,7 +12,7 @@ using Rhino.Mocks;
 using System.Linq;
 
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
 {
   [TestFixture]
   public class UpperMethodCallSqlGeneratorTest
