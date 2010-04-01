@@ -26,46 +26,49 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class DefaultSqlPreparationStage : ISqlPreparationStage
   {
+    private readonly MethodCallTransformerRegistry _registry;
     private readonly SqlPreparationContext _context;
     private readonly UniqueIdentifierGenerator _generator;
 
-    public DefaultSqlPreparationStage (SqlPreparationContext context, UniqueIdentifierGenerator generator)
+    public DefaultSqlPreparationStage (MethodCallTransformerRegistry registry, SqlPreparationContext context, UniqueIdentifierGenerator generator)
     {
+      ArgumentUtility.CheckNotNull ("registry", registry);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
+      _registry = registry;
       _context = context;
       _generator = generator;
     }
 
     public Expression PrepareSelectExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
     public Expression PrepareWhereExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
     public Expression PrepareTopExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
     public Expression PrepareFromExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
     public Expression PrepareOrderByExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression(expression, _context, this);
+      return SqlPreparationExpressionVisitor.TranslateExpression(expression, _context, this, _registry);
     }
 
     public Expression PrepareItemExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
     public SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType)

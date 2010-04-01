@@ -35,25 +35,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
+    private MethodCallTransformerRegistry _registry;
 
-    public static Expression TranslateExpression (Expression projection, SqlPreparationContext context, ISqlPreparationStage stage)
+    public static Expression TranslateExpression (
+        Expression projection, SqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("projection", projection);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("registry", registry);
 
-      var visitor = new SqlPreparationExpressionVisitor (context, stage);
+      var visitor = new SqlPreparationExpressionVisitor (context, stage, registry);
       var result = visitor.VisitExpression (projection);
       return result;
     }
 
-    protected SqlPreparationExpressionVisitor (SqlPreparationContext context, ISqlPreparationStage stage)
+    protected SqlPreparationExpressionVisitor (SqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("registry", registry);
 
       _context = context;
       _stage = stage;
+      _registry = registry;
     }
 
     protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
@@ -121,19 +126,28 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (expression.NodeType == ExpressionType.Equal || expression.NodeType == ExpressionType.NotEqual)
       {
         if (((expression.Left is ConstantExpression) && ((ConstantExpression) expression.Left).Value == null)
-          || ((expression.Right is ConstantExpression) && ((ConstantExpression) expression.Right).Value == null))
+            || ((expression.Right is ConstantExpression) && ((ConstantExpression) expression.Right).Value == null))
         {
           if (expression.NodeType == ExpressionType.Equal)
-              return (IsNullConstant(expression.Left))
-                       ? new SqlIsNullExpression (expression.Left, VisitExpression(expression.Right))
-                       : new SqlIsNullExpression (expression.Right, VisitExpression(expression.Left));
-          else
+          {
             return (IsNullConstant (expression.Left))
-                       ? new SqlIsNotNullExpression (expression.Left, VisitExpression(expression.Right))
-                       : new SqlIsNotNullExpression (expression.Right, VisitExpression(expression.Left));
+                       ? new SqlIsNullExpression (expression.Left, VisitExpression (expression.Right))
+                       : new SqlIsNullExpression (expression.Right, VisitExpression (expression.Left));
+          }
+          else
+          {
+            return (IsNullConstant (expression.Left))
+                       ? new SqlIsNotNullExpression (expression.Left, VisitExpression (expression.Right))
+                       : new SqlIsNotNullExpression (expression.Right, VisitExpression (expression.Left));
+          }
         }
       }
-      return base.VisitBinaryExpression(expression);
+      return base.VisitBinaryExpression (expression);
+    }
+
+    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    {
+      return base.VisitMethodCallExpression (expression);
     }
 
     private bool IsNullConstant (Expression expression)
