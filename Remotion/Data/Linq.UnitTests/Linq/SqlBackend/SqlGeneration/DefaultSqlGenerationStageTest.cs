@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _stage = new DefaultSqlGenerationStage(MethodCallTransformerRegistry.CreateDefault());
+      _stage = new DefaultSqlGenerationStage();
       _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { });
       _commandBuilder = new SqlCommandBuilder();
     }

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -27,13 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class DefaultSqlGenerationStage : ISqlGenerationStage
   {
-    public DefaultSqlGenerationStage (MethodCallTransformerRegistry registry)
-    {
-      ArgumentUtility.CheckNotNull ("registry", registry);
-      // ReSharper disable DoNotCallOverridableMethodsInConstructor
-      // ReSharper restore DoNotCallOverridableMethodsInConstructor
-    }
-
     public void GenerateTextForFromTable (SqlCommandBuilder commandBuilder, SqlTableBase table, bool isFirstTable)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
