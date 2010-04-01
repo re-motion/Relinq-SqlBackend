@@ -29,6 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public class MethodCallTransformerRegistry
   {
     private readonly Dictionary<MethodInfo, IMethodCallSqlGenerator> _generators;
+    private readonly Dictionary<MethodInfo, IMethodCallTransformer> _transformers;
 
     /// <summary>
     /// Creates a default <see cref="MethodCallTransformerRegistry"/>, which has all types implementing <see cref="IMethodCallSqlGenerator"/> from the
@@ -57,9 +58,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return registry;
     }
 
+    public static MethodCallTransformerRegistry CreateDefault2 ()
+    {
+      var methodTransformers = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
+                             where typeof (IMethodCallTransformer).IsAssignableFrom (t)
+                             select t;
+
+      var supportedMethodsForTypes = from t in methodTransformers
+                                     let supportedMethodsField = t.GetField ("SupportedMethods", BindingFlags.Static | BindingFlags.Public)
+                                     where supportedMethodsField != null
+                                     select new { Generator = t, Methods = (IEnumerable<MethodInfo>) supportedMethodsField.GetValue (null) };
+
+      var registry = new MethodCallTransformerRegistry ();
+
+      foreach (var supportedMethodsForType in supportedMethodsForTypes)
+      {
+        registry.Register2 (supportedMethodsForType.Methods, (IMethodCallTransformer) Activator.CreateInstance (supportedMethodsForType.Generator));
+      }
+
+      return registry;
+    }
+
     public MethodCallTransformerRegistry ()
     {
       _generators = new Dictionary<MethodInfo, IMethodCallSqlGenerator> ();
+      _transformers = new Dictionary<MethodInfo, IMethodCallTransformer>();
     }
 
     public void Register (MethodInfo methodInfo, IMethodCallSqlGenerator generator)
@@ -70,6 +93,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _generators[methodInfo] = generator;
     }
 
+    public void Register2 (MethodInfo methodInfo, IMethodCallTransformer transformer)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNull ("transformer", transformer);
+
+      _transformers[methodInfo] = transformer;
+    }
+
     public void Register (IEnumerable<MethodInfo> methodInfos, IMethodCallSqlGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("generator", generator);
@@ -78,6 +109,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       foreach (var methodInfo in methodInfos)
       {
         _generators[methodInfo] = generator;
+      }
+    }
+
+    public void Register2 (IEnumerable<MethodInfo> methodInfos, IMethodCallTransformer transformer)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfos", methodInfos);
+      ArgumentUtility.CheckNotNull ("transformer", transformer);
+
+      foreach (var methodInfo in methodInfos)
+      {
+        _transformers[methodInfo] = transformer;
       }
     }
 
@@ -100,6 +142,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           methodInfo.DeclaringType.FullName,
           methodInfo.Name);
       throw new NotSupportedException(message);
+    }
+
+    public IMethodCallTransformer GetTransformer (MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+
+      if (_transformers.ContainsKey (methodInfo))
+        return _transformers[methodInfo];
+
+      if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
+        return GetTransformer (methodInfo.GetGenericMethodDefinition ());
+
+      var baseMethod = methodInfo.GetBaseDefinition ();
+      if (baseMethod != methodInfo)
+        return GetTransformer (baseMethod);
+
+      string message = string.Format (
+          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered.",
+          methodInfo.DeclaringType.FullName,
+          methodInfo.Name);
+      throw new NotSupportedException (message);
     }
   }
 }
