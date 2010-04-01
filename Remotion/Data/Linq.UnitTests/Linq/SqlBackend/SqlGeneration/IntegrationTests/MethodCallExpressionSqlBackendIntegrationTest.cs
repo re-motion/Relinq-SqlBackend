@@ -155,7 +155,72 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
     }
 
-    //TODO extension methods
+    [Test]
+    public void IndexOf ()
+    {
+      CheckQuery (
+          from c in Cooks select c.FirstName.IndexOf("test"),
+          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", "test"),
+          new CommandParameter ("@2", "test")
+          );
+
+      CheckQuery (
+          from c in Cooks select c.FirstName.IndexOf ('t'),
+          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 't'),
+          new CommandParameter ("@2", 't')
+          );
+
+      CheckQuery (
+          from c in Cooks select c.FirstName.IndexOf ("test", 2),
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END "
+          +"FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", "test"),
+          new CommandParameter ("@2", 2),
+          new CommandParameter ("@3", 2),
+          new CommandParameter ("@4", "test"),
+          new CommandParameter ("@5", 2)
+          );
+
+      CheckQuery (
+          from c in Cooks select c.FirstName.IndexOf ('t', 2),
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END "
+          + "FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 't'),
+          new CommandParameter ("@2", 2),
+          new CommandParameter ("@3", 2),
+          new CommandParameter ("@4", 't'),
+          new CommandParameter ("@5", 2)
+          );
+
+      CheckQuery (
+         from c in Cooks select c.FirstName.IndexOf ("test", 2, 5),
+         "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
+         + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
+         new CommandParameter ("@1", "test"),
+         new CommandParameter ("@2", 2),
+         new CommandParameter ("@3", 2),
+         new CommandParameter ("@4", "test"),
+         new CommandParameter ("@5", 2),
+         new CommandParameter ("@6", 5),
+         new CommandParameter ("@7", 2)
+         );
+
+      CheckQuery (
+          from c in Cooks select c.FirstName.IndexOf ('t', 2, 5),
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
+          +"ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 't'),
+          new CommandParameter ("@2", 2),
+          new CommandParameter ("@3", 2),
+          new CommandParameter ("@4", 't'),
+          new CommandParameter ("@5", 2),
+          new CommandParameter ("@6", 5),
+          new CommandParameter ("@7", 2)
+          );
+
+    }
 
     [Test]
     public void Like ()
@@ -172,17 +237,44 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2490")]
     public void ContainsFulltext ()
     {
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFulltext ("%ab%c") select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1)",
+          new CommandParameter ("@1", "%ab%c")
+          );
+
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFulltext ("%ab%c", "de") select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1, LANGUAGE de)",
+          new CommandParameter ("@1", "%ab%c")
+          );
+
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFulltext (c.Name) select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], [t0].[Name])");
     }
 
     [Test]
-    [Ignore ("TODO 2490")]
     public void ContainsFreetext ()
     {
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c") select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1)",
+          new CommandParameter ("@1", "%ab%c")
+          );
+
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c", "de") select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE de)",
+          new CommandParameter ("@1", "%ab%c")
+          );
+
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFreetext (c.Name) select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
     }
 
-    //TODO IndexOf integration tests
   }
 }
