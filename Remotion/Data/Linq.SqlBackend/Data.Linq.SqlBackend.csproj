@@ -70,7 +70,6 @@
     <Compile Include="SqlGeneration\BinaryExpressionTextGenerator.cs" />
     <Compile Include="SqlGeneration\CommandParameter.cs" />
     <Compile Include="SqlGeneration\DefaultSqlGenerationStage.cs" />
-    <Compile Include="SqlGeneration\IMethodCallSqlGenerator.cs" />
     <Compile Include="SqlGeneration\ISqlGenerationStage.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformerRegistry.cs" />
     <Compile Include="SqlGeneration\SqlCommand.cs" />
