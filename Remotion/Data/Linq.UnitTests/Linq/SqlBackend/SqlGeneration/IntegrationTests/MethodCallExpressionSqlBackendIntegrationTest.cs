@@ -25,7 +25,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   public class MethodCallExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 2490")]
     public void Contains ()
     {
       CheckQuery (
@@ -36,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("a%b_c[a] [^]") select c.ID,
           "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]%")
+          new CommandParameter ("@1", "'%a[%]b[_]c[[]a] [[]^]%'")
           );
     }
 
@@ -52,18 +51,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2490")]
     public void StartsWith ()
     {
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("abc") select c.ID,
           "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "abc%")
+          new CommandParameter ("@1", "'abc%'")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("a%b_c[a] [^]") select c.ID,
           "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "a[%]b[_]c[[]a] [[]^]%")
+          new CommandParameter ("@1", "'a[%]b[_]c[[]a] [[]^]%'")
           );
     }
 
@@ -79,7 +77,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2490")]
     public void EndsWith ()
     {
       CheckQuery (

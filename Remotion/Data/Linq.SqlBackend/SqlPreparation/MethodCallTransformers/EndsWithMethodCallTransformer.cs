@@ -40,9 +40,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       if (!(methodCallExpression.Arguments[0] is ConstantExpression))
         throw new NotSupportedException ("Only expressions that can be evaluated locally can be used as the argument for EndsWith.");
-        
-      var rightExpression = Expression.Constant (string.Format ("'%{0}'", ((ConstantExpression)methodCallExpression.Arguments[0]).Value));  
-      
+
+      var rightExpression =
+          Expression.Constant (
+              string.Format ("'%{0}'", EscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
+
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }
