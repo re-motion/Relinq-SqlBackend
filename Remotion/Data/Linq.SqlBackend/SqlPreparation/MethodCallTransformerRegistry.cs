@@ -24,40 +24,18 @@ using System.Linq;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallSqlGenerator"/> instances.
+  /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallTransformer"/> instances.
   /// </summary>
   public class MethodCallTransformerRegistry
   {
-    private readonly Dictionary<MethodInfo, IMethodCallSqlGenerator> _generators;
     private readonly Dictionary<MethodInfo, IMethodCallTransformer> _transformers;
 
     /// <summary>
-    /// Creates a default <see cref="MethodCallTransformerRegistry"/>, which has all types implementing <see cref="IMethodCallSqlGenerator"/> from the
+    /// Creates a default <see cref="MethodCallTransformerRegistry"/>, which has all types implementing <see cref="IMethodCallTransformer"/> from the
     /// re-linq assembly automatically registered, as long as they offer a public static <c>SupportedMethods</c> field.
     /// </summary>
-    /// <returns>A default <see cref="MethodCallTransformerRegistry"/> with all <see cref="IMethodCallSqlGenerator"/>s with a <c>SupportedMethods</c>
+    /// <returns>A default <see cref="MethodCallTransformerRegistry"/> with all <see cref="IMethodCallTransformer"/>s with a <c>SupportedMethods</c>
     /// field registered.</returns>
-    public static MethodCallTransformerRegistry CreateDefault ()
-    {
-      var methodGenerators = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
-                             where typeof (IMethodCallSqlGenerator).IsAssignableFrom (t)
-                             select t;
-
-      var supportedMethodsForTypes = from t in methodGenerators
-                                     let supportedMethodsField = t.GetField ("SupportedMethods", BindingFlags.Static | BindingFlags.Public)
-                                     where supportedMethodsField != null
-                                     select new { Generator = t, Methods = (IEnumerable<MethodInfo>) supportedMethodsField.GetValue (null) };
-
-      var registry = new MethodCallTransformerRegistry();
-
-      foreach (var supportedMethodsForType in supportedMethodsForTypes)
-      {
-        registry.Register (supportedMethodsForType.Methods, (IMethodCallSqlGenerator) Activator.CreateInstance (supportedMethodsForType.Generator));
-      }
-
-      return registry;
-    }
-
     public static MethodCallTransformerRegistry CreateDefault2 ()
     {
       var methodTransformers = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
@@ -81,16 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public MethodCallTransformerRegistry ()
     {
-      _generators = new Dictionary<MethodInfo, IMethodCallSqlGenerator> ();
       _transformers = new Dictionary<MethodInfo, IMethodCallTransformer>();
-    }
-
-    public void Register (MethodInfo methodInfo, IMethodCallSqlGenerator generator)
-    {
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-
-      _generators[methodInfo] = generator;
     }
 
     public void Register2 (MethodInfo methodInfo, IMethodCallTransformer transformer)
@@ -99,17 +68,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("transformer", transformer);
 
       _transformers[methodInfo] = transformer;
-    }
-
-    public void Register (IEnumerable<MethodInfo> methodInfos, IMethodCallSqlGenerator generator)
-    {
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("methodInfos", methodInfos);
-
-      foreach (var methodInfo in methodInfos)
-      {
-        _generators[methodInfo] = generator;
-      }
     }
 
     public void Register2 (IEnumerable<MethodInfo> methodInfos, IMethodCallTransformer transformer)
@@ -121,27 +79,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         _transformers[methodInfo] = transformer;
       }
-    }
-
-    public IMethodCallSqlGenerator GetGenerator (MethodInfo methodInfo)
-    {
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-
-      if (_generators.ContainsKey (methodInfo))
-        return _generators[methodInfo];
-
-      if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
-        return GetGenerator (methodInfo.GetGenericMethodDefinition ());
-
-      var baseMethod = methodInfo.GetBaseDefinition ();
-      if (baseMethod != methodInfo)
-        return GetGenerator (baseMethod);
-      
-      string message = string.Format (
-          "The method '{0}.{1}' is not supported by this code generator, and no custom generator has been registered.",
-          methodInfo.DeclaringType.FullName,
-          methodInfo.Name);
-      throw new NotSupportedException(message);
     }
 
     public IMethodCallTransformer GetTransformer (MethodInfo methodInfo)
