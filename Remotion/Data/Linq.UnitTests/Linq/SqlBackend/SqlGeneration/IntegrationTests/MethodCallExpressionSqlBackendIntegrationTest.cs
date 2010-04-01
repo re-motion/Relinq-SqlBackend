@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
@@ -160,16 +161,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Ignore ("TODO 2490")]
     public void Like ()
     {
-      //CheckQuery (
-      //    from c in Cooks where c.FirstName.Like ("%ab%c") select c.ID,
-      //    "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-      //    new CommandParameter ("@1", "%a%bc")
-      //    );
-      //CheckQuery (
-      //    from c in Cooks where c.FirstName.Like (c.Name) select c.ID,
-      //    "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]",
-      //    new CommandParameter ("@1", "%a%bc")
-      //    );
+      CheckQuery (
+          from c in Cooks where c.FirstName.Like ("%ab%c") select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          new CommandParameter ("@1", "%a%bc")
+          );
+      CheckQuery (
+          from c in Cooks where c.FirstName.Like (c.Name) select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]",
+          new CommandParameter ("@1", "%a%bc")
+          );
     }
 
     [Test]

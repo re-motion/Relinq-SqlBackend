@@ -27,17 +27,35 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class ContainsFreetextMethodCallTransformer : IMethodCallTransformer
   {
-    public static readonly MethodInfo[] SupportedMethods = new MethodInfo[] { };
+    public static readonly MethodInfo[] SupportedMethods = new[]
+                                                           {
+                                                               typeof (StringExtensions).GetMethod (
+                                                                   "ContainsFreetext",
+                                                                   BindingFlags.Public | BindingFlags.Static,
+                                                                   null,
+                                                                   CallingConventions.Any,
+                                                                   new[] { typeof (string), typeof (string) },
+                                                                   null),
+                                                               typeof (StringExtensions).GetMethod (
+                                                                   "ContainsFreetext",
+                                                                   BindingFlags.Public | BindingFlags.Static,
+                                                                   null,
+                                                                   CallingConventions.Any,
+                                                                   new[] { typeof (string), typeof (string), typeof (string) },
+                                                                   null)
+                                                           };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       if (methodCallExpression.Arguments.Count == 2)
-        return new SqlFunctionExpression (typeof (bool), "FREETEXT", methodCallExpression.Object, methodCallExpression.Arguments[1]);
+        return new SqlFunctionExpression (typeof (bool), "FREETEXT", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
       else if (methodCallExpression.Arguments.Count == 3)
       {
         if (!(methodCallExpression.Arguments[2] is ConstantExpression))
+        {
           throw new NotSupportedException (
               "Only expressions that can be evaluated locally can be used as the language argument for contains fulltext.");
+        }
 
         //TODO 2509: escape sql text in language argument ???
 
@@ -45,7 +63,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             new SqlLiteralExpression (string.Format ("LANGUAGE {0}", ((ConstantExpression) methodCallExpression.Arguments[2]).Value));
 
         return new SqlFunctionExpression (
-            typeof (bool), "FREETEXT", methodCallExpression.Object, methodCallExpression.Arguments[1], languageExpression);
+            typeof (bool), "FREETEXT", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], languageExpression);
       }
       else
       {

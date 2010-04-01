@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -31,22 +32,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsEmpty (LikeMethodCallTransformer.SupportedMethods);
+      Assert.IsTrue (
+          LikeMethodCallTransformer.SupportedMethods.Contains (
+              typeof (StringExtensions).GetMethod (
+                  "Like", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null)));
     }
 
     [Test]
     public void Transform ()
     {
       var method = typeof (StringExtensions).GetMethod (
-        "Like", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null);
+          "Like", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null);
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("%es%");
       var expression = Expression.Call (objectExpression, method, objectExpression, argument1);
-      var transformer = new LikeMethodCallTransformer ();
-      
+      var transformer = new LikeMethodCallTransformer();
+
       var result = transformer.Transform (expression);
 
-      var rightExpression = Expression.Constant (string.Format ("'{0}'", argument1.Value));
+      var rightExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
       var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);

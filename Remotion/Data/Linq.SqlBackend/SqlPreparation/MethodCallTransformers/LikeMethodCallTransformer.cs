@@ -28,19 +28,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class LikeMethodCallTransformer : IMethodCallTransformer
   {
-    public static readonly MethodInfo[] SupportedMethods = new MethodInfo[] { };
+    public static readonly MethodInfo[] SupportedMethods = new[] {
+    typeof (StringExtensions).GetMethod (
+        "Like", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null)
+    };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      if (!(methodCallExpression.Arguments[0] is ConstantExpression))
+      if (!(methodCallExpression.Arguments[1] is ConstantExpression))
         throw new NotSupportedException ("Only expressions that can be evaluated locally can be used as the argument for Contains.");
 
       var rightExpression =
-          Expression.Constant (string.Format ("'{0}'", ((ConstantExpression) methodCallExpression.Arguments[1]).Value));
+          Expression.Constant (string.Format ("{0}", ((ConstantExpression) methodCallExpression.Arguments[1]).Value));
 
-      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
+      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Arguments[0], rightExpression);
     }
   }
 }

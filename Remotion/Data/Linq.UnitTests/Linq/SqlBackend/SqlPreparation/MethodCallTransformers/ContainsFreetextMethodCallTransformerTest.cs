@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -31,18 +32,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsEmpty (ContainsFreetextMethodCallTransformer.SupportedMethods);
+      Assert.IsTrue (
+          ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
+              typeof (StringExtensions).GetMethod (
+                  "ContainsFreetext",
+                  BindingFlags.Public | BindingFlags.Static,
+                  null,
+                  CallingConventions.Any,
+                  new[] { typeof (string), typeof (string) },
+                  null)));
+      Assert.IsTrue (
+          ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
+              typeof (StringExtensions).GetMethod (
+                  "ContainsFreetext",
+                  BindingFlags.Public | BindingFlags.Static,
+                  null,
+                  CallingConventions.Any,
+                  new[] { typeof (string), typeof (string), typeof (string) },
+                  null)));
     }
 
     [Test]
     public void Transform_OneArgument ()
     {
       var method = typeof (StringExtensions).GetMethod (
-          "ContainsFulltext", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null);
+          "ContainsFulltext",
+          BindingFlags.Public | BindingFlags.Static,
+          null,
+          CallingConventions.Any,
+          new[] { typeof (string), typeof (string) },
+          null);
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("es");
       var expression = Expression.Call (objectExpression, method, objectExpression, argument1);
-      var transformer = new ContainsFreetextMethodCallTransformer ();
+      var transformer = new ContainsFreetextMethodCallTransformer();
 
       var result = transformer.Transform (expression);
 
@@ -56,12 +79,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void Transform_TwoArguments ()
     {
       var method = typeof (StringExtensions).GetMethod (
-        "ContainsFulltext", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string), typeof (string) }, null);
+          "ContainsFulltext",
+          BindingFlags.Public | BindingFlags.Static,
+          null,
+          CallingConventions.Any,
+          new[] { typeof (string), typeof (string), typeof (string) },
+          null);
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("es");
       var language = Expression.Constant ("language");
       var expression = Expression.Call (objectExpression, method, objectExpression, argument1, language);
-      var transformer = new ContainsFreetextMethodCallTransformer ();
+      var transformer = new ContainsFreetextMethodCallTransformer();
 
       var result = transformer.Transform (expression);
 
