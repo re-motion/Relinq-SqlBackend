@@ -15,22 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using System.Linq;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ReplaceMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the replace method.
+  /// <see cref="UpperMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the string upper method.
   /// </summary>
-  public class ReplaceMethodCallTransformer : IMethodCallTransformer
+  public class UpperMethodCallTransformer : IMethodCallTransformer
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-      return new SqlFunctionExpression (methodCallExpression.Type, "REPLACE", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
+      return new SqlFunctionExpression (methodCallExpression.Type, "UPPER", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
     }
   }
 }

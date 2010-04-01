@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -31,21 +32,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   public class MethodCallSqlGeneratorRegistryTest
   {
     private MethodInfo _methodInfo;
-    private MethodCallSqlGeneratorRegistry _methodCallSqlGeneratorRegistry;
+    private MethodCallTransformerRegistry _methodCallTransformerRegistry;
     private IMethodCallSqlGenerator _generatorStub;
 
     [SetUp]
     public void SetUp ()
     {
       _methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      _methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
+      _methodCallTransformerRegistry = new MethodCallTransformerRegistry();
       _generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator>();
     }
 
     [Test]
     public void CreateDefault ()
     {
-      MethodCallSqlGeneratorRegistry registry = MethodCallSqlGeneratorRegistry.CreateDefault ();
+      MethodCallTransformerRegistry registry = MethodCallTransformerRegistry.CreateDefault ();
 
       AssertAllMethodsRegistered (registry, typeof (ContainsMethodCallSqlGenerator));
       AssertAllMethodsRegistered (registry, typeof (ConvertMethodCallSqlGenerator));
@@ -57,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       AssertAllMethodsRegistered (registry, typeof (UpperMethodCallSqlGenerator));
     }
 
-    private void AssertAllMethodsRegistered (MethodCallSqlGeneratorRegistry registry, Type type)
+    private void AssertAllMethodsRegistered (MethodCallTransformerRegistry registry, Type type)
     {
       var methodInfos = (MethodInfo[]) type.GetField ("SupportedMethods").GetValue (null);
       Assert.That (methodInfos.Length, Is.GreaterThan (0));
@@ -69,21 +70,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void Register_NewMethod ()
     {
-      _methodCallSqlGeneratorRegistry.Register (_methodInfo, _generatorStub);
+      _methodCallTransformerRegistry.Register (_methodInfo, _generatorStub);
 
-      var expectedGenerator = _methodCallSqlGeneratorRegistry.GetGenerator (_methodInfo);
+      var expectedGenerator = _methodCallTransformerRegistry.GetGenerator (_methodInfo);
       Assert.That (_generatorStub, Is.SameAs (expectedGenerator));
     }
 
     [Test]
     public void Register_MethodTwice ()
     {
-      _methodCallSqlGeneratorRegistry.Register (_methodInfo, _generatorStub);
+      _methodCallTransformerRegistry.Register (_methodInfo, _generatorStub);
 
       var generatorStub = MockRepository.GenerateStub<IMethodCallSqlGenerator>();
-      _methodCallSqlGeneratorRegistry.Register (_methodInfo, generatorStub);
+      _methodCallTransformerRegistry.Register (_methodInfo, generatorStub);
 
-      var expectedGenerator = _methodCallSqlGeneratorRegistry.GetGenerator (_methodInfo);
+      var expectedGenerator = _methodCallTransformerRegistry.GetGenerator (_methodInfo);
       Assert.That (_generatorStub, Is.Not.EqualTo (expectedGenerator));
       Assert.That (generatorStub, Is.EqualTo (expectedGenerator));
     }
@@ -93,12 +94,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var methodInfo = typeof (string).GetMethod ("EndsWith", new[] { typeof (string) });
       IEnumerable<MethodInfo> methodInfos = new List<MethodInfo> { _methodInfo, methodInfo };
-      _methodCallSqlGeneratorRegistry.Register (methodInfos, _generatorStub);
+      _methodCallTransformerRegistry.Register (methodInfos, _generatorStub);
 
-      var expectedGenerator = _methodCallSqlGeneratorRegistry.GetGenerator (_methodInfo);
+      var expectedGenerator = _methodCallTransformerRegistry.GetGenerator (_methodInfo);
       Assert.That (_generatorStub, Is.SameAs (expectedGenerator));
 
-      var expectedGenerator2 = _methodCallSqlGeneratorRegistry.GetGenerator (methodInfo);
+      var expectedGenerator2 = _methodCallTransformerRegistry.GetGenerator (methodInfo);
       Assert.That (_generatorStub, Is.SameAs (expectedGenerator2));
     }
 
@@ -107,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
                                                                           + "generator, and no custom generator has been registered.")]
     public void GetGenerator_DontFindGenerator_Exception ()
     {
-      var methodCallSqlGeneratorRegistry = new MethodCallSqlGeneratorRegistry();
+      var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry();
       methodCallSqlGeneratorRegistry.GetGenerator (_methodInfo);
     }
 
@@ -119,9 +120,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
                                      select m).Single();
       var closedGenericMethod = genericMethodDefinition.MakeGenericMethod (typeof (Cook));
 
-      _methodCallSqlGeneratorRegistry.Register (genericMethodDefinition, _generatorStub);
+      _methodCallTransformerRegistry.Register (genericMethodDefinition, _generatorStub);
 
-      var expectedGenerator = _methodCallSqlGeneratorRegistry.GetGenerator (closedGenericMethod);
+      var expectedGenerator = _methodCallTransformerRegistry.GetGenerator (closedGenericMethod);
 
       Assert.That (expectedGenerator, Is.SameAs (_generatorStub));
     }
@@ -132,11 +133,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       object test = new object();
       var methodInfo = ReflectionUtility.GetMethod (() => test.ToString());
 
-      _methodCallSqlGeneratorRegistry.Register (methodInfo, _generatorStub);
+      _methodCallTransformerRegistry.Register (methodInfo, _generatorStub);
 
       int i = 5;
       var intMethodInfo = ReflectionUtility.GetMethod (() => i.ToString());
-      var result = _methodCallSqlGeneratorRegistry.GetGenerator (intMethodInfo);
+      var result = _methodCallTransformerRegistry.GetGenerator (intMethodInfo);
 
       Assert.That (result, Is.EqualTo (_generatorStub));
     }

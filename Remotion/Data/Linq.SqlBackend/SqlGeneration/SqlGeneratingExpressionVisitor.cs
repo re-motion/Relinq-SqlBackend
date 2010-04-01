@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -35,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public static void GenerateSql (
         Expression expression,
         SqlCommandBuilder commandBuilder,
-        MethodCallSqlGeneratorRegistry methodCallRegistry,
+        MethodCallTransformerRegistry methodCallRegistry,
         SqlExpressionContext context,
         ISqlGenerationStage stage)
     {
@@ -51,12 +52,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     }
 
     private readonly SqlCommandBuilder _commandBuilder;
-    private readonly MethodCallSqlGeneratorRegistry _methodCallRegistry;
+    private readonly MethodCallTransformerRegistry _methodCallRegistry;
     private readonly BinaryExpressionTextGenerator _binaryExpressionTextGenerator;
     private readonly ISqlGenerationStage _stage;
 
     protected SqlGeneratingExpressionVisitor (
-        SqlCommandBuilder commandBuilder, MethodCallSqlGeneratorRegistry methodCallRegistry, ISqlGenerationStage stage)
+        SqlCommandBuilder commandBuilder, MethodCallTransformerRegistry methodCallRegistry, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("methodCallRegistry", methodCallRegistry);
@@ -217,6 +218,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    //TODO: 2511 remove method
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
       var generator = _methodCallRegistry.GetGenerator (expression.Method);

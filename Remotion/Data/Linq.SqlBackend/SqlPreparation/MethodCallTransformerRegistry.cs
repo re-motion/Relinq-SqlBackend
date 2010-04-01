@@ -17,27 +17,28 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// <see cref="MethodCallSqlGeneratorRegistry"/> is used to register and get <see cref="IMethodCallSqlGenerator"/> instances.
+  /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallSqlGenerator"/> instances.
   /// </summary>
-  public class MethodCallSqlGeneratorRegistry
+  public class MethodCallTransformerRegistry
   {
     private readonly Dictionary<MethodInfo, IMethodCallSqlGenerator> _generators;
 
     /// <summary>
-    /// Creates a default <see cref="MethodCallSqlGeneratorRegistry"/>, which has all types implementing <see cref="IMethodCallSqlGenerator"/> from the
+    /// Creates a default <see cref="MethodCallTransformerRegistry"/>, which has all types implementing <see cref="IMethodCallSqlGenerator"/> from the
     /// re-linq assembly automatically registered, as long as they offer a public static <c>SupportedMethods</c> field.
     /// </summary>
-    /// <returns>A default <see cref="MethodCallSqlGeneratorRegistry"/> with all <see cref="IMethodCallSqlGenerator"/>s with a <c>SupportedMethods</c>
+    /// <returns>A default <see cref="MethodCallTransformerRegistry"/> with all <see cref="IMethodCallSqlGenerator"/>s with a <c>SupportedMethods</c>
     /// field registered.</returns>
-    public static MethodCallSqlGeneratorRegistry CreateDefault ()
+    public static MethodCallTransformerRegistry CreateDefault ()
     {
-      var methodGenerators = from t in typeof (MethodCallSqlGeneratorRegistry).Assembly.GetTypes ()
+      var methodGenerators = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
                              where typeof (IMethodCallSqlGenerator).IsAssignableFrom (t)
                              select t;
 
@@ -46,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
                                      where supportedMethodsField != null
                                      select new { Generator = t, Methods = (IEnumerable<MethodInfo>) supportedMethodsField.GetValue (null) };
 
-      var registry = new MethodCallSqlGeneratorRegistry();
+      var registry = new MethodCallTransformerRegistry();
 
       foreach (var supportedMethodsForType in supportedMethodsForTypes)
       {
@@ -56,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return registry;
     }
 
-    public MethodCallSqlGeneratorRegistry ()
+    public MethodCallTransformerRegistry ()
     {
       _generators = new Dictionary<MethodInfo, IMethodCallSqlGenerator> ();
     }

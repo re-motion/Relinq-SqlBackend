@@ -16,15 +16,16 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="RemoveMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the remove method.
+  /// <see cref="SubstringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the substring method.
   /// </summary>
-  public class RemoveMethodCallTransformer : IMethodCallTransformer
+  public class SubstringMethodCallTransformer : IMethodCallTransformer
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
@@ -36,24 +37,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
       {
         return new SqlFunctionExpression (
             methodCallExpression.Type,
-            "STUFF",
+            "SUBSTRING",
             methodCallExpression.Object,
             startIndexExpression,
-            new SqlFunctionExpression (methodCallExpression.Object.Type, "LEN", methodCallExpression.Object),
-            new SqlLiteralExpression ("''"));
+            new SqlFunctionExpression (methodCallExpression.Object.Type, "LEN", methodCallExpression.Object));
       }
       else if (methodCallExpression.Arguments.Count == 2)
       {
         return new SqlFunctionExpression (
             methodCallExpression.Type,
-            "STUFF",
+            "SUBSTRING",
             methodCallExpression.Object,
             startIndexExpression,
-            methodCallExpression.Arguments[1],
-            new SqlLiteralExpression ("''"));
+            methodCallExpression.Arguments[1]);
       }
       else
-        throw new NotSupportedException (string.Format ("Remove function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
+      {
+        throw new NotSupportedException (
+            string.Format ("Substring function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
+      }
     }
   }
 }

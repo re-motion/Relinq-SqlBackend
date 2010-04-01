@@ -16,21 +16,22 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ContainsMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the contains method.
+  /// <see cref="EndsWithMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the ends-with method.
   /// </summary>
-  public class ContainsMethodCallTransformer : IMethodCallTransformer
+  public class EndsWithMethodCallTransformer : IMethodCallTransformer
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      var rightExpression = Expression.Constant (string.Format ("'%{0}%'", methodCallExpression.Arguments[0]));
+      var rightExpression = Expression.Constant (string.Format ("'%{0}'", methodCallExpression.Arguments[0]));
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }

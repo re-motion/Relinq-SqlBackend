@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -50,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _stage = new DefaultSqlGenerationStage(MethodCallSqlGeneratorRegistry.CreateDefault());
+      _stage = new DefaultSqlGenerationStage(MethodCallTransformerRegistry.CreateDefault());
       _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { });
       _commandBuilder = new SqlCommandBuilder();
     }
