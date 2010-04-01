@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _generator = new UniqueIdentifierGenerator();
       _context = new SqlPreparationContext();
-      _defaultStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault2 (), _context, _generator);
+      _defaultStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault (), _context, _generator);
 
       _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _selectClause = ExpressionHelper.CreateSelectClause (_mainFromClause);

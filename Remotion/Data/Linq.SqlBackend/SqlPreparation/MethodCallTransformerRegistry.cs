@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     /// </summary>
     /// <returns>A default <see cref="MethodCallTransformerRegistry"/> with all <see cref="IMethodCallTransformer"/>s with a <c>SupportedMethods</c>
     /// field registered.</returns>
-    public static MethodCallTransformerRegistry CreateDefault2 ()
+    public static MethodCallTransformerRegistry CreateDefault ()
     {
       var methodTransformers = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
                              where typeof (IMethodCallTransformer).IsAssignableFrom (t)
@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       foreach (var supportedMethodsForType in supportedMethodsForTypes)
       {
-        registry.Register2 (supportedMethodsForType.Methods, (IMethodCallTransformer) Activator.CreateInstance (supportedMethodsForType.Generator));
+        registry.Register (supportedMethodsForType.Methods, (IMethodCallTransformer) Activator.CreateInstance (supportedMethodsForType.Generator));
       }
 
       return registry;
@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _transformers = new Dictionary<MethodInfo, IMethodCallTransformer>();
     }
 
-    public void Register2 (MethodInfo methodInfo, IMethodCallTransformer transformer)
+    public void Register (MethodInfo methodInfo, IMethodCallTransformer transformer)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("transformer", transformer);
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _transformers[methodInfo] = transformer;
     }
 
-    public void Register2 (IEnumerable<MethodInfo> methodInfos, IMethodCallTransformer transformer)
+    public void Register (IEnumerable<MethodInfo> methodInfos, IMethodCallTransformer transformer)
     {
       ArgumentUtility.CheckNotNull ("methodInfos", methodInfos);
       ArgumentUtility.CheckNotNull ("transformer", transformer);
