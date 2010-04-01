@@ -181,7 +181,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _commandBuilder.Append (expression.SqlFunctioName);
+      _commandBuilder.Append ("(");
+      VisitExpression (expression.Prefix);
+      foreach (var arg in expression.Args)
+      {
+        _commandBuilder.Append (", ");
+        VisitExpression (arg);
+      }
+      _commandBuilder.Append (")");
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)

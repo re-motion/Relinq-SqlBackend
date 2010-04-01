@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].*"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].*"));
     }
 
     [Test]
@@ -363,13 +363,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlBinaryOperatorExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
-      var sqlSubStatementExpression = new SqlSubStatementExpression(sqlStatement, typeof(Cook));
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
       var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock
           .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
-      
+
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlInExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
 
@@ -383,9 +383,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var nullExpression = Expression.Constant (null);
       var sqlIsNullExpression = new SqlIsNullExpression (nullExpression, expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1 IS NULL)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 IS NULL)"));
     }
 
     [Test]
@@ -395,9 +396,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var nullExpression = Expression.Constant (null);
       var sqlIsNullExpression = new SqlIsNullExpression (nullExpression, expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlIsNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1 = 0)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 = 0)"));
     }
 
     [Test]
@@ -407,9 +409,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var nullExpression = Expression.Constant (null);
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (nullExpression, expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNotNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlIsNotNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1 IS NOT NULL)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 IS NOT NULL)"));
     }
 
     [Test]
@@ -419,10 +422,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var nullExpression = Expression.Constant (null);
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (nullExpression, expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlIsNotNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlIsNotNullExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1 <> 0)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 <> 0)"));
     }
 
+    [Test]
+    public void VisitSqlFunctionExpression ()
+    {
+      var sqlFunctionExpression = new SqlFunctionExpression (typeof (int), "LENFUNC", new SqlLiteralExpression ("test"), new SqlLiteralExpression (1));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlFunctionExpression, _commandBuilder, _methodCallRegistry, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("LENFUNC(test, 1)"));
+    }
   }
 }
