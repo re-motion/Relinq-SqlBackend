@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
       var transformer = new StartsWithMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var rightExpression = Expression.Constant (string.Format ("{0}%", argument1));
+      var rightExpression = Expression.Constant (string.Format ("'{0}%'", argument1));
 
       var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
 

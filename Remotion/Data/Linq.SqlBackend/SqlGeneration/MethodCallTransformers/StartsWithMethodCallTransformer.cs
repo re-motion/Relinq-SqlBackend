@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      var rightExpression = Expression.Constant (string.Format ("{0}%", methodCallExpression.Arguments[0]));
+      var rightExpression = Expression.Constant (string.Format ("'{0}%'", methodCallExpression.Arguments[0]));
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }
