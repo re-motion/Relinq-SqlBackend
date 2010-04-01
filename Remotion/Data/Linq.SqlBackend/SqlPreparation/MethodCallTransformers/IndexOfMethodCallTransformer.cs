@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -26,6 +27,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class IndexOfMethodCallTransformer : IMethodCallTransformer
   {
+    public static readonly MethodInfo[] SupportedMethods =
+        new[]
+        {
+            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(string) }),
+            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(char) }),
+            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(string), typeof(int) }),
+            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(char), typeof(int) }),
+            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(string), typeof(int),typeof(int) }),
+            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(char), typeof(int),typeof(int) })
+        };
+
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       if (methodCallExpression.Arguments.Count == 1)

@@ -20,12 +20,20 @@ using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
 {
   [TestFixture]
   public class ContainsMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          ContainsMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Contains", new Type[] { typeof (string) })));
+    }
+
     [Test]
     public void Transform ()
     {

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,6 +27,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
   [TestFixture]
   public class ReplaceMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          ReplaceMethodCallTransformer.SupportedMethods.Contains (
+              typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) })));
+    }
+
     [Test]
     public void Transform ()
     {

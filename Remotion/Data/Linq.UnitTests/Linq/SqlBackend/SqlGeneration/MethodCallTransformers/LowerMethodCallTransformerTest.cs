@@ -20,12 +20,20 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
 {
   [TestFixture]
   public class LowerMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          LowerMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToLower", new Type[] { })));
+    }
+
     [Test]
     public void Transform ()
     {

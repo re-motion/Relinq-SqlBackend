@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,6 +27,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
   [TestFixture]
   public class UpperMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          UpperMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToUpper", new Type[] { })));
+    }
+
     [Test]
     public void Transform ()
     {

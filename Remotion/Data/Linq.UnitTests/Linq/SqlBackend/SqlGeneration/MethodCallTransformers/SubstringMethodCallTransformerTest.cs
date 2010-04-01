@@ -20,12 +20,20 @@ using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
 {
   [TestFixture]
   public class SubstringMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (SubstringMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int) })));
+      Assert.IsTrue (SubstringMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) })));
+    }
+
     [Test]
     public void Transform_WithOneArgument ()
     {

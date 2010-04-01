@@ -20,12 +20,31 @@ using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
 {
   [TestFixture]
   public class IndexOfMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("IndexOf", new Type[] { typeof (string) })));
+      Assert.IsTrue (
+          IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("IndexOf", new Type[] { typeof (char) })));
+      Assert.IsTrue (
+        IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("IndexOf", new Type[] { typeof (string), typeof (int) })));
+      Assert.IsTrue (
+        IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("IndexOf", new Type[] { typeof (char), typeof (int) })));
+      Assert.IsTrue (
+        IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("IndexOf", new Type[] { typeof (string), typeof (int), typeof (int) })));
+      Assert.IsTrue (
+        IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("IndexOf", new Type[] { typeof (char), typeof (int), typeof (int) })));
+
+    }
+
     [Test]
     public void Transform_WithOneArgument_TypeString ()
     {

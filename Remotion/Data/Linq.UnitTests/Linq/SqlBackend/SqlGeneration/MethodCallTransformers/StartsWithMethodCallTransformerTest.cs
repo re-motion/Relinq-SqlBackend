@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
@@ -26,6 +27,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallT
   [TestFixture]
   public class StartsWithMethodCallTransformerTest
   {
+    [Test]
+    public void SupportedMethods ()
+    {
+      Assert.IsTrue (
+          StartsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("StartsWith", new[] { typeof (string) })));
+    }
+
     [Test]
     public void Transform ()
     {
