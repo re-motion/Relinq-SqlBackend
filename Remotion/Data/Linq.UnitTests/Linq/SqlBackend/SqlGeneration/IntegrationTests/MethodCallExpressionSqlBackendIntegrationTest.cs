@@ -158,19 +158,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     //TODO extension methods
 
     [Test]
-    [Ignore ("TODO 2490")]
     public void Like ()
     {
       CheckQuery (
           from c in Cooks where c.FirstName.Like ("%ab%c") select c.ID,
           "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "%a%bc")
+          new CommandParameter ("@1", "%ab%c")
           );
+
       CheckQuery (
           from c in Cooks where c.FirstName.Like (c.Name) select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]",
-          new CommandParameter ("@1", "%a%bc")
-          );
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]");
     }
 
     [Test]

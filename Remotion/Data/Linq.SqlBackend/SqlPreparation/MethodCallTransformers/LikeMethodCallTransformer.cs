@@ -37,13 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      if (!(methodCallExpression.Arguments[1] is ConstantExpression))
-        throw new NotSupportedException ("Only expressions that can be evaluated locally can be used as the argument for Contains.");
-
-      var rightExpression =
-          Expression.Constant (string.Format ("{0}", ((ConstantExpression) methodCallExpression.Arguments[1]).Value));
-
-      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Arguments[0], rightExpression);
+      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
     }
   }
 }
