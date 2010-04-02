@@ -108,17 +108,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (1));
     }
 
-    // TODO Review 2494: No need to test this twice, the stage code being executed is the same as for the previous test
-    [Test]
-    public void GenerateTextForOrderByExpression_SqlColumnExpression ()
-    {
-      var expression = new SqlColumnExpression (typeof (int), "c", "ID");
-
-      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[ID]"));
-    }
-
     [Test]
     public void GenerateTextForSqlStatement ()
     {
