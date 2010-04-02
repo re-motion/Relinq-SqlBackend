@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       _restaurants = ExpressionHelper.CreateRestaurantQueryable();
     }
 
-    protected SqlCommand GenerateSql (Expression expression)
+    protected SqlCommandData GenerateSql (Expression expression)
     {
       var queryModel = ExpressionHelper.ParseQuery (expression);
 

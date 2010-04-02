@@ -21,15 +21,14 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlCommand"/> contains the SQL command text and parameters generated for a LINQ query.
+  /// <see cref="SqlCommandData"/> contains the SQL command text and parameters generated for a LINQ query.
   /// </summary>
-  // TODO Review 2440: Rename to SqlCommandData - a sqlCommand class already exists in ADO.NET.
-  public struct SqlCommand
+  public struct SqlCommandData
   {
     private readonly string _commandText;
     private readonly CommandParameter[] _parameters;
 
-    public SqlCommand (string commandText, CommandParameter[] parameters) : this ()
+    public SqlCommandData (string commandText, CommandParameter[] parameters) : this ()
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);

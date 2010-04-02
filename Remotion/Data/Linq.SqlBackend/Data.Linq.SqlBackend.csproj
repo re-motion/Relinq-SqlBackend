@@ -73,7 +73,7 @@
     <Compile Include="SqlGeneration\DefaultSqlGenerationStage.cs" />
     <Compile Include="SqlGeneration\ISqlGenerationStage.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformerRegistry.cs" />
-    <Compile Include="SqlGeneration\SqlCommand.cs" />
+    <Compile Include="SqlGeneration\SqlCommandData.cs" />
     <Compile Include="SqlGeneration\SqlCommandBuilder.cs" />
     <Compile Include="SqlGeneration\SqlContextExpressionVisitor.cs" />
     <Compile Include="SqlGeneration\SqlExpressionContext.cs" />

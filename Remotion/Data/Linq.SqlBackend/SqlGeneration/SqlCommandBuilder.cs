@@ -63,9 +63,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return _parameters.ToArray();
     }
 
-    public SqlCommand GetCommand ()
+    public SqlCommandData GetCommand ()
     {
-      return new SqlCommand(GetCommandText(), GetCommandParameters());
+      return new SqlCommandData(GetCommandText(), GetCommandParameters());
     }
   }
 }
