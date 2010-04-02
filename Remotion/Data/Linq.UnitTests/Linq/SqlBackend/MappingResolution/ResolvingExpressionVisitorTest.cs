@@ -309,6 +309,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
     }
 
+
+    [Test]
+    public void VisitSqlConvertExpression ()
+    {
+      var expression = Expression.Constant (1);
+      var sqlConvertExpression = new SqlConvertExpression (typeof (int), expression);
+
+      var resolvedExpression = Expression.Constant ("1");
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (resolvedExpression);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlConvertExpression, _resolverMock, _generator, _stageMock);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
+      Assert.That (((SqlConvertExpression) result).Type, Is.EqualTo(typeof(int)) );
+      Assert.That (((SqlConvertExpression) result).Source, Is.SameAs (resolvedExpression));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
     private void StubResolveTableInfo ()
     {
       _resolverMock
