@@ -104,10 +104,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2490")]
     public void Convert ()
     {
       // Test convert for different type combinations
+      CheckQuery (
+          from c in Cooks select c.ID.ToString(),
+          "SELECT CONVERT(NVARCHAR, [t0].[ID]) FROM [CookTable] AS [t0]"
+          );
     }
 
     [Test]

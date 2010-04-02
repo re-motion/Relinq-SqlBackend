@@ -30,6 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
+      Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (object).GetMethod ("ToString", new Type[] {  })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (int) })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (bool) })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (object) })));

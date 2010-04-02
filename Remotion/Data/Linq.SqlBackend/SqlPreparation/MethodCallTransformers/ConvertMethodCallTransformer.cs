@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
+            typeof(object).GetMethod("ToString", new Type[] {}),
             typeof (Convert).GetMethod ("ToString", new[] { typeof (int) }),
             typeof (Convert).GetMethod ("ToString", new[] { typeof (bool) }), 
             typeof (Convert).GetMethod ("ToString", new[] { typeof (object) }),
