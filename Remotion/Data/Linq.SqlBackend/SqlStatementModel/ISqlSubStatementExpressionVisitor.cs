@@ -28,5 +28,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   {
     Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression);
     Expression VisitSqlFunctionExpression (SqlFunctionExpression expression);
+    Expression VisitSqlConvertExpression (SqlConvertExpression expression);
   }
 }

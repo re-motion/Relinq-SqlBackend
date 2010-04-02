@@ -121,5 +121,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return expression;
     }
+
+    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    {
+      //TODO: 2510
+      // translate source expression
+      throw new NotImplementedException();
+    }
   }
 }

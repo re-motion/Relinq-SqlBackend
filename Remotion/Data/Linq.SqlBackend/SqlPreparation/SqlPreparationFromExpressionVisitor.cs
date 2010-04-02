@@ -32,14 +32,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationFromExpressionVisitor : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementExpressionVisitor
   {
-    public static SqlTableBase GetTableForFromExpression (Expression fromExpression, Type itemType, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
+    public static SqlTableBase GetTableForFromExpression (
+        Expression fromExpression, Type itemType, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("itemType", itemType);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var visitor = new SqlPreparationFromExpressionVisitor(itemType, generator);
+      var visitor = new SqlPreparationFromExpressionVisitor (itemType, generator);
       var result = (SqlTableReferenceExpression) visitor.VisitExpression (fromExpression);
       return result.SqlTable;
     }
@@ -67,8 +68,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public Expression VisitSqlMemberExpression (SqlMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
-      var joinedTable = new SqlJoinedTable (new UnresolvedJoinInfo(expression.SqlTable, expression.MemberInfo, JoinCardinality.Many));
+
+      var joinedTable = new SqlJoinedTable (new UnresolvedJoinInfo (expression.SqlTable, expression.MemberInfo, JoinCardinality.Many));
 
       return new SqlTableReferenceExpression (joinedTable);
     }
@@ -79,7 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // on an unresolved table info to the mapping resolution stage. Should we ever have the need to resolve subqueries in the mapping resolution 
       // stage, we should refactor this into an UnresolvedSubStatemenTableInfo. (Of course, the statement inside the ResolvedSubStatementTableInfo is 
       // resolved anyway.)
-      
+
       var type = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "expression");
       var tableInfo = new ResolvedSubStatementTableInfo (type, _generator.GetUniqueIdentifier ("q"), expression.SqlStatement);
       var sqlTable = new SqlTable (tableInfo);
@@ -110,5 +111,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return base.VisitUnknownExpression (expression);
     }
 
+    Expression ISqlSubStatementExpressionVisitor.VisitSqlConvertExpression (SqlConvertExpression expression)
+    {
+      return base.VisitUnknownExpression (expression);
+    }
   }
 }

@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       if (_sqlTypeMapper.ContainsKey (Type))
         return _sqlTypeMapper[Type];
       else
-        throw new KeyNotFoundException (string.Format("No appropriate mapper for type '{0}' found.", Type.Name));
+        throw new KeyNotFoundException (string.Format ("No appropriate mapper for type '{0}' found.", Type.Name));
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -65,7 +65,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      throw new NotImplementedException();
+      var specificVisitor = visitor as ISqlSubStatementExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlConvertExpression (this);
+      else
+        return base.Accept (visitor);
     }
   }
 }
