@@ -247,19 +247,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (0));
     }
 
-    //[Test]
-    //public void VisitMethodCallExpression_ConvertTo ()
-    //{
-    //  var method = typeof (Convert).GetMethod ("ToString", new [] { typeof(int) });
-    //  var constantExpression = Expression.Constant ("Test");
-    //  var methodCallExpression = Expression.Call (constantExpression, method);
+    [Test]
+    public void VisitMethodCallExpression_ConvertToInt64 ()
+    {
+      var method = typeof (Convert).GetMethod ("ToInt64", new Type[] { typeof(string) });
+      var constantExpression = Expression.Constant ("1");
+      var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
 
-    //  var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
 
-    //  Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
-    //  Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
-    //  Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (constantExpression));
-    //  Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (0));
-    //}
+      Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
+      Assert.That (result.Type, Is.EqualTo (typeof (Int64)));
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_ConvertToString ()
+    {
+      var method = typeof (Convert).GetMethod ("ToString", new Type[] { typeof (int) });
+      var constantExpression = Expression.Constant (1);
+      var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
+      Assert.That (result.Type, Is.EqualTo (typeof (string)));
+    }
   }
 }
