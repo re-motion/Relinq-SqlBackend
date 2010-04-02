@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// Analyzes the <see cref="FromClauseBase.FromExpression"/> of a <see cref="FromClauseBase"/> and returns a <see cref="SqlTableBase"/> that 
   /// represents the data source of the <see cref="FromClauseBase"/>.
   /// </summary>
-  public class SqlPreparationFromExpressionVisitor : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementExpressionVisitor
+  public class SqlPreparationFromExpressionVisitor : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlResultExpressionVisitor
   {
     public static SqlTableBase GetTableForFromExpression (
         Expression fromExpression, Type itemType, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
@@ -106,12 +106,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return base.VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSubStatementExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    Expression ISqlResultExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
       return base.VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSubStatementExpressionVisitor.VisitSqlConvertExpression (SqlConvertExpression expression)
+    Expression ISqlResultExpressionVisitor.VisitSqlConvertExpression (SqlConvertExpression expression)
     {
       return base.VisitUnknownExpression (expression);
     }
