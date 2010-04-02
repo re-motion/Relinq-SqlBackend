@@ -106,11 +106,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void Convert ()
     {
-      // Test convert for different type combinations
       CheckQuery (
-          from c in Cooks select c.ID.ToString(),
+          from c in Cooks select c.ID.ToString (),
           "SELECT CONVERT(NVARCHAR, [t0].[ID]) FROM [CookTable] AS [t0]"
           );
+
+      //TODO: 2510: Convert.ToInt32, Convert.ToBoolean, etc.
     }
 
     [Test]
@@ -151,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
-          from c in Cooks select c.FirstName.Substring(3, 5),
+          from c in Cooks select c.FirstName.Substring (3, 5),
           "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), @2) FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3),
           new CommandParameter ("@2", 5)
@@ -162,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void IndexOf ()
     {
       CheckQuery (
-          from c in Cooks select c.FirstName.IndexOf("test"),
+          from c in Cooks select c.FirstName.IndexOf ("test"),
           "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", "test")
@@ -178,7 +179,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2),
           "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END "
-          +"FROM [CookTable] AS [t0]",
+          + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", 2),
           new CommandParameter ("@3", 2),
@@ -198,22 +199,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
 
       CheckQuery (
-         from c in Cooks select c.FirstName.IndexOf ("test", 2, 5),
-         "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
-         + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
-         new CommandParameter ("@1", "test"),
-         new CommandParameter ("@2", 2),
-         new CommandParameter ("@3", 2),
-         new CommandParameter ("@4", "test"),
-         new CommandParameter ("@5", 2),
-         new CommandParameter ("@6", 5),
-         new CommandParameter ("@7", 2)
-         );
+          from c in Cooks select c.FirstName.IndexOf ("test", 2, 5),
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
+          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", "test"),
+          new CommandParameter ("@2", 2),
+          new CommandParameter ("@3", 2),
+          new CommandParameter ("@4", "test"),
+          new CommandParameter ("@5", 2),
+          new CommandParameter ("@6", 5),
+          new CommandParameter ("@7", 2)
+          );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2, 5),
           "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
-          +"ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
+          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
           new CommandParameter ("@3", 2),
@@ -222,7 +223,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@6", 5),
           new CommandParameter ("@7", 2)
           );
-
     }
 
     [Test]
@@ -278,6 +278,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks where c.FirstName.ContainsFreetext (c.Name) select c.ID,
           "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
     }
-
   }
 }
