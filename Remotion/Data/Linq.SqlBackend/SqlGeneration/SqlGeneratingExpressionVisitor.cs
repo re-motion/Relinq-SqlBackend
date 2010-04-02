@@ -186,9 +186,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
     {
-      //TODO 2510:
-      //create sql text
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      
+      _commandBuilder.Append ("CONVERT");
+      _commandBuilder.Append ("(");
+      _commandBuilder.Append (expression.GetSqlTypeName());
+      _commandBuilder.Append (", ");
+      VisitExpression (expression.Source);
+      _commandBuilder.Append (")");
+
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)

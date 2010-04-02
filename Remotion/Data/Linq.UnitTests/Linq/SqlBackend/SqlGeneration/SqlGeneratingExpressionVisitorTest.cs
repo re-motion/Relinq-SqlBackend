@@ -373,5 +373,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("LENFUNC(test, 1)"));
     }
+
+    [Test]
+    public void VisitSqlConvertExpression ()
+    {
+      var sqlConvertExpression = new SqlConvertExpression (typeof (string), Expression.Constant ("1"));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlConvertExpression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(NVARCHAR, @1)"));
+    }
   }
 }

@@ -43,11 +43,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     public void GetSqlTypeName ()
     {
       var result = _convertExpresion.GetSqlTypeName();
-      Assert.That (result, Is.EqualTo ("int"));
+      Assert.That (result, Is.EqualTo ("INT"));
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No appropriate mapper for type 'Cook' found.")]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No appropriate sql type for 'Cook' found.")]
     public void GetSqlTypeName_KeyNotFound_ThrowsException ()
     {
       var convertExpression = new SqlConvertExpression (typeof (Cook), Expression.Constant ("1"));

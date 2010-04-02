@@ -39,9 +39,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       _source = source;
       _sqlTypeMapper = new Dictionary<Type, string>
                        {
-                           { typeof (string), "nvarchar" },
-                           { typeof (int), "int" },
-                           { typeof (bool), "bit" },
+                           { typeof (string), "NVARCHAR" },
+                           { typeof (int), "INT" },
+                           { typeof (bool), "BIT" },
                        };
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       if (_sqlTypeMapper.ContainsKey (Type))
         return _sqlTypeMapper[Type];
       else
-        throw new KeyNotFoundException (string.Format ("No appropriate mapper for type '{0}' found.", Type.Name));
+        throw new KeyNotFoundException (string.Format ("No appropriate sql type for '{0}' found.", Type.Name));
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
