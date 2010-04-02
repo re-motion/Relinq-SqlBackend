@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   public class SqlConvertExpression : ExtensionExpression
   {
     private readonly Expression _source;
-    private Dictionary<Type, string> _sqlTypeMapper;
+    private readonly Dictionary<Type, string> _sqlTypeMapper;
 
     public SqlConvertExpression (Type targetType, Expression source)
         : base (targetType)
