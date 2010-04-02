@@ -27,14 +27,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     void GenerateTextForFromTable (SqlCommandBuilder commandBuilder, SqlTableBase table, bool isFirstTable);
     void GenerateTextForSelectExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext);
-    // TODO Review 2494: selectedSqlContext is not needed here, it's always PredicateRequired
-    void GenerateTextForWhereExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext);
-    // TODO Review 2494: selectedSqlContext is not needed here, it's always SingleValueRequired (cannot sort using a predicate or an entity)
-    void GenerateTextForOrderByExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext);
-    // TODO Review 2494: selectedSqlContext is not needed here, it's always SingleValueRequired (cannot use top with a predicate or an entity)
-    void GenerateTextForTopExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext);
+    void GenerateTextForWhereExpression (SqlCommandBuilder commandBuilder, Expression expression);
+    void GenerateTextForOrderByExpression (SqlCommandBuilder commandBuilder, Expression expression);
+    void GenerateTextForTopExpression (SqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForSqlStatement (SqlCommandBuilder commandBuilder, SqlStatement sqlStatement, SqlExpressionContext selectedSqlContext);
-    // TODO Review 2494: selectedSqlContext is not needed here, it's always SingleValueRequired (join keys cannot be a predicate or an entity)
-    void GenerateTextForJoinKeyExpression (SqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext);
+    void GenerateTextForJoinKeyExpression (SqlCommandBuilder commandBuilder, Expression expression);
   }
 }

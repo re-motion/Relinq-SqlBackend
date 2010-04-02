@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       get { return _commandText; }
     }
 
-    public CommandParameter[] Parameters //TODO: 2404 move type CommandParameter to SqlBackend
+    public CommandParameter[] Parameters
     {
       get { return _parameters; }
     }

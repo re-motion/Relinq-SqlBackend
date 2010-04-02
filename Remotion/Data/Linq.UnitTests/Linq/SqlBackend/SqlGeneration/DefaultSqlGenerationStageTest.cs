@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForTopExpression ()
     {
       _sqlStatement.TopExpression = Expression.Constant (5);
-      _stage.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression, SqlExpressionContext.SingleValueRequired);
+      _stage.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _sqlStatement.WhereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
 
-      _stage.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition, SqlExpressionContext.PredicateRequired);
+      _stage.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("((@1 = 1) AND (@2 = 1))"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (2));
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.Constant (1);
 
-      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
+      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new SqlColumnExpression (typeof (int), "c", "ID");
 
-      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
+      _stage.GenerateTextForOrderByExpression (_commandBuilder, expression);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[ID]"));
     }
@@ -136,7 +136,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new SqlColumnExpression (typeof (int), "c", "ID");
 
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, expression, SqlExpressionContext.ValueRequired);
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, expression);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[ID]"));
     }

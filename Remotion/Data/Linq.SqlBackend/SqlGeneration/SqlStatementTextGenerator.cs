@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         if (sqlStatement.TopExpression != null)
         {
           commandBuilder.Append ("TOP (");
-          _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression, selectedSqlContext);
+          _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression);
           commandBuilder.Append (") ");
         }
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection, selectedSqlContext);
@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition, selectedSqlContext);
+      _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition);
     }
 
     protected virtual void BuildOrderByPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
@@ -120,12 +120,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
         if (orderByClause.Expression.NodeType != ExpressionType.Constant)
         {
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression, selectedSqlContext);
+          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
         }
         else
         {
           commandBuilder.Append ("(SELECT ");
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression, selectedSqlContext);
+          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
           commandBuilder.Append (")");
         }
         commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString ().ToUpper ()));
