@@ -23,7 +23,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// Defines a custom visit method for <see cref="SqlSubStatementExpression"/> <see cref="ExtensionExpression"/> instances.
   /// </summary>
-  public interface ISqlResultExpressionVisitor
+  public interface ISqlSubStatementVisitor
   {
     Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression);
   }

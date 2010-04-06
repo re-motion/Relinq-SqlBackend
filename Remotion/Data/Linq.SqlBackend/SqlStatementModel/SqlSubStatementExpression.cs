@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var specificVisitor = visitor as ISqlResultExpressionVisitor;
+      var specificVisitor = visitor as ISqlSubStatementVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlSubStatementExpression(this);
       else

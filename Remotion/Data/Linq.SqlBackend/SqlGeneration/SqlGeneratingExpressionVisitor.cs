@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// <see cref="SqlGeneratingExpressionVisitor"/> implements <see cref="ThrowingExpressionTreeVisitor"/> and <see cref="IResolvedSqlExpressionVisitor"/>.
   /// </summary>
   public class SqlGeneratingExpressionVisitor
-      : ThrowingExpressionTreeVisitor, IResolvedSqlExpressionVisitor, ISqlSpecificExpressionVisitor, ISqlResultExpressionVisitor, IJoinConditionExpressionVisitor
+      : ThrowingExpressionTreeVisitor, IResolvedSqlExpressionVisitor, ISqlSpecificExpressionVisitor, ISqlSubStatementVisitor, IJoinConditionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, SqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
     {

@@ -62,7 +62,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
-    <Compile Include="SqlStatementModel\ISqlResultExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />
     <Compile Include="MappingResolution\ResolvingExpressionVisitor.cs" />
     <Compile Include="MappingResolution\ResolvingJoinInfoVisitor.cs" />
