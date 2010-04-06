@@ -63,18 +63,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      var newArgList = new List<Expression>();
-
       var newPrefix = visitor.VisitExpression (_prefix);
+      var newArgs = visitor.VisitAndConvert (_args, "VisitChildren");
 
-      // var newArgs = visitor.VisitAndConvert (_args, "VisitChildren");
-
-      foreach (var expression in Args)
-        newArgList.Add (visitor.VisitExpression (expression));
-
-      // TODO: Add a test that checks that this is returned when prefix and args are not changed
-      if ((_args.ToList() != newArgList) || (_prefix != newPrefix))
-        return new SqlFunctionExpression (Type, _sqlFunctioName, _prefix, newArgList.ToArray());
+      if ((_args != newArgs) || (_prefix != newPrefix))
+        return new SqlFunctionExpression (Type, _sqlFunctioName, _prefix, newArgs.ToArray());
       else
         return this;
     }

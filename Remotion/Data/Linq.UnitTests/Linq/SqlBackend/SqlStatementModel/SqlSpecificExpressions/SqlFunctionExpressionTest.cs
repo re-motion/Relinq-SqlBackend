@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -38,27 +40,65 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void VisitChildren ()
+    public void VisitChildren_NewArgs ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      var expression = Expression.Constant (3);
-
+      var newArgs = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1), Expression.Constant (2) });
+      
       visitorMock
           .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
           .Return (_sqlFunctionExpression.Prefix);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[0]))
-          .Return (expression);
-      visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[1]))
-          .Return (expression);
-      visitorMock.Replay();
+          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "VisitChildren"))
+          .Return (newArgs);
+      visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlFunctionExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.Not.SameAs (_sqlFunctionExpression));
+    }
+
+    [Test]
+    public void VisitChildren_NewPrefix ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var newPrefix = Expression.Constant (3);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
+          .Return (newPrefix);
+      visitorMock
+          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "VisitChildren"))
+          .Return (_sqlFunctionExpression.Args);
+      visitorMock.Replay ();
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlFunctionExpression, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.Not.SameAs (_sqlFunctionExpression));
+    }
+
+    [Test]
+    public void VisitChildren_SameSqlFunctionExpression ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
+          .Return (_sqlFunctionExpression.Prefix);
+      visitorMock
+          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args,"VisitChildren"))
+          .Return (_sqlFunctionExpression.Args);
+      visitorMock.Replay();
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlFunctionExpression, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (_sqlFunctionExpression));
     }
 
     [Test]
