@@ -244,7 +244,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
       Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
       Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (constantExpression));
-      Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (0));
+      Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (0));
     }
 
     [Test]

@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       Assert.That (result.Type, Is.EqualTo (typeof (string)));
       Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("REPLACE"));
       Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
-      Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (2));
+      Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (2));
     }
   }
 }

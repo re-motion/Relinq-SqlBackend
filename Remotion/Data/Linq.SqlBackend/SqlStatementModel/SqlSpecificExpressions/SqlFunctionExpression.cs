@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -31,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     private readonly string _sqlFunctioName;
     private readonly Expression _prefix;
-    private readonly Expression[] _args; // TODO: Change to ReadOnlyCollection<Expression>
+    private ReadOnlyCollection<Expression> _args;
 
     public SqlFunctionExpression (Type type, string sqlFunctioName, Expression prefix, params Expression[] args)
         : base (type)
@@ -40,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       ArgumentUtility.CheckNotNull ("sqlFunctioName", sqlFunctioName);
       ArgumentUtility.CheckNotNull ("prefix", prefix);
 
-      _args = args;
+      _args = Array.AsReadOnly(args);
       _sqlFunctioName = sqlFunctioName;
       _prefix = prefix;
     }
@@ -50,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _sqlFunctioName; }
     }
 
-    public Expression[] Args // TODO: Change to ReadOnlyCollection<Expression>
+    public ReadOnlyCollection<Expression> Args
     {
       get { return _args; }
     }
