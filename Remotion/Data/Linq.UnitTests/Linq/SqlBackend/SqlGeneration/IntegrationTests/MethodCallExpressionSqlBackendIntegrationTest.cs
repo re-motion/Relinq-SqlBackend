@@ -276,15 +276,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", "%ab%c")
           );
 
-      //CheckQuery (
-      //    from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c", "de") select c.ID,
-      //    "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE de)",
-      //    new CommandParameter ("@1", "%ab%c")
-      //    );
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c", "de") select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE de)",
+          new CommandParameter ("@1", "%ab%c")
+          );
 
-      //CheckQuery (
-      //    from c in Cooks where c.FirstName.ContainsFreetext (c.Name) select c.ID,
-      //    "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
+      CheckQuery (
+          from c in Cooks where c.FirstName.ContainsFreetext (c.Name) select c.ID,
+          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
     }
   }
 }
