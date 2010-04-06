@@ -55,21 +55,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void VisitChildren_ReturnsThis ()
+    public void VisitChildren_NewSource ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var newPrefix = Expression.Constant (3);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_convertExpresion.Source))
+          .Return (newPrefix);
       visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_convertExpresion));
+
+      Assert.That (result, Is.Not.SameAs (_convertExpresion));
     }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlConvertExpression, ISqlResultExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlConvertExpression, ISqlSpecificExpressionVisitor> (
           _convertExpresion,
           mock => mock.VisitSqlConvertExpression (_convertExpresion));
     }

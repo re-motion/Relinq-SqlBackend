@@ -205,6 +205,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
+    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)
     {
       switch (expressionType)

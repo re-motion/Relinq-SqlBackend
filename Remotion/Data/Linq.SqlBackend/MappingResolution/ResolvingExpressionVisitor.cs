@@ -15,12 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -103,36 +100,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _stage.ResolveSqlStatement (expression.SqlStatement);
-      return expression;
-    }
-
-    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
-    {
-      // TODO: return VisitUnknownExpression (expression);
-
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var newPrefixExpression = ResolveExpression (expression.Prefix, _resolver, _generator, _stage);
-      List<Expression> newArguments = new List<Expression>();
-
-      foreach (var arg in expression.Args)
-        newArguments.Add (ResolveExpression (arg, _resolver, _generator, _stage));
-      
-      if ((expression.Prefix != newPrefixExpression) || (expression.Args.ToList() != newArguments))
-        return new SqlFunctionExpression (expression.Type, expression.SqlFunctioName, newPrefixExpression, newArguments.ToArray());
-
-      return expression;
-    }
-
-    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var newExpression = ResolveExpression (expression.Source, _resolver, _generator, _stage);
-
-      if (expression.Source != newExpression)
-        return new SqlConvertExpression (expression.Type, newExpression);
-
       return expression;
     }
   }

@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
@@ -26,9 +25,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface ISqlResultExpressionVisitor
   {
-    //TODO: check name or define new interface for VisitSqlFunctionExpression/VisitSqlConvertExpression
     Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression);
-    Expression VisitSqlFunctionExpression (SqlFunctionExpression expression);
-    Expression VisitSqlConvertExpression (SqlConvertExpression expression);
   }
 }

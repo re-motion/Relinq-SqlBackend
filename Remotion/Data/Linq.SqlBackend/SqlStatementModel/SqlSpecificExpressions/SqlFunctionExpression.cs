@@ -67,14 +67,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       var newArgs = visitor.VisitAndConvert (_args, "VisitChildren");
 
       if ((_args != newArgs) || (_prefix != newPrefix))
-        return new SqlFunctionExpression (Type, _sqlFunctioName, _prefix, newArgs.ToArray());
+        return new SqlFunctionExpression (Type, _sqlFunctioName, newPrefix, newArgs.ToArray());
       else
         return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as ISqlResultExpressionVisitor;
+      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlFunctionExpression (this);
       else

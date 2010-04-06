@@ -60,12 +60,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      return this;
+      var newSource = visitor.VisitExpression (_source);
+
+      if (newSource != _source)
+        return new SqlConvertExpression (Type, newSource);
+      else
+        return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as ISqlResultExpressionVisitor;
+      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlConvertExpression (this);
       else
