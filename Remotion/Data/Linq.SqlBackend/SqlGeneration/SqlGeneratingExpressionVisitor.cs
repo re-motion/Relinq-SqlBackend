@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
     {
-      throw new NotImplementedException();
+      return VisitExpression (new SqlColumnExpression (expression.Type, expression.SqlTable.GetResolvedTableInfo().TableAlias, "value"));
     }
 
     public Expression VisitJoinConditionExpression (JoinConditionExpression expression)

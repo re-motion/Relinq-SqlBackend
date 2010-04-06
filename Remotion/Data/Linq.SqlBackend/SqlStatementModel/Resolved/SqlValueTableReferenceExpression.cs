@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlValueTableReferenceExpression : ExtensionExpression
   {
-    private SqlTable _sqlTable;
+    private readonly SqlTable _sqlTable;
 
     public SqlValueTableReferenceExpression (SqlTable sqlTable)
         : base(sqlTable.ItemType)
@@ -37,6 +37,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       _sqlTable = sqlTable;
     }
 
+    public SqlTable SqlTable
+    {
+      get { return _sqlTable; }
+    }
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
@@ -44,7 +49,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      throw new NotImplementedException();
+      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlValueTableReferenceExpression (this);
+      else
+        return base.Accept (visitor);
     }
 
   }

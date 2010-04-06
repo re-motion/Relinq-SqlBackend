@@ -383,5 +383,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(NVARCHAR, @1)"));
     }
+
+    [Test]
+    public void VisitSqlValueTableReferenceExpression ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (string));
+      var expression = new SqlValueTableReferenceExpression (sqlTable);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[value]"));
+    }
   }
 }

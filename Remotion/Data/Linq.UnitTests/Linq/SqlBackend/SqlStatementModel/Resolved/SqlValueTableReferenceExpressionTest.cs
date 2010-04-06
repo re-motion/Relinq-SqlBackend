@@ -47,5 +47,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       Assert.That (result, Is.SameAs (_expression));
       visitorMock.VerifyAllExpectations ();
     }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlValueTableReferenceExpression, IResolvedSqlExpressionVisitor> (
+          _expression,
+          mock => mock.VisitSqlValueTableReferenceExpression(_expression));
+    }
+
+    [Test]
+    public void Accept_VisitorNotSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
+    }
   }
 }
