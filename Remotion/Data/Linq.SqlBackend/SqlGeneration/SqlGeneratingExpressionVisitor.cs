@@ -98,6 +98,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
+    {
+      throw new NotImplementedException();
+    }
+
     public Expression VisitJoinConditionExpression (JoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
