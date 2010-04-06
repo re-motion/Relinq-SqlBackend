@@ -30,10 +30,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (object).GetMethod ("ToString", new Type[] {  })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (int) })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (bool) })));
-      Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (object) })));
+      Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToString", new[] { typeof (object) })));  
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToInt64", new[] { typeof (string) })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToInt64", new[] { typeof (string) })));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod ("ToInt64", new[] { typeof (bool) })));
@@ -48,14 +47,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void Transform ()
     {
-      var method = typeof (Convert).GetMethod ("ToString", new [] { typeof(int)  });
-      var argument = Expression.Constant (1);
-      var expression = Expression.Call (argument, method, argument);
+      var method = typeof (Convert).GetMethod ("ToInt32", new Type[] { typeof (string)});
+      var argument = Expression.Constant ("1");
 
-      var transformer = new ConvertMethodCallTransformer ();
+      var expression = Expression.Call (Expression.Constant ("1"), method, argument);
+      var transformer = new ConvertMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var fakeResult = new SqlConvertExpression (typeof(string), Expression.Constant(1));
+      var fakeResult = new SqlConvertExpression (typeof(int), Expression.Constant("1"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }

@@ -59,6 +59,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\ReplaceMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\StartsWithMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\SubstringMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlResultExpressionVisitor.cs" />

@@ -24,31 +24,21 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ConvertMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the convert method.
+  /// <see cref="ToStringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the ToString method.
   /// </summary>
-  public class ConvertMethodCallTransformer : IMethodCallTransformer
+  public class ToStringMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-            typeof (Convert).GetMethod ("ToString", new[] { typeof (int) }),
-            typeof (Convert).GetMethod ("ToString", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToString", new[] { typeof (object) }),
-            typeof (Convert).GetMethod ("ToInt64", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToInt64", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToInt32", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToInt32", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToInt16", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToInt16", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }),
+            typeof(object).GetMethod("ToString", new Type[] {}),
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      return new SqlConvertExpression (methodCallExpression.Type, methodCallExpression.Arguments[0]);
+      return new SqlConvertExpression (methodCallExpression.Type, methodCallExpression.Object);
     }
   }
 }
