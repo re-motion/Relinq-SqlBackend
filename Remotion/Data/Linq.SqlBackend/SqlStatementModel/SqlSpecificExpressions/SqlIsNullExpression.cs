@@ -23,15 +23,16 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
-  /// /// Represents 'is null' in a comparison.
+  /// Represents 'is null' in a comparison.
   /// </summary>
   public class SqlIsNullExpression : ExtensionExpression
   {
     private readonly Expression _nullExpression;
     private readonly Expression _expression;
 
+    // TODO Review 2528: IS NULL only needs one operand
     public SqlIsNullExpression (Expression nullExpression, Expression expression)
-        : base(typeof(bool))
+        : base (typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("nullExpression", nullExpression);
       ArgumentUtility.CheckNotNull ("expression", expression);

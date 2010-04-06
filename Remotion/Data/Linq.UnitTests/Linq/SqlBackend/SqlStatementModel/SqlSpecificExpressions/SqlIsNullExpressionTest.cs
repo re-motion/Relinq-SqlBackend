@@ -54,6 +54,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (expression));
     }
 
+    // TODO Review 2528: Also add a test for VisitChildren that shows that the returned expression is the same if the inner expression is not changed
+
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {

@@ -123,6 +123,33 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // TODO Review 2528: Rewrite as follows
+      //if (IsNullConstant (expression.Left))
+      //{
+      //  if (expression.NodeType == ExpressionType.Equal)
+      //    return VisitExpression (new SqlIsNullExpression (expression.Right));
+      //  else if (expression.NodeType == ExpressionType.NotEqual)
+      //    return VisitExpression (new SqlIsNotNullExpression (expression.Right));
+      //  else
+      //    return base.VisitBinaryExpression (expression);
+      //}
+      //else if (IsNullConstant (expression.Right))
+      //{
+      //  if (expression.NodeType == ExpressionType.Equal)
+      //    return VisitExpression (new SqlIsNullExpression (expression.Left));
+      //  else if (expression.NodeType == ExpressionType.NotEqual)
+      //    return VisitExpression (new SqlIsNotNullExpression (expression.Left));
+      //  else
+      //    return base.VisitBinaryExpression (expression);
+      //}
+      //else
+      //{
+      //  return base.VisitBinaryExpression (expression);
+      //}
+
+
       if (expression.NodeType == ExpressionType.Equal || expression.NodeType == ExpressionType.NotEqual)
       {
         if (((expression.Left is ConstantExpression) && ((ConstantExpression) expression.Left).Value == null)

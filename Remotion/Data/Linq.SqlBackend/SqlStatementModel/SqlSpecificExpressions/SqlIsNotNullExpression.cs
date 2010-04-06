@@ -30,6 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     private readonly Expression _nullExpression;
     private readonly Expression _expression;
 
+    // TODO Review 2528: IS NOT NULL only needs one operand
     public SqlIsNotNullExpression (Expression nullExpression, Expression expression)
         : base(typeof(bool))
     {

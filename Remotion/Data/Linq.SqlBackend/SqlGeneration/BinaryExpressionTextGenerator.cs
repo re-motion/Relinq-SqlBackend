@@ -68,6 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       switch (expression.NodeType)
       {
+        // TODO Review 2528: Refactor to handle Equal and NotEqual just like any other infix operator
         case ExpressionType.Equal:
           GenerateSqlForEqualityOperator (expression.Left, expression.Right, "=");
           break;

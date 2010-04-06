@@ -181,7 +181,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitBinaryExpression_ReturnsSqlIsNullExpression ()
+    public void VisitBinaryExpression ()
+    {
+      var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.SameAs (binaryExpression));
+    }
+
+    // TODO Review 2528: Add test showing that base.VisitBinaryExpression is called - visit a BinaryExpression whose left side and right side are QuerySourceReferenceExpressions; after the Visit call, both sides should be SqlTableReferenceExpressions 
+
+
+    // TODO Review 2528: Change the following tests to use a QuerySourceReferenceExpression for the non-null side; after the Visit method, the expression should be a SqlTableReferenceExpression
+    [Test]
+    public void VisitBinaryExpression_ReturnsSqlIsNullExpression_NullLeft ()
     {
       var leftExpression = Expression.Constant (null);
       var rightExpression = Expression.Constant ("1");
@@ -195,10 +208,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitBinaryExpression_ReturnsSqlIsNullExpressionWithCorrectPropertyOrder ()
+    public void VisitBinaryExpression_ReturnsSqlIsNullExpression_NullRight ()
     {
-      var rightExpression = Expression.Constant (null);
       var leftExpression = Expression.Constant ("1");
+      var rightExpression = Expression.Constant (null);
       var binaryExpression = Expression.Equal (leftExpression, rightExpression);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
@@ -209,28 +222,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitBinaryExpression_ReturnsSqlIsNotNullExpression ()
+    public void VisitBinaryExpression_ReturnsSqlIsNotNullExpression_NullLeft ()
     {
       var leftExpression = Expression.Constant (null);
       var rightExpression = Expression.Constant ("1");
       var binaryExpression = Expression.NotEqual (leftExpression, rightExpression);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
-
-
+      
       Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
       Assert.That (((SqlIsNotNullExpression) result).NullExpression, Is.SameAs (leftExpression));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
 
-    [Test]
-    public void VisitBinaryExpression ()
-    {
-      var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+    // TODO Review 2528: Test missing: ReturnsSqlIsNotNullExpression_NullRight
 
-      Assert.That (result, Is.SameAs (binaryExpression));
-    }
+    // TODO Review 2528: Also add tests that show that an expression that has nulls but is not an equals/non-equals expression is still visited correctly. Test this by using a Coerce expression with a null on the one side and a QuerySourceReferenceExpression on the other side. Test with null on the left and on the right side.
 
     [Test]
     public void VisitMethodCallExpression ()

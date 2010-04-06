@@ -392,29 +392,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlInExpression_NoSqlEntityExpression ()
+    public void VisitSqlBinaryExpression_NoSqlEntityExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
       var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), expression);
+      var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), expression);
 
-      var result = _visitor.VisitSqlBinaryOperatorExpression (sqlInExpression);
+      var result = _visitor.VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
 
       Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      Assert.That (result, Is.SameAs (sqlInExpression));
+      Assert.That (result, Is.SameAs (sqlBinaryOperatorExpression));
     }
 
     [Test]
-    public void VisitSqlInExpression_WithSqlEnitiyExpression ()
+    public void VisitSqlBinaryExpression_WithSqlEnitiyExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
       var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", entityExpression, expression);
+      var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", entityExpression, expression);
 
-      var result = _visitor.VisitSqlBinaryOperatorExpression (sqlInExpression);
+      var result = _visitor.VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
 
-      Assert.That (result, Is.Not.SameAs (sqlInExpression));
+      Assert.That (result, Is.Not.SameAs (sqlBinaryOperatorExpression));
     }
 
     [Test]
@@ -430,11 +430,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNullExpression_NewExpression ()
     {
+      // TODO Review 2528: Test using an entity instead - the entity must be converted to an ID column
       var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (null), Expression.Constant (true));
 
       var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
       
       Assert.That (result, Is.Not.SameAs (sqlIsNullExpression));
+      
       Assert.That (((SqlIsNullExpression) result).NullExpression, Is.TypeOf (typeof(SqlLiteralExpression)));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
     }
@@ -452,6 +454,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNotNullExpression_NewExpression ()
     {
+      // TODO Review 2528: Test using an entity instead - the entity must be converted to an ID column
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (null), Expression.Constant (true));
 
       var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
