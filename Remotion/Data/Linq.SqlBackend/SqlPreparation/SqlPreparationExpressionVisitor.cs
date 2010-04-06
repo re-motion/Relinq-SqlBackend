@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         expression.QueryModel.ResultOperators.RemoveAt (lastOperatorIndex);
 
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-        var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type); // TODO: type is not correct, use expression.QueryModel.GetOutputDataInfo().DataType
+        var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.QueryModel.GetOutputDataInfo ().DataType);
         return new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (containsOperator.Item), subStatementExpression);
       }
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
