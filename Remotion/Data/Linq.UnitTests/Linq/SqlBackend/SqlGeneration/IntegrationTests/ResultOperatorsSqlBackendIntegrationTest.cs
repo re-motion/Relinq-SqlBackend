@@ -176,13 +176,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void Contains_onTopLevel ()
+    public void Contains_OnTopLevel ()
     {
       var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           ( () => (from s in Cooks select s).Contains(cook)),
           "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END",
           new CommandParameter("@1", 23) );
+    }
+
+    [Test]
+    [Ignore("TODO 2547")]
+    public void Contains_WithConstantCollection ()
+    {
+      var cookNames = new[] { "hugo", "hans", "heinz" };
+      CheckQuery (
+          (from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName),
+          "SELECT [t0].[FirstName] FROM [CookTable] [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
+          new CommandParameter ("@1", "hugo"),
+          new CommandParameter ("@2", "hans"),
+          new CommandParameter ("@3", "heinz"));
+    }
+
+    [Test]
+    public void NonEntityType ()
+    {
+      var query = from c in Cooks.Select (c => c.FirstName) select c;
+      
     }
 
   }

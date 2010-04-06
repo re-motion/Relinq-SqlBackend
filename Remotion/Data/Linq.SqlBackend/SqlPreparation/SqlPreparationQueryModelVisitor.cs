@@ -151,7 +151,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
+        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type); // TODO: type is not correct, use typeof (IQueryable<>).MakeGenericType (itemExpression.Type)
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.ProjectionExpression = sqlInExpression;

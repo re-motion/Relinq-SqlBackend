@@ -108,6 +108,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
+      // TODO: return VisitUnknownExpression (expression);
+
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newPrefixExpression = ResolveExpression (expression.Prefix, _resolver, _generator, _stage);

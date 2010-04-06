@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     private readonly string _sqlFunctioName;
     private readonly Expression _prefix;
-    private readonly Expression[] _args;
+    private readonly Expression[] _args; // TODO: Change to ReadOnlyCollection<Expression>
 
     public SqlFunctionExpression (Type type, string sqlFunctioName, Expression prefix, params Expression[] args)
         : base (type)
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _sqlFunctioName; }
     }
 
-    public Expression[] Args
+    public Expression[] Args // TODO: Change to ReadOnlyCollection<Expression>
     {
       get { return _args; }
     }
@@ -66,9 +66,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
       var newPrefix = visitor.VisitExpression (_prefix);
 
+      // var newArgs = visitor.VisitAndConvert (_args, "VisitChildren");
+
       foreach (var expression in Args)
         newArgList.Add (visitor.VisitExpression (expression));
 
+      // TODO: Add a test that checks that this is returned when prefix and args are not changed
       if ((_args.ToList() != newArgList) || (_prefix != newPrefix))
         return new SqlFunctionExpression (Type, _sqlFunctioName, _prefix, newArgList.ToArray());
       else

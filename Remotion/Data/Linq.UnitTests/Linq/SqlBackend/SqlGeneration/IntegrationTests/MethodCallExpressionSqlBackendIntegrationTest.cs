@@ -111,6 +111,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT CONVERT(NVARCHAR, [t0].[ID]) FROM [CookTable] AS [t0]"
           );
 
+      //CheckQuery (
+      //    from c in Cooks select System.Convert.ToInt32 (c.FirstName),
+      //    "SELECT CONVERT(INT, [t0].[FirstName]) FROM [CookTable] AS [t0]"
+      //    );
+
       //TODO: 2510: Convert.ToInt32, Convert.ToBoolean, etc.
     }
 

@@ -111,12 +111,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var containsOperator = lastOperatorIndex >= 0 ? expression.QueryModel.ResultOperators[lastOperatorIndex] as ContainsResultOperator : null;
       if (containsOperator != null)
       {
-        var itemExpression = ((ContainsResultOperator) expression.QueryModel.ResultOperators.Last()).Item;
-        itemExpression = _stage.PrepareItemExpression (itemExpression);
         expression.QueryModel.ResultOperators.RemoveAt (lastOperatorIndex);
+
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-        var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type);
-        return new SqlBinaryOperatorExpression ("IN", itemExpression, subStatementExpression);
+        var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.Type); // TODO: type is not correct, use expression.QueryModel.GetOutputDataInfo().DataType
+        return new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (containsOperator.Item), subStatementExpression);
       }
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
       return new SqlSubStatementExpression (sqlStatement, expression.Type);
@@ -145,6 +144,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       return base.VisitBinaryExpression (expression);
     }
+
+   
 
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
