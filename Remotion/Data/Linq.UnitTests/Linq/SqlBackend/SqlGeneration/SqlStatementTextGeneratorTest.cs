@@ -192,7 +192,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END AS [value]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -283,7 +283,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.Build(_sqlStatement,_commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] AS [value]"));
       _stageMock.VerifyAllExpectations ();
     }
 

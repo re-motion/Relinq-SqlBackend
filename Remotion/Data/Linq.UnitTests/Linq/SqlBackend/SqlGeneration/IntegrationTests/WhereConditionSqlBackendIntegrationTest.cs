@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.IsFullTimeCook select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = 1)"
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = 1)"
           );
     }
 
@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where true select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 1)
           );
     }
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where false select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 0)
           );
     }
@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName == "hugo" select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1)",
           new CommandParameter ("@1", "hugo")
           );
     }

@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Distinct().Take (5),
-          "SELECT DISTINCT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]",
+          "SELECT DISTINCT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 5));
     }
 
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Distinct(),
-          "SELECT DISTINCT [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
+          "SELECT DISTINCT [t1].[FirstName] AS [value] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
           new CommandParameter ("@1", 5));
     }
 

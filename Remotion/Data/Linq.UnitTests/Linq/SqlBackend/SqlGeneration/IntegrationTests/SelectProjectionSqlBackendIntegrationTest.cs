@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens select "hugo",
-          "SELECT @1 FROM [KitchenTable] AS [t0]",
+          "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
           new CommandParameter ("@1", "hugo"));
     }
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           Kitchens.Select<Kitchen, object> (k => null),
-          "SELECT NULL FROM [KitchenTable] AS [t0]");
+          "SELECT NULL AS [value] FROM [KitchenTable] AS [t0]");
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens select true,
-          "SELECT @1 FROM [KitchenTable] AS [t0]",
+          "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
           new CommandParameter ("@1", 1));
     }
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens select false,
-          "SELECT @1 FROM [KitchenTable] AS [t0]",
+          "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
           new CommandParameter ("@1", 0));
     }
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens select k.Name == "SpecialKitchen",
-          "SELECT CASE WHEN ([t0].[Name] = @1) THEN 1 ELSE 0 END FROM [KitchenTable] AS [t0]",
+          "SELECT CASE WHEN ([t0].[Name] = @1) THEN 1 ELSE 0 END AS [value] FROM [KitchenTable] AS [t0]",
           new CommandParameter ("@1", "SpecialKitchen"));
     }
   }

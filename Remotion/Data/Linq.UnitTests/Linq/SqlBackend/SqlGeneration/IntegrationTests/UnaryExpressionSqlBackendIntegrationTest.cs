@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           query,
-          "SELECT +[t0].[Weight] FROM [CookTable] AS [t0]"
+          "SELECT +[t0].[Weight] AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select -c.ID,
-          "SELECT -[t0].[ID] FROM [CookTable] AS [t0]"
+          "SELECT -[t0].[ID] AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where !(c.FirstName == null) select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[FirstName] IS NULL)"
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE NOT ([t0].[FirstName] IS NULL)"
           );
     }
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where !c.IsStarredCook select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[IsStarredCook] = 1)"
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE NOT ([t0].[IsStarredCook] = 1)"
           );
     }
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select !c.IsStarredCook,
-          "SELECT CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END FROM [CookTable] AS [t0]"
+          "SELECT CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select ~c.ID,
-          "SELECT ~[t0].[ID] FROM [CookTable] AS [t0]"
+          "SELECT ~[t0].[ID] AS [value] FROM [CookTable] AS [t0]"
           );
     }
   }

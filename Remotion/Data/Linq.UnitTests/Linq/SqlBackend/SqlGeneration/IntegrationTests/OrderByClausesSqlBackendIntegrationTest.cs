@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks orderby s.Name select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC");
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC");
     }
 
     [Test]
@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks orderby s.Name , s.FirstName descending , s.Weight select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC, [t0].[FirstName] DESC, [t0].[Weight] ASC");
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC, [t0].[FirstName] DESC, [t0].[Weight] ASC");
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           orderby s.Name , s.FirstName descending , s.Weight
           orderby s.ID , s.IsFullTimeCook descending
           select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] "
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] "
           + "ORDER BY [t0].[ID] ASC, [t0].[IsFullTimeCook] DESC, [t0].[Name] ASC, [t0].[FirstName] DESC, [t0].[Weight] ASC");
     }
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           where s.FirstName != null
           orderby s.ID
           select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] "
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] "
           + "WHERE ([t0].[FirstName] IS NOT NULL) "
           + "ORDER BY [t0].[ID] ASC, [t0].[Name] ASC");
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks orderby 1 select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY (SELECT @1) ASC",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY (SELECT @1) ASC",
           new CommandParameter ("@1", 1));
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks orderby s.Name + " " + s.FirstName select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] ORDER BY (([t0].[Name] + @1) + [t0].[FirstName]) ASC",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY (([t0].[Name] + @1) + [t0].[FirstName]) ASC",
           new CommandParameter ("@1", " "));
     }
   }

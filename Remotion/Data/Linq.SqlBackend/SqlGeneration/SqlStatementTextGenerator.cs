@@ -86,8 +86,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection, selectedSqlContext);
 
-        //if (!(sqlStatement.SelectProjection is SqlEntityExpression) )
-        //  commandBuilder.Append (" AS [value]");
+        if (!(sqlStatement.SelectProjection is SqlEntityExpression))
+          commandBuilder.Append (" AS [value]");
       }
     }
 

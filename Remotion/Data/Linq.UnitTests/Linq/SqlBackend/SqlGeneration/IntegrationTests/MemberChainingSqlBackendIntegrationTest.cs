@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks select s.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0]");
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens select k.Cook.FirstName,
-          "SELECT [t1].[FirstName] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]");
+          "SELECT [t1].[FirstName] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]");
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.Substitution.FirstName,
-          "SELECT [t1].[FirstName] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
     }
 
     [Test]

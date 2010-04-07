@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks from k in Kitchens select s.Name,
-          "SELECT [t0].[Name] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1]");
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1]");
     }
 
     [Test]
@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks from k in Kitchens from r in Restaurants select k.Name,
-          "SELECT [t1].[Name] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] CROSS JOIN [RestaurantTable] AS [t2]");
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] CROSS JOIN [RestaurantTable] AS [t2]");
     }
 
     [Test]
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks from k in Kitchens where s.Substitution.Name == "Hugo" select k.Cook.FirstName,
-          "SELECT [t3].[FirstName] "
+          "SELECT [t3].[FirstName] AS [value] "
           + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
           + "CROSS JOIN [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
           + "WHERE ([t1].[Name] = @1)",
@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks from a in s.Assistants select a.Name,
-          "SELECT [t1].[Name] FROM [CookTable] AS [t0] "
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] "
           + "CROSS JOIN [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])"
           );
     }
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks from a in s.Assistants from r in Restaurants from c in r.Cooks where a.Name != null select c.Name,
-          "SELECT [t3].[Name] FROM [CookTable] AS [t0] "
+          "SELECT [t3].[Name] AS [value] FROM [CookTable] AS [t0] "
           + "CROSS JOIN [CookTable] AS [t1] "
           + "CROSS JOIN [RestaurantTable] AS [t2] "
           + "CROSS JOIN [CookTable] AS [t3] "

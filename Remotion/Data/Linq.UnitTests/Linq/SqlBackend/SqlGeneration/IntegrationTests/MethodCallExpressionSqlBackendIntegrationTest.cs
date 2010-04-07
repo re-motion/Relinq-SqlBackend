@@ -30,12 +30,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("abc") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "'%abc%'")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("a%b_c[a] [^]") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "'%a[%]b[_]c[[]a] [[]^]%'")
           );
     }
@@ -56,12 +56,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("abc") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "'abc%'")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("a%b_c[a] [^]") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "'a[%]b[_]c[[]a] [[]^]%'")
           );
     }
@@ -82,12 +82,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith ("abc") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "'%abc'")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith ("a%b_c[a] [^]") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "'%a[%]b[_]c[[]a] [[]^]'")
           );
     }
@@ -108,17 +108,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.ID.ToString (),
-          "SELECT CONVERT(NVARCHAR, [t0].[ID]) FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select System.Convert.ToInt32 (c.FirstName),
-          "SELECT CONVERT(INT, [t0].[FirstName]) FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(INT, [t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select System.Convert.ToString (c.ID),
-          "SELECT CONVERT(NVARCHAR, [t0].[ID]) FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
@@ -127,11 +127,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.ToLower(),
-          "SELECT LOWER([t0].[FirstName]) FROM [CookTable] AS [t0]"
+          "SELECT LOWER([t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
       CheckQuery (
           from c in Cooks select c.FirstName.ToUpper(),
-          "SELECT UPPER([t0].[FirstName]) FROM [CookTable] AS [t0]"
+          "SELECT UPPER([t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
@@ -140,12 +140,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Remove (3),
-          "SELECT STUFF([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName]), '') FROM [CookTable] AS [t0]",
+          "SELECT STUFF([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName]), '') AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
           from c in Cooks select c.FirstName.Remove (3, 5),
-          "SELECT STUFF([t0].[FirstName], (@1 + 1), @2, '') FROM [CookTable] AS [t0]",
+          "SELECT STUFF([t0].[FirstName], (@1 + 1), @2, '') AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3),
           new CommandParameter ("@2", 5)
           );
@@ -156,12 +156,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3),
-          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName])) FROM [CookTable] AS [t0]",
+          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3, 5),
-          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), @2) FROM [CookTable] AS [t0]",
+          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), @2) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3),
           new CommandParameter ("@2", 5)
           );
@@ -172,21 +172,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test"),
-          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END FROM [CookTable] AS [t0]",
+          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", "test")
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t'),
-          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END FROM [CookTable] AS [t0]",
+          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 't')
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END "
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", 2),
@@ -197,7 +197,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END "
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2, 5),
           "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
-          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
+          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", 2),
           new CommandParameter ("@3", 2),
@@ -222,7 +222,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2, 5),
           "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
-          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END FROM [CookTable] AS [t0]",
+          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
           new CommandParameter ("@3", 2),
@@ -238,13 +238,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.Like ("%ab%c") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
           from c in Cooks where c.FirstName.Like (c.Name) select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]");
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]");
     }
 
     [Test]
@@ -252,19 +252,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFulltext ("%ab%c") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1)",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1)",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFulltext ("%ab%c", "de") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1, LANGUAGE de)",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1, LANGUAGE de)",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFulltext (c.Name) select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], [t0].[Name])");
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], [t0].[Name])");
     }
 
     [Test]
@@ -272,19 +272,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1)",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1)",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c", "de") select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE de)",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE de)",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFreetext (c.Name) select c.ID,
-          "SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
     }
   }
 }

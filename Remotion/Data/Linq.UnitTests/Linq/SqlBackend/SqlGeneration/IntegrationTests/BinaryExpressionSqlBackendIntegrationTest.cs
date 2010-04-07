@@ -31,11 +31,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.Name == "Huber" select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
           new CommandParameter ("@1", "Huber"));
       CheckQuery (
           from c in Cooks where c.Name != "Huber" select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[Name] <> @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] <> @1)",
           new CommandParameter ("@1", "Huber"));
     }
 
@@ -44,11 +44,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.Name == null select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NULL)"
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NULL)"
           );
       CheckQuery (
           from c in Cooks where c.Name != null select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NOT NULL)"
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NOT NULL)"
           );
     }
 
@@ -58,13 +58,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       // ReSharper disable RedundantBoolCompare
       CheckQuery (
           from c in Cooks where c.IsFullTimeCook == true select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = @1)",
           new CommandParameter ("@1", 1)
           );
       // ReSharper restore RedundantBoolCompare
       CheckQuery (
           from c in Cooks where c.IsFullTimeCook != true select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] <> @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] <> @1)",
           new CommandParameter ("@1", 1)
           );
     }
@@ -74,13 +74,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.IsFullTimeCook == false select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = @1)",
           new CommandParameter ("@1", 0)
           );
       // ReSharper disable RedundantBoolCompare
       CheckQuery (
           from c in Cooks where c.IsFullTimeCook != false select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] <> @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] <> @1)",
           new CommandParameter ("@1", 0)
           );
       // ReSharper restore RedundantBoolCompare
@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.IsStarredCook == (c.FirstName == "Sepp") select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = CASE WHEN ([t0].[FirstName] = @1) THEN 1 ELSE 0 END)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = CASE WHEN ([t0].[FirstName] = @1) THEN 1 ELSE 0 END)",
           new CommandParameter ("@1", "Sepp"));
     }
 
@@ -100,22 +100,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.ID > 0 select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] > @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] > @1)",
           new CommandParameter ("@1", 0)
           );
       CheckQuery (
           from c in Cooks where c.ID >= 0 select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] >= @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] >= @1)",
           new CommandParameter ("@1", 0)
           );
       CheckQuery (
           from c in Cooks where c.ID < 0 select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] < @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] < @1)",
           new CommandParameter ("@1", 0)
           );
       CheckQuery (
           from c in Cooks where c.ID <= 0 select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] <= @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] <= @1)",
           new CommandParameter ("@1", 0)
           );
     }
@@ -125,18 +125,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.Name == "Huber" && c.FirstName == "Sepp" select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = @1) AND ([t0].[FirstName] = @2))",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = @1) AND ([t0].[FirstName] = @2))",
           new CommandParameter ("@1", "Huber"),
           new CommandParameter ("@2", "Sepp"));
       CheckQuery (
           from c in Cooks where c.Name == "Huber" || c.FirstName == "Sepp" select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = @1) OR ([t0].[FirstName] = @2))",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = @1) OR ([t0].[FirstName] = @2))",
           new CommandParameter ("@1", "Huber"),
           new CommandParameter ("@2", "Sepp"));
 
       CheckQuery (
           from c in Cooks where (c.Name == "Huber" && c.FirstName == "Sepp") || (c.Name == "Scott" && c.FirstName == "John") select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND ([t0].[FirstName] = @2)) OR (([t0].[Name] = @3) AND ([t0].[FirstName] = @4)))",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND ([t0].[FirstName] = @2)) OR (([t0].[Name] = @3) AND ([t0].[FirstName] = @4)))",
           new CommandParameter ("@1", "Huber"),
           new CommandParameter ("@2", "Sepp"),
           new CommandParameter ("@3", "Scott"),
@@ -149,7 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
       CheckQuery (
           from c in Cooks where ((c.Name == "Huber") && true) || (false && (c.Name == "Huber")) select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND (@2 = 1)) OR ((@3 = 1) AND ([t0].[Name] = @4)))",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND (@2 = 1)) OR ((@3 = 1) AND ([t0].[Name] = @4)))",
           new CommandParameter ("@1", "Huber"),
           new CommandParameter ("@2", 1),
           new CommandParameter ("@3", 0),
@@ -162,7 +162,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName ?? "hugo",
-          "SELECT (COALESCE ([t0].[FirstName], @1)) FROM [CookTable] AS [t0]",
+          "SELECT (COALESCE ([t0].[FirstName], @1)) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "hugo")
           );
     }
@@ -172,17 +172,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName + "Test",
-          "SELECT ([t0].[FirstName] + @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[FirstName] + @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "Test")
           );
       CheckQuery (
           from c in Cooks select c.FirstName + 10,
-          "SELECT ([t0].[FirstName] + @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[FirstName] + @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.FirstName + " " + c.Name,
-          "SELECT (([t0].[FirstName] + @1) + [t0].[Name]) FROM [CookTable] AS [t0]",
+          "SELECT (([t0].[FirstName] + @1) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", " ")
           );
     }
@@ -192,27 +192,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.ID + 10,
-          "SELECT ([t0].[ID] + @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] + @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID - 10,
-          "SELECT ([t0].[ID] - @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] - @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID * 10,
-          "SELECT ([t0].[ID] * @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] * @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID / 10,
-          "SELECT ([t0].[ID] / @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] / @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID % 10,
-          "SELECT ([t0].[ID] % @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] % @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
     }
@@ -222,17 +222,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select checked (c.ID + 10),
-          "SELECT ([t0].[ID] + @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] + @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select checked (c.ID - 10),
-          "SELECT ([t0].[ID] - @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] - @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select checked (c.ID * 10),
-          "SELECT ([t0].[ID] * @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] * @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
     }
@@ -242,17 +242,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select unchecked (c.ID + 10),
-          "SELECT ([t0].[ID] + @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] + @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select unchecked (c.ID - 10),
-          "SELECT ([t0].[ID] - @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] - @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select unchecked (c.ID * 10),
-          "SELECT ([t0].[ID] * @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] * @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
     }
@@ -267,7 +267,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           query,
-          "SELECT (POWER ([t0].[Weight], @1)) FROM [CookTable] AS [t0]",
+          "SELECT (POWER ([t0].[Weight], @1)) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3.0)
           );
     }
@@ -277,17 +277,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.ID & 10,
-          "SELECT ([t0].[ID] & @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] & @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID | 10,
-          "SELECT ([t0].[ID] | @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] | @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID ^ 10,
-          "SELECT ([t0].[ID] ^ @1) FROM [CookTable] AS [t0]",
+          "SELECT ([t0].[ID] ^ @1) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 10)
           );
     }
@@ -297,7 +297,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens where k.Cook == null select k.Name,
-          "SELECT [t0].[Name] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
+          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
           + "WHERE ([t1].[ID] IS NULL)");
     }
 
@@ -308,7 +308,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
       CheckQuery (
           from c in Cooks where c.ID == cook.ID select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
           new CommandParameter ("@1", 5)
           );
     }
@@ -331,7 +331,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
       CheckQuery (
           from c in Cooks where c == null select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)"
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)"
           );
     }
 
@@ -341,7 +341,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       const int id = 5;
       CheckQuery (
           from c in Cooks where c.ID == id select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
           new CommandParameter ("@1", 5)
           );
     }
@@ -351,7 +351,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens where k.Cook == k.Restaurant.SubKitchen.Cook select k.Name,
-          "SELECT [t0].[Name] FROM [KitchenTable] AS [t0] "
+          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
           + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
           + "LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] "
