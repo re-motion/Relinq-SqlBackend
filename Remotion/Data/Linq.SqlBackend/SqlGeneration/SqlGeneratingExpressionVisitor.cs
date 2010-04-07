@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
@@ -30,7 +31,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// <see cref="SqlGeneratingExpressionVisitor"/> implements <see cref="ThrowingExpressionTreeVisitor"/> and <see cref="IResolvedSqlExpressionVisitor"/>.
   /// </summary>
   public class SqlGeneratingExpressionVisitor
-      : ThrowingExpressionTreeVisitor, IResolvedSqlExpressionVisitor, ISqlSpecificExpressionVisitor, ISqlSubStatementVisitor, IJoinConditionExpressionVisitor
+      : ThrowingExpressionTreeVisitor,
+        IResolvedSqlExpressionVisitor,
+        ISqlSpecificExpressionVisitor,
+        ISqlSubStatementVisitor,
+        IJoinConditionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, SqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
     {
@@ -119,6 +124,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       if (expression.Value == null)
         _commandBuilder.Append ("NULL");
+      else if (expression.Value is ICollection)
+      {
+        _commandBuilder.Append ("(");
+        bool first = true;
+        foreach (var o in expression.Value as ICollection)
+        {
+          if (!first)
+            _commandBuilder.Append (", ");
+          first = false;
+          var parameter = _commandBuilder.AddParameter (o);
+          _commandBuilder.Append (parameter.Name);
+        }
+
+        _commandBuilder.Append (")");
+      }
       else
       {
         var parameter = _commandBuilder.AddParameter (expression.Value);
@@ -141,7 +161,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.LeftExpression);
-      _commandBuilder.Append (string.Format(" {0} ", expression.BinaryOperator));
+      _commandBuilder.Append (string.Format (" {0} ", expression.BinaryOperator));
       VisitExpression (expression.RightExpression);
 
       return expression;
@@ -154,7 +174,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (IsNullConstant(expression.NullExpression) ? " IS " : " = ");
+      _commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS " : " = ");
       VisitExpression (expression.NullExpression);
       _commandBuilder.Append (")");
 
@@ -194,7 +214,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
+
       _commandBuilder.Append ("CONVERT");
       _commandBuilder.Append ("(");
       _commandBuilder.Append (expression.GetSqlTypeName());

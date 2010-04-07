@@ -161,6 +161,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitConstantExpression_Collection ()
+    {
+      var expression = Expression.Constant (new [] {"Hugo", "Maier", "Markart"});
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (3));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1, @2, @3)"));
+    }
+
+    [Test]
     public void VisitLiteralExpression ()
     {
       var expression = new SqlLiteralExpression (5);
