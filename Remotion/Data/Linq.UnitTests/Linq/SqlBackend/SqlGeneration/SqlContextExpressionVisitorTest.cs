@@ -430,14 +430,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNullExpression_NewExpression ()
     {
-      // TODO Review 2528: Test using an entity instead - the entity must be converted to an ID column
-      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (true));
+      var entityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+      var sqlIsNullExpression = new SqlIsNullExpression (entityExpression);
 
       var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
       
       Assert.That (result, Is.Not.SameAs (sqlIsNullExpression));
-      
-      Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
     [Test]
@@ -453,13 +452,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNotNullExpression_NewExpression ()
     {
-      // TODO Review 2528: Test using an entity instead - the entity must be converted to an ID column
-      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (true));
+      var entityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (entityExpression);
 
       var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
 
       Assert.That (result, Is.Not.SameAs (sqlIsNotNullExpression));
-      Assert.That (((SqlIsNotNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((SqlIsNotNullExpression) result).Expression, Is.TypeOf (typeof (SqlColumnExpression)));
     }
   }
 }
