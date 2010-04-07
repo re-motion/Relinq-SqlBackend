@@ -167,22 +167,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    // TODO Review 2528: For a SqlIsNullExpression, always emit (... IS NULL); no IsNullConstant checks required here
     public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      //_commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS " : " = ");
       _commandBuilder.Append (" IS NULL");
-      //VisitExpression (expression.NullExpression);
       _commandBuilder.Append (")");
 
       return expression;
     }
 
-    // TODO Review 2528: For a SqlIsNotNullExpression, always emit (... IS NOT NULL); no IsNullConstant checks required here
     public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -190,8 +186,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
       _commandBuilder.Append (" IS NOT NULL");
-      //_commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS NOT " : " <> ");
-      //VisitExpression (expression.NullExpression);
       _commandBuilder.Append (")");
 
       return expression;

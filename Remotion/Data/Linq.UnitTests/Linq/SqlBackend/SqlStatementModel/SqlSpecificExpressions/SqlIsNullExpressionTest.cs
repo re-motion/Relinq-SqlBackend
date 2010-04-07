@@ -53,7 +53,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (expression));
     }
 
-    // TODO Review 2528: Also add a test for VisitChildren that shows that the returned expression is the same if the inner expression is not changed
+    [Test]
+    public void VisitChildren_ReturnsSame ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var expression = Expression.Constant (3);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_sqlIsNullExpression.Expression))
+          .Return (_sqlIsNullExpression.Expression);
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (_sqlIsNullExpression));
+    }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()

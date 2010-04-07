@@ -132,7 +132,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2528: Rewrite as follows
       if (IsNullConstant (expression.Left))
       {
         if (expression.NodeType == ExpressionType.Equal)
@@ -155,28 +154,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         return base.VisitBinaryExpression (expression);
       }
-
-
-      //if (expression.NodeType == ExpressionType.Equal || expression.NodeType == ExpressionType.NotEqual)
-      //{
-      //  if (((expression.Left is ConstantExpression) && ((ConstantExpression) expression.Left).Value == null)
-      //      || ((expression.Right is ConstantExpression) && ((ConstantExpression) expression.Right).Value == null))
-      //  {
-      //    if (expression.NodeType == ExpressionType.Equal)
-      //    {
-      //      return (IsNullConstant (expression.Left))
-      //                 ? new SqlIsNullExpression (expression.Left, VisitExpression (expression.Right))
-      //                 : new SqlIsNullExpression (expression.Right, VisitExpression (expression.Left));
-      //    }
-      //    else
-      //    {
-      //      return (IsNullConstant (expression.Left))
-      //                 ? new SqlIsNotNullExpression (expression.Left, VisitExpression (expression.Right))
-      //                 : new SqlIsNotNullExpression (expression.Right, VisitExpression (expression.Left));
-      //    }
-      //  }
-      //}
-      //return base.VisitBinaryExpression (expression);
     }
 
    
