@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -82,7 +83,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression);
           commandBuilder.Append (") ");
         }
+
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection, selectedSqlContext);
+
+        //if (!(sqlStatement.SelectProjection is SqlEntityExpression) )
+        //  commandBuilder.Append (" AS [value]");
       }
     }
 

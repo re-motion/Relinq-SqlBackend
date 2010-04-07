@@ -73,6 +73,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    [Ignore("Check SqlColumnExpression")]
+    public void BuildSelectPart_NoEntityExpression ()
+    {
+      _sqlStatement.SelectProjection = new SqlColumnExpression (typeof (string), "t", "FirstName");
+      _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[FirstName]"));
+      _stageMock.Replay ();
+
+      _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[FirstName] AS [value]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void BuildFromPart_WithFrom ()
     {
       _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true))

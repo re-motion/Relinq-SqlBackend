@@ -216,7 +216,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });
       }
-      throw new UnmappedItemException ("The type " + ((ITableInfo) tableInfo).ItemType + " is not a queryable type.");
+      else if (type == typeof (string) || (type == typeof(int)))
+        return new SqlValueTableReferenceExpression (new SqlTable (tableInfo));
+      else
+        throw new UnmappedItemException ("The type " + ((ITableInfo) tableInfo).ItemType + " is not a queryable type.");
     }
 
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)

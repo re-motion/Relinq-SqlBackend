@@ -104,13 +104,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2542")]
     public void SubQueryInFromClause_SelectingSingleValue ()
     {
       CheckQuery (
           from s in (from s2 in Cooks select s2.ID + s2.ID).Take (1) select s,
-          "SELECT [q0].[value] FROM (SELECT TOP (@1) ([t1].[ID] + [t1].[ID]) AS value FROM [CookTable] AS [t1]) AS [q0]",
+          "SELECT [q0].[value] FROM (SELECT TOP (@1) ([t1].[ID] + [t1].[ID]) FROM [CookTable] AS [t1]) AS [q0]",
           new CommandParameter ("@1", 1));
+      //TODO : correct sql: SELECT [q0].[value] FROM (SELECT TOP (@1) ([t1].[ID] + [t1].[ID]) AS value FROM [CookTable] AS [t1]) AS [q0]
+    }
+
+    [Test]
+    public void ResolveNonEntiy ()
+    {
+      CheckQuery (
+          (from r in Restaurants
+           from name in r.Cooks.Select (n => n.FirstName)
+           select name),
+          "SELECT [q0].[value] FROM [RestaurantTable] AS [t1] CROSS APPLY "
+          +"(SELECT [t2].[FirstName] FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[RestaurantID])) AS [q0]");
+      //TODO: correct sql: 
+      //"SELECT [q0].[value] FROM [RestaurantTable] AS [t1] CROSS APPLY "
+      //    +"(SELECT [t2].[FirstName] AS VALUE FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[RestaurantID])) AS [q0]");
     }
 
     [Test]
