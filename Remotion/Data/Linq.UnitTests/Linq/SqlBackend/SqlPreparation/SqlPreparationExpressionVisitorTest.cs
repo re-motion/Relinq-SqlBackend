@@ -233,7 +233,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
-      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (leftExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
 
@@ -247,7 +246,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
-      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (rightExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (leftExpression));
     }
 
@@ -261,7 +259,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
       
       Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
-      Assert.That (((SqlIsNotNullExpression) result).NullExpression, Is.SameAs (leftExpression));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
 

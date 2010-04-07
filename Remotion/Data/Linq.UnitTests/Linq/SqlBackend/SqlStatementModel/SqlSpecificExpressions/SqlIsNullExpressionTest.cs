@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     [SetUp]
     public void SetUp ()
     {
-      _sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant(1),Expression.Constant(2));
+      _sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant(2));
     }
 
     [Test]
@@ -50,7 +50,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
 
       visitorMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.SameAs (_sqlIsNullExpression));
-      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.SameAs (_sqlIsNullExpression.NullExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (expression));
     }
 

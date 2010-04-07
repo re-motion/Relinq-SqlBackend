@@ -420,7 +420,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNullExpression ()
     {
-      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (null), Expression.Constant (1));
+      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (1));
 
       var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
 
@@ -431,20 +431,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlIsNullExpression_NewExpression ()
     {
       // TODO Review 2528: Test using an entity instead - the entity must be converted to an ID column
-      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (null), Expression.Constant (true));
+      var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (true));
 
       var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
       
       Assert.That (result, Is.Not.SameAs (sqlIsNullExpression));
       
-      Assert.That (((SqlIsNullExpression) result).NullExpression, Is.TypeOf (typeof(SqlLiteralExpression)));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
     }
 
     [Test]
     public void VisitSqlIsNotNullExpression ()
     {
-      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (null), Expression.Constant (1));
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (1));
 
       var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
 
@@ -455,12 +454,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlIsNotNullExpression_NewExpression ()
     {
       // TODO Review 2528: Test using an entity instead - the entity must be converted to an ID column
-      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (null), Expression.Constant (true));
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (true));
 
       var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
 
       Assert.That (result, Is.Not.SameAs (sqlIsNotNullExpression));
-      Assert.That (((SqlIsNotNullExpression) result).NullExpression, Is.TypeOf (typeof (SqlLiteralExpression)));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.TypeOf (typeof (ConstantExpression)));
     }
   }

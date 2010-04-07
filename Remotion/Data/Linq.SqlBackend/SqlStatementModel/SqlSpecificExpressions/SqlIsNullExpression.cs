@@ -27,23 +27,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public class SqlIsNullExpression : ExtensionExpression
   {
-    private readonly Expression _nullExpression;
     private readonly Expression _expression;
 
-    // TODO Review 2528: IS NULL only needs one operand
-    public SqlIsNullExpression (Expression nullExpression, Expression expression)
+    public SqlIsNullExpression (Expression expression)
         : base (typeof(bool))
     {
-      ArgumentUtility.CheckNotNull ("nullExpression", nullExpression);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _nullExpression = nullExpression;
       _expression = expression;
-    }
-
-    public Expression NullExpression
-    {
-      get { return _nullExpression; }
     }
 
     public Expression Expression
@@ -56,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       var newExpression = visitor.VisitExpression (_expression);
      
       if (newExpression != _expression)
-        return new SqlIsNullExpression (_nullExpression, newExpression);
+        return new SqlIsNullExpression (newExpression);
       else
         return this;
     }

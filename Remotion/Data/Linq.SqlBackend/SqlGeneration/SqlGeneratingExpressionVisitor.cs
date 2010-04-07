@@ -174,8 +174,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS " : " = ");
-      VisitExpression (expression.NullExpression);
+      //_commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS " : " = ");
+      _commandBuilder.Append (" IS NULL");
+      //VisitExpression (expression.NullExpression);
       _commandBuilder.Append (")");
 
       return expression;
@@ -188,8 +189,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS NOT " : " <> ");
-      VisitExpression (expression.NullExpression);
+      _commandBuilder.Append (" IS NOT NULL");
+      //_commandBuilder.Append (IsNullConstant (expression.NullExpression) ? " IS NOT " : " <> ");
+      //VisitExpression (expression.NullExpression);
       _commandBuilder.Append (")");
 
       return expression;

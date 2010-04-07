@@ -325,8 +325,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlIsNullExpression ()
     {
       var expression = Expression.Constant ("test");
-      var nullExpression = Expression.Constant (null);
-      var sqlIsNullExpression = new SqlIsNullExpression (nullExpression, expression);
+      var sqlIsNullExpression = new SqlIsNullExpression (expression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlIsNullExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
@@ -335,42 +334,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlIsNullExpression_BooleanValue ()
-    {
-      var expression = Expression.Constant (true);
-      var nullExpression = Expression.Constant (null);
-      var sqlIsNullExpression = new SqlIsNullExpression (nullExpression, expression);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          sqlIsNullExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 = 0)"));
-    }
-
-    [Test]
     public void VisitSqlIsNotNullExpression ()
     {
       var expression = Expression.Constant ("test");
-      var nullExpression = Expression.Constant (null);
-      var sqlIsNotNullExpression = new SqlIsNotNullExpression (nullExpression, expression);
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (expression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlIsNotNullExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 IS NOT NULL)"));
-    }
-
-    [Test]
-    public void VisitSqlIsNotNullExpression_BooleanValue ()
-    {
-      var expression = Expression.Constant (true);
-      var nullExpression = Expression.Constant (null);
-      var sqlIsNotNullExpression = new SqlIsNotNullExpression (nullExpression, expression);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          sqlIsNotNullExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 <> 0)"));
     }
 
     [Test]

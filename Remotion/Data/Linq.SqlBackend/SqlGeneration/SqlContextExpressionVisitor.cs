@@ -193,8 +193,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.Expression)
-        // TODO Review 2528: Remove conditional - simply use the newExpression for the SqlIsNullExpression
-        return new SqlIsNullExpression (newExpression is ConstantExpression ? new SqlLiteralExpression(0) : expression.NullExpression, newExpression);
+        return new SqlIsNullExpression (newExpression);
       return expression;
     }
 
@@ -202,8 +201,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
       if (newExpression != expression.Expression)
-        // TODO Review 2528: Remove conditional - simply use the newExpression for the SqlIsNotNullExpression
-        return new SqlIsNotNullExpression (newExpression is ConstantExpression ? new SqlLiteralExpression (0) : expression.NullExpression, newExpression);
+        return new SqlIsNotNullExpression (newExpression);
       return expression;
     }
 
