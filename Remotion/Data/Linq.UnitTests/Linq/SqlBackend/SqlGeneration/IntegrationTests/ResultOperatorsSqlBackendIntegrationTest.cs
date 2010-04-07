@@ -206,7 +206,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("TODO: 2542")]
     public void Cast_SubQuery ()
     {
       CheckQuery (

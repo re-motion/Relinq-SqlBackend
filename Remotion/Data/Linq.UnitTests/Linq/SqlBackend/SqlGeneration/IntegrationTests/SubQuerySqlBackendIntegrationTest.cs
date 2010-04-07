@@ -94,12 +94,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2542")]
     public void SubQueryInFromClause_SelectingColumn ()
     {
       CheckQuery (
           from s in (from s2 in Cooks select s2.FirstName).Take (1) select s,
-          "SELECT [q0].[value] FROM (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]",
+          "SELECT [q0].[value] AS [value] FROM (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]",
           new CommandParameter ("@1", 1));
     }
 
