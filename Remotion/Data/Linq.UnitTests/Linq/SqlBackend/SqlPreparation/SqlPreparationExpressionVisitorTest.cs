@@ -219,21 +219,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.SameAs (binaryExpression));
     }
 
-    // TODO Review 2528: Add test showing that base.VisitBinaryExpression is called - visit a BinaryExpression whose left side and right side are QuerySourceReferenceExpressions; after the Visit call, both sides should be SqlTableReferenceExpressions 
+    [Test]
+    public void VisitBinaryExpression_QuerySourceReferenceExpressionsOnBothSide ()
+    {
+      var binaryExpression = Expression.Equal (_cookQuerySourceReferenceExpression, _cookQuerySourceReferenceExpression);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+    }
 
-    // TODO Review 2528: Change the following tests to use a QuerySourceReferenceExpression for the non-null side; after the Visit method, the expression should be a SqlTableReferenceExpression
     [Test]
     public void VisitBinaryExpression_ReturnsSqlIsNullExpression_NullLeft ()
     {
       var leftExpression = Expression.Constant (null);
-      var rightExpression = Expression.Constant ("1");
-      var binaryExpression = Expression.Equal (leftExpression, rightExpression);
+      var binaryExpression = Expression.Equal (leftExpression, _cookQuerySourceReferenceExpression);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
-      Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (rightExpression));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
     }
 
     [Test]
@@ -262,9 +268,44 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
 
-    // TODO Review 2528: Test missing: ReturnsSqlIsNotNullExpression_NullRight
+    [Test]
+    public void VisitBinaryExpression_ReturnsSqlIsNotNullExpression_NullRight ()
+    {
+      var rightExpression = Expression.Constant (null);
+      var leftExpression = Expression.Constant ("1");
+      var binaryExpression = Expression.NotEqual (leftExpression, rightExpression);
 
-    // TODO Review 2528: Also add tests that show that an expression that has nulls but is not an equals/non-equals expression is still visited correctly. Test this by using a Coerce expression with a null on the one side and a QuerySourceReferenceExpression on the other side. Test with null on the left and on the right side.
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
+      Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (leftExpression));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NotEqual_WithNullOnRightSide ()
+    {
+      var rightExpression = Expression.Constant (null);
+      var binaryExpression = Expression.Coalesce (_cookQuerySourceReferenceExpression, rightExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof(SqlTableReferenceExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof(ConstantExpression)));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NotEqual_WithNullOnLeftSide ()
+    {
+      var leftExpression = Expression.Constant (null);
+      var binaryExpression = Expression.Coalesce (leftExpression,_cookQuerySourceReferenceExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+    }
 
     [Test]
     public void VisitMethodCallExpression ()
