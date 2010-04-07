@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -112,6 +113,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (containsOperator != null)
       {
         expression.QueryModel.ResultOperators.RemoveAt (lastOperatorIndex);
+
+        if (expression.QueryModel.IsIdentityQuery () && (typeof (ICollection).IsAssignableFrom (expression.QueryModel.MainFromClause.FromExpression.Type)))
+        {
+          return new SqlBinaryOperatorExpression (
+              "IN", _stage.PrepareItemExpression (containsOperator.Item), (ConstantExpression) expression.QueryModel.MainFromClause.FromExpression);
+        }
 
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
         var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.QueryModel.GetOutputDataInfo ().DataType);

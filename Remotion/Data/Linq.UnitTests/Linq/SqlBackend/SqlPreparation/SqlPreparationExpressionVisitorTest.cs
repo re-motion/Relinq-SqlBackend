@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -178,6 +179,35 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) result).RightExpression).SqlStatement, Is.SameAs (fakeSqlStatement));
       Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.SameAs (fakeConstantExpression));
       Assert.That (result.Type, Is.EqualTo (typeof (bool)));
+    }
+
+    [Test]
+    public void VisitSubQueryExpression_WithContainsAndConstantCollection ()
+    {
+      var constantExpressionCollection = Expression.Constant (new Expression[] { Expression.Constant("Huber"), Expression.Constant("Maier")});
+      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
+      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+      var constantExpression = Expression.Constant ("Huber");
+
+      var containsResultOperator = new ContainsResultOperator (constantExpression);
+      querModel.ResultOperators.Add (containsResultOperator);
+
+      var expression = new SubQueryExpression (querModel);
+      var fakeConstantExpression = Expression.Constant ("Sepp");
+      
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (constantExpression))
+          .Return (fakeConstantExpression);
+      _stageMock.Replay ();
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
+      Assert.That (((SqlBinaryOperatorExpression) result).BinaryOperator, Is.EqualTo ("IN"));
+      Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.EqualTo (fakeConstantExpression));
+      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.EqualTo (mainFromClause.FromExpression));
+
+      _stageMock.VerifyAllExpectations ();
     }
 
     [Test]
