@@ -196,6 +196,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@2", "hans"),
           new CommandParameter ("@3", "heinz"));
     }
+
+    [Test]
+    public void Cast_TopLevel ()
+    {
+      CheckQuery (
+          (from s in Cooks select s.FirstName).Cast<string>(),
+          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    [Ignore("TODO: 2542")]
+    public void Cast_SubQuery ()
+    {
+      CheckQuery (
+          (from r in (from c in Cooks select c.FirstName).Cast<string>() select r),
+          "SELECT [q0].[value] FROM (SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
+      
+    }
+
+
     
   }
 }

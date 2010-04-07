@@ -113,6 +113,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void TransformQueryModel_WithCast ()
+    {
+      var castResultOperator = new CastResultOperator (typeof (string));
+      _queryModel.ResultOperators.Add (castResultOperator);
+
+      SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage);
+    }
+
+    [Test]
     public void TransformQueryModel_WithTake ()
     {
       var resultOperator = new TakeResultOperator (Expression.Constant (0));

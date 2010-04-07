@@ -156,6 +156,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
         SqlStatementBuilder.ProjectionExpression = sqlInExpression;
       }
+      else if (resultOperator is CastResultOperator)
+        return;
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
     }
