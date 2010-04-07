@@ -60,7 +60,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
                                     { ExpressionType.Subtract, "-" },            
                                     { ExpressionType.SubtractChecked, "-" },     
                                     { ExpressionType.Coalesce, "COALESCE" },            
-                                    { ExpressionType.Power, "POWER" }                
+                                    { ExpressionType.Power, "POWER" },
+                                    { ExpressionType.Equal, "=" },
+                                    { ExpressionType.NotEqual, "<>" }            
                                 };
     }
 
@@ -68,12 +70,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       switch (expression.NodeType)
       {
-        // TODO Review 2528: Refactor to handle Equal and NotEqual just like any other infix operator
         case ExpressionType.Equal:
-          GenerateSqlForEqualityOperator (expression.Left, expression.Right, "=");
+          GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType);
           break;
         case ExpressionType.NotEqual:
-          GenerateSqlForEqualityOperator (expression.Left, expression.Right, "<>");
+          GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType);
           break;
         case ExpressionType.Coalesce:
         case ExpressionType.Power:
@@ -83,15 +84,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType);
           break;
       }
-    }
-
-    private void GenerateSqlForEqualityOperator (Expression left, Expression right, string ordinaryOperator)
-    {
-      _expressionVisitor.VisitExpression (left);
-      _commandBuilder.Append (" ");
-      _commandBuilder.Append (ordinaryOperator);
-      _commandBuilder.Append (" ");
-      _expressionVisitor.VisitExpression (right);
     }
 
     private void GenerateSqlForPrefixOperator (Expression left, Expression right, ExpressionType nodeType)
