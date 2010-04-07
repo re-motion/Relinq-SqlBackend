@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });
       }
-      else if (type == typeof (string) || (type == typeof(int)))
+      else if (tableInfo is ResolvedSubStatementTableInfo && (type == typeof (string) || (type == typeof(int))))
         return new SqlValueTableReferenceExpression (new SqlTable (tableInfo));
       else
         throw new UnmappedItemException ("The type " + ((ITableInfo) tableInfo).ItemType + " is not a queryable type.");
