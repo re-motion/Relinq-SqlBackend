@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      SqlStatementBuilder.ProjectionExpression = _stage.PrepareSelectExpression (selectClause.Selector);
+      SqlStatementBuilder.SelectProjection = _stage.PrepareSelectExpression (selectClause.Selector);
     }
 
     public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type); // TODO: type is not correct, use typeof (IQueryable<>).MakeGenericType (itemExpression.Type)
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
-        SqlStatementBuilder.ProjectionExpression = sqlInExpression;
+        SqlStatementBuilder.SelectProjection = sqlInExpression;
       }
       else if (resultOperator is CastResultOperator)
         return;

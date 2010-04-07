@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
-using System.Linq.Expressions;
-using Remotion.Data.Linq.Utilities;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
@@ -32,31 +32,68 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   {
     private readonly SqlTableBase[] _sqlTables;
     private readonly Ordering[] _orderings;
+    private readonly Expression _selectProjection;
+    private readonly Expression _whereCondition;
+    private readonly Expression _topExpression;
+    private readonly bool _isCountQuery;
+    private readonly bool _isDistinctQuery;
 
-    private Expression _selectProjection;
-    private Expression _whereCondition;
-    
-    public SqlStatement (Expression selectProjection, IEnumerable<SqlTableBase> sqlTables, IEnumerable<Ordering> orderings)
+    //public SqlStatement (Expression selectProjection, IEnumerable<SqlTableBase> sqlTables, IEnumerable<Ordering> orderings)
+    //{
+    //  ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
+    //  ArgumentUtility.CheckNotNull ("sqlTables", sqlTables);
+    //  ArgumentUtility.CheckNotNull ("orderings", orderings);
+    //  //ArgumentUtility.CheckNotEmpty ("sqlTables", sqlTables);
+
+    //  _selectProjection = selectProjection;
+    //  _sqlTables = sqlTables.ToArray();
+    //  _orderings = orderings.ToArray();
+    //}
+
+    public SqlStatement (
+        Expression selectProjection,
+        IEnumerable<SqlTableBase> sqlTables,
+        IEnumerable<Ordering> orderings,
+        Expression whereCondition,
+        Expression topExpression,
+        bool isCountQuery,
+        bool isDistinctQuery
+        )
     {
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
       ArgumentUtility.CheckNotNull ("sqlTables", sqlTables);
       ArgumentUtility.CheckNotNull ("orderings", orderings);
-      //ArgumentUtility.CheckNotEmpty ("sqlTables", sqlTables);
+
+      if (whereCondition != null && whereCondition.Type != typeof (bool))
+        throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
 
       _selectProjection = selectProjection;
       _sqlTables = sqlTables.ToArray();
       _orderings = orderings.ToArray();
+      _whereCondition = whereCondition;
+      _topExpression = topExpression;
+      _isCountQuery = isCountQuery;
+      _isDistinctQuery = isDistinctQuery;
     }
 
-    public bool IsCountQuery { get; set; }
-    public bool IsDistinctQuery { get; set; }
-    
-    public Expression TopExpression { get; set;}
-    
+    public bool IsCountQuery
+    {
+      get { return _isCountQuery; }
+    }
+
+    public bool IsDistinctQuery
+    {
+      get { return _isDistinctQuery; }
+    }
+
+    public Expression TopExpression
+    {
+      get { return _topExpression; }
+    }
+
     public Expression SelectProjection
     {
       get { return _selectProjection; }
-      set { _selectProjection = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     public ReadOnlyCollection<SqlTableBase> SqlTables
@@ -67,18 +104,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public Expression WhereCondition
     {
       get { return _whereCondition; }
-      set 
-      {
-        if (value != null && value.Type != typeof (bool))
-          throw new ArgumentTypeException ("whereCondition", typeof (bool), value.Type);
-
-        _whereCondition = value;
-      }
     }
 
     public ReadOnlyCollection<Ordering> Orderings
     {
-      get { return Array.AsReadOnly(_orderings); }
+      get { return Array.AsReadOnly (_orderings); }
     }
   }
 }

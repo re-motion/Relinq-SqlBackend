@@ -99,8 +99,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _stage.ResolveSqlStatement (expression.SqlStatement);
-      return expression;
+      var newSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement);
+      return new SqlSubStatementExpression (newSqlStatement, expression.Type);
     }
   }
 }

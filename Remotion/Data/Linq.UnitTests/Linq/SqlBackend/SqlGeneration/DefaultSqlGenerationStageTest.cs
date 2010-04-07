@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null,false, false);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForTopExpression ()
     {
-      _sqlStatement.TopExpression = Expression.Constant (5);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (5));
 
       _stageMock
           .Expect (
@@ -106,7 +106,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForWhereExpression ()
     {
-      _sqlStatement.WhereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
+      var whereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, whereCondition);
 
       _stageMock
           .Expect (
@@ -145,7 +146,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      sqlStatement.SelectProjection = _columnListExpression;
+      sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (sqlStatement, _columnListExpression);
       ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
 
       _stageMock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);

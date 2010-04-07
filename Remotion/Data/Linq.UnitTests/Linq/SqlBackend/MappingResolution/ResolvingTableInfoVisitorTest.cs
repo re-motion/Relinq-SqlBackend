@@ -80,13 +80,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "c", _sqlStatement);
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (_sqlStatement));
+          .Expect (mock => mock.ResolveSqlStatement (_sqlStatement))
+          .Return(_sqlStatement);
       _resolverMock.Replay();
 
-      var result = ResolvingTableInfoVisitor.ResolveTableInfo (sqlSubStatementTableInfo, _resolverMock, _generator, _stageMock);
+      ResolvedSubStatementTableInfo result = (ResolvedSubStatementTableInfo) ResolvingTableInfoVisitor.ResolveTableInfo (sqlSubStatementTableInfo, _resolverMock, _generator, _stageMock);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (sqlSubStatementTableInfo));
+      Assert.That (result.SqlStatement, Is.EqualTo (sqlSubStatementTableInfo.SqlStatement));
     }
 
     [Test]

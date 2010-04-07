@@ -82,11 +82,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator);
     }
 
-    public void ResolveSqlStatement (SqlStatement sqlStatement)
+    public SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      SqlStatementResolver.ResolveExpressions (this, sqlStatement);
+      return SqlStatementResolver.ResolveExpressions (this, sqlStatement);
     }
   }
 }

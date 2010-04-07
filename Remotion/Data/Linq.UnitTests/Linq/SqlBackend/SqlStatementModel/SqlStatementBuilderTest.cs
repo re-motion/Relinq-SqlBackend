@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var statementBuilder = new SqlStatementBuilder();
       var constantExpression = Expression.Constant ("test");
-      statementBuilder.ProjectionExpression = constantExpression;
+      statementBuilder.SelectProjection = constantExpression;
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       statementBuilder.SqlTables.Add (sqlTable);
 

@@ -276,12 +276,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expression = new SqlSubStatementExpression (sqlStatement, typeof (int));
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (sqlStatement));
+          .Expect (mock => mock.ResolveSqlStatement (sqlStatement))
+          .Return (sqlStatement);
       _stageMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _generator, _stageMock);
+      SqlSubStatementExpression result = (SqlSubStatementExpression) ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _generator, _stageMock);
 
-      Assert.That (result, Is.SameAs (expression));
+      Assert.That (result.SqlStatement, Is.EqualTo (expression.SqlStatement));
       _stageMock.VerifyAllExpectations();
     }
 

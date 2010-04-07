@@ -29,13 +29,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   {
     private readonly IMappingResolutionStage _stage;
 
-    public static void ResolveExpressions (IMappingResolutionStage stage, SqlStatement statement)
+    public static SqlStatement ResolveExpressions (IMappingResolutionStage stage, SqlStatement statement)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("statement", statement);
       
       var resolver = new SqlStatementResolver (stage);
-      resolver.ResolveSqlStatement (statement);
+      return resolver.ResolveSqlStatement (statement);
     }
 
     protected SqlStatementResolver (IMappingResolutionStage stage)
@@ -91,26 +91,30 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return _stage.ResolveTopExpression (topExpression);
     }
 
-    protected void ResolveSqlStatement (SqlStatement sqlStatement)
+    protected SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       foreach (var sqlTable in sqlStatement.SqlTables)
         sqlTable.Accept (this);
-        
-      sqlStatement.SelectProjection = _stage.ResolveSelectExpression (sqlStatement.SelectProjection);
 
-      if (sqlStatement.WhereCondition != null)
-        sqlStatement.WhereCondition = _stage.ResolveWhereExpression (sqlStatement.WhereCondition);
+      var sqlStatementBuilder = new SqlStatementBuilder(sqlStatement);
 
-      if (sqlStatement.TopExpression != null)
-        sqlStatement.TopExpression = _stage.ResolveTopExpression (sqlStatement.TopExpression);
+      sqlStatementBuilder.SelectProjection = _stage.ResolveSelectExpression (sqlStatementBuilder.SelectProjection);
 
-      if (sqlStatement.Orderings.Count > 0)
+      if (sqlStatementBuilder.WhereCondition != null)
+        sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition);
+
+      if (sqlStatementBuilder.TopExpression != null)
+        sqlStatementBuilder.TopExpression = _stage.ResolveTopExpression (sqlStatementBuilder.TopExpression);
+
+      if (sqlStatementBuilder.Orderings.Count > 0)
       {
-        foreach (var orderByClause in sqlStatement.Orderings)
+        foreach (var orderByClause in sqlStatementBuilder.Orderings)
           orderByClause.Expression = _stage.ResolveOrderingExpression (orderByClause.Expression);
       }
+
+      return sqlStatementBuilder.GetSqlStatement();
     }
 
     void ISqlTableBaseVisitor.VisitSqlTable (SqlTable sqlTable)

@@ -69,8 +69,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      _stage.ResolveSqlStatement (tableInfo.SqlStatement);
-      return tableInfo;
+      var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement);
+      return new ResolvedSubStatementTableInfo (tableInfo.ItemType, tableInfo.TableAlias, newSqlStatement);
     }
   }
 }

@@ -34,16 +34,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void WhereCondition_ChecksType ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      sqlStatement.WhereCondition = Expression.Constant (1);
+      SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (sqlStatement, Expression.Constant (1));
     }
 
     [Test]
     public void WhereCondition_CanBeSetToNull ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      sqlStatement.WhereCondition = Expression.Constant (true);
-      sqlStatement.WhereCondition = null;
-
+      sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (sqlStatement, Expression.Constant (true));
+      sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (sqlStatement, null);
+      
       Assert.That (sqlStatement.WhereCondition, Is.Null);
     }
   }

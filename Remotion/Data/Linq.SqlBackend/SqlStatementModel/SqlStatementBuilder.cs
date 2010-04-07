@@ -17,7 +17,9 @@
 using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Clauses;
+using System.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
@@ -26,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlStatementBuilder
   {
-    public Expression ProjectionExpression { get; set; }
+    public Expression SelectProjection { get; set; }
     public Expression WhereCondition { get; set; }
     public bool IsCountQuery { get; set; }
     public bool IsDistinctQuery { get; set; }
@@ -40,17 +42,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       SqlTables = new List<SqlTableBase> ();
       Orderings = new List<Ordering> ();
     }
-   
+
+    public SqlStatementBuilder (SqlStatement sqlStatement)
+    {
+      SelectProjection = sqlStatement.SelectProjection;
+      WhereCondition = sqlStatement.WhereCondition;
+      IsCountQuery = sqlStatement.IsCountQuery;
+      IsDistinctQuery = sqlStatement.IsDistinctQuery;
+      TopExpression = sqlStatement.TopExpression;
+      SqlTables = sqlStatement.SqlTables.ToList();
+      Orderings = sqlStatement.Orderings.ToList();
+    }
+
     public SqlStatement GetSqlStatement ()
     {
-      var sqlStatement = new SqlStatement (ProjectionExpression, SqlTables, Orderings);
-
-      sqlStatement.IsCountQuery = IsCountQuery;
-      sqlStatement.IsDistinctQuery = IsDistinctQuery;
-      sqlStatement.WhereCondition = WhereCondition;
-      sqlStatement.TopExpression = TopExpression;
-
-      return sqlStatement;
+      return new SqlStatement (SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery);
     }
 
   }

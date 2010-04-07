@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage>();
       _generator = new TestableSqlStatementTextGenerator (_stageMock);
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new Ordering[] { });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new Ordering[] { }, null, null, false, false);
       _commandBuilder = new SqlCommandBuilder();
     }
 
@@ -76,7 +76,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Ignore("Check SqlColumnExpression")]
     public void BuildSelectPart_NoEntityExpression ()
     {
-      _sqlStatement.SelectProjection = new SqlColumnExpression (typeof (string), "t", "FirstName");
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (
+          _sqlStatement, new SqlColumnExpression (typeof (string), "t", "FirstName"));
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[FirstName]"));
       _stageMock.Replay ();
@@ -104,8 +105,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException (typeof (NotSupportedException))]
     public void BuildSelectPart_WithCountAndTop_ThrowsException ()
     {
-      _sqlStatement.IsCountQuery = true;
-      _sqlStatement.TopExpression = Expression.Constant (1);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewCountQuery (_sqlStatement, true);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (1));
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
     }
@@ -114,8 +115,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException (typeof (NotSupportedException))]
     public void BuildSelectPart_WithCountAndDistinct_ThrowsException ()
     {
-      _sqlStatement.IsCountQuery = true;
-      _sqlStatement.IsDistinctQuery = true;
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewCountQuery (_sqlStatement, true);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewDistinctQuery (_sqlStatement, true);
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
     }
@@ -123,8 +124,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithCountIsTrue ()
     {
-      _sqlStatement.IsCountQuery = true;
-
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewCountQuery (_sqlStatement, true);
+      
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("COUNT(*)"));
@@ -134,8 +135,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithDistinctIsTrue ()
     {
-      _sqlStatement.IsDistinctQuery = true;
-
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewDistinctQuery (_sqlStatement, true);
+     
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
       _stageMock.Replay();
@@ -149,8 +150,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithTopExpression ()
     {
-      _sqlStatement.TopExpression = Expression.Constant (5);
-
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (1));
+      
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
@@ -166,9 +167,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithDistinctAndTopExpression ()
     {
-      _sqlStatement.IsDistinctQuery = true;
-      _sqlStatement.TopExpression = Expression.Constant (5);
-
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (5));
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewDistinctQuery (_sqlStatement, true);
+      
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
@@ -184,7 +185,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_HasValueSemantics ()
     {
-      _sqlStatement.SelectProjection = Expression.Equal (Expression.Constant (0), Expression.Constant (1));
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (
+          _sqlStatement, Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
@@ -199,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildWhere_WithSingleWhereCondition_PredicateSemantics ()
     {
-      _sqlStatement.WhereCondition = Expression.Constant (true);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, Expression.Constant (true));
 
       _stageMock.Expect (mock => mock.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("(@1 = 1)"));
@@ -217,7 +219,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause }, null, null, false, false);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name]"));
@@ -239,7 +241,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var columnExpression3 = new SqlColumnExpression (typeof (string), "t", "City");
       var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause1, orderByClause2, orderByClause3 });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause1, orderByClause2, orderByClause3 }, null, null, false, false);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
@@ -274,8 +276,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void Build_WithSelectAndNoFrom ()
     {
-      _sqlStatement = new SqlStatement(_columnListExpression, new SqlTable[] { }, new Ordering[] { });
-      _sqlStatement.SelectProjection = Expression.Constant ("test");
+      _sqlStatement = new SqlStatement(_columnListExpression, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (_sqlStatement, Expression.Constant ("test"));
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
@@ -290,7 +292,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void Build_WithWhereCondition_PredicateSemantics ()
     {
-      _sqlStatement.WhereCondition = Expression.Constant (true);
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, Expression.Constant (true));
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.PredicateRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
@@ -313,7 +315,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause });
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { _sqlTable }, new[] { orderByClause }, null, null, false, false);
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.SingleValueRequired))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));

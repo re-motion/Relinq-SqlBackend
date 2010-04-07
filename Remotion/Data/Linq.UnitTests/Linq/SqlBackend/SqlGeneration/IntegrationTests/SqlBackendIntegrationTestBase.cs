@@ -69,11 +69,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       var resolver = new MappingResolverStub();
       var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
-      mappingResolutionStage.ResolveSqlStatement (sqlStatement);
+      var newSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement);
 
       var commandBuilder = new SqlCommandBuilder();
       var sqlGenerationStage = new DefaultSqlGenerationStage();
-      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
+      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, newSqlStatement, SqlExpressionContext.ValueRequired);
 
       return commandBuilder.GetCommand();
     }
