@@ -15,13 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -30,6 +26,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   public class SqlStatementTest
   {
     [Test]
+    // TODO Review 2546: Change this test to call the ctor. Since this test is for the SqlStatement class, we shouldn't hide the details behind the ObjectMother here.
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
     {
@@ -38,6 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
+    // TODO Review 2546: Change this test to simply call the ctor with a null whereCondition; also add tests that check the same for all parameters that can be null
     public void WhereCondition_CanBeSetToNull ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();

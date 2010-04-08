@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Clauses;
 using System.Linq;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
@@ -28,11 +29,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlStatementBuilder
   {
-    public Expression SelectProjection { get; set; }
-    public Expression WhereCondition { get; set; }
+    // TODO Review 2546: Move properties down, should be below ctor.
     public bool IsCountQuery { get; set; }
     public bool IsDistinctQuery { get; set; }
+
     public Expression TopExpression { get; set; }
+
+    public Expression SelectProjection { get; set; }
+    public Expression WhereCondition { get; set; }
 
     public List<SqlTableBase> SqlTables { get; private set; }
     public List<Ordering> Orderings { get; private set; }
@@ -45,6 +49,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public SqlStatementBuilder (SqlStatement sqlStatement)
     {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+
       SelectProjection = sqlStatement.SelectProjection;
       WhereCondition = sqlStatement.WhereCondition;
       IsCountQuery = sqlStatement.IsCountQuery;

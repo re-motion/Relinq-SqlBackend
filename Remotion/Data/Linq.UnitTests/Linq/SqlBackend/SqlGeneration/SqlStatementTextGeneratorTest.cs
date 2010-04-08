@@ -76,6 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Ignore("Check SqlColumnExpression")]
     public void BuildSelectPart_NoEntityExpression ()
     {
+      // TODO Review 2546: Instead of the following line, add a CreateSqlStatement method that allows one to specify a select projection and a params array of tables.
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (
           _sqlStatement, new SqlColumnExpression (typeof (string), "t", "FirstName"));
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
@@ -124,6 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithCountIsTrue ()
     {
+      // TODO Review 2546: Create a new builder and set the relevant properties: new SqlStatementBuilder { SelectExpression = _columListExpression, IsCountQuery = true }.GetStatement()
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewCountQuery (_sqlStatement, true);
       
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
@@ -135,6 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithDistinctIsTrue ()
     {
+      // TODO Review 2546: Create a new builder and set the relevant properties: new SqlStatementBuilder { SelectExpression = _columListExpression, IsDistinctQuery = true }.GetStatement()
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewDistinctQuery (_sqlStatement, true);
      
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
@@ -150,6 +153,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithTopExpression ()
     {
+      // TODO Review 2546: Create a new builder and set the relevant properties: new SqlStatementBuilder { SelectExpression = _columListExpression, TopExpression = Expression.Constant(1) }.GetStatement()
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (1));
       
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression))
@@ -167,6 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithDistinctAndTopExpression ()
     {
+      // TODO Review 2546: Create a new builder and set the relevant properties: new SqlStatementBuilder { SelectExpression = _columListExpression, TopExpression = Expression.Constant(5), IsDistinctQuery = true }.GetStatement()
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (5));
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewDistinctQuery (_sqlStatement, true);
       
@@ -185,6 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_HasValueSemantics ()
     {
+      // TODO Review 2546: Instead of the following line, add a CreateSqlStatement method that allows one to specify a select projection and a params array of tables.
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (
           _sqlStatement, Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
 
@@ -201,6 +207,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildWhere_WithSingleWhereCondition_PredicateSemantics ()
     {
+      // TODO Review 2546: Use CreateSqlStatement (_columnListExpression, Expression.Constant (true));
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, Expression.Constant (true));
 
       _stageMock.Expect (mock => mock.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition))
@@ -276,6 +283,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void Build_WithSelectAndNoFrom ()
     {
+      // TODO Review 2546: Instead of the following two lines, add a CreateSqlStatement method that allows one to specify a select projection and a params array of tables.
       _sqlStatement = new SqlStatement(_columnListExpression, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (_sqlStatement, Expression.Constant ("test"));
 
@@ -290,8 +298,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void Build_WithWhereCondition_PredicateSemantics ()
+    public void Build_WithWhereCondition ()
     {
+      // TODO Review 2546: Use CreateSqlStatement (_columnListExpression, Expression.Constant (true));
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, Expression.Constant (true));
 
       _stageMock.Expect (mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SqlExpressionContext.PredicateRequired))

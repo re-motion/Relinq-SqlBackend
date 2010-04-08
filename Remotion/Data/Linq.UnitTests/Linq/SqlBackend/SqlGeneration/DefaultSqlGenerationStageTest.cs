@@ -87,6 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForTopExpression ()
     {
+      // TODO Review 2546: Create a new builder and set the relevant properties: new SqlStatementBuilder { SelectExpression = _columListExpression, TopExpression = Expression.Constant(5) }.GetStatement()
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (5));
 
       _stageMock
@@ -106,6 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForWhereExpression ()
     {
+      // TODO Review 2546: Instead of the following line, add a CreateSqlStatement method that allows one to specify a select projection, a where condition, and a params array of sql tables. Use the _columnListExpression as the select projection.
       var whereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
       _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, whereCondition);
 
@@ -145,6 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForSqlStatement ()
     {
+      // TODO Review 2546: Instead of using CreateSqlStatementWithNew..., add a CreateSqlStatement method that allows one to specify a select projection and a params array of tables.
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
       sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (sqlStatement, _columnListExpression);
       ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");

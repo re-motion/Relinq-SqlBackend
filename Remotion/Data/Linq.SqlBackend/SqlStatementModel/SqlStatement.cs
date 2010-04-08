@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly bool _isCountQuery;
     private readonly bool _isDistinctQuery;
 
+    // TODO Review 2546: Remove commented code
     //public SqlStatement (Expression selectProjection, IEnumerable<SqlTableBase> sqlTables, IEnumerable<Ordering> orderings)
     //{
     //  ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
@@ -66,6 +67,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       if (whereCondition != null && whereCondition.Type != typeof (bool))
         throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
+
+      // TODO Review 2546: Move check that a SqlStatement cannot contain both a Count and Top or Count and Distinct part from SqlStatementTextGenerator to here. Change the check in SqlStatementTextGenerator to be an assertion. Test the check in SqlStatementTest
 
       _selectProjection = selectProjection;
       _sqlTables = sqlTables.ToArray();

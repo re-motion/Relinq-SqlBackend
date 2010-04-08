@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
     }
 
-    // TODO Review: Add a test that checks that all properties are correctly set by GetSqlStatment
-    // TODO Review: Add a test that checks that all properties are correctly taken over by SqlStatementBuilder ctor taking a SqlStatement
+    // TODO Review 2546: Add a test that checks that all properties are correctly set by GetSqlStatment
+    // TODO Review 2546: Add a test that checks that all properties are correctly taken over by SqlStatementBuilder ctor taking a SqlStatement
   }
 }

@@ -39,6 +39,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
 
+    // TODO Review 2546: Check whether these methods are still required
+
     public static SqlStatement CreateSqlStatementWithNewSelectProjection (SqlStatement sqlStatement, Expression selectProjection)
     {
       var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
@@ -53,21 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return sqlStatementBuilder.GetSqlStatement();
     }
 
-    public static SqlStatement CreateSqlStatementWithNewOrderings (SqlStatement sqlStatement, IEnumerable<Ordering> orderings)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.Orderings.AddRange (orderings);
-      return sqlStatementBuilder.GetSqlStatement();
-    }
-
-    public static SqlStatement CreateSqlStatementWithNewSqlTables (SqlStatement sqlStatement, IEnumerable<SqlTableBase> sqlTables)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.SqlTables.AddRange (sqlTables);
-      return sqlStatementBuilder.GetSqlStatement();
-    }
-
-    public static SqlStatement CreateSqlStatementWithNewTopExpression (SqlStatement sqlStatement, Expression topExpression)
+   public static SqlStatement CreateSqlStatementWithNewTopExpression (SqlStatement sqlStatement, Expression topExpression)
     {
       var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
       sqlStatementBuilder.TopExpression = topExpression;
