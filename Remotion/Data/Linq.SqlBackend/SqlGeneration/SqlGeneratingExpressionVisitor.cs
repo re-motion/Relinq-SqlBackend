@@ -283,16 +283,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append (")");
       return expression;
     }
-
-    private bool IsNullConstant (Expression expression)
-    {
-      var constantExpression = expression as ConstantExpression;
-      if (constantExpression != null)
-      {
-        if (constantExpression.Value == null)
-          return true;
-      }
-      return false;
-    }
   }
 }

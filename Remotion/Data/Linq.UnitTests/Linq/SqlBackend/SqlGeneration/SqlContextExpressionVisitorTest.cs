@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -157,6 +158,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
       Assert.That (result, Is.SameAs (columnExpression));
+    }
+
+    [Test]
+    public void ApplySqlExpressionContext_WithSingleValueSemantics_WithSqlEntityConstantExpression ()
+    {
+      var entityExpressionValue = Expression.Constant ("5").Value;
+      var constantEntityExpression = new SqlEntityConstantExpression (typeof (string), entityExpressionValue, 5);
+
+      var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (constantEntityExpression, SqlExpressionContext.SingleValueRequired);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlEntityConstantExpression)));
+      Assert.That (result.Type, Is.EqualTo(typeof(int)));
+      Assert.That (((SqlEntityConstantExpression) result).Value, Is.SameAs(entityExpressionValue));
+      Assert.That (((SqlEntityConstantExpression) result).PrimaryKeyValue, Is.EqualTo (5));
     }
 
     [Test]
