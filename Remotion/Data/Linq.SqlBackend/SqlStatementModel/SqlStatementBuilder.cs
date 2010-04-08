@@ -50,8 +50,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       IsCountQuery = sqlStatement.IsCountQuery;
       IsDistinctQuery = sqlStatement.IsDistinctQuery;
       TopExpression = sqlStatement.TopExpression;
-      SqlTables = sqlStatement.SqlTables.ToList();
-      Orderings = sqlStatement.Orderings.ToList();
+      
+      SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
+      Orderings = new List<Ordering> (sqlStatement.Orderings);
     }
 
     public SqlStatement GetSqlStatement ()
