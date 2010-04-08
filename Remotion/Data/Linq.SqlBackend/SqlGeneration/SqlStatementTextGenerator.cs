@@ -123,16 +123,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         if (!first)
           commandBuilder.Append (", ");
 
-        if (orderByClause.Expression.NodeType != ExpressionType.Constant)
-        {
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
-        }
-        else
+        if (orderByClause.Expression.NodeType == ExpressionType.Constant)
         {
           commandBuilder.Append ("(SELECT ");
           _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
           commandBuilder.Append (")");
         }
+        else
+        {
+          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
+        }
+
         commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString ().ToUpper ()));
         first = false;
       }
