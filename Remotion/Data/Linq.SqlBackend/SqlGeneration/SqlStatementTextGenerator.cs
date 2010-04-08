@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlStatementTextGenerator"/> generates sql-text from a given <see cref="SqlStatement"/>.
+  /// <see cref="SqlStatementTextGenerator"/> generates SQL text for a given <see cref="SqlStatement"/>.
   /// </summary>
   public class SqlStatementTextGenerator
   {
