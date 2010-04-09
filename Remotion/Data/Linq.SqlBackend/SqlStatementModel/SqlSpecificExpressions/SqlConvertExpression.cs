@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   public class SqlConvertExpression : ExtensionExpression
   {
     private readonly Expression _source;
-    private readonly Dictionary<Type, string> _sqlTypeMapper;
+    private readonly Dictionary<Type, string> _sqlTypeMapper; // TODO Review 2510: Rename to sqlTypeMapping
 
     public SqlConvertExpression (Type targetType, Expression source)
         : base (targetType)
@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       ArgumentUtility.CheckNotNull ("source", source);
 
       _source = source;
-      _sqlTypeMapper = new Dictionary<Type, string>
+      _sqlTypeMapper = new Dictionary<Type, string> // TODO Review 2510: Add more types, see reference here: http://msdn.microsoft.com/en-us/library/cc716729.aspx
                        {
                            { typeof (string), "NVARCHAR" },
                            { typeof (int), "INT" },

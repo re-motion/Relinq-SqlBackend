@@ -72,6 +72,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       Assert.That (result, Is.Not.SameAs (_convertExpresion));
     }
 
+    // TODO Review 2510: Add test for VisitChildren with the same source
+
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {

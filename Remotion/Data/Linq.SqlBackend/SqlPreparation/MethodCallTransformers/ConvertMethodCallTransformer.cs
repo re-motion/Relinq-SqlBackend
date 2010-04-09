@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
+          // TODO Review 2510: Add more overloads/convert methods
             typeof (Convert).GetMethod ("ToString", new[] { typeof (int) }),
             typeof (Convert).GetMethod ("ToString", new[] { typeof (bool) }),
             typeof (Convert).GetMethod ("ToString", new[] { typeof (object) }),

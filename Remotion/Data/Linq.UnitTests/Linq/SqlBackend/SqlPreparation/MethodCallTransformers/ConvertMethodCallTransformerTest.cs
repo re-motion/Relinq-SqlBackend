@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void Transform ()
     {
-      var method = typeof (Convert).GetMethod ("ToInt32", new Type[] { typeof (string)});
+      var method = typeof (Convert).GetMethod ("ToInt32", new[] { typeof (string)});
       var argument = Expression.Constant ("1");
 
       var expression = Expression.Call (Expression.Constant ("1"), method, argument);
