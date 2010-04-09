@@ -163,11 +163,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitConstantExpression_Collection ()
     {
-      var expression = Expression.Constant (new [] {"Hugo", "Maier", "Markart"});
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+      var collectionExpression = Expression.Constant (new [] {"Hugo", "Maier", "Markart"});
+      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant ("Hubert"), collectionExpression);
+      
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (3));
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(@1, @2, @3)"));
+      var expectedParameters = new[] { 
+          new CommandParameter("@1", "Hubert"),
+          new CommandParameter("@2", "Hugo"),
+          new CommandParameter("@3", "Maier"),
+          new CommandParameter("@4", "Markart")};
+      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (expectedParameters));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IN (@2, @3, @4)"));
     }
 
     [Test]

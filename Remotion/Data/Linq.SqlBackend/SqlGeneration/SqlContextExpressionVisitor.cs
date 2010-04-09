@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     private static Expression EnsureValueSemantics (Expression expression)
     {
-      if (!(expression is ConstantExpression) && expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+      if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
         throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
       if (expression.Type == typeof (bool))

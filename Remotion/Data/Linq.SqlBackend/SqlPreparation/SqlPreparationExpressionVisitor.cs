@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -112,18 +113,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var containsOperator = lastOperatorIndex >= 0 ? expression.QueryModel.ResultOperators[lastOperatorIndex] as ContainsResultOperator : null;
       if (containsOperator != null)
       {
-        expression.QueryModel.ResultOperators.RemoveAt (lastOperatorIndex);
-
-        if (expression.QueryModel.IsIdentityQuery () && (typeof (ICollection).IsAssignableFrom (expression.QueryModel.MainFromClause.FromExpression.Type)))
+        // Check whether the query applies Contains to a constant collection
+        if (expression.QueryModel.IsIdentityQuery()
+          // TODO Review 2547: Check that expression.QueryModel.MainFromClause.FromExpression is ConstantExpression (test)
+            && typeof (ICollection).IsAssignableFrom (expression.QueryModel.MainFromClause.FromExpression.Type))
         {
-          return new SqlBinaryOperatorExpression (
-              "IN", _stage.PrepareItemExpression (containsOperator.Item), (ConstantExpression) expression.QueryModel.MainFromClause.FromExpression);
+          // TODO Review 2547: Throw a NotSupportedException when expression.QueryModel.ResultOperators holds more than 1 result operators: A constant collection used in a query must not contain any result operators apart from Contains.
+
+          var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
+          return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, expression.QueryModel.MainFromClause.FromExpression);
         }
 
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-        var subStatementExpression = new SqlSubStatementExpression (preparedSqlStatement, expression.QueryModel.GetOutputDataInfo ().DataType);
-        return new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (containsOperator.Item), subStatementExpression);
+
+        // PrepareSqlStatement will handle the contains operator by putting an "IN" expression into the select projection
+        Debug.Assert (
+            preparedSqlStatement.SqlTables.Count == 0 
+            && preparedSqlStatement.WhereCondition == null 
+            && preparedSqlStatement.Orderings.Count == 0
+            && !preparedSqlStatement.IsCountQuery 
+            && !preparedSqlStatement.IsDistinctQuery 
+            && preparedSqlStatement.TopExpression == null);
+
+        return preparedSqlStatement.SelectProjection;
       }
+
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
       return new SqlSubStatementExpression (sqlStatement, expression.Type);
     }

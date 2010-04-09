@@ -190,7 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       var cookNames = new[] { "hugo", "hans", "heinz" };
       CheckQuery (
-          (from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName),
+          from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
           new CommandParameter ("@1", "hugo"),
           new CommandParameter ("@2", "hans"),

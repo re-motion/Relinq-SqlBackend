@@ -158,14 +158,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       querModel.ResultOperators.Add (containsResultOperator);
 
       var expression = new SubQueryExpression (querModel);
-      var fakeConstantExpression = Expression.Constant (new Kitchen());
-      var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      // TODO Review 2547: var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (...);
+      var fakeSqlStatement =
+        new SqlStatementBuilder
+                             {
+                               SelectProjection =
+                                   new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+                             }.GetSqlStatement();
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (constantExpression))
-          .Return (fakeConstantExpression);
-      _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches (q => q.ResultOperators.Count == 0)))
+          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches (q => q.ResultOperators.Count == 1)))
           .Return (fakeSqlStatement);
       _stageMock.Replay();
 
@@ -174,29 +176,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) result).RightExpression).SqlStatement, Is.SameAs (fakeSqlStatement));
-      Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.SameAs (fakeConstantExpression));
-      Assert.That (result.Type, Is.EqualTo (typeof (bool)));
+      Assert.That (result, Is.SameAs (fakeSqlStatement.SelectProjection));
     }
 
     [Test]
     public void VisitSubQueryExpression_WithContainsAndConstantCollection ()
     {
-      var constantExpressionCollection = Expression.Constant (new Expression[] { Expression.Constant("Huber"), Expression.Constant("Maier")});
+      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier"});
       var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
-      var constantExpression = Expression.Constant ("Huber");
-
-      var containsResultOperator = new ContainsResultOperator (constantExpression);
+      
+      var itemExpression = Expression.Constant ("Huber");
+      var containsResultOperator = new ContainsResultOperator (itemExpression);
       querModel.ResultOperators.Add (containsResultOperator);
 
       var expression = new SubQueryExpression (querModel);
       var fakeConstantExpression = Expression.Constant ("Sepp");
       
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (constantExpression))
+          .Expect (mock => mock.PrepareItemExpression (itemExpression))
           .Return (fakeConstantExpression);
       _stageMock.Replay ();
 
@@ -205,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (((SqlBinaryOperatorExpression) result).BinaryOperator, Is.EqualTo ("IN"));
       Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.EqualTo (fakeConstantExpression));
-      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.EqualTo (mainFromClause.FromExpression));
+      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.EqualTo (constantExpressionCollection));
 
       _stageMock.VerifyAllExpectations ();
     }

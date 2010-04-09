@@ -67,6 +67,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO Review 2547: _commandBuilder.AppendSeparated (", ", expression.ProjectionColumns, (cb, column) => column.Accept (this));
+
       var first = true;
       foreach (var column in expression.ProjectionColumns)
       {
@@ -127,8 +129,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       else if (expression.Value is ICollection)
       {
         _commandBuilder.Append ("(");
+
+        // TODO Review 2547: Add SqlCommandBuilder.AppendSeparated<T> (string separator, IEnumerable<T> values, Action<SqlCommandBuilder, T> appender)
+        // TODO Review 2547: var items = ((ICollection) expression.Value).Cast<object>();
+        // TODO Review 2547: _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AddParameter (value));
+
         bool first = true;
-        foreach (var o in expression.Value as ICollection)
+        foreach (var o in (ICollection) expression.Value)
         {
           if (!first)
             _commandBuilder.Append (", ");
