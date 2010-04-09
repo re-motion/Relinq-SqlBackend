@@ -115,10 +115,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         // Check whether the query applies Contains to a constant collection
         if (expression.QueryModel.IsIdentityQuery()
-          // TODO Review 2547: Check that expression.QueryModel.MainFromClause.FromExpression is ConstantExpression (test)
+            && (expression.QueryModel.MainFromClause.FromExpression is ConstantExpression)
             && typeof (ICollection).IsAssignableFrom (expression.QueryModel.MainFromClause.FromExpression.Type))
         {
-          // TODO Review 2547: Throw a NotSupportedException when expression.QueryModel.ResultOperators holds more than 1 result operators: A constant collection used in a query must not contain any result operators apart from Contains.
+          if (expression.QueryModel.ResultOperators.Count > 1)
+            throw new NotSupportedException("Expression with more than one results operators are not allowed when using contains.");
 
           var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
           return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, expression.QueryModel.MainFromClause.FromExpression);
@@ -128,11 +129,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
         // PrepareSqlStatement will handle the contains operator by putting an "IN" expression into the select projection
         Debug.Assert (
-            preparedSqlStatement.SqlTables.Count == 0 
-            && preparedSqlStatement.WhereCondition == null 
+            preparedSqlStatement.SqlTables.Count == 0
+            && preparedSqlStatement.WhereCondition == null
             && preparedSqlStatement.Orderings.Count == 0
-            && !preparedSqlStatement.IsCountQuery 
-            && !preparedSqlStatement.IsDistinctQuery 
+            && !preparedSqlStatement.IsCountQuery
+            && !preparedSqlStatement.IsDistinctQuery
             && preparedSqlStatement.TopExpression == null);
 
         return preparedSqlStatement.SelectProjection;
@@ -165,12 +166,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           return base.VisitBinaryExpression (expression);
       }
       else
-      {
         return base.VisitBinaryExpression (expression);
-      }
     }
 
-   
 
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {

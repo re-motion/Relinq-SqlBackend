@@ -27,6 +27,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
   public class SqlStatementModelObjectMother
   {
+    public static SqlStatement CreateSqlStatement (Expression selectProjection)
+    {
+      return new SqlStatementBuilder
+      {
+        SelectProjection =
+            new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+      }.GetSqlStatement ();
+    }
+
     public static SqlStatement CreateSqlStatementWithCook ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -158,14 +157,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       querModel.ResultOperators.Add (containsResultOperator);
 
       var expression = new SubQueryExpression (querModel);
-      // TODO Review 2547: var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (...);
       var fakeSqlStatement =
-        new SqlStatementBuilder
-                             {
-                               SelectProjection =
-                                   new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
-                             }.GetSqlStatement();
-
+          SqlStatementModelObjectMother.CreateSqlStatement (
+              new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+              );
+      
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches (q => q.ResultOperators.Count == 1)))
           .Return (fakeSqlStatement);
@@ -182,21 +178,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSubQueryExpression_WithContainsAndConstantCollection ()
     {
-      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier"});
+      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier" });
       var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
-      
+
       var itemExpression = Expression.Constant ("Huber");
       var containsResultOperator = new ContainsResultOperator (itemExpression);
       querModel.ResultOperators.Add (containsResultOperator);
 
       var expression = new SubQueryExpression (querModel);
       var fakeConstantExpression = Expression.Constant ("Sepp");
-      
+
       _stageMock
           .Expect (mock => mock.PrepareItemExpression (itemExpression))
           .Return (fakeConstantExpression);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
@@ -205,7 +201,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.EqualTo (fakeConstantExpression));
       Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.EqualTo (constantExpressionCollection));
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void VisitSubQueryExpression_WithSeveralResultOperatorsAndConstantCollection ()
+    {
+      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier" });
+      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
+      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+
+      var itemExpression = Expression.Constant ("Huber");
+      var containsResultOperator = new ContainsResultOperator (itemExpression);
+
+      var resultOperator = new TakeResultOperator (Expression.Constant (1));
+      querModel.ResultOperators.Add (resultOperator);
+      querModel.ResultOperators.Add (containsResultOperator);
+
+      var expression = new SubQueryExpression (querModel);
+      
+      SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
     }
 
     [Test]
@@ -237,7 +253,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
-      Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
+      Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (SqlTableReferenceExpression)));
     }
 
     [Test]
@@ -261,7 +277,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var binaryExpression = Expression.NotEqual (leftExpression, rightExpression);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
-      
+
       Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (rightExpression));
     }
@@ -288,15 +304,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof(SqlTableReferenceExpression)));
-      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof(ConstantExpression)));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (ConstantExpression)));
     }
 
     [Test]
     public void VisitBinaryExpression_NotEqual_WithNullOnLeftSide ()
     {
       var leftExpression = Expression.Constant (null);
-      var binaryExpression = Expression.Coalesce (leftExpression,_cookQuerySourceReferenceExpression);
+      var binaryExpression = Expression.Coalesce (leftExpression, _cookQuerySourceReferenceExpression);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
 
@@ -323,7 +339,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitMethodCallExpression_ConvertToInt64 ()
     {
-      var method = typeof (Convert).GetMethod ("ToInt64", new Type[] { typeof(string) });
+      var method = typeof (Convert).GetMethod ("ToInt64", new[] { typeof (string) });
       var constantExpression = Expression.Constant ("1");
       var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
 
@@ -336,7 +352,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitMethodCallExpression_ConvertToString ()
     {
-      var method = typeof (Convert).GetMethod ("ToString", new Type[] { typeof (int) });
+      var method = typeof (Convert).GetMethod ("ToString", new[] { typeof (int) });
       var constantExpression = Expression.Constant (1);
       var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
 
