@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
       //var startIndexExpression = Expression.Add (methodCallExpression.Arguments[0], new SqlLiteralExpression (1));
-      var startIndexExpression = methodCallExpression.Arguments[0];// Expression.Constant(methodCallExpression.Arguments[0]);
+      var startIndexExpression = methodCallExpression.Arguments[0]; // TODO Review 2508: Should add 1
 
       if (methodCallExpression.Arguments.Count == 1)
       {

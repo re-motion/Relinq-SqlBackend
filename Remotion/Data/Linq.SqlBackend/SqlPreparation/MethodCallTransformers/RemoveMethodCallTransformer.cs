@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             methodCallExpression.Object,
             startIndexExpression,
             new SqlFunctionExpression (methodCallExpression.Object.Type, "LEN", methodCallExpression.Object),
-            new SqlLiteralExpression ("''"));
+            new SqlLiteralExpression ("''")); // TODO Review 2508: should be "", not "''"
       }
       else if (methodCallExpression.Arguments.Count == 2)
       {
@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             methodCallExpression.Object,
             startIndexExpression,
             methodCallExpression.Arguments[1],
-            new SqlLiteralExpression ("''"));
+            new SqlLiteralExpression ("''")); // TODO Review 2508: 
       }
       else
         throw new NotSupportedException (string.Format ("Remove function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));

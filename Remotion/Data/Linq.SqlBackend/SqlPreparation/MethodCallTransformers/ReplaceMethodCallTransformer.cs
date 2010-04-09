@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      // TODO Review 2508: Check argument count here
       return new SqlFunctionExpression (methodCallExpression.Type, "REPLACE", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
     }
   }
