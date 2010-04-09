@@ -23,7 +23,8 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ContainsFulltextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the contains fulltext extension method.
+  /// <see cref="ContainsFulltextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
+  /// <see cref="StringExtensions.ContainsFulltext(string,string)"/> extension methods.
   /// </summary>
   public class ContainsFulltextMethodCallTransformer : IMethodCallTransformer
   {
@@ -47,17 +48,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      if (methodCallExpression.Arguments.Count == 2)
+      if (methodCallExpression.Arguments.Count == 2) // overload without language
         return new SqlFunctionExpression (typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
-      else if (methodCallExpression.Arguments.Count == 3)
+      else if (methodCallExpression.Arguments.Count == 3) // TODO Review 2509: Simply assume that count == 3 if it isn't 2 - since SupportedMethods only has those two possibilities, we needn't be overly defensive => remove NotSupportedException below
       {
         if (!(methodCallExpression.Arguments[2] is ConstantExpression))
         {
           throw new NotSupportedException (
-              "Only expressions that can be evaluated locally can be used as the language argument for contains fulltext.");
+              "Only expressions that can be evaluated locally can be used as the LANGUAGE argument for ContainsFulltext.");
         }
 
         //TODO 2509: escape sql text in language argument ???
+        // TODO Review 2509: Use the SqlCompositeExpression to create the following languageExpression: SqlCompositeExpression (SqlCustomTextExpression ("LANGUAGE "), SqlConstantExpression (((ConstantExpression)methodCallExpression.Arguments[2]).Value))
+        // TODO Review 2509: By using the SqlConstantExpression, escaping is not required.
 
         var languageExpression =
             new SqlLiteralExpression (string.Format ("LANGUAGE {0}", ((ConstantExpression) methodCallExpression.Arguments[2]).Value));

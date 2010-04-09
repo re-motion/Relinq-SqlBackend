@@ -23,8 +23,10 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ContainsFreetextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the contains freetext extension method.
+  /// <see cref="ContainsFreetextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
+  /// <see cref="StringExtensions.ContainsFreetext(string,string)"/> extension methods.
   /// </summary>
+  // TODO Review 2509: See ContainsFulltextMethodCallTransformer
   public class ContainsFreetextMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods = new[]

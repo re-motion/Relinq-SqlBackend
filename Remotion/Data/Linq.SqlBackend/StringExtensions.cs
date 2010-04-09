@@ -21,6 +21,7 @@ namespace Remotion.Data.Linq.SqlBackend
   /// <summary>
   /// <see cref="StringExtensions"/> provides extension methods for strings.
   /// </summary>
+  // TODO Review 2509: Rename all of these methods to SqlLike, SqlContainsFulltext, and so on; this better expresses that they represent SQL operators
   public static class StringExtensions
   {
     public static bool Like (this string source, string pattern)

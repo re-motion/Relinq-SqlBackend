@@ -20,8 +20,9 @@ using System.Text;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="EscapeUtility"/> is an utility class to escape strings.
+  /// <see cref="EscapeUtility"/> is an utility class to escape strings as required by the LIKE SQL function.
   /// </summary>
+  // TODO Review 2509: Rename to LikeEscapeUtility because this class only implements escaping for the LIKE operator
   public static class EscapeUtility
   {
     public static string Escape (string text)
