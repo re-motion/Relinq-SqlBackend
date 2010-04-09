@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
           .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
           .Return (_sqlFunctionExpression.Prefix);
       visitorMock
-          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "VisitChildren"))
+          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "SqlFunctionExpression.VisitChildren"))
           .Return (newArgs);
       visitorMock.Replay ();
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
           .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
           .Return (newPrefix);
       visitorMock
-          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "VisitChildren"))
+          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "SqlFunctionExpression.VisitChildren"))
           .Return (_sqlFunctionExpression.Args);
       visitorMock.Replay ();
 
@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
           .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
           .Return (_sqlFunctionExpression.Prefix);
       visitorMock
-          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args,"VisitChildren"))
+          .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "SqlFunctionExpression.VisitChildren"))
           .Return (_sqlFunctionExpression.Args);
       visitorMock.Replay();
 
