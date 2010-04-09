@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -67,17 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2547: _commandBuilder.AppendSeparated (", ", expression.ProjectionColumns, (cb, column) => column.Accept (this));
-
-      var first = true;
-      foreach (var column in expression.ProjectionColumns)
-      {
-        if (!first)
-          _commandBuilder.Append (",");
-        column.Accept (this);
-        first = false;
-      }
-
+      _commandBuilder.AppendSeparated (",", expression.ProjectionColumns, (cb, column) => column.Accept (this));
       return expression;
     }
 
@@ -99,7 +90,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var parameter = _commandBuilder.AddParameter (expression.PrimaryKeyValue);
+      var parameter = _commandBuilder.CreateParameter (expression.PrimaryKeyValue);
       _commandBuilder.Append (parameter.Name);
 
       return expression;
@@ -130,25 +121,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         _commandBuilder.Append ("(");
 
-        // TODO Review 2547: Add SqlCommandBuilder.AppendSeparated<T> (string separator, IEnumerable<T> values, Action<SqlCommandBuilder, T> appender)
-        // TODO Review 2547: var items = ((ICollection) expression.Value).Cast<object>();
-        // TODO Review 2547: _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AddParameter (value));
 
-        bool first = true;
-        foreach (var o in (ICollection) expression.Value)
-        {
-          if (!first)
-            _commandBuilder.Append (", ");
-          first = false;
-          var parameter = _commandBuilder.AddParameter (o);
-          _commandBuilder.Append (parameter.Name);
-        }
+        var items = ((ICollection) expression.Value).Cast<object>();
+        _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
+
 
         _commandBuilder.Append (")");
       }
       else
       {
-        var parameter = _commandBuilder.AddParameter (expression.Value);
+        var parameter = _commandBuilder.CreateParameter (expression.Value);
         _commandBuilder.Append (parameter.Name);
       }
 

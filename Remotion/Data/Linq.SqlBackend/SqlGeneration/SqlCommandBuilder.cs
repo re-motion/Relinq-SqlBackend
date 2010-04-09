@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -33,23 +32,47 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _parameters = new List<CommandParameter>();
     }
 
+    public CommandParameter CreateParameter (object value)
+    {
+      var parameter = new CommandParameter ("@" + (_parameters.Count + 1), value);
+      _parameters.Add (parameter);
+
+      return parameter;
+    }
+
     public void Append (string stringToAppend)
     {
       ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);
       _stringBuilder.Append (stringToAppend);
     }
 
+    public void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<SqlCommandBuilder, T> appender)
+    {
+      ArgumentUtility.CheckNotNull ("separator", separator);
+      ArgumentUtility.CheckNotNull ("values", values);
+      ArgumentUtility.CheckNotNull ("appender", appender);
+
+      bool first = true;
+      foreach (T value in values)
+      {
+        if (!first)
+          _stringBuilder.Append (separator);
+        first = false;
+        appender (this, value);
+      }
+    }
+
     public void AppendFormat (string stringToAppend, params object[] parameters)
     {
       ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);
-      
+
       _stringBuilder.AppendFormat (stringToAppend, parameters);
     }
 
-    public CommandParameter AddParameter (object value)
+    public CommandParameter AppendParameter (object value)
     {
-      var parameter = new CommandParameter ("@" + (_parameters.Count + 1), value);
-      _parameters.Add (parameter);
+      var parameter = CreateParameter (value);
+      Append (parameter.Name);
       return parameter;
     }
 
@@ -65,7 +88,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public SqlCommandData GetCommand ()
     {
-      return new SqlCommandData(GetCommandText(), GetCommandParameters());
+      return new SqlCommandData (GetCommandText(), GetCommandParameters());
     }
   }
 }

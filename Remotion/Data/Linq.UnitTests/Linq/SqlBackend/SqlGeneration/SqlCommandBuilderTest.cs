@@ -44,10 +44,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GetCommandParameters ()
     {
       var commandParameter = new CommandParameter ("@1", "value");
-      _sqlCommandBuilder.AddParameter ("value");
+      _sqlCommandBuilder.CreateParameter ("value");
 
       Assert.That (_sqlCommandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
       Assert.That (_sqlCommandBuilder.GetCommandParameters()[0], Is.EqualTo (commandParameter));
+    }
+
+    [Test]
+    public void CreateParameter ()
+    {
+      var result = _sqlCommandBuilder.CreateParameter ("test");
+
+      Assert.That (result.Name, Is.EqualTo ("@1"));
+      Assert.That (result.Value, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void AppendParameter ()
+    {
+      _sqlCommandBuilder.AppendParameter ("test");
+
+      var commandParameter = _sqlCommandBuilder.GetCommandParameters();
+
+      Assert.That (commandParameter[0].Name, Is.EqualTo ("@1"));
+      Assert.That (commandParameter[0].Value, Is.EqualTo ("test"));
+
     }
   }
 }

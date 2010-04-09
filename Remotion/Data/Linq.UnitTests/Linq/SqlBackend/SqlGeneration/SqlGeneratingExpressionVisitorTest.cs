@@ -173,8 +173,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new CommandParameter("@2", "Hugo"),
           new CommandParameter("@3", "Maier"),
           new CommandParameter("@4", "Markart")};
-      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (expectedParameters));
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IN (@2, @3, @4)"));
+      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (expectedParameters));
     }
 
     [Test]
