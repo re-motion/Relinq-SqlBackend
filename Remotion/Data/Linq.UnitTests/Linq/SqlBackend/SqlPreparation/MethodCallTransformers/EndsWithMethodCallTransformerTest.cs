@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new EndsWithMethodCallTransformer ();
       var result = transformer.Transform (expression);
 
-      var rightExpression = Expression.Constant (string.Format ("'%{0}'", argument1.Value));
+      var rightExpression = Expression.Constant (string.Format ("%{0}", argument1.Value));
 
       var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
 

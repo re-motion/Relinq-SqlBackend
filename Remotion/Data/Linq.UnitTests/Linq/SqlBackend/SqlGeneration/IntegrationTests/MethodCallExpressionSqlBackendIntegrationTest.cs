@@ -31,12 +31,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("abc") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "'%abc%'")
+          new CommandParameter ("@1", "%abc%")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("a%b_c[a] [^]") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "'%a[%]b[_]c[[]a] [[]^]%'")
+          new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]%")
           );
     }
 
@@ -57,12 +57,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("abc") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "'abc%'")
+          new CommandParameter ("@1", "abc%")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("a%b_c[a] [^]") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "'a[%]b[_]c[[]a] [[]^]%'")
+          new CommandParameter ("@1", "a[%]b[_]c[[]a] [[]^]%")
           );
     }
 
@@ -83,12 +83,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith ("abc") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "'%abc'")
+          new CommandParameter ("@1", "%abc")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith ("a%b_c[a] [^]") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "'%a[%]b[_]c[[]a] [[]^]'")
+          new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]")
           );
     }
 
@@ -156,12 +156,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3),
-          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]",
+          "SELECT SUBSTRING([t0].[FirstName], @1, LEN([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3, 5),
-          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), @2) AS [value] FROM [CookTable] AS [t0]",
+          "SELECT SUBSTRING([t0].[FirstName], @1, @2) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3),
           new CommandParameter ("@2", 5)
           );

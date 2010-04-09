@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       var rightExpression =
           Expression.Constant (
-              string.Format ("'%{0}%'", EscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
+              string.Format ("%{0}%", EscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }

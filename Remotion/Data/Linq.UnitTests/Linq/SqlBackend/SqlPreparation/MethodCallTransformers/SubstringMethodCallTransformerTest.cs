@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type,
           "SUBSTRING",
           objectExpression,
-          Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
+          Expression.Constant (1),
           new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression)
           );
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type,
           "SUBSTRING",
           objectExpression,
-          Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
+          Expression.Constant (1),
           Expression.Constant (3)
           );
 
