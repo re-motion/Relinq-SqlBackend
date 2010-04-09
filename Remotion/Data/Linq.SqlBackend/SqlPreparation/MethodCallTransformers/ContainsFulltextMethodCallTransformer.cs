@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       if (methodCallExpression.Arguments.Count == 2) // overload without language
         return new SqlFunctionExpression (typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
-      else if (methodCallExpression.Arguments.Count == 3) // TODO Review 2509: Simply assume that count == 3 if it isn't 2 - since SupportedMethods only has those two possibilities, we needn't be overly defensive => remove NotSupportedException below
+      else if (methodCallExpression.Arguments.Count == 3)
       {
         if (!(methodCallExpression.Arguments[2] is ConstantExpression))
         {
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         return new SqlFunctionExpression (
             typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], languageExpression);
       }
-      else
+      else  // TODO Review 2509: Encapsulate these checks (in all transformers) into a MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2, 3) method (taking a params int[] allowedArgumentCounts); also add a CheckInstanceMethod (methodCallExpression) and a CheckStaticMethod (methodCallExpression) method and use them
       {
         throw new NotSupportedException (
             string.Format ("IndexOf function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
