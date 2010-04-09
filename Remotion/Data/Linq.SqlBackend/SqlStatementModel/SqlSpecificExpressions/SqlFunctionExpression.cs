@@ -32,14 +32,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     private readonly string _sqlFunctioName;
     private readonly Expression _prefix;
-    private ReadOnlyCollection<Expression> _args;
+    private readonly ReadOnlyCollection<Expression> _args;
 
+    // TODO Review 2511: Remove prefix, make this a part of args
     public SqlFunctionExpression (Type type, string sqlFunctioName, Expression prefix, params Expression[] args)
         : base (type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("sqlFunctioName", sqlFunctioName);
+      ArgumentUtility.CheckNotNullOrEmpty ("sqlFunctioName", sqlFunctioName);
       ArgumentUtility.CheckNotNull ("prefix", prefix);
+      ArgumentUtility.CheckNotNull ("args", args);
 
       _args = Array.AsReadOnly(args);
       _sqlFunctioName = sqlFunctioName;
@@ -64,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newPrefix = visitor.VisitExpression (_prefix);
-      var newArgs = visitor.VisitAndConvert (_args, "VisitChildren");
+      var newArgs = visitor.VisitAndConvert (_args, "SqlFunctionExpression.VisitChildren");
 
       if ((_args != newArgs) || (_prefix != newPrefix))
         return new SqlFunctionExpression (Type, _sqlFunctioName, newPrefix, newArgs.ToArray());

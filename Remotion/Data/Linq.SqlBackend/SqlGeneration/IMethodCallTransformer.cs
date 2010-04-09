@@ -21,7 +21,8 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="IMethodCallTransformer"/> is implemented by classes generating <see cref="SqlFunctionExpression"/>.
+  /// <see cref="IMethodCallTransformer"/> is implemented by classes generating SQL-emittable expressions (e.g., <see cref="SqlFunctionExpression"/>)
+  /// from <see cref="MethodCallExpression"/> instances.
   /// </summary>
   public interface IMethodCallTransformer
   {

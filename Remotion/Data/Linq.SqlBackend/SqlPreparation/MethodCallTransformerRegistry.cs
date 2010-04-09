@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     /// <summary>
     /// Creates a default <see cref="MethodCallTransformerRegistry"/>, which has all types implementing <see cref="IMethodCallTransformer"/> from the
-    /// re-linq assembly automatically registered, as long as they offer a public static <c>SupportedMethods</c> field.
+    /// SQL backend assembly automatically registered, as long as they offer a public static <c>SupportedMethods</c> field.
     /// </summary>
     /// <returns>A default <see cref="MethodCallTransformerRegistry"/> with all <see cref="IMethodCallTransformer"/>s with a <c>SupportedMethods</c>
     /// field registered.</returns>

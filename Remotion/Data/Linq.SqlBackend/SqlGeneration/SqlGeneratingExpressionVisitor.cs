@@ -184,6 +184,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO Review 2511: Use AppendSeparated here
       _commandBuilder.Append (expression.SqlFunctioName);
       _commandBuilder.Append ("(");
       VisitExpression (expression.Prefix);

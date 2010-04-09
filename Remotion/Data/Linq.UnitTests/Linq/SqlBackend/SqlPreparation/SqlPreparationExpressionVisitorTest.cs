@@ -159,7 +159,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatement =
           SqlStatementModelObjectMother.CreateSqlStatement (
-              new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+                                   new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
               );
       
       _stageMock
@@ -335,6 +335,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (constantExpression));
       Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (0));
     }
+
+    // TODO Review 2511: Add a test showing that the expression's properties are visited before being passed to the method transformer - use a MethodCallExpression whose instance or argument is the _cookQuerySourceReferenceExpression, and use a transformer mock to verify that a SqlTableReferenceExpression is passed instead of the _cookQuerySourceReferenceExpression
+    // TODO Review 2511: Add a test showing that the transformed expression's properties are visited after the transformation - use a transformer mock that returns the _cookQuerySourceReferenceExpression, then verify that a SqlTableReferenceExpression is created for that
+
+    // TODO Review 2511: The following two tests are not required in the SqlPreparationExpressionVisitor test fixture; they are integration tests and should thus be removed
 
     [Test]
     public void VisitMethodCallExpression_ConvertToInt64 ()

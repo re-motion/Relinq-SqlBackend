@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
@@ -58,6 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.Not.SameAs (_sqlFunctionExpression));
+      // TODO Review 2511: Check properties of new result
     }
 
     [Test]

@@ -167,21 +167,26 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else
         return base.VisitBinaryExpression (expression);
-    }
-
+      }
 
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // TODO Review 2511: Simply call base.VisitMethodCallExpression to replace the following lines
       var instanceExpression = VisitExpression (expression.Object);
-      List<Expression> arguments = new List<Expression>();
+
+      var arguments = new List<Expression>();
       foreach (var argument in expression.Arguments)
         arguments.Add (VisitExpression (argument));
+      
       var newExpression = Expression.Call (instanceExpression, expression.Method, arguments);
 
       if ((expression.Object != instanceExpression) || (expression.Arguments.ToList() != arguments))
         return _registry.GetTransformer (expression.Method).Transform (newExpression);
 
-      return _registry.GetTransformer (expression.Method).Transform (expression);
+      // TODO Review 2511: Everything up to here can be replaced by base.VisitMethodCallExpression; adapt the next line to use newExpression instead
+      return _registry.GetTransformer (expression.Method).Transform (expression); // TODO Review 2511: Call VisitExpression on the result of Transform; test this. This is necessary so that a MethodCallTransformer can return an "unprepared" expression.
     }
 
     private bool IsNullConstant (Expression expression)

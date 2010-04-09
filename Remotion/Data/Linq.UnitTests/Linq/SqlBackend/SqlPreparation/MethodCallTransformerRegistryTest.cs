@@ -122,8 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void GetTransformer_ForBaseDefintion ()
     {
-      object test = new object ();
-      var methodInfo = ReflectionUtility.GetMethod (() => test.ToString ());
+      var methodInfo = ReflectionUtility.GetMethod (() => new object ().ToString ());
 
       _methodCallTransformerRegistry.Register (methodInfo, _transformerStub);
 
