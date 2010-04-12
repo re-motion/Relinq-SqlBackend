@@ -39,30 +39,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public virtual void Build (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("selectedSqlContext", selectedSqlContext);
       
-      commandBuilder.Append ("SELECT ");
       BuildSelectPart (sqlStatement, commandBuilder, selectedSqlContext);
-      if (sqlStatement.SqlTables.Count > 0)
-      {
-        commandBuilder.Append (" FROM ");
-        BuildFromPart (sqlStatement, commandBuilder);
-      }
-      if ((sqlStatement.WhereCondition != null))
-      {
-        commandBuilder.Append (" WHERE ");
-        BuildWherePart (sqlStatement, commandBuilder, SqlExpressionContext.PredicateRequired);
-      }
-      if (sqlStatement.Orderings.Count > 0)
-      {
-        commandBuilder.Append (" ORDER BY ");
-        BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
-      }
+      BuildFromPart (sqlStatement, commandBuilder);
+      BuildWherePart (sqlStatement, commandBuilder, SqlExpressionContext.PredicateRequired);
+      BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
     }
 
     protected virtual void BuildSelectPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+
+      commandBuilder.Append ("SELECT ");
 
       if ((sqlStatement.IsCountQuery && sqlStatement.TopExpression != null) || (sqlStatement.IsCountQuery && sqlStatement.IsDistinctQuery))
         throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
@@ -96,11 +87,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      bool first = true;
-      foreach (var sqlTable in sqlStatement.SqlTables)
+      if (sqlStatement.SqlTables.Count > 0)
       {
-        _stage.GenerateTextForFromTable (commandBuilder, sqlTable, first);
-        first = false;
+        commandBuilder.Append (" FROM ");
+
+        bool first = true;
+        foreach (var sqlTable in sqlStatement.SqlTables)
+        {
+          _stage.GenerateTextForFromTable (commandBuilder, sqlTable, first);
+          first = false;
+        }
       }
     }
 
@@ -109,7 +105,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition);
+      if ((sqlStatement.WhereCondition != null))
+      {
+        commandBuilder.Append (" WHERE ");
+
+        _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition);
+      }
     }
 
     protected virtual void BuildOrderByPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
@@ -117,25 +118,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      bool first = true;
-      foreach (var orderByClause in sqlStatement.Orderings)
+      if (sqlStatement.Orderings.Count > 0)
       {
-        if (!first)
-          commandBuilder.Append (", ");
+        commandBuilder.Append (" ORDER BY ");
 
-        if (orderByClause.Expression.NodeType == ExpressionType.Constant)
+        bool first = true;
+        foreach (var orderByClause in sqlStatement.Orderings)
         {
-          commandBuilder.Append ("(SELECT ");
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
-          commandBuilder.Append (")");
-        }
-        else
-        {
-          _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
-        }
+          if (!first)
+            commandBuilder.Append (", ");
 
-        commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString ().ToUpper ()));
-        first = false;
+          if (orderByClause.Expression.NodeType == ExpressionType.Constant)
+          {
+            commandBuilder.Append ("(SELECT ");
+            _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
+            commandBuilder.Append (")");
+          }
+          else
+          {
+            _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
+          }
+
+          commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString().ToUpper()));
+          first = false;
+        }
       }
     }
   }

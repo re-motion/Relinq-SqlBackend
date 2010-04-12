@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildFromPart (_sqlStatement, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" FROM [Table] AS [t]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("COUNT(*)"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT COUNT(*)"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -146,7 +146,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("DISTINCT [t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT DISTINCT [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -164,7 +164,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -183,7 +183,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -200,7 +200,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (_sqlStatement, _commandBuilder, SqlExpressionContext.ValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END AS [value]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN 1 ELSE 0 END AS [value]"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildWherePart (_sqlStatement, _commandBuilder, SqlExpressionContext.PredicateRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 = 1)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" WHERE (@1 = 1)"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -234,7 +234,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildOrderByPart (_sqlStatement, _commandBuilder, SqlExpressionContext.SingleValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[Name] ASC"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" ORDER BY [t].[Name] ASC"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -260,7 +260,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildOrderByPart (_sqlStatement, _commandBuilder, SqlExpressionContext.SingleValueRequired);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID] ASC, [t].[Name] DESC, [t].[City] DESC"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" ORDER BY [t].[ID] ASC, [t].[Name] DESC, [t].[City] DESC"));
       _stageMock.VerifyAllExpectations();
     }
 
