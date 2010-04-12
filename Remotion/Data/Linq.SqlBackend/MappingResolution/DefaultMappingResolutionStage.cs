@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
@@ -40,49 +39,49 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _resolver = resolver;
     }
 
-    public Expression ResolveSelectExpression (Expression expression)
+    public virtual Expression ResolveSelectExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public Expression ResolveWhereExpression (Expression expression)
+    public virtual Expression ResolveWhereExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public Expression ResolveOrderingExpression (Expression expression)
+    public virtual Expression ResolveOrderingExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public Expression ResolveTopExpression (Expression expression)
+    public virtual Expression ResolveTopExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo)
+    public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
       return ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
+    public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
       return ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator);
     }
 
-    public SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
+    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 

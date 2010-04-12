@@ -41,42 +41,42 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _generator = generator;
     }
 
-    public Expression PrepareSelectExpression (Expression expression)
+    public virtual Expression PrepareSelectExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
-    public Expression PrepareWhereExpression (Expression expression)
+    public virtual Expression PrepareWhereExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
-    public Expression PrepareTopExpression (Expression expression)
+    public virtual Expression PrepareTopExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
-    public Expression PrepareFromExpression (Expression expression)
+    public virtual Expression PrepareFromExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
-    public Expression PrepareOrderByExpression (Expression expression)
+    public virtual Expression PrepareOrderByExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression(expression, _context, this, _registry);
     }
 
-    public Expression PrepareItemExpression (Expression expression)
+    public virtual Expression PrepareItemExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
 
-    public SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType)
+    public virtual SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType)
     {
       return SqlPreparationFromExpressionVisitor.GetTableForFromExpression (fromExpression, itemType, this, _generator);
     }
 
-    public SqlStatement PrepareSqlStatement (QueryModel queryModel)
+    public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
     {
       return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this);
     }
