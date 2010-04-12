@@ -242,6 +242,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         case ExpressionType.UnaryPlus:
           _commandBuilder.Append ("+");
           break;
+        case ExpressionType.Convert: //TODO: check convert
+          break;
         default:
           throw new NotSupportedException();
       }
