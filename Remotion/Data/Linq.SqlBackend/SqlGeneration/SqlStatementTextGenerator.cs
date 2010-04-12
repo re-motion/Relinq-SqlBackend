@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage = stage;
     }
 
-    public void Build (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    public virtual void Build (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       
