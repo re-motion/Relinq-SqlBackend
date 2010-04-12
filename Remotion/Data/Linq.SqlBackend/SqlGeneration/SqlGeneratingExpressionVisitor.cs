@@ -36,7 +36,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         IResolvedSqlExpressionVisitor,
         ISqlSpecificExpressionVisitor,
         ISqlSubStatementVisitor,
-        IJoinConditionExpressionVisitor
+        IJoinConditionExpressionVisitor,
+        ISqlCustomTextGeneratorExpressionVisitor
   {
     public static void GenerateSql (Expression expression, SqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
     {
@@ -275,6 +276,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement, SqlExpressionContext.SingleValueRequired);
       _commandBuilder.Append (")");
       return expression;
+    }
+
+    public void VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      expression.Generate (_commandBuilder, this, _stage);
     }
   }
 }
