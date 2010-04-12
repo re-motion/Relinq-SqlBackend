@@ -25,20 +25,49 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlStatementBuilderTest
   {
+    private SqlStatementBuilder _statementBuilder;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _statementBuilder = new SqlStatementBuilder ();
+    }
+
     [Test]
     public void GetSqlStatement ()
     {
-      var statementBuilder = new SqlStatementBuilder();
       var constantExpression = Expression.Constant ("test");
-      statementBuilder.SelectProjection = constantExpression;
+      _statementBuilder.SelectProjection = constantExpression;
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      statementBuilder.SqlTables.Add (sqlTable);
+      _statementBuilder.SqlTables.Add (sqlTable);
 
-      var result = statementBuilder.GetSqlStatement();
+      var result = _statementBuilder.GetSqlStatement();
 
       Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
       Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
+    }
+
+    [Test]
+    public void AddWhereCondition_SingleWhereCondition ()
+    {
+      var expression = Expression.Constant ("whereTest");
+      _statementBuilder.AddWhereCondition (expression);
+
+      Assert.That (_statementBuilder.WhereCondition, Is.EqualTo (expression));
+    }
+
+    [Test]
+    public void AddWhereCondition_MultipleWhereCondition ()
+    {
+      var expression1 = Expression.Constant (true);
+      _statementBuilder.AddWhereCondition (expression1);
+      var expression2 = Expression.Constant (false);
+      _statementBuilder.AddWhereCondition (expression2);
+
+      Assert.That (((BinaryExpression) _statementBuilder.WhereCondition).Left, Is.EqualTo (expression1));
+      Assert.That (((BinaryExpression) _statementBuilder.WhereCondition).Right, Is.EqualTo (expression2));
+      Assert.That (_statementBuilder.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
     }
 
     // TODO Review 2546: Add a test that checks that all properties are correctly set by GetSqlStatment

@@ -33,11 +33,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       get { return base.SqlStatementBuilder; }
     }
 
-    public new void AddWhereCondition (Expression translatedExpression)
-    {
-      base.AddWhereCondition (translatedExpression);
-    }
-
     public new SqlStatement GetStatementAndResetBuilder ()
     {
       return base.GetStatementAndResetBuilder ();

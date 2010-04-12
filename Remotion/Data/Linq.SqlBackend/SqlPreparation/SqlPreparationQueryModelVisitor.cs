@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var translatedExpression = _stage.PrepareWhereExpression (whereClause.Predicate);
-      AddWhereCondition (translatedExpression);
+      SqlStatementBuilder.AddWhereCondition (translatedExpression);
     }
 
     public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
@@ -169,14 +169,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return sqlSubStatement;
     }
 
-    protected void AddWhereCondition (Expression translatedExpression)
-    {
-      if (SqlStatementBuilder.WhereCondition != null)
-        SqlStatementBuilder.WhereCondition = Expression.AndAlso (SqlStatementBuilder.WhereCondition, translatedExpression);
-      else
-        SqlStatementBuilder.WhereCondition = translatedExpression;
-    }
-
     private void AddFromClause (FromClauseBase fromClause)
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromClause.FromExpression);
@@ -186,7 +178,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
-        AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
+        SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
       
       SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
     }

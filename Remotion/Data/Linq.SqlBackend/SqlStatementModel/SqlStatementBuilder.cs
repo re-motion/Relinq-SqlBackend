@@ -66,5 +66,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery);
     }
 
+    public void AddWhereCondition (Expression translatedExpression)
+    {
+      if (WhereCondition != null)
+        WhereCondition = Expression.AndAlso (WhereCondition, translatedExpression);
+      else
+        WhereCondition = translatedExpression;
+    }
+
   }
 }

@@ -437,29 +437,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           Is.EqualTo(oldSqlStatementBuilder.SqlTables));
 
     }
-
-    [Test]
-    public void AddWhereCondition_SingleWhereCondition ()
-    {
-      var expression = Expression.Constant ("whereTest");
-      _visitor.AddWhereCondition (expression);
-
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.EqualTo (expression));
-    }
-
-    [Test]
-    public void AddWhereCondition_MultipleWhereCondition ()
-    {
-      var expression1 = Expression.Constant (true);
-      _visitor.AddWhereCondition (expression1);
-      var expression2 = Expression.Constant (false);
-      _visitor.AddWhereCondition (expression2);
-      
-      Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Left, Is.EqualTo (expression1));
-      Assert.That (((BinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Right, Is.EqualTo (expression2));
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition.NodeType, Is.EqualTo(ExpressionType.AndAlso));
-    }
-
+    
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
     public void VisitResultOperator_NotSupported ()
