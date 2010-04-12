@@ -29,6 +29,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     private readonly ISqlGenerationStage _stage;
 
+    protected ISqlGenerationStage Stage
+    {
+      get { return _stage; }
+    }
+
     public SqlStatementTextGenerator (ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
