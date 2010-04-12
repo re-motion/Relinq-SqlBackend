@@ -123,9 +123,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
 
         var items = ((ICollection) expression.Value).Cast<object>();
-        _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
-
-
+        if(items.Count() > 0)
+          _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
+        else
+          _commandBuilder.Append ("null");
+        
         _commandBuilder.Append (")");
       }
       else

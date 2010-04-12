@@ -178,6 +178,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitConstantExpression_EmptyCollection ()
+    {
+      var collectionExpression = Expression.Constant (new string[] { });
+      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant ("Hubert"), collectionExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
+      
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IN (null)"));
+    }
+
+    [Test]
     public void VisitLiteralExpression ()
     {
       var expression = new SqlLiteralExpression (5);
