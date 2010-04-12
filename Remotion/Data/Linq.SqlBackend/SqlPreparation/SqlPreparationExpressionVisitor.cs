@@ -119,10 +119,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             && typeof (ICollection).IsAssignableFrom (expression.QueryModel.MainFromClause.FromExpression.Type))
         {
           if (expression.QueryModel.ResultOperators.Count > 1)
-            throw new NotSupportedException("Expression with more than one results operators are not allowed when using contains.");
+            throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
 
           var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
-          return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, expression.QueryModel.MainFromClause.FromExpression);
+
+          if (((ICollection)((ConstantExpression) expression.QueryModel.MainFromClause.FromExpression).Value).Cast<object> ().Count () > 0)
+            return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, expression.QueryModel.MainFromClause.FromExpression);
+          else
+            return Expression.Constant (false);
         }
 
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
@@ -167,7 +171,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else
         return base.VisitBinaryExpression (expression);
-      }
+    }
 
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
@@ -179,14 +183,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var arguments = new List<Expression>();
       foreach (var argument in expression.Arguments)
         arguments.Add (VisitExpression (argument));
-      
+
       var newExpression = Expression.Call (instanceExpression, expression.Method, arguments);
 
       if ((expression.Object != instanceExpression) || (expression.Arguments.ToList() != arguments))
         return _registry.GetTransformer (expression.Method).Transform (newExpression);
 
       // TODO Review 2511: Everything up to here can be replaced by base.VisitMethodCallExpression; adapt the next line to use newExpression instead
-      return _registry.GetTransformer (expression.Method).Transform (expression); // TODO Review 2511: Call VisitExpression on the result of Transform; test this. This is necessary so that a MethodCallTransformer can return an "unprepared" expression.
+      return _registry.GetTransformer (expression.Method).Transform (expression);
+          // TODO Review 2511: Call VisitExpression on the result of Transform; test this. This is necessary so that a MethodCallTransformer can return an "unprepared" expression.
     }
 
     private bool IsNullConstant (Expression expression)

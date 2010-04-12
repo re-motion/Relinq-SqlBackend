@@ -120,14 +120,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       else if (expression.Value is ICollection)
       {
         _commandBuilder.Append ("(");
-
-
-        var items = ((ICollection) expression.Value).Cast<object>();
-        if(items.Count() > 0)
-          _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
-        else
-          _commandBuilder.Append ("null");
         
+        var items = ((ICollection) expression.Value).Cast<object>();
+        _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
         _commandBuilder.Append (")");
       }
       else

@@ -205,6 +205,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitSubQueryExpression_WithContainsAndEmptyConstantCollection ()
+    {
+      var constantExpressionCollection = Expression.Constant (new string[] { });
+      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
+      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+
+      var itemExpression = Expression.Constant ("Huber");
+      var containsResultOperator = new ContainsResultOperator (itemExpression);
+      querModel.ResultOperators.Add (containsResultOperator);
+
+      var expression = new SubQueryExpression (querModel);
+      var fakeConstantExpression = Expression.Constant ("Sepp");
+
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (itemExpression))
+          .Return (fakeConstantExpression);
+      _stageMock.Replay ();
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(false));
+      
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     [ExpectedException(typeof(NotSupportedException))]
     public void VisitSubQueryExpression_WithSeveralResultOperatorsAndConstantCollection ()
     {

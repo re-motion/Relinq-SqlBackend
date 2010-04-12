@@ -198,6 +198,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void Contains_WithEmptyCollection ()
+    {
+      var cookNames = new string[] { };
+      CheckQuery (
+          from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter("@1", 0));
+    }
+
+    [Test]
     public void Cast_TopLevel ()
     {
       CheckQuery (
