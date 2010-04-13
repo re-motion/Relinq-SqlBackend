@@ -28,11 +28,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class BinaryExpressionTextGenerator
   {
-    private readonly SqlCommandBuilder _commandBuilder;
+    private readonly ISqlCommandBuilder _commandBuilder;
     private readonly ExpressionTreeVisitor _expressionVisitor;
     private readonly Dictionary<ExpressionType, string> _simpleOperatorRegistry;
 
-    public BinaryExpressionTextGenerator (SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionVisitor)
+    public BinaryExpressionTextGenerator (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionVisitor)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expressionVisitor", expressionVisitor);

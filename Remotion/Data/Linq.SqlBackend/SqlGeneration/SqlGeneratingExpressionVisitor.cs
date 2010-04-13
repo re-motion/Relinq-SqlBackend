@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         IJoinConditionExpressionVisitor,
         ISqlCustomTextGeneratorExpressionVisitor
   {
-    public static void GenerateSql (Expression expression, SqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
+    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -51,11 +51,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       visitor.VisitExpression (expressionWithBooleanSemantics);
     }
 
-    private readonly SqlCommandBuilder _commandBuilder;
+    private readonly ISqlCommandBuilder _commandBuilder;
     private readonly BinaryExpressionTextGenerator _binaryExpressionTextGenerator;
     private readonly ISqlGenerationStage _stage;
 
-    protected SqlGeneratingExpressionVisitor (SqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);

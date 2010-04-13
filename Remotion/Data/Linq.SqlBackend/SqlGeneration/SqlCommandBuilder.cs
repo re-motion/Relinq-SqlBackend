@@ -21,7 +21,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  public class SqlCommandBuilder
+  public class SqlCommandBuilder : ISqlCommandBuilder
   {
     private readonly StringBuilder _stringBuilder;
     private readonly List<CommandParameter> _parameters;
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stringBuilder.Append (stringToAppend);
     }
 
-    public void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<SqlCommandBuilder, T> appender)
+    public void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<ISqlCommandBuilder, T> appender)
     {
       ArgumentUtility.CheckNotNull ("separator", separator);
       ArgumentUtility.CheckNotNull ("values", values);

@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage = stage;
     }
 
-    public virtual void Build (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    public virtual void Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
     }
 
-    protected virtual void BuildSelectPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    protected virtual void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    protected virtual void BuildFromPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder)
+    protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    protected virtual void BuildWherePart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    protected virtual void BuildWherePart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -118,7 +118,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    protected virtual void BuildOrderByPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    protected virtual void BuildOrderByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);

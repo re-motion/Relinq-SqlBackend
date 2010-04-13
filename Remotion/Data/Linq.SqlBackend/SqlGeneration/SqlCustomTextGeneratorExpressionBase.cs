@@ -31,6 +31,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _expressionType = expressionType;
     }
 
-    public abstract void Generate (SqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
+    public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
   }
 }

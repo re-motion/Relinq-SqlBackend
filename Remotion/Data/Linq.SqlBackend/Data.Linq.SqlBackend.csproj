@@ -46,6 +46,7 @@
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
     <Compile Include="SqlGeneration\IMethodCallTransformer.cs" />
+    <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />
     <Compile Include="SqlGeneration\ISqlCustomTextGeneratorExpressionVisitor.cs" />
     <Compile Include="SqlGeneration\SqlCompositeCustomTextGeneratorExpression.cs" />
     <Compile Include="SqlGeneration\SqlCustomTextExpression .cs" />

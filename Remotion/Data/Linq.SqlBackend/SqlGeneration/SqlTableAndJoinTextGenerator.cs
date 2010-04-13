@@ -27,11 +27,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor
   {
-    private readonly SqlCommandBuilder _commandBuilder;
+    private readonly ISqlCommandBuilder _commandBuilder;
     private readonly ISqlGenerationStage _stage;
     private bool _first;
     
-    public static void GenerateSql (SqlTableBase sqlTable, SqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
+    public static void GenerateSql (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    protected SqlTableAndJoinTextGenerator (SqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
+    protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
