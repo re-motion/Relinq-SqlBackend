@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null,false, false);
+      _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -87,18 +87,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForTopExpression ()
     {
-      // TODO Review 2546: Create a new builder and set the relevant properties: new SqlStatementBuilder { SelectExpression = _columListExpression, TopExpression = Expression.Constant(5) }.GetStatement()
-      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewTopExpression (_sqlStatement, Expression.Constant (5));
+      var sqlStatement =
+          new SqlStatementBuilder { SelectProjection = _columnListExpression, TopExpression = Expression.Constant (5) }.GetSqlStatement();
 
       _stageMock
           .Expect (
           mock =>
           PrivateInvoke.InvokeNonPublicMethod (
-              mock, "GenerateTextForExpression", _commandBuilder, _sqlStatement.TopExpression, SqlExpressionContext.SingleValueRequired))
+              mock, "GenerateTextForExpression", _commandBuilder, sqlStatement.TopExpression, SqlExpressionContext.SingleValueRequired))
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
-      _stageMock.GenerateTextForTopExpression (_commandBuilder, _sqlStatement.TopExpression);
+      _stageMock.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
@@ -107,19 +107,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForWhereExpression ()
     {
-      // TODO Review 2546: Instead of the following line, add a CreateSqlStatement method that allows one to specify a select projection, a where condition, and a params array of sql tables. Use the _columnListExpression as the select projection.
-      var whereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
-      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (_sqlStatement, whereCondition);
+      var sqlStatement = new SqlStatement (
+          _columnListExpression,
+          new SqlTable[] { },
+          new Ordering[] { },
+          Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)),
+          null,
+          false,
+          false);
 
       _stageMock
           .Expect (
           mock =>
           PrivateInvoke.InvokeNonPublicMethod (
-              mock, "GenerateTextForExpression", _commandBuilder, _sqlStatement.WhereCondition, SqlExpressionContext.PredicateRequired))
+              mock, "GenerateTextForExpression", _commandBuilder, sqlStatement.WhereCondition, SqlExpressionContext.PredicateRequired))
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
-      _stageMock.GenerateTextForWhereExpression (_commandBuilder, _sqlStatement.WhereCondition);
+      _stageMock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
@@ -147,10 +152,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForSqlStatement ()
     {
-      // TODO Review 2546: Instead of using CreateSqlStatementWithNew..., add a CreateSqlStatement method that allows one to specify a select projection and a params array of tables.
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewSelectProjection (sqlStatement, _columnListExpression);
-      ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
+          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t")) });
 
       _stageMock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
 

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -60,9 +61,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       commandBuilder.Append ("SELECT ");
 
-      if ((sqlStatement.IsCountQuery && sqlStatement.TopExpression != null) || (sqlStatement.IsCountQuery && sqlStatement.IsDistinctQuery))
-        throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
-
+      bool condition = !((sqlStatement.IsCountQuery && sqlStatement.TopExpression != null)
+                       || (sqlStatement.IsCountQuery && sqlStatement.IsDistinctQuery));
+      Debug.Assert (condition, "A SqlStatement cannot contain both Count and Top or Count and Distinct.");
+      
       if (sqlStatement.IsCountQuery)
       {
         commandBuilder.Append ("COUNT(*)");

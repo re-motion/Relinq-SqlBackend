@@ -18,7 +18,10 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -26,23 +29,32 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   public class SqlStatementTest
   {
     [Test]
-    // TODO Review 2546: Change this test to call the ctor. Since this test is for the SqlStatement class, we shouldn't hide the details behind the ObjectMother here.
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (sqlStatement, Expression.Constant (1));
+      new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, Expression.Constant (1), null, false, false);
     }
 
     [Test]
-    // TODO Review 2546: Change this test to simply call the ctor with a null whereCondition; also add tests that check the same for all parameters that can be null
     public void WhereCondition_CanBeSetToNull ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (sqlStatement, Expression.Constant (true));
-      sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithNewWhereCondition (sqlStatement, null);
+      var sqlStatement = new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
       
       Assert.That (sqlStatement.WhereCondition, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void BuildSelectPart_WithCountAndTop_ThrowsException ()
+    {
+      new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, Expression.Constant ("top"), true, false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void BuildSelectPart_WithCountAndDistinct_ThrowsException ()
+    {
+      new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
     }
   }
 }

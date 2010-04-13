@@ -29,18 +29,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlStatementBuilder
   {
-    // TODO Review 2546: Move properties down, should be below ctor.
-    public bool IsCountQuery { get; set; }
-    public bool IsDistinctQuery { get; set; }
-
-    public Expression TopExpression { get; set; }
-
-    public Expression SelectProjection { get; set; }
-    public Expression WhereCondition { get; set; }
-
-    public List<SqlTableBase> SqlTables { get; private set; }
-    public List<Ordering> Orderings { get; private set; }
-
     public SqlStatementBuilder ()
     {
       SqlTables = new List<SqlTableBase> ();
@@ -60,6 +48,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
       Orderings = new List<Ordering> (sqlStatement.Orderings);
     }
+
+    public bool IsCountQuery { get; set; }
+    public bool IsDistinctQuery { get; set; }
+
+    public Expression TopExpression { get; set; }
+
+    public Expression SelectProjection { get; set; }
+    public Expression WhereCondition { get; set; }
+
+    public List<SqlTableBase> SqlTables { get; private set; }
+    public List<Ordering> Orderings { get; private set; }
 
     public SqlStatement GetSqlStatement ()
     {

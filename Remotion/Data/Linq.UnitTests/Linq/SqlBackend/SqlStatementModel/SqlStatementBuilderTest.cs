@@ -19,6 +19,9 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -70,7 +73,59 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (_statementBuilder.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
     }
 
-    // TODO Review 2546: Add a test that checks that all properties are correctly set by GetSqlStatment
-    // TODO Review 2546: Add a test that checks that all properties are correctly taken over by SqlStatementBuilder ctor taking a SqlStatement
+    [Test]
+    public void GetSqlStatement_CheckProperties()
+    {
+      var selectProjection = Expression.Constant ("select");
+      var whereCondition = Expression.Constant (true);
+      var topExpression = Expression.Constant ("top");
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
+
+      var statementBuilder = new SqlStatementBuilder()
+                             {
+                                 SelectProjection = selectProjection,
+                                 WhereCondition = whereCondition,
+                                 TopExpression = topExpression,
+                                 IsCountQuery = false,
+                                 IsDistinctQuery = true
+                             };
+      statementBuilder.SqlTables.Add (sqlTable);
+      statementBuilder.Orderings.Add (ordering);
+
+      var sqlStatement = statementBuilder.GetSqlStatement();
+
+      Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
+      Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
+      Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
+      Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
+      Assert.That (sqlStatement.IsDistinctQuery, Is.True);
+      Assert.That (sqlStatement.IsCountQuery, Is.False);
+    }
+
+    [Test]
+    public void CreateSqlStatementBuilder_WithExistingSqlStatement ()
+    {
+      var selectProjection = Expression.Constant ("select");
+      var whereCondition = Expression.Constant (true);
+      var topExpression = Expression.Constant ("top");
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
+
+      var sqlStatement = new SqlStatement (
+          selectProjection, new SqlTable[] { sqlTable }, new Ordering[] { ordering }, whereCondition, topExpression, false, true);
+
+      var testedBuilder = new SqlStatementBuilder (sqlStatement);
+
+      Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
+      Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
+      Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
+      Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
+      Assert.That (testedBuilder.IsDistinctQuery, Is.True);
+      Assert.That (testedBuilder.IsCountQuery, Is.False);
+      
+    }
   }
 }

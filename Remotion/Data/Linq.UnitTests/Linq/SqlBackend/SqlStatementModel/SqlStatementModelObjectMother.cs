@@ -36,6 +36,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       }.GetSqlStatement ();
     }
 
+    public static SqlStatement CreateSqlStatement (Expression selectProjection, params SqlTable[] sqlTables)
+    {
+      return new SqlStatement (selectProjection, sqlTables, new Ordering[] { }, null, null, false, false);
+    }
+
     public static SqlStatement CreateSqlStatementWithCook ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
@@ -46,43 +51,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo();
       return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
-    }
-
-    // TODO Review 2546: Check whether these methods are still required
-
-    public static SqlStatement CreateSqlStatementWithNewSelectProjection (SqlStatement sqlStatement, Expression selectProjection)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.SelectProjection = selectProjection;
-      return sqlStatementBuilder.GetSqlStatement();
-    }
-
-    public static SqlStatement CreateSqlStatementWithNewWhereCondition (SqlStatement sqlStatement, Expression whereCondition)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.WhereCondition = whereCondition;
-      return sqlStatementBuilder.GetSqlStatement();
-    }
-
-   public static SqlStatement CreateSqlStatementWithNewTopExpression (SqlStatement sqlStatement, Expression topExpression)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.TopExpression = topExpression;
-      return sqlStatementBuilder.GetSqlStatement();
-    }
-
-    public static SqlStatement CreateSqlStatementWithNewCountQuery (SqlStatement sqlStatement, bool isCountQuery)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.IsCountQuery = isCountQuery;
-      return sqlStatementBuilder.GetSqlStatement();
-    }
-
-    public static SqlStatement CreateSqlStatementWithNewDistinctQuery (SqlStatement sqlStatement, bool isDistinctQuery)
-    {
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      sqlStatementBuilder.IsDistinctQuery = isDistinctQuery;
-      return sqlStatementBuilder.GetSqlStatement();
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
