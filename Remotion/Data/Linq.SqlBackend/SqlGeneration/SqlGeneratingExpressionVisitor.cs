@@ -80,9 +80,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var prefix = expression.OwningTableAlias;
       var columnName = expression.ColumnName;
       if (columnName == "*")
-        _commandBuilder.AppendFormat ("[{0}].*", prefix);
+      {
+        _commandBuilder.AppendIdentifier (prefix);
+        _commandBuilder.Append (".*");
+      }
       else
-        _commandBuilder.AppendFormat ("[{0}].[{1}]", prefix, columnName);
+      {
+        _commandBuilder.AppendIdentifier (prefix);
+        _commandBuilder.Append (".");
+        _commandBuilder.AppendIdentifier (columnName);
+      }
 
       return expression;
     }

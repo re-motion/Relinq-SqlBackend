@@ -74,14 +74,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _commandBuilder.Append (" CROSS JOIN ");
         _first = true;
       }
-      
-      _commandBuilder.Append ("[");
-      _commandBuilder.Append (tableInfo.TableName);
-      _commandBuilder.Append ("]");
+
+      _commandBuilder.AppendIdentifier (tableInfo.TableName);
       _commandBuilder.Append (" AS ");
-      _commandBuilder.Append ("[");
-      _commandBuilder.Append (tableInfo.TableAlias);
-      _commandBuilder.Append ("]");
+      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
 
       return tableInfo;
     }
@@ -97,9 +93,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement, SqlExpressionContext.ValueRequired);
       _commandBuilder.Append (")");
       _commandBuilder.Append (" AS ");
-      _commandBuilder.Append ("[");
-      _commandBuilder.Append (tableInfo.TableAlias);
-      _commandBuilder.Append ("]");
+      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
+      
       return tableInfo;
     }
 
@@ -107,7 +102,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       _commandBuilder.Append (" LEFT OUTER JOIN ");
 
-      ((ITableInfo) tableSource.ForeignTableInfo).Accept (this);
+      tableSource.ForeignTableInfo.Accept (this);
 
       _commandBuilder.Append (" ON ");
 

@@ -62,6 +62,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
+    public void AppendIdentifier (string identifier)
+    {
+      AppendFormat ("[{0}]", identifier);
+    }
+
     public void AppendFormat (string stringToAppend, params object[] parameters)
     {
       ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);
