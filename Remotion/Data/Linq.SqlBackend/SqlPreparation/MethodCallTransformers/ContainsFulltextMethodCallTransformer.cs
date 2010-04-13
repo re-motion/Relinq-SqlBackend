@@ -52,12 +52,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         return new SqlFunctionExpression (typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
       else if (methodCallExpression.Arguments.Count == 3)
       {
-        if (!(methodCallExpression.Arguments[2] is ConstantExpression))
-        {
-          throw new NotSupportedException (
-              "Only expressions that can be evaluated locally can be used as the LANGUAGE argument for ContainsFulltext.");
-        }
-
+        MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
+        
         //TODO 2509: escape sql text in language argument ???
         // TODO Review 2509: Use the SqlCompositeExpression to create the following languageExpression: SqlCompositeExpression (SqlCustomTextExpression ("LANGUAGE "), SqlConstantExpression (((ConstantExpression)methodCallExpression.Arguments[2]).Value))
         // TODO Review 2509: By using the SqlConstantExpression, escaping is not required.

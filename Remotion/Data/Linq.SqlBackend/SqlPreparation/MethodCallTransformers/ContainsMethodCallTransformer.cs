@@ -38,13 +38,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      // TODO Review 2508: Move this check (in all tests making it) to an ConstantExpression MethodCallTransformerUtility.CheckConstantExpression (string methodName, Expression argument) helper method
-      if (!(methodCallExpression.Arguments[0] is ConstantExpression))
-        throw new NotSupportedException ("Only expressions that can be evaluated locally can be used as the argument for Contains.");
+      MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[0]);
 
       var rightExpression =
           Expression.Constant (
-              string.Format ("%{0}%", EscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
+              string.Format ("%{0}%", LikeEscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }

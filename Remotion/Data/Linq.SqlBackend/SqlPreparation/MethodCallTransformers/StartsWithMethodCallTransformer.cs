@@ -38,12 +38,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      if (!(methodCallExpression.Arguments[0] is ConstantExpression))
-        throw new NotSupportedException ("Only expressions that can be evaluated locally can be used as the argument for StartsWith.");
-
+      MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[0]);
+      
       var rightExpression =
           Expression.Constant (
-              string.Format ("{0}%", EscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
+              string.Format ("{0}%", LikeEscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }

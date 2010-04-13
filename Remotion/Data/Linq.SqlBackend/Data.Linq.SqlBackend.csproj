@@ -55,11 +55,12 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFulltextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ConvertMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
-    <Compile Include="SqlPreparation\MethodCallTransformers\EscapeUtility.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\LikeEscapeUtility.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\IndexOfMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\LikeMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\LowerMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\MethodCallTransformerUtility.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\RemoveMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ReplaceMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\StartsWithMethodCallTransformer.cs" />

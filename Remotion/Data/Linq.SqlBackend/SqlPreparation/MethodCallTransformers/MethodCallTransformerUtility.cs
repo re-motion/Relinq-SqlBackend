@@ -15,37 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using System.Linq.Expressions;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
-  [TestFixture]
-  public class EscapeUtilityTest
+  /// <summary>
+  /// <see cref="MethodCallTransformerUtility"/> provides utility methods for MethodCallTransformers.
+  /// </summary>
+  public class MethodCallTransformerUtility
   {
-    [Test]
-    public void Escape_Bracket ()
+    public static void CheckConstantExpression (string methodName, Expression argument)
     {
-      var result = LikeEscapeUtility.Escape ("test[test");
-
-      Assert.That (result, Is.EqualTo ("test[[]test"));
-    }
-
-    [Test]
-    public void Escape_Percent ()
-    {
-      var result = LikeEscapeUtility.Escape ("test%test");
-
-      Assert.That (result, Is.EqualTo ("test[%]test"));
-    }
-
-    [Test]
-    public void Escape_Underline ()
-    {
-      var result = LikeEscapeUtility.Escape ("test_test");
-
-      Assert.That (result, Is.EqualTo ("test[_]test"));
+      if (!(argument is ConstantExpression))
+        throw new NotSupportedException (
+            string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0}.", methodName));
     }
   }
 }

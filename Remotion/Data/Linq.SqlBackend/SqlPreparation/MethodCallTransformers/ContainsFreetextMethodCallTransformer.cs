@@ -26,7 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// <see cref="ContainsFreetextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
   /// <see cref="StringExtensions.ContainsFreetext(string,string)"/> extension methods.
   /// </summary>
-  // TODO Review 2509: See ContainsFulltextMethodCallTransformer
   public class ContainsFreetextMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods = new[]
@@ -53,11 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         return new SqlFunctionExpression (typeof (bool), "FREETEXT", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
       else if (methodCallExpression.Arguments.Count == 3)
       {
-        if (!(methodCallExpression.Arguments[2] is ConstantExpression))
-        {
-          throw new NotSupportedException (
-              "Only expressions that can be evaluated locally can be used as the language argument for contains fulltext.");
-        }
+        MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
 
         //TODO 2509: escape sql text in language argument ???
 
