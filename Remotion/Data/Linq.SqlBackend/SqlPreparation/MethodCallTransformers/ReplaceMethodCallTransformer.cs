@@ -32,13 +32,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-            typeof (string).GetMethod ("Replace", new Type[] {typeof(string),typeof(string) })
+            typeof (string).GetMethod ("Replace", new [] {typeof(string),typeof(string) })
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-      // TODO Review 2508: Check argument count here
+
+      if (methodCallExpression.Arguments.Count != 2)
+        throw new NotSupportedException ("Replace method can only be used with two arguments.");
       return new SqlFunctionExpression (methodCallExpression.Type, "REPLACE", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
     }
   }

@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
@@ -32,13 +34,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       Assert.IsTrue (
           ReplaceMethodCallTransformer.SupportedMethods.Contains (
-              typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) })));
+              typeof (string).GetMethod ("Replace", new [] { typeof (string), typeof (string) })));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) });
+      var method = typeof (string).GetMethod ("Replace", new [] { typeof (string), typeof (string) });
       var objectExpression = Expression.Constant ("TAst");
       var expression = Expression.Call (objectExpression, method, Expression.Constant ("A"), Expression.Constant ("B"));
       var transformer = new ReplaceMethodCallTransformer();
@@ -50,5 +52,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
       Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (2));
     }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void Transform_InvalidArgumentCount ()
+    {
+      var method = typeof (string).GetMethod ("ToUpper", new Type[] { });
+      var objectExpression = Expression.Constant ("Test");
+      var expression = Expression.Call (objectExpression, method);
+      var transformer = new ReplaceMethodCallTransformer();
+      transformer.Transform (expression);
+    }
+
   }
 }
