@@ -16,11 +16,21 @@
 // 
 using System;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   public abstract class SqlCustomTextGeneratorExpressionBase
   {
+    private Type _expressionType;
+
+    protected SqlCustomTextGeneratorExpressionBase (Type expressionType)
+    {
+      ArgumentUtility.CheckNotNull ("expressionType", expressionType);
+
+      _expressionType = expressionType;
+    }
+
     public abstract void Generate (SqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
   }
 }

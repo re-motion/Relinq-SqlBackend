@@ -21,20 +21,18 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// TODO: add summary
+  /// <see cref="SqlCustomTextExpression"/> is used to insert sql text to the sql output. 
+  /// Added sql text is not escaped. The implemented provider has to avoid sql injection.
   /// </summary>
   public class SqlCustomTextExpression : SqlCustomTextGeneratorExpressionBase
   {
     private readonly string _sqlText;
-    private Type _expressionType;
-
-    public SqlCustomTextExpression (string sqlText, Type expressionType)
+    
+    public SqlCustomTextExpression (string sqlText, Type expressionType) : base(expressionType)
     {
       ArgumentUtility.CheckNotNull ("sqlText", sqlText);
-      ArgumentUtility.CheckNotNull ("expressionType", expressionType);
 
       _sqlText = sqlText;
-      _expressionType = expressionType;
     }
 
     public override void Generate (SqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
