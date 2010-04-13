@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -31,34 +32,36 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public class SqlPreparationQueryModelVisitor : QueryModelVisitorBase
   {
     public static SqlStatement TransformQueryModel (
-        QueryModel queryModel,
-        SqlPreparationContext preparationContext,
-        ISqlPreparationStage stage)
+        QueryModel queryModel, SqlPreparationContext preparationContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("preparationContext", preparationContext);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var visitor = new SqlPreparationQueryModelVisitor (preparationContext, stage);
+      var visitor = new SqlPreparationQueryModelVisitor (preparationContext, stage, generator);
       queryModel.Accept (visitor);
-      
+
       return visitor.GetSqlStatement();
     }
 
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    
-    private SqlStatementBuilder _sqlStatementBuilder;
 
-    protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage)
+    private SqlStatementBuilder _sqlStatementBuilder;
+    private readonly UniqueIdentifierGenerator _generator;
+
+    protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("generator", generator);
 
       _context = context;
       _stage = stage;
+      _generator = generator;
 
-      _sqlStatementBuilder = new SqlStatementBuilder ();
+      _sqlStatementBuilder = new SqlStatementBuilder();
     }
 
     public SqlPreparationContext Context
@@ -78,9 +81,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public SqlStatement GetSqlStatement ()
     {
-      return SqlStatementBuilder.GetSqlStatement ();
+      return SqlStatementBuilder.GetSqlStatement();
     }
-    
+
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
@@ -130,14 +133,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
+      if (SqlStatementBuilder.TopExpression != null)
+      {
+        var sqlStatement = SqlStatementBuilder.GetSqlStatement ();
+        
+        var subStatementTableInfo = new ResolvedSubStatementTableInfo (
+            sqlStatement.SelectProjection.Type, _generator.GetUniqueIdentifier ("q"), sqlStatement);
+        var sqlTable = new SqlTable (subStatementTableInfo);
+        
+        _sqlStatementBuilder = new SqlStatementBuilder ();
+        SqlStatementBuilder.SqlTables.Add(sqlTable);
+        SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
+      }
+
       if (resultOperator is CountResultOperator)
         SqlStatementBuilder.IsCountQuery = true;
       else if (resultOperator is DistinctResultOperator)
-      {
-        if (SqlStatementBuilder.TopExpression != null)
-          throw new NotImplementedException ("Distinct after Take is not yet implemented. TODO 2370");
         SqlStatementBuilder.IsDistinctQuery = true;
-      }
       else if (resultOperator is FirstResultOperator)
         SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
       else if (resultOperator is SingleResultOperator)
@@ -147,11 +159,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var expression = ((TakeResultOperator) resultOperator).Count;
         SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (expression);
       }
-      else if (resultOperator is ContainsResultOperator) 
+      else if (resultOperator is ContainsResultOperator)
       {
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type); // TODO: type is not correct, use typeof (IQueryable<>).MakeGenericType (itemExpression.Type)
+        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
+        // TODO: type is not correct, use typeof (IQueryable<>).MakeGenericType (itemExpression.Type)
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.SelectProjection = sqlInExpression;
@@ -160,12 +173,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return;
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
+
+      
     }
 
     protected virtual SqlStatement GetStatementAndResetBuilder ()
     {
-      var sqlSubStatement = SqlStatementBuilder.GetSqlStatement ();
-      _sqlStatementBuilder = new SqlStatementBuilder ();
+      var sqlSubStatement = SqlStatementBuilder.GetSqlStatement();
+      _sqlStatementBuilder = new SqlStatementBuilder();
       return sqlSubStatement;
     }
 
@@ -179,7 +194,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
         SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-      
+
       SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
     }
   }

@@ -43,74 +43,69 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2370")]
     public void TakeAndDistinct ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Distinct(),
-          "SELECT DISTINCT [t1].[FirstName] AS [value] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
+          "SELECT DISTINCT [q0].[value] AS [value] FROM (SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
           new CommandParameter ("@1", 5));
     }
 
     [Test]
-    [Ignore ("TODO 2370")]
     public void TakeAndCount ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Count(),
-          "SELECT COUNT(*) FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
+          "SELECT COUNT(*) FROM (SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
           new CommandParameter ("@1", 5));
     }
 
     [Test]
-    [Ignore ("TODO 2370")]
     public void TakeAndTake ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Take (3),
-          "SELECT TOP @2 [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
-          new CommandParameter ("@1", 5),
-          new CommandParameter ("@2", 3));
+          "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
+          new CommandParameter ("@1", 3),
+          new CommandParameter ("@2", 5));
 
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (3).Take (5),
-          "SELECT TOP @2 [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
-          new CommandParameter ("@1", 3),
-          new CommandParameter ("@2", 5));
+          "SELECT TOP (@1) [q1].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q1]",
+          new CommandParameter ("@1", 5),
+          new CommandParameter ("@2", 3));
     }
 
     [Test]
-    [Ignore ("TODO 2370")]
     public void TakeAndFirst_TakeAndSingle ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).First(),
-          "SELECT TOP @2 [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
-          new CommandParameter ("@1", 5),
-          new CommandParameter ("@2", 1));
+          "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
+          new CommandParameter ("@1", 1),
+          new CommandParameter ("@2", 5));
 
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Single(),
-          "SELECT TOP @2 [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]",
-          new CommandParameter ("@1", 5),
-          new CommandParameter ("@2", 1));
+          "SELECT TOP (@1) [q1].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q1]",
+          new CommandParameter ("@1", 1),
+          new CommandParameter ("@2", 5));
     }
 
     [Test]
-    [Ignore ("TODO 2370")]
     public void TakeAndFirst_TakeAndSingle_WithPredicate ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).First (fn => fn != null),
-          "SELECT TOP @2 [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1] WHERE ([t1].[FirstName] IS NOT NULL)",
-          new CommandParameter ("@1", 5),
-          new CommandParameter ("@2", 1));
+          "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[value] IS NOT NULL)",
+          new CommandParameter ("@1", 1),
+          new CommandParameter ("@2", 5));
 
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Single (fn => fn != null),
-          "SELECT TOP @2 [t1].[FirstName] FROM (SELECT TOP (@1) [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1] WHERE ([t1].[FirstName] IS NOT NULL)",
-          new CommandParameter ("@1", 5),
-          new CommandParameter ("@2", 1));
+          "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[value] IS NOT NULL)",
+          new CommandParameter ("@1", 1),
+          new CommandParameter ("@2", 5));
     }
   }
 }

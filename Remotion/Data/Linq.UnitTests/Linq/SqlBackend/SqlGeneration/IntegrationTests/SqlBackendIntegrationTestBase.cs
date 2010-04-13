@@ -32,6 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     private IQueryable<Cook> _cooks;
     private IQueryable<Kitchen> _kitchens;
     private IQueryable<Restaurant> _restaurants;
+    private UniqueIdentifierGenerator _generator;
 
     public IQueryable<Cook> Cooks
     {
@@ -54,6 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       _cooks = ExpressionHelper.CreateCookQueryable();
       _kitchens = ExpressionHelper.CreateKitchenQueryable();
       _restaurants = ExpressionHelper.CreateRestaurantQueryable();
+      _generator = new UniqueIdentifierGenerator();
     }
 
     protected SqlCommandData GenerateSql (Expression expression)
@@ -65,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
           queryModel,
           preparationContext,
-          new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), preparationContext, uniqueIdentifierGenerator));
+          new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), preparationContext, uniqueIdentifierGenerator), _generator);
 
       var resolver = new MappingResolverStub();
       var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
@@ -91,6 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       var result = GenerateSql (queryLambda.Body);
 
+      //Console.WriteLine (result.CommandText);
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
     }

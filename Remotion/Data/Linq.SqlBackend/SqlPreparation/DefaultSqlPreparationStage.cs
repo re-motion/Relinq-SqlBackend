@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
     {
-      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this);
+      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this, _generator);
     }
   }
 }
