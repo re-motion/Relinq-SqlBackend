@@ -62,5 +62,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", "hugo")
           );
     }
+
+    [Test]
+    public void BinaryExpression_WithConditionalExpression ()
+    {
+      CheckQuery (
+          from c in Cooks where c.FirstName == (c.FirstName == "Hugo" ? "test1" : "test2") select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE "
+          + "([t0].[FirstName] = CASE WHEN ([t0].[FirstName] = @1) THEN @2 ELSE @3 END)",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "test1"),
+          new CommandParameter ("@3", "test2"));
+    }
   }
 }

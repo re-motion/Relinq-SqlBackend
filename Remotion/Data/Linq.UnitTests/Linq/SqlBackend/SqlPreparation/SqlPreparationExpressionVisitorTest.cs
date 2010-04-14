@@ -349,6 +349,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitBinaryExpression_WithConditionalExpression ()
+    {
+      var leftExpression = Expression.Constant ("Name");
+      var testPredicate = Expression.Constant (true);
+      var ifTrueExpression = Expression.Constant ("true");
+      var ifFalseExpression = Expression.Constant ("false");
+      var rightExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
+      var binaryExpression = Expression.Equal (leftExpression, rightExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlCaseExpression)));
+
+      Assert.That (((SqlCaseExpression) ((BinaryExpression) result).Right).TestPredicate, Is.SameAs (testPredicate));
+      Assert.That (((SqlCaseExpression) ((BinaryExpression) result).Right).ThenValue, Is.SameAs (ifTrueExpression));
+      Assert.That (((SqlCaseExpression) ((BinaryExpression) result).Right).ElseValue, Is.SameAs (ifFalseExpression));
+    }
+
+    [Test]
     public void VisitMethodCallExpression ()
     {
       var method = typeof (string).GetMethod ("ToUpper", new Type[] { });

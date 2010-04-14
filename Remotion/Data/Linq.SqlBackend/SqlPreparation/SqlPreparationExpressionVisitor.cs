@@ -194,6 +194,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           // TODO Review 2511: Call VisitExpression on the result of Transform; test this. This is necessary so that a MethodCallTransformer can return an "unprepared" expression.
     }
 
+    protected override Expression VisitConditionalExpression (ConditionalExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return new SqlCaseExpression (VisitExpression(expression.Test), VisitExpression(expression.IfTrue), VisitExpression(expression.IfFalse));
+    }
+
     private bool IsNullConstant (Expression expression)
     {
       var constantExpression = expression as ConstantExpression;
