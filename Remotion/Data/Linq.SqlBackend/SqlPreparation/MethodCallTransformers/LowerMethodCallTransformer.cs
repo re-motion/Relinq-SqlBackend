@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-            typeof (string).GetMethod ("ToLower", new Type[] { })
+           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "ToLower")
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)

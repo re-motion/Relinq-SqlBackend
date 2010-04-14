@@ -35,22 +35,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       Assert.IsTrue (
           ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
-              typeof (StringExtensions).GetMethod (
-                  "ContainsFreetext",
-                  BindingFlags.Public | BindingFlags.Static,
-                  null,
-                  CallingConventions.Any,
-                  new[] { typeof (string), typeof (string) },
-                  null)));
+              MethodCallTransformerUtility.GetStaticMethod (
+                  typeof (StringExtensions), "ContainsFreetext", typeof (string), typeof (string))));
+
       Assert.IsTrue (
           ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
-              typeof (StringExtensions).GetMethod (
+              MethodCallTransformerUtility.GetStaticMethod (
+                  typeof (StringExtensions),
                   "ContainsFreetext",
-                  BindingFlags.Public | BindingFlags.Static,
-                  null,
-                  CallingConventions.Any,
-                  new[] { typeof (string), typeof (string), typeof (string) },
-                  null)));
+                  typeof (string),
+                  typeof (string),
+                  typeof (string))));
     }
 
     [Test]
@@ -98,7 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
           typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), argument1);
-      
+
       var fakeResult =
           new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, argumentExpression, compositeExpression);
 

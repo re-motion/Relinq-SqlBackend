@@ -35,22 +35,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       Assert.IsTrue (
           ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
-              typeof (StringExtensions).GetMethod (
-                  "ContainsFulltext",
-                  BindingFlags.Public | BindingFlags.Static,
-                  null,
-                  CallingConventions.Any,
-                  new[] { typeof (string), typeof (string) },
-                  null)));
+              MethodCallTransformerUtility.GetStaticMethod (
+                  typeof (StringExtensions), "ContainsFulltext", typeof (string), typeof (string))));
       Assert.IsTrue (
           ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
-              typeof (StringExtensions).GetMethod (
+              MethodCallTransformerUtility.GetStaticMethod (
+                  typeof (StringExtensions),
                   "ContainsFulltext",
-                  BindingFlags.Public | BindingFlags.Static,
-                  null,
-                  CallingConventions.Any,
-                  new[] { typeof (string), typeof (string), typeof (string) },
-                  null)));
+                  typeof (string),
+                  typeof (string),
+                  typeof (string))));
     }
 
     [Test]
@@ -97,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var argumentExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
 
       var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
-            typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), argument1);
+          typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), argument1);
 
       var fakeResult =
           new SqlFunctionExpression (typeof (bool), "CONTAINS", objectExpression, argumentExpression, compositeExpression);

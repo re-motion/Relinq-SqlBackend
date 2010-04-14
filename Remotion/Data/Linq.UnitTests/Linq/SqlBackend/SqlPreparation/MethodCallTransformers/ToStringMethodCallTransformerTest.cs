@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
-using System.Linq;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
@@ -30,7 +30,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (ToStringMethodCallTransformer.SupportedMethods.Contains (typeof (object).GetMethod ("ToString", new Type[] { })));
+      Assert.IsTrue (
+          ToStringMethodCallTransformer.SupportedMethods.Contains (MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString")));
     }
 
     [Test]
@@ -40,13 +41,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var argument = Expression.Constant (1);
       var expression = Expression.Call (argument, method);
 
-      var transformer = new ToStringMethodCallTransformer ();
+      var transformer = new ToStringMethodCallTransformer();
       var result = transformer.Transform (expression);
 
       var fakeResult = new SqlConvertExpression (typeof (string), Expression.Constant (1));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }
-
   }
 }

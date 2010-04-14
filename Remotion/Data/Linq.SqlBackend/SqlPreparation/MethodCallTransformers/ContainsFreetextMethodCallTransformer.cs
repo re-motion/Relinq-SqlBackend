@@ -30,20 +30,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   {
     public static readonly MethodInfo[] SupportedMethods = new[]
                                                            {
-                                                               typeof (StringExtensions).GetMethod (
+                                                               MethodCallTransformerUtility.GetStaticMethod (
+                                                                   typeof (StringExtensions), "ContainsFreetext", typeof (string), typeof (string)),
+                                                               MethodCallTransformerUtility.GetStaticMethod (
+                                                                   typeof (StringExtensions),
                                                                    "ContainsFreetext",
-                                                                   BindingFlags.Public | BindingFlags.Static,
-                                                                   null,
-                                                                   CallingConventions.Any,
-                                                                   new[] { typeof (string), typeof (string) },
-                                                                   null),
-                                                               typeof (StringExtensions).GetMethod (
-                                                                   "ContainsFreetext",
-                                                                   BindingFlags.Public | BindingFlags.Static,
-                                                                   null,
-                                                                   CallingConventions.Any,
-                                                                   new[] { typeof (string), typeof (string), typeof (string) },
-                                                                   null)
+                                                                   typeof (string),
+                                                                   typeof (string),
+                                                                   typeof (string))
                                                            };
 
     public Expression Transform (MethodCallExpression methodCallExpression)

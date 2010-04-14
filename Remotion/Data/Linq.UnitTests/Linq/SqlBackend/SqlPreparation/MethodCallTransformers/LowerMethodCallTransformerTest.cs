@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          LowerMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToLower", new Type[] { })));
+          LowerMethodCallTransformer.SupportedMethods.Contains (MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "ToLower")));
     }
 
     [Test]
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var method = typeof (string).GetMethod ("ToLower", new Type[] { });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method);
-      var transformer = new LowerMethodCallTransformer ();
+      var transformer = new LowerMethodCallTransformer();
       var result = transformer.Transform (expression);
 
       Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));

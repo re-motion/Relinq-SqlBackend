@@ -29,18 +29,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class LikeMethodCallTransformer : IMethodCallTransformer
   {
-    // TODO Review 2509: Add a class MethodCallTransformerUtility with the following methods:
-    // TODO Review 2509: public static MethodInfo GetStaticMethod (Type type, string name, params Type[] argumentTypes);
-    // TODO Review 2509: public static MethodInfo GetInstanceMethod (Type type, string name, params Type[] argumentTypes);
-    // TODO Review 2509: Use those methods to define the SupportedMethods of all transformers in a more concise way
-    public static readonly MethodInfo[] SupportedMethods = new[] {
-        typeof (StringExtensions).GetMethod (
-            "Like", 
-            BindingFlags.Public | BindingFlags.Static, 
-            null, 
-            new[] { typeof (string), typeof (string) }, 
-            null)
-    };
+    public static readonly MethodInfo[] SupportedMethods = new[]
+                                                           {
+                                                               MethodCallTransformerUtility.GetStaticMethod (
+                                                                   typeof (StringExtensions), "Like", typeof (string), typeof (string))
+                                                           };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {

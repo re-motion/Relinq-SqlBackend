@@ -31,11 +31,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-            typeof (string).GetMethod ("Substring", new[] { typeof (int) }),
-            typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) })
+           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof(int)),
+           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof(int), typeof(int))
         };
-
-
+    
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);

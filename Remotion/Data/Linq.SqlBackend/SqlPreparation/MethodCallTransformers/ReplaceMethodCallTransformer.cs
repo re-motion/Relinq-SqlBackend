@@ -32,8 +32,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-            typeof (string).GetMethod ("Replace", new [] {typeof(string),typeof(string) })
-        };
+           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Replace", typeof(string), typeof(string))
+         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {

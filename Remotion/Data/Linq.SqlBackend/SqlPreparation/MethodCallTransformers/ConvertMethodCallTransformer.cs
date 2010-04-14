@@ -32,17 +32,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         new[]
         {
           // TODO Review 2510: Add more overloads/convert methods
-            typeof (Convert).GetMethod ("ToString", new[] { typeof (int) }),
-            typeof (Convert).GetMethod ("ToString", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToString", new[] { typeof (object) }),
-            typeof (Convert).GetMethod ("ToInt64", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToInt64", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToInt32", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToInt32", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToInt16", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToInt16", new[] { typeof (bool) }),
-            typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (string) }),
-            typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToString", typeof (int)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToString", typeof (bool)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToString", typeof (object)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt64", typeof (string)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt64", typeof (bool)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt32", typeof (string)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt32", typeof (bool)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt16", typeof (string)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt16", typeof (bool)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToBoolean", typeof (string)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToBoolean", typeof (int))
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)

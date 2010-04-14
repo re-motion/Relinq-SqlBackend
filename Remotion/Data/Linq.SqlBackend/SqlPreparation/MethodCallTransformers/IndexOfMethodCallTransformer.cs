@@ -30,12 +30,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(string) }),
-            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(char) }),
-            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(string), typeof(int) }),
-            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(char), typeof(int) }),
-            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(string), typeof(int),typeof(int) }),
-            typeof (string).GetMethod ("IndexOf", new Type[] { typeof(char), typeof(int),typeof(int) })
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof(int)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof(int)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof(int), typeof(int)),
+          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof(int), typeof(int))
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)

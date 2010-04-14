@@ -31,13 +31,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          StartsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("StartsWith", new[] { typeof (string) })));
+          StartsWithMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "StartsWith", typeof (string))));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("StartsWith", new Type[] { typeof (string) });
+      var method = typeof (string).GetMethod ("StartsWith", new[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("test");
       var expression = Expression.Call (objectExpression, method, argument1);

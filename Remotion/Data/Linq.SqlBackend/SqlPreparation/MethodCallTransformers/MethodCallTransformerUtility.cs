@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -29,6 +31,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       if (!(argument is ConstantExpression))
         throw new NotSupportedException (
             string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0}.", methodName));
+    }
+
+    public static MethodInfo GetStaticMethod (Type type, string methodName, params Type[] argumentTypes)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("methodName", methodName);
+
+      return type.GetMethod (
+          methodName,
+          BindingFlags.Public | BindingFlags.Static,
+          null,
+          argumentTypes,
+          null);
+    }
+
+    public static MethodInfo GetInstanceMethod (Type type, string methodName, params Type[] argumentTypes)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("methodName", methodName);
+
+      return type.GetMethod (methodName, argumentTypes);
     }
   }
 }

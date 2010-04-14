@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -31,9 +31,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Remove", new[] { typeof (int) })));
+          RemoveMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Remove", typeof (int))));
       Assert.IsTrue (
-          RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Remove", new[] { typeof (int), typeof (int) })));
+          RemoveMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Remove", typeof (int), typeof (int))));
     }
 
     [Test]

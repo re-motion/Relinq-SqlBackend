@@ -22,7 +22,6 @@ using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -35,9 +34,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       Assert.IsTrue (
           LikeMethodCallTransformer.SupportedMethods.Contains (
-              // TODO Review 2509: Also use MethodCallTransformerUtility for the tests
-              typeof (StringExtensions).GetMethod (
-                  "Like", BindingFlags.Public | BindingFlags.Static, null, CallingConventions.Any, new[] { typeof (string), typeof (string) }, null)));
+              MethodCallTransformerUtility.GetStaticMethod (
+                  typeof (StringExtensions), "Like", typeof (string), typeof (string))));
     }
 
     [Test]
@@ -51,11 +49,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       // TODO Review 2509: consider using the following helper to avoid creating unrealistic source expressions:
       // var expression = ExpressionHelper.MakeExpression<string, bool> (s => s.Like ("%es%"));
-      
+
       var transformer = new LikeMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var fakeResult = new SqlBinaryOperatorExpression ("LIKE", expression.Arguments[0], expression.Arguments[1]); // TODO Review 2509: Rename to expectedResult (in all tests)
+      var fakeResult = new SqlBinaryOperatorExpression ("LIKE", expression.Arguments[0], expression.Arguments[1]);
+      // TODO Review 2509: Rename to expectedResult (in all tests)
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult); // TODO Review 2509: expected result should come first in CheckAreEqualTrees
     }
   }
