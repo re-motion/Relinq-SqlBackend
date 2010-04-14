@@ -27,10 +27,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlValueTableReferenceExpression : ExtensionExpression
   {
-    private readonly SqlTable _sqlTable;
+    private readonly SqlTableBase _sqlTable;
 
-    // TODO Review 2542: Should be SqlTableBase, not SqlTable
-    public SqlValueTableReferenceExpression (SqlTable sqlTable)
+    public SqlValueTableReferenceExpression (SqlTableBase sqlTable)
         : base(sqlTable.ItemType)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
@@ -38,8 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       _sqlTable = sqlTable;
     }
 
-    // TODO Review 2542: Change to SqlTableBase
-    public SqlTable SqlTable
+    public SqlTableBase SqlTable
     {
       get { return _sqlTable; }
     }
