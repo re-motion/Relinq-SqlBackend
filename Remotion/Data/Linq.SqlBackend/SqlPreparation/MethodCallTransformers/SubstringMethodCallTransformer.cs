@@ -39,6 +39,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1, 2);
+      MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
+
       var startIndexExpression = methodCallExpression.Arguments[0]; // TODO Review 2508: Should add 1
 
       if (methodCallExpression.Arguments.Count == 1)

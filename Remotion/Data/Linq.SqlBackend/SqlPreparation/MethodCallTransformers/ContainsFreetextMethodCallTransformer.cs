@@ -24,17 +24,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// <see cref="ContainsFreetextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
-  /// <see cref="StringExtensions.ContainsFreetext(string,string)"/> extension methods.
+  /// <see cref="StringExtensions.SqlContainsFreetext"/> extension methods.
   /// </summary>
   public class ContainsFreetextMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods = new[]
                                                            {
                                                                MethodCallTransformerUtility.GetStaticMethod (
-                                                                   typeof (StringExtensions), "ContainsFreetext", typeof (string), typeof (string)),
+                                                                   typeof (StringExtensions), "SqlContainsFreetext", typeof (string), typeof (string)),
                                                                MethodCallTransformerUtility.GetStaticMethod (
                                                                    typeof (StringExtensions),
-                                                                   "ContainsFreetext",
+                                                                   "SqlContainsFreetext",
                                                                    typeof (string),
                                                                    typeof (string),
                                                                    typeof (string))

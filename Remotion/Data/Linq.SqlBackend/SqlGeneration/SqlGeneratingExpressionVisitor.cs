@@ -146,11 +146,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2509: Change to enclose in quotation marks when appending the value. If the value contains "'" characters, escape them as required by SQL (' -> '')
-      // TODO Review 2509: Move the string implementation to an _commandBuilder.AppendStringLiteral (string value) method
       // TODO Review 2509: In places where this expression was used to append custom text, use the SqlCustomTextExpression. Use the SqlCompositeExpression to combine SqlCustomTextExpression with other expressions.
 
-      _commandBuilder.Append (expression.Value.ToString());
+      _commandBuilder.AppendStringLiteral (expression.Value.ToString());
       return expression;
     }
 

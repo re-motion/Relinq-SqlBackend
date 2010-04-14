@@ -38,6 +38,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
+      MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
       MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[0]);
 
       var rightExpression =

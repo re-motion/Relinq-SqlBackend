@@ -21,30 +21,29 @@ namespace Remotion.Data.Linq.SqlBackend
   /// <summary>
   /// <see cref="StringExtensions"/> provides extension methods for strings.
   /// </summary>
-  // TODO Review 2509: Rename all of these methods to SqlLike, SqlContainsFulltext, and so on; this better expresses that they represent SQL operators
   public static class StringExtensions
   {
-    public static bool Like (this string source, string pattern)
+    public static bool SqlLike (this string source, string pattern)
     {
       throw new NotImplementedException ("This method is only meant for translation to SQL.");
     }
 
-    public static bool ContainsFulltext (this string source, string searchCondition)
+    public static bool SqlContainsFulltext (this string source, string searchCondition)
     {
       throw new NotImplementedException ("This method is only meant for translation to SQL.");
     }
 
-    public static bool ContainsFulltext (this string source, string searchCondition, string language)
+    public static bool SqlContainsFulltext (this string source, string searchCondition, string language)
     {
       throw new NotImplementedException ("This method is only meant for translation to SQL.");
     }
 
-    public static bool ContainsFreetext (this string source, string searchCondition)
+    public static bool SqlContainsFreetext (this string source, string searchCondition)
     {
       throw new NotImplementedException ("This method is only meant for translation to SQL.");
     }
 
-    public static bool ContainsFreetext (this string source, string searchCondition, string language)
+    public static bool SqlContainsFreetext (this string source, string searchCondition, string language)
     {
       throw new NotImplementedException ("This method is only meant for translation to SQL.");
     }

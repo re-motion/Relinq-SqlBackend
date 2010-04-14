@@ -9,6 +9,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     void Append (string stringToAppend);
     void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<ISqlCommandBuilder, T> appender);
     void AppendIdentifier (string identifier);
+    void AppendStringLiteral (string value);
     void AppendFormat (string stringToAppend, params object[] parameters);
     CommandParameter AppendParameter (object value);
     string GetCommandText ();

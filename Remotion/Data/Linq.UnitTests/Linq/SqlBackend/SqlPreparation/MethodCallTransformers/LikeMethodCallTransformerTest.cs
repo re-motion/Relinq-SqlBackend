@@ -36,13 +36,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       Assert.IsTrue (
           LikeMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions), "Like", typeof (string), typeof (string))));
+                  typeof (StringExtensions), "SqlLike", typeof (string), typeof (string))));
     }
 
     [Test]
     public void Transform ()
     {
-      MethodCallExpression expression = (MethodCallExpression) ExpressionHelper.MakeExpression<string, bool> (s => s.Like ("%es%"));
+      MethodCallExpression expression = (MethodCallExpression) ExpressionHelper.MakeExpression<string, bool> (s => s.SqlLike ("%es%"));
 
       var transformer = new LikeMethodCallTransformer();
       var result = transformer.Transform (expression);

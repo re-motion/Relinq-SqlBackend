@@ -36,13 +36,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       Assert.IsTrue (
           ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions), "ContainsFreetext", typeof (string), typeof (string))));
+                  typeof (StringExtensions), "SqlContainsFreetext", typeof (string), typeof (string))));
 
       Assert.IsTrue (
           ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (
                   typeof (StringExtensions),
-                  "ContainsFreetext",
+                  "SqlContainsFreetext",
                   typeof (string),
                   typeof (string),
                   typeof (string))));
@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void Transform_OneArgument ()
     {
       var method = typeof (StringExtensions).GetMethod (
-          "ContainsFulltext",
+          "SqlContainsFulltext",
           BindingFlags.Public | BindingFlags.Static,
           null,
           CallingConventions.Any,
@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     public void Transform_TwoArguments ()
     {
       var method = typeof (StringExtensions).GetMethod (
-          "ContainsFulltext",
+          "SqlContainsFulltext",
           BindingFlags.Public | BindingFlags.Static,
           null,
           CallingConventions.Any,

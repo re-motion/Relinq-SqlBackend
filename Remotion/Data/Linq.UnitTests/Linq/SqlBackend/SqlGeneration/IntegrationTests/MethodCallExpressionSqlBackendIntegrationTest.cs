@@ -237,13 +237,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void Like ()
     {
       CheckQuery (
-          from c in Cooks where c.FirstName.Like ("%ab%c") select c.ID,
+          from c in Cooks where c.FirstName.SqlLike ("%ab%c") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
-          from c in Cooks where c.FirstName.Like (c.Name) select c.ID,
+          from c in Cooks where c.FirstName.SqlLike (c.Name) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]");
     }
 
@@ -251,19 +251,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void ContainsFulltext ()
     {
       CheckQuery (
-          from c in Cooks where c.FirstName.ContainsFulltext ("%ab%c") select c.ID,
+          from c in Cooks where c.FirstName.SqlContainsFulltext ("%ab%c") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1)",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
-          from c in Cooks where c.FirstName.ContainsFulltext ("%ab%c", "de") select c.ID,
+          from c in Cooks where c.FirstName.SqlContainsFulltext ("%ab%c", "de") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1, LANGUAGE @2)",
           new CommandParameter ("@1", "%ab%c"), new CommandParameter("@2","de")
           );
 
       CheckQuery (
-          from c in Cooks where c.FirstName.ContainsFulltext (c.Name) select c.ID,
+          from c in Cooks where c.FirstName.SqlContainsFulltext (c.Name) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], [t0].[Name])");
     }
 
@@ -271,19 +271,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void ContainsFreetext ()
     {
       CheckQuery (
-          from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c") select c.ID,
+          from c in Cooks where c.FirstName.SqlContainsFreetext ("%ab%c") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1)",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
-          from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c", "de") select c.ID,
+          from c in Cooks where c.FirstName.SqlContainsFreetext ("%ab%c", "de") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE @2)", 
           new CommandParameter ("@1", "%ab%c"), new CommandParameter("@2","de")
           );
 
       CheckQuery (
-          from c in Cooks where c.FirstName.ContainsFreetext (c.Name) select c.ID,
+          from c in Cooks where c.FirstName.SqlContainsFreetext (c.Name) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
     }
   }

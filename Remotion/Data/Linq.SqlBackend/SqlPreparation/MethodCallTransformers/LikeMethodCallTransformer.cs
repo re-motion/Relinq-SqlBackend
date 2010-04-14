@@ -24,7 +24,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="LikeMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="StringExtensions.Like"/> extension 
+  /// <see cref="LikeMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="StringExtensions.SqlLike"/> extension 
   /// method.
   /// </summary>
   public class LikeMethodCallTransformer : IMethodCallTransformer
@@ -32,12 +32,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods = new[]
                                                            {
                                                                MethodCallTransformerUtility.GetStaticMethod (
-                                                                   typeof (StringExtensions), "Like", typeof (string), typeof (string))
+                                                                   typeof (StringExtensions), "SqlLike", typeof (string), typeof (string))
                                                            };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2);
+      MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
     }

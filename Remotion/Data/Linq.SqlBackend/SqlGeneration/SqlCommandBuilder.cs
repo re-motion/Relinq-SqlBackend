@@ -67,6 +67,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       AppendFormat ("[{0}]", identifier);
     }
 
+    public void AppendStringLiteral (string value)
+    {
+      Append (value.Replace ("'", "''"));
+    }
+
     public void AppendFormat (string stringToAppend, params object[] parameters)
     {
       ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);

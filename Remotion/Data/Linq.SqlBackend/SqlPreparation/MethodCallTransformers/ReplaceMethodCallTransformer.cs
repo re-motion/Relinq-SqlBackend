@@ -39,8 +39,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      if (methodCallExpression.Arguments.Count != 2)
-        throw new NotSupportedException ("Replace method can only be used with two arguments.");
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2);
+      MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
+      
       return new SqlFunctionExpression (methodCallExpression.Type, "REPLACE", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
     }
   }

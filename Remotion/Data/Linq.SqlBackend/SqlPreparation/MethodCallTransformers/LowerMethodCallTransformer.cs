@@ -38,7 +38,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-      return new SqlFunctionExpression (methodCallExpression.Type, "LOWER", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
+
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 0);
+      MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
+
+      return new SqlFunctionExpression (methodCallExpression.Type, "LOWER", methodCallExpression.Object);
     }
   }
 }

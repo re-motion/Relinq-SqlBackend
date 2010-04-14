@@ -32,22 +32,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         new[]
         {
           // TODO Review 2510: Add more overloads/convert methods
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToString", typeof (int)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToString", typeof (bool)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToString", typeof (object)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt64", typeof (string)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt64", typeof (bool)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt32", typeof (string)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt32", typeof (bool)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt16", typeof (string)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToInt16", typeof (bool)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToBoolean", typeof (string)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (Convert), "ToBoolean", typeof (int))
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (int)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (object)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (string)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (string)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (string)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (string)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (int))
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
+      MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
 
       return new SqlConvertExpression (methodCallExpression.Type, methodCallExpression.Arguments[0]);
     }

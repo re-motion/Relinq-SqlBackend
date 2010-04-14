@@ -24,17 +24,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// <see cref="ContainsFulltextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
-  /// <see cref="StringExtensions.ContainsFulltext(string,string)"/> extension methods.
+  /// <see cref="StringExtensions.SqlContainsFulltext"/> extension methods.
   /// </summary>
   public class ContainsFulltextMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods = new[]
                                                            {
                                                                MethodCallTransformerUtility.GetStaticMethod (
-                                                                   typeof (StringExtensions), "ContainsFulltext", typeof (string), typeof (string)),
+                                                                   typeof (StringExtensions), "SqlContainsFulltext", typeof (string), typeof (string)),
                                                                MethodCallTransformerUtility.GetStaticMethod (
                                                                    typeof (StringExtensions),
-                                                                   "ContainsFulltext",
+                                                                   "SqlContainsFulltext",
                                                                    typeof (string),
                                                                    typeof (string),
                                                                    typeof (string))
@@ -42,9 +42,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
+      MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2, 3);
+      MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
+
       if (methodCallExpression.Arguments.Count == 2) // overload without language
         return new SqlFunctionExpression (typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
-      else if (methodCallExpression.Arguments.Count == 3)
+      else 
       {
         MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
         
@@ -53,11 +56,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
         return new SqlFunctionExpression (
             typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], compositeExpression);
-      }
-      else  // TODO Review 2509: Encapsulate these checks (in all transformers) into a MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2, 3) method (taking a params int[] allowedArgumentCounts); also add a CheckInstanceMethod (methodCallExpression) and a CheckStaticMethod (methodCallExpression) method and use them
-      {
-        throw new NotSupportedException (
-            string.Format ("IndexOf function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
       }
     }
   }

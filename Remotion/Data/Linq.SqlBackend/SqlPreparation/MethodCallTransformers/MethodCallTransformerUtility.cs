@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Utilities;
@@ -29,8 +30,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static void CheckConstantExpression (string methodName, Expression argument)
     {
       if (!(argument is ConstantExpression))
+      {
         throw new NotSupportedException (
             string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0}.", methodName));
+      }
     }
 
     public static MethodInfo GetStaticMethod (Type type, string methodName, params Type[] argumentTypes)
@@ -52,6 +55,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       ArgumentUtility.CheckNotNull ("methodName", methodName);
 
       return type.GetMethod (methodName, argumentTypes);
+    }
+
+    public static void CheckArgumentCount (MethodCallExpression methodCallExpression, params int[] allowedArgumentCounts)
+    {
+      if (!allowedArgumentCounts.Contains (methodCallExpression.Arguments.Count))
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "{0} function with {1} arguments is not supported.", methodCallExpression.Method.Name, methodCallExpression.Arguments.Count));
+      }
+    }
+
+    public static void CheckStaticMethod (MethodCallExpression methodCallExpression)
+    {
+      if (!methodCallExpression.Method.IsStatic)
+        throw new NotSupportedException (
+            string.Format ("{0} is not supported by this transformer.", methodCallExpression.Method.Name));
+    }
+
+    public static void CheckInstanceMethod (MethodCallExpression methodCallExpression)
+    {
+      if (methodCallExpression.Method.IsStatic)
+        throw new NotSupportedException (string.Format ("{0} is not supported by this transformer.", methodCallExpression.Method.Name));
     }
   }
 }
