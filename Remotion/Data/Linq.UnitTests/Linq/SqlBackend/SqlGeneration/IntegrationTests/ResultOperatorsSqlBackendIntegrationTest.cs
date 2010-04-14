@@ -211,15 +211,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void Cast_TopLevel ()
     {
       CheckQuery (
-          (from s in Cooks select s.FirstName).Cast<string>(),
+          (from s in Cooks select s.FirstName).Cast<object>(),
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
+    // TODO Review 2542: Enable this test
+    [Ignore ("TODO 2542")]
     public void Cast_SubQuery ()
     {
       CheckQuery (
-          (from r in (from c in Cooks select c.FirstName).Cast<string>() select r),
+          (from r in (from c in Cooks select c.FirstName).Cast<object>() select r),
           "SELECT [q0].[value] AS [value] FROM (SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
       
     }

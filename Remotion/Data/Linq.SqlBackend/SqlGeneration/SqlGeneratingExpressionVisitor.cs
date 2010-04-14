@@ -106,6 +106,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
     {
+      // TODO Review 2542: Extract complex inner expression to local variable
       return VisitExpression (new SqlColumnExpression (expression.Type, expression.SqlTable.GetResolvedTableInfo().TableAlias, "value"));
     }
 

@@ -23,12 +23,13 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="SqlValueTableReferenceExpression"/> represents a non-entity expression.
+  /// <see cref="SqlValueTableReferenceExpression"/> represents a reference to a <see cref="SqlTableBase"/> that returns non-entity items.
   /// </summary>
   public class SqlValueTableReferenceExpression : ExtensionExpression
   {
     private readonly SqlTable _sqlTable;
 
+    // TODO Review 2542: Should be SqlTableBase, not SqlTable
     public SqlValueTableReferenceExpression (SqlTable sqlTable)
         : base(sqlTable.ItemType)
     {
@@ -37,6 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       _sqlTable = sqlTable;
     }
 
+    // TODO Review 2542: Change to SqlTableBase
     public SqlTable SqlTable
     {
       get { return _sqlTable; }

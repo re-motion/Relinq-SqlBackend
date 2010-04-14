@@ -84,6 +84,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection, selectedSqlContext);
 
+        // TODO Review 2542: This expression does not add AS [value] if we select an entity in a context where a single value is required (and thus the ID is used instead). Add a test for this (pass in an entity expression and SingleValueRequired - the SQL should be [t0].[ID] AS [value]). The test will fail, although it should pass.
+        // TODO Review 2542: Then, change the check as follows: if (selectedSqlContext == SqlExpressionContext.SingleValueRequired || !(sqlStatement.SelectProjection is SqlEntityExpression))
         if (!(sqlStatement.SelectProjection is SqlEntityExpression))
           commandBuilder.Append (" AS [value]");
       }

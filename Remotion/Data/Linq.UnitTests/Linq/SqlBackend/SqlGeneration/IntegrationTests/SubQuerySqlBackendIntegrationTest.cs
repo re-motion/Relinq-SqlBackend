@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void ResolveNonEntiy ()
+    public void ResolveNonEntity ()
     {
       CheckQuery (
           (from r in Restaurants

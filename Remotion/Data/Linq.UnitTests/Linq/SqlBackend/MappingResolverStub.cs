@@ -105,6 +105,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
+      
       return CreateEntityExpression (tableReferenceExpression.Type, resolvedTableInfo);
     }
 
@@ -168,10 +169,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName);
     }
 
+    // TODO Review 2542: Change to return SqlEntityExpression. If the type is unmapped, return null. Move the part dealing with SqlValueTableReferenceExpression to the calling method (ResolveTableReferenceExpression).
     private Expression CreateEntityExpression (Type entityType, IResolvedTableInfo tableInfo)
     {
-      Type type = ((ITableInfo) tableInfo).ItemType;
-      if (type == typeof (Cook) || type == typeof (IQueryable<Cook>))
+      Type type = tableInfo.ItemType;
+      if (type == typeof (Cook) || type == typeof (IQueryable<Cook>)) // TODO Review 2542: The check for IQueryable<Cook> shouldn't be necessary because ItemType should only be a single Cook/Kitchen/etc. Remove it and similar checks below.
       {
         var primaryKeyColumn = CreateColumn (typeof (int?), tableInfo, "ID");
         return new SqlEntityExpression (
@@ -216,6 +218,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
             });
       }
+      // TODO Review 2542: Remove check and exception, just return a SqlValueTableReferenceExpression for every unmapped data type
       else if (tableInfo is ResolvedSubStatementTableInfo && (type == typeof (string) || (type == typeof(int))))
         return new SqlValueTableReferenceExpression (new SqlTable (tableInfo));
       else

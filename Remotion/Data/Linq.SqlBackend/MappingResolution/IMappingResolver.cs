@@ -50,7 +50,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     /// <summary>
     /// Analyses the <see cref="SqlTableReferenceExpression"/> and returns a resolved version of the expression. The resolved version will usually
-    /// be a <see cref="SqlEntityExpression"/> representing the entity described by the <paramref name="tableReferenceExpression"/> in the database.
+    /// be a <see cref="SqlEntityExpression"/> representing the entity described by the <paramref name="tableReferenceExpression"/> in the database. 
+    /// If the item type of the table is not a queryable entity, the resolver should return a <see cref="SqlValueTableReferenceExpression"/>.
     /// </summary>
     /// <param name="tableReferenceExpression">A <see cref="SqlTableReferenceExpression"/> which has to be resolved. 
     /// The expression represents a reference to an entity retrieved from a <see cref="SqlTableBase"/>.</param>
@@ -59,7 +60,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// columns of the referenced <see cref="SqlTableBase"/>. If the <see cref="SqlTableReferenceExpression"/> is not a queryable entity, 
     /// the resolver has to return a <see cref="SqlValueTableReferenceExpression"/>. 
     /// This method can return a partial result that itself again needs to be resolved.</returns>
-    /// <exception cref="UnmappedItemException">The given <see cref="SqlTableReferenceExpression"/> cannot be resolved to a mapped database item.</exception>
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator);
 
     /// <summary>
