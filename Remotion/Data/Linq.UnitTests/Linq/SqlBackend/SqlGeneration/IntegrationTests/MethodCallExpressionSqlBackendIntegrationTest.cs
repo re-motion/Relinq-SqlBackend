@@ -278,8 +278,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks where c.FirstName.ContainsFreetext ("%ab%c", "de") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE de)", // TODO Review 2509: Should be LANGUAGE 'de' or LANGUAGE @1
-          new CommandParameter ("@1", "%ab%c")
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE @2)", 
+          new CommandParameter ("@1", "%ab%c"), new CommandParameter("@2","de")
           );
 
       CheckQuery (

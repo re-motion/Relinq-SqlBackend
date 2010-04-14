@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
@@ -94,10 +95,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var result = transformer.Transform (expression);
 
       var argumentExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
-      var languageExpression = new SqlLiteralExpression ("LANGUAGE language");
 
+      var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
+          typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), argument1);
+      
       var fakeResult =
-          new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, argumentExpression, languageExpression);
+          new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, argumentExpression, compositeExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
     }
