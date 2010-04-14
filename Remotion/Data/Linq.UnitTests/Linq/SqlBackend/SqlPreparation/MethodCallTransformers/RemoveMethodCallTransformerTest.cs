@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new RemoveMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var fakeResult = new SqlFunctionExpression (
+      var expectedResult = new SqlFunctionExpression (
           expression.Type,
           "STUFF",
           objectExpression,
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression),
           new SqlLiteralExpression ("''"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new RemoveMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var fakeResult = new SqlFunctionExpression (
+      var expectedResult = new SqlFunctionExpression (
           expression.Type,
           "STUFF",
           objectExpression,
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           Expression.Constant (3),
           new SqlLiteralExpression ("''"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

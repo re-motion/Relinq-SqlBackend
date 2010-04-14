@@ -66,9 +66,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var result = transformer.Transform (expression);
 
       var rightExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
-      var fakeResult = new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, rightExpression);
+      var expectedResult = new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, rightExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -94,10 +94,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
           typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), argument1);
 
-      var fakeResult =
+      var expectedResult =
           new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, argumentExpression, compositeExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

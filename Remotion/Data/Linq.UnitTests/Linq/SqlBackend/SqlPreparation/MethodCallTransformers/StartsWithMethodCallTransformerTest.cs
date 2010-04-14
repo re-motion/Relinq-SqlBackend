@@ -47,9 +47,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var rightExpression = Expression.Constant (string.Format ("{0}%", argument1.Value));
 
-      var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
+      var expectedResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

@@ -44,9 +44,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new ToStringMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var fakeResult = new SqlConvertExpression (typeof (string), Expression.Constant (1));
+      var expectedResult = new SqlConvertExpression (typeof (string), Expression.Constant (1));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

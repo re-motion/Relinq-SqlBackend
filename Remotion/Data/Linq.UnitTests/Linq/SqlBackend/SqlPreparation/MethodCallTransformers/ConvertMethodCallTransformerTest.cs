@@ -75,9 +75,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new ConvertMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var fakeResult = new SqlConvertExpression (typeof (int), Expression.Constant ("1"));
+      var expectedResult = new SqlConvertExpression (typeof (int), Expression.Constant ("1"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }
