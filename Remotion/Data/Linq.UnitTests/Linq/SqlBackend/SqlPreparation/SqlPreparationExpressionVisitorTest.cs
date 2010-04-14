@@ -21,8 +21,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
@@ -159,9 +162,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatement =
           SqlStatementModelObjectMother.CreateSqlStatement (
-                                   new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+              new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
               );
-      
+
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches (q => q.ResultOperators.Count == 1)))
           .Return (fakeSqlStatement);
@@ -221,18 +224,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock
           .Expect (mock => mock.PrepareItemExpression (itemExpression))
           .Return (fakeConstantExpression);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(false));
-      
-      _stageMock.VerifyAllExpectations ();
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (false));
+
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void VisitSubQueryExpression_WithSeveralResultOperatorsAndConstantCollection ()
     {
       var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier" });
@@ -247,7 +250,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       querModel.ResultOperators.Add (containsResultOperator);
 
       var expression = new SubQueryExpression (querModel);
-      
+
       SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
     }
 
@@ -384,35 +387,45 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (1));
     }
 
-    // TODO Review 2511: Add a test showing that the expression's properties are visited before being passed to the method transformer - use a MethodCallExpression whose instance or argument is the _cookQuerySourceReferenceExpression, and use a transformer mock to verify that a SqlTableReferenceExpression is passed instead of the _cookQuerySourceReferenceExpression
-    // TODO Review 2511: Add a test showing that the transformed expression's properties are visited after the transformation - use a transformer mock that returns the _cookQuerySourceReferenceExpression, then verify that a SqlTableReferenceExpression is created for that
-
-    // TODO Review 2511: The following two tests are not required in the SqlPreparationExpressionVisitor test fixture; they are integration tests and should thus be removed
-
     [Test]
-    public void VisitMethodCallExpression_ConvertToInt64 ()
+    public void VisitMethodCallExpression_ExpressionPropertiesVisitedBeforeTransformation ()
     {
-      var method = typeof (Convert).GetMethod ("ToInt64", new[] { typeof (string) });
-      var constantExpression = Expression.Constant ("1");
-      var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
+      var method = MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString");
+      var methodCallExpression = Expression.Call (_cookQuerySourceReferenceExpression, method);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+      var transformerMock = MockRepository.GenerateMock<IMethodCallTransformer>();
+      transformerMock
+          .Expect (mock => mock.Transform (Arg<MethodCallExpression>.Matches (m => m.Object is SqlTableReferenceExpression)))
+          .Return (methodCallExpression);
+      transformerMock.Replay();
 
-      Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
-      Assert.That (result.Type, Is.EqualTo (typeof (Int64)));
+      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry ();
+      registry.Register (method, transformerMock);
+
+      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
+
+      transformerMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void VisitMethodCallExpression_ConvertToString ()
+    public void VisitMethodCallExpression_ExpressionPropertiesVisitedAfterTransformation ()
     {
-      var method = typeof (Convert).GetMethod ("ToString", new[] { typeof (int) });
-      var constantExpression = Expression.Constant (1);
-      var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
+      var method = MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString");
+      var methodCallExpression = Expression.Call (_cookQuerySourceReferenceExpression, method);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+      var transformerMock = MockRepository.GenerateMock<IMethodCallTransformer> ();
+      transformerMock
+          .Expect (mock => mock.Transform (Arg<MethodCallExpression>.Matches (m => m.Object is SqlTableReferenceExpression)))
+          .Return (_cookQuerySourceReferenceExpression);
+      transformerMock.Replay ();
 
-      Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
-      Assert.That (result.Type, Is.EqualTo (typeof (string)));
+      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry ();
+      registry.Register (method, transformerMock);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      transformerMock.VerifyAllExpectations ();
     }
   }
 }

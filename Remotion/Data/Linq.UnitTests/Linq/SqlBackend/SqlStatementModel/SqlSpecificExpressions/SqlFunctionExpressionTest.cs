@@ -57,7 +57,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.Not.SameAs (_sqlFunctionExpression));
-      // TODO Review 2511: Check properties of new result
+      Assert.That (((SqlFunctionExpression) result).Args, Is.EqualTo (newArgs));
+      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("Test"));
     }
 
     [Test]

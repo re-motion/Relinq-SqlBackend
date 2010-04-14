@@ -177,21 +177,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2511: Simply call base.VisitMethodCallExpression to replace the following lines
-      var instanceExpression = VisitExpression (expression.Object);
-
-      var arguments = new List<Expression>();
-      foreach (var argument in expression.Arguments)
-        arguments.Add (VisitExpression (argument));
-
-      var newExpression = Expression.Call (instanceExpression, expression.Method, arguments);
-
-      if ((expression.Object != instanceExpression) || (expression.Arguments.ToList() != arguments))
-        return _registry.GetTransformer (expression.Method).Transform (newExpression);
-
-      // TODO Review 2511: Everything up to here can be replaced by base.VisitMethodCallExpression; adapt the next line to use newExpression instead
-      return _registry.GetTransformer (expression.Method).Transform (expression);
-          // TODO Review 2511: Call VisitExpression on the result of Transform; test this. This is necessary so that a MethodCallTransformer can return an "unprepared" expression.
+      var newExpression = base.VisitMethodCallExpression (expression);
+      var transformedExpression = _registry.GetTransformer (expression.Method).Transform ((MethodCallExpression) newExpression);
+      return VisitExpression (transformedExpression);
     }
 
     protected override Expression VisitConditionalExpression (ConditionalExpression expression)
