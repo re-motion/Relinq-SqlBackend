@@ -147,9 +147,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2509: In places where this expression was used to append custom text, use the SqlCustomTextExpression. Use the SqlCompositeExpression to combine SqlCustomTextExpression with other expressions.
-
-      _commandBuilder.AppendStringLiteral (expression.Value.ToString());
+      if (expression.Type == typeof (int))
+        _commandBuilder.Append (expression.Value.ToString ());
+      else
+        _commandBuilder.AppendStringLiteral ((string) expression.Value);
       return expression;
     }
 

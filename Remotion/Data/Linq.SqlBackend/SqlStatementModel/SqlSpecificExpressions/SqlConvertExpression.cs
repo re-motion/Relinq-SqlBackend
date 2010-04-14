@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   public class SqlConvertExpression : ExtensionExpression
   {
     private readonly Expression _source;
-    private readonly Dictionary<Type, string> _sqlTypeMapper; // TODO Review 2510: Rename to sqlTypeMapping
+    private readonly Dictionary<Type, string> _sqlTypeMapping;
 
     public SqlConvertExpression (Type targetType, Expression source)
         : base (targetType)
@@ -37,11 +37,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       ArgumentUtility.CheckNotNull ("source", source);
 
       _source = source;
-      _sqlTypeMapper = new Dictionary<Type, string> // TODO Review 2510: Add more types, see reference here: http://msdn.microsoft.com/en-us/library/cc716729.aspx
+      _sqlTypeMapping = new Dictionary<Type, string> 
                        {
                            { typeof (string), "NVARCHAR" },
                            { typeof (int), "INT" },
                            { typeof (bool), "BIT" },
+                           { typeof (long), "BIGINT" },
+                           { typeof (char), "CHAR" },
+                           { typeof (DateTime), "DATETIME" },
+                           { typeof (decimal), "DECIMAL" },
+                           { typeof (double), "FLOAT" },
+                           { typeof (short), "SMALLINT" },
+                           { typeof (Guid), "UNIQUEIDENTIFIER" }
                        };
     }
 
@@ -52,8 +59,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public string GetSqlTypeName ()
     {
-      if (_sqlTypeMapper.ContainsKey (Type))
-        return _sqlTypeMapper[Type];
+      if (_sqlTypeMapping.ContainsKey (Type))
+        return _sqlTypeMapping[Type];
       else
         throw new KeyNotFoundException (string.Format ("No appropriate sql type for '{0}' found.", Type.Name));
     }

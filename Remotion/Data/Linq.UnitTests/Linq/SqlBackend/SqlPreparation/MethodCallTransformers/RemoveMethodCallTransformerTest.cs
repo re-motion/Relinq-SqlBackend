@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           objectExpression,
           Expression.Add (Expression.Constant (1), new SqlCustomTextExpression ("1", typeof(int))),
           new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression),
-          new SqlCustomTextExpression ("''", typeof(string)));
+          new SqlLiteralExpression (""));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           objectExpression,
           Expression.Add (Expression.Constant (1), new SqlCustomTextExpression ("1", typeof(int))),
           Expression.Constant (3),
-          new SqlCustomTextExpression ("''", typeof(string)));
+          new SqlLiteralExpression (""));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

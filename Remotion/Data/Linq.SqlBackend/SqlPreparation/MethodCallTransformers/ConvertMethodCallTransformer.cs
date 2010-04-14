@@ -31,18 +31,61 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-          // TODO Review 2510: Add more overloads/convert methods
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (int)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (bool)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (object)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (decimal)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (double)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (float)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (long)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (short)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (char)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (byte)),
+          
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (string)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (byte)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (char)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (DateTime)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (decimal)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (float)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (long)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (object)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (short)),
+
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (string)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (byte)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (char)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (DateTime)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (decimal)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (float)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (long)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (object)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (short)),
+
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (string)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (bool)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (byte)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (char)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (DateTime)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (decimal)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (float)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (long)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (object)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (short)),
+
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (string)),
-          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (int))
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (int)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (char)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (byte)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (DateTime)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (decimal)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (double)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (float)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (long)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (object)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (short))
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)

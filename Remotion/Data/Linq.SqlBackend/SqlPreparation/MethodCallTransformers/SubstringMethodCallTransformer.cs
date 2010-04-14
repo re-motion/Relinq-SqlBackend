@@ -42,8 +42,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1, 2);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
 
-      var startIndexExpression = methodCallExpression.Arguments[0]; // TODO Review 2508: Should add 1
-
+      var startIndexExpression = Expression.Add (methodCallExpression.Arguments[0], new SqlCustomTextExpression ("1", typeof(int)));
+      
       if (methodCallExpression.Arguments.Count == 1)
       {
         return new SqlFunctionExpression (

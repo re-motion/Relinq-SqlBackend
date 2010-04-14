@@ -41,10 +41,57 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (object))));
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (decimal))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (double))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (float))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (long))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (short))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (char))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (byte))));
+
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (string))));
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (bool))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (byte))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (char))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (DateTime))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (decimal))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (float))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (long))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (object))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (short))));
+
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (string))));
@@ -53,16 +100,94 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (bool))));
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (byte))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (char))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (DateTime))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (decimal))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (float))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (long))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (object))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt32", typeof (short))));
+
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (string))));
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (bool))));
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (byte))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (char))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (DateTime))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (decimal))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (float))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (long))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (object))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt16", typeof (short))));
+
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (string))));
       Assert.IsTrue (
           ConvertMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (int))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (char))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (byte))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (DateTime))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (decimal))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (double))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (float))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (long))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (object))));
+      Assert.IsTrue (
+          ConvertMethodCallTransformer.SupportedMethods.Contains (
+              MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToBoolean", typeof (short))));
+     
     }
 
     [Test]

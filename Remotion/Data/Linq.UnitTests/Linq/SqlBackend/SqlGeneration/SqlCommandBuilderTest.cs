@@ -68,7 +68,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (commandParameter[0].Name, Is.EqualTo ("@1"));
       Assert.That (commandParameter[0].Value, Is.EqualTo ("test"));
+    }
 
+    [Test]
+    public void AppendIdentifier ()
+    {
+      _sqlCommandBuilder.AppendStringLiteral ("'test'");
+      Assert.That (_sqlCommandBuilder.GetCommandText(), Is.EqualTo ("'''test'''"));
     }
   }
 }

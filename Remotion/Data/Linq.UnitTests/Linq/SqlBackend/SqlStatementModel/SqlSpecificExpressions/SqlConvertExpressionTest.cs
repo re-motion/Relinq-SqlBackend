@@ -72,7 +72,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       Assert.That (result, Is.Not.SameAs (_convertExpresion));
     }
 
-    // TODO Review 2510: Add test for VisitChildren with the same source
+    [Test]
+    public void VisitChildren_SameSource ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_convertExpresion.Source))
+          .Return (_convertExpresion.Source);
+      visitorMock.Replay ();
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (_convertExpresion));
+    }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()

@@ -341,6 +341,37 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitSqlLiteralExpression_Int ()
+    {
+      var expression = new SqlLiteralExpression (1);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("1"));
+
+    }
+
+    [Test]
+    public void VisitSqlLiteralExpression_String ()
+    {
+      var expression = new SqlLiteralExpression ("1");
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("'1'"));
+    }
+
+    [Test]
+    public void VisitSqlLiteralExpression_Empty ()
+    {
+      var expression = new SqlLiteralExpression ("");
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("''"));
+    }
+
+    [Test]
     public void VisitSqlIsNotNullExpression ()
     {
       var expression = Expression.Constant ("test");
@@ -360,7 +391,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlFunctionExpression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("LENFUNC(test, 1)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("LENFUNC('test', 1)"));
     }
 
     [Test]

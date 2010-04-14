@@ -156,12 +156,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3),
-          "SELECT SUBSTRING([t0].[FirstName], @1, LEN([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]", // TODO Review 2508: should be @1 + 1
+          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3, 5),
-          "SELECT SUBSTRING([t0].[FirstName], @1, @2) AS [value] FROM [CookTable] AS [t0]", // TODO Review 2508: should be @1 + 1
+          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), @2) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3),
           new CommandParameter ("@2", 5)
           );

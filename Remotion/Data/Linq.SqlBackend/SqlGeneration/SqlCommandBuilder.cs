@@ -69,7 +69,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public void AppendStringLiteral (string value)
     {
+      Append ("'");
       Append (value.Replace ("'", "''"));
+      Append ("'");
     }
 
     public void AppendFormat (string stringToAppend, params object[] parameters)

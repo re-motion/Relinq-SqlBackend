@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
@@ -52,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type,
           "SUBSTRING",
           objectExpression,
-          Expression.Constant (1),
+          Expression.Add (Expression.Constant (1), new SqlCustomTextExpression ("1", typeof(int))),
           new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression)
           );
 
@@ -73,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type,
           "SUBSTRING",
           objectExpression,
-          Expression.Constant (1),
+          Expression.Add (Expression.Constant (1), new SqlCustomTextExpression ("1", typeof (int))),
           Expression.Constant (3)
           );
 
