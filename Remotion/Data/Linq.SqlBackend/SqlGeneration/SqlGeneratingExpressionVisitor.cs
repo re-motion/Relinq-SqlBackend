@@ -285,11 +285,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public void VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
+    public Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-
       expression.Generate (_commandBuilder, this, _stage);
+      return expression;
     }
   }
 }

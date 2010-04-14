@@ -15,20 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  public abstract class SqlCustomTextGeneratorExpressionBase
+  public abstract class SqlCustomTextGeneratorExpressionBase : ExtensionExpression
   {
-    private Type _expressionType;
 
-    protected SqlCustomTextGeneratorExpressionBase (Type expressionType)
+    protected SqlCustomTextGeneratorExpressionBase (Type expressionType) : base(expressionType)
     {
-      ArgumentUtility.CheckNotNull ("expressionType", expressionType);
-
-      _expressionType = expressionType;
     }
 
     public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);

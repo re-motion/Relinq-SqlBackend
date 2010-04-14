@@ -54,15 +54,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       {
         MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
         
-        //TODO 2509: escape sql text in language argument ???
-        // TODO Review 2509: Use the SqlCompositeExpression to create the following languageExpression: SqlCompositeExpression (SqlCustomTextExpression ("LANGUAGE "), SqlConstantExpression (((ConstantExpression)methodCallExpression.Arguments[2]).Value))
-        // TODO Review 2509: By using the SqlConstantExpression, escaping is not required.
-
-        var languageExpression =
-            new SqlLiteralExpression (string.Format ("LANGUAGE {0}", ((ConstantExpression) methodCallExpression.Arguments[2]).Value));
+        var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
+            typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), ((ConstantExpression) methodCallExpression.Arguments[2]));
 
         return new SqlFunctionExpression (
-            typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], languageExpression);
+            typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], compositeExpression);
       }
       else  // TODO Review 2509: Encapsulate these checks (in all transformers) into a MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2, 3) method (taking a params int[] allowedArgumentCounts); also add a CheckInstanceMethod (methodCallExpression) and a CheckStaticMethod (methodCallExpression) method and use them
       {

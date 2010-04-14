@@ -43,5 +43,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       textGeneratingExpressionVisitor.VisitList (_expressions, innerExpression => textGeneratingExpressionVisitor.VisitExpression (innerExpression));
     }
+
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    {
+      return this;
+    }
+
+    public override Expression Accept (ExpressionTreeVisitor visitor)
+    {
+      var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlCustomTextGeneratorExpression (this);
+      else
+        return base.Accept (visitor);
+    }
   }
 }

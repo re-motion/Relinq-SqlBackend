@@ -15,11 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   public interface ISqlCustomTextGeneratorExpressionVisitor
   {
-    void VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression);
+    Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression);
   }
 }

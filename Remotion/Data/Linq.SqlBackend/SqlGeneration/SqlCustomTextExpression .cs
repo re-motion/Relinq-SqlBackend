@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
@@ -43,5 +44,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       commandBuilder.Append (_sqlText);
     }
+
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    {
+      return this;
+    }
+
+    public override Expression Accept (ExpressionTreeVisitor visitor)
+    {
+      var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlCustomTextGeneratorExpression (this);
+      else
+        return base.Accept (visitor);
+    }
+
+
   }
 }
