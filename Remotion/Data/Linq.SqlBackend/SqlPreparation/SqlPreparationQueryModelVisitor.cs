@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddFromClause (fromClause);
+      AddFromClause (fromClause, fromClause.FromExpression);
     }
 
     public override void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index)
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddFromClause (fromClause);
+      AddFromClause (fromClause, fromClause.FromExpression);
     }
 
     public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
@@ -184,12 +184,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return sqlSubStatement;
     }
 
-    private void AddFromClause (FromClauseBase fromClause)
+    private void AddFromClause (IQuerySource source, Expression fromExpression)
     {
-      var preparedFromExpression = _stage.PrepareFromExpression (fromClause.FromExpression);
-      var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, fromClause.ItemType);
+      var preparedFromExpression = _stage.PrepareFromExpression (fromExpression);
+      var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, source.ItemType);
 
-      _context.AddQuerySourceMapping (fromClause, sqlTableOrJoin);
+      _context.AddQuerySourceMapping (source, sqlTableOrJoin);
 
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
