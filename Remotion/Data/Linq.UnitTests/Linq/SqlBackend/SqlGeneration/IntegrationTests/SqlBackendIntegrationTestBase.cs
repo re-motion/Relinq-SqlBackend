@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var result = GenerateSql (queryable.Expression);
 
       //Console.WriteLine (result.CommandText);
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
+      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
     }
 
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var result = GenerateSql (queryLambda.Body);
 
       //Console.WriteLine (result.CommandText);
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
+      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
     }
   }
