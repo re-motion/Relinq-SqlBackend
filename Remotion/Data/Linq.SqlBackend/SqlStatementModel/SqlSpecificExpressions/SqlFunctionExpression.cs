@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -31,21 +30,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   public class SqlFunctionExpression : ExtensionExpression
   {
     private readonly string _sqlFunctioName;
-    private readonly Expression _prefix;
     private readonly ReadOnlyCollection<Expression> _args;
 
-    // TODO Review 2511: Remove prefix, make this a part of args
-    public SqlFunctionExpression (Type type, string sqlFunctioName, Expression prefix, params Expression[] args)
+    public SqlFunctionExpression (Type type, string sqlFunctioName, params Expression[] args)
         : base (type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFunctioName", sqlFunctioName);
-      ArgumentUtility.CheckNotNull ("prefix", prefix);
       ArgumentUtility.CheckNotNull ("args", args);
 
       _args = Array.AsReadOnly(args);
       _sqlFunctioName = sqlFunctioName;
-      _prefix = prefix;
     }
 
     public string SqlFunctioName
@@ -58,18 +53,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _args; }
     }
 
-    public Expression Prefix
-    {
-      get { return _prefix; }
-    }
-
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      var newPrefix = visitor.VisitExpression (_prefix);
+      var newPrefix = visitor.VisitExpression (_args[0]);
       var newArgs = visitor.VisitAndConvert (_args, "SqlFunctionExpression.VisitChildren");
 
-      if ((_args != newArgs) || (_prefix != newPrefix))
-        return new SqlFunctionExpression (Type, _sqlFunctioName, newPrefix, newArgs.ToArray());
+      if ((_args != newArgs) || (_args[0] != newPrefix))
+        return new SqlFunctionExpression (Type, _sqlFunctioName, newArgs.ToArray());
       else
         return this;
     }

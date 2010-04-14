@@ -305,8 +305,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlFunctionExpression, _resolverMock, _generator, _stageMock);
       
       Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
-      Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (resolvedExpression));
       Assert.That (((SqlFunctionExpression) result).Args[0], Is.SameAs (resolvedExpression));
+      Assert.That (((SqlFunctionExpression) result).Args[1], Is.SameAs (resolvedExpression));
       _resolverMock.VerifyAllExpectations();
     }
 

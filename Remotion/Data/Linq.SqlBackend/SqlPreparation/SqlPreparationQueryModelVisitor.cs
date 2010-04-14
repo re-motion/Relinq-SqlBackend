@@ -128,6 +128,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       SqlStatementBuilder.Orderings.InsertRange (0, orderings);
     }
 
+    public override void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, int index)
+    {
+      ArgumentUtility.CheckNotNull ("joinClause", joinClause);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      
+      AddFromClause (joinClause, joinClause.InnerSequence);
+      var whereCondition = Expression.Equal (joinClause.OuterKeySelector, joinClause.InnerKeySelector);
+      SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression(whereCondition));
+    }
+
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
@@ -173,8 +183,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return;
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
-
-      
     }
 
     protected virtual SqlStatement GetStatementAndResetBuilder ()

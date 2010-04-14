@@ -380,8 +380,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
       Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
-      Assert.That (((SqlFunctionExpression) result).Prefix, Is.SameAs (constantExpression));
-      Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (0));
+      Assert.That (((SqlFunctionExpression) result).Args[0], Is.SameAs (constantExpression));
+      Assert.That (((SqlFunctionExpression) result).Args.Count, Is.EqualTo (1));
     }
 
     // TODO Review 2511: Add a test showing that the expression's properties are visited before being passed to the method transformer - use a MethodCallExpression whose instance or argument is the _cookQuerySourceReferenceExpression, and use a transformer mock to verify that a SqlTableReferenceExpression is passed instead of the _cookQuerySourceReferenceExpression

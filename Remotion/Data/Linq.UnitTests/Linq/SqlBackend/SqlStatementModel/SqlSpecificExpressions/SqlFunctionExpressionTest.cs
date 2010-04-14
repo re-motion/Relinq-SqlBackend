@@ -45,8 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       var newArgs = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1), Expression.Constant (2) });
       
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
-          .Return (_sqlFunctionExpression.Prefix);
+          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[0]))
+          .Return (_sqlFunctionExpression.Args[0]);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "SqlFunctionExpression.VisitChildren"))
           .Return (newArgs);
@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
+          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[0]))
           .Return (newPrefix);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "SqlFunctionExpression.VisitChildren"))
@@ -87,8 +87,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
       
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Prefix))
-          .Return (_sqlFunctionExpression.Prefix);
+          .Expect (mock => mock.VisitExpression (_sqlFunctionExpression.Args[0]))
+          .Return (_sqlFunctionExpression.Args[0]);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (_sqlFunctionExpression.Args, "SqlFunctionExpression.VisitChildren"))
           .Return (_sqlFunctionExpression.Args);

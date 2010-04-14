@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _generator = new UniqueIdentifierGenerator();
       _context = new SqlPreparationContext();
-      _defaultStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault (), _context, _generator);
+      _defaultStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), _context, _generator);
 
       _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _selectClause = ExpressionHelper.CreateSelectClause (_mainFromClause);
@@ -297,6 +297,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitJoinClause_CreatesWhereCondition ()
+    {
+      var joinClause = ExpressionHelper.CreateJoinClause();
+
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      
+      _stageMock.Expect (mock => mock.PrepareFromExpression (joinClause.InnerSequence)).Return (Expression.Constant (5));
+      _stageMock.Expect (
+          mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything)).Return(preparedSqlTable);
+      _stageMock.Replay();
+      
+      var fakeWhereCondition = Expression.Constant (1);
+      _stageMock.Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Is.Anything)).Return (fakeWhereCondition);
+
+      _visitor.VisitJoinClause (joinClause, _queryModel,5);
+
+      _stageMock.VerifyAllExpectations();
+
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (fakeWhereCondition));
+    }
+
+    [Test]
     public void VisitOrderByClause_Single ()
     {
       var preparedOrdering = new Ordering (Expression.Constant ("column"), OrderingDirection.Asc);
@@ -410,22 +432,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var queryModel = new QueryModel (_mainFromClause, _selectClause);
       var takeResultOperator = new TakeResultOperator (takeExpression);
       queryModel.ResultOperators.Add (takeResultOperator);
-      var distinctResultOperator = new DistinctResultOperator ();
+      var distinctResultOperator = new DistinctResultOperator();
 
       _visitor.SqlStatementBuilder.SelectProjection = Expression.Constant ("select");
 
       var preparedExpression = Expression.Constant (null, typeof (Cook));
       _stageMock
-        .Expect (mock => mock.PrepareTopExpression (takeExpression))
-        .Return (preparedExpression);
-      _stageMock.Replay ();
+          .Expect (mock => mock.PrepareTopExpression (takeExpression))
+          .Return (preparedExpression);
+      _stageMock.Replay();
 
       _visitor.VisitResultOperator (takeResultOperator, queryModel, 0);
       _visitor.VisitResultOperator (distinctResultOperator, queryModel, 0);
- 
-      _stageMock.VerifyAllExpectations ();
+
+      _stageMock.VerifyAllExpectations();
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo(1));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -439,30 +461,32 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.SqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
 
       var preparedExpression = Expression.Constant (new Cook(), typeof (Cook));
-      _stageMock.Expect (mock => mock.PrepareItemExpression(itemExpression)).Return (preparedExpression);
-      _stageMock.Replay ();
+      _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression)).Return (preparedExpression);
+      _stageMock.Replay();
 
       var oldSqlStatementBuilder = _visitor.SqlStatementBuilder;
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (oldSqlStatementBuilder));
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).LeftExpression, Is.SameAs (preparedExpression));
-      Assert.That (((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      
+      Assert.That (
+          ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression,
+          Is.TypeOf (typeof (SqlSubStatementExpression)));
+
       Assert.That (
           ((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression).SqlStatement.
               SelectProjection,
           Is.SameAs (oldSqlStatementBuilder.SelectProjection));
       Assert.That (
-          ((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression).SqlStatement.SqlTables,
-          Is.EqualTo(oldSqlStatementBuilder.SqlTables));
-
+          ((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression).SqlStatement.
+              SqlTables,
+          Is.EqualTo (oldSqlStatementBuilder.SqlTables));
     }
-    
+
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
     public void VisitResultOperator_NotSupported ()
@@ -484,8 +508,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = _visitor.GetStatementAndResetBuilder();
 
       Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (originalSqlStatementBuilder));
-      Assert.That (result.SelectProjection, Is.SameAs(constantExpression));
+      Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
     }
-
   }
 }

@@ -46,8 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
       Assert.That (result.Type, Is.EqualTo (typeof (string)));
       Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
-      Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
-      Assert.That (((SqlFunctionExpression) result).Args, Is.Empty);
+      Assert.That (((SqlFunctionExpression) result).Args[0], Is.EqualTo (objectExpression));
     }
   }
 }
