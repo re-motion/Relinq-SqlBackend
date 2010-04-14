@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -105,8 +104,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      if (resolvedTableInfo is ResolvedSubStatementTableInfo
-          && (tableReferenceExpression.Type == typeof (string) || (tableReferenceExpression.Type == typeof (int))))
+      if (resolvedTableInfo is ResolvedSubStatementTableInfo &&
+          (tableReferenceExpression.Type == typeof (string) || (tableReferenceExpression.Type == typeof (int))
+           || (tableReferenceExpression.Type == typeof (object))))
         return new SqlValueTableReferenceExpression (new SqlTable (resolvedTableInfo));
       else
         return CreateEntityExpression (tableReferenceExpression.Type, resolvedTableInfo);

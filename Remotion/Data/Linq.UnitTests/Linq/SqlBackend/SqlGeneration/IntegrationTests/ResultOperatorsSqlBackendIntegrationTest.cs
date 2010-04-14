@@ -216,17 +216,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    // TODO Review 2542: Enable this test
-    [Ignore ("TODO 2542")]
     public void Cast_SubQuery ()
     {
       CheckQuery (
           (from r in (from c in Cooks select c.FirstName).Cast<object>() select r),
           "SELECT [q0].[value] AS [value] FROM (SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
-      
     }
 
-
-    
   }
 }
