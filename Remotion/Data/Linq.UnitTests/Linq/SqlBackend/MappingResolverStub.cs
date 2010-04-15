@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -114,12 +115,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
     }
 
-    public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
+    public virtual Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
     {
-      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberExpression.MemberInfo);
-      if (memberExpression.MemberInfo.DeclaringType == typeof (Cook))
+      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      if (memberInfo.DeclaringType == typeof (Cook))
       {
-        switch (memberExpression.MemberInfo.Name)
+        switch (memberInfo.Name)
         {
           case "ID":
           case "FirstName":
@@ -127,38 +128,38 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
-            return CreateColumn (memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
           case "Substitution":
-            return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
+            return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
         }
       }
-      else if (memberExpression.MemberInfo.DeclaringType == typeof (Kitchen))
+      else if (memberInfo.DeclaringType == typeof (Kitchen))
       {
-        switch (memberExpression.MemberInfo.Name)
+        switch (memberInfo.Name)
         {
           case "ID":
           case "Name":
           case "RoomNumber":
             return CreateColumn (
-                memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+                memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
           case "Cook":
           case "Restaurant":
-            return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
+            return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
         }
       }
-      else if (memberExpression.MemberInfo.DeclaringType == typeof (Restaurant))
+      else if (memberInfo.DeclaringType == typeof (Restaurant))
       {
-        switch (memberExpression.MemberInfo.Name)
+        switch (memberInfo.Name)
         {
           case "ID":
             return CreateColumn (
-                memberType, memberExpression.SqlTable.GetResolvedTableInfo(), memberExpression.MemberInfo.Name);
+                memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
           case "SubKitchen":
-            return new SqlEntityRefMemberExpression (memberExpression.SqlTable, memberExpression.MemberInfo);
+            return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
         }
       }
 
-      throw new UnmappedItemException ("Cannot resolve member: " + memberExpression.MemberInfo);
+      throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)

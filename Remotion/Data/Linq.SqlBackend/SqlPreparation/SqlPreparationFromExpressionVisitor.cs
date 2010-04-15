@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Parsing;
@@ -22,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
+using System.Collections;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
@@ -64,13 +66,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return new SqlTableReferenceExpression (sqlTable);
     }
 
-    public Expression VisitSqlMemberExpression (SqlMemberExpression expression)
+    protected override Expression VisitMemberExpression (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var joinedTable = new SqlJoinedTable (new UnresolvedJoinInfo (expression.SqlTable, expression.MemberInfo, JoinCardinality.Many));
+      var tableReference = expression.Expression as SqlTableReferenceExpression;
+      if (tableReference == null)
+        tableReference = (SqlTableReferenceExpression) VisitExpression (expression.Expression);
 
-      return new SqlTableReferenceExpression (joinedTable);
+      var joinCardinality = typeof (IEnumerable).IsAssignableFrom (expression.Type) ? JoinCardinality.Many : JoinCardinality.One;
+      if (joinCardinality == JoinCardinality.Many)
+      {
+        var joinedTable = new SqlJoinedTable (new UnresolvedJoinInfo (tableReference.SqlTable, expression.Member, joinCardinality));
+        return new SqlTableReferenceExpression (joinedTable);
+      }
+      else
+      {
+        var joinedTable = tableReference.SqlTable.GetOrAddJoin (expression.Member, joinCardinality);
+        return new SqlTableReferenceExpression (joinedTable);
+      }
     }
 
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)

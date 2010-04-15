@@ -45,10 +45,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks from k in Kitchens where s.Substitution.Name == "Hugo" select k.Cook.FirstName,
-          "SELECT [t3].[FirstName] AS [value] "
-          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
-          + "CROSS JOIN [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
-          + "WHERE ([t1].[Name] = @1)",
+          "SELECT [t2].[FirstName] AS [value] FROM [CookTable] AS [t0] " +
+          "LEFT OUTER JOIN [CookTable] AS [t3] ON [t0].[ID] = [t3].[SubstitutedID] " +
+          "CROSS JOIN [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] WHERE ([t3].[Name] = @1)",
           new CommandParameter ("@1", "Hugo")
           );
     }

@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -67,21 +68,34 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return VisitExpression (newExpression);
     }
 
-    public Expression VisitSqlMemberExpression (SqlMemberExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var newExpression = _resolver.ResolveMemberExpression (expression, _generator);
-      if (newExpression == expression)
-        return expression;
-      else
-        return VisitExpression (newExpression);
-    }
-
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       return _resolver.ResolveConstantExpression (expression);
+    }
+
+    protected override Expression VisitMemberExpression (MemberExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // First process any nested expressions
+      // E.g, for (kitchen.Cook).FirstName, first process kitchen => newExpression1 (SqlTableReferenceExpression)
+      // then newExpression1.Cook => newExpression2 (SqlMemberExpression)
+      // then newExpression2.FirstName => result (SqlMemberExpression)
+      var newExpression = VisitExpression (expression.Expression);
+
+      // kitchen case: newExpression is a SqlTableReferenceExpression (kitchenTable)
+      // create a SqlMemberExpression (kitchenTable, "Cook")
+      var newExpressionAsEntityExpression = newExpression as SqlEntityExpression;
+      if (newExpressionAsEntityExpression != null)
+      {
+        var sqlTable = newExpressionAsEntityExpression.SqlTable; // kitchenTable
+
+        var resolvedMemberExpression = _resolver.ResolveMemberExpression(sqlTable, expression.Member, _generator);
+        return VisitExpression(resolvedMemberExpression);
+      }
+
+      return expression;
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)

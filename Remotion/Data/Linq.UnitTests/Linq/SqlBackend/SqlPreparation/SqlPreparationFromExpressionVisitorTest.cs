@@ -62,13 +62,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTableForFromExpression_SqlMemberExpression_ReturnsJoinedTable ()
     {
       // from r in Restaurant => sqlTable 
-      // from c in r.Cooks => MemberExpression (QSRExpression (r), "Cooks") => SqlMemberExpression (sqlTable, "Cooks") => Join: sqlTable.Cooks
+      // from c in r.Cooks => MemberExpression (QSRExpression (r), "Cooks") => Join: sqlTable.Cooks
 
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
-      var sqlMemberExpression = new SqlMemberExpression (sqlTable, memberInfo);
+      var memberExpression = Expression.MakeMemberAccess ( Expression.Constant(new Restaurant()), memberInfo);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (sqlMemberExpression, typeof (Cook), _stageMock, _generator);
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (memberExpression, typeof (Cook), _stageMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
       Assert.That (sqlTable.JoinedTables.ToArray().Contains (result), Is.False);
@@ -130,5 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (condition.TableAlias, Is.EqualTo ("q0"));
       Assert.That (condition.ItemType, Is.EqualTo (typeof (Cook)));
     }
+
+    //TODO 2562: VisitMemberExpression tests
   }
 }

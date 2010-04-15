@@ -74,54 +74,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitMemberExpression_CreatesSqlMemberExpression ()
-    {
-      Expression memberExpression = Expression.MakeMemberAccess (_cookQuerySourceReferenceExpression, typeof (Cook).GetProperty ("FirstName"));
-
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlMemberExpression)));
-      Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (_sqlTable));
-      Assert.That (result.Type, Is.SameAs (typeof (string)));
-    }
-
-    [Test]
-    public void VisitSeveralMemberExpression_CreatesSqlMemberExpression_AndJoin ()
-    {
-      var expression = ExpressionHelper.Resolve<Kitchen, string> (_kitchenMainFromClause, k => k.Cook.FirstName);
-
-      var source = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Kitchen));
-      var sqlTable = new SqlTable (source);
-
-      _context.AddQuerySourceMapping (_kitchenMainFromClause, sqlTable);
-
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
-
-      var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var cookFirstNameMember = typeof (Cook).GetProperty ("FirstName");
-
-      Assert.That (result, Is.TypeOf (typeof (SqlMemberExpression)));
-      Assert.That (((SqlMemberExpression) result).MemberInfo, Is.EqualTo (cookFirstNameMember));
-
-      var join = sqlTable.GetJoin (kitchenCookMember);
-      Assert.That (((SqlMemberExpression) result).SqlTable, Is.SameAs (join));
-
-      Assert.That (join.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
-      Assert.That (((UnresolvedJoinInfo) join.JoinInfo).MemberInfo, Is.EqualTo (kitchenCookMember));
-      Assert.That (((UnresolvedJoinInfo) join.JoinInfo).Cardinality, Is.EqualTo (JoinCardinality.One));
-    }
-
-    [Test]
-    public void VisitMemberExpression_NonQuerySourceReferenceExpression ()
-    {
-      var memberExpression = Expression.MakeMemberAccess (Expression.Constant ("Test"), typeof (string).GetProperty ("Length"));
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
-
-      Assert.That (result, Is.EqualTo (memberExpression));
-    }
-
-
-    [Test]
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
       var expression = new CustomExpression (typeof (int));

@@ -58,12 +58,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
-      if (specificVisitor != null)
-        return specificVisitor.VisitSqlMemberExpression(this);
-      else
-        return base.Accept (visitor);
+      return this;
+      //var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
+      //if (specificVisitor != null)
+      //  return specificVisitor.VisitSqlMemberExpression(this);
+      //else
+      //  return base.Accept (visitor);
     }
   }
 }

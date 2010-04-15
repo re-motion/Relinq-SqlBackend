@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
@@ -64,17 +65,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     /// <summary>
     /// Analyses the <see cref="SqlMemberExpression"/> and returns a resolved version of the expression. The resolved version will usually
-    /// be a <see cref="SqlColumnExpression"/> representing the member described by the <paramref name="memberExpression"/> in the database, or a
+    /// be a <see cref="SqlColumnExpression"/> representing the member described by the <paramref name="memberInfo"/> in the database, or a
     /// <see cref="SqlEntityExpression"/> if the member references another entity.
     /// </summary>
-    /// <param name="memberExpression">The <see cref="SqlMemberExpression"/> which is to be resolved. 
-    /// The expression represents a reference to the member of an entity.</param>
+    /// <param name="sqlTable">The <see cref="SqlTableBase"/> which represents an entity reference.</param> 
+    /// <param name="memberInfo">The <see cref="MemberInfo"/> which is needed to get appropriate entity.</param>
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as column aliases.</param>
-    /// <returns>A resolved version of <paramref name="memberExpression"/>, usually a <see cref="SqlColumnExpression"/> if the member is resolved to a 
-    /// simple column, or a <see cref="SqlEntityExpression"/> if the member references another entity.
+    /// <returns>Usually a <see cref="SqlColumnExpression"/> if the member is resolved to a simple column, or a <see cref="SqlEntityExpression"/> 
+    /// if the member references another entity.
     /// This method can return a partial result that itself again needs to be resolved.</returns>
-    /// <exception cref="UnmappedItemException">The given <see cref="SqlMemberExpression"/> cannot be resolved to a mapped database item.</exception>
-    Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator);
+    /// <exception cref="UnmappedItemException">The given <see cref="MemberInfo"/> cannot be resolved to a mapped database item.</exception>
+    Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
     /// Analyses the given <see cref="ConstantExpression"/> and resolves it to a database-compatible expression if necessary. For example, if the 
