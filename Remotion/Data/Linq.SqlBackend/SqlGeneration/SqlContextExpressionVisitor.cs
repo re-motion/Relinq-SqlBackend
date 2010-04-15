@@ -80,7 +80,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var entityExpression = expression as SqlEntityExpression;
       if (entityExpression != null)
         return entityExpression.PrimaryKeyColumn;
+
       var entityConstantExpression = expression as SqlEntityConstantExpression;
+      // TODO Review 2534: EnsureSingleValueSemantics should extract the primary key from the entityConstantExpression, not create a new one
       if (entityConstantExpression != null)
         return new SqlEntityConstantExpression (
             entityConstantExpression.PrimaryKeyValue.GetType(), entityConstantExpression.Value, entityConstantExpression.PrimaryKeyValue);

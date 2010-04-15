@@ -314,24 +314,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2494 add after refactoring")]
     public void EntityConstantExpression_WithReference ()
     {
       var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
       CheckQuery (
           from c in Cooks where c == cook select c.FirstName,
-          "SELECT [t0].[FirstName] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
           new CommandParameter ("@1", cook.ID)
-          );
-    }
-
-    [Test]
-    public void EntityConstantExpression_WithNull ()
-    {
-      var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
-      CheckQuery (
-          from c in Cooks where c == null select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)"
           );
     }
 
@@ -343,6 +332,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks where c.ID == id select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
           new CommandParameter ("@1", 5)
+          );
+    }
+
+    [Test]
+    public void EntityComparison_WithNull ()
+    {
+      CheckQuery (
+          from c in Cooks where c == null select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)"
           );
     }
 
