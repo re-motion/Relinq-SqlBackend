@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator);
 
     /// <summary>
-    /// Analyses the <see cref="SqlMemberExpression"/> and returns a resolved version of the expression. The resolved version will usually
+    /// Analyses the <see cref="MemberInfo"/> and returns an appropriate expression. The resolved version will usually
     /// be a <see cref="SqlColumnExpression"/> representing the member described by the <paramref name="memberInfo"/> in the database, or a
     /// <see cref="SqlEntityExpression"/> if the member references another entity.
     /// </summary>
