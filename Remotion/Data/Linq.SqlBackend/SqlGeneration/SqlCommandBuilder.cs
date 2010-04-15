@@ -46,6 +46,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stringBuilder.Append (stringToAppend);
     }
 
+    // TODO Review 2564: Missing unit test
     public void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<ISqlCommandBuilder, T> appender)
     {
       ArgumentUtility.CheckNotNull ("separator", separator);

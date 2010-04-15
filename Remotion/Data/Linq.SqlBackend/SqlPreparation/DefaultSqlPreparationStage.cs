@@ -41,6 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _generator = generator;
     }
 
+    // TODO Review 2564: Add a single protected virtual PrepareExpression method, call that method from all expression preparers.
     public virtual Expression PrepareSelectExpression (Expression expression)
     {
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);

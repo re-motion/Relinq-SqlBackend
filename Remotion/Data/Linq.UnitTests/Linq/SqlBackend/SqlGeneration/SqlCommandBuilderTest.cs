@@ -70,6 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (commandParameter[0].Value, Is.EqualTo ("test"));
     }
 
+    // TODO Review 2564: Test has wrong name
     [Test]
     public void AppendIdentifier ()
     {

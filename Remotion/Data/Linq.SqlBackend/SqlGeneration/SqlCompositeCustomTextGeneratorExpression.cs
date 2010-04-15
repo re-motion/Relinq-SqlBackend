@@ -41,14 +41,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("textGeneratingExpressionVisitor", textGeneratingExpressionVisitor);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      textGeneratingExpressionVisitor.VisitList (_expressions, innerExpression => textGeneratingExpressionVisitor.VisitExpression (innerExpression));
+      textGeneratingExpressionVisitor.VisitList (_expressions, textGeneratingExpressionVisitor.VisitExpression);
     }
 
+    // TODO Review 2564: Should visit its child expressions. Tests missing.
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
     }
 
+    // TODO Review 2564: Move to base class
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
       var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;

@@ -48,6 +48,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       {
         MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
 
+        // TODO Review 2564: Cast to (ConstantExpression) is not needed
         var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
             typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), ((ConstantExpression) methodCallExpression.Arguments[2]));
 

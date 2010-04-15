@@ -39,6 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _resolver = resolver;
     }
 
+    // TODO Review 2564: Add a single protected virtual ResolveExpression method; use that method from all expression resolver methods.
     public virtual Expression ResolveSelectExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

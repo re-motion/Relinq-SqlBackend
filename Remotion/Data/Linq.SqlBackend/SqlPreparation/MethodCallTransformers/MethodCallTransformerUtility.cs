@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       if (!(argument is ConstantExpression))
       {
+        // TODO Review 2564: Add a parameter name to the message. (A method might have more than one argument.)
         throw new NotSupportedException (
             string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0}.", methodName));
       }

@@ -24,12 +24,13 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlStatementTextGenerator"/> generates SQL text for a given <see cref="SqlStatement"/>.
+  /// <see cref="SqlStatementTextGenerator"/> generates SQL text for a resolved <see cref="SqlStatement"/>.
   /// </summary>
   public class SqlStatementTextGenerator
   {
     private readonly ISqlGenerationStage _stage;
 
+    // TODO Review 2564: Move property down, should be below ctor
     protected ISqlGenerationStage Stage
     {
       get { return _stage; }
@@ -107,6 +108,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
+    // TODO Review 2564: SelectedSqlContext isn't needed, it's always PredicateRequired
     protected virtual void BuildWherePart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
