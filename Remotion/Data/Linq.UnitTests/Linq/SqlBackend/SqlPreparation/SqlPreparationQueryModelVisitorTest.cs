@@ -488,6 +488,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitResultOperator_OfType ()
+    {
+      var resultOperator = new OfTypeResultOperator (typeof (Chef));
+      _queryModel.ResultOperators.Add (resultOperator);
+      var selectProjection = Expression.Constant ("select");
+      _visitor.SqlStatementBuilder.SelectProjection = selectProjection;
+
+      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
+
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
+      Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Expression, Is.SameAs (selectProjection));
+      Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo(typeof(Chef)));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
     public void VisitResultOperator_NotSupported ()
     {

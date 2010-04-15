@@ -132,10 +132,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      
+
       AddFromClause (joinClause, joinClause.InnerSequence);
       var whereCondition = Expression.Equal (joinClause.OuterKeySelector, joinClause.InnerKeySelector);
-      SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression(whereCondition));
+      SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression (whereCondition));
     }
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
@@ -145,14 +145,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       if (SqlStatementBuilder.TopExpression != null)
       {
-        var sqlStatement = SqlStatementBuilder.GetSqlStatement ();
-        
+        var sqlStatement = SqlStatementBuilder.GetSqlStatement();
+
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (
             sqlStatement.SelectProjection.Type, _generator.GetUniqueIdentifier ("q"), sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
-        
-        _sqlStatementBuilder = new SqlStatementBuilder ();
-        SqlStatementBuilder.SqlTables.Add(sqlTable);
+
+        _sqlStatementBuilder = new SqlStatementBuilder();
+        SqlStatementBuilder.SqlTables.Add (sqlTable);
         SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
       }
 
@@ -181,6 +181,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else if (resultOperator is CastResultOperator)
         return;
+      else if (resultOperator is OfTypeResultOperator)
+      {
+        SqlStatementBuilder.AddWhereCondition (
+            Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType));
+      }
+
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
     }
