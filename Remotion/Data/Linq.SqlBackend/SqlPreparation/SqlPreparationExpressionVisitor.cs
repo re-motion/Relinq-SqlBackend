@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -121,8 +120,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           if (expression.QueryModel.ResultOperators.Count > 1)
             throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
 
+          // TODO Review 2582: Move this to the "then" part of the following if statement
           var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
 
+          // TODO Review 2582: Do not use .Cast<object> to cast the ICollection to an IEnumerable<object> - the Count() query operator is less efficient than just calling Count directly on the collection
+          // TODO Review 2582: Extract the inner expression to a local variable
           if (((ICollection)((ConstantExpression) expression.QueryModel.MainFromClause.FromExpression).Value).Cast<object> ().Count () > 0)
             return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, expression.QueryModel.MainFromClause.FromExpression);
           else

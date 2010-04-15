@@ -212,13 +212,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var constantExpressionCollection = Expression.Constant (new string[] { });
       var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
-      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+      var queryModel = ExpressionHelper.CreateQueryModel (mainFromClause);
 
       var itemExpression = Expression.Constant ("Huber");
       var containsResultOperator = new ContainsResultOperator (itemExpression);
-      querModel.ResultOperators.Add (containsResultOperator);
+      queryModel.ResultOperators.Add (containsResultOperator);
 
-      var expression = new SubQueryExpression (querModel);
+      var expression = new SubQueryExpression (queryModel);
       var fakeConstantExpression = Expression.Constant ("Sepp");
 
       _stageMock

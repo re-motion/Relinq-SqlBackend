@@ -131,8 +131,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       else if (expression.Value is ICollection)
       {
         _commandBuilder.Append ("(");
-        
-        var items = ((ICollection) expression.Value).Cast<object>();
+
+        var collection = ((ICollection) expression.Value);
+        // TODO Review 2582: Throw a NotSupportedException if the collection is empty at this point.
+        var items = collection.Cast<object>();
         _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
         _commandBuilder.Append (")");
       }
