@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
@@ -34,6 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         case "Kitchen":
         case "Restaurant":
         case "Compyany":
+        case "Chef":
           return CreateResolvedTableInfo (tableInfo.ItemType, generator);
       }
 
@@ -169,7 +171,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
 
     public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
     {
-      throw new NotImplementedException();
+      if ((innerExpression.Type == typeof (Cook) || innerExpression.Type == typeof (Chef))
+          && (desiredType == typeof (Chef) || desiredType == typeof (Cook)))
+        return Expression.GreaterThan (((SqlEntityExpression) innerExpression).PrimaryKeyColumn, new SqlLiteralExpression (1000));
+      else if (innerExpression.Type == desiredType)
+        return Expression.Constant (true);
+      else
+        throw new UnmappedItemException ("Cannot resolve type for innerExpression: " + innerExpression.Type.Name);
     }
 
     private SqlColumnExpression CreateColumn (Type columnType, IResolvedTableInfo resolvedSimpleTableInfo, string columnName)
@@ -182,7 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       Type type = tableInfo.ItemType;
       if (type == typeof (Cook))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int?), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
             primaryKeyColumn,
@@ -193,23 +201,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "Name"),
                 CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
                 CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
-                CreateColumn (typeof (int?), tableInfo, "SubstitutedID"),
-                CreateColumn (typeof (int?), tableInfo, "KitchenID")
+                CreateColumn (typeof (int), tableInfo, "SubstitutedID"),
+                CreateColumn (typeof (int), tableInfo, "KitchenID")
             });
       }
       else if (type == typeof (Kitchen))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int?), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
             entityType,
             primaryKeyColumn,
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int?), tableInfo, "CookID"),
+                CreateColumn (typeof (int), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
-                CreateColumn (typeof (int?), tableInfo, "RestaurantID"),
-                CreateColumn (typeof (int?), tableInfo, "SubKitchenID"),
+                CreateColumn (typeof (int), tableInfo, "RestaurantID"),
+                CreateColumn (typeof (int), tableInfo, "SubKitchenID"),
             });
       }
       else if (type == typeof (Restaurant))
@@ -221,8 +229,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int?), tableInfo, "CookID"),
+                CreateColumn (typeof (int), tableInfo, "CookID"),
                 CreateColumn (typeof (string), tableInfo, "Name"),
+            });
+      }
+      else if (type == typeof (Chef))
+      {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        return new SqlEntityExpression (
+            entityType,
+            primaryKeyColumn,
+            new[]
+            {
+                primaryKeyColumn,
+                CreateColumn (typeof (string), tableInfo, "FirstName"),
+                CreateColumn (typeof (string), tableInfo, "Name"),
+                CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
+                CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
+                CreateColumn (typeof (int), tableInfo, "SubstitutedID"),
+                CreateColumn (typeof (int), tableInfo, "KitchenID"),
+                CreateColumn (typeof (string), tableInfo, "LetterOfRecommendation")
             });
       }
       return null;

@@ -223,5 +223,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [q0].[value] AS [value] FROM (SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
     }
 
+    [Test]
+    public void OfType ()
+    {
+      CheckQuery (
+          Cooks.OfType<Chef> (),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
+          "FROM [CookTable] AS [t0] WHERE ([t0].[ID] > 1000)"
+          );
+
+      CheckQuery (
+          Chefs.OfType<Chef>(),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],"+
+          "[t0].[KitchenID],[t0].[LetterOfRecommendation] FROM [ChefTable] AS [t0] WHERE ([t0].[ID] > 1000)"
+          );
+
+      CheckQuery (
+          Chefs.OfType<Cook> (),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],"+
+          "[t0].[KitchenID],[t0].[LetterOfRecommendation] FROM [ChefTable] AS [t0] WHERE ([t0].[ID] > 1000)"
+          );
+
+      CheckQuery (
+         Cooks.Where(c=>c is Chef),
+         "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
+          "FROM [CookTable] AS [t0] WHERE ([t0].[ID] > 1000)"
+         );
+    }
+
   }
 }

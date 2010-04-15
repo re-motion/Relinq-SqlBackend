@@ -33,6 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     private IQueryable<Kitchen> _kitchens;
     private IQueryable<Restaurant> _restaurants;
     private UniqueIdentifierGenerator _generator;
+    private IQueryable<Chef> _chefs;
 
     public IQueryable<Cook> Cooks
     {
@@ -49,12 +50,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       get { return _restaurants; }
     }
 
+    public IQueryable<Chef> Chefs
+    {
+      get { return _chefs; }
+    }
+
     [SetUp]
     public virtual void SetUp ()
     {
       _cooks = ExpressionHelper.CreateCookQueryable();
       _kitchens = ExpressionHelper.CreateKitchenQueryable();
       _restaurants = ExpressionHelper.CreateRestaurantQueryable();
+      _chefs = ExpressionHelper.CreateChefQueryable();
+
       _generator = new UniqueIdentifierGenerator();
     }
 
