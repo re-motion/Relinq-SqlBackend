@@ -173,25 +173,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitMainFromClause_CreatesFromExpressionWith ()
-    {
-      var preparedExpression = Expression.Constant (0);
-      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
-      var joinConditionExpression = new JoinConditionExpression (preparedSqlTable);
-
-      _stageMock.Expect (mock => mock.PrepareFromExpression (_mainFromClause.FromExpression)).Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
-
-      _stageMock.Replay();
-
-      _visitor.VisitMainFromClause (_mainFromClause, _queryModel);
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition.Type, Is.EqualTo (joinConditionExpression.Type));
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-    }
-
-    [Test]
     public void VisitAdditionalFromClause_CreatesFromExpression ()
     {
       var fakeSqlTableForMainFromClause = SqlStatementModelObjectMother.CreateSqlTable();
@@ -217,7 +198,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitMainFromClause_AddWhereConditionAndCreatesNewSqlTable ()
+    public void VisitMainFromClause_AddsWhereCondition_AndCreatesNewSqlTable ()
     {
       var constantExpression = Expression.Constant (0);
       var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
@@ -296,6 +277,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
     }
 
+    // TODO Review 2593: Add test showing that VisitJoinClause creates a SqlTable. In that test, check the expression and type passed to PrepareFromExpression, check that in the end, the SqlTables collection contains the preparedSqlTable
+
     [Test]
     public void VisitJoinClause_CreatesWhereCondition ()
     {
@@ -306,12 +289,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.Expect (mock => mock.PrepareFromExpression (joinClause.InnerSequence)).Return (Expression.Constant (5));
       _stageMock.Expect (
           mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything)).Return(preparedSqlTable);
-      _stageMock.Replay();
+      _stageMock.Replay (); // TODO Review 2593: Replace should come after all expectations on _stageMock
       
       var fakeWhereCondition = Expression.Constant (1);
       _stageMock.Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Is.Anything)).Return (fakeWhereCondition);
 
-      _visitor.VisitJoinClause (joinClause, _queryModel,5);
+      _visitor.VisitJoinClause (joinClause, _queryModel, 5);
 
       _stageMock.VerifyAllExpectations();
 

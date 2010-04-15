@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -32,6 +31,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] CROSS JOIN [CookTable] AS [t1] WHERE ([t0].[Name] = [t1].[FirstName])"
           );
     }
-   
+
+    // TODO Review 2593: Add test joining dependent expression (k.Cooks), subquery (Cooks.Where (...)), and dependent subquery (k.Cooks.Where (...))
+    // TODO Review 2593: Also add re-store/LINQ integration tests
   }
 }

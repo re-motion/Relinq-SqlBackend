@@ -134,6 +134,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       AddFromClause (joinClause, joinClause.InnerSequence);
+
       var whereCondition = Expression.Equal (joinClause.OuterKeySelector, joinClause.InnerKeySelector);
       SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression (whereCondition));
     }
