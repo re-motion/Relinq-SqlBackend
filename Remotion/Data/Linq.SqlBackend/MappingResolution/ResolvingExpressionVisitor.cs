@@ -84,6 +84,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return _resolver.ResolveConstantExpression (expression);
     }
 
+    protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newExpression = VisitExpression(expression.Expression);
+      var resolvedTypeExpression = _resolver.ResolveTypeCheck (newExpression, expression.TypeOperand);
+      return VisitExpression (resolvedTypeExpression);
+    }
+
     public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

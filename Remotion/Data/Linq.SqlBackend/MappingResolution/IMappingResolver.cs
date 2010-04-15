@@ -84,5 +84,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <returns>A resolved version of <paramref name="constantExpression"/>, usually a <see cref="SqlEntityConstantExpression"/>, or the
     /// <paramref name="constantExpression"/> itself.</returns>
     Expression ResolveConstantExpression (ConstantExpression constantExpression);
+
+    /// <summary>
+    /// Analyses the given <see cref="Expression"/> and checks it's type to get the approriate database table. It translates the comparison 
+    /// between the database table and the given type to a convenient sql statement.
+    /// </summary>
+    /// <param name="innerExpression">The <see cref="Expression"/> to be analyzed.</param>
+    /// <param name="desiredType">The <see cref="Type"/> to be compared with.</param>
+    /// <returns>A representation of a sql compatible comparison between sql table and type.</returns>
+    Expression ResolveTypeCheck (Expression innerExpression, Type desiredType);
   }
 }

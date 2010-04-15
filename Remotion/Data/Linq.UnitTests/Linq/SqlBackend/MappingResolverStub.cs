@@ -167,6 +167,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         return constantExpression;
     }
 
+    public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
+    {
+      throw new NotImplementedException();
+    }
+
     private SqlColumnExpression CreateColumn (Type columnType, IResolvedTableInfo resolvedSimpleTableInfo, string columnName)
     {
       return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName);

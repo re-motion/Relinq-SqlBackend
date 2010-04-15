@@ -331,6 +331,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations ();
     }
 
+    [Test]
+    public void VisitTypeBinaryExpression ()
+    {
+      var expression = Expression.Constant ("select");
+      var typeBinaryExpression = Expression.TypeIs (expression, typeof (Chef));
+      var resolvedTypeExpression = Expression.Constant ("resolved");
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (expression);
+      _resolverMock.Expect (mock => mock.ResolveTypeCheck(expression, typeof(Chef)))
+          .Return (resolvedTypeExpression);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (resolvedTypeExpression))
+          .Return (resolvedTypeExpression);
+      _resolverMock.Replay();
+
+      ResolvingExpressionVisitor.ResolveExpression (typeBinaryExpression, _resolverMock, _generator, _stageMock);
+
+      _resolverMock.VerifyAllExpectations();
+    }
+
     private void StubResolveTableInfo ()
     {
       _resolverMock
