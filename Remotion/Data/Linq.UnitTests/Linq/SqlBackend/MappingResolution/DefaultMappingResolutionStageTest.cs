@@ -176,7 +176,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       var sqlStatement = new SqlStatement (tableReferenceExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
-      var fakeEntityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+      var fakeEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (int), "c", "ID"));
 
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))

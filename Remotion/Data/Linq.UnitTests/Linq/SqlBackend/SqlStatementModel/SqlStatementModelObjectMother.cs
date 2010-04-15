@@ -162,7 +162,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID");
       return new SqlEntityExpression (
-          type,
+          CreateSqlTable(),
           primaryKeyColumn,
           new[]
           {

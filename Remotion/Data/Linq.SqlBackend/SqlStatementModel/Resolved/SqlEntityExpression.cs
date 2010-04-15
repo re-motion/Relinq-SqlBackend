@@ -29,19 +29,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlEntityExpression : ExtensionExpression
   {
+    private readonly SqlTableBase _sqlTable;
     private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _projectionColumns;
     
-    public SqlEntityExpression (Type type, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
-        : base (type)
+    public SqlEntityExpression (SqlTableBase sqlTable, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
+        : base (sqlTable.ItemType)
     {
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("projectionColumns", projectionColumns);
       ArgumentUtility.CheckNotNull ("primaryKeyColumn", primaryKeyColumn);
 
+      _sqlTable = sqlTable;
       _projectionColumns = Array.AsReadOnly (projectionColumns);
       _primaryKeyColumn = primaryKeyColumn;
     }
 
+    public SqlTableBase SqlTable
+    {
+      get { return _sqlTable; }
+    }
+    
     public SqlColumnExpression PrimaryKeyColumn
     {
       get { return _primaryKeyColumn; }
@@ -56,7 +64,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       var newColumns = visitor.VisitAndConvert (ProjectionColumns, "VisitChildren");
       if (newColumns != ProjectionColumns)
-        return new SqlEntityExpression (Type, PrimaryKeyColumn, newColumns.ToArray());
+        return new SqlEntityExpression (SqlTable, PrimaryKeyColumn, newColumns.ToArray());
       else
         return this;
     }

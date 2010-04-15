@@ -229,7 +229,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       StubResolveTableInfo();
 
-      var columnListExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+      var columnListExpression = new SqlEntityExpression (_sqlTable, new SqlColumnExpression (typeof (int), "c", "ID"));
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_generator)))
           .Return (columnListExpression);
@@ -253,7 +253,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (
           mock =>
           mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Matches (tableRef => tableRef.SqlTable == join), Arg.Is (_generator)))
-          .Return (new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID")));
+          .Return (new SqlEntityExpression (_sqlTable, new SqlColumnExpression (typeof (int), "c", "ID")));
       _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (sqlEntityRefMemberExpression, _resolverMock, _generator, _stageMock);
@@ -326,7 +326,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (sqlConvertExpression, _resolverMock, _generator, _stageMock);
 
       Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
-      Assert.That (((SqlConvertExpression) result).Type, Is.EqualTo(typeof(int)) );
+      Assert.That (result.Type, Is.EqualTo(typeof(int)) );
       Assert.That (((SqlConvertExpression) result).Source, Is.SameAs (resolvedExpression));
       _resolverMock.VerifyAllExpectations ();
     }

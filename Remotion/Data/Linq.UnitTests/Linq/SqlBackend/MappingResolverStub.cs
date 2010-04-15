@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
            || (tableReferenceExpression.Type == typeof (object))))
         return new SqlValueTableReferenceExpression (new SqlTable (resolvedTableInfo));
       else
-        return CreateEntityExpression (tableReferenceExpression.Type, resolvedTableInfo);
+        return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -185,14 +185,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName);
     }
 
-    private SqlEntityExpression CreateEntityExpression (Type entityType, IResolvedTableInfo tableInfo)
+    private SqlEntityExpression CreateEntityExpression (SqlTableBase sqlTable, IResolvedTableInfo tableInfo)
     {
       Type type = tableInfo.ItemType;
       if (type == typeof (Cook))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
-            entityType,
+            sqlTable,
             primaryKeyColumn,
             new[]
             {
@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
-            entityType,
+            sqlTable,
             primaryKeyColumn,
             new[]
             {
@@ -224,7 +224,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
-            entityType,
+            sqlTable,
             primaryKeyColumn,
             new[]
             {
@@ -237,7 +237,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
         return new SqlEntityExpression (
-            entityType,
+            sqlTable,
             primaryKeyColumn,
             new[]
             {

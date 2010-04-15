@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -152,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void ApplySqlExpressionContext_WithSingleValueSemantics_WithSqlEntityExpression ()
     {
       var columnExpression = new SqlColumnExpression (typeof (int), "c", "ID");
-      var entityExpression = new SqlEntityExpression (typeof (Cook), columnExpression);
+      var entityExpression = new SqlEntityExpression (SqlStatementModelObjectMother.CreateSqlTable(), columnExpression);
 
       var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (entityExpression, SqlExpressionContext.SingleValueRequired);
 
@@ -445,7 +444,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNullExpression_NewExpression ()
     {
-      var entityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+      var entityExpression = new SqlEntityExpression (SqlStatementModelObjectMother.CreateSqlTable(), new SqlColumnExpression (typeof (int), "c", "ID"));
       var sqlIsNullExpression = new SqlIsNullExpression (entityExpression);
 
       var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
@@ -467,7 +466,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNotNullExpression_NewExpression ()
     {
-      var entityExpression = new SqlEntityExpression (typeof (Cook), new SqlColumnExpression (typeof (int), "c", "ID"));
+      var entityExpression = new SqlEntityExpression (SqlStatementModelObjectMother.CreateSqlTable (), new SqlColumnExpression (typeof (int), "c", "ID"));
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (entityExpression);
 
       var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);

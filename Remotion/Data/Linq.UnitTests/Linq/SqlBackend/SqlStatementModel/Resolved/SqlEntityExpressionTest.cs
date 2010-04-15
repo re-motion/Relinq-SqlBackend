@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name");
       _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City");
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _entityExpression = new SqlEntityExpression (_tableReferenceExpression.Type, _columnExpression1, _orginalColumns);
+      _entityExpression = new SqlEntityExpression (_tableReferenceExpression.SqlTable, _columnExpression1, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.ProjectionColumns;
     }
 
