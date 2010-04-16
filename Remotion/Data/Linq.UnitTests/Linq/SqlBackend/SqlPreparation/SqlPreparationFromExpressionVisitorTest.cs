@@ -130,6 +130,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (condition.ItemType, Is.EqualTo (typeof (Cook)));
     }
 
-    //TODO 2562: VisitMemberExpression tests
+    [Test]
+    public void VisitMemberExpression ()
+    {
+      var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("Name"));
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (memberExpression, typeof (Cook), _stageMock, _generator);
+      
+      Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
+    }
   }
 }
