@@ -303,6 +303,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlTableReferenceExpression)));
     }
 
+    // TODO Review 2589: Test VisitConditionalExpression separately, without binary expressions
+    // TODO Review 2589: To ensure that VisitConditionalExpression calls VisitExpression on its subexpressions, use subexpressions that are further changed (e.g., QuerySourceReferenceExpressions)
     [Test]
     public void VisitBinaryExpression_WithConditionalExpression ()
     {

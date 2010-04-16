@@ -63,6 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
     }
 
+    // TODO Review 2589: Conditinal expressions have nothing to do with binary expressions, so there should be a separate integration test fixture only for conditional expressions; test conditional in Where expressions and Select expressions (as indicated in the task description)
     [Test]
     public void BinaryExpression_WithConditionalExpression ()
     {
