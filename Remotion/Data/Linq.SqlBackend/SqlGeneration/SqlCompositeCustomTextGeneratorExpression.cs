@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
@@ -35,6 +36,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _expressions = Array.AsReadOnly (expressions);
     }
 
+    public ReadOnlyCollection<Expression> Expressions
+    {
+      get { return _expressions; }
+    }
+
     public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -44,20 +50,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       textGeneratingExpressionVisitor.VisitList (_expressions, textGeneratingExpressionVisitor.VisitExpression);
     }
 
-    // TODO Review 2564: Should visit its child expressions. Tests missing.
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      return this;
+      var newExpressions = visitor.VisitAndConvert(_expressions, "VisitChildren");
+      if (newExpressions != Expressions)
+        return new SqlCompositeCustomTextGeneratorExpression (Type, newExpressions.ToArray());
+      else
+        return this;
     }
 
-    // TODO Review 2564: Move to base class
-    public override Expression Accept (ExpressionTreeVisitor visitor)
-    {
-      var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
-      if (specificVisitor != null)
-        return specificVisitor.VisitSqlCustomTextGeneratorExpression (this);
-      else
-        return base.Accept (visitor);
-    }
   }
 }

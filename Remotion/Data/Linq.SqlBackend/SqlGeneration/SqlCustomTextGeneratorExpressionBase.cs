@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 
@@ -35,5 +36,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     // TODO Review 2564: Implement Accept to delegate to VisitSqlCustomTextGeneratorExpression
     // TODO Review 2564: Test by deriving a TestableSqlCustomTextGeneratorExpression in the unit tests project and call Accept on it
     // TODO Review 2564: Create an integration test 
+    
+    public override Expression Accept (ExpressionTreeVisitor visitor)
+    {
+      var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlCustomTextGeneratorExpression (this);
+      else
+        return base.Accept (visitor);
+    }
   }
 }
