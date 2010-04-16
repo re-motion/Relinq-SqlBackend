@@ -33,7 +33,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
 
-    // TODO Review 2564: Implement Accept to delegate to VisitSqlCustomTextGeneratorExpression
     // TODO Review 2564: Test by deriving a TestableSqlCustomTextGeneratorExpression in the unit tests project and call Accept on it
     // TODO Review 2564: Create an integration test 
     

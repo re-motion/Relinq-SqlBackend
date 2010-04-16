@@ -37,9 +37,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       base.BuildFromPart (sqlStatement, commandBuilder);
     }
 
-    public new void BuildWherePart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    public new void BuildWherePart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder)
     {
-      base.BuildWherePart (sqlStatement, commandBuilder, selectedSqlContext);
+      base.BuildWherePart (sqlStatement, commandBuilder);
     }
 
     public new void BuildOrderByPart (SqlStatement sqlStatement, SqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)

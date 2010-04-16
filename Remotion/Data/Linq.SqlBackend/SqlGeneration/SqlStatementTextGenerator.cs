@@ -30,17 +30,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     private readonly ISqlGenerationStage _stage;
 
-    // TODO Review 2564: Move property down, should be below ctor
-    protected ISqlGenerationStage Stage
-    {
-      get { return _stage; }
-    }
-
     public SqlStatementTextGenerator (ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       
       _stage = stage;
+    }
+
+    protected ISqlGenerationStage Stage
+    {
+      get { return _stage; }
     }
 
     public virtual void Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
@@ -51,7 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       
       BuildSelectPart (sqlStatement, commandBuilder, selectedSqlContext);
       BuildFromPart (sqlStatement, commandBuilder);
-      BuildWherePart (sqlStatement, commandBuilder, SqlExpressionContext.PredicateRequired);
+      BuildWherePart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
     }
 
@@ -108,8 +107,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    // TODO Review 2564: SelectedSqlContext isn't needed, it's always PredicateRequired
-    protected virtual void BuildWherePart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    protected virtual void BuildWherePart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);

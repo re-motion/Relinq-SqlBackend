@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("(@1 = 1)"));
       _stageMock.Replay();
 
-      _generator.BuildWherePart (sqlStatement, _commandBuilder, SqlExpressionContext.PredicateRequired);
+      _generator.BuildWherePart (sqlStatement, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" WHERE (@1 = 1)"));
       _stageMock.VerifyAllExpectations();
