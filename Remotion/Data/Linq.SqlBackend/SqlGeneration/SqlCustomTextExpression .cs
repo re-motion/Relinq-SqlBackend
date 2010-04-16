@@ -38,7 +38,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _sqlText = sqlText;
     }
 
-    // TODO Review 2564: Missing unit test
     public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -48,7 +47,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       commandBuilder.Append (_sqlText);
     }
 
-    // TODO Review 2564: Also test this
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
