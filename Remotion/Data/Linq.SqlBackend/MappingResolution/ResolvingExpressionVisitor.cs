@@ -95,6 +95,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return VisitExpression(resolvedMemberExpression);
       }
 
+      var newExpressionAsColumnExpression = newExpression as SqlColumnExpression;
+      if (newExpressionAsColumnExpression != null)
+      {
+        var resolvedMemberExpression = _resolver.ResolveMemberExpression (newExpressionAsColumnExpression, expression.Member);
+        return VisitExpression (resolvedMemberExpression);
+      }
+
       return expression;
     }
 

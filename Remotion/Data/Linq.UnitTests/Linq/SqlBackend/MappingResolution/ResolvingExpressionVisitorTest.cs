@@ -162,6 +162,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations ();
     }
 
+    [Test]
+    public void VisitSqlMemberExpression_SqlColumnExpression ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("Substitution");
+      var expression = Expression.Constant (new Cook ());
+      var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
+
+      var fakeResult = new SqlColumnExpression (typeof (string), "c", "Name");
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveMemberExpression (fakeResult, memberInfo))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
+
+      Assert.That (result, Is.SameAs (fakeResult));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
     
     [Test]
     public void VisitSqlEntityRefMemberExpression_CreatesJoin ()
