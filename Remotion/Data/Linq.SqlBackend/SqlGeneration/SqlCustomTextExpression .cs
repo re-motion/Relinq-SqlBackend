@@ -26,7 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// The custom text is inserted into the statement as is, it is not escaped. Therefore, the provider making use of <see cref="SqlCustomTextExpression"/> 
   /// has to make sure the custom text cannot lead to SQL injection attacks.
   /// </summary>
-  // TODO Review 2564: Replace usages of this expression in the method call transformers with SqlLiteralExpressions where possible.
   public class SqlCustomTextExpression : SqlCustomTextGeneratorExpressionBase
   {
     private readonly string _sqlText;

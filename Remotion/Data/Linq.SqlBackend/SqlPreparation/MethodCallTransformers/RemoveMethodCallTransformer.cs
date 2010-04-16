@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1, 2);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
 
-      var startIndexExpression = Expression.Add (methodCallExpression.Arguments[0], new SqlCustomTextExpression ("1", methodCallExpression.Arguments[0].Type));
+      var startIndexExpression = Expression.Add (methodCallExpression.Arguments[0], new SqlLiteralExpression (1));
 
       if (methodCallExpression.Arguments.Count == 1)
       {

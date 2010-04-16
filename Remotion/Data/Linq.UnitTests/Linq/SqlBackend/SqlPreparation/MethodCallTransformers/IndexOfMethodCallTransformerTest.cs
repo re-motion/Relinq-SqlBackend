@@ -63,12 +63,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var result = transformer.Transform (expression);
 
       var lenExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
-      var testPredicate = Expression.Equal (lenExpression, new SqlCustomTextExpression ("0", typeof(int)));
+      var testPredicate = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
       var charIndexExpression = new SqlFunctionExpression (
           expression.Type, "CHARINDEX", argument1, objectExpression);
-      var elseValue = Expression.Subtract (charIndexExpression, new SqlCustomTextExpression ("1", expression.Type));
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, new SqlCustomTextExpression ("0", typeof(int)), elseValue);
+      var expectedResult = new SqlCaseExpression (testPredicate, new SqlLiteralExpression(0), elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -85,12 +85,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var result = transformer.Transform (expression);
 
       var lenExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
-      var testPredicate = Expression.Equal (lenExpression, new SqlCustomTextExpression ("0", typeof(int)));
+      var testPredicate = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
       var charIndexExpression = new SqlFunctionExpression (
           expression.Type, "CHARINDEX", argument1, objectExpression);
-      var elseValue = Expression.Subtract (charIndexExpression, new SqlCustomTextExpression ("1", expression.Type));
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, new SqlCustomTextExpression ("0", expression.Type), elseValue);
+      var expectedResult = new SqlCaseExpression (testPredicate, new SqlLiteralExpression (0), elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -107,10 +107,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new IndexOfMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var startIndexExpression = Expression.Add (argument2, new SqlCustomTextExpression ("1", typeof(int)));
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
 
       var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
-      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlCustomTextExpression ("0",typeof(int)));
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
 
       var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
       var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var charIndexExpression = new SqlFunctionExpression (
           expression.Type, "CHARINDEX", argument1, objectExpression, startIndexExpression);
 
-      var elseValue = Expression.Subtract (charIndexExpression, new SqlCustomTextExpression ("1",expression.Type));
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
       var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
 
@@ -138,10 +138,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new IndexOfMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var startIndexExpression = Expression.Add (argument2, new SqlCustomTextExpression ("1",typeof(int)));
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
 
       var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
-      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlCustomTextExpression ("0", typeof(int)));
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression(0));
 
       var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
       var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
@@ -150,7 +150,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var charIndexExpression = new SqlFunctionExpression (
           expression.Type, "CHARINDEX", argument1, objectExpression, startIndexExpression);
 
-      var elseValue = Expression.Subtract (charIndexExpression, new SqlCustomTextExpression ("1", expression.Type));
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
       var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
 
@@ -170,10 +170,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new IndexOfMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var startIndexExpression = Expression.Add (argument2, new SqlCustomTextExpression ("1",typeof(int)));
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression(1));
 
       var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
-      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlCustomTextExpression ("0", typeof(int)));
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
 
       var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
       var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
@@ -181,12 +181,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var startAddCountExpression = Expression.Add (argument2, argument3);
       var substringExpression = new SqlFunctionExpression (
-          typeof (string), "SUBSTRING", objectExpression, new SqlCustomTextExpression ("1", typeof(string)), startAddCountExpression);
+          typeof (string), "SUBSTRING", objectExpression, new SqlLiteralExpression (1), startAddCountExpression);
 
       var charIndexExpression = new SqlFunctionExpression (
           expression.Type, "CHARINDEX", argument1, substringExpression, startIndexExpression);
 
-      var elseValue = Expression.Subtract (charIndexExpression, new SqlCustomTextExpression ("1", expression.Type));
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
       var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
 
@@ -206,10 +206,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new IndexOfMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var startIndexExpression = Expression.Add (argument2, new SqlCustomTextExpression ("1", typeof(int)));
+      var startIndexExpression = Expression.Add (argument2, new SqlLiteralExpression (1));
 
       var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", argument1);
-      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlCustomTextExpression ("0", typeof(int)));
+      var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
 
       var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
       var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
@@ -217,12 +217,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var startAddCountExpression = Expression.Add (argument2, argument3);
       var substringExpression = new SqlFunctionExpression (
-          typeof (string), "SUBSTRING", objectExpression, new SqlCustomTextExpression ("1", typeof(string)), startAddCountExpression);
+          typeof (string), "SUBSTRING", objectExpression, new SqlLiteralExpression (1), startAddCountExpression);
 
       var charIndexExpression = new SqlFunctionExpression (
           expression.Type, "CHARINDEX", argument1, substringExpression, startIndexExpression);
 
-      var elseValue = Expression.Subtract (charIndexExpression, new SqlCustomTextExpression ("1", expression.Type));
+      var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
       var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
 

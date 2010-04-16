@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       else if (methodCallExpression.Arguments.Count == 3)
       {
         MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2], "language parameter");
-        
+
         var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
             typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), methodCallExpression.Arguments[2]);
 

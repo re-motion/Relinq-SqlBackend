@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void Transform_WithOneArgument ()
     {
-      var method = typeof (string).GetMethod ("Remove", new Type[] { typeof (int) });
+      var method = typeof (string).GetMethod ("Remove", new [] { typeof (int) });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method, Expression.Constant (1));
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type,
           "STUFF",
           objectExpression,
-          Expression.Add (Expression.Constant (1), new SqlCustomTextExpression ("1", typeof(int))),
+          Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
           new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression),
           new SqlLiteralExpression (""));
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void Transform_WithTwoArgument ()
     {
-      var method = typeof (string).GetMethod ("Remove", new Type[] { typeof (int), typeof (int) });
+      var method = typeof (string).GetMethod ("Remove", new [] { typeof (int), typeof (int) });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method, Expression.Constant (1), Expression.Constant (3));
 
@@ -74,11 +74,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type,
           "STUFF",
           objectExpression,
-          Expression.Add (Expression.Constant (1), new SqlCustomTextExpression ("1", typeof(int))),
+          Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
           Expression.Constant (3),
           new SqlLiteralExpression (""));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
+
   }
 }
