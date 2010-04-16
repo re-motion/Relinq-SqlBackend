@@ -78,6 +78,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
+    /// Analyses the <see cref="MemberInfo"/> to identify a mapped property.
+    /// </summary>
+    /// <param name="sqlColumnExpression">The <see cref="SqlColumnExpression"/> is needed so that the alias can be reused.</param>
+    /// <param name="memberInfo">The <see cref="MemberInfo"/> which is needed to identify a mapped property.</param>
+    /// <returns>Returns a modified Expression which is usually a <see cref="SqlColumnExpression"/>.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="MemberInfo"/> cannot be resolved.</exception>
+    Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo);
+
+    /// <summary>
     /// Analyses the given <see cref="ConstantExpression"/> and resolves it to a database-compatible expression if necessary. For example, if the 
     /// constant value is another entity, this method should return a <see cref="SqlEntityConstantExpression"/>.
     /// </summary>

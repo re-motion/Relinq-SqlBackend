@@ -162,6 +162,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
     }
 
+    public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
+    {
+      throw new NotImplementedException();
+    }
+
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
       if (constantExpression.Value is Cook)
