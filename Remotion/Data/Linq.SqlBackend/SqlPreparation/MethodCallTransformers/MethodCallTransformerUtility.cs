@@ -27,13 +27,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class MethodCallTransformerUtility
   {
-    public static void CheckConstantExpression (string methodName, Expression argument)
+    public static void CheckConstantExpression (string methodName, Expression argument, string parameterName)
     {
       if (!(argument is ConstantExpression))
       {
-        // TODO Review 2564: Add a parameter name to the message. (A method might have more than one argument.)
         throw new NotSupportedException (
-            string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0}.", methodName));
+            string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0} ('{1}').", methodName, parameterName));
       }
     }
 
@@ -71,8 +70,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static void CheckStaticMethod (MethodCallExpression methodCallExpression)
     {
       if (!methodCallExpression.Method.IsStatic)
+      {
         throw new NotSupportedException (
             string.Format ("{0} is not supported by this transformer.", methodCallExpression.Method.Name));
+      }
     }
 
     public static void CheckInstanceMethod (MethodCallExpression methodCallExpression)

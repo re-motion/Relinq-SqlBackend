@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only expressions that can be evaluated locally can be used as the argument for Contains.")]
+        "Only expressions that can be evaluated locally can be used as the argument for Contains ('search condition').")]
     public void Contains_Unevaluatable ()
     {
       CheckQuery (
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only expressions that can be evaluated locally can be used as the argument for StartsWith.")]
+        "Only expressions that can be evaluated locally can be used as the argument for StartsWith ('search condition').")]
     public void StartsWith_Unevaluatable ()
     {
       CheckQuery (
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only expressions that can be evaluated locally can be used as the argument for EndsWith.")]
+        "Only expressions that can be evaluated locally can be used as the argument for EndsWith ('search condition').")]
     public void EndsWith_Unevaluatable ()
     {
       CheckQuery (

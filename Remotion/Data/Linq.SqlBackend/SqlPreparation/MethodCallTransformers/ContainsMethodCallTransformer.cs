@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
-      MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[0]);
+      MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[0], "search condition");
 
       var rightExpression =
           Expression.Constant (

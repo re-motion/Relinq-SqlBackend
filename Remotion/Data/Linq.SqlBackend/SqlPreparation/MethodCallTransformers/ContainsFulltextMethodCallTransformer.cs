@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         return new SqlFunctionExpression (typeof (bool), "CONTAINS", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
       else 
       {
-        MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
+        MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2], "language parameter");
         
         var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
             typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), ((ConstantExpression) methodCallExpression.Arguments[2]));
