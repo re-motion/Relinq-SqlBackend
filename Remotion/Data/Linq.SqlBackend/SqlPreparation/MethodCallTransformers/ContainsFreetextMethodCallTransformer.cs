@@ -47,10 +47,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       else if (methodCallExpression.Arguments.Count == 3)
       {
         MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2]);
-
-        // TODO Review 2564: Cast to (ConstantExpression) is not needed
+        
         var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
-            typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), ((ConstantExpression) methodCallExpression.Arguments[2]));
+            typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), methodCallExpression.Arguments[2]);
 
         return new SqlFunctionExpression (
             typeof (bool), "FREETEXT", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], compositeExpression);

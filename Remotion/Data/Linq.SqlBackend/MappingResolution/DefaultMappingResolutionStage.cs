@@ -39,33 +39,32 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _resolver = resolver;
     }
 
-    // TODO Review 2564: Add a single protected virtual ResolveExpression method; use that method from all expression resolver methods.
     public virtual Expression ResolveSelectExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
+      return ResolveExpression (expression);
     }
 
     public virtual Expression ResolveWhereExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
+      return ResolveExpression (expression);
     }
 
     public virtual Expression ResolveOrderingExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
+      return ResolveExpression (expression);
     }
 
     public virtual Expression ResolveTopExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
+      return ResolveExpression (expression);
     }
 
     public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo)
@@ -90,6 +89,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     }
 
     public Expression ResolveCollectionSourceExpression (Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return ResolveExpression (expression);
+    }
+
+    protected virtual Expression ResolveExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
