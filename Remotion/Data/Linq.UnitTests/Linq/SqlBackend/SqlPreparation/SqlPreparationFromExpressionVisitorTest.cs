@@ -74,10 +74,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (sqlTable.JoinedTables.ToArray().Contains (result), Is.False);
 
       var joinInfo = ((SqlJoinedTable) result).JoinInfo;
-      Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
+      Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
 
-      Assert.That (((UnresolvedJoinInfo) joinInfo).MemberInfo, Is.EqualTo (memberInfo));
-      Assert.That (((UnresolvedJoinInfo) joinInfo).Cardinality, Is.EqualTo (JoinCardinality.Many));
+      Assert.That (((UnresolvedCollectionJoinInfo) joinInfo).MemberInfo, Is.EqualTo (memberInfo));
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 

@@ -70,21 +70,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var tableReference = expression.Expression as SqlTableReferenceExpression;
-      if (tableReference == null)
-        tableReference = (SqlTableReferenceExpression) VisitExpression (expression.Expression);
-
-      var joinCardinality = typeof (IEnumerable).IsAssignableFrom (expression.Type) ? JoinCardinality.Many : JoinCardinality.One;
-      if (joinCardinality == JoinCardinality.Many)
-      {
-        var joinedTable = new SqlJoinedTable (new UnresolvedJoinInfo (tableReference.SqlTable, expression.Member, joinCardinality));
-        return new SqlTableReferenceExpression (joinedTable);
-      }
-      else
-      {
-        var joinedTable = tableReference.SqlTable.GetOrAddJoin (expression.Member, joinCardinality);
-        return new SqlTableReferenceExpression (joinedTable);
-      }
+      var joinedTable = new SqlJoinedTable (new UnresolvedCollectionJoinInfo (expression.Expression, expression.Member));
+      return new SqlTableReferenceExpression (joinedTable);
     }
 
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
