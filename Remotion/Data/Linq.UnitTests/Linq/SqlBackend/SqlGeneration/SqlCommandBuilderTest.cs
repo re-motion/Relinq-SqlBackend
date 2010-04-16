@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -70,12 +71,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (commandParameter[0].Value, Is.EqualTo ("test"));
     }
 
-    // TODO Review 2564: Test has wrong name
     [Test]
-    public void AppendIdentifier ()
+    public void AppendStringLiteral ()
     {
       _sqlCommandBuilder.AppendStringLiteral ("'test'");
       Assert.That (_sqlCommandBuilder.GetCommandText(), Is.EqualTo ("'''test'''"));
+    }
+
+    [Test]
+    public void AppendSeparated ()
+    {
+      _sqlCommandBuilder.AppendSeparated (",", new List<string> { "Hugo", "Sepp" },(cb, value) => cb.Append(value));
+      Assert.That (_sqlCommandBuilder.GetCommandText (), Is.EqualTo ("Hugo,Sepp"));
     }
   }
 }
