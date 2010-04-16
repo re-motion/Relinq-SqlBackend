@@ -41,35 +41,34 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _generator = generator;
     }
 
-    // TODO Review 2564: Add a single protected virtual PrepareExpression method, call that method from all expression preparers.
     public virtual Expression PrepareSelectExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
+      return PrepareExpression (expression);
     }
 
     public virtual Expression PrepareWhereExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
+      return PrepareExpression (expression);
     }
 
     public virtual Expression PrepareTopExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
+      return PrepareExpression (expression);
     }
 
     public virtual Expression PrepareFromExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
+      return PrepareExpression (expression);
     }
 
     public virtual Expression PrepareOrderByExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression(expression, _context, this, _registry);
+      return PrepareExpression (expression);
     }
 
     public virtual Expression PrepareItemExpression (Expression expression)
     {
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
+      return PrepareExpression (expression);
     }
 
     public virtual SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType)
@@ -80,6 +79,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
     {
       return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this, _generator);
+    }
+
+    protected virtual Expression PrepareExpression (Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
     }
   }
 }
