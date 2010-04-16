@@ -125,6 +125,7 @@
     <Compile Include="SqlStatementModel\Unresolved\SqlEntityRefMemberExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlBinaryOperatorExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlTableReferenceExpression.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\UnresolvedCollectionJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedTableInfo.cs" />
     <Compile Include="StringExtensions.cs" />
