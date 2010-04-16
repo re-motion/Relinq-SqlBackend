@@ -133,6 +133,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
         }
       }
+      else if (memberInfo.DeclaringType == typeof (Chef))
+      {
+        switch (memberInfo.Name)
+        {
+          case "LetterOfRecommendation":
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
+        }
+      }
       else if (memberInfo.DeclaringType == typeof (Kitchen))
       {
         switch (memberInfo.Name)
