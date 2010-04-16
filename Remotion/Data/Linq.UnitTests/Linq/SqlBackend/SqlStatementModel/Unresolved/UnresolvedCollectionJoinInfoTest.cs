@@ -14,18 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using System;
+using NUnit.Framework;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
-  /// <summary>
-  /// Provides a visitor for implementations of <see cref="ITableInfo"/>.
-  /// </summary>
-  public interface IJoinInfoVisitor
+  [TestFixture]
+  public class UnresolvedCollectionJoinInfoTest
   {
-    IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo);
-    IJoinInfo VisitUnresolvedCollectionJoinInfo (UnresolvedCollectionJoinInfo joinInfo);
-    IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo);
+    [Test]
+    public void Accept ()
+    {
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinInfo_RestaurantCooks ();
+
+      var joinInfoVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor> ();
+      joinInfoVisitorMock.Expect (mock => mock.VisitUnresolvedCollectionJoinInfo (joinInfo));
+
+      joinInfoVisitorMock.Replay ();
+
+      joinInfo.Accept (joinInfoVisitorMock);
+      joinInfoVisitorMock.VerifyAllExpectations ();
+    }
   }
 }

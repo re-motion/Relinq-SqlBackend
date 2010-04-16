@@ -33,5 +33,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo);
     ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo);
     SqlStatement ResolveSqlStatement (SqlStatement sqlStatement);
+    Expression ResolveCollectionSourceExpression (Expression expression);
   }
 }

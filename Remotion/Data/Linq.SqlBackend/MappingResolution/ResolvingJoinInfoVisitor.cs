@@ -29,24 +29,28 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   {
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
+    private readonly IMappingResolutionStage _stage;
 
-    public static ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator)
+    public static ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new ResolvingJoinInfoVisitor (resolver, generator);
+      var visitor = new ResolvingJoinInfoVisitor (resolver, generator, stage);
       return (ResolvedJoinInfo) joinInfo.Accept (visitor);
     }
 
-    protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator)
+    protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
       
       _resolver = resolver;
       _generator = generator;
+      _stage = stage;
     }
 
     public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
@@ -55,6 +59,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var result = _resolver.ResolveJoinInfo (joinInfo, _generator);
       return result.Accept (this);
     }
+
+    public IJoinInfo VisitUnresolvedCollectionJoinInfo (UnresolvedCollectionJoinInfo joinInfo)
+    {
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+
+      var newExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression) as SqlEntityExpression;
+
+      if (newExpression != null)
+      {
+        var sqlTable = newExpression.SqlTable;
+        var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
+        return unresolvedJoinInfo.Accept (this);
+      }
+      return joinInfo;
+    }
+
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {

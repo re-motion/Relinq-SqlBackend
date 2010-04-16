@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -29,14 +29,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   {
     private readonly Expression _sourceExpression;
     private readonly MemberInfo _memberInfo;
+    private readonly Type _itemType;
 
     public UnresolvedCollectionJoinInfo (Expression sourceExpression, MemberInfo memberInfo)
     {
       ArgumentUtility.CheckNotNull ("sourceExpression", sourceExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      
+
       _memberInfo = memberInfo;
       _sourceExpression = sourceExpression;
+
+      var memberReturnType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (memberReturnType, "memberInfo");
     }
 
     public Expression SourceExpression
@@ -51,17 +55,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public Type ItemType
     {
-      get { throw new NotImplementedException(); }
+      get { return _itemType; }
     }
 
     public IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      return visitor.VisitUnresolvedCollectionJoinInfo (this);
     }
 
     public ResolvedJoinInfo GetResolvedJoinInfo ()
     {
-       throw new InvalidOperationException ("This join has not yet been resolved; call the resolution step first.");
+      throw new InvalidOperationException ("This join has not yet been resolved; call the resolution step first.");
     }
   }
 }

@@ -192,5 +192,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlTable) newSqlStatment.SqlTables[0]).TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
       Assert.That (newSqlStatment.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
+
+    [Test]
+    public void ResolveCollectionSourceExpression ()
+    {
+      var constantExpression = Expression.Constant (new Cook());
+      var expression = Expression.MakeMemberAccess (constantExpression, typeof (Cook).GetProperty ("FirstName"));
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _stage.ResolveCollectionSourceExpression(expression);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (expression));
+    }
   }
 }

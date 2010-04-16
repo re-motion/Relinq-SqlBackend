@@ -135,6 +135,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new UnresolvedJoinInfo (sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
+    public static UnresolvedCollectionJoinInfo CreateUnresolvedCollectionJoinInfo_RestaurantCooks ()
+    {
+      return new UnresolvedCollectionJoinInfo(Expression.Constant(new Restaurant()), typeof (Restaurant).GetProperty ("Cooks"));
+    }
+
     public static ResolvedSimpleTableInfo CreateResolvedTableInfo ()
     {
       return CreateResolvedTableInfo (typeof (Cook));

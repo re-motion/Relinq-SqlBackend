@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      return ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator);
+      return ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this);
     }
 
     public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
@@ -87,6 +87,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       return SqlStatementResolver.ResolveExpressions (this, sqlStatement);
+    }
+
+    public Expression ResolveCollectionSourceExpression (Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
     }
   }
 }
