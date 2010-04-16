@@ -149,10 +149,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var sqlStatement = SqlStatementBuilder.GetSqlStatement();
 
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-            sqlStatement.SelectProjection.Type, _generator.GetUniqueIdentifier ("q"), sqlStatement);
+            sqlStatement.SelectProjection.Type, // TODO 2616: This type is potentially wrong if a result operator (e.g., Cast) changed the type of the items coming from the SelectProjection. Added a dedicated task for this (COMMONS-2616).
+            _generator.GetUniqueIdentifier ("q"), 
+            sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
 
-        _sqlStatementBuilder = new SqlStatementBuilder();
+        _sqlStatementBuilder = new SqlStatementBuilder(); // TODO Review 2441: Use GetStatementAndResetBuilder
         SqlStatementBuilder.SqlTables.Add (sqlTable);
         SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
       }
@@ -170,24 +172,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var expression = ((TakeResultOperator) resultOperator).Count;
         SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (expression);
       }
-      else if (resultOperator is ContainsResultOperator)
+      else if (resultOperator is ContainsResultOperator) // TODO Review 2441: Move this up to before the TopExpression check (and add a return statement) - we shouldn't add two substatements for Cooks.Take(1).Contains(cook) - a single substatement (SELECT CASE WHEN @1 IN (SELECT TOP (@2) [t1].[ID] FROM [CookTable] [t1])) should be enough; add integration test
       {
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
+        // TODO 2616: Type is not correct here, will be solved by COMMONS-2616
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
-        // TODO: type is not correct, use typeof (IQueryable<>).MakeGenericType (itemExpression.Type)
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.SelectProjection = sqlInExpression;
       }
-      else if (resultOperator is CastResultOperator)
+      else if (resultOperator is CastResultOperator) // TODO Review 2441: Move this up to before the TopExpression check - we don't need to create a new substatement for the Cast operator; add integration test
         return;
-      else if (resultOperator is OfTypeResultOperator)
+      else if (resultOperator is OfTypeResultOperator) // TODO Review 2441: Move this up to before the TopExpression check (and add a return statement) - the OfType operator can be handled in the same statement even if we have a TopExpression; add integration test
       {
         SqlStatementBuilder.AddWhereCondition (
             Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType));
       }
-
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
     }
@@ -209,7 +210,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
         SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-
+       
       SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
     }
   }

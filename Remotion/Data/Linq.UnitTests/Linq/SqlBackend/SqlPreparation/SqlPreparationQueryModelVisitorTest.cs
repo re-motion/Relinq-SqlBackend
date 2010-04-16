@@ -431,6 +431,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      // TODO Review 2441: Check substatement's content
     }
 
     [Test]

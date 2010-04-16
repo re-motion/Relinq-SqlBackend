@@ -25,12 +25,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   public class ResultOperatorCombinationsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 2370")]
+    // TODO Review 2441: Solve this
+    [Ignore ("TODO 2441")]
     public void DistinctAndCount ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Distinct().Count(),
-          "SELECT COUNT(*) FROM (SELECT DISTINCT [t0].[FirstName] FROM [CookTable] AS [t0]) AS [t1]");
+          "SELECT DISTINCT COUNT(*) FROM FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -41,6 +42,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT DISTINCT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 5));
     }
+
+    // TODO Review 2441: Missing: DistinctAndFirst, DistinctAndSingle
 
     [Test]
     public void TakeAndDistinct ()
@@ -107,5 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 1),
           new CommandParameter ("@2", 5));
     }
+
+    // TODO Review 2441: Missing: TakeAndTakeAndTake
   }
 }
