@@ -54,14 +54,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return this;
     }
 
-    // TODO Review 2564: Move up to base class
-    public override Expression Accept (ExpressionTreeVisitor visitor)
-    {
-      var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
-      if (specificVisitor != null)
-        return specificVisitor.VisitSqlCustomTextGeneratorExpression (this);
-      else
-        return base.Accept (visitor);
-    }
   }
 }
