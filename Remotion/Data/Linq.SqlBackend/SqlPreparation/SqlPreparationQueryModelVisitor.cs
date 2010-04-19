@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
 
-        _sqlStatementBuilder = new SqlStatementBuilder(); // TODO Review 2441: Use GetStatementAndResetBuilder
+        GetStatementAndResetBuilder();
         SqlStatementBuilder.SqlTables.Add (sqlTable);
         SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
       }

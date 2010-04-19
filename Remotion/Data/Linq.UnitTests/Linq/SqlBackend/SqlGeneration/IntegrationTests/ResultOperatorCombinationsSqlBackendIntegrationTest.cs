@@ -138,7 +138,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@2", 3),
           new CommandParameter ("@3", 5));
     }
-
-    // TODO Review 2441: Missing: TakeAndTakeAndTake
   }
 }
