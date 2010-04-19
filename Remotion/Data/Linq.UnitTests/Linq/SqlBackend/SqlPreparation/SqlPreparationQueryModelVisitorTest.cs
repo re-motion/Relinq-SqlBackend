@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -285,12 +286,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var joinClause = ExpressionHelper.CreateJoinClause();
 
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      
+
       _stageMock.Expect (mock => mock.PrepareFromExpression (joinClause.InnerSequence)).Return (Expression.Constant (5));
       _stageMock.Expect (
-          mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything)).Return(preparedSqlTable);
-      _stageMock.Replay (); // TODO Review 2593: Replace should come after all expectations on _stageMock
-      
+          mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything)).Return (preparedSqlTable);
+      _stageMock.Replay(); // TODO Review 2593: Replace should come after all expectations on _stageMock
+
       var fakeWhereCondition = Expression.Constant (1);
       _stageMock.Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Is.Anything)).Return (fakeWhereCondition);
 
@@ -431,7 +432,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      // TODO Review 2441: Check substatement's content
+      Assert.That (
+          ((SqlTable) ((SqlTableReferenceExpression) _visitor.SqlStatementBuilder.SelectProjection).SqlTable).TableInfo,
+          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
 
     [Test]
@@ -483,7 +486,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
       Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Expression, Is.SameAs (selectProjection));
-      Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo(typeof(Chef)));
+      Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo (typeof (Chef)));
     }
 
     [Test]
