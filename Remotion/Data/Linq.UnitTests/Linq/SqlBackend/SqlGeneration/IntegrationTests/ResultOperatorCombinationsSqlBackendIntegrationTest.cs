@@ -127,6 +127,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@2", 5));
     }
 
+    [Test]
+    public void TakeAndTakeAndTake ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Take (5).Take(3).Take(7),
+          "SELECT TOP (@1) [q1].[value] AS [value] FROM (SELECT TOP (@2) [q0].[value] AS [value] FROM (SELECT TOP (@3) [t0].[FirstName] AS [value] " +
+          "FROM [CookTable] AS [t0]) AS [q0]) AS [q1]",
+          new CommandParameter ("@1", 7),
+          new CommandParameter ("@2", 3),
+          new CommandParameter ("@3", 5));
+    }
+
     // TODO Review 2441: Missing: TakeAndTakeAndTake
   }
 }
