@@ -186,20 +186,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
 
     public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
     {
-      // TODO Review 2557: To make this more realistic, change as follows:
-      // if (desiredType.IsAssignableFrom (innerExpression.Type))
-      //   return Expression.Constant (true);
-      // else if (desiredType == typeof (Chef) && innerExpression.Type == typeof (Cook))
-      //   return Expression.MakeMemberAccess (innerExpression, typeof (Cook).GetProperty ("IsStarredCook"));
-      // else
-      //   throw ...
-      if ((innerExpression.Type == typeof (Cook) || innerExpression.Type == typeof (Chef))
-          && (desiredType == typeof (Chef) || desiredType == typeof (Cook)))
-        return Expression.GreaterThan (((SqlEntityExpression) innerExpression).PrimaryKeyColumn, new SqlLiteralExpression (1000));
-      else if (innerExpression.Type == desiredType)
-        return Expression.Constant (true);
-      else
-        throw new UnmappedItemException ("Cannot resolve type for innerExpression: " + innerExpression.Type.Name);
+       if (desiredType.IsAssignableFrom (innerExpression.Type))
+         return Expression.Constant (true);
+       else if (desiredType == typeof (Chef) && innerExpression.Type == typeof (Cook))
+         return Expression.MakeMemberAccess (innerExpression, typeof (Cook).GetProperty ("IsStarredCook"));
+       else
+         throw new UnmappedItemException ("Cannot resolve type for innerExpression: " + innerExpression.Type.Name);
     }
 
     private SqlColumnExpression CreateColumn (Type columnType, IResolvedTableInfo resolvedSimpleTableInfo, string columnName)

@@ -168,7 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => Cooks.Take (1).OfType<Chef>(),
           "SELECT TOP (@1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          +"FROM [CookTable] AS [t0] WHERE ([t0].[ID] > 1000)",
+          + "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)",
           new CommandParameter ("@1", 1)
           );
     }

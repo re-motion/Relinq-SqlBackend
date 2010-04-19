@@ -229,28 +229,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           Cooks.OfType<Chef> (),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
-          "FROM [CookTable] AS [t0] WHERE ([t0].[ID] > 1000)"
+          "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)"
           );
 
       CheckQuery (
           Chefs.OfType<Chef>(),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],"+
-          "[t0].[KitchenID],[t0].[LetterOfRecommendation] FROM [ChefTable] AS [t0] WHERE ([t0].[ID] > 1000)"
-          );
+          "[t0].[KitchenID],[t0].[LetterOfRecommendation] FROM [ChefTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter("@1", 1));
 
       CheckQuery (
           Chefs.OfType<Cook> (),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],"+
-          "[t0].[KitchenID],[t0].[LetterOfRecommendation] FROM [ChefTable] AS [t0] WHERE ([t0].[ID] > 1000)"
-          );
-
-      // TODO Review 2557: Move this test to a separate TypeIsExpressionSqlBackendIntegrationTest
-      // TODO Review 2557: Add different variants => Cooks.Where (c => c is Cook), Chefs.Where (c => c is Cook), Chefs.Where (c => c is Chefs)
-      CheckQuery (
-         Cooks.Where(c=>c is Chef),
-         "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
-          "FROM [CookTable] AS [t0] WHERE ([t0].[ID] > 1000)"
-         );
+          "[t0].[KitchenID],[t0].[LetterOfRecommendation] FROM [ChefTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter("@1", 1));
     }
 
   }
