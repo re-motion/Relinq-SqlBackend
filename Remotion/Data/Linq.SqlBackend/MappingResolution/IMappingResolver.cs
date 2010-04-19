@@ -60,7 +60,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <returns>A resolved version of <paramref name="tableReferenceExpression"/>, usually a <see cref="SqlEntityExpression"/> containing all the 
     /// columns of the referenced <see cref="SqlTableBase"/>. If the <see cref="SqlTableReferenceExpression"/> is not a queryable entity, 
     /// the resolver has to return a <see cref="SqlValueTableReferenceExpression"/>. 
-    /// This method can return a partial result that itself again needs to be resolved.</returns>
+    /// This method can return a partial result that itself again needs to be resolved, but it must not return the unresolved 
+    /// <paramref name="tableReferenceExpression"/>.</returns>
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator);
 
     /// <summary>
@@ -96,12 +97,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ResolveConstantExpression (ConstantExpression constantExpression);
 
     /// <summary>
-    /// Analyses the given <see cref="Expression"/> and checks it's type to get the approriate database table. It translates the comparison 
-    /// between the database table and the given type to a convenient sql statement.
+    /// Analyzes the given <see cref="Expression"/> and returns an expression that evaluates to <see langword="true" /> if it is of a desired 
+    /// <see cref="Type"/>. This will usually be a comparison of a type identifier column with a constant value.
     /// </summary>
-    /// <param name="innerExpression">The <see cref="Expression"/> to be analyzed.</param>
-    /// <param name="desiredType">The <see cref="Type"/> to be compared with.</param>
-    /// <returns>A representation of a sql compatible comparison between sql table and type.</returns>
-    Expression ResolveTypeCheck (Expression innerExpression, Type desiredType);
+    /// <param name="expression">The <see cref="Expression"/> to be analyzed.</param>
+    /// <param name="desiredType">The <see cref="Type"/> to check for.</param>
+    /// <returns>An expression representing a type check of the given <paramref name="expression"/>. 
+    /// This method can return a partial result that itself again needs to be resolved.</returns>
+    /// <exception cref="UnmappedItemException">The given type check cannot be resolved because no database-level check can be constructed for it.</exception>
+    Expression ResolveTypeCheck (Expression expression, Type desiredType);
   }
 }
