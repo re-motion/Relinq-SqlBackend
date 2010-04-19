@@ -26,13 +26,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   public class ResultOperatorCombinationsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    // TODO Review 2441: Solve this
-    [Ignore ("TODO 2441")]
+    [Ignore ("TODO 2620: generate subquery")]
     public void DistinctAndCount ()
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Distinct().Count(),
-          "SELECT DISTINCT COUNT(*) FROM FROM [CookTable] AS [t0]");
+          "SELECT DISTINCT COUNT(*) FROM (SELECT DISTINCT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]");
     }
 
     [Test]
