@@ -144,6 +144,26 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
+      if (resultOperator is ContainsResultOperator)
+      {
+        var sqlSubStatement = GetStatementAndResetBuilder();
+        var itemExpression = ((ContainsResultOperator) resultOperator).Item;
+        // TODO 2616: Type is not correct here, will be solved by COMMONS-2616
+        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
+        var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
+
+        SqlStatementBuilder.SelectProjection = sqlInExpression;
+        return;
+      }
+      else if (resultOperator is CastResultOperator)
+        return;
+      else if (resultOperator is OfTypeResultOperator)
+      {
+        SqlStatementBuilder.AddWhereCondition (
+            Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType));
+        return;
+      }
+
       if (SqlStatementBuilder.TopExpression != null)
       {
         var sqlStatement = SqlStatementBuilder.GetSqlStatement();
@@ -171,23 +191,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var expression = ((TakeResultOperator) resultOperator).Count;
         SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (expression);
-      }
-      else if (resultOperator is ContainsResultOperator) // TODO Review 2441: Move this up to before the TopExpression check (and add a return statement) - we shouldn't add two substatements for Cooks.Take(1).Contains(cook) - a single substatement (SELECT CASE WHEN @1 IN (SELECT TOP (@2) [t1].[ID] FROM [CookTable] [t1])) should be enough; add integration test
-      {
-        var sqlSubStatement = GetStatementAndResetBuilder();
-        var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        // TODO 2616: Type is not correct here, will be solved by COMMONS-2616
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
-        var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
-
-        SqlStatementBuilder.SelectProjection = sqlInExpression;
-      }
-      else if (resultOperator is CastResultOperator) // TODO Review 2441: Move this up to before the TopExpression check - we don't need to create a new substatement for the Cast operator; add integration test
-        return;
-      else if (resultOperator is OfTypeResultOperator) // TODO Review 2441: Move this up to before the TopExpression check (and add a return statement) - the OfType operator can be handled in the same statement even if we have a TopExpression; add integration test
-      {
-        SqlStatementBuilder.AddWhereCondition (
-            Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType));
       }
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));

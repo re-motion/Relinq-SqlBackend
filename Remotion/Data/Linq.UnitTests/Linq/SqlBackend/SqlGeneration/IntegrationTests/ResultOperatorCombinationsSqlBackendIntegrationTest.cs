@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -137,6 +138,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 7),
           new CommandParameter ("@2", 3),
           new CommandParameter ("@3", 5));
+    }
+
+    [Test]
+    public void TakeAndContains ()
+    {
+      Cook cook = new Cook { ID = 5, FirstName = "Hugo", Name = "Hanser" };
+      CheckQuery (
+          () => Cooks.Take (1).Contains (cook),
+          "SELECT CASE WHEN @1 IN (SELECT TOP (@2) [t0].[ID] AS [value] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END AS [value]",
+          new CommandParameter("@1", cook.ID),
+          new CommandParameter("@2", 1)
+          );
+    }
+
+    [Test]
+    public void TakeAndCast ()
+    {
+      CheckQuery (
+          () => Cooks.Take (1).Cast<object>(),
+          "SELECT TOP (@1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+           +"FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1)
+          );
+    }
+
+    [Test]
+    public void TakeAndOfType ()
+    {
+      CheckQuery (
+          () => Cooks.Take (1).OfType<Chef>(),
+          "SELECT TOP (@1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          +"FROM [CookTable] AS [t0] WHERE ([t0].[ID] > 1000)",
+          new CommandParameter ("@1", 1)
+          );
     }
   }
 }
