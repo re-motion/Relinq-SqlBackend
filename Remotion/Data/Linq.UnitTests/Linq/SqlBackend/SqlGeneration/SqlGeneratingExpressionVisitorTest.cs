@@ -87,19 +87,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_VisitSqlEntityConstantExpresion ()
-    {
-      var entityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), 5);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          entityConstantExpression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
-      Assert.That (_commandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
-      Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (5));
-    }
-
-    [Test]
     public void GenerateSql_BoolExpression_ValueSemantics ()
     {
       var boolExpression = Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("sepp"));

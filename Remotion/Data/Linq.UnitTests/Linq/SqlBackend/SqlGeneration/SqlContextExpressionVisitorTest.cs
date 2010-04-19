@@ -167,10 +167,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (constantEntityExpression, SqlExpressionContext.SingleValueRequired);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlEntityConstantExpression)));
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (result.Type, Is.EqualTo(typeof(int)));
-      Assert.That (((SqlEntityConstantExpression) result).Value, Is.SameAs(entityExpressionValue));
-      Assert.That (((SqlEntityConstantExpression) result).PrimaryKeyValue, Is.EqualTo (5));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(5));
     }
 
     [Test]

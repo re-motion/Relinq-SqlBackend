@@ -50,15 +50,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _primaryKeyValue; }
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
-    {
-      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
-      if (specificVisitor != null)
-        return specificVisitor.VisitSqlEntityConstantExpression (this);
-      else
-        return base.Accept (visitor);
-    }
-
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;

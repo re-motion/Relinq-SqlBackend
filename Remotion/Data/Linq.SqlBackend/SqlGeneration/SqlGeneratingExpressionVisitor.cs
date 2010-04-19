@@ -94,17 +94,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    // TODO Review 2534: When SqlContextExpressionVisitor replaces EntitiyConstantExpressions with their foreign keys, this method can (and should) be removed
-    public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var parameter = _commandBuilder.CreateParameter (expression.PrimaryKeyValue);
-      _commandBuilder.Append (parameter.Name);
-
-      return expression;
-    }
-
     public Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
