@@ -77,21 +77,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var containsOperator = lastOperatorIndex >= 0 ? expression.QueryModel.ResultOperators[lastOperatorIndex] as ContainsResultOperator : null;
       if (containsOperator != null)
       {
+        var fromExpression = expression.QueryModel.MainFromClause.FromExpression as ConstantExpression;
+
         // Check whether the query applies Contains to a constant collection
-        if (expression.QueryModel.IsIdentityQuery()
-            && (expression.QueryModel.MainFromClause.FromExpression is ConstantExpression)
-            && typeof (ICollection).IsAssignableFrom (expression.QueryModel.MainFromClause.FromExpression.Type))
+        if (expression.QueryModel.IsIdentityQuery() && (fromExpression!=null) && typeof (ICollection).IsAssignableFrom (fromExpression.Type))
         {
           if (expression.QueryModel.ResultOperators.Count > 1)
             throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
 
           // TODO Review 2582: Move this to the "then" part of the following if statement
           var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
-
-          // TODO Review 2582: Do not use .Cast<object> to cast the ICollection to an IEnumerable<object> - the Count() query operator is less efficient than just calling Count directly on the collection
-          // TODO Review 2582: Extract the inner expression to a local variable
-          if (((ICollection)((ConstantExpression) expression.QueryModel.MainFromClause.FromExpression).Value).Cast<object> ().Count () > 0)
-            return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, expression.QueryModel.MainFromClause.FromExpression);
+          
+          if (((ICollection)fromExpression.Value).Count > 0)
+            return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, fromExpression);
           else
             return Expression.Constant (false);
         }
