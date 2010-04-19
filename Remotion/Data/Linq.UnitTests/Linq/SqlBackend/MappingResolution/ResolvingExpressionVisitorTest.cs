@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlMemberExpression ()
+    public void VisitMemberExpression_OnEntity ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant(new Cook());
@@ -142,8 +142,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations ();
     }
 
+    // TODO Review 2562: Should probably throw an exception
     [Test]
-    public void VisitSqlMemberExpression_ReturnsSame ()
+    public void VisitMemberExpression_MemberAppliedToConstant ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant (new Cook ());
@@ -163,25 +164,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlMemberExpression_SqlColumnExpression ()
+    public void VisitMemberExpression_OnColumnExpression ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant (new Cook ());
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
 
-      var fakeResult = new SqlColumnExpression (typeof (string), "c", "Name");
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name");
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Return (columnExpression);
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (fakeResult, memberInfo))
-          .Return (fakeResult);
+          .Expect (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
+          .Return (columnExpression); // TODO Review 2562: Return a constant expression as the second fake result so that you can verify the expression is visited again
       _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.SameAs (columnExpression));
       _resolverMock.VerifyAllExpectations ();
     }
 

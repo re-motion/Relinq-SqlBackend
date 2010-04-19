@@ -79,22 +79,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       // First process any nested expressions
-      // E.g, for (kitchen.Cook).FirstName, first process kitchen => newExpression1 (SqlTableReferenceExpression)
-      // then newExpression1.Cook => newExpression2 (SqlMemberExpression)
-      // then newExpression2.FirstName => result (SqlMemberExpression)
+      // E.g, for (kitchen.Cook).FirstName, first process kitchen => newExpression1 (SqlEntity)
+      // then newExpression1.Cook => newExpression2 (SqlEntityRef/SqlEntity)
+      // then newExpression2.FirstName => result (SqlColumn)
       var newExpression = VisitExpression (expression.Expression);
 
-      // kitchen case: newExpression is a SqlTableReferenceExpression (kitchenTable)
-      // create a SqlMemberExpression (kitchenTable, "Cook")
+      // member applied to an entity?
       var newExpressionAsEntityExpression = newExpression as SqlEntityExpression;
       if (newExpressionAsEntityExpression != null)
       {
-        var sqlTable = newExpressionAsEntityExpression.SqlTable; // kitchenTable
+        var sqlTable = newExpressionAsEntityExpression.SqlTable;
 
-        var resolvedMemberExpression = _resolver.ResolveMemberExpression(sqlTable, expression.Member, _generator);
-        return VisitExpression(resolvedMemberExpression);
+        var resolvedMemberExpression = _resolver.ResolveMemberExpression (sqlTable, expression.Member, _generator);
+        return VisitExpression (resolvedMemberExpression);
       }
 
+      // member applied to a column?
       var newExpressionAsColumnExpression = newExpression as SqlColumnExpression;
       if (newExpressionAsColumnExpression != null)
       {
