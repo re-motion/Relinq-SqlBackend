@@ -43,7 +43,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 5));
     }
 
-    // TODO Review 2441: Missing: DistinctAndFirst, DistinctAndSingle
+    [Test]
+    public void DistinctAndFirst ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Distinct ().First(),
+          "SELECT DISTINCT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+    }
+
+    [Test]
+    public void DistinctAndSingle ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Distinct ().Single(),
+          "SELECT DISTINCT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+    }
 
     [Test]
     public void TakeAndDistinct ()
