@@ -128,9 +128,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
+          case "MetaID":
             return CreateColumn (memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
           case "Substitution":
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+          
         }
       }
       else if (memberInfo.DeclaringType == typeof (Chef))
@@ -170,10 +172,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
     }
 
-    // TODO Review 2562: Implement this as follows: Add a new Cook.MetaID property. Resolve that to a SqlColumnExpression in the method above. Add a MetaID struct for the property with a ClassID property of type string. In this method, detect cook.MetaID.ClassID, and return a SqlColumn (cook, "ClassID") for it. Write an integration test using cook.MetaID.ClassID.
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      throw new NotImplementedException();
+      if (memberInfo.DeclaringType == typeof (MetaID))
+      {
+        if (memberInfo.Name == "ClassID")
+          return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID");
+      }
+      throw new UnmappedItemException ("Cannot resolve member for: " + memberInfo.Name);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)

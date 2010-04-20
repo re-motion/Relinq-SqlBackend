@@ -97,5 +97,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "WHERE ([t4].[ID] = @1)",
           new CommandParameter ("@1", 0));
     }
+
+    [Test]
+    public void PropertySelectsClassID ()
+    {
+      CheckQuery (
+          from c in Cooks select c.MetaID.ClassID,
+          "SELECT [t0].[ClassID] AS [value] FROM [CookTable] AS [t0]"
+          );
+    }
   }
 }
