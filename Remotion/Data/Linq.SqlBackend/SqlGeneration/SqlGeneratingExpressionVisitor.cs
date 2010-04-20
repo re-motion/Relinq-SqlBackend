@@ -275,7 +275,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    // TODO Review 2564: Test missing. Test via TestableSqlCustom...Expression
     public Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

@@ -30,13 +30,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
     public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
-      throw new NotImplementedException();
+      commandBuilder.Append ("TestableSqlCustomTextGeneratorExpression");
     }
 
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      throw new NotImplementedException();
+      return this;
     }
 
    }

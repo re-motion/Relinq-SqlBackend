@@ -32,8 +32,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     }
 
     public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
-
-    // TODO Review 2564: Create an integration test 
     
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
