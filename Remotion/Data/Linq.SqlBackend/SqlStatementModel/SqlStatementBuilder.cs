@@ -17,9 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Clauses;
-using System.Linq;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
