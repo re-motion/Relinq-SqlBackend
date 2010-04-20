@@ -123,7 +123,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _commandBuilder.Append ("(");
 
         var collection = ((ICollection) expression.Value);
-        // TODO Review 2582: Throw a NotSupportedException if the collection is empty at this point.
+        if (collection.Count == 0)
+          throw new NotSupportedException ("Empty collections are not supported.");
+        
         var items = collection.Cast<object>();
         _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
         _commandBuilder.Append (")");
