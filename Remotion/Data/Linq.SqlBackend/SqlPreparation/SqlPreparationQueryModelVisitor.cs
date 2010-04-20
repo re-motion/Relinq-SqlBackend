@@ -148,7 +148,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        // TODO 2616: Type is not correct here, will be solved by COMMONS-2616
+        // TODO 2615: Type is not correct here, will be solved by COMMONS-2616
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
@@ -169,7 +169,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var sqlStatement = SqlStatementBuilder.GetSqlStatement();
 
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-            sqlStatement.SelectProjection.Type, // TODO 2616: This type is potentially wrong if a result operator (e.g., Cast) changed the type of the items coming from the SelectProjection. Added a dedicated task for this (COMMONS-2616).
+            sqlStatement.SelectProjection.Type, // TODO 2615: This type is potentially wrong if a result operator (e.g., Cast) changed the type of the items coming from the SelectProjection. Added a dedicated task for this (COMMONS-2616).
             _generator.GetUniqueIdentifier ("q"), 
             sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);

@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveJoinInfo_ResolvesJoinInfo ()
+    public void ResolveJoinInfo_ResolvesUnresolvedJoinInfo ()
     {
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
@@ -66,8 +66,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveCollectionJoinInfo ()
+    public void ResolveJoinInfo_ResolvesUnresolvedJoinInfo_AndRevisitsResult ()
     {
+      // TODO Review 2615: To test that the result is revisited, ResolveJoinInfo must return a different unresolved join info on the first call; then a second call must be expected that returns the final result
+
+      var resolvedJoinInfo = new ResolvedJoinInfo (
+          new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
+          new SqlColumnExpression (typeof (string), "c", "ID"),
+          new SqlColumnExpression (typeof (string), "c", "ID"));
+      _resolverMock
+          .Expect (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
+          .Return (resolvedJoinInfo);
+      _resolverMock.Replay ();
+
+      var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock, _generator, _stageMock);
+
+      Assert.That (result, Is.SameAs (resolvedJoinInfo));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ResolveJoinInfo_ResolvesCollectionJoinInfo ()
+    {
+      // TODO Review 2615: Use a collection-valued property
       var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("FirstName"));
 
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
@@ -77,39 +98,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID");
       var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
 
-
       _stageMock
           .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression))
           .Return (sqlEntityExpression);
       _stageMock.Replay();
+      
       _resolverMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator))) // TODO Review 2615: Change to check UnresolvedJoinInfo: should have same member as above, should have sqlEntityExpression.SqlTable
           .Return (expectedResolvedJoinInfo);
       _resolverMock.Replay ();
 
       var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock);
 
-      Assert.That (resolvedJoinInfo, Is.EqualTo(expectedResolvedJoinInfo));
+      Assert.That (resolvedJoinInfo, Is.SameAs (expectedResolvedJoinInfo));
 
       _stageMock.VerifyAllExpectations();
-      _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void ResolveJoinInfo_ResolvesJoinInfo_AndRevisitsResult()
-    {
-      var resolvedJoinInfo = new ResolvedJoinInfo (
-          new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
-          new SqlColumnExpression (typeof (string), "c", "ID"),
-          new SqlColumnExpression (typeof (string), "c", "ID"));
-      _resolverMock
-          .Expect (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
-          .Return (resolvedJoinInfo);
-      _resolverMock.Replay();
-
-      var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock, _generator, _stageMock);
-
-      Assert.That (result, Is.SameAs (resolvedJoinInfo));
       _resolverMock.VerifyAllExpectations();
     }
   }

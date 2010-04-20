@@ -205,7 +205,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay ();
 
-      var result = _stage.ResolveCollectionSourceExpression(expression);
+      var result = _stage.ResolveCollectionSourceExpression (expression);
 
       _resolverMock.VerifyAllExpectations ();
 

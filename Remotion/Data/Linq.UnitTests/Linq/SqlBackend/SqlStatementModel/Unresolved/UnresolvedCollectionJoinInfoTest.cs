@@ -24,6 +24,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   [TestFixture]
   public class UnresolvedCollectionJoinInfoTest
   {
+    // TODO Review 2615: Add Initialization test showing that item type is calculated correctly.
     [Test]
     public void Accept ()
     {

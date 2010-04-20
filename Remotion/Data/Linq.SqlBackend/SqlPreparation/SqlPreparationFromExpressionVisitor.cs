@@ -94,6 +94,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return new NotSupportedException (message);
     }
 
+    // TODO Review 2615: The IUnresolvedSqlExpressionVisitor interface can now be removed from this class; the following two methods can be removed, too
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       return base.VisitUnknownExpression (expression);

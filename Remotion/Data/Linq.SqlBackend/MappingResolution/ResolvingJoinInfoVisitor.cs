@@ -64,17 +64,16 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var newExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression) as SqlEntityExpression;
+      // TODO Review 2615: The result of ResolveCollectionSourceExpression _must_ be a SqlEntityExpression - everything else is not supported. Therefore, if the cast expression is null, throw an exception: NotSupportedException, "The expression 'SourceExpression' used as a query source with the member 'Member' resolves to an expression of type '...'. This is not supported.". (Don't forget the test.)
+      var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression) as SqlEntityExpression;
 
-      if (newExpression != null)
+      if (sourceEntityExpression != null)
       {
-        var sqlTable = newExpression.SqlTable;
-        var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
+        var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression.SqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
         return unresolvedJoinInfo.Accept (this);
       }
       return joinInfo;
     }
-
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
