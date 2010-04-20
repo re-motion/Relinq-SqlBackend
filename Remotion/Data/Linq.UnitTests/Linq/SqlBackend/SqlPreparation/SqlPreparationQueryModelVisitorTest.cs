@@ -20,11 +20,14 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -448,6 +451,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       queryModel.ResultOperators.Add (takeResultOperator);
       var distinctResultOperator = new DistinctResultOperator();
 
+      _visitor.SqlStatementBuilder.DataInfo = queryModel.GetOutputDataInfo();
       _visitor.SqlStatementBuilder.SelectProjection = Expression.Constant ("select");
 
       var preparedExpression = Expression.Constant (null, typeof (Cook));
@@ -470,10 +474,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitResultOperator_Contains ()
     {
-      var itemExpression = Expression.Constant (2);
+      var itemExpression = Expression.Constant (new Cook ());
       var resultOperator = new ContainsResultOperator (itemExpression);
       _queryModel.ResultOperators.Add (resultOperator);
 
+      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), itemExpression);
       _visitor.SqlStatementBuilder.SelectProjection = Expression.Constant (1);
       _visitor.SqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
 
@@ -535,6 +540,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var originalSqlStatementBuilder = _visitor.SqlStatementBuilder;
 
       var constantExpression = Expression.Constant (1);
+      _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo ();
       _visitor.SqlStatementBuilder.SelectProjection = constantExpression;
 
       var result = _visitor.GetStatementAndResetBuilder();

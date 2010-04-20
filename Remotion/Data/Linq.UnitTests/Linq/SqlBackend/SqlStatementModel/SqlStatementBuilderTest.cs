@@ -22,6 +22,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -34,6 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void SetUp ()
     {
       _statementBuilder = new SqlStatementBuilder ();
+      _statementBuilder.DataInfo = new TestStreamedValueInfo (typeof (int));
     }
 
     [Test]
@@ -49,6 +51,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
       Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
+    }
+
+    [Test]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void GetSqlStatement_NoDataInfoSet ()
+    {
+      _statementBuilder.GetSqlStatement();
     }
 
     [Test]
@@ -84,6 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       var statementBuilder = new SqlStatementBuilder()
                              {
+                                 DataInfo = new TestStreamedValueInfo(typeof(Cook)),
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
                                  TopExpression = topExpression,
@@ -113,8 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
        var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
 
-      var sqlStatement = new SqlStatement (
-          selectProjection, new SqlTable[] { sqlTable }, new Ordering[] { ordering }, whereCondition, topExpression, false, true);
+       var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), selectProjection, new SqlTable[] { sqlTable }, new Ordering[] { ordering }, whereCondition, topExpression, false, true);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 

@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       return new SqlStatementBuilder
       {
+        DataInfo = new TestStreamedValueInfo (typeof(Cook)),
         SelectProjection =
             new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
       }.GetSqlStatement ();
@@ -38,25 +39,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static SqlStatement CreateSqlStatement (Expression selectProjection, params SqlTable[] sqlTables)
     {
-      return new SqlStatement (selectProjection, sqlTables, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (new TestStreamedValueInfo(typeof(string)), selectProjection, sqlTables, new Ordering[] { }, null, null, false, false);
     }
 
     public static SqlStatement CreateSqlStatementWithCook ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (new TestStreamedValueInfo (typeof (string)), new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
 
     public static SqlStatement CreateSqlStatement ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo();
-      return new SqlStatement (new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (new TestStreamedValueInfo (typeof (string)), new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
     {
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
-      return new SqlStatement (CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (new TestStreamedValueInfo (typeof (string)), CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
 
     public static SqlTable CreateSqlTable ()

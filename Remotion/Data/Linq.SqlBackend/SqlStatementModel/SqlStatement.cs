@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
@@ -30,6 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlStatement
   {
+    private readonly IStreamedDataInfo _dataInfo;
     private readonly SqlTableBase[] _sqlTables;
     private readonly Ordering[] _orderings;
     private readonly Expression _selectProjection;
@@ -38,16 +40,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly bool _isCountQuery;
     private readonly bool _isDistinctQuery;
 
-    public SqlStatement (
-        Expression selectProjection,
-        IEnumerable<SqlTableBase> sqlTables,
-        IEnumerable<Ordering> orderings,
-        Expression whereCondition,
-        Expression topExpression,
-        bool isCountQuery,
-        bool isDistinctQuery
-        )
+    public SqlStatement (IStreamedDataInfo dataInfo, Expression selectProjection, IEnumerable<SqlTableBase> sqlTables, IEnumerable<Ordering> orderings, Expression whereCondition, Expression topExpression, bool isCountQuery, bool isDistinctQuery)
     {
+      ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
       ArgumentUtility.CheckNotNull ("sqlTables", sqlTables);
       ArgumentUtility.CheckNotNull ("orderings", orderings);
@@ -58,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if ((isCountQuery && topExpression != null) || (isCountQuery && isDistinctQuery))
         throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
 
-
+      _dataInfo = dataInfo;
       _selectProjection = selectProjection;
       _sqlTables = sqlTables.ToArray();
       _orderings = orderings.ToArray();
@@ -66,6 +61,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       _topExpression = topExpression;
       _isCountQuery = isCountQuery;
       _isDistinctQuery = isDistinctQuery;
+    }
+
+    public IStreamedDataInfo DataInfo
+    {
+      get { return _dataInfo; }
     }
 
     public bool IsCountQuery

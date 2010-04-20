@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
 using Remotion.Data.Linq.Clauses;
 
@@ -32,13 +33,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
     {
-      new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, Expression.Constant (1), null, false, false);
+      new SqlStatement (new TestStreamedValueInfo(typeof(int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, Expression.Constant (1), null, false, false);
     }
 
     [Test]
     public void WhereCondition_CanBeSetToNull ()
     {
-      var sqlStatement = new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
       
       Assert.That (sqlStatement.WhereCondition, Is.Null);
     }
@@ -47,14 +48,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (NotSupportedException))]
     public void BuildSelectPart_WithCountAndTop_ThrowsException ()
     {
-      new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, Expression.Constant ("top"), true, false);
+      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, Expression.Constant ("top"), true, false);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void BuildSelectPart_WithCountAndDistinct_ThrowsException ()
     {
-      new SqlStatement (Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
+      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
     }
   }
 }

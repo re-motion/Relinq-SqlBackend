@@ -115,6 +115,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       SqlStatementBuilder.SelectProjection = _stage.PrepareSelectExpression (selectClause.Selector);
+      SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();
     }
 
     public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
@@ -146,6 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       if (resultOperator is ContainsResultOperator)
       {
+        var previousDataInfo = SqlStatementBuilder.DataInfo;
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
         //TODO 2616: Type is not correct here, will be solved by COMMONS-2616
@@ -153,6 +155,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.SelectProjection = sqlInExpression;
+        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (previousDataInfo);
         return;
       }
       else if (resultOperator is CastResultOperator)
@@ -174,9 +177,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
 
+        var previousDataInfo = SqlStatementBuilder.DataInfo;
         GetStatementAndResetBuilder();
         SqlStatementBuilder.SqlTables.Add (sqlTable);
         SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
+        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (previousDataInfo);
       }
 
       if (resultOperator is CountResultOperator)

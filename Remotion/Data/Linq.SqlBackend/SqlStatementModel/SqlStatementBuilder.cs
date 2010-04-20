@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
@@ -37,6 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
+      DataInfo = sqlStatement.DataInfo;
       SelectProjection = sqlStatement.SelectProjection;
       WhereCondition = sqlStatement.WhereCondition;
       IsCountQuery = sqlStatement.IsCountQuery;
@@ -46,6 +48,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
       Orderings = new List<Ordering> (sqlStatement.Orderings);
     }
+
+    public IStreamedDataInfo DataInfo { get; set; }
 
     public bool IsCountQuery { get; set; }
     public bool IsDistinctQuery { get; set; }
@@ -60,7 +64,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public SqlStatement GetSqlStatement ()
     {
-      return new SqlStatement (SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery);
+      if (DataInfo == null)
+        throw new ArgumentNullException("DataInfo", "DataInfo has not been set.");
+      return new SqlStatement (DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery);
     }
 
     public void AddWhereCondition (Expression translatedExpression)

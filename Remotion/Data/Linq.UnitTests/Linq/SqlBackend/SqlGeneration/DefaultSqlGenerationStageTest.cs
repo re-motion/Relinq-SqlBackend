@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestUtilities;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -51,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnExpression (typeof (int), "t", "City")
           });
 
-      _sqlStatement = new SqlStatement (_columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -87,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForTopExpression ()
     {
       var sqlStatement =
-          new SqlStatementBuilder { SelectProjection = _columnListExpression, TopExpression = Expression.Constant (5) }.GetSqlStatement();
+          new SqlStatementBuilder { DataInfo = new TestStreamedValueInfo(typeof(int)), SelectProjection = _columnListExpression, TopExpression = Expression.Constant (5) }.GetSqlStatement();
 
       _stageMock
           .Expect (
@@ -106,8 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForWhereExpression ()
     {
-      var sqlStatement = new SqlStatement (
-          _columnListExpression,
+      var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression,
           new SqlTable[] { },
           new Ordering[] { },
           Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)),
