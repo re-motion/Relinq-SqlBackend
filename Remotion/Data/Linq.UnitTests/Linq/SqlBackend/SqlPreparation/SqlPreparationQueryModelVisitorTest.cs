@@ -278,22 +278,52 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
     }
 
-    // TODO Review 2593: Add test showing that VisitJoinClause creates a SqlTable. In that test, check the expression and type passed to PrepareFromExpression, check that in the end, the SqlTables collection contains the preparedSqlTable
+    [Test]
+    public void VisitJoinClause_CreatesSqlTable ()
+    {
+      var joinClause = ExpressionHelper.CreateJoinClause ();
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var constantExpression = Expression.Constant (5);
+      var fakeWhereCondition = Expression.Constant (1);
+      
+      _stageMock
+        .Expect (mock => mock.PrepareFromExpression (joinClause.InnerSequence))
+        .Return (constantExpression);
+      _stageMock
+          .Expect (
+          mock => mock.PrepareSqlTable (constantExpression, joinClause.ItemType))
+          .Return (preparedSqlTable);
+      _stageMock
+        .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Is.Anything))
+        .Return (fakeWhereCondition);
+      _stageMock.Replay ();
+
+      _visitor.VisitJoinClause (joinClause, _queryModel, 5);
+
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EquivalentTo (new [] { preparedSqlTable }));
+    }
 
     [Test]
     public void VisitJoinClause_CreatesWhereCondition ()
     {
       var joinClause = ExpressionHelper.CreateJoinClause();
-
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
 
-      _stageMock.Expect (mock => mock.PrepareFromExpression (joinClause.InnerSequence)).Return (Expression.Constant (5));
-      _stageMock.Expect (
-          mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything)).Return (preparedSqlTable);
-      _stageMock.Replay(); // TODO Review 2593: Replace should come after all expectations on _stageMock
-
       var fakeWhereCondition = Expression.Constant (1);
-      _stageMock.Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Is.Anything)).Return (fakeWhereCondition);
+
+      _stageMock
+        .Expect (mock => mock.PrepareFromExpression (joinClause.InnerSequence))
+        .Return (Expression.Constant (5));
+      _stageMock
+          .Expect (
+          mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything))
+          .Return (preparedSqlTable);
+      _stageMock
+        .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Is.Anything))
+        .Return (fakeWhereCondition);
+      _stageMock.Replay();
 
       _visitor.VisitJoinClause (joinClause, _queryModel, 5);
 

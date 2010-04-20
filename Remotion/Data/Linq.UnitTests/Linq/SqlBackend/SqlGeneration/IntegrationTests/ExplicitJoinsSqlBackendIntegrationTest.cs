@@ -32,7 +32,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
     }
 
-    // TODO Review 2593: Add test joining dependent expression (k.Cooks), subquery (Cooks.Where (...)), and dependent subquery (k.Cooks.Where (...))
-    // TODO Review 2593: Also add re-store/LINQ integration tests
+    [Test]
+    public void ExplicitJoin_DependentExpressions ()
+    {
+      CheckQuery (
+          from k in Kitchens join c in Cooks on k.Cook.ID equals c.ID select k.Name,
+          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t2] ON [t0].[ID] = [t2].[KitchenID] "
+          +"CROSS JOIN [CookTable] AS [t1] WHERE ([t2].[ID] = [t1].[ID])"
+          );
+    }
+    
   }
 }
