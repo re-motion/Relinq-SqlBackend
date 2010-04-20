@@ -17,25 +17,39 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
   public class UnresolvedCollectionJoinInfoTest
   {
-    // TODO Review 2615: Add Initialization test showing that item type is calculated correctly.
+    private UnresolvedCollectionJoinInfo _joinInfo; 
+    
+    [SetUp]
+    public void SetUp ()
+    {
+      _joinInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinInfo_RestaurantCooks ();
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_joinInfo.ItemType, Is.EqualTo (typeof (Cook)));  
+    }
+
     [Test]
     public void Accept ()
     {
-      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinInfo_RestaurantCooks ();
-
       var joinInfoVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor> ();
-      joinInfoVisitorMock.Expect (mock => mock.VisitUnresolvedCollectionJoinInfo (joinInfo));
+      joinInfoVisitorMock.Expect (mock => mock.VisitUnresolvedCollectionJoinInfo (_joinInfo));
 
       joinInfoVisitorMock.Replay ();
 
-      joinInfo.Accept (joinInfoVisitorMock);
+      _joinInfo.Accept (joinInfoVisitorMock);
       joinInfoVisitorMock.VerifyAllExpectations ();
     }
   }

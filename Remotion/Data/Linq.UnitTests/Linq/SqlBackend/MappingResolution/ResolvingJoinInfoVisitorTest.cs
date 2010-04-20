@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -23,7 +24,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
-using System.Linq.Expressions;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
@@ -68,8 +68,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveJoinInfo_ResolvesUnresolvedJoinInfo_AndRevisitsResult ()
     {
-      // TODO Review 2615: To test that the result is revisited, ResolveJoinInfo must return a different unresolved join info on the first call; then a second call must be expected that returns the final result
-
       var resolvedJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (string), "c", "ID"),
@@ -77,19 +75,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
           .Return (resolvedJoinInfo);
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock, _generator, _stageMock);
 
       Assert.That (result, Is.SameAs (resolvedJoinInfo));
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations();
     }
 
     [Test]
     public void ResolveJoinInfo_ResolvesCollectionJoinInfo ()
     {
-      // TODO Review 2615: Use a collection-valued property
-      var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("FirstName"));
+      var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
+      var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook()), memberInfo);
 
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
@@ -102,11 +100,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression))
           .Return (sqlEntityExpression);
       _stageMock.Replay();
-      
+
       _resolverMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator))) // TODO Review 2615: Change to check UnresolvedJoinInfo: should have same member as above, should have sqlEntityExpression.SqlTable
+          .Expect (
+          mock =>
+          mock.ResolveJoinInfo (
+              Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingTable == sqlEntityExpression.SqlTable),
+              Arg.Is (_generator)))
           .Return (expectedResolvedJoinInfo);
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock);
 
@@ -114,6 +116,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void ResolveJoinInfo_ResolvesCollectionJoinInfo_ReturnsNoSqlEntityExpression ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
+      var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook ()), memberInfo);
+
+      _stageMock
+          .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression))
+          .Return (Expression.Constant(2));
+     
+      ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock);
     }
   }
 }

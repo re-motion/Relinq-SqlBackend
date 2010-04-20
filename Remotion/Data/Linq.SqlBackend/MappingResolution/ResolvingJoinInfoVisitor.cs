@@ -31,7 +31,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
 
-    public static ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    public static ResolvedJoinInfo ResolveJoinInfo (
+        IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -47,7 +48,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      
+
       _resolver = resolver;
       _generator = generator;
       _stage = stage;
@@ -64,15 +65,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      // TODO Review 2615: The result of ResolveCollectionSourceExpression _must_ be a SqlEntityExpression - everything else is not supported. Therefore, if the cast expression is null, throw an exception: NotSupportedException, "The expression 'SourceExpression' used as a query source with the member 'Member' resolves to an expression of type '...'. This is not supported.". (Don't forget the test.)
       var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression) as SqlEntityExpression;
-
       if (sourceEntityExpression != null)
       {
         var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression.SqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
         return unresolvedJoinInfo.Accept (this);
-      }
-      return joinInfo;
+      } 
+      throw new NotSupportedException (
+          string.Format (
+              "The expression '{0}' used as a query source with the member '{1}' resolves to an unsupported type.",
+              joinInfo.SourceExpression.Type.Name,
+              joinInfo.MemberInfo.Name));
     }
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)

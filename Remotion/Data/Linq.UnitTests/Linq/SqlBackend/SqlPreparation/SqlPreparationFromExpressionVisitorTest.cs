@@ -133,13 +133,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitMemberExpression ()
     {
-      // TODO Review 2615: To make this more realistic, use a collection property, e.g., Restaurant.Cooks
-      var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("Name"));
+      var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Cook ()), typeof (Cook).GetProperty ("IllnessDays"));
       var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (memberExpression, typeof (Cook), _stageMock, _generator);
       
       Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
-      // TODO Review 2615: Test all code within VisitMemberExpression: JoinInfo is of type UnresolvedCollectionJoinInfo, JoinInfo.Member is same as memberExpression.Member, JoinInfo.SourceExpression is same as memberExpression.Expression
+      Assert.That (((SqlJoinedTable) result).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
       Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
+      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).MemberInfo, Is.EqualTo (memberExpression.Member));
+
     }
   }
 }

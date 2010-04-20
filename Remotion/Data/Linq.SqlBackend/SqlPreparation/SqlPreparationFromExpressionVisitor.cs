@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// Analyzes the <see cref="FromClauseBase.FromExpression"/> of a <see cref="FromClauseBase"/> and returns a <see cref="SqlTableBase"/> that 
   /// represents the data source of the <see cref="FromClauseBase"/>.
   /// </summary>
-  public class SqlPreparationFromExpressionVisitor : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
+  public class SqlPreparationFromExpressionVisitor : ThrowingExpressionTreeVisitor, ISqlSubStatementVisitor
   {
     public static SqlTableBase GetTableForFromExpression (
         Expression fromExpression, Type itemType, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
@@ -92,17 +92,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", unhandledItem.GetType().Name);
       return new NotSupportedException (message);
-    }
-
-    // TODO Review 2615: The IUnresolvedSqlExpressionVisitor interface can now be removed from this class; the following two methods can be removed, too
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
-    {
-      return base.VisitUnknownExpression (expression);
-    }
-
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
-    {
-      return base.VisitUnknownExpression (expression);
     }
   }
 }
