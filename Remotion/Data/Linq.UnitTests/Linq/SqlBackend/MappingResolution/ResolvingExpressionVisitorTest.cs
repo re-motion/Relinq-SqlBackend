@@ -142,14 +142,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations ();
     }
 
-    // TODO Review 2562: Should probably throw an exception
     [Test]
+    [ExpectedException(typeof(NotSupportedException))]
     public void VisitMemberExpression_MemberAppliedToConstant ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant (new Cook ());
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-      
+
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
@@ -157,10 +157,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay ();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
-
-      Assert.That (result, Is.SameAs (memberExpression));
-      _resolverMock.VerifyAllExpectations ();
+      ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
     }
 
     [Test]
@@ -169,7 +166,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant (new Cook ());
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-
+      var constantExpression = Expression.Constant ("test");
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name");
 
       _resolverMock
@@ -177,12 +174,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (columnExpression);
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
-          .Return (columnExpression); // TODO Review 2562: Return a constant expression as the second fake result so that you can verify the expression is visited again
+          .Return (constantExpression);
+      _resolverMock
+           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+           .Return (constantExpression);
       _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
 
-      Assert.That (result, Is.SameAs (columnExpression));
+      Assert.That (result, Is.SameAs (constantExpression));
       _resolverMock.VerifyAllExpectations ();
     }
 

@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return VisitExpression (resolvedMemberExpression);
       }
 
-      return expression;
+      throw new NotSupportedException (string.Format ("Resolved inner expression of type {0} is not supported.", newExpression.Type.Name));
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)

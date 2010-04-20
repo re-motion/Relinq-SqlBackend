@@ -198,10 +198,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var constantExpression = Expression.Constant (new Cook());
       var expression = Expression.MakeMemberAccess (constantExpression, typeof (Cook).GetProperty ("FirstName"));
-      var fakeResult = Expression.Constant (0);
+      var fakeResult = new SqlColumnExpression (typeof (string), "c", "Name");
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveMemberExpression (fakeResult, expression.Member))
           .Return (fakeResult);
       _resolverMock.Replay ();
 
@@ -209,7 +212,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.SameAs (expression));
+      Assert.That (result, Is.SameAs (fakeResult));
     }
   }
 }
