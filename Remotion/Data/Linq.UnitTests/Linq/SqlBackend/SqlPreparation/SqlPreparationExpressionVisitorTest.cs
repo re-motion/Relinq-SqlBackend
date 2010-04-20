@@ -171,13 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       queryModel.ResultOperators.Add (containsResultOperator);
 
       var expression = new SubQueryExpression (queryModel);
-      var fakeConstantExpression = Expression.Constant ("Sepp");
-
-      _stageMock
-          .Expect (mock => mock.PrepareItemExpression (itemExpression))
-          .Return (fakeConstantExpression);
-      _stageMock.Replay();
-
+      
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));

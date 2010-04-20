@@ -85,13 +85,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           if (expression.QueryModel.ResultOperators.Count > 1)
             throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
 
-          // TODO Review 2582: Move this to the "then" part of the following if statement
-          var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
-          
-          if (((ICollection)fromExpression.Value).Count > 0)
+          if (((ICollection) fromExpression.Value).Count > 0)
+          {
+            var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
             return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, fromExpression);
+          }
           else
+          {
             return Expression.Constant (false);
+          }
         }
 
         var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
