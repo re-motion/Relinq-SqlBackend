@@ -186,7 +186,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       else if (resultOperator is FirstResultOperator)
         SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
       else if (resultOperator is SingleResultOperator)
-        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
+        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (2));
       else if (resultOperator is TakeResultOperator)
       {
         var expression = ((TakeResultOperator) resultOperator).Count;

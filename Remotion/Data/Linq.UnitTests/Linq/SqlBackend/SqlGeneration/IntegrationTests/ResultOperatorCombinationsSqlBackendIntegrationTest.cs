@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Distinct ().Single(),
           "SELECT DISTINCT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", 1));
+          new CommandParameter ("@1", 2));
     }
 
     [Test]
@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Single(),
           "SELECT TOP (@1) [q1].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q1]",
-          new CommandParameter ("@1", 1),
+          new CommandParameter ("@1", 2),
           new CommandParameter ("@2", 5));
     }
 
@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Single (fn => fn != null),
           "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[value] IS NOT NULL)",
-          new CommandParameter ("@1", 1),
+          new CommandParameter ("@1", 2),
           new CommandParameter ("@2", 5));
     }
 

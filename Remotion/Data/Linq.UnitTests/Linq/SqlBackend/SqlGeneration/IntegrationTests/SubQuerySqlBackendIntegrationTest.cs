@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.Name == (from k in Kitchens select k.Name).Single() select c.Name,
           "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (@1) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]))",
-          new CommandParameter ("@1", 1));
+          new CommandParameter ("@1", 2));
     }
 
     [Test]

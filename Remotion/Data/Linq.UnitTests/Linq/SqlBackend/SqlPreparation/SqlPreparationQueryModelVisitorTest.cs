@@ -410,7 +410,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock
           .Expect (
           mock => mock.PrepareTopExpression (
-                      Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (1))))
+                      Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (2))))
           .Return (preparedExpression);
       _stageMock.Replay();
 
