@@ -22,46 +22,30 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
   [TestFixture]
-  public class WhereConditionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
+  public class ConditionalExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
+    //test conditional in Where expressions and Select expressions (as indicated in the task description)
     [Test]
-    public void BooleanColumn ()
+    public void ConditionalExpressionInWhereClause ()
     {
       CheckQuery (
-          from c in Cooks where c.IsFullTimeCook select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[IsFullTimeCook] = 1)"
-          );
+          from c in Cooks where c.FirstName == (c.FirstName == "Hugo" ? "test1" : "test2") select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE "
+          + "([t0].[FirstName] = CASE WHEN ([t0].[FirstName] = @1) THEN @2 ELSE @3 END)",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "test1"),
+          new CommandParameter ("@3", "test2"));
     }
 
     [Test]
-    public void True ()
+    public void ConditionalExpressionInSelectClause ()
     {
       CheckQuery (
-          from c in Cooks where true select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
-          new CommandParameter ("@1", 1)
-          );
+          from c in Cooks select c.FirstName == "Hugo" ? "test1" : "test2",
+          "SELECT CASE WHEN ([t0].[FirstName] = @1) THEN @2 ELSE @3 END AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "test1"),
+          new CommandParameter ("@3", "test2"));
     }
-
-    [Test]
-    public void False ()
-    {
-      CheckQuery (
-          from c in Cooks where false select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
-          new CommandParameter ("@1", 0)
-          );
-    }
-
-    [Test]
-    public void BinaryExpression ()
-    {
-      CheckQuery (
-          from c in Cooks where c.FirstName == "hugo" select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1)",
-          new CommandParameter ("@1", "hugo")
-          );
-    }
-
   }
 }

@@ -297,10 +297,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlTableReferenceExpression)));
     }
 
-    // TODO Review 2589: Test VisitConditionalExpression separately, without binary expressions
-    // TODO Review 2589: To ensure that VisitConditionalExpression calls VisitExpression on its subexpressions, use subexpressions that are further changed (e.g., QuerySourceReferenceExpressions)
     [Test]
-    public void VisitBinaryExpression_WithConditionalExpression ()
+    public void VisitConditionalExpression ()
+    {
+      var testPredicate = Expression.Constant (true);
+      var ifTrueExpression = Expression.Constant ("true");
+      var ifFalseExpression = Expression.Constant ("false");
+      var conditionalExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
+      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.EqualTo(testPredicate));
+      Assert.That (((SqlCaseExpression) result).ThenValue, Is.EqualTo (ifTrueExpression));
+      Assert.That (((SqlCaseExpression) result).ElseValue, Is.EqualTo (ifFalseExpression));
+    }
+
+    [Test]
+    public void VisitConditionalExpression_VisitSubExpressions ()
+    {
+      var testPredicate = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
+      var ifTrueExpression = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
+      var ifFalseExpression = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
+      var conditionalExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
+      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.TypeOf(typeof(SqlCaseExpression)));
+      Assert.That (((SqlCaseExpression) result).ThenValue, Is.TypeOf (typeof (SqlCaseExpression)));
+      Assert.That (((SqlCaseExpression) result).ElseValue, Is.TypeOf (typeof (SqlCaseExpression)));
+    }
+    
+    [Test]
+    public void VisitBinaryExpression_WithConditionalExpressionInBinaryExpression ()
     {
       var leftExpression = Expression.Constant ("Name");
       var testPredicate = Expression.Constant (true);
