@@ -53,8 +53,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
     }
 
+    // TODO Review 2616: Also add a test GetSqlStatement_NoSelectProjection set. Expect an InvalidOperationException: "A SelectProjection must be set before the SqlStatement can be retrieved." Adapt implementation.
+
     [Test]
-    [ExpectedException(typeof(ArgumentNullException))]
+    [ExpectedException (typeof (ArgumentNullException))] // TODO Review 2616: Change to expect an InvalidOperationException: "A DataInfo must be set before the SqlStatement can be retrieved." Adapt implementation.
     public void GetSqlStatement_NoDataInfoSet ()
     {
       _statementBuilder.GetSqlStatement();
@@ -112,9 +114,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.True);
       Assert.That (sqlStatement.IsCountQuery, Is.False);
+      // TODO Review 2616: Also check DataInfo
     }
 
     [Test]
+    // TODO Review 2616: Rename this test to Initialization_WithExistingSqlStatement - we always name ctor tests like this -, and move to the top (after Setup method)
     public void CreateSqlStatementBuilder_WithExistingSqlStatement ()
     {
       var selectProjection = Expression.Constant ("select");
@@ -134,6 +138,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.True);
       Assert.That (testedBuilder.IsCountQuery, Is.False);
+
+      // TODO Review 2616: Also check that DataInfo is taken from existing statement
       
     }
   }

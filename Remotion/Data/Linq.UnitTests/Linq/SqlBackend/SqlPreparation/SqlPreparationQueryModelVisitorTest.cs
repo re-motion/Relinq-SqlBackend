@@ -26,8 +26,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -95,6 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    // TODO Review 2616: Rewrite as VisitResultOperator test (move down to the other VisitResultOperator tests)
     public void TransformQueryModel_WithCount ()
     {
       var countResultOperator = new CountResultOperator();
@@ -103,9 +102,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
 
       Assert.That (result.IsCountQuery, Is.True);
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
+    // TODO Review 2616: Rewrite as VisitResultOperator test (move down to the other VisitResultOperator tests)
     public void TransformQueryModel_WithDistinct ()
     {
       var distinctResultOperator = new DistinctResultOperator();
@@ -114,9 +115,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
 
       Assert.That (result.IsDistinctQuery, Is.True);
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
+    // TODO Review 2616: Rewrite as VisitResultOperator test (move down to the other VisitResultOperator tests)
     public void TransformQueryModel_WithCast ()
     {
       var castResultOperator = new CastResultOperator (typeof (Cook));
@@ -124,9 +127,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo();
 
       SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
+    // TODO Review 2616: Remove, there already is a VisitResultOperator test for Take
     public void TransformQueryModel_WithTake ()
     {
       var resultOperator = new TakeResultOperator (Expression.Constant (0));
@@ -138,6 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    // TODO Review 2616: Remove, there already is a VisitResultOperator test for First
     public void TransformQueryModel_WithFirst ()
     {
       var resultOperator = new FirstResultOperator (false);
@@ -149,6 +155,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    // TODO Review 2616: Remove, there already is a VisitResultOperator test for Single
     public void TransformQueryModel_WithSingle ()
     {
       var resultOperator = new SingleResultOperator (false);
@@ -280,6 +287,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
@@ -403,6 +411,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
@@ -425,6 +434,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
@@ -444,6 +454,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+      // TODO Review 2616: Test DataInfo
     }
 
     [Test]
@@ -498,19 +509,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (oldSqlStatementBuilder));
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      Assert.That (((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).LeftExpression, Is.SameAs (preparedExpression));
-      Assert.That (
-          ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression,
-          Is.TypeOf (typeof (SqlSubStatementExpression)));
+      // TODO Review 2616: Test DataInfo
 
-      Assert.That (
-          ((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression).SqlStatement.
-              SelectProjection,
-          Is.SameAs (oldSqlStatementBuilder.SelectProjection));
-      Assert.That (
-          ((SqlSubStatementExpression) ((SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection).RightExpression).SqlStatement.
-              SqlTables,
-          Is.EqualTo (oldSqlStatementBuilder.SqlTables));
+      var binaryOperatorExpression = (SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection;
+      Assert.That (binaryOperatorExpression.LeftExpression, Is.SameAs (preparedExpression));
+      Assert.That (binaryOperatorExpression.RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
+
+      var subStatementExpression = ((SqlSubStatementExpression) binaryOperatorExpression.RightExpression);
+      Assert.That (subStatementExpression.SqlStatement.SelectProjection, Is.SameAs (oldSqlStatementBuilder.SelectProjection));
+      Assert.That (subStatementExpression.SqlStatement.SqlTables, Is.EqualTo (oldSqlStatementBuilder.SqlTables));
+      // TODO Review 2616: Test DataInfo of substatement
     }
 
     [Test]
@@ -523,6 +531,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.SqlStatementBuilder.SelectProjection = selectProjection;
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
+
+      // TODO Review 2616: Test DataInfo
 
       Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
       Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Expression, Is.SameAs (selectProjection));

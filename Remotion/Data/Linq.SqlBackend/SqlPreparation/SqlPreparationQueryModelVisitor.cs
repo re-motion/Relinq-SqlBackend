@@ -164,8 +164,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       else if (resultOperator is OfTypeResultOperator)
       {
         SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
-        SqlStatementBuilder.AddWhereCondition (
-            Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType));
+        var typeCheckExpression = Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType);
+        SqlStatementBuilder.AddWhereCondition (typeCheckExpression);
         return;
       }
 
@@ -179,6 +179,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
         SqlStatementBuilder.SqlTables.Add (sqlTable);
         SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
+        // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
         SqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
       }
 

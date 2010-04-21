@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly SqlStatement _sqlStatement;
     
     public SqlSubStatementExpression (SqlStatement sqlStatement)
-        : base(sqlStatement.DataInfo.DataType)
+        : base (sqlStatement.DataInfo.DataType) // TODO Review 2616: Write an Initialization test that shows that the expression type is correctly extracted from the sqlStatement
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 

@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="ResolvedSubStatementTableInfo"/> represents the data source defined by a table of a subquery in a relational database.
   /// </summary>
-  public class ResolvedSubStatementTableInfo : ITableInfo, IResolvedTableInfo
+  public class ResolvedSubStatementTableInfo : IResolvedTableInfo
   {
     private readonly Type _itemType;
     private readonly string _tableAlias;
@@ -35,7 +35,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       
       _sqlStatement = sqlStatement;
       _tableAlias = tableAlias;
-      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable(sqlStatement.DataInfo.DataType, "DataType");
+      // TODO Review 2616: write a test showing that the item type is correctly extracted from a sqlStatement with a new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0))
+      // TODO Review 2616: use the following expression to get the item type: ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression.Type
+      // TODO Review 2616: Then, write a test expecting an ArgumentException when a sqlStatement with a non-sequence data info is passed to the ctor. Then rewrite the implementation as follows: var streamedSequenceInfo = sqlStatement.DataInfo as StreamedSequenceInfo; if (ssI == null) throw new ArgumentException ("For a statement to be used as a table, it must return a sequence of items.", "sqlStatement"); _itemType = streamedSequenceInfo.ItemExpression.Type;
+      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable ( sqlStatement.DataInfo.DataType, "DataType");
     }
 
     public virtual Type ItemType
