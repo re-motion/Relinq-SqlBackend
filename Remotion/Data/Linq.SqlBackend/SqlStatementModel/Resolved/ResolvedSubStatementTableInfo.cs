@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       
       _sqlStatement = sqlStatement;
       _tableAlias = tableAlias;
-      _itemType = itemType;
+      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable(sqlStatement.DataInfo.DataType, "DataType"); //TODO 2616: itemType;
     }
 
     public virtual Type ItemType

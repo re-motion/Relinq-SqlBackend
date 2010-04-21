@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSqlSubStatementExpression ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[]));
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (IEnumerable<Cook>));
 
       var result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (

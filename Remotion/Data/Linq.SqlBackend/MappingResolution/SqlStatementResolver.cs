@@ -113,7 +113,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         foreach (var orderByClause in sqlStatementBuilder.Orderings)
           orderByClause.Expression = _stage.ResolveOrderingExpression (orderByClause.Expression);
       }
-
+      
       return sqlStatementBuilder.GetSqlStatement();
     }
 

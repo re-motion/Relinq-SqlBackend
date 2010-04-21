@@ -119,8 +119,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void TransformQueryModel_WithCast ()
     {
-      var castResultOperator = new CastResultOperator (typeof (string));
+      var castResultOperator = new CastResultOperator (typeof (Cook));
       _queryModel.ResultOperators.Add (castResultOperator);
+      _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo();
 
       SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
     }
@@ -388,6 +389,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var resultOperator = new FirstResultOperator (false);
       _queryModel.ResultOperators.Add (resultOperator);
       var preparedExpression = Expression.Constant (null, typeof (Cook));
+      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), preparedExpression);
 
       _stageMock
           .Expect (
@@ -409,6 +411,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var resultOperator = new SingleResultOperator (false);
       _queryModel.ResultOperators.Add (resultOperator);
       var preparedExpression = Expression.Constant (null, typeof (Cook));
+      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), preparedExpression);
 
       _stageMock
           .Expect (
@@ -431,6 +434,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var resultOperator = new TakeResultOperator (takeExpression);
       _queryModel.ResultOperators.Add (resultOperator);
       var preparedExpression = Expression.Constant (null, typeof (Cook));
+      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo(typeof (int[]), takeExpression);
 
       _stageMock.Expect (mock => mock.PrepareTopExpression (takeExpression)).Return (preparedExpression);
       _stageMock.Replay();
@@ -514,7 +518,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var resultOperator = new OfTypeResultOperator (typeof (Chef));
       _queryModel.ResultOperators.Add (resultOperator);
-      var selectProjection = Expression.Constant ("select");
+      var selectProjection = Expression.Constant (new Chef());
+      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Chef[]), selectProjection);
       _visitor.SqlStatementBuilder.SelectProjection = selectProjection;
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
@@ -528,8 +533,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
     public void VisitResultOperator_NotSupported ()
     {
-      var resultOperator = new DefaultIfEmptyResultOperator (Expression.Constant (1));
+      var expression = Expression.Constant (1);
+      var resultOperator = new DefaultIfEmptyResultOperator (expression);
       _queryModel.ResultOperators.Add (resultOperator);
+      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo(typeof(int[]), expression);
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
     }

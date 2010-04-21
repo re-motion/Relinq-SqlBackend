@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
       var expression = new SubQueryExpression (querModel);
-      var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Kitchen));
 
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (querModel))
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
-      Assert.That (result.Type, Is.EqualTo (expression.Type));
+      Assert.That (result.Type, Is.EqualTo (fakeSqlStatement.DataInfo.DataType));
     }
 
     [Test]

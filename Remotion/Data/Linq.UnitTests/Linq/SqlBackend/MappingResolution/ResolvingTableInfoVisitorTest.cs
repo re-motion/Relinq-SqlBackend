@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _resolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
       _generator = new UniqueIdentifierGenerator();
-      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[]));
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo_SubStatementTableInfo ()
     {
-      var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "c", _sqlStatement);
+      var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook[]), "c", _sqlStatement);
 
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (_sqlStatement))

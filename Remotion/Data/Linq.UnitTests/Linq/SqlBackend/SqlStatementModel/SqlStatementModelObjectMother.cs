@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static SqlStatement CreateSqlStatementWithCook ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      return new SqlStatement (new TestStreamedValueInfo (typeof (string)), new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (new TestStreamedValueInfo (typeof (Cook)), new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
 
     public static SqlStatement CreateSqlStatement ()
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
     {
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
-      return new SqlStatement (new TestStreamedValueInfo (typeof (string)), CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (new TestStreamedValueInfo (type), CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
 
     public static SqlTable CreateSqlTable ()

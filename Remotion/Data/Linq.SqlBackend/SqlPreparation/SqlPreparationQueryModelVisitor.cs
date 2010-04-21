@@ -147,21 +147,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       if (resultOperator is ContainsResultOperator)
       {
-        var previousDataInfo = SqlStatementBuilder.DataInfo;
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        //TODO 2616: Type is not correct here, will be solved by COMMONS-2616
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, itemExpression.Type);
+        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, sqlSubStatement.DataInfo.DataType);
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.SelectProjection = sqlInExpression;
-        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (previousDataInfo);
+        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlSubStatement.DataInfo);
         return;
       }
       else if (resultOperator is CastResultOperator)
+      {
+        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
         return;
+      }
       else if (resultOperator is OfTypeResultOperator)
       {
+        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
         SqlStatementBuilder.AddWhereCondition (
             Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType));
         return;
@@ -169,20 +171,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       if (SqlStatementBuilder.TopExpression != null)
       {
-        var sqlStatement = SqlStatementBuilder.GetSqlStatement();
+        var sqlStatement = GetStatementAndResetBuilder ();
 
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-            sqlStatement.SelectProjection.Type, // TODO 2616: This type is potentially wrong if a result operator (e.g., Cast) changed the type of the items coming from the SelectProjection. Added a dedicated task for this (COMMONS-2616).
-            _generator.GetUniqueIdentifier ("q"), 
+            sqlStatement.DataInfo.DataType,
+            _generator.GetUniqueIdentifier ("q"),
             sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
 
-        var previousDataInfo = SqlStatementBuilder.DataInfo;
-        GetStatementAndResetBuilder();
         SqlStatementBuilder.SqlTables.Add (sqlTable);
         SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
-        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (previousDataInfo);
+        SqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
       }
+
+      SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
 
       if (resultOperator is CountResultOperator)
         SqlStatementBuilder.IsCountQuery = true;

@@ -30,8 +30,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   {
     private readonly SqlStatement _sqlStatement;
     
-    public SqlSubStatementExpression (SqlStatement sqlStatement, Type type)
-        : base(type)
+    public SqlSubStatementExpression (SqlStatement sqlStatement, Type type) //TODO 2616
+        : base(sqlStatement.DataInfo.DataType)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
