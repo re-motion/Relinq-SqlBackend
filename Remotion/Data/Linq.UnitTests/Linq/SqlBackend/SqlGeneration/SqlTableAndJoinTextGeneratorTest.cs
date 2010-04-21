@@ -155,7 +155,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSubStatementTableInfo_WithFirstIsFalse ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[]));
-      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "cook", sqlStatement);
+      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
       var sqlTable = new SqlTable (resolvedSubTableInfo);
 
       _stageMock
@@ -172,7 +172,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSubStatementTableInfo_WithFirstIsTrue ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[]));
-      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook), "cook", sqlStatement);
+      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
       var sqlTable = new SqlTable (resolvedSubTableInfo);
 
       _stageMock

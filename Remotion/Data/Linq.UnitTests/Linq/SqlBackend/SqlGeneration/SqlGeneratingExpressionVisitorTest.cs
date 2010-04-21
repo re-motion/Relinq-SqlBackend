@@ -280,7 +280,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlSubStatementExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
-      var subStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
       _stageMock
           .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))
@@ -312,7 +312,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlBinaryOperatorExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
       var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock

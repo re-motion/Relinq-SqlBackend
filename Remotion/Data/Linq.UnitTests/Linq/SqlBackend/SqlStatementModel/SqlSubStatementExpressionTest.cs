@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      _expression = new SqlSubStatementExpression (SqlStatementModelObjectMother.CreateSqlStatement(), typeof (int));
+      _expression = new SqlSubStatementExpression (SqlStatementModelObjectMother.CreateSqlStatement());
     }
 
     [Test]

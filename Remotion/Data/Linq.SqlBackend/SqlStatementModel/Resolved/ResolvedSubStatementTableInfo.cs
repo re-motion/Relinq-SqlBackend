@@ -28,15 +28,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly string _tableAlias;
     private readonly SqlStatement _sqlStatement;
 
-    public ResolvedSubStatementTableInfo (Type itemType, string tableAlias, SqlStatement sqlStatement)
+    public ResolvedSubStatementTableInfo (string tableAlias, SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("itemType", itemType);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       
       _sqlStatement = sqlStatement;
       _tableAlias = tableAlias;
-      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable(sqlStatement.DataInfo.DataType, "DataType"); //TODO 2616: itemType;
+      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable(sqlStatement.DataInfo.DataType, "DataType");
     }
 
     public virtual Type ItemType

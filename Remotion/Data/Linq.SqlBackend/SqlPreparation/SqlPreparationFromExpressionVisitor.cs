@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // resolved anyway.)
 
       var type = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "expression");
-      var tableInfo = new ResolvedSubStatementTableInfo (type, _generator.GetUniqueIdentifier ("q"), expression.SqlStatement);
+      var tableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), expression.SqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       return new SqlTableReferenceExpression (sqlTable);
     }

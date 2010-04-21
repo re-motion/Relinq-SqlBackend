@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
 
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-      return new SqlSubStatementExpression (sqlStatement, expression.Type);
+      return new SqlSubStatementExpression (sqlStatement);
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)

@@ -149,7 +149,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var sqlSubStatement = GetStatementAndResetBuilder();
         var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement, sqlSubStatement.DataInfo.DataType);
+        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
         var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
 
         SqlStatementBuilder.SelectProjection = sqlInExpression;
@@ -173,9 +173,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var sqlStatement = GetStatementAndResetBuilder ();
 
-        var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-            sqlStatement.DataInfo.DataType,
-            _generator.GetUniqueIdentifier ("q"),
+        var subStatementTableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"),
             sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
 

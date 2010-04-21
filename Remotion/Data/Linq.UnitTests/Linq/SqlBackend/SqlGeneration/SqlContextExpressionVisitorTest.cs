@@ -399,7 +399,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void ApplySqlExpressionContext_SqlSubStatementExpression_ThrowsException ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<Cook>));
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement, typeof (IQueryable<Cook>));
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
       SqlContextExpressionVisitor.ApplySqlExpressionContext (sqlSubStatementExpression, SqlExpressionContext.ValueRequired);
     }
@@ -408,7 +408,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlBinaryExpression_NoSqlEntityExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
-      var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var expression = new SqlSubStatementExpression (sqlStatement);
       var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), expression);
 
       var result = _visitor.VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
@@ -421,7 +421,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlBinaryExpression_WithSqlEnitiyExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
-      var expression = new SqlSubStatementExpression (sqlStatement, typeof (Cook));
+      var expression = new SqlSubStatementExpression (sqlStatement);
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
       var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", entityExpression, expression);
 

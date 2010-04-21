@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo_SubStatementTableInfo ()
     {
-      var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo (typeof (Cook[]), "c", _sqlStatement);
+      var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo ("c", _sqlStatement);
 
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (_sqlStatement))

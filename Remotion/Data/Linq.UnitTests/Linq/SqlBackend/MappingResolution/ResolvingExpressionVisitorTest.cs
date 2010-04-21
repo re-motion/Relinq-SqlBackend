@@ -277,7 +277,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitSqlSubStatementExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
-      var expression = new SqlSubStatementExpression (sqlStatement, typeof (int));
+      var expression = new SqlSubStatementExpression (sqlStatement);
 
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (sqlStatement))
