@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -33,12 +32,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlContextExpressionVisitorTest
   {
-    private TestableSqlExpressionContextExpressionVisitor _visitor;
+    private TestableSqlExpressionContextExpressionVisitor _nonTopLevelVisitor;
 
     [SetUp]
     public void SetUp ()
     {
-      _visitor = new TestableSqlExpressionContextExpressionVisitor();
+      _nonTopLevelVisitor = new TestableSqlExpressionContextExpressionVisitor (SqlExpressionContext.ValueRequired, false);
     }
 
     [Test]
@@ -180,7 +179,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var result = SqlContextExpressionVisitor.ApplySqlExpressionContext (columnExpression, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
-      Assert.That (result, Is.SameAs (columnExpression));
+      ExpressionTreeComparer.CheckAreEqualTrees (result, columnExpression);
     }
 
     [Test]
@@ -195,7 +194,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitExpression_Null_Ignored ()
     {
-      var result = _visitor.VisitExpression (null);
+      var result = _nonTopLevelVisitor.VisitExpression (null);
       Assert.That (result, Is.Null);
     }
 
@@ -204,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.Equal (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.Equal (Expression.Constant (1), Expression.Constant (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -215,7 +214,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.NotEqual (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.NotEqual (Expression.Constant (1), Expression.Constant (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -226,7 +225,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.AndAlso (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.AndAlso (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -239,7 +238,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.OrElse (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.OrElse (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -252,7 +251,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.And (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.And (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -265,7 +264,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.Or (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.Or (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -278,7 +277,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = Expression.ExclusiveOr (Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitBinaryExpression (expression);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
 
       var expectedExpression = Expression.ExclusiveOr (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -287,11 +286,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitBinaryExpression_BinaryBoolExpression_PassesMethod ()
+    {
+      var operatorMethod = typeof (SqlContextExpressionVisitorTest).GetMethod ("FakeAndOperator");
+      var expression = Expression.And (Expression.Constant (true), Expression.Constant (false), operatorMethod);
+      Assert.That (expression.Method, Is.Not.Null);
+
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (expression);
+
+      var expectedExpression = Expression.And (
+          Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
+          Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)),
+          operatorMethod);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
     public void VisitBinaryExpression_OtherBinaryExpression_Unchanged ()
     {
       var binary = BinaryExpression.And (Expression.Constant (5), Expression.Constant (5));
 
-      var result = _visitor.VisitBinaryExpression (binary);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (binary);
 
       Assert.That (result, Is.SameAs (binary));
     }
@@ -301,11 +316,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var binary = BinaryExpression.And (Expression.Convert (Expression.Not (Expression.Constant (true)), typeof (int)), Expression.Constant (5));
 
-      var result = _visitor.VisitBinaryExpression (binary);
+      var result = _nonTopLevelVisitor.VisitBinaryExpression (binary);
 
       var expectedExpression =
           BinaryExpression.And (
-              Expression.Convert (Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))), typeof (int)),
+              Expression.Convert (
+                  new SqlCaseExpression (
+                      Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
+                      new SqlLiteralExpression (1),
+                      new SqlLiteralExpression (0)),
+                  typeof (int)),
               Expression.Constant (5));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
@@ -315,7 +335,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var unaryExpression = Expression.Not (Expression.Constant (true));
 
-      var result = _visitor.VisitUnaryExpression (unaryExpression);
+      var result = _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
 
       var expectedExpression = Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -328,7 +348,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var unaryExpression = Expression.Convert (Expression.Constant (true), typeof (bool));
 
-      _visitor.VisitUnaryExpression (unaryExpression);
+      _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
     }
 
     [Test]
@@ -336,7 +356,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var unaryExpression = Expression.Not (Expression.Constant (5));
 
-      var result = _visitor.VisitUnaryExpression (unaryExpression);
+      var result = _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
 
       Assert.That (result, Is.SameAs (unaryExpression));
     }
@@ -344,22 +364,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitUnaryExpression_OtherUnaryExpression_ChangedWhenInnerExpressionReplaced ()
     {
-      var unaryExpression = Expression.Not (Expression.Convert (Expression.Not (Expression.Constant (true)), typeof (int)));
+      var unaryExpression = // ValueRequired
+          Expression.Not ( // ValueRequired
+            Expression.Convert ( 
+              Expression.Not (
+                Expression.Constant (true)
+              ), 
+              typeof (int)));
 
-      var result = _visitor.VisitUnaryExpression (unaryExpression);
+      var result = _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
 
       var expectedExpression =
           Expression.Not (
-              Expression.Convert (Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))), typeof (int)));
+              Expression.Convert (
+                  new SqlCaseExpression (
+                      Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))), 
+                      new SqlLiteralExpression (1),
+                      new SqlLiteralExpression (0)),
+                      typeof (int)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
-
+    
     [Test]
     public void VisitSqlCaseExpression_ConvertsTestToPredicate ()
     {
       var caseExpression = new SqlCaseExpression (Expression.Constant (true), Expression.Constant (0), Expression.Constant (1));
 
-      var result = _visitor.VisitSqlCaseExpression (caseExpression);
+      var result = _nonTopLevelVisitor.VisitSqlCaseExpression (caseExpression);
 
       var expectedExpression = new SqlCaseExpression (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -374,7 +405,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var caseExpression = new SqlCaseExpression (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
 
-      var result = _visitor.VisitSqlCaseExpression (caseExpression);
+      var result = _nonTopLevelVisitor.VisitSqlCaseExpression (caseExpression);
 
       var expectedExpression = new SqlCaseExpression (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -389,19 +420,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (Cook));
 
-      var result = _visitor.VisitExpression (expression);
+      var result = _nonTopLevelVisitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
-    public void ApplySqlExpressionContext_SqlSubStatementExpression_ThrowsException ()
-    {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<Cook>));
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-
-      SqlContextExpressionVisitor.ApplySqlExpressionContext (sqlSubStatementExpression, SqlExpressionContext.ValueRequired);
     }
 
     [Test]
@@ -411,21 +432,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expression = new SqlSubStatementExpression (sqlStatement);
       var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), expression);
 
-      var result = _visitor.VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
+      var result = ((ISqlSpecificExpressionVisitor) _nonTopLevelVisitor).VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
 
       Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (result, Is.SameAs (sqlBinaryOperatorExpression));
     }
 
     [Test]
-    public void VisitSqlBinaryExpression_WithSqlEnitiyExpression ()
+    public void VisitSqlBinaryExpression_WithSqlEntityExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
       var expression = new SqlSubStatementExpression (sqlStatement);
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
       var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", entityExpression, expression);
 
-      var result = _visitor.VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
+      var result = ((ISqlSpecificExpressionVisitor) _nonTopLevelVisitor).VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
 
       Assert.That (result, Is.Not.SameAs (sqlBinaryOperatorExpression));
     }
@@ -435,7 +456,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (1));
 
-      var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
+      var result = _nonTopLevelVisitor.VisitSqlIsNullExpression (sqlIsNullExpression);
 
       Assert.That (result, Is.SameAs (sqlIsNullExpression));
     }
@@ -446,7 +467,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var entityExpression = new SqlEntityExpression (SqlStatementModelObjectMother.CreateSqlTable(), new SqlColumnExpression (typeof (int), "c", "ID"));
       var sqlIsNullExpression = new SqlIsNullExpression (entityExpression);
 
-      var result = _visitor.VisitSqlIsNullExpression (sqlIsNullExpression);
+      var result = _nonTopLevelVisitor.VisitSqlIsNullExpression (sqlIsNullExpression);
       
       Assert.That (result, Is.Not.SameAs (sqlIsNullExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (SqlColumnExpression)));
@@ -457,7 +478,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (1));
 
-      var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
+      var result = _nonTopLevelVisitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
 
       Assert.That (result, Is.SameAs (sqlIsNotNullExpression));
     }
@@ -468,10 +489,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var entityExpression = new SqlEntityExpression (SqlStatementModelObjectMother.CreateSqlTable (), new SqlColumnExpression (typeof (int), "c", "ID"));
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (entityExpression);
 
-      var result = _visitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
+      var result = _nonTopLevelVisitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpression);
 
       Assert.That (result, Is.Not.SameAs (sqlIsNotNullExpression));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.TypeOf (typeof (SqlColumnExpression)));
+    }
+
+    public static bool FakeAndOperator (bool operand1, bool operand2)
+    {
+      throw new NotImplementedException();
     }
   }
 }

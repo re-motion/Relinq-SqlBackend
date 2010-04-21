@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -35,103 +34,103 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// and boolean columns are interpreted as integer values. In scenarios where a predicate is required, boolean expressions are constructed by 
   /// comparing those integer values to 1 and 0 literals.
   /// </remarks>
-  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor
+  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor
   {
-    private static readonly SqlContextExpressionVisitor s_visitorInstance = new SqlContextExpressionVisitor ();
-
     public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var result = s_visitorInstance.VisitExpression (expression);
-
-      if (initialSemantics == SqlExpressionContext.ValueRequired)
-        return EnsureValueSemantics (result);
-      else if (initialSemantics == SqlExpressionContext.SingleValueRequired)
-        return EnsureSingleValueSemantics (result);
-      else if (initialSemantics == SqlExpressionContext.PredicateRequired)
-        return EnsurePredicateSemantics (result);
-      else
-        throw new NotImplementedException ("Invalid enum value: " + initialSemantics);
+      var visitor = new SqlContextExpressionVisitor (initialSemantics, true);
+      return visitor.VisitExpression (expression);
     }
 
-    private static Expression EnsureValueSemantics (Expression expression)
+    private readonly SqlExpressionContext _currentContext;
+    
+    private bool _isTopLevelExpression;
+    
+    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression)
     {
-      if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
-        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
+      _currentContext = currentContext;
+      _isTopLevelExpression = isTopLevelExpression;
+    }
 
-      if (expression.Type == typeof (bool))
-      {
-        if (expression.NodeType == ExpressionType.Constant)
-          return ConvertBoolConstantToValue ((ConstantExpression) expression);
-        else if (expression is SqlColumnExpression)
-          return ConvertSqlColumnToValue ((SqlColumnExpression) expression);
-        else
-          return new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-      }
-      else
-      {
+    public override Expression VisitExpression (Expression expression)
+    {
+      if (expression == null)
         return expression;
-      }
-    }
 
-    private static Expression EnsureSingleValueSemantics (Expression expression)
-    {
-      var entityExpression = expression as SqlEntityExpression;
-      if (entityExpression != null)
-        return entityExpression.PrimaryKeyColumn;
+      // Expressions that are not on the top level always need SingleValueRequired semantics
+      if (!_isTopLevelExpression && _currentContext != SqlExpressionContext.SingleValueRequired)
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
 
-      var entityConstantExpression = expression as SqlEntityConstantExpression;
-      if (entityConstantExpression != null)
-        return Expression.Constant (entityConstantExpression.PrimaryKeyValue, entityConstantExpression.PrimaryKeyValue.GetType());
-      
-      return EnsureValueSemantics (expression);
-    }
+      // This is only executed if the _currentContext is SingleValueRequired or if we are at the top level
 
-    private static Expression EnsurePredicateSemantics (Expression expression)
-    {
-      if (expression.Type == typeof (bool))
+      _isTopLevelExpression = false;
+
+      // TODO 2639: Move to SqlStatement ctor
+      //if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+      //  throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
+
+      //TODO 2639: add visitor interface, move to VisitSqlEntityConstantExpression method
+      if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
-        if (expression.NodeType == ExpressionType.Constant)
-          return ConvertBoolConstantToPredicate ((ConstantExpression) expression);
-        else if (expression is SqlColumnExpression)
-          return ConvertSqlColumnToPredicate ((SqlColumnExpression) expression);
-        else
-          return expression;
+        var entityConstantExpression = expression as SqlEntityConstantExpression;
+        if (entityConstantExpression != null)
+          return Expression.Constant (entityConstantExpression.PrimaryKeyValue, entityConstantExpression.PrimaryKeyValue.GetType());
       }
-      else if (expression.Type == typeof (int))
-        return Expression.Equal (expression, new SqlLiteralExpression (1));
+
+      var newExpression = base.VisitExpression (expression);
+
+      switch (_currentContext)
+      {
+        case SqlExpressionContext.SingleValueRequired:
+        case SqlExpressionContext.ValueRequired:
+          if (newExpression.Type == typeof (bool))
+            return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+          else
+            return newExpression;
+        case SqlExpressionContext.PredicateRequired:
+          if (newExpression.Type == typeof (bool))
+            return newExpression;
+          else if (newExpression.Type == typeof (int))
+            return Expression.Equal (newExpression, new SqlLiteralExpression (1));
+          else
+            throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", expression.Type));
+      }
+
+      throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
+    }
+     
+    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    {
+      // Always convert boolean constants to int constants because in the database, there are no boolean constants
+      if (expression.Type == typeof (bool))
+        return expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
       else
-        throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", expression.Type));
+        return expression; // rely on VisitExpression to apply correct semantics
     }
 
-    private static Expression ConvertBoolConstantToValue (ConstantExpression expression)
+    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
     {
-      return expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
+      // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
+      if (expression.Type == typeof (bool))
+        return new SqlColumnExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName);
+      else
+        return expression; // rely on VisitExpression to apply correct semantics
     }
 
-    private static Expression ConvertBoolConstantToPredicate (ConstantExpression expression)
+    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
-      var expressionAsValue = ConvertBoolConstantToValue (expression); // 1/0
-      return EnsurePredicateSemantics (expressionAsValue); // 1/0 == 1
+      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+        return expression.PrimaryKeyColumn;
+      else
+        return expression; // rely on VisitExpression to apply correct semantics
     }
 
-    private static Expression ConvertSqlColumnToValue (SqlColumnExpression expression)
+    public Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
     {
-      return new SqlColumnExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName);
+      return base.VisitUnknownExpression (expression);
     }
-
-    private static Expression ConvertSqlColumnToPredicate (SqlColumnExpression expression)
-    {
-      var expressionAsValue = ConvertSqlColumnToValue (expression); // int column
-      return EnsurePredicateSemantics (expressionAsValue); // int column == 1
-    }
-
-    protected SqlContextExpressionVisitor ()
-    {
-    }
-
-    // The Visit methods model the rules of where what kind of expression context is required
 
     public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
     {
@@ -152,13 +151,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if (expression.Type != typeof (bool))
         return base.VisitBinaryExpression (expression);
 
-      var childSemantics = GetChildSemanticsForBoolExpression (expression.NodeType);
-
-      var left = ApplySqlExpressionContext (expression.Left, childSemantics);
-      var right = ApplySqlExpressionContext (expression.Right, childSemantics);
+      var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
+      var left = ApplySqlExpressionContext (expression.Left, childContext);
+      var right = ApplySqlExpressionContext (expression.Right, childContext);
 
       if (left != expression.Left || right != expression.Right)
-        expression = Expression.MakeBinary (expression.NodeType, left, right);
+        expression = Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
       
       return expression;
     }
@@ -170,26 +168,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if (expression.Type != typeof (bool))
         return base.VisitUnaryExpression (expression);
 
-      var childSemantics = GetChildSemanticsForBoolExpression (expression.NodeType);
-
-      var operand = ApplySqlExpressionContext (expression.Operand, childSemantics);
+      var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
+      var operand = ApplySqlExpressionContext (expression.Operand, childContext);
 
       if (operand != expression.Operand)
         expression = Expression.MakeUnary (expression.NodeType, operand, expression.Type, expression.Method);
 
-      return expression;
-    }
-
-    Expression ISqlSpecificExpressionVisitor.VisitSqlLiteralExpression (SqlLiteralExpression expression)
-    {
-      return VisitUnknownExpression (expression);
-    }
-
-    public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
-    {
-      var newExpression = ApplySqlExpressionContext (expression.LeftExpression, SqlExpressionContext.SingleValueRequired);
-      if (newExpression != expression.LeftExpression)
-        return new SqlBinaryOperatorExpression (expression.BinaryOperator, newExpression, expression.RightExpression);
       return expression;
     }
 
@@ -209,16 +193,26 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    Expression ISqlSpecificExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    Expression ISqlSpecificExpressionVisitor.VisitSqlConvertExpression (SqlConvertExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
+    Expression ISqlSpecificExpressionVisitor.VisitSqlLiteralExpression (SqlLiteralExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
+    Expression ISqlSpecificExpressionVisitor.VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
+    {
+      return base.VisitUnknownExpression (expression);
+    }
+    
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)
     {
       switch (expressionType)
@@ -245,5 +239,50 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           return SqlExpressionContext.SingleValueRequired;
       }
     }
+
+    // TODO 2639
+    //  switch (_currentContext)
+    //  {
+    //    case SqlExpressionContext.SingleValueRequired:
+    //      return HandleSingleValueSemantics (expression);
+    //    case SqlExpressionContext.ValueRequired:
+    //      return HandleValueSemantics (expression);
+    //    case SqlExpressionContext.PredicateRequired:
+    //      return HandlePredicateSemantics (expression);
+    //  }
+    //}
+
+    //private Expression HandleSingleValueSemantics (Expression expression)
+    //{
+    //  if (newExpression.Type == typeof (bool))
+    //    return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+    //  else
+    //    return newExpression;
+    //}
+
+    //private Expression HandleValueSemantics (Expression expression)
+    //{
+    //  if (!_isTopLevelExpression)
+    //    return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
+
+    //  if (newExpression.Type == typeof (bool))
+    //    return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+    //  else
+    //    return newExpression;
+    //}
+
+    //private Expression HandlePredicateSemantics (Expression expression)
+    //{
+    //  if (!_isTopLevelExpression)
+    //    return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
+
+    //  if (newExpression.Type == typeof (bool))
+    //    return newExpression;
+    //  else if (newExpression.Type == typeof (int))
+    //    return Expression.Equal (newExpression, new SqlLiteralExpression (1));
+    //  else
+    //    throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", expression.Type));
+    //}
+   
   }
 }

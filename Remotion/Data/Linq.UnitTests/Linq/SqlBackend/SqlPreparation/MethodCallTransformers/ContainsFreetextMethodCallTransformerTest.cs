@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var argumentExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
 
       var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
-          typeof (bool), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), language);
+          typeof (string), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), language);
 
       var expectedResult =
           new SqlFunctionExpression (typeof (bool), "FREETEXT", objectExpression, argumentExpression, compositeExpression);

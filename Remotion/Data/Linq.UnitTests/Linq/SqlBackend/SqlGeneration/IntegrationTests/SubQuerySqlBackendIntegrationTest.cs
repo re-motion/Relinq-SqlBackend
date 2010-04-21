@@ -123,12 +123,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 2639")]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void InSelectProjection_ThrowsNotSupportedException ()
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name),
-          "SELECT (SELECT [t1].[Name] FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
+          "SELECT (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
     }
 
     [Test]

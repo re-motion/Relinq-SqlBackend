@@ -21,6 +21,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
   public class TestableSqlExpressionContextExpressionVisitor : SqlContextExpressionVisitor
   {
+    public TestableSqlExpressionContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression)
+        : base(currentContext, isTopLevelExpression)
+    {
+    }
+
     public new Expression VisitBinaryExpression (BinaryExpression expression)
     {
       return base.VisitBinaryExpression (expression);
