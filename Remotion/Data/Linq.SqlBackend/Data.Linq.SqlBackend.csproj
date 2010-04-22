@@ -86,8 +86,8 @@
     <Compile Include="SqlPreparation\MethodCallTransformerRegistry.cs" />
     <Compile Include="SqlGeneration\SqlCommandData.cs" />
     <Compile Include="SqlGeneration\SqlCommandBuilder.cs" />
-    <Compile Include="SqlGeneration\SqlContextExpressionVisitor.cs" />
-    <Compile Include="SqlGeneration\SqlExpressionContext.cs" />
+    <Compile Include="MappingResolution\SqlContextExpressionVisitor.cs" />
+    <Compile Include="MappingResolution\SqlExpressionContext.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingExpressionVisitor.cs" />
     <Compile Include="SqlGeneration\SqlStatementTextGenerator.cs" />
     <Compile Include="SqlGeneration\SqlTableAndJoinTextGenerator.cs" />

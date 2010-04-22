@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
   /// Describes whether predicate or value semantics is required for boolean expressions in the current context.

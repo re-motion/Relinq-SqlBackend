@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
