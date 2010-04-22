@@ -102,6 +102,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return VisitExpression (resolvedMemberExpression);
       }
 
+      //member withe a cast?
+      var newExpressionAsUnaryExpression = newExpression as UnaryExpression;
+      if (newExpressionAsUnaryExpression != null && newExpressionAsUnaryExpression.NodeType==ExpressionType.Convert)
+      {
+        return newExpressionAsUnaryExpression.Operand;
+      }
+
       throw new NotSupportedException (string.Format ("Resolved inner expression of type {0} is not supported.", newExpression.Type.Name));
     }
 

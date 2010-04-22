@@ -143,6 +143,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitMemberExpression_OnUnaryExpression ()
+    {
+      var operand = Expression.Constant(new Cook());
+      var convertExpression = Expression.Convert (operand, typeof (Chef));
+      var memberExpression = Expression.MakeMemberAccess (convertExpression, typeof (Chef).GetProperty ("LetterOfRecommendation"));
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (operand))
+          .Return (operand);
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
+
+      Assert.That (result, Is.SameAs (operand));
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+
+
+    [Test]
     [ExpectedException(typeof(NotSupportedException))]
     public void VisitMemberExpression_MemberAppliedToConstant ()
     {
