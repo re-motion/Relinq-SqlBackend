@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -71,7 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       //if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
       //  throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
-      //TODO 2639: add visitor interface, move to VisitSqlEntityConstantExpression method
+      //TODO 2639: add visitor interface, move to VisitSqlEntityConstantExpression method; don't forget test
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
         var entityConstantExpression = expression as SqlEntityConstantExpression;
@@ -95,7 +96,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           else if (newExpression.Type == typeof (int))
             return Expression.Equal (newExpression, new SqlLiteralExpression (1));
           else
-            throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", expression.Type));
+          {
+            var message = string.Format (
+                "An expression ('{0}') evaluating to type '{1}' was used where a predicate is required.", 
+                FormattingExpressionTreeVisitor.Format (expression), 
+                expression.Type);
+            throw new InvalidOperationException (message);
+          }
       }
 
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
@@ -125,11 +132,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         return expression.PrimaryKeyColumn;
       else
         return expression; // rely on VisitExpression to apply correct semantics
-    }
-
-    public Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
-    {
-      return base.VisitUnknownExpression (expression);
     }
 
     public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
@@ -191,6 +193,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if (newExpression != expression.Expression)
         return new SqlIsNotNullExpression (newExpression);
       return expression;
+    }
+
+    Expression IResolvedSqlExpressionVisitor.VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
+    {
+      return base.VisitUnknownExpression (expression);
     }
 
     Expression ISqlSpecificExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)

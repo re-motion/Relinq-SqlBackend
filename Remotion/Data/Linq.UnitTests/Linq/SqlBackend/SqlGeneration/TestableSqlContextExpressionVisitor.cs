@@ -19,9 +19,9 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
-  public class TestableSqlExpressionContextExpressionVisitor : SqlContextExpressionVisitor
+  public class TestableSqlContextExpressionVisitor : SqlContextExpressionVisitor
   {
-    public TestableSqlExpressionContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression)
+    public TestableSqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression)
         : base(currentContext, isTopLevelExpression)
     {
     }
