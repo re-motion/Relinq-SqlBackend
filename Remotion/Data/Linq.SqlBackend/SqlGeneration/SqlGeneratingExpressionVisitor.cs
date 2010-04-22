@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -45,7 +46,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var expressionWithBooleanSemantics = SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, context);
+      var expressionWithBooleanSemantics = SqlContextExpressionVisitor.ApplySqlExpressionContext (
+          expression, context, new DefaultSqlContextResolutionStage()); //TODO 2641: stage as parameter!?
 
       var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expressionWithBooleanSemantics);
@@ -125,7 +127,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         var collection = ((ICollection) expression.Value);
         if (collection.Count == 0)
           throw new NotSupportedException ("Empty collections are not supported.");
-        
+
         var items = collection.Cast<object>();
         _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
         _commandBuilder.Append (")");
@@ -144,7 +146,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (expression.Type == typeof (int))
-        _commandBuilder.Append (expression.Value.ToString ());
+        _commandBuilder.Append (expression.Value.ToString());
       else
         _commandBuilder.AppendStringLiteral ((string) expression.Value);
       return expression;

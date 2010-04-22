@@ -18,13 +18,12 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
@@ -33,11 +32,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   public class SqlContextExpressionVisitorTest
   {
     private TestableSqlContextExpressionVisitor _nonTopLevelVisitor;
+    private DefaultSqlContextResolutionStage _stage;
 
     [SetUp]
     public void SetUp ()
     {
-      _nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false);
+      _stage = new DefaultSqlContextResolutionStage ();
+      _nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stage);
     }
 
     [Test]
@@ -46,8 +47,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var valueExpression = Expression.Constant (0);
       var predicateExpression = Expression.Constant (true);
 
-      var convertedValue = SqlContextExpressionVisitor.ApplySqlExpressionContext (valueExpression, SqlExpressionContext.PredicateRequired);
-      var convertedPredicate = SqlContextExpressionVisitor.ApplySqlExpressionContext (predicateExpression, SqlExpressionContext.SingleValueRequired);
+      var convertedValue = SqlContextExpressionVisitor.ApplySqlExpressionContext (valueExpression, SqlExpressionContext.PredicateRequired, _stage);
+      var convertedPredicate = SqlContextExpressionVisitor.ApplySqlExpressionContext (predicateExpression, SqlExpressionContext.SingleValueRequired, _stage);
 
       var expectedConvertedValue = Expression.Equal (valueExpression, new SqlLiteralExpression (1));
       var expectedConvertedPredicate = Expression.Constant (1);
@@ -68,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stage);
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
@@ -79,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
       
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stage);
       var result = visitor.VisitExpression (expression);
 
       var expected = new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -92,7 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stage);
       var result = visitor.VisitExpression (expression);
 
       var expected = new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -105,7 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stage);
       var result = visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -116,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stage);
       var result = visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -127,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stage);
       var result = visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -138,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stage);
       var result = visitor.VisitExpression (expression);
 
       var expected = Expression.Equal (expression, new SqlLiteralExpression (1));
@@ -153,7 +154,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (string));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stage);
       visitor.VisitExpression (expression);
     }
 
@@ -163,7 +164,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (string));
 
-      var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), true);
+      var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), true, _stage);
       visitor.VisitExpression (expression);
     }
 
@@ -172,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stage);
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.Not.SameAs (entityExpression));
@@ -184,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stage);
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
@@ -196,7 +197,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var childExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
       var parentExpression = new CustomCompositeExpression (typeof (bool), childExpression);
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stage);
       var result = visitor.VisitExpression (parentExpression);
 
       var expectedExpression = new CustomCompositeExpression (typeof (bool), childExpression.PrimaryKeyColumn);
@@ -255,7 +256,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stage);
       var result =  visitor.VisitSqlEntityExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
@@ -266,7 +267,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stage);
       var result = visitor.VisitSqlEntityExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
@@ -460,32 +461,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
     
     [Test]
-    public void VisitSqlBinaryExpression_NoSqlEntityExpression ()
-    {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
-      var expression = new SqlSubStatementExpression (sqlStatement);
-      var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), expression);
-
-      var result = ((ISqlSpecificExpressionVisitor) _nonTopLevelVisitor).VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      Assert.That (result, Is.SameAs (sqlBinaryOperatorExpression));
-    }
-
-    [Test]
-    public void VisitSqlBinaryExpression_WithSqlEntityExpression ()
-    {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
-      var expression = new SqlSubStatementExpression (sqlStatement);
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
-      var sqlBinaryOperatorExpression = new SqlBinaryOperatorExpression ("IN", entityExpression, expression);
-
-      var result = ((ISqlSpecificExpressionVisitor) _nonTopLevelVisitor).VisitSqlBinaryOperatorExpression (sqlBinaryOperatorExpression);
-
-      Assert.That (result, Is.Not.SameAs (sqlBinaryOperatorExpression));
-    }
-
-    [Test]
     public void VisitSqlIsNullExpression_AppliesSingleValueSemantics ()
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
@@ -517,6 +492,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var expectedResultWithEntity = new SqlIsNotNullExpression (entityExpression.PrimaryKeyColumn);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResultWithEntity, resultWithEntity);
+    }
+
+    [Test]
+    [Ignore ("TODO 2640")]
+    public void VisitSqlSubStatementExpression ()
+    {
+      Assert.Fail ("TODO");
     }
 
     public static bool FakeAndOperator (bool operand1, bool operand2)

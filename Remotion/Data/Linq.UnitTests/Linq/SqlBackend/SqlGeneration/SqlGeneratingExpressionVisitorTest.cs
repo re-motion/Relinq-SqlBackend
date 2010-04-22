@@ -150,22 +150,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitConstantExpression_Collection ()
     {
-      var collectionExpression = Expression.Constant (new [] {"Hugo", "Maier", "Markart"});
+      var collectionExpression = Expression.Constant (new[] { "Hugo", "Maier", "Markart" });
       var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant ("Hubert"), collectionExpression);
-      
+
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
 
-      var expectedParameters = new[] { 
-          new CommandParameter("@1", "Hubert"),
-          new CommandParameter("@2", "Hugo"),
-          new CommandParameter("@3", "Maier"),
-          new CommandParameter("@4", "Markart")};
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IN (@2, @3, @4)"));
-      Assert.That (_commandBuilder.GetCommandParameters (), Is.EqualTo (expectedParameters));
+      var expectedParameters = new[]
+                               {
+                                   new CommandParameter ("@1", "Hubert"),
+                                   new CommandParameter ("@2", "Hugo"),
+                                   new CommandParameter ("@3", "Maier"),
+                                   new CommandParameter ("@4", "Markart")
+                               };
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (@2, @3, @4)"));
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void VisitConstantExpression_EmptyCollection ()
     {
       var collectionExpression = Expression.Constant (new string[] { });
@@ -283,13 +285,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))
+          .Expect (
+          mock =>
+          mock.GenerateTextForSqlStatement (
+              Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything, Arg.Is (SqlExpressionContext.SingleValueRequired)))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SELECT [t].[Name] FROM [Table] AS [t]"));
+      _stageMock.Replay();
 
       SqlGeneratingExpressionVisitor.GenerateSql (
           subStatementExpression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT [t].[Name] FROM [Table] AS [t])"));
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -316,13 +323,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.SingleValueRequired))
+          .Expect (
+          mock =>
+          mock.GenerateTextForSqlStatement (
+              Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything, Arg.Is (SqlExpressionContext.SingleValueRequired)))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
+      _stageMock.Replay();
 
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlInExpression, _commandBuilder, SqlExpressionContext.PredicateRequired, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (test)"));
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -345,7 +357,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("1"));
-
     }
 
     [Test]
@@ -355,7 +366,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("'1'"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("'1'"));
     }
 
     [Test]
@@ -365,7 +376,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("''"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("''"));
     }
 
     [Test]
@@ -409,7 +420,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[value]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[value]"));
     }
 
     [Test]
@@ -419,7 +430,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("TestableSqlCustomTextGeneratorExpression"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("TestableSqlCustomTextGeneratorExpression"));
     }
   }
 }

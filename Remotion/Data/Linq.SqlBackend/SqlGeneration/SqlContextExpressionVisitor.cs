@@ -18,6 +18,8 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -35,24 +37,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   /// and boolean columns are interpreted as integer values. In scenarios where a predicate is required, boolean expressions are constructed by 
   /// comparing those integer values to 1 and 0 literals.
   /// </remarks>
-  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor
+  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, ISqlSubStatementVisitor
   {
-    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics)
+    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, ISqlContextResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlContextExpressionVisitor (initialSemantics, true);
+      var visitor = new SqlContextExpressionVisitor (initialSemantics, true, stage);
       return visitor.VisitExpression (expression);
     }
 
     private readonly SqlExpressionContext _currentContext;
     
     private bool _isTopLevelExpression;
-    
-    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression)
+    private readonly ISqlContextResolutionStage _stage;
+
+    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, ISqlContextResolutionStage stage)
     {
       _currentContext = currentContext;
       _isTopLevelExpression = isTopLevelExpression;
+      _stage = stage;
     }
 
     public override Expression VisitExpression (Expression expression)
@@ -62,7 +67,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       // Expressions that are not on the top level always need SingleValueRequired semantics
       if (!_isTopLevelExpression && _currentContext != SqlExpressionContext.SingleValueRequired)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
 
       // This is only executed if the _currentContext is SingleValueRequired or if we are at the top level
 
@@ -136,9 +141,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
     {
-      var testPredicate = ApplySqlExpressionContext (expression.TestPredicate, SqlExpressionContext.PredicateRequired);
-      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.SingleValueRequired);
-      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.SingleValueRequired);
+      var testPredicate = ApplySqlExpressionContext (expression.TestPredicate, SqlExpressionContext.PredicateRequired, _stage);
+      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.SingleValueRequired, _stage);
+      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.SingleValueRequired, _stage);
 
       if (testPredicate != expression.TestPredicate || thenValue != expression.ThenValue || elseValue != expression.ElseValue)
         return new SqlCaseExpression (testPredicate, thenValue, elseValue);
@@ -154,8 +159,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         return base.VisitBinaryExpression (expression);
 
       var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
-      var left = ApplySqlExpressionContext (expression.Left, childContext);
-      var right = ApplySqlExpressionContext (expression.Right, childContext);
+      var left = ApplySqlExpressionContext (expression.Left, childContext, _stage);
+      var right = ApplySqlExpressionContext (expression.Right, childContext, _stage);
 
       if (left != expression.Left || right != expression.Right)
         expression = Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
@@ -171,7 +176,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         return base.VisitUnaryExpression (expression);
 
       var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
-      var operand = ApplySqlExpressionContext (expression.Operand, childContext);
+      var operand = ApplySqlExpressionContext (expression.Operand, childContext, _stage);
 
       if (operand != expression.Operand)
         expression = Expression.MakeUnary (expression.NodeType, operand, expression.Type, expression.Method);
@@ -181,7 +186,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
     {
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage);
       if (newExpression != expression.Expression)
         return new SqlIsNullExpression (newExpression);
       return expression;
@@ -189,15 +196,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage);
       if (newExpression != expression.Expression)
         return new SqlIsNotNullExpression (newExpression);
       return expression;
     }
 
+    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newSqlStatement = _stage.ApplyContext (expression.SqlStatement, _currentContext);
+      if (expression.SqlStatement != newSqlStatement)
+        return new SqlSubStatementExpression (newSqlStatement);
+      return expression;
+    }
+
     Expression IResolvedSqlExpressionVisitor.VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
     {
-      return base.VisitUnknownExpression (expression);
+      return VisitUnknownExpression (expression);
     }
 
     Expression ISqlSpecificExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)
@@ -217,7 +236,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     Expression ISqlSpecificExpressionVisitor.VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
-      return base.VisitUnknownExpression (expression);
+      return VisitUnknownExpression (expression);
     }
     
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)

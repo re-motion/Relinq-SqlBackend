@@ -43,8 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
+    <Compile Include="MappingResolution\DefaultSqlContextResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
+    <Compile Include="MappingResolution\ISqlContextResolutionStage.cs" />
+    <Compile Include="MappingResolution\SqlContextStatementVisitor.cs" />
     <Compile Include="SqlGeneration\IMethodCallTransformer.cs" />
     <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />
     <Compile Include="SqlGeneration\ISqlCustomTextGeneratorExpressionVisitor.cs" />
