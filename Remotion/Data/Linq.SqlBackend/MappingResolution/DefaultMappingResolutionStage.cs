@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
@@ -82,6 +83,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     }
 
     public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+
+      var resolvedStatement = SqlStatementResolver.ResolveExpressions (this, sqlStatement);
+      return SqlContextStatementVisitor.ApplyContext (resolvedStatement, SqlExpressionContext.ValueRequired, new DefaultSqlContextResolutionStage()); //TODO 2641: check stage
+    }
+
+    public virtual SqlStatement ResolveSqlSubStatement (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 

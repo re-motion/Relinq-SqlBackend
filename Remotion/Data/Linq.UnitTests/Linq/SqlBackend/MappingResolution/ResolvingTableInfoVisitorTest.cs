@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo ("c", _sqlStatement);
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (_sqlStatement))
+          .Expect (mock => mock.ResolveSqlSubStatement (_sqlStatement))
           .Return(_sqlStatement);
       _resolverMock.Replay();
 

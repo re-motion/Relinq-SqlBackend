@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement);
+      var newSqlStatement = _stage.ResolveSqlSubStatement (expression.SqlStatement);
       return new SqlSubStatementExpression (newSqlStatement);
     }
   }
