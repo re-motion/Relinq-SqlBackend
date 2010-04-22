@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
@@ -495,10 +496,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [Ignore ("TODO 2640")]
     public void VisitSqlSubStatementExpression ()
     {
-      Assert.Fail ("TODO");
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = _nonTopLevelVisitor.VisitSqlSubStatementExpression (sqlSubStatementExpression);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.Not.SameAs (sqlStatement));
     }
 
     public static bool FakeAndOperator (bool operand1, bool operand2)
