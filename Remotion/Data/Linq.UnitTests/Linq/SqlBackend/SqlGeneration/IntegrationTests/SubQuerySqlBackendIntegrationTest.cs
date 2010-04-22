@@ -94,6 +94,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void ComplexSubQuery_WithEntityComparison_InAdditionalFromClause ()
+    {
+      CheckQuery (
+          from s in Cooks from s2 in (from s3 in Cooks where s3 == s select s3) select s2.FirstName,
+          "SELECT [q0].[FirstName] AS [value] FROM [CookTable] AS [t1] CROSS APPLY "
+          + "(SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID] "
+          + "FROM [CookTable] AS [t2] "
+          + "WHERE ([t2].[ID] = [t1].[ID])) AS [q0]");
+    }
+
+    [Test]
     public void SubQueryInFromClause_SelectingColumn ()
     {
       CheckQuery (

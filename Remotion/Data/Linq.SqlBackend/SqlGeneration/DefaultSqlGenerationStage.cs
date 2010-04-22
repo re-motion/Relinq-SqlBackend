@@ -34,12 +34,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable);
     }
 
-    public virtual void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext)
+    public virtual void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, selectedSqlContext);
+      GenerateTextForExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlExpressionContext.PredicateRequired);
+      GenerateTextForExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
+      GenerateTextForExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
+      GenerateTextForExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -71,24 +71,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlExpressionContext.SingleValueRequired);
+      GenerateTextForExpression (commandBuilder, expression);
     }
 
-    public virtual void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement, SqlExpressionContext selectedSqlContext)
+    public virtual void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
-      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, selectedSqlContext);
+      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder);
     }
 
-    protected virtual void GenerateTextForExpression (ISqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext context)
+    protected virtual void GenerateTextForExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, context, this);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
   }
 }

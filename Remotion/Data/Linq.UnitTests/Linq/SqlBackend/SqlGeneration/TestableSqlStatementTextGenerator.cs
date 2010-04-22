@@ -27,9 +27,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
     }
 
-    public new void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    public new void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      base.BuildSelectPart (sqlStatement, commandBuilder, selectedSqlContext);
+      base.BuildSelectPart (sqlStatement, commandBuilder);
     }
 
     public new void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
@@ -42,9 +42,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       base.BuildWherePart (sqlStatement, commandBuilder);
     }
 
-    public new void BuildOrderByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    public new void BuildOrderByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      base.BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
+      base.BuildOrderByPart (sqlStatement, commandBuilder);
     }
   }
 }

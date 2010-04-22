@@ -26,11 +26,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   public interface ISqlGenerationStage
   {
     void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTableBase table, bool isFirstTable);
-    void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression, SqlExpressionContext selectedSqlContext);
+    void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression);
-    void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement, SqlExpressionContext selectedSqlContext);
+    void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement);
     void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression);
   }
 }

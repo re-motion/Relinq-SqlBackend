@@ -42,19 +42,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       get { return _stage; }
     }
 
-    public virtual void Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    public virtual void Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("selectedSqlContext", selectedSqlContext);
       
-      BuildSelectPart (sqlStatement, commandBuilder, selectedSqlContext);
+      BuildSelectPart (sqlStatement, commandBuilder);
       BuildFromPart (sqlStatement, commandBuilder);
       BuildWherePart (sqlStatement, commandBuilder);
-      BuildOrderByPart (sqlStatement, commandBuilder, selectedSqlContext);
+      BuildOrderByPart (sqlStatement, commandBuilder);
     }
 
-    protected virtual void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    protected virtual void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -82,9 +81,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           commandBuilder.Append (") ");
         }
 
-        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection, selectedSqlContext);
+        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
 
-        if (selectedSqlContext == SqlExpressionContext.SingleValueRequired || !(sqlStatement.SelectProjection is SqlEntityExpression))
+        if (!(sqlStatement.SelectProjection is SqlEntityExpression))
           commandBuilder.Append (" AS [value]");
       }
     }
@@ -120,7 +119,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    protected virtual void BuildOrderByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, SqlExpressionContext selectedSqlContext)
+    protected virtual void BuildOrderByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);

@@ -159,7 +159,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlTable = new SqlTable (resolvedSubTableInfo);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false);
@@ -176,7 +176,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlTable = new SqlTable (resolvedSubTableInfo);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, true);

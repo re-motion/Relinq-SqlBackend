@@ -40,17 +40,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         IJoinConditionExpressionVisitor,
         ISqlCustomTextGeneratorExpressionVisitor
   {
-    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, SqlExpressionContext context, ISqlGenerationStage stage)
+    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var expressionWithBooleanSemantics = SqlContextExpressionVisitor.ApplySqlExpressionContext (
-          expression, context, new DefaultSqlContextResolutionStage()); //TODO 2641: stage as parameter!?
-
       var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
-      visitor.VisitExpression (expressionWithBooleanSemantics);
+      visitor.VisitExpression (expression);
     }
 
     private readonly ISqlCommandBuilder _commandBuilder;
@@ -272,7 +269,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       _commandBuilder.Append ("(");
-      _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement, SqlExpressionContext.SingleValueRequired);
+      _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement);
       _commandBuilder.Append (")");
       return expression;
     }

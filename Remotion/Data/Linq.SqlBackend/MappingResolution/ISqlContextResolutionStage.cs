@@ -29,5 +29,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   {
     Expression ApplyContext (Expression expression, SqlExpressionContext context);
     SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context);
+    void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context);
   }
 }

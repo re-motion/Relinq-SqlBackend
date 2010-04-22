@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -24,6 +27,9 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
+  /// <summary>
+  /// <see cref="SqlContextStatementVisitor"/> applies <see cref="SqlExpressionContext"/> to a <see cref="SqlStatement"/>.
+  /// </summary>
   public class SqlContextStatementVisitor
   {
     private readonly ISqlContextResolutionStage _stage;
@@ -51,25 +57,59 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (context == SqlExpressionContext.PredicateRequired)
         throw new NotSupportedException ("A sql-statement cannot return a predicate");
 
-      var statementBuilder = new SqlStatementBuilder (sqlStatement);
+      var statementBuilder = new SqlStatementBuilder ();
 
-      var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, context);
-      if (newSelectProjection != statementBuilder.SelectProjection)
-      {
-        statementBuilder.DataInfo = GetNewDataInfo (sqlStatement.DataInfo, newSelectProjection);
-        statementBuilder.SelectProjection = newSelectProjection;
-      }
+      statementBuilder.IsCountQuery = sqlStatement.IsCountQuery;
+      statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
 
-      if(statementBuilder.WhereCondition!=null)
-        statementBuilder.WhereCondition = _stage.ApplyContext (sqlStatement.WhereCondition, SqlExpressionContext.PredicateRequired);
+      VisitSelectProjection(sqlStatement.SelectProjection, context, statementBuilder);
+      VisitWhereCondition(sqlStatement.WhereCondition, statementBuilder);
+      VisitOrderings (sqlStatement.Orderings, statementBuilder);
+      VisitTopExpression(sqlStatement.TopExpression, statementBuilder);
+      VisitSqlTables (sqlStatement.SqlTables, statementBuilder);
 
-      foreach (var ordering in statementBuilder.Orderings)
-         ordering.Expression = _stage.ApplyContext (ordering.Expression, SqlExpressionContext.SingleValueRequired);
-
-      if(statementBuilder.TopExpression!=null)
-        statementBuilder.TopExpression = _stage.ApplyContext (sqlStatement.TopExpression, SqlExpressionContext.SingleValueRequired);
+      if (statementBuilder.SelectProjection != sqlStatement.SelectProjection)
+        statementBuilder.DataInfo = GetNewDataInfo (sqlStatement.DataInfo, statementBuilder.SelectProjection);
+      else
+        statementBuilder.DataInfo = sqlStatement.DataInfo;
 
       return statementBuilder.GetSqlStatement();
+    }
+
+    private void VisitSelectProjection (Expression selectProjection, SqlExpressionContext selectContext, SqlStatementBuilder statementBuilder)
+    {
+      var newSelectProjection = _stage.ApplyContext (selectProjection, selectContext);
+      statementBuilder.SelectProjection = newSelectProjection;
+    }
+
+    private void VisitWhereCondition (Expression whereCondition, SqlStatementBuilder statementBuilder)
+    {
+      if (whereCondition != null)
+        statementBuilder.WhereCondition = _stage.ApplyContext (whereCondition, SqlExpressionContext.PredicateRequired);
+    }
+
+    private void VisitOrderings (IEnumerable<Ordering> orderings, SqlStatementBuilder statementBuilder)
+    {
+      foreach (var ordering in orderings)
+      {
+        var newExpression = _stage.ApplyContext (ordering.Expression, SqlExpressionContext.SingleValueRequired);
+        statementBuilder.Orderings.Add (new Ordering (newExpression, ordering.OrderingDirection));
+      }
+    }
+
+    private void VisitTopExpression (Expression topExpression, SqlStatementBuilder statementBuilder)
+    {
+      if (topExpression != null)
+        statementBuilder.TopExpression = _stage.ApplyContext (topExpression, SqlExpressionContext.SingleValueRequired);
+    }
+
+    private void VisitSqlTables (IEnumerable<SqlTableBase> tables, SqlStatementBuilder statementBuilder)
+    {
+      foreach (var table in tables)
+      {
+        _stage.ApplyContext (table, SqlExpressionContext.ValueRequired);
+        statementBuilder.SqlTables.Add (table);
+      }
     }
 
     private IStreamedDataInfo GetNewDataInfo (IStreamedDataInfo previousDataInfo, Expression newSelectProjection)

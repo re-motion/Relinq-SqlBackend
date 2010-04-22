@@ -21,6 +21,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
+  /// <summary>
+  /// Provides a default implementation of <see cref="ISqlContextResolutionStage"/>.
+  /// </summary>
   public class DefaultSqlContextResolutionStage : ISqlContextResolutionStage
   {
     public Expression ApplyContext (Expression expression, SqlExpressionContext context)
@@ -31,6 +34,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context)
     {
       return SqlContextStatementVisitor.ApplyContext (sqlStatement, context, this);
+    }
+
+    public void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context)
+    {
+      SqlContextTableVisitor.ApplyContext (sqlTableBase, context, this);
     }
   }
 }
