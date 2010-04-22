@@ -32,12 +32,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   public class SqlContextExpressionVisitorTest
   {
     private TestableSqlContextExpressionVisitor _nonTopLevelVisitor;
-    private DefaultSqlContextResolutionStage _stage;
+    private DefaultMappingResolutionStage _stage;
 
     [SetUp]
     public void SetUp ()
     {
-      _stage = new DefaultSqlContextResolutionStage ();
+      _stage = new DefaultMappingResolutionStage(new MappingResolverStub(), new UniqueIdentifierGenerator());
       _nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stage);
     }
 

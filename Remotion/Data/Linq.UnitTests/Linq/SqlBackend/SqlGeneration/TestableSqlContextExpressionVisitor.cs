@@ -21,7 +21,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
   public class TestableSqlContextExpressionVisitor : SqlContextExpressionVisitor
   {
-    public TestableSqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, ISqlContextResolutionStage stage)
+    public TestableSqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage)
         : base (currentContext, isTopLevelExpression, stage)
     {
     }

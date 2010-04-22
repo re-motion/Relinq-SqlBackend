@@ -33,12 +33,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   [TestFixture]
   public class SqlContextStatementVisitorTest
   {
-    private ISqlContextResolutionStage _stageMock;
+    private IMappingResolutionStage _stageMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlContextResolutionStage>();
+      _stageMock = MockRepository.GenerateMock<IMappingResolutionStage> ();
     }
 
     [Test]

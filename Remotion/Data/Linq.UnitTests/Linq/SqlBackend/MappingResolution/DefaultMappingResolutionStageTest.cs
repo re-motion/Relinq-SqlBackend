@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -237,6 +238,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void ApplyContext_Expression ()
+    {
+      var result = _stage.ApplyContext (Expression.Constant (false), SqlExpressionContext.PredicateRequired);
+
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((ConstantExpression) ((BinaryExpression) result).Left).Value, Is.EqualTo (0));
+      Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void ApplyContext_SqlStatement ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
+
+      var result = _stage.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired);
+
+      Assert.That (result, Is.Not.SameAs (sqlStatement));
     }
   }
 }

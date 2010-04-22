@@ -86,7 +86,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       var resolvedStatement = SqlStatementResolver.ResolveExpressions (this, sqlStatement);
-      return SqlContextStatementVisitor.ApplyContext (resolvedStatement, SqlExpressionContext.ValueRequired, new DefaultSqlContextResolutionStage()); //TODO 2641: check stage
+      return SqlContextStatementVisitor.ApplyContext (resolvedStatement, SqlExpressionContext.ValueRequired, this);
     }
 
     public virtual SqlStatement ResolveSqlSubStatement (SqlStatement sqlStatement)
@@ -101,6 +101,27 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return ResolveExpression (expression);
+    }
+
+    public Expression ApplyContext (Expression expression, SqlExpressionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, context, this);
+    }
+
+    public SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+
+      return SqlContextStatementVisitor.ApplyContext (sqlStatement, context, this);
+    }
+
+    public void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
+
+      SqlContextTableVisitor.ApplyContext (sqlTableBase, context, this);
     }
 
     protected virtual Expression ResolveExpression (Expression expression)

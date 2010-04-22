@@ -28,10 +28,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class SqlContextTableVisitor : ISqlTableBaseVisitor, ITableInfoVisitor
   {
-    private readonly ISqlContextResolutionStage _stage;
+    private readonly IMappingResolutionStage _stage;
     private SqlExpressionContext _context;
 
-    public static void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context, ISqlContextResolutionStage stage)
+    public static void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       sqlTableBase.Accept (visitor);
     }
 
-    public SqlContextTableVisitor (ISqlContextResolutionStage stage, SqlExpressionContext context)
+    public SqlContextTableVisitor (IMappingResolutionStage stage, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
 

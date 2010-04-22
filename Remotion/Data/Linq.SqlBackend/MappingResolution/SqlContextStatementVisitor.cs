@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -31,9 +30,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class SqlContextStatementVisitor
   {
-    private readonly ISqlContextResolutionStage _stage;
+    private readonly IMappingResolutionStage _stage;
 
-    public static SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context, ISqlContextResolutionStage stage)
+    public static SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -42,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return visitor.VisitSqlStatement (sqlStatement, context);
     }
 
-    private SqlContextStatementVisitor (ISqlContextResolutionStage stage)
+    private SqlContextStatementVisitor (IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
 

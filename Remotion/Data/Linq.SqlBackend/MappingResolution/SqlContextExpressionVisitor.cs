@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </remarks>
   public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, ISqlSubStatementVisitor
   {
-    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, ISqlContextResolutionStage stage)
+    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -50,9 +50,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly SqlExpressionContext _currentContext;
     
     private bool _isTopLevelExpression;
-    private readonly ISqlContextResolutionStage _stage;
+    private readonly IMappingResolutionStage _stage;
 
-    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, ISqlContextResolutionStage stage)
+    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage)
     {
       _currentContext = currentContext;
       _isTopLevelExpression = isTopLevelExpression;
