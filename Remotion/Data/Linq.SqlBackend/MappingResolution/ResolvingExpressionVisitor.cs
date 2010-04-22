@@ -84,6 +84,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // then newExpression2.FirstName => result (SqlColumn)
       var newExpression = VisitExpression (expression.Expression);
 
+      //member withe a cast?
+      var newExpressionAsUnaryExpression = newExpression as UnaryExpression;
+      if (newExpressionAsUnaryExpression != null && newExpressionAsUnaryExpression.NodeType == ExpressionType.Convert)
+      {
+        newExpression = newExpressionAsUnaryExpression.Operand;
+      }
+
       // member applied to an entity?
       var newExpressionAsEntityExpression = newExpression as SqlEntityExpression;
       if (newExpressionAsEntityExpression != null)
@@ -100,13 +107,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       {
         var resolvedMemberExpression = _resolver.ResolveMemberExpression (newExpressionAsColumnExpression, expression.Member);
         return VisitExpression (resolvedMemberExpression);
-      }
-
-      //member withe a cast?
-      var newExpressionAsUnaryExpression = newExpression as UnaryExpression;
-      if (newExpressionAsUnaryExpression != null && newExpressionAsUnaryExpression.NodeType==ExpressionType.Convert)
-      {
-        return newExpressionAsUnaryExpression.Operand;
       }
 
       throw new NotSupportedException (string.Format ("Resolved inner expression of type {0} is not supported.", newExpression.Type.Name));

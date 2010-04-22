@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
@@ -81,6 +82,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select ~c.ID,
           "SELECT ~[t0].[ID] AS [value] FROM [CookTable] AS [t0]"
+          );
+    }
+
+    [Test]
+    public void UnaryConvert ()
+    {
+      CheckQuery (
+          from c in Cooks where ((ISpecificCook) c).SpecificInformation == "test" select c,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
+          "FROM [CookTable] AS [t0] WHERE ([t0].[SpecificInformation] = @1)",
+          new CommandParameter("@1", "test")
           );
     }
   }

@@ -135,6 +135,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           
         }
       }
+      else if (memberInfo.DeclaringType == typeof (ISpecificCook))
+      {
+        switch (memberInfo.Name)
+        {
+          case "SpecificInformation":
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
+        }
+      }
       else if (memberInfo.DeclaringType == typeof (Chef))
       {
         switch (memberInfo.Name)
@@ -151,7 +159,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "Name":
           case "RoomNumber":
             return CreateColumn (
-                memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
+                memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
           case "Cook":
           case "Restaurant":
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
@@ -163,7 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "ID":
             return CreateColumn (
-                memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
+                memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
           case "SubKitchen":
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
         }
