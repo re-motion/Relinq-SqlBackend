@@ -74,5 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (sqlTable.TableInfo, Is.Not.SameAs (subStatementTableInfo));
       _stageMock.VerifyAllExpectations();
     }
+    
+    // TODO Review 2641: Write tests for the remaining Visit methods
   }
 }

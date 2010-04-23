@@ -28,8 +28,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class SqlContextTableVisitor : ISqlTableBaseVisitor, ITableInfoVisitor
   {
+    // TODO Review 2641: Move instance members down below instance ctor. The order of members should be: static fields, static ctors, static properties, static methods, instance fields, instance ctors, instance properties, instance methods
     private readonly IMappingResolutionStage _stage;
-    private SqlExpressionContext _context;
+    private readonly SqlExpressionContext _context;
 
     public static void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context, IMappingResolutionStage stage)
     {
@@ -40,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       sqlTableBase.Accept (visitor);
     }
 
-    public SqlContextTableVisitor (IMappingResolutionStage stage, SqlExpressionContext context)
+    protected SqlContextTableVisitor (IMappingResolutionStage stage, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
 
@@ -52,14 +53,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      ITableInfo newTableInfo = sqlTable.TableInfo.Accept (this);
-      if (newTableInfo != sqlTable.TableInfo)
-        sqlTable.TableInfo = newTableInfo;
+      var newTableInfo = sqlTable.TableInfo.Accept (this);
+      sqlTable.TableInfo = newTableInfo;
     }
 
     public void VisitSqlJoinedTable (SqlJoinedTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+
+      // TODO Review 2641: Currently, joined tables don't contain sub-statements. However, in the future, this might change. Therefore, implement IJoinInfoVisitor with VisitResolvedJoinInfo; call accept on the ITableInfo stored in the ResolvedJoinInfo. Ignore all other JoinInfos.
     }
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)

@@ -20,7 +20,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// Provides a visitor for implementations of <see cref="ISqlTableBaseVisitor"/>.
+  /// Provides a visitor for implementations of <see cref="SqlTableBase"/>.
   /// </summary>
   public interface ISqlTableBaseVisitor
   {
