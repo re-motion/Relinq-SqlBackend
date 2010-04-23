@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       if (context == SqlExpressionContext.PredicateRequired)
-        throw new NotSupportedException ("A sql-statement cannot return a predicate");
+        throw new InvalidOperationException ("A SqlStatement cannot be used as a predicate."); // TODO Review 2640: Test missing
 
       var statementBuilder = new SqlStatementBuilder ();
 

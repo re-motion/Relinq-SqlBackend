@@ -56,6 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
+      // TODO Review 2640: Check that DataInfo is same a before
     }
 
     [Test]
@@ -67,6 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       builder.Orderings.Add (new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc));
       builder.DataInfo = new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (builder.SelectProjection.Type), builder.SelectProjection);
       var sqlStatement = builder.GetSqlStatement();
+
       var fakeResult = Expression.Constant ("test");
       var fakeWhereResult = Expression.Equal (fakeResult, fakeResult);
 
@@ -92,6 +94,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.WhereCondition, Is.SameAs (fakeWhereResult));
       Assert.That (result.TopExpression, Is.SameAs (fakeResult));
       Assert.That (result.Orderings[0].Expression, Is.SameAs (fakeResult));
+      // TODO Review 2640: Test Orderings[0].OrderingDirection
+      // TODO Review 2640: Verify type of DataInfo (typeof (StreamedSequenceInfo))
+      // TODO Review 2640: Verify ItemExpression of DataInfo (cast to StreamedSequenceInfo)
       Assert.That (result.DataInfo.DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (fakeResult.Type)));
     }
 
@@ -113,14 +118,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
+      // TODO Review 2640: Check that DataInfo is typeof (StreamedSingleValueInfo)
       Assert.That (result.DataInfo.DataType, Is.EqualTo (fakeResult.Type));
     }
+
+    // TODO Review 2640: Add test for StreamedScalarValueInfo
 
     [Test]
     public void VisitSqlStatement_SqlTablesAreVisited ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
       var sqlStatement = builder.GetSqlStatement();
+      // TODO Review 2640: subStatement doesn't seem to be used; remove
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<>).MakeGenericType (typeof (Cook)));
       ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
 
@@ -131,6 +140,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ApplyContext (sqlStatement.SqlTables[0], SqlExpressionContext.ValueRequired));
       _stageMock.Replay();
 
+      // TODO Review 2640: Use a different SqlExpressionContext (SingleValueRequired) to demonstrate that SqlTables are always processed with ValueRequired
       var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();

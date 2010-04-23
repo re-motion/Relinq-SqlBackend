@@ -255,9 +255,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
 
-      var result = _stage.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired);
+      var result = _stage.ApplyContext (sqlStatement, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
+      // TODO Review 2640: Check that result.SelectProjection is a SqlColumnExpression (instead of a SqlEntityExpression)
     }
+
+    // TODO Review 2640: Test missing for ApplyContext_Table
   }
 }

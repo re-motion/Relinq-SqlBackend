@@ -497,6 +497,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlSubStatementExpression ()
     {
+      // TODO Review 2640: Use a mock as the stage and expect that stageMock.ApplyContext (sqlStatement, currentContext) is called.
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
