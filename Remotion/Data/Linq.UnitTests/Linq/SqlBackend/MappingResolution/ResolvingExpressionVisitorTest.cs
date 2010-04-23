@@ -143,23 +143,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnUnaryExpression ()
+    public void VisitMemberExpression_OnConvertExpression ()
     {
       var operand = new SqlColumnExpression (typeof (Cook), "c", "ID");
       var convertExpression = Expression.Convert (operand, typeof (Chef));
       var memberExpression = Expression.MakeMemberAccess (convertExpression, typeof (Chef).GetProperty ("LetterOfRecommendation"));
 
+      var fakeResult = Expression.Constant (0);
+
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (operand,memberExpression.Member))
-          .Return (operand);
+          .Expect (mock => mock.ResolveMemberExpression (operand, memberExpression.Member))
+          .Return (fakeResult);
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
 
-      Assert.That (result, Is.SameAs (operand));
+      Assert.That (result, Is.SameAs (fakeResult));
       _resolverMock.VerifyAllExpectations ();
     }
-
-
 
     [Test]
     [ExpectedException(typeof(NotSupportedException))]
