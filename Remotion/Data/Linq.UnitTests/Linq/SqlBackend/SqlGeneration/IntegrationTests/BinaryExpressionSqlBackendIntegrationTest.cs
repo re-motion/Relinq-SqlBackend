@@ -358,14 +358,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2618")]
     public void Equals_EntityComparison_WithSubQuery ()
     {
       CheckQuery (
           from c in Cooks where c == (from k in Kitchens select k.Cook).First () select c.ID,
-          "SELECT [t2].[ID] FROM [CookTable] [t2] "
-          + "WHERE [t2].[ID] = (SELECT [q0].ID FROM (SELECT TOP (1) [t2].* FROM [KitchenTable] [t1] LEFT OUTER JOIN [CookTable] [t2]) q0)");
-
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT TOP (@1) [t2].[ID] AS [value] FROM [KitchenTable] AS [t1] "
+          +"LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID]))",
+          new CommandParameter("@1", 1));
     }
   }
 }
