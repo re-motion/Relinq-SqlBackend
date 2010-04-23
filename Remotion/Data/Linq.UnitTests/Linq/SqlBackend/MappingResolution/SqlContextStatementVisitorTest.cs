@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void VisitSqlStatement_PrdicateRequired_ThrowsException ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
