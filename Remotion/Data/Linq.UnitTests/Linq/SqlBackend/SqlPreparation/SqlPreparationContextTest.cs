@@ -57,7 +57,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException))]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = 
+        "The query source 's' (MainFromClause) could not be found in the list of processed query sources. Probably, the feature declaring 's' isn't "
+        + "supported yet.")]
     public void GetSqlTableForQuerySource_Throws_WhenSourceNotAdded ()
     {
       _source = ExpressionHelper.CreateMainFromClause_Cook();

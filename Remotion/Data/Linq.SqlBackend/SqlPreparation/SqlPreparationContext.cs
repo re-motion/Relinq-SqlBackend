@@ -50,7 +50,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlTableBase GetSqlTableForQuerySource (IQuerySource source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
-      return _mapping[source];
+      
+      SqlTableBase result;
+      if (!_mapping.TryGetValue (source, out result))
+      {
+        var message = string.Format (
+            "The query source '{0}' ({1}) could not be found in the list of processed query sources. Probably, the feature declaring '{0}' isn't "
+            + "supported yet.", 
+            source.ItemName,
+            source.GetType().Name);
+        throw new KeyNotFoundException (message);
+      }
+
+      return result;
     }
   }
 }
