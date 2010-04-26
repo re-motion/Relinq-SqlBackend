@@ -154,6 +154,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (operand, memberExpression.Member))
           .Return (fakeResult);
+      _resolverMock
+         .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+         .Return (fakeResult);
+      _resolverMock.Replay();
+
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock);
 
