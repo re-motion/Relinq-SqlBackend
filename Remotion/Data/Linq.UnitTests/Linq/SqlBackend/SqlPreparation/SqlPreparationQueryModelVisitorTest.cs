@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -90,80 +91,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result.WhereCondition, Is.Not.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (2));
-    }
-
-    [Test]
-    // TODO Review 2616: Rewrite as VisitResultOperator test (move down to the other VisitResultOperator tests)
-    public void TransformQueryModel_WithCount ()
-    {
-      var countResultOperator = new CountResultOperator();
-      _queryModel.ResultOperators.Add (countResultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
-
-      Assert.That (result.IsCountQuery, Is.True);
-      // TODO Review 2616: Test DataInfo
-    }
-
-    [Test]
-    // TODO Review 2616: Rewrite as VisitResultOperator test (move down to the other VisitResultOperator tests)
-    public void TransformQueryModel_WithDistinct ()
-    {
-      var distinctResultOperator = new DistinctResultOperator();
-      _queryModel.ResultOperators.Add (distinctResultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
-
-      Assert.That (result.IsDistinctQuery, Is.True);
-      // TODO Review 2616: Test DataInfo
-    }
-
-    [Test]
-    // TODO Review 2616: Rewrite as VisitResultOperator test (move down to the other VisitResultOperator tests)
-    public void TransformQueryModel_WithCast ()
-    {
-      var castResultOperator = new CastResultOperator (typeof (Cook));
-      _queryModel.ResultOperators.Add (castResultOperator);
-      _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo();
-
-      SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
-      // TODO Review 2616: Test DataInfo
-    }
-
-    [Test]
-    // TODO Review 2616: Remove, there already is a VisitResultOperator test for Take
-    public void TransformQueryModel_WithTake ()
-    {
-      var resultOperator = new TakeResultOperator (Expression.Constant (0));
-      _queryModel.ResultOperators.Add (resultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
-
-      Assert.That (result.TopExpression, Is.Not.Null);
-    }
-
-    [Test]
-    // TODO Review 2616: Remove, there already is a VisitResultOperator test for First
-    public void TransformQueryModel_WithFirst ()
-    {
-      var resultOperator = new FirstResultOperator (false);
-      _queryModel.ResultOperators.Add (resultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
-
-      Assert.That (result.TopExpression, Is.Not.Null);
-    }
-
-    [Test]
-    // TODO Review 2616: Remove, there already is a VisitResultOperator test for Single
-    public void TransformQueryModel_WithSingle ()
-    {
-      var resultOperator = new SingleResultOperator (false);
-      _queryModel.ResultOperators.Add (resultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
-
-      Assert.That (result.TopExpression, Is.Not.Null);
     }
 
     [Test]
@@ -287,7 +214,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
-      // TODO Review 2616: Test DataInfo
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof(StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (_selectClause.GetOutputDataInfo().DataType));
     }
 
     [Test]
@@ -411,7 +339,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-      // TODO Review 2616: Test DataInfo
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf(typeof(StreamedSingleValueInfo)));
+      Assert.That (((StreamedSingleValueInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (Cook)));
     }
 
     [Test]
@@ -434,7 +363,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-      // TODO Review 2616: Test DataInfo
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf(typeof(StreamedSingleValueInfo)));
+      Assert.That (((StreamedSingleValueInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (Cook)));
     }
 
     [Test]
@@ -454,7 +384,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-      // TODO Review 2616: Test DataInfo
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType(typeof(int))));
     }
 
     [Test]
@@ -509,7 +440,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (oldSqlStatementBuilder));
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      // TODO Review 2616: Test DataInfo
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
+      Assert.That (((StreamedScalarValueInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (Boolean)));
 
       var binaryOperatorExpression = (SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection;
       Assert.That (binaryOperatorExpression.LeftExpression, Is.SameAs (preparedExpression));
@@ -518,7 +450,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var subStatementExpression = ((SqlSubStatementExpression) binaryOperatorExpression.RightExpression);
       Assert.That (subStatementExpression.SqlStatement.SelectProjection, Is.SameAs (oldSqlStatementBuilder.SelectProjection));
       Assert.That (subStatementExpression.SqlStatement.SqlTables, Is.EqualTo (oldSqlStatementBuilder.SqlTables));
-      // TODO Review 2616: Test DataInfo of substatement
+      Assert.That (subStatementExpression.SqlStatement.DataInfo, Is.TypeOf (typeof(StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) subStatementExpression.SqlStatement.DataInfo).DataType, Is.EqualTo (typeof (Cook[])));
     }
 
     [Test]
@@ -527,16 +460,56 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var resultOperator = new OfTypeResultOperator (typeof (Chef));
       _queryModel.ResultOperators.Add (resultOperator);
       var selectProjection = Expression.Constant (new Chef());
-      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Chef[]), selectProjection);
+      var dataInfo = new StreamedSequenceInfo (typeof (Chef[]), selectProjection);
+      _visitor.SqlStatementBuilder.DataInfo = dataInfo;
       _visitor.SqlStatementBuilder.SelectProjection = selectProjection;
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
-      // TODO Review 2616: Test DataInfo
-
       Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
       Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Expression, Is.SameAs (selectProjection));
       Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo (typeof (Chef)));
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf(typeof(StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(Chef))));
+    }
+
+    [Test]
+    public void VisitResultOperator_WithCount ()
+    {
+      var countResultOperator = new CountResultOperator ();
+      _queryModel.ResultOperators.Add (countResultOperator);
+
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+
+      Assert.That (result.IsCountQuery, Is.True);
+      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
+      Assert.That (((StreamedScalarValueInfo) result.DataInfo).DataType, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
+    public void VisitResultOperator_WithDistinct ()
+    {
+      var distinctResultOperator = new DistinctResultOperator ();
+      _queryModel.ResultOperators.Add (distinctResultOperator);
+
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+
+      Assert.That (result.IsDistinctQuery, Is.True);
+      Assert.That (result.DataInfo, Is.TypeOf(typeof(StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) result.DataInfo).DataType, Is.EqualTo(_queryModel.SelectClause.GetOutputDataInfo().DataType));
+    }
+
+    [Test]
+    public void VisitResultOperator_WithCast ()
+    {
+      var castResultOperator = new CastResultOperator (typeof (Cook));
+      _queryModel.ResultOperators.Add (castResultOperator);
+      _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo ();
+
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+
+      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) result.DataInfo).DataType, Is.EqualTo (typeof(IQueryable<>).MakeGenericType(typeof (Cook))));
     }
 
     [Test]
@@ -550,7 +523,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
     }
-
+    
     [Test]
     public void GetStatementAndResetBuilder ()
     {

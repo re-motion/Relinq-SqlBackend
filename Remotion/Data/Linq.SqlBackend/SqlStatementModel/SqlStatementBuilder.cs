@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public SqlStatement GetSqlStatement ()
     {
       if (DataInfo == null)
-        throw new ArgumentNullException("DataInfo", "DataInfo has not been set.");
+        throw new InvalidOperationException("A DataInfo must be set before the SqlStatement can be retrieved.");
       return new SqlStatement (DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery);
     }
 

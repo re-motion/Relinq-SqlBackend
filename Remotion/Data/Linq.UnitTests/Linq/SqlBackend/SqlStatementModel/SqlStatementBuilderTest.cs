@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -39,6 +40,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
+    public void Initialization_WithExistingSqlStatement ()
+    {
+      var selectProjection = Expression.Constant ("select");
+      var whereCondition = Expression.Constant (true);
+      var topExpression = Expression.Constant ("top");
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
+
+      var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), selectProjection, new SqlTable[] { sqlTable }, new Ordering[] { ordering }, whereCondition, topExpression, false, true);
+
+      var testedBuilder = new SqlStatementBuilder (sqlStatement);
+
+      Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
+      Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
+      Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
+      Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
+      Assert.That (testedBuilder.IsDistinctQuery, Is.True);
+      Assert.That (testedBuilder.IsCountQuery, Is.False);
+      Assert.That (testedBuilder.DataInfo, Is.SameAs(sqlStatement.DataInfo));
+    }
+
+    [Test]
     public void GetSqlStatement ()
     {
       var constantExpression = Expression.Constant ("test");
@@ -56,9 +80,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     // TODO Review 2616: Also add a test GetSqlStatement_NoSelectProjection set. Expect an InvalidOperationException: "A SelectProjection must be set before the SqlStatement can be retrieved." Adapt implementation.
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))] // TODO Review 2616: Change to expect an InvalidOperationException: "A DataInfo must be set before the SqlStatement can be retrieved." Adapt implementation.
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A DataInfo must be set before the SqlStatement can be retrieved.")]
     public void GetSqlStatement_NoDataInfoSet ()
     {
+      _statementBuilder.DataInfo = null;
       _statementBuilder.GetSqlStatement();
     }
 
@@ -114,33 +139,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.True);
       Assert.That (sqlStatement.IsCountQuery, Is.False);
-      // TODO Review 2616: Also check DataInfo
+      Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
-
-    [Test]
-    // TODO Review 2616: Rename this test to Initialization_WithExistingSqlStatement - we always name ctor tests like this -, and move to the top (after Setup method)
-    public void CreateSqlStatementBuilder_WithExistingSqlStatement ()
-    {
-      var selectProjection = Expression.Constant ("select");
-      var whereCondition = Expression.Constant (true);
-      var topExpression = Expression.Constant ("top");
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
-       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
-
-       var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), selectProjection, new SqlTable[] { sqlTable }, new Ordering[] { ordering }, whereCondition, topExpression, false, true);
-
-      var testedBuilder = new SqlStatementBuilder (sqlStatement);
-
-      Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
-      Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
-      Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
-      Assert.That (testedBuilder.IsDistinctQuery, Is.True);
-      Assert.That (testedBuilder.IsCountQuery, Is.False);
-
-      // TODO Review 2616: Also check that DataInfo is taken from existing statement
-      
-    }
+    
   }
 }
