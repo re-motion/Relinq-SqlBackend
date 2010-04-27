@@ -96,28 +96,28 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return SqlStatementResolver.ResolveExpressions (this, sqlStatement);
     }
 
-    public Expression ResolveCollectionSourceExpression (Expression expression)
+    public virtual Expression ResolveCollectionSourceExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return ResolveExpression (expression);
     }
 
-    public Expression ApplyContext (Expression expression, SqlExpressionContext context)
+    public virtual Expression ApplyContext (Expression expression, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, context, this);
     }
 
-    public SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context)
+    public virtual SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       return SqlContextStatementVisitor.ApplyContext (sqlStatement, context, this);
     }
 
-    public void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context)
+    public virtual void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
 

@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -253,14 +254,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_SqlStatement ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ())
+      {
+        SelectProjection = SqlStatementModelObjectMother.CreateSqlEntityExpression(typeof(Cook))
+      }.GetSqlStatement();
 
       var result = _stage.ApplyContext (sqlStatement, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
-      // TODO Review 2640: Check that result.SelectProjection is a SqlColumnExpression (instead of a SqlEntityExpression)
+      Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
-    // TODO Review 2640: Test missing for ApplyContext_Table
+    [Test]
+    public void ApplyContext_Table ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ())
+      {
+        DataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()))
+      }.GetSqlStatement();
+
+      var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
+      var sqlTable = new SqlTable (subStatementTableInfo);
+      _stage.ApplyContext (sqlTable, SqlExpressionContext.ValueRequired);
+
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.Not.SameAs (sqlStatement));
+    }
   }
 }

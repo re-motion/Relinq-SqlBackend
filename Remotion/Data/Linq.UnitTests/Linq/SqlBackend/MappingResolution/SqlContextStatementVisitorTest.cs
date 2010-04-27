@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
-      // TODO Review 2640: Check that DataInfo is same a before
+      Assert.That (result.DataInfo, Is.SameAs(sqlStatement.DataInfo));
     }
 
     [Test]
@@ -94,9 +94,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.WhereCondition, Is.SameAs (fakeWhereResult));
       Assert.That (result.TopExpression, Is.SameAs (fakeResult));
       Assert.That (result.Orderings[0].Expression, Is.SameAs (fakeResult));
-      // TODO Review 2640: Test Orderings[0].OrderingDirection
-      // TODO Review 2640: Verify type of DataInfo (typeof (StreamedSequenceInfo))
-      // TODO Review 2640: Verify ItemExpression of DataInfo (cast to StreamedSequenceInfo)
+      Assert.That (result.Orderings[0].OrderingDirection, Is.EqualTo(OrderingDirection.Asc));
+      Assert.That (result.DataInfo, Is.TypeOf(typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) result.DataInfo).ItemExpression.Type, Is.EqualTo(typeof(string)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (fakeResult.Type)));
     }
 
@@ -118,11 +118,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
-      // TODO Review 2640: Check that DataInfo is typeof (StreamedSingleValueInfo)
+      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (fakeResult.Type));
     }
 
-    // TODO Review 2640: Add test for StreamedScalarValueInfo
+    [Test]
+    public void VisitSqlStatement_SelectExpressionAndStreamedScalarValueTypeChanged ()
+    {
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ());
+      builder.DataInfo = new StreamedScalarValueInfo(builder.SelectProjection.Type);
+      var sqlStatement = builder.GetSqlStatement ();
+      var fakeResult = Expression.Constant (new Cook());
+
+      _stageMock
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Return (fakeResult);
+      _stageMock.Replay ();
+
+      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Not.SameAs (sqlStatement));
+      Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
+      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
+      Assert.That (result.DataInfo.DataType, Is.EqualTo (fakeResult.Type));
+    }
 
     [Test]
     public void VisitSqlStatement_SqlTablesAreVisited ()
@@ -131,14 +151,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = builder.GetSqlStatement();
       
       _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.SingleValueRequired))
           .Return (sqlStatement.SelectProjection);
       _stageMock
           .Expect (mock => mock.ApplyContext (sqlStatement.SqlTables[0], SqlExpressionContext.ValueRequired));
       _stageMock.Replay();
 
-      // TODO Review 2640: Use a different SqlExpressionContext (SingleValueRequired) to demonstrate that SqlTables are always processed with ValueRequired
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.SingleValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result.SqlTables[0], Is.SameAs (sqlStatement.SqlTables[0]));
@@ -178,7 +197,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A SqlStatement cannot be used as a predicate.")]
     public void VisitSqlStatement_PrdicateRequired_ThrowsException ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();

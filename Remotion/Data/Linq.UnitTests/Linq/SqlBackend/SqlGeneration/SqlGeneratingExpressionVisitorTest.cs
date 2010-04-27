@@ -274,11 +274,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
-      // TODO Review 2640: Change to match _commandBuilder and sqlStatement exactly (not using Arg.Is.Anything)
       _stageMock
           .Expect (
           mock =>
-          mock.GenerateTextForSqlStatement (Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything))
+          mock.GenerateTextForSqlStatement (_commandBuilder,sqlStatement))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SELECT [t].[Name] FROM [Table] AS [t]"));
       _stageMock.Replay();
 
