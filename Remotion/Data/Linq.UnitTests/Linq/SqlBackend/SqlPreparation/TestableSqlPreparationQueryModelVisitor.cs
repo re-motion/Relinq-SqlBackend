@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   public class TestableSqlPreparationQueryModelVisitor : SqlPreparationQueryModelVisitor
   {
     public TestableSqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage)
-        : base (context, stage, new UniqueIdentifierGenerator())
+        : base (context, stage, new UniqueIdentifierGenerator(), ResultOperatorHandlerRegistry.CreateDefault())
     {
     }
 

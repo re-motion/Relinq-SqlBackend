@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _generator = new UniqueIdentifierGenerator();
       _context = new SqlPreparationContext();
-      _defaultStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), _context, _generator);
+      _defaultStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _context, _generator);
 
       _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _selectClause = ExpressionHelper.CreateSelectClause (_mainFromClause);
@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void TransformQueryModel_EmptyQueryModel ()
     {
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault ());
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _queryModel.BodyClauses.Add (ExpressionHelper.CreateWhereClause());
       _queryModel.ResultOperators.Add (new CountResultOperator());
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault ());
 
       Assert.That (result.WhereCondition, Is.Not.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (2));
@@ -479,7 +479,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var countResultOperator = new CountResultOperator ();
       _queryModel.ResultOperators.Add (countResultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
 
       Assert.That (result.IsCountQuery, Is.True);
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
@@ -492,7 +492,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var distinctResultOperator = new DistinctResultOperator ();
       _queryModel.ResultOperators.Add (distinctResultOperator);
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
 
       Assert.That (result.IsDistinctQuery, Is.True);
       Assert.That (result.DataInfo, Is.TypeOf(typeof(StreamedSequenceInfo)));
@@ -506,7 +506,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _queryModel.ResultOperators.Add (castResultOperator);
       _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo ();
 
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator);
+      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
 
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) result.DataInfo).DataType, Is.EqualTo (typeof(IQueryable<>).MakeGenericType(typeof (Cook))));

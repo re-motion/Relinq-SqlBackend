@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly Dictionary<Type, IResultOperatorHandler> _handlers;
 
-    public static ResultOperatorHandlerRegistry CreateDefault (UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    public static ResultOperatorHandlerRegistry CreateDefault ()
     {
       var handlerTypes = from t in typeof (ResultOperatorHandlerRegistry).Assembly.GetTypes ()
                          where typeof (IResultOperatorHandler).IsAssignableFrom (t) && t != typeof (IResultOperatorHandler) && t != typeof (ResultOperatorHandler<>)
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       foreach (var handlerType in handlerTypes)
       {
-        var handler = (IResultOperatorHandler) Activator.CreateInstance (handlerType, generator, stage);
+        var handler = (IResultOperatorHandler) Activator.CreateInstance (handlerType);
         registry.Register (handler.GetType ().BaseType.GetGenericArguments ()[0], handler);
       }
 

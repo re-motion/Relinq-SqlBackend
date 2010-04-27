@@ -23,17 +23,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class SingleResultOperatorHandler : ResultOperatorHandler<SingleResultOperator>
   {
-    public SingleResultOperatorHandler (UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
-        : base(generator, stage)
+    protected override void HandleResultOperator (SingleResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
+      EnsureNoTopExpressionAndSetDataInfo (resultOperator, sqlStatementBuilder, generator, stage);
 
-    }
-
-    protected override void HandleResultOperator (SingleResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder)
-    {
-      EnsureNoTopExpressionAndSetDataInfo (resultOperator, sqlStatementBuilder);
-
-      sqlStatementBuilder.TopExpression = Stage.PrepareTopExpression (Expression.Constant (2));
+      sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (2));
     }
   }
 }

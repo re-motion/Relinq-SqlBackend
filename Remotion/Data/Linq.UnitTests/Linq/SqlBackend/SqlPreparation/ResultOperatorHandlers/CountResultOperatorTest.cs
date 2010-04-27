@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
-      _handler = new CountResultOperatorHandler (_generator, _stageMock);
+      _handler = new CountResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var countResultOperator = new CountResultOperator ();
 
-      _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder);
+      _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.IsCountQuery, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));

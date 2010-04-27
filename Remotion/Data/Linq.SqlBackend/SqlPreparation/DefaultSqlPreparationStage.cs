@@ -26,17 +26,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class DefaultSqlPreparationStage : ISqlPreparationStage
   {
-    private readonly MethodCallTransformerRegistry _registry;
+    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
     private readonly SqlPreparationContext _context;
     private readonly UniqueIdentifierGenerator _generator;
+    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
-    public DefaultSqlPreparationStage (MethodCallTransformerRegistry registry, SqlPreparationContext context, UniqueIdentifierGenerator generator)
+    public DefaultSqlPreparationStage (MethodCallTransformerRegistry methodCallTransformerRegistry, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, SqlPreparationContext context, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("registry", methodCallTransformerRegistry);
+      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      _registry = registry;
+      _methodCallTransformerRegistry = methodCallTransformerRegistry;
+      _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
       _context = context;
       _generator = generator;
     }
@@ -78,14 +81,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
     {
-      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this, _generator);
+      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this, _generator, _resultOperatorHandlerRegistry);
     }
 
     protected virtual Expression PrepareExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _registry);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _methodCallTransformerRegistry);
     }
   }
 }

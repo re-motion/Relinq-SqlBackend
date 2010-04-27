@@ -31,15 +31,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationQueryModelVisitor : QueryModelVisitorBase
   {
-    public static SqlStatement TransformQueryModel (
-        QueryModel queryModel, SqlPreparationContext preparationContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
+    public static SqlStatement TransformQueryModel (QueryModel queryModel, SqlPreparationContext preparationContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("preparationContext", preparationContext);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("registry", registry);
 
-      var visitor = new SqlPreparationQueryModelVisitor (preparationContext, stage, generator);
+      var visitor = new SqlPreparationQueryModelVisitor (preparationContext, stage, generator, registry);
       queryModel.Accept (visitor);
 
       return visitor.GetSqlStatement();
@@ -50,16 +50,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private SqlStatementBuilder _sqlStatementBuilder;
     private readonly UniqueIdentifierGenerator _generator;
+    private ResultOperatorHandlerRegistry _registry;
 
-    protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
+    protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("registry", registry);
 
       _context = context;
       _stage = stage;
       _generator = generator;
+      _registry = registry;
 
       _sqlStatementBuilder = new SqlStatementBuilder();
     }

@@ -22,14 +22,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class CastResultOperatorHandler : ResultOperatorHandler<CastResultOperator>
   {
-    public CastResultOperatorHandler (UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
-        : base(generator, stage)
-    {
-    }
-
-    protected override void HandleResultOperator (CastResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder)
+    protected override void HandleResultOperator (
+        CastResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
     }
+    
   }
 }

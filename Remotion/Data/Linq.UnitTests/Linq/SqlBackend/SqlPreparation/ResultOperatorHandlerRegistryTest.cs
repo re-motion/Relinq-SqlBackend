@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void CreateDefault ()
     {
-      var registry = ResultOperatorHandlerRegistry.CreateDefault (_generator, _stageMock);
+      var registry = ResultOperatorHandlerRegistry.CreateDefault ();
 
       Assert.That (registry.GetHandler (typeof (CastResultOperator)), Is.TypeOf (typeof (CastResultOperatorHandler)));
       Assert.That (registry.GetHandler (typeof (ContainsResultOperator)), Is.TypeOf (typeof (ContainsResultOperatorHandler)));

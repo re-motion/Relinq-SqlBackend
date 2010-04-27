@@ -22,6 +22,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public interface IResultOperatorHandler
   {
-    void HandleResultOperator (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder);
+    void HandleResultOperator (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
   }
 }

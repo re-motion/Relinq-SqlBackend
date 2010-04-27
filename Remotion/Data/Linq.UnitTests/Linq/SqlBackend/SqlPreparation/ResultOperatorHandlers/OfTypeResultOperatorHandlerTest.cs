@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
-      _handler = new OfTypeResultOperatorHandler (_generator, _stageMock);
+      _handler = new OfTypeResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var resultOperator = new OfTypeResultOperator (typeof (Chef));
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
       Assert.That (((TypeBinaryExpression) _sqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo (typeof (Chef)));

@@ -29,38 +29,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <typeparam name="T"></typeparam>
   public abstract class ResultOperatorHandler<T> : IResultOperatorHandler where T: ResultOperatorBase
   {
-    private readonly UniqueIdentifierGenerator _generator;
-    private readonly ISqlPreparationStage _stage;
+    protected abstract void HandleResultOperator (T resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
-    public UniqueIdentifierGenerator Generator
-    {
-      get { return _generator; }
-    }
-
-    public ISqlPreparationStage Stage
-    {
-      get { return _stage; }
-    }
-
-    protected ResultOperatorHandler (UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
-    {
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-
-      _generator = generator;
-      _stage = stage;
-    }
-
-    protected abstract void HandleResultOperator (T resultOperator, SqlStatementBuilder sqlStatementBuilder);
-
-    protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder)
+    protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       if (sqlStatementBuilder.TopExpression != null)
       {
         var sqlStatement = GetStatementAndResetBuilder (sqlStatementBuilder);
 
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-            _generator.GetUniqueIdentifier ("q"),
+            generator.GetUniqueIdentifier ("q"),
             sqlStatement);
         var sqlTable = new SqlTable (subStatementTableInfo);
 
@@ -72,9 +50,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
     }
 
-    public void HandleResultOperator (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder)
+    public void HandleResultOperator (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
-      HandleResultOperator ((T) resultOperator, sqlStatementBuilder);
+      HandleResultOperator ((T) resultOperator, sqlStatementBuilder, generator, stage);
     }
 
     protected virtual SqlStatement GetStatementAndResetBuilder(SqlStatementBuilder sqlStatementBuilder)
