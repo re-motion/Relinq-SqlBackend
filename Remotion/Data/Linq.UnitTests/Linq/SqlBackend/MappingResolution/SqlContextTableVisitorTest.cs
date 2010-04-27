@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -86,6 +87,89 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
     }
     
-    // TODO Review 2641: Write tests for the remaining Visit methods
+    [Test]
+    public void VisitUnresolvedTableInfo ()
+    {
+      var tableInfo = new UnresolvedTableInfo (typeof (Cook));
+      var sqlTable = new SqlTable (tableInfo);
+
+      SqlContextTableVisitor.ApplyContext (sqlTable, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (sqlTable.TableInfo, Is.SameAs (tableInfo));
+    }
+
+    [Test]
+    public void VisitSimpleTableInfo ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var sqlTable = new SqlTable (tableInfo);
+
+      SqlContextTableVisitor.ApplyContext (sqlTable, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (sqlTable.TableInfo, Is.SameAs (tableInfo));
+    }
+
+    [Test]
+    public void VisitUnresolvedJoinInfo ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var sqlTable = new SqlTable (tableInfo);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo(sqlTable, typeof(Cook).GetProperty("ID"), JoinCardinality.One);
+      var joinedTable = new SqlJoinedTable (unresolvedJoinInfo);
+
+      SqlContextTableVisitor.ApplyContext (joinedTable, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (joinedTable.JoinInfo, Is.SameAs (unresolvedJoinInfo));
+    }
+
+    [Test]
+    public void VisitUnresolvedCollectionJoinInfo ()
+    {
+      var unresolvedJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook ()), typeof (Cook).GetProperty ("IllnessDays"));
+      var joinedTable = new SqlJoinedTable (unresolvedJoinInfo);
+
+      SqlContextTableVisitor.ApplyContext (joinedTable, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (joinedTable.JoinInfo, Is.SameAs (unresolvedJoinInfo));
+    }
+
+    [Test]
+    public void ApplyContext_SqlStatementNotChanged_SameJoinInfo ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID"), new SqlColumnExpression (typeof (int), "r", "CookID"));
+      var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo);
+
+      SqlContextTableVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (sqlJoinedTable.JoinInfo, Is.SameAs (resolvedJoinInfo));
+    }
+
+    [Test]
+    public void ApplyContext_SqlStatementNotChanged_NewJoinInfo ()
+    {
+      var subStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
+      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID"), new SqlColumnExpression (typeof (int), "r", "CookID"));
+      var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo);
+      var returnedStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+
+      _stageMock
+          .Expect (mock => mock.ApplyContext (subStatement, SqlExpressionContext.ValueRequired))
+          .Return (returnedStatement);
+      _stageMock.Replay ();
+
+      SqlContextTableVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock);
+
+      Assert.That (sqlJoinedTable.JoinInfo, Is.Not.SameAs(resolvedJoinInfo));
+      _stageMock.VerifyAllExpectations();
+    }
+
   }
 }

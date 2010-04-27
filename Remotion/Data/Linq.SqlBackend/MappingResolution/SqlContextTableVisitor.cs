@@ -26,12 +26,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// <see cref="SqlContextTableVisitor"/> applies <see cref="SqlExpressionContext"/> to <see cref="ResolvedSubStatementTableInfo"/>s 
   /// in the specified <see cref="SqlTableBase"/>.
   /// </summary>
-  public class SqlContextTableVisitor : ISqlTableBaseVisitor, ITableInfoVisitor
+  public class SqlContextTableVisitor : ISqlTableBaseVisitor, ITableInfoVisitor, IJoinInfoVisitor
   {
-    // TODO Review 2641: Move instance members down below instance ctor. The order of members should be: static fields, static ctors, static properties, static methods, instance fields, instance ctors, instance properties, instance methods
-    private readonly IMappingResolutionStage _stage;
-    private readonly SqlExpressionContext _context;
-
     public static void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
@@ -49,6 +45,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _context = context;
     }
 
+    private readonly IMappingResolutionStage _stage;
+    private readonly SqlExpressionContext _context;
+
     public void VisitSqlTable (SqlTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
@@ -61,7 +60,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      // TODO Review 2641: Currently, joined tables don't contain sub-statements. However, in the future, this might change. Therefore, implement IJoinInfoVisitor with VisitResolvedJoinInfo; call accept on the ITableInfo stored in the ResolvedJoinInfo. Ignore all other JoinInfos.
+      var newJoinInfo = sqlTable.JoinInfo.Accept (this);
+      sqlTable.JoinInfo = newJoinInfo;
     }
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
@@ -84,6 +84,30 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
       return tableInfo;
+    }
+
+    public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
+    {
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+
+      return joinInfo;
+    }
+
+    public IJoinInfo VisitUnresolvedCollectionJoinInfo (UnresolvedCollectionJoinInfo joinInfo)
+    {
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+
+      return joinInfo;
+    }
+
+    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
+    {
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+
+      var newTableInfo = joinInfo.ForeignTableInfo.Accept(this);
+      if (joinInfo.ForeignTableInfo != newTableInfo)
+        return new ResolvedJoinInfo((IResolvedTableInfo)newTableInfo, joinInfo.LeftKeyColumn, joinInfo.RightKeyColumn);
+      return joinInfo;
     }
   }
 }
