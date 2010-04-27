@@ -77,8 +77,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
     }
 
-    // TODO Review 2616: Also add a test GetSqlStatement_NoSelectProjection set. Expect an InvalidOperationException: "A SelectProjection must be set before the SqlStatement can be retrieved." Adapt implementation.
-
+    [Test]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void GetSqlStatement_NoSelectProjection ()
+    {
+      _statementBuilder.SelectProjection = null;
+      _statementBuilder.GetSqlStatement();
+    }
+    
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A DataInfo must be set before the SqlStatement can be retrieved.")]
     public void GetSqlStatement_NoDataInfoSet ()

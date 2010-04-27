@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
       return new SqlStatement (new TestStreamedValueInfo (type), CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
     }
-
+    
     public static SqlTable CreateSqlTable ()
     {
       return CreateSqlTable (typeof (Cook));

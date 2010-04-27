@@ -129,10 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
       var sqlStatement = builder.GetSqlStatement();
-      // TODO Review 2640: subStatement doesn't seem to be used; remove
-      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<>).MakeGenericType (typeof (Cook)));
-      ((SqlTable) sqlStatement.SqlTables[0]).TableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
-
+      
       _stageMock
           .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .Return (sqlStatement.SelectProjection);

@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -41,7 +43,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_SqlStatementNotChanged_SameTableInfo ()
     {
-      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<>).MakeGenericType (typeof (Cook)));
+      var subStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
       var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
       var sqlTable = new SqlTable (subStatementTableInfo);
 
@@ -59,10 +64,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_SqlStatementChanged_NewTableInfo ()
     {
-      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<>).MakeGenericType (typeof (Cook)));
+      var subStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
       var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
       var sqlTable = new SqlTable (subStatementTableInfo);
-      var returnedStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (IQueryable<>).MakeGenericType (typeof (Cook)));
+      var returnedStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
      
       _stageMock
           .Expect (mock => mock.ApplyContext (subStatement, SqlExpressionContext.ValueRequired))

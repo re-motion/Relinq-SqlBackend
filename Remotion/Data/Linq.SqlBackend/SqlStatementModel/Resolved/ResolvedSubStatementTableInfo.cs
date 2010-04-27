@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -35,10 +36,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       
       _sqlStatement = sqlStatement;
       _tableAlias = tableAlias;
-      // TODO Review 2616: write a test showing that the item type is correctly extracted from a sqlStatement with a new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0))
-      // TODO Review 2616: use the following expression to get the item type: ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression.Type
-      // TODO Review 2616: Then, write a test expecting an ArgumentException when a sqlStatement with a non-sequence data info is passed to the ctor. Then rewrite the implementation as follows: var streamedSequenceInfo = sqlStatement.DataInfo as StreamedSequenceInfo; if (ssI == null) throw new ArgumentException ("For a statement to be used as a table, it must return a sequence of items.", "sqlStatement"); _itemType = streamedSequenceInfo.ItemExpression.Type;
-      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable ( sqlStatement.DataInfo.DataType, "DataType");
+      
+      var streamedSequenceInfo = sqlStatement.DataInfo as StreamedSequenceInfo;
+      if (streamedSequenceInfo == null)
+        throw new ArgumentException ("For a statement to be used as a table, it must return a sequence of items.", "sqlStatement");
+      _itemType = streamedSequenceInfo.ItemExpression.Type;
     }
 
     public virtual Type ItemType

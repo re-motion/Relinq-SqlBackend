@@ -28,11 +28,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   public class SqlSubStatementExpressionTest
   {
     private SqlSubStatementExpression _expression;
+    private SqlStatement _sqlStatement;
 
     [SetUp]
     public void SetUp ()
     {
-      _expression = new SqlSubStatementExpression (SqlStatementModelObjectMother.CreateSqlStatement());
+      _sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
+      _expression = new SqlSubStatementExpression (_sqlStatement);
+    }
+
+    [Test]
+    public void Initialization_ItemType ()
+    {
+      Assert.That (_expression.Type, Is.EqualTo (_sqlStatement.DataInfo.DataType));
     }
 
     [Test]
