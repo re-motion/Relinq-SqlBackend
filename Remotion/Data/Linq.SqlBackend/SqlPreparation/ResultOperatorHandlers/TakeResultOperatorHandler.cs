@@ -22,9 +22,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class TakeResultOperatorHandler : ResultOperatorHandler<TakeResultOperator>
   {
-    protected override void HandleResultOperator (TakeResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected override void HandleResultOperator (TakeResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
-      EnsureNoTopExpressionAndSetDataInfo (resultOperator, sqlStatementBuilder, generator, stage);
+      EnsureNoTopExpressionAndSetDataInfo (resultOperator, ref sqlStatementBuilder, generator, stage);
 
       sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count);
     }

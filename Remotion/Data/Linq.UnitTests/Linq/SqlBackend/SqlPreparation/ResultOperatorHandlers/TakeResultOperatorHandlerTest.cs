@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _stageMock.Expect (mock => mock.PrepareTopExpression (takeExpression)).Return (preparedExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));

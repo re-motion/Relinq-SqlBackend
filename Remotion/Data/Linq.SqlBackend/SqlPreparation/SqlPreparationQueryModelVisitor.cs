@@ -20,7 +20,6 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -150,57 +149,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       if (resultOperator is ContainsResultOperator)
       {
-        var sqlSubStatement = GetStatementAndResetBuilder();
-        var itemExpression = ((ContainsResultOperator) resultOperator).Item;
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
-        var sqlInExpression = new SqlBinaryOperatorExpression ("IN", _stage.PrepareItemExpression (itemExpression), subStatementExpression);
-
-        SqlStatementBuilder.SelectProjection = sqlInExpression;
-        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlSubStatement.DataInfo);
+        _registry.GetHandler (typeof (ContainsResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
         return;
       }
       else if (resultOperator is CastResultOperator)
       {
-        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
+        _registry.GetHandler (typeof (CastResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
         return;
       }
       else if (resultOperator is OfTypeResultOperator)
       {
-        SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
-        var typeCheckExpression = Expression.TypeIs (SqlStatementBuilder.SelectProjection, ((OfTypeResultOperator) resultOperator).SearchedItemType);
-        SqlStatementBuilder.AddWhereCondition (typeCheckExpression);
+        _registry.GetHandler (typeof (OfTypeResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
         return;
       }
-
-      if (SqlStatementBuilder.TopExpression != null)
-      {
-        var sqlStatement = GetStatementAndResetBuilder ();
-
-        var subStatementTableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"),
-            sqlStatement);
-        var sqlTable = new SqlTable (subStatementTableInfo);
-
-        SqlStatementBuilder.SqlTables.Add (sqlTable);
-        SqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
-        // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
-        SqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
-      }
-
-      SqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (SqlStatementBuilder.DataInfo);
-
+      
       if (resultOperator is CountResultOperator)
-        SqlStatementBuilder.IsCountQuery = true;
+        _registry.GetHandler (typeof (CountResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
       else if (resultOperator is DistinctResultOperator)
-        SqlStatementBuilder.IsDistinctQuery = true;
+        _registry.GetHandler (typeof (DistinctResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
       else if (resultOperator is FirstResultOperator)
-        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (1));
+        _registry.GetHandler (typeof (FirstResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
       else if (resultOperator is SingleResultOperator)
-        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (Expression.Constant (2));
+        _registry.GetHandler (typeof (SingleResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
       else if (resultOperator is TakeResultOperator)
-      {
-        var expression = ((TakeResultOperator) resultOperator).Count;
-        SqlStatementBuilder.TopExpression = _stage.PrepareTopExpression (expression);
-      }
+        _registry.GetHandler (typeof (TakeResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
       else
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
     }

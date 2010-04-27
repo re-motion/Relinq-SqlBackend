@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var castResultOperator = new CastResultOperator (typeof (Cook));
 
-      _handler.HandleResultOperator (castResultOperator, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (castResultOperator, ref _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Cook))));

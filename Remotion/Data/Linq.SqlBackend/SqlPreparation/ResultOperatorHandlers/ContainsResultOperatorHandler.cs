@@ -23,9 +23,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class ContainsResultOperatorHandler : ResultOperatorHandler<ContainsResultOperator>
   {
-    protected override void HandleResultOperator (ContainsResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected override void HandleResultOperator (ContainsResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
-      var sqlSubStatement = GetStatementAndResetBuilder (sqlStatementBuilder);
+      var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
       var itemExpression = resultOperator.Item;
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
       var sqlInExpression = new SqlBinaryOperatorExpression ("IN", stage.PrepareItemExpression (itemExpression), subStatementExpression);

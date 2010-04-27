@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var countResultOperator = new CountResultOperator ();
 
-      _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (countResultOperator, ref _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.IsCountQuery, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
