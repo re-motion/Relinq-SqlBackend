@@ -172,6 +172,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO Review 2647: Add a test showing that this substitution is only done for SingleValueRequired, not for ValueRequired
       return Expression.Constant (expression.PrimaryKeyValue, expression.PrimaryKeyValue.GetType ());
     }
 

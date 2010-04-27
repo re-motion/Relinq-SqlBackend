@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -281,6 +280,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    // TODO Review 2647: This visitor shouldn't implement VisitSqlEntityConstantExpression, and it must never ignore an expression.
+    // TODO Review 2647: SqlEntityConstantExpression is not a resolved expression (it is replaced with the primary key in the resolution stage...), move it to the Unresolved namespace and IUnresolvedSqlExpressionVisitor
     Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
       return expression;
