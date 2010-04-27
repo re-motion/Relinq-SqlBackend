@@ -64,37 +64,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (expression == null)
         return expression;
 
-      // Expressions that are not on the top level always need SingleValueRequired semantics
-      if (!_isTopLevelExpression && _currentContext != SqlExpressionContext.SingleValueRequired)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
-
-      // This is only executed if the _currentContext is SingleValueRequired or if we are at the top level
-
-      _isTopLevelExpression = false;
-
-      var newExpression = base.VisitExpression (expression);
-
       switch (_currentContext)
       {
         case SqlExpressionContext.SingleValueRequired:
+          return HandleSingleValueSemantics (expression);
         case SqlExpressionContext.ValueRequired:
-          if (newExpression.Type == typeof (bool))
-            return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-          else
-            return newExpression;
+          return HandleValueSemantics (expression);
         case SqlExpressionContext.PredicateRequired:
-          if (newExpression.Type == typeof (bool))
-            return newExpression;
-          else if (newExpression.Type == typeof (int))
-            return Expression.Equal (newExpression, new SqlLiteralExpression (1));
-          else
-          {
-            var message = string.Format (
-                "An expression ('{0}') evaluating to type '{1}' was used where a predicate is required.", 
-                FormattingExpressionTreeVisitor.Format (expression), 
-                expression.Type);
-            throw new InvalidOperationException (message);
-          }
+          return HandlePredicateSemantics (expression);
       }
 
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
@@ -260,49 +237,46 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       }
     }
 
-    // TODO 2647
-    //  switch (_currentContext)
-    //  {
-    //    case SqlExpressionContext.SingleValueRequired:
-    //      return HandleSingleValueSemantics (expression);
-    //    case SqlExpressionContext.ValueRequired:
-    //      return HandleValueSemantics (expression);
-    //    case SqlExpressionContext.PredicateRequired:
-    //      return HandlePredicateSemantics (expression);
-    //  }
-    //}
+    private Expression HandleSingleValueSemantics (Expression expression)
+    {
+      _isTopLevelExpression = false;
+      
+      var newExpression = base.VisitExpression (expression);
+      if (newExpression.Type == typeof (bool))
+        return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+      else
+        return newExpression;
+    }
 
-    //private Expression HandleSingleValueSemantics (Expression expression)
-    //{
-    //  if (newExpression.Type == typeof (bool))
-    //    return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-    //  else
-    //    return newExpression;
-    //}
+    private Expression HandleValueSemantics (Expression expression)
+    {
+      if (!_isTopLevelExpression)
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired,_stage);
+      
+      _isTopLevelExpression = false;
 
-    //private Expression HandleValueSemantics (Expression expression)
-    //{
-    //  if (!_isTopLevelExpression)
-    //    return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
+      var newExpression = base.VisitExpression (expression);
+      if (newExpression.Type == typeof (bool))
+        return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+      else
+        return newExpression;
+    }
 
-    //  if (newExpression.Type == typeof (bool))
-    //    return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-    //  else
-    //    return newExpression;
-    //}
+    private Expression HandlePredicateSemantics (Expression expression)
+    {
+      if (!_isTopLevelExpression)
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
+      
+      _isTopLevelExpression = false;
+      
+      var newExpression = base.VisitExpression (expression);
+      if (newExpression.Type == typeof (bool))
+        return newExpression;
+      else if (newExpression.Type == typeof (int))
+        return Expression.Equal (newExpression, new SqlLiteralExpression (1));
+      else
+        throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", newExpression.Type));
+    }
 
-    //private Expression HandlePredicateSemantics (Expression expression)
-    //{
-    //  if (!_isTopLevelExpression)
-    //    return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
-
-    //  if (newExpression.Type == typeof (bool))
-    //    return newExpression;
-    //  else if (newExpression.Type == typeof (int))
-    //    return Expression.Equal (newExpression, new SqlLiteralExpression (1));
-    //  else
-    //    throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", expression.Type));
-    //}
-   
   }
 }

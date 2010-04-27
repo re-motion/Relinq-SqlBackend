@@ -149,8 +149,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "An expression ('CustomExpression') evaluating to type 'System.String' was used where a predicate is required.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Cannot convert an expression of type 'System.String' to a boolean expression.")]
     public void VisitExpression_ThrowsOnNonConvertible_ToPredicate ()
     {
       var expression = new CustomExpression (typeof (string));
