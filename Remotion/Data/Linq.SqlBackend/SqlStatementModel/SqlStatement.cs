@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -52,6 +53,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       if ((isCountQuery && topExpression != null) || (isCountQuery && isDistinctQuery))
         throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
+
+      if (selectProjection.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (selectProjection.Type))
+        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;

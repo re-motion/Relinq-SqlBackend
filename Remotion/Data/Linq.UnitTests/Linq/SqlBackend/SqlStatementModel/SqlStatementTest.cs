@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
 using Remotion.Data.Linq.Clauses;
 
@@ -29,6 +30,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlStatementTest
   {
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Initialization_WithCountAndTop_ThrowsException ()
+    {
+      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, Expression.Constant ("top"), true, false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A SqlStatement cannot contain both Count and Top or Count and Distinct.")]
+    public void Initialization_WithCountAndDistinct_ThrowsException ()
+    {
+      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
+    public void Initialization_CollectionInSelectProjection_ThrowsException ()
+    {
+      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (new Cook[]{}), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
@@ -43,19 +65,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       
       Assert.That (sqlStatement.WhereCondition, Is.Null);
     }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void BuildSelectPart_WithCountAndTop_ThrowsException ()
-    {
-      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, Expression.Constant ("top"), true, false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void BuildSelectPart_WithCountAndDistinct_ThrowsException ()
-    {
-      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
-    }
+    
   }
 }

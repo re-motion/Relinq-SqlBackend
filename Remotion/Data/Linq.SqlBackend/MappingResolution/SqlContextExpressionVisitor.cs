@@ -72,11 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       _isTopLevelExpression = false;
 
-      // TODO 2639: Move to SqlStatement ctor
-      //if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
-      //  throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
-
-      //TODO 2639: add visitor interface, move to VisitSqlEntityConstantExpression method; don't forget test
+      //TODO 2647: add visitor interface, move to VisitSqlEntityConstantExpression method; don't forget test
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
         var entityConstantExpression = expression as SqlEntityConstantExpression;
@@ -265,7 +261,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       }
     }
 
-    // TODO 2639
+    // TODO 2647
     //  switch (_currentContext)
     //  {
     //    case SqlExpressionContext.SingleValueRequired:
