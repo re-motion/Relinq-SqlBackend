@@ -90,8 +90,16 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\SubstringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\CastResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\ContainsResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\CountResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\DistinctResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\FirstResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\IResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\OfTypeResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SingleResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandler.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />
