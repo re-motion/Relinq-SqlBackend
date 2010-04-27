@@ -496,6 +496,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitSqlEntityConstantExpression ()
+    {
+      var expression = new SqlEntityConstantExpression (typeof (int), 5, 1);
+
+      var result = _nonTopLevelVisitor.VisitSqlEntityConstantExpression (expression);
+
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(1));
+    }
+
+    [Test]
     public void VisitSqlSubStatementExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();

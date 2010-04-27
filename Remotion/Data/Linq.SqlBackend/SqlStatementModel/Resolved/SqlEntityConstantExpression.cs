@@ -54,5 +54,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       return this;
     }
+
+    public override Expression Accept (ExpressionTreeVisitor visitor)
+    {
+      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlEntityConstantExpression(this);
+      else
+        return base.Accept (visitor);
+    }
   }
 }

@@ -280,5 +280,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       expression.Generate (_commandBuilder, this, _stage);
       return expression;
     }
+
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    {
+      return expression;
+    }
   }
 }

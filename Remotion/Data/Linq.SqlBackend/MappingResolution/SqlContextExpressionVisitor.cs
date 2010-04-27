@@ -72,14 +72,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       _isTopLevelExpression = false;
 
-      //TODO 2647: add visitor interface, move to VisitSqlEntityConstantExpression method; don't forget test
-      if (_currentContext == SqlExpressionContext.SingleValueRequired)
-      {
-        var entityConstantExpression = expression as SqlEntityConstantExpression;
-        if (entityConstantExpression != null)
-          return Expression.Constant (entityConstantExpression.PrimaryKeyValue, entityConstantExpression.PrimaryKeyValue.GetType());
-      }
-
       var newExpression = base.VisitExpression (expression);
 
       switch (_currentContext)
@@ -197,6 +189,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpression != expression.Expression)
         return new SqlIsNotNullExpression (newExpression);
       return expression;
+    }
+
+    public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return Expression.Constant (expression.PrimaryKeyValue, expression.PrimaryKeyValue.GetType ());
     }
 
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
