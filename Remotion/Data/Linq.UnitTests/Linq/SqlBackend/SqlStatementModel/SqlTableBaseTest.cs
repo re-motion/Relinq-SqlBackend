@@ -30,10 +30,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void GetOrAddJoin_NewEntry ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
-
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, memberInfo, JoinCardinality.One);
 
-      var joinedTable = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
+      var joinedTable = sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
       Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingTable, Is.SameAs (sqlTable));
@@ -43,13 +43,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void GetOrAddJoin_GetEntry_Twice ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
-
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, memberInfo, JoinCardinality.One);
 
-      var joinedTable1 = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
+      var joinedTable1 = sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
       var originalJoinInfo = joinedTable1.JoinInfo;
 
-      var joinedTable2 = sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
+      var joinedTable2 = sqlTable.GetOrAddJoin (originalJoinInfo, JoinCardinality.One);
 
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));

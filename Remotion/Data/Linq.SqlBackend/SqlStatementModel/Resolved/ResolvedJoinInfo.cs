@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -27,21 +28,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly IResolvedTableInfo _foreignTableInfo;
     private readonly SqlColumnExpression _leftKeyColumn;
     private readonly SqlColumnExpression _rightKeyColumn;
+    private readonly MemberInfo _memberInfo;
 
-    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, SqlColumnExpression leftKeyColumn, SqlColumnExpression rightKeyColumn)
+    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, SqlColumnExpression leftKeyColumn, SqlColumnExpression rightKeyColumn, MemberInfo memberInfo)
     {
       ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
       ArgumentUtility.CheckNotNull ("leftKeyColumn", leftKeyColumn);
       ArgumentUtility.CheckNotNull ("rightKeyColumn", rightKeyColumn);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       
       _foreignTableInfo = foreignTableInfo;
       _leftKeyColumn = leftKeyColumn;
       _rightKeyColumn = rightKeyColumn;
+      _memberInfo = memberInfo;
     }
 
     public virtual Type ItemType
     {
       get { return _foreignTableInfo.ItemType; }
+    }
+
+    public MemberInfo MemberInfo
+    {
+      get { return _memberInfo;  }
     }
 
     public IResolvedTableInfo ForeignTableInfo

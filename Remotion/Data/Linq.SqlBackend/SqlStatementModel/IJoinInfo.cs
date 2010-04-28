@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
@@ -25,6 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public interface IJoinInfo
   {
     Type ItemType { get; }
+    MemberInfo MemberInfo { get; }
     IJoinInfo Accept (IJoinInfoVisitor visitor);
     ResolvedJoinInfo GetResolvedJoinInfo ();
   }

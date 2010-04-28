@@ -93,8 +93,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var newExpressionAsSqlEntityRefMemberExpression = newExpression as SqlEntityRefMemberExpression;
       if (newExpressionAsSqlEntityRefMemberExpression != null)
-        newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression);
-      
+      {
+        var unresolvedJoinInfo = new UnresolvedJoinInfo (
+            newExpressionAsSqlEntityRefMemberExpression.SqlTable, newExpressionAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
+        newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression, unresolvedJoinInfo);
+      }
+
       // member applied to an entity?
       var newExpressionAsEntityExpression = newExpression as SqlEntityExpression;
       if (newExpressionAsEntityExpression != null)
@@ -125,23 +129,19 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitExpression (resolvedTypeExpression);
     }
 
-    public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var join = expression.SqlTable.GetOrAddJoin (expression.MemberInfo, JoinCardinality.One);
-      join.JoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (join.JoinInfo, _resolver, _generator, _stage);
-
-      var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
-      return VisitExpression (sqlTableReferenceExpression);
-    }
-
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newSqlStatement = _stage.ResolveSqlSubStatement (expression.SqlStatement);
       return new SqlSubStatementExpression (newSqlStatement);
+    }
+
+    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return base.VisitUnknownExpression (expression);
     }
   }
 }

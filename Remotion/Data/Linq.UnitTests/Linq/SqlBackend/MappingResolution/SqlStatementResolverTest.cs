@@ -68,7 +68,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var join = _sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (
+          new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo, JoinCardinality.One);
+      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
@@ -92,8 +94,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSqlTable_ResolvesJoinInfo_Multiple ()
     {
-      var join1 = _sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
-      var join2 = _sqlTable.GetOrAddJoin (typeof (Kitchen).GetProperty ("Restaurant"), JoinCardinality.One);
+      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (
+          new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (
+         new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), typeof (Kitchen).GetProperty ("Restaurant"), JoinCardinality.One);
+      var join1 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo1, JoinCardinality.One);
+      var join2 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo2, JoinCardinality.One);
 
       var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Restaurant));
@@ -104,10 +110,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join1.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join1.JoinInfo))
             .Return (fakeResolvedJoinInfo1);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join2.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join2.JoinInfo))
             .Return (fakeResolvedJoinInfo2);
       }
       _stageMock.Replay();
@@ -122,10 +128,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSqlTable_ResolvesJoinInfo_Recursive ()
     {
-      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var join1 = _sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
-      var join2 = join1.GetOrAddJoin (typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
-      var join3 = join1.GetOrAddJoin (typeof (Cook).GetProperty ("Name"), JoinCardinality.One);
+      var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
+      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (new SqlTable(new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo1, JoinCardinality.One);
+      var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
+      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c1")), memberInfo2, JoinCardinality.One);
+      var memberInfo3 = typeof (Cook).GetProperty ("Name");
+      var unresolvedJoinInfo3 = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c2")), memberInfo3, JoinCardinality.One);
+      
+      var join1 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo1, JoinCardinality.One);
+      var join2 = join1.GetOrAddJoin (unresolvedJoinInfo2, JoinCardinality.One);
+      var join3 = join1.GetOrAddJoin (unresolvedJoinInfo3, JoinCardinality.One);
 
       var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));

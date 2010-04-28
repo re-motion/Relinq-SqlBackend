@@ -54,13 +54,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "SubstitutedID");
+                "SubstitutedID",
+                joinInfo.MemberInfo);
           case "Assistants":
             return CreateResolvedJoinInfo (
                 (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "AssistedID");
+                "AssistedID",
+                joinInfo.MemberInfo);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -72,13 +74,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "KitchenID");
+                "KitchenID",
+                joinInfo.MemberInfo);
           case "Restaurant":
             return CreateResolvedJoinInfo (
                 (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "ID");
+                "ID",
+                joinInfo.MemberInfo);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Restaurant))
@@ -90,13 +94,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "RestaurantID");
+                "RestaurantID",
+                joinInfo.MemberInfo);
           case "Cooks":
             return CreateResolvedJoinInfo (
                 (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "RestaurantID");
+                "RestaurantID",
+                joinInfo.MemberInfo);
         }
       }
 
@@ -288,12 +294,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (
-        ResolvedSimpleTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName)
+        ResolvedSimpleTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName, MemberInfo memberInfo)
     {
       var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName, true);
       var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName, false);
 
-      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn, memberInfo);
     }
   }
 }

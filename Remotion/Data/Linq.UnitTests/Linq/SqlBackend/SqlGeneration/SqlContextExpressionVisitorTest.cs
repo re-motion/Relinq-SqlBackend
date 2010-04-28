@@ -15,12 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -33,12 +35,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   public class SqlContextExpressionVisitorTest
   {
     private TestableSqlContextExpressionVisitor _nonTopLevelVisitor;
-    private DefaultMappingResolutionStage _stageMock;
+    private IMappingResolutionStage _stageMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<DefaultMappingResolutionStage> (new MappingResolverStub (), new UniqueIdentifierGenerator ());
+      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage> ();
       _nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock);
     }
 
@@ -523,6 +525,98 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.Not.SameAs (sqlStatement));
       _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void VisitSqlEntityRefMemberExpression_ValueSemantic ()
+    {
+      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
+      var sqlTable = new SqlTable (resolvedSimpleTableInfo);
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
+      var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn, memberInfo);
+      var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
+
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))
+          .Return (fakeJoinInfo);
+      _stageMock
+          .Expect (mock => mock.ResolveEntityRefMemberExpression(entityRefMemberExpression, fakeJoinInfo))
+          .Return (fakeEntityExpression);
+      _stageMock.Replay();
+
+      var result = _nonTopLevelVisitor.VisitSqlEntityRefMemberExpression(entityRefMemberExpression);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeEntityExpression));
+    }
+
+    [Test]
+    public void VisitSqlEntityRefMemberExpression_SingleValueSemantic_PrimaryKeyColumnOnLeftSide ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
+      var sqlTable = new SqlTable (resolvedSimpleTableInfo);
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
+      var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn, memberInfo);
+      var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
+
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))
+          .Return (fakeJoinInfo);
+      _stageMock
+          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfo))
+          .Return (fakeEntityExpression);
+      _stageMock.Replay ();
+
+      var result = nonTopLevelVisitor.VisitSqlEntityRefMemberExpression (entityRefMemberExpression);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (primaryKeyColumn));
+    }
+
+    [Test]
+    public void VisitSqlEntityRefMemberExpression_SingleValueSemantic_PrimaryKeyColumnOnRightSide ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
+      var sqlTable = new SqlTable (resolvedSimpleTableInfo);
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
+      var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn, memberInfo);
+
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))
+          .Return (fakeJoinInfo);
+      _stageMock.Replay();
+
+      var result = nonTopLevelVisitor.VisitSqlEntityRefMemberExpression (entityRefMemberExpression);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (foreignKeyColumn));
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void VisitSqlEntityRefMemberExpression_PredicateSemantic ()
+    {
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var memberInfo = typeof (Cook).GetProperty ("ID");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything))
+          .Return (null);
+      _stageMock.Replay();
+
+      SqlContextExpressionVisitor.ApplySqlExpressionContext (entityRefMemberExpression, SqlExpressionContext.PredicateRequired, _stageMock);
     }
 
     public static bool FakeAndOperator (bool operand1, bool operand2)

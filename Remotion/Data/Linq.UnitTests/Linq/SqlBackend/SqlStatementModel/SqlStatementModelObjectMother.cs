@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID", false);
       var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
-      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn, typeof(Cook).GetProperty("ID"));
     }
 
     public static SqlEntityExpression CreateSqlEntityExpression (Type type)

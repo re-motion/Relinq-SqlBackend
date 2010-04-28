@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ApplyContext_SqlStatementNotChanged_SameJoinInfo ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID", false), new SqlColumnExpression (typeof (int), "r", "CookID", false));
+      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID", false), new SqlColumnExpression (typeof (int), "r", "CookID", false), typeof(Cook).GetProperty("ID"));
       var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo);
 
       SqlContextTableVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock);
@@ -153,7 +153,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
       }.GetSqlStatement ();
       var tableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
-      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID", false), new SqlColumnExpression (typeof (int), "r", "CookID", false));
+      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID", false), new SqlColumnExpression (typeof (int), "r", "CookID", false), typeof(Cook).GetProperty("ID"));
       var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo);
       var returnedStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
       {

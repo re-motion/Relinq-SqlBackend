@@ -65,17 +65,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression) as SqlEntityExpression;
-      if (sourceEntityExpression != null)
-      {
-        var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression.SqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
-        return unresolvedJoinInfo.Accept (this);
-      } 
-      throw new NotSupportedException (
-          string.Format (
-              "The expression '{0}' used as a query source with the member '{1}' resolves to an unsupported type.",
-              joinInfo.SourceExpression.Type.Name,
-              joinInfo.MemberInfo.Name));
+      var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression.SqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
+      return unresolvedJoinInfo.Accept (this);
     }
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)

@@ -51,8 +51,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-
-      var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      
+      var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn, typeof(Cook).GetProperty("ID"));
 
       _resolverMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var resolvedJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (string), "c", "ID", false),
-          new SqlColumnExpression (typeof (string), "c", "ID", false));
+          new SqlColumnExpression (typeof (string), "c", "ID", false), typeof(Cook).GetProperty("ID"));
       _resolverMock
           .Expect (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
           .Return (resolvedJoinInfo);
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-      var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn, memberInfo);
 
       _stageMock
           .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression))
@@ -116,20 +116,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    [ExpectedException(typeof(NotSupportedException))]
-    public void ResolveJoinInfo_ResolvesCollectionJoinInfo_ReturnsNoSqlEntityExpression ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
-      var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook ()), memberInfo);
-
-      _stageMock
-          .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression))
-          .Return (Expression.Constant(2));
-     
-      ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock);
     }
   }
 }

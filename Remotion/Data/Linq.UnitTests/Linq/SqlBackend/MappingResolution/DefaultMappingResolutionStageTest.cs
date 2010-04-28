@@ -157,7 +157,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveJoinInfo ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var join = _sqlTable.GetOrAddJoin (memberInfo, JoinCardinality.One);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo, JoinCardinality.One);
+      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
       var joinInfo = (UnresolvedJoinInfo) join.JoinInfo;
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
@@ -226,13 +227,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var constantExpression = Expression.Constant (new Cook());
       var expression = Expression.MakeMemberAccess (constantExpression, typeof (Cook).GetProperty ("FirstName"));
-      var fakeResult = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var sqlColumnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var fakeResult = new SqlEntityExpression (_sqlTable, sqlColumnExpression);
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
-          .Return (fakeResult);
+          .Return (sqlColumnExpression);
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (fakeResult, expression.Member))
+          .Expect (mock => mock.ResolveMemberExpression (sqlColumnExpression, expression.Member))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -249,10 +251,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, kitchenCookMember);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, kitchenCookMember, JoinCardinality.One);
       var fakeJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (int), "k", "ID", true),
-          new SqlColumnExpression (typeof (int), "c", "KitchenID", false));
+          new SqlColumnExpression (typeof (int), "c", "KitchenID", false), kitchenCookMember);
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
       _resolverMock
@@ -270,11 +273,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                   Arg<UniqueIdentifierGenerator>.Is.Anything))
           .Return (fakeEntityExpression);
 
-      var result = _stage.ResolveEntityRefMemberExpression (entityRefMemberExpression);
+      var result = _stage.ResolveEntityRefMemberExpression (entityRefMemberExpression, unresolvedJoinInfo);
 
       _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
+      Assert.That (entityRefMemberExpression.SqlTable.GetJoin (kitchenCookMember), Is.Not.Null);
+      Assert.That (entityRefMemberExpression.SqlTable.GetJoin (kitchenCookMember).JoinInfo, Is.SameAs (fakeJoinInfo));
     }
 
     [Test]

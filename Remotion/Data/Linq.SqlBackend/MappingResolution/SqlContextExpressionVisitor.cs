@@ -190,12 +190,16 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (new UnresolvedJoinInfo (expression.SqlTable, expression.MemberInfo, JoinCardinality.One));
       switch (_currentContext)
       {
         case SqlExpressionContext.ValueRequired:
-          return _stage.ResolveEntityRefMemberExpression (expression);
+          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo);
         case SqlExpressionContext.SingleValueRequired:
-          return ((SqlEntityExpression)_stage.ResolveEntityRefMemberExpression (expression)).PrimaryKeyColumn;
+          if (resolvedJoinInfo.RightKeyColumn.IsPrimaryKey)
+            return resolvedJoinInfo.LeftKeyColumn;
+          else
+            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn;
       }
       throw new NotSupportedException (string.Format("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
     }

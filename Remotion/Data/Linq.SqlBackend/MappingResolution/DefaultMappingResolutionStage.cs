@@ -97,18 +97,23 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return SqlStatementResolver.ResolveExpressions (this, sqlStatement);
     }
 
-    public virtual Expression ResolveCollectionSourceExpression (Expression expression)
+    public virtual SqlEntityExpression ResolveCollectionSourceExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolveExpression (expression);
+      var resolvedExpression = ResolveExpression (expression);
+      return (SqlEntityExpression) ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired);
     }
 
-    public Expression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolveExpression (expression);
+      var join = expression.SqlTable.GetOrAddJoin (joinInfo, JoinCardinality.One);
+      join.JoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (join.JoinInfo, _resolver, _uniqueIdentifierGenerator, this);
+
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
+      return (SqlEntityExpression)ResolveExpression(sqlTableReferenceExpression);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext context)
