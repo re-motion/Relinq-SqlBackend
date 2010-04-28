@@ -21,6 +21,10 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="FirstResultOperator"/> by setting a <see cref="SqlStatementBuilder.TopExpression"/>. When the 
+  /// <see cref="FirstResultOperator"/> occurs after a <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created.
+  /// </summary>
   public class FirstResultOperatorHandler : ResultOperatorHandler<FirstResultOperator>
   {
     protected override void HandleResultOperator (FirstResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)

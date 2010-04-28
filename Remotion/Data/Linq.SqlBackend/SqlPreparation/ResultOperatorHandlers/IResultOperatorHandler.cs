@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
+// TODO Review 2620: Move out to SqlPreparation namespace
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public interface IResultOperatorHandler

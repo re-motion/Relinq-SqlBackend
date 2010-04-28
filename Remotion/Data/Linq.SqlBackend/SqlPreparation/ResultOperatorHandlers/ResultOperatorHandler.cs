@@ -19,24 +19,27 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   /// <summary>
-  /// <see cref="ResultOperatorHandler{T}"/> handles implementations of <see cref="ResultOperatorBase"/>.
+  /// Default implementation of <see cref="IResultOperatorHandler"/> providing commonly needed functionality.
   /// </summary>
-  /// <typeparam name="T"></typeparam>
+  /// <typeparam name="T">The result operator type handled by the concrete subclass of <see cref="ResultOperatorHandler{T}"/>.</typeparam>
   public abstract class ResultOperatorHandler<T> : IResultOperatorHandler where T: ResultOperatorBase
   {
     protected abstract void HandleResultOperator (T resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
+    // TODO Review 2620: Make two methods of this: EnsureNoTopExpression, UpdateDataInfo
+    // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)
     protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
+      // TODO Review 2620: argument checks
+
       if (sqlStatementBuilder.TopExpression != null)
       {
         var sqlStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
-        sqlStatementBuilder = new SqlStatementBuilder();
+        sqlStatementBuilder = new SqlStatementBuilder (); // TODO Review 2620: this is already done by GetStatementAndResetBuilder 
 
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (
             generator.GetUniqueIdentifier ("q"),
@@ -48,14 +51,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
         sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
       }
+
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
     }
 
+    // TODO Review 2620: Make this an explicit interface implementation; make the abstract method public
     public void HandleResultOperator (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
+      // TODO Review 2620: Argument checks. Also check type of resultOperator: var castOperator = ArgumentUtility.CheckNotNullAndType<T> (resultOperator)
       HandleResultOperator ((T) resultOperator, ref sqlStatementBuilder, generator, stage);
     }
 
+    // TODO Review 2620: Probably not necessary to make this virtual
     protected virtual SqlStatement GetStatementAndResetBuilder (ref SqlStatementBuilder sqlStatementBuilder)
     {
       var sqlSubStatement = sqlStatementBuilder.GetSqlStatement ();

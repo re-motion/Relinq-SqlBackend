@@ -69,5 +69,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Cook)));
       _stageMock.VerifyAllExpectations();
     }
+
+    // TODO Review 2620: Add a test showing that First after a top expression leads to a subquery
+
   }
 }

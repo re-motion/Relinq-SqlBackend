@@ -21,6 +21,9 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="OfTypeResultOperator"/> by adding a type check to the <see cref="SqlStatementBuilder.WhereCondition"/>.
+  /// </summary>
   public class OfTypeResultOperatorHandler : ResultOperatorHandler<OfTypeResultOperator>
   {
     protected override void HandleResultOperator (OfTypeResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)

@@ -319,6 +319,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.Orderings[2].Expression, Is.SameAs (preparedOrderingExpression1));
     }
 
+    // TODO Review 2620: Remove all the result operator handler tests - their contents should already be tested in the handler tests
+    // TODO Review 2620: Only keep one with a handler mock showing that the handler is invoked
+
     [Test]
     public void VisitResultOperator_First ()
     {

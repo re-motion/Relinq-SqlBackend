@@ -27,16 +27,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   [TestFixture]
   public class ResultOperatorHandlerRegistryTest
   {
-    private UniqueIdentifierGenerator _generator;
-    private ISqlPreparationStage _stageMock;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _generator = new UniqueIdentifierGenerator();
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
-    }
-
     [Test]
     public void CreateDefault ()
     {

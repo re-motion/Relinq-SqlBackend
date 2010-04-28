@@ -53,6 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void VisitResultOperator_WithCast ()
     {
+      // TODO Review 2620: Make a cast to Chef in order to test that the DataInfo is really changed
       var castResultOperator = new CastResultOperator (typeof (Cook));
 
       _handler.HandleResultOperator (castResultOperator, ref _sqlStatementBuilder, _generator, _stageMock);

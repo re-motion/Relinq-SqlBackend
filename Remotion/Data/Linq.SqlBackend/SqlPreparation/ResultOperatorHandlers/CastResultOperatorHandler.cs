@@ -20,11 +20,20 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="CastResultOperator"/> by adjusting the <see cref="SqlStatementBuilder.DataInfo"/> of the current 
+  /// <see cref="SqlStatementBuilder"/>.
+  /// </summary>
   public class CastResultOperatorHandler : ResultOperatorHandler<CastResultOperator>
   {
     protected override void HandleResultOperator (
-        CastResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+        CastResultOperator resultOperator, 
+        ref SqlStatementBuilder sqlStatementBuilder, 
+        UniqueIdentifierGenerator generator, 
+        ISqlPreparationStage stage)
     {
+      // TODO Review 2620: Argument checks (here and in all implementations of this method)
+      // TODO Review 2620: Should call UpdateDataInfo instead (when this method exists; here and in all similar implementations)
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
     }
     

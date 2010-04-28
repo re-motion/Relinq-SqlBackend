@@ -20,6 +20,10 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="TakeResultOperator"/> by setting a <see cref="SqlStatementBuilder.TopExpression"/>. When the 
+  /// <see cref="TakeResultOperator"/> occurs after a <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created.
+  /// </summary>
   public class TakeResultOperatorHandler : ResultOperatorHandler<TakeResultOperator>
   {
     protected override void HandleResultOperator (TakeResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)

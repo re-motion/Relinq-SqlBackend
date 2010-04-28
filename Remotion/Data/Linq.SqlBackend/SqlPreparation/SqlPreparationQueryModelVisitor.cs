@@ -147,6 +147,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
+      // TODO Review 2620: Remove all those if checks, just use _registry.GetHandler for resultOperator.GetType()
+
       if (resultOperator is ContainsResultOperator)
       {
         _registry.GetHandler (typeof (ContainsResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
@@ -177,6 +179,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
     }
 
+    // TODO Review 2620: Move this method to SqlStatementBuilder. Implement it as follows:
+    // TODO Review 2620: Add a private nested class SqlStatementBuilder.ValueHolder; move all SqlStatementBuilder properties (but not the methods) to SqlStatementBuilder.ValueHolder; add a single field of type ValueHolder to SqlStatementBuilder; use ReSharper to add delegating members that expose all properties as follows: public Expression SelectProjection { get { return _valueHolder.SelectProjection; } set { _valueHolder.SelectProjection = ...; }
+    // TODO Review 2620: Implement SqlStatementBuilder.GetStatementAndResetBuilder via _valueHolder = new ValueHolder(); (after getting the statement)
+    // TODO Review 2620: Refactor IResultOperatorHandler to remove the ref parameter - it isn't required any longer
     protected virtual SqlStatement GetStatementAndResetBuilder ()
     {
       var sqlSubStatement = SqlStatementBuilder.GetSqlStatement();

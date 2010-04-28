@@ -21,14 +21,18 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="ContainsResultOperator"/> by generating a SQL IN expression.
+  /// </summary>
   public class ContainsResultOperatorHandler : ResultOperatorHandler<ContainsResultOperator>
   {
     protected override void HandleResultOperator (ContainsResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
-      var itemExpression = resultOperator.Item;
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", stage.PrepareItemExpression (itemExpression), subStatementExpression);
+      var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
+
+      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
 
       sqlStatementBuilder.SelectProjection = sqlInExpression;
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlSubStatement.DataInfo);

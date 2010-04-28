@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
+// TODO Review 2620: Move to SqlPreparation namespace
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>

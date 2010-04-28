@@ -39,8 +39,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public static MethodCallTransformerRegistry CreateDefault ()
     {
       var methodTransformers = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
-                             where typeof (IMethodCallTransformer).IsAssignableFrom (t)
-                             select t;
+                               where typeof (IMethodCallTransformer).IsAssignableFrom (t) // TODO Review 2620: Add && !t.IsAbstract as an optimization
+                               select t;
 
       var supportedMethodsForTypes = from t in methodTransformers
                                      let supportedMethodsField = t.GetField ("SupportedMethods", BindingFlags.Static | BindingFlags.Public)

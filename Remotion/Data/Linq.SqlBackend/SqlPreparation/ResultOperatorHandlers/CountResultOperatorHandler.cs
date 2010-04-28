@@ -20,6 +20,12 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  // TODO Review 2620: Tests missing; copy the one from SqlPreparationQueryModelVisitorTest; add one showing that an existing top expression leads to a subquery
+  /// <summary>
+  /// Handles the <see cref="CountResultOperator"/> by setting the <see cref="SqlStatementBuilder.IsCountQuery"/> flag. When the 
+  /// <see cref="CountResultOperator"/> occurs after a <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
+  /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
+  /// </summary>
   public class CountResultOperatorHandler : ResultOperatorHandler<CountResultOperator>
   {
     protected override void HandleResultOperator (CountResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
