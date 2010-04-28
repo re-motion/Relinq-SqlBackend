@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnExpression ()
     {
-      var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID");
+      var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID", false);
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnExpression, _commandBuilder, _stageMock);
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnExpressionWithStart ()
     {
-      var sqlColumnExpression = new SqlColumnExpression (typeof (Cook), "c", "*");
+      var sqlColumnExpression = new SqlColumnExpression (typeof (Cook), "c", "*", false);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].*"));
@@ -70,15 +70,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression ()
     {
-      var primaryKeyColumn = new SqlColumnExpression (typeof (string), "t", "ID");
+      var primaryKeyColumn = new SqlColumnExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityExpression (
           SqlStatementModelObjectMother.CreateSqlTable(),
           primaryKeyColumn,
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnExpression (typeof (string), "t", "Name"),
-              new SqlColumnExpression (typeof (string), "t", "City")
+              new SqlColumnExpression (typeof (string), "t", "Name", false),
+              new SqlColumnExpression (typeof (string), "t", "City", false)
           });
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnListExpression, _commandBuilder, _stageMock);
@@ -291,8 +291,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitJoinConditionExpression ()
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var primaryColumn = new SqlColumnExpression (typeof (Cook), "c", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (Cook), "a", "FK");
+      var primaryColumn = new SqlColumnExpression (typeof (Cook), "c", "ID", false);
+      var foreignColumn = new SqlColumnExpression (typeof (Cook), "a", "FK", false);
       var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, primaryColumn, foreignColumn);
       var sqlTable = new SqlJoinedTable (joinInfo);
       var joinConditionExpression = new JoinConditionExpression (sqlTable);

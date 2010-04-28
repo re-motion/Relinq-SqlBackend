@@ -123,13 +123,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
           case "FirstName":
           case "Name":
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
           case "MetaID":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name);
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name, false);
           case "Substitution":
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
           
@@ -140,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "SpecificInformation":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Chef))
@@ -148,7 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "LetterOfRecommendation":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Kitchen))
@@ -156,10 +157,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
           case "Name":
           case "RoomNumber":
-            return CreateColumn (
-                memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
           case "Cook":
           case "Restaurant":
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
@@ -170,8 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (
-                memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name);
+            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
           case "SubKitchen":
             return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
         }
@@ -185,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       if (memberInfo.DeclaringType == typeof (MetaID))
       {
         if (memberInfo.Name == "ClassID")
-          return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID");
+          return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
       }
       throw new UnmappedItemException ("Cannot resolve member for: " + memberInfo.Name);
     }
@@ -208,9 +208,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
          throw new UnmappedItemException ("Cannot resolve type for innerExpression: " + innerExpression.Type.Name);
     }
 
-    private SqlColumnExpression CreateColumn (Type columnType, IResolvedTableInfo resolvedSimpleTableInfo, string columnName)
+    private SqlColumnExpression CreateColumn (Type columnType, IResolvedTableInfo resolvedSimpleTableInfo, string columnName, bool isPriamryKey)
     {
-      return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName);
+      return new SqlColumnExpression (columnType, resolvedSimpleTableInfo.TableAlias, columnName, isPriamryKey);
     }
 
     private SqlEntityExpression CreateEntityExpression (SqlTableBase sqlTable, IResolvedTableInfo tableInfo)
@@ -218,65 +218,65 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       Type type = tableInfo.ItemType;
       if (type == typeof (Cook))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID", true);
         return new SqlEntityExpression (
             sqlTable,
             primaryKeyColumn,
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (string), tableInfo, "FirstName"),
-                CreateColumn (typeof (string), tableInfo, "Name"),
-                CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
-                CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
-                CreateColumn (typeof (int), tableInfo, "SubstitutedID"),
-                CreateColumn (typeof (int), tableInfo, "KitchenID")
+                CreateColumn (typeof (string), tableInfo, "FirstName", false),
+                CreateColumn (typeof (string), tableInfo, "Name", false),
+                CreateColumn (typeof (bool), tableInfo, "IsStarredCook", false),
+                CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook", false),
+                CreateColumn (typeof (int), tableInfo, "SubstitutedID", false),
+                CreateColumn (typeof (int), tableInfo, "KitchenID", false)
             });
       }
       else if (type == typeof (Kitchen))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID", true);
         return new SqlEntityExpression (
             sqlTable,
             primaryKeyColumn,
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo, "CookID"),
-                CreateColumn (typeof (string), tableInfo, "Name"),
-                CreateColumn (typeof (int), tableInfo, "RestaurantID"),
-                CreateColumn (typeof (int), tableInfo, "SubKitchenID"),
+                CreateColumn (typeof (int), tableInfo, "CookID", false),
+                CreateColumn (typeof (string), tableInfo, "Name", false),
+                CreateColumn (typeof (int), tableInfo, "RestaurantID", false),
+                CreateColumn (typeof (int), tableInfo, "SubKitchenID", false),
             });
       }
       else if (type == typeof (Restaurant))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID", true);
         return new SqlEntityExpression (
             sqlTable,
             primaryKeyColumn,
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo, "CookID"),
-                CreateColumn (typeof (string), tableInfo, "Name"),
+                CreateColumn (typeof (int), tableInfo, "CookID", false),
+                CreateColumn (typeof (string), tableInfo, "Name", false),
             });
       }
       else if (type == typeof (Chef))
       {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID");
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo, "ID", true);
         return new SqlEntityExpression (
             sqlTable,
             primaryKeyColumn,
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (string), tableInfo, "FirstName"),
-                CreateColumn (typeof (string), tableInfo, "Name"),
-                CreateColumn (typeof (bool), tableInfo, "IsStarredCook"),
-                CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook"),
-                CreateColumn (typeof (int), tableInfo, "SubstitutedID"),
-                CreateColumn (typeof (int), tableInfo, "KitchenID"),
-                CreateColumn (typeof (string), tableInfo, "LetterOfRecommendation")
+                CreateColumn (typeof (string), tableInfo, "FirstName", false),
+                CreateColumn (typeof (string), tableInfo, "Name", false),
+                CreateColumn (typeof (bool), tableInfo, "IsStarredCook", false),
+                CreateColumn (typeof (bool), tableInfo, "IsFullTimeCook", false),
+                CreateColumn (typeof (int), tableInfo, "SubstitutedID", false),
+                CreateColumn (typeof (int), tableInfo, "KitchenID", false),
+                CreateColumn (typeof (string), tableInfo, "LetterOfRecommendation", false)
             });
       }
       return null;
@@ -290,8 +290,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     private ResolvedJoinInfo CreateResolvedJoinInfo (
         ResolvedSimpleTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName)
     {
-      var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName);
-      var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName);
+      var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName, true);
+      var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName, false);
 
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }

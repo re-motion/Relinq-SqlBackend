@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [SetUp]
     public void SetUp ()
     {
-      _columnExpression = new SqlColumnExpression (typeof (int), "t", "name");
+      _columnExpression = new SqlColumnExpression (typeof (int), "t", "name", false);
     }
 
     [Test]

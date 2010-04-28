@@ -29,15 +29,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   {
     private readonly string _owningTableAlias;
     private readonly string _columnName;
+    private readonly bool _isPrimaryKey;
 
-    public SqlColumnExpression (Type type, string owningTableAlias, string columnName)
+    public SqlColumnExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
         : base(type)
     {
       ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
       ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
+      ArgumentUtility.CheckNotNull ("isPrimaryKey", isPrimaryKey);
 
       _columnName = columnName;
       _owningTableAlias = owningTableAlias;
+      _isPrimaryKey = isPrimaryKey;
     }
 
     public string OwningTableAlias
@@ -48,6 +51,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public string ColumnName
     {
       get { return _columnName; }
+    }
+
+    public bool IsPrimaryKey
+    {
+      get { return _isPrimaryKey; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)

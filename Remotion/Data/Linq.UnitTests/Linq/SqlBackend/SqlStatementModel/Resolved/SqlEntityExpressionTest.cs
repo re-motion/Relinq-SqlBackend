@@ -44,9 +44,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
 
       _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _columnExpression1 = new SqlColumnExpression (typeof (int), "t", "ID");
-      _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name");
-      _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City");
+      _columnExpression1 = new SqlColumnExpression (typeof (int), "t", "ID", false);
+      _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name", false);
+      _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City", false);
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
       _entityExpression = new SqlEntityExpression (_tableReferenceExpression.SqlTable, _columnExpression1, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.ProjectionColumns;
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [Test]
     public void VisitChildren_ChangeColumn ()
     {
-      var newColumnExpression = new SqlColumnExpression (typeof (string), "o", "Test");
+      var newColumnExpression = new SqlColumnExpression (typeof (string), "o", "Test", false);
 
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };

@@ -42,15 +42,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void SetUp ()
     {
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID");
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID", true);
       _columnListExpression = new SqlEntityExpression (
           _sqlTable,
           primaryKeyColumn,
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnExpression (typeof (int), "t", "Name"),
-              new SqlColumnExpression (typeof (int), "t", "City")
+              new SqlColumnExpression (typeof (int), "t", "Name", false),
+              new SqlColumnExpression (typeof (int), "t", "City", false)
           });
 
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage>();
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_NoEntityExpression ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (new SqlColumnExpression (typeof (string), "t", "FirstName"));
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (new SqlColumnExpression (typeof (string), "t", "FirstName", false));
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[FirstName]"));
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildOrderBy_WithSingleOrderByClause ()
     {
-      var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
+      var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name", false);
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
 
       _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { _sqlTable }, new[] { orderByClause }, null, null, false, false);
@@ -221,11 +221,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildOrderBy_WithMultipleOrderByClauses ()
     {
-      var columnExpression1 = new SqlColumnExpression (typeof (string), "t", "ID");
+      var columnExpression1 = new SqlColumnExpression (typeof (string), "t", "ID", false);
       var orderByClause1 = new Ordering (columnExpression1, OrderingDirection.Asc);
-      var columnExpression2 = new SqlColumnExpression (typeof (string), "t", "Name");
+      var columnExpression2 = new SqlColumnExpression (typeof (string), "t", "Name", false);
       var orderByClause2 = new Ordering (columnExpression2, OrderingDirection.Desc);
-      var columnExpression3 = new SqlColumnExpression (typeof (string), "t", "City");
+      var columnExpression3 = new SqlColumnExpression (typeof (string), "t", "City", false);
       var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
 
       _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { _sqlTable }, new[] { orderByClause1, orderByClause2, orderByClause3 }, null, null, false, false);
@@ -301,7 +301,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void Build_WithOrderByClause ()
     {
-      var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name");
+      var columnExpression = new SqlColumnExpression (typeof (string), "t", "Name", false);
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
 
       _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { _sqlTable }, new[] { orderByClause }, null, null, false, false);

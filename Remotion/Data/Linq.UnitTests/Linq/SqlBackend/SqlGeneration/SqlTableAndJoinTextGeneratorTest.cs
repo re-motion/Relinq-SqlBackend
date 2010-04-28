@@ -99,8 +99,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var joinedTable = originalTable.GetOrAddJoin (kitchenCookMember, JoinCardinality.One);
 
       var foreignTableSource = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t2");
-      var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK");
+      var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID", false);
+      var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK", false);
       joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
 
       _stageMock
@@ -221,8 +221,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
         Type type, string originalTableAlias, string leftSideKeyName, string joinedTableName, string joinedTableAlias, string rightSideKeyName)
     {
       var foreignTableSource = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
-      var primaryColumn = new SqlColumnExpression (typeof (int), originalTableAlias, leftSideKeyName);
-      var foreignColumn = new SqlColumnExpression (typeof (int), joinedTableAlias, rightSideKeyName);
+      var primaryColumn = new SqlColumnExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
+      var foreignColumn = new SqlColumnExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
       return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
     }
   }

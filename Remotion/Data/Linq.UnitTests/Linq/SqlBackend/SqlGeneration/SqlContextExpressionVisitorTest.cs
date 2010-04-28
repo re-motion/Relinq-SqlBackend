@@ -234,18 +234,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlColumnExpression_BoolColumn_ConvertedToIntColumn ()
     {
-      var column = new SqlColumnExpression (typeof (bool), "x", "y");
+      var column = new SqlColumnExpression (typeof (bool), "x", "y", false);
 
       var result = _nonTopLevelVisitor.VisitSqlColumnExpression (column);
 
-      var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y");
+      var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y", false);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
     public void VisitSqlColumnExpression_OtherColumn ()
     {
-      var column = new SqlColumnExpression (typeof (string), "x", "y");
+      var column = new SqlColumnExpression (typeof (string), "x", "y", false);
 
       var result = _nonTopLevelVisitor.VisitSqlColumnExpression (column);
 

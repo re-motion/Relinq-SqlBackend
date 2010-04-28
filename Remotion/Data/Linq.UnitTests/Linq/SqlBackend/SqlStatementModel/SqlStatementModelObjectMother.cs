@@ -158,23 +158,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type)
     {
-      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID");
-      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID");
+      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
+      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID", false);
       var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 
     public static SqlEntityExpression CreateSqlEntityExpression (Type type)
     {
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID");
+      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID", true);
       return new SqlEntityExpression (
           CreateSqlTable(),
           primaryKeyColumn,
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnExpression (typeof (int), "t", "Name"),
-              new SqlColumnExpression (typeof (int), "t", "City")
+              new SqlColumnExpression (typeof (int), "t", "Name", false),
+              new SqlColumnExpression (typeof (int), "t", "City", false)
           });
     }
   }

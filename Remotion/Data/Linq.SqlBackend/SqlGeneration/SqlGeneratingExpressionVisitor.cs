@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var columnExpression = new SqlColumnExpression (expression.Type, expression.SqlTable.GetResolvedTableInfo().TableAlias, "value");
+      var columnExpression = new SqlColumnExpression (expression.Type, expression.SqlTable.GetResolvedTableInfo().TableAlias, "value", false);
       return VisitExpression (columnExpression);
     }
 
