@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
+      return ResolveExpression (expression);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext context)

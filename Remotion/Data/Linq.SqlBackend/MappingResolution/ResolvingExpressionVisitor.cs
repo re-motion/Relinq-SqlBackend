@@ -91,6 +91,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         newExpression = newExpressionAsUnaryExpression.Operand;
       }
 
+      var newExpressionAsSqlEntityRefMemberExpression = newExpression as SqlEntityRefMemberExpression;
+      if (newExpressionAsSqlEntityRefMemberExpression != null)
+        newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression);
+      
       // member applied to an entity?
       var newExpressionAsEntityExpression = newExpression as SqlEntityExpression;
       if (newExpressionAsEntityExpression != null)

@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// and boolean columns are interpreted as integer values. In scenarios where a predicate is required, boolean expressions are constructed by 
   /// comparing those integer values to 1 and 0 literals.
   /// </remarks>
-  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, ISqlSubStatementVisitor
+  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
   {
     public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage)
     {
@@ -186,6 +186,25 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
+    public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      switch (_currentContext)
+      {
+        case SqlExpressionContext.ValueRequired:
+          return _stage.ResolveEntityRefMemberExpression (expression);
+        case SqlExpressionContext.SingleValueRequired:
+          return ((SqlEntityExpression)_stage.ResolveEntityRefMemberExpression (expression)).PrimaryKeyColumn;
+      }
+      throw new NotSupportedException (string.Format("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
+    }
+
+    Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
     Expression IResolvedSqlExpressionVisitor.VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
     {
       return VisitUnknownExpression (expression);
@@ -278,6 +297,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       else
         throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", newExpression.Type));
     }
-
+    
   }
 }
