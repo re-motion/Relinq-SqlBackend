@@ -26,6 +26,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   public class ResultOperatorCombinationsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
+    // TODO Review 2620: Fix test - Count should generate a subquery for Distinct
     [Ignore ("TODO 2620: generate subquery")]
     public void DistinctAndCount ()
     {

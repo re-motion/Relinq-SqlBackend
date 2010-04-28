@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       if (sqlStatementBuilder.TopExpression != null)
       {
+        // TODO Review 2620: Put this part (the whole "then" block) into a separate method: MoveStatementToSubQuery
         var sqlStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
         sqlStatementBuilder = new SqlStatementBuilder (); // TODO Review 2620: this is already done by GetStatementAndResetBuilder 
 
