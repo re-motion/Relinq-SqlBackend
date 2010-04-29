@@ -97,7 +97,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\CountResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\DistinctResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\FirstResultOperatorHandler.cs" />
-    <Compile Include="SqlPreparation\ResultOperatorHandlers\IResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\IResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\OfTypeResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SingleResultOperatorHandler.cs" />

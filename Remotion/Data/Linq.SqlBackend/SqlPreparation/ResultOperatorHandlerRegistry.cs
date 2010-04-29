@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public static ResultOperatorHandlerRegistry CreateDefault ()
     {
       var handlerTypes = from t in typeof (ResultOperatorHandlerRegistry).Assembly.GetTypes ()
-                         where typeof (IResultOperatorHandler).IsAssignableFrom (t) && t != typeof (IResultOperatorHandler) && t != typeof (ResultOperatorHandler<>) // TODO Review 2620: Use !t.IsAbstract instead of t != typeof (IResultOperatorHandler) && t != typeof (ResultOperatorHandler<>)
+                         where typeof (IResultOperatorHandler).IsAssignableFrom (t) && !t.IsAbstract 
                          select t;
 
       var registry = new ResultOperatorHandlerRegistry ();
@@ -43,8 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       foreach (var handlerType in handlerTypes)
       {
         var handler = (IResultOperatorHandler) Activator.CreateInstance (handlerType);
-        // TODO Review 2620: Refactor by adding a SupportedResultOperatorType property to IResultOperatorHandler
-        registry.Register (handler.GetType ().BaseType.GetGenericArguments ()[0], handler);
+        registry.Register (handler.SupportedResultOperatorType, handler);
       }
 
       return registry;
@@ -73,15 +72,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       // TODO Review 2620: Write a test showing that it is possible to register a catch-all handler for ResultOperatorBase; implement by iterating over resultOperatorType.BaseType (currentType = resultOperatorType; while (currentType != null) ... currentType = currentType.BaseType)
       
-      // TODO Review 2620: Use TryGetValue instead (for performance)
-      if (_handlers.ContainsKey (resultOperatorType))
-        return _handlers[resultOperatorType];
-
-      string message =
-          string.Format (
-              "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
-              resultOperatorType.FullName);
-      throw new NotSupportedException (message);
+      IResultOperatorHandler handler;
+      if (_handlers.TryGetValue (resultOperatorType, out handler))
+        return handler;
+      else
+      {
+        string message =
+            string.Format (
+                "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
+                resultOperatorType.FullName);
+        throw new NotSupportedException (message);
+      }
     }
 
   }

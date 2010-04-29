@@ -30,6 +30,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <typeparam name="T">The result operator type handled by the concrete subclass of <see cref="ResultOperatorHandler{T}"/>.</typeparam>
   public abstract class ResultOperatorHandler<T> : IResultOperatorHandler where T: ResultOperatorBase
   {
+    public Type SupportedResultOperatorType 
+    { 
+      get { return typeof (T); }
+    }
+
     public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
     // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)

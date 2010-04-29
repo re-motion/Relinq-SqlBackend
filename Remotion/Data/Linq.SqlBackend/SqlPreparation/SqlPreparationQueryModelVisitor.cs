@@ -147,7 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      // TODO Review 2620: Remove all those if checks, just use _registry.GetHandler for resultOperator.GetType()
+      // TODO Review 2620: Remove all those if checks, just use _registry.GetHandler for resultOperator.GetType(
 
       if (resultOperator is ContainsResultOperator)
       {
@@ -169,7 +169,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         _registry.GetHandler (typeof (OfTypeResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
         return;
       }
-      
+
       if (resultOperator is CountResultOperator)
         _registry.GetHandler (typeof (CountResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
       else if (resultOperator is DistinctResultOperator)
