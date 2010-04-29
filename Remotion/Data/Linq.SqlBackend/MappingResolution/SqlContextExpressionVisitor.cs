@@ -224,6 +224,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitUnknownExpression (expression);
     }
 
+    Expression ISqlSpecificExpressionVisitor.VisitSqlExistsExpression (SqlExistsExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
     Expression ISqlSpecificExpressionVisitor.VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
       return VisitUnknownExpression (expression);

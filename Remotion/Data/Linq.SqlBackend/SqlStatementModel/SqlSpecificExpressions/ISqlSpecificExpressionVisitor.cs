@@ -32,5 +32,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression);
     Expression VisitSqlFunctionExpression (SqlFunctionExpression expression);
     Expression VisitSqlConvertExpression (SqlConvertExpression expression);
+    Expression VisitSqlExistsExpression (SqlExistsExpression expression);
   }
 }
