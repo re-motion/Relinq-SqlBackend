@@ -56,13 +56,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void VisitResultOperator_WithCast ()
     {
-      // TODO Review 2620: Make a cast to Chef in order to test that the DataInfo is really changed
-      var castResultOperator = new CastResultOperator (typeof (Cook));
+      var castResultOperator = new CastResultOperator (typeof (Chef));
 
       _handler.HandleResultOperator (castResultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
+      Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Chef))));
     }
   }
 }

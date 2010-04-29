@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
-// TODO Review 2620: Move to SqlPreparation namespace
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// <see cref="IMethodCallTransformer"/> is implemented by classes generating SQL-emittable expressions (e.g., <see cref="SqlFunctionExpression"/>)
