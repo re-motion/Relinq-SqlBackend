@@ -40,6 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (registry.GetHandler (typeof (OfTypeResultOperator)), Is.TypeOf (typeof (OfTypeResultOperatorHandler)));
       Assert.That (registry.GetHandler (typeof (SingleResultOperator)), Is.TypeOf (typeof (SingleResultOperatorHandler)));
       Assert.That (registry.GetHandler (typeof (TakeResultOperator)), Is.TypeOf (typeof (TakeResultOperatorHandler)));
+      Assert.That (registry.GetHandler (typeof (AnyResultOperator)), Is.TypeOf (typeof (AnyResultOperatorHandler)));
     }
 
     [Test]
