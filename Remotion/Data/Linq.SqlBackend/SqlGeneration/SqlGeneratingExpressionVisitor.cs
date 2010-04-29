@@ -210,7 +210,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _commandBuilder.Append ("EXISTS");
+      _commandBuilder.Append ("(");
+      VisitExpression (expression.Expression);
+      _commandBuilder.Append (")");
+
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)

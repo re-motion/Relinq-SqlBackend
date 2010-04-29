@@ -200,6 +200,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitExistsExpression ()
+    {
+      var expression = new SqlExistsExpression (Expression.Constant ("test"));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      var result = _commandBuilder.GetCommandText();
+
+      Assert.That (result, Is.EqualTo ("EXISTS(@1)"));
+    }
+
+    [Test]
     public void VisitUnaryExpression_UnaryNot ()
     {
       var unaryNotExpression = Expression.Not (Expression.Equal (Expression.Constant ("hugo"), Expression.Constant ("hugo")));

@@ -208,6 +208,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void Any_WithoutPredicate ()
+    {
+      CheckQuery(
+        () => Cooks.Any(),
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]"
+        );
+    }
+
+    [Test]
+    public void Any_WithPredicate ()
+    {
+      CheckQuery (
+        () => Cooks.Any (c=>c.FirstName=="Hugo"),
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END AS [value]",
+        new CommandParameter("@1", "Hugo")
+        );
+    }
+
+    [Test]
     public void Cast_TopLevel ()
     {
       CheckQuery (
