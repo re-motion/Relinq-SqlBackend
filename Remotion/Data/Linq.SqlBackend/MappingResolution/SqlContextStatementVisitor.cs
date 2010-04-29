@@ -71,7 +71,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       else
         statementBuilder.DataInfo = sqlStatement.DataInfo;
 
-      return statementBuilder.GetSqlStatement();
+      var newSqlStatement = statementBuilder.GetSqlStatement();
+      return newSqlStatement.Equals (sqlStatement) ? sqlStatement : newSqlStatement;
     }
 
     private void VisitSelectProjection (Expression selectProjection, SqlExpressionContext selectContext, SqlStatementBuilder statementBuilder)

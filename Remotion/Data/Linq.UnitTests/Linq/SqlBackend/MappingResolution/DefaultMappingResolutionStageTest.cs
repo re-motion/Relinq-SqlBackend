@@ -319,7 +319,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stage.ApplyContext (sqlTable, SqlExpressionContext.ValueRequired);
 
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.Not.SameAs (sqlStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.SameAs (sqlStatement));
     }
   }
 }

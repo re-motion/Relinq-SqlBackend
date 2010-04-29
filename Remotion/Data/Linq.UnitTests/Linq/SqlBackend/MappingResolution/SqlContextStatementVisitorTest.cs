@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlStatement_NoExpressionChanged ()
+    public void VisitSqlStatement_NoExpressionChanged_SameSqlStatementIsReturned ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.Not.SameAs (sqlStatement));
+      Assert.That (result, Is.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
       Assert.That (result.DataInfo, Is.SameAs(sqlStatement.DataInfo));
     }
