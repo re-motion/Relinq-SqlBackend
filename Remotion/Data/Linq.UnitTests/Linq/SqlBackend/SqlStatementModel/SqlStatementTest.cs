@@ -18,12 +18,12 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
-using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -34,36 +34,217 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (NotSupportedException))]
     public void Initialization_WithCountAndTop_ThrowsException ()
     {
-      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, Expression.Constant ("top"), true, false);
+      new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          Expression.Constant (1),
+          new SqlTable[] { },
+          new Ordering[] { },
+          null,
+          Expression.Constant ("top"),
+          true,
+          false);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A SqlStatement cannot contain both Count and Top or Count and Distinct.")]
     public void Initialization_WithCountAndDistinct_ThrowsException ()
     {
-      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
+      new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void Initialization_CollectionInSelectProjection_ThrowsException ()
     {
-      new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (new Cook[]{}), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          Expression.Constant (new Cook[] { }),
+          new SqlTable[] { },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
     {
-      new SqlStatement (new TestStreamedValueInfo(typeof(int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, Expression.Constant (1), null, false, false);
+      new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          Expression.Constant (1),
+          new SqlTable[] { },
+          new Ordering[] { },
+          Expression.Constant (1),
+          null,
+          false,
+          false);
     }
 
     [Test]
     public void WhereCondition_CanBeSetToNull ()
     {
-      var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
-      
+      var sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
       Assert.That (sqlStatement.WhereCondition, Is.Null);
+    }
+
+    [Test]
+    public void Equals_EqualStatementsWithAllMembers ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
+      var whereCondition = Expression.Constant (true);
+      var topExpression = Expression.Constant ("top");
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+
+      Assert.AreEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_EqualStatementsWithMandatoryMembers ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentDataInfo ()
+    {
+      var dataInfo1 = new TestStreamedValueInfo (typeof (int));
+      var dataInfo2 = new TestStreamedValueInfo (typeof (char));
+      var selectProjection = Expression.Constant (1);
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo1, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo2, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentSelectProjection ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection1 = Expression.Constant (1);
+      var selectProjection2 = Expression.Constant (2);
+
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection1, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection2, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentSqlTables ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable1 }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable2 }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentOrderings ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var ordering1 = new Ordering (Expression.Constant ("ordering1"), OrderingDirection.Asc);
+      var ordering2 = new Ordering (Expression.Constant ("ordering2"), OrderingDirection.Desc);
+      
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering1 }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering2 }, null, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentWhereCondition ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var whereCondition1 = Expression.Constant (true);
+      var whereCondition2 = Expression.Constant (false);
+      
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition1, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition2, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentTopExpression ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var topExpression1 = Expression.Constant ("top1");
+      var topExpression2 = Expression.Constant ("top2");
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression1, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression2, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentCountCondition ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, true, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+    }
+
+    [Test]
+    public void Equals_DifferentDistinctCondition ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, true);
+
+      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
     }
     
   }

@@ -106,5 +106,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       get { return Array.AsReadOnly (_orderings); }
     }
+
+    public override bool Equals (object obj)
+    {
+      if (obj == null)
+        return false;
+
+      var statement = obj as SqlStatement;
+      if (statement == null)
+        return false;
+
+      return (_dataInfo == statement._dataInfo) &&
+             (_selectProjection == statement._selectProjection) &&
+             (_sqlTables.SequenceEqual (statement._sqlTables)) &&
+             (_orderings.SequenceEqual(statement._orderings)) &&
+             (_whereCondition == statement._whereCondition) &&
+             (_topExpression == statement._topExpression) &&
+             (_isCountQuery == statement._isCountQuery) &&
+             (_isDistinctQuery == statement._isDistinctQuery);
+    }
+
+    public override int GetHashCode ()
+    {
+      return base.GetHashCode ();
+    }
   }
 }
