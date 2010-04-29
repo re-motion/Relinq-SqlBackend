@@ -246,6 +246,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.AreNotEqual (sqlStatement1, sqlStatement2);
     }
+
+    [Test]
+    public void Equals_ObjectIsNull ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlStatement = new SqlStatement (
+         dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+     
+      Assert.AreNotEqual (sqlStatement, null);
+    }
+
+    [Test]
+    public void Equals_ObjectIsNotASqlStatement ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlStatement = new SqlStatement (
+         dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreNotEqual (sqlStatement, new object());
+    }
     
   }
 }
