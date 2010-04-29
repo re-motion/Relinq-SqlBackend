@@ -268,6 +268,38 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.AreNotEqual (sqlStatement, new object());
     }
+
+    [Test]
+    public void GetHashcode_EqualSqlStatementsWithAllMembers ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
+      var whereCondition = Expression.Constant (true);
+      var topExpression = Expression.Constant ("top");
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+
+      Assert.That (sqlStatement1.GetHashCode(), Is.EqualTo(sqlStatement2.GetHashCode()));
+    }
+
+    [Test]
+    public void GetHashCode_EqualStatementsWithMandatoryMembers ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+
+      var sqlStatement1 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement2 = new SqlStatement (
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+
+      Assert.AreEqual (sqlStatement1, sqlStatement2);
+    }
     
   }
 }

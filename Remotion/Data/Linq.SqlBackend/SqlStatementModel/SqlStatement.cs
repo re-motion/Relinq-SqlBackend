@@ -128,7 +128,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override int GetHashCode ()
     {
-      return base.GetHashCode ();
+      return HashCodeUtility.GetHashCodeOrZero (_dataInfo) ^
+             HashCodeUtility.GetHashCodeOrZero (_selectProjection) ^
+             HashCodeUtility.GetHashCodeForSequence (_sqlTables) ^
+             HashCodeUtility.GetHashCodeForSequence (_orderings) ^
+             HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
+             HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
+             HashCodeUtility.GetHashCodeOrZero (_isCountQuery) ^
+             HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery);
     }
   }
 }
