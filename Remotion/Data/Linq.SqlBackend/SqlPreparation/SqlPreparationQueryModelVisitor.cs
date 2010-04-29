@@ -154,6 +154,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         _registry.GetHandler (typeof (ContainsResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
         return;
       }
+      else if (resultOperator is AnyResultOperator)
+      {
+        _registry.GetHandler (typeof (AnyResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
+        return;
+      }
       else if (resultOperator is CastResultOperator)
       {
         _registry.GetHandler (typeof (CastResultOperator)).HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stage);
