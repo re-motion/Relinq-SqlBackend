@@ -28,7 +28,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class CountResultOperatorHandler : ResultOperatorHandler<CountResultOperator>
   {
-    protected override void HandleResultOperator (CountResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected override void HandleResultOperator (
+        CountResultOperator resultOperator,
+        QueryModel queryModel,
+        ref SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage)
     {
       EnsureNoTopExpressionAndSetDataInfo (resultOperator, ref sqlStatementBuilder, generator, stage);
 

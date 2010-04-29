@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
@@ -26,16 +29,44 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class ContainsResultOperatorHandler : ResultOperatorHandler<ContainsResultOperator>
   {
-    protected override void HandleResultOperator (ContainsResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected override void HandleResultOperator (
+        ContainsResultOperator resultOperator,
+        QueryModel queryModel,
+        ref SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage)
     {
-      var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
-      var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
-      var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
+      Expression selectProjection;
+      var fromExpression = queryModel.MainFromClause.FromExpression as ConstantExpression;
+      IStreamedDataInfo dataInfo = sqlStatementBuilder.DataInfo;
 
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
+      if (queryModel.IsIdentityQuery () && fromExpression != null && typeof (ICollection).IsAssignableFrom (fromExpression.Type))
+      {
+        if (queryModel.ResultOperators.Count > 1)
+          throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
 
-      sqlStatementBuilder.SelectProjection = sqlInExpression;
-      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlSubStatement.DataInfo);
+        if (((ICollection) fromExpression.Value).Count > 0)
+        {
+          var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
+          selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, fromExpression);
+        }
+        else
+        {
+          selectProjection = Expression.Constant (false);
+        }
+
+        sqlStatementBuilder.SqlTables.Clear ();
+      }
+      else
+      {
+        var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
+        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
+        var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
+        selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
+      }
+
+      sqlStatementBuilder.SelectProjection = selectProjection;
+      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (dataInfo);
     }
   }
 }

@@ -15,12 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -73,45 +69,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
-      var lastOperatorIndex = expression.QueryModel.ResultOperators.Count - 1;
-      var containsOperator = lastOperatorIndex >= 0 ? expression.QueryModel.ResultOperators[lastOperatorIndex] as ContainsResultOperator : null;
-      if (containsOperator != null)
-      {
-        var fromExpression = expression.QueryModel.MainFromClause.FromExpression as ConstantExpression;
-
-        // Check whether the query applies Contains to a constant collection
-        if (expression.QueryModel.IsIdentityQuery() && (fromExpression!=null) && typeof (ICollection).IsAssignableFrom (fromExpression.Type))
-        {
-          if (expression.QueryModel.ResultOperators.Count > 1)
-            throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
-
-          if (((ICollection) fromExpression.Value).Count > 0)
-          {
-            var preparedItemExpression = _stage.PrepareItemExpression (containsOperator.Item);
-            return new SqlBinaryOperatorExpression ("IN", preparedItemExpression, fromExpression);
-          }
-          else
-          {
-            return Expression.Constant (false);
-          }
-        }
-
-        var preparedSqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-
-        // PrepareSqlStatement will handle the contains operator by putting an "IN" expression into the select projection
-        Debug.Assert (
-            preparedSqlStatement.SqlTables.Count == 0
-            && preparedSqlStatement.WhereCondition == null
-            && preparedSqlStatement.Orderings.Count == 0
-            && !preparedSqlStatement.IsCountQuery
-            && !preparedSqlStatement.IsDistinctQuery
-            && preparedSqlStatement.TopExpression == null);
-
-        return preparedSqlStatement.SelectProjection;
-      }
-
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-      return new SqlSubStatementExpression (sqlStatement);
+      return sqlStatement.SqlTables.Count == 0 && !sqlStatement.IsCountQuery && !sqlStatement.IsDistinctQuery
+                 ? sqlStatement.SelectProjection
+                 : new SqlSubStatementExpression (sqlStatement);
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
@@ -153,7 +114,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlCaseExpression (VisitExpression(expression.Test), VisitExpression(expression.IfTrue), VisitExpression(expression.IfFalse));
+      return new SqlCaseExpression (VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
     }
 
     private bool IsNullConstant (Expression expression)

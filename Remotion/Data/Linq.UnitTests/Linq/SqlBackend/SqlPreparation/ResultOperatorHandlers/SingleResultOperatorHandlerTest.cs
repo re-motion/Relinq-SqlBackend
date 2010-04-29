@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -36,6 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private SingleResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
+    private QueryModel _queryModel;
 
     [SetUp]
     public void SetUp ()
@@ -47,6 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       {
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
       };
+      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
     }
 
     [Test]
@@ -62,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (preparedExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));

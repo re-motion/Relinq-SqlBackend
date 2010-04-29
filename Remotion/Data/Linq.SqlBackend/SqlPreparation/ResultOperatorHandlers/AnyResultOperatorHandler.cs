@@ -26,7 +26,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class AnyResultOperatorHandler : ResultOperatorHandler<AnyResultOperator>
   {
-    protected override void HandleResultOperator (AnyResultOperator resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected override void HandleResultOperator (
+        AnyResultOperator resultOperator,
+        QueryModel queryModel,
+        ref SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage)
     {
       var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);

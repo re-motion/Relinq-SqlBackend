@@ -28,6 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   {
     protected override void HandleResultOperator (
         CastResultOperator resultOperator, 
+        QueryModel queryModel,
         ref SqlStatementBuilder sqlStatementBuilder, 
         UniqueIdentifierGenerator generator, 
         ISqlPreparationStage stage)

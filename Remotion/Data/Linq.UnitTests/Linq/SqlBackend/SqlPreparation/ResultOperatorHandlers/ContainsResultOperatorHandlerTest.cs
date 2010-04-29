@@ -18,12 +18,15 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -37,6 +40,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private ContainsResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
+    private QueryModel _queryModel;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -48,10 +53,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       {
         DataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()))
       };
+      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause ());
+      _context = new SqlPreparationContext ();
     }
 
     [Test]
-    public void HandleResultOperator ()
+    public void HandleResultOperator_TopLevel ()
     {
       var itemExpression = Expression.Constant (new Cook ());
       var resultOperator = new ContainsResultOperator (itemExpression);
@@ -60,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression)).Return (preparedExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (resultOperator, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
@@ -76,5 +83,70 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _stageMock.VerifyAllExpectations();
     }
+
+    [Test]
+    public void VisitSubQueryExpression_WithContainsAndConstantCollection ()
+    {
+      var constantExpressionCollection = Expression.Constant (new[] { new Cook(), new Cook()});
+      var mainFromClause = new MainFromClause ("generated", typeof (Cook), constantExpressionCollection);
+      var queryModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+
+      var itemExpression = Expression.Constant (new Cook());
+      var containsResultOperator = new ContainsResultOperator (itemExpression);
+      queryModel.ResultOperators.Add (containsResultOperator);
+      var fakeConstantExpression = Expression.Constant (new Cook());
+
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (itemExpression))
+          .Return (fakeConstantExpression);
+      _stageMock.Replay ();
+
+      _handler.HandleResultOperator (containsResultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+
+      Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
+      Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).BinaryOperator, Is.EqualTo ("IN"));
+      Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).LeftExpression, Is.EqualTo (fakeConstantExpression));
+      Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).RightExpression, Is.EqualTo (constantExpressionCollection));
+
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void VisitSubQueryExpression_WithContainsAndEmptyConstantCollection ()
+    {
+      var constantExpressionCollection = Expression.Constant (new Cook[] { });
+      var mainFromClause = new MainFromClause ("generated", typeof (Cook), constantExpressionCollection);
+      var queryModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+
+      var itemExpression = Expression.Constant (new Cook());
+      var containsResultOperator = new ContainsResultOperator (itemExpression);
+      queryModel.ResultOperators.Add (containsResultOperator);
+
+      _handler.HandleResultOperator (containsResultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+     
+      Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) _sqlStatementBuilder.SelectProjection).Value, Is.EqualTo (false));
+
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void VisitSubQueryExpression_WithSeveralResultOperatorsAndConstantCollection ()
+    {
+      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier" });
+      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
+      var queryModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+
+      var itemExpression = Expression.Constant ("Huber");
+      var containsResultOperator = new ContainsResultOperator (itemExpression);
+
+      var resultOperator = new TakeResultOperator (Expression.Constant (1));
+      queryModel.ResultOperators.Add (resultOperator);
+      queryModel.ResultOperators.Add (containsResultOperator);
+
+      _handler.HandleResultOperator (containsResultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+    }
+
   }
 }

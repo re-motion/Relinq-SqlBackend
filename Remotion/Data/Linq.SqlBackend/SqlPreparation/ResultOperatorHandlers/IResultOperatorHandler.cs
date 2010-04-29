@@ -19,10 +19,16 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 // TODO Review 2620: Move out to SqlPreparation namespace
+
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public interface IResultOperatorHandler
   {
-    void HandleResultOperator (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
+    void HandleResultOperator (
+        ResultOperatorBase resultOperator,
+        QueryModel queryModel,
+        ref SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage);
   }
 }

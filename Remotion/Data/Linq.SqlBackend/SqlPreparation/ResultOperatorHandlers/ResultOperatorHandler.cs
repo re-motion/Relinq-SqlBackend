@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <typeparam name="T">The result operator type handled by the concrete subclass of <see cref="ResultOperatorHandler{T}"/>.</typeparam>
   public abstract class ResultOperatorHandler<T> : IResultOperatorHandler where T: ResultOperatorBase
   {
-    protected abstract void HandleResultOperator (T resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
+    protected abstract void HandleResultOperator (T resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
     // TODO Review 2620: Make two methods of this: EnsureNoTopExpression, UpdateDataInfo
     // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)
@@ -57,10 +57,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     }
 
     // TODO Review 2620: Make this an explicit interface implementation; make the abstract method public
-    public void HandleResultOperator (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    public void HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       // TODO Review 2620: Argument checks. Also check type of resultOperator: var castOperator = ArgumentUtility.CheckNotNullAndType<T> (resultOperator)
-      HandleResultOperator ((T) resultOperator, ref sqlStatementBuilder, generator, stage);
+      HandleResultOperator ((T) resultOperator, queryModel, ref sqlStatementBuilder, generator, stage);
     }
 
     // TODO Review 2620: Probably not necessary to make this virtual

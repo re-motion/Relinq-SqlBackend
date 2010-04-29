@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -131,73 +132,46 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSubQueryExpression_WithContainsAndConstantCollection ()
+    public void VisitSubqueryExpressionTest_WithNoSqlTables ()
     {
-      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier" });
-      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
-
-      var itemExpression = Expression.Constant ("Huber");
-      var containsResultOperator = new ContainsResultOperator (itemExpression);
-      querModel.ResultOperators.Add (containsResultOperator);
-
       var expression = new SubQueryExpression (querModel);
-      var fakeConstantExpression = Expression.Constant ("Sepp");
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
+                                    {
+                                        IsCountQuery = false,
+                                        IsDistinctQuery = false
+                                    };
+      fakeSqlStatementBuilder.SqlTables.Clear();
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (itemExpression))
-          .Return (fakeConstantExpression);
-      _stageMock.Replay();
+          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Return (fakeSqlStatement);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      Assert.That (((SqlBinaryOperatorExpression) result).BinaryOperator, Is.EqualTo ("IN"));
-      Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.EqualTo (fakeConstantExpression));
-      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.EqualTo (constantExpressionCollection));
-
-      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeSqlStatement.SelectProjection));
     }
 
     [Test]
-    public void VisitSubQueryExpression_WithContainsAndEmptyConstantCollection ()
+    public void VisitSubqueryExpressionTest_WithSqlTables ()
     {
-      var constantExpressionCollection = Expression.Constant (new string[] { });
-      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
-      var queryModel = ExpressionHelper.CreateQueryModel (mainFromClause);
-
-      var itemExpression = Expression.Constant ("Huber");
-      var containsResultOperator = new ContainsResultOperator (itemExpression);
-      queryModel.ResultOperators.Add (containsResultOperator);
-
-      var expression = new SubQueryExpression (queryModel);
-      
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
-
-      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (false));
-
-      _stageMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void VisitSubQueryExpression_WithSeveralResultOperatorsAndConstantCollection ()
-    {
-      var constantExpressionCollection = Expression.Constant (new[] { "Huber", "Maier" });
-      var mainFromClause = new MainFromClause ("generated", typeof (string), constantExpressionCollection);
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
-
-      var itemExpression = Expression.Constant ("Huber");
-      var containsResultOperator = new ContainsResultOperator (itemExpression);
-
-      var resultOperator = new TakeResultOperator (Expression.Constant (1));
-      querModel.ResultOperators.Add (resultOperator);
-      querModel.ResultOperators.Add (containsResultOperator);
-
       var expression = new SubQueryExpression (querModel);
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement());
+      fakeSqlStatementBuilder.SqlTables.Add (_sqlTable);
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
-      SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      _stageMock
+          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Return (fakeSqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
     }
 
     [Test]
