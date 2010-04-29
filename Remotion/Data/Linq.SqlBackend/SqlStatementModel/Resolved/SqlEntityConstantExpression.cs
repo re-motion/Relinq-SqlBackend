@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -57,7 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
+      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlEntityConstantExpression(this);
       else

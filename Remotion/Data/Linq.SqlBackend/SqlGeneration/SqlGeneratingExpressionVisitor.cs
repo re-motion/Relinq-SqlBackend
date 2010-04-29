@@ -291,13 +291,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       expression.Generate (_commandBuilder, this, _stage);
       return expression;
     }
-
-    // TODO Review 2647: This visitor shouldn't implement VisitSqlEntityConstantExpression, and it must never ignore an expression.
-    // TODO Review 2647: SqlEntityConstantExpression is not a resolved expression (it is replaced with the primary key in the resolution stage...), move it to the Unresolved namespace and IUnresolvedSqlExpressionVisitor
-    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
-    {
-      return expression;
-    }
     
   }
 }

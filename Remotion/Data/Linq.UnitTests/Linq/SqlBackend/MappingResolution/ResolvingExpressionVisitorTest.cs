@@ -313,6 +313,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (entityRefmemberExpression));
     }
 
+    [Test]
+    public void VisitSqlEntityConstantExpression ()
+    {
+      var sqlEntityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), "test", "key");
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlEntityConstantExpression, _resolverMock, _generator, _stageMock);
+
+      Assert.That (result, Is.SameAs (sqlEntityConstantExpression));
+    }
+
     //TODO: change to MemberExpression & adapt tests
     //[Test]
     //public void VisitMemberExpression_CreatesSqlMemberExpression ()

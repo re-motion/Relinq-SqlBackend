@@ -6,6 +6,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -38,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityConstantExpression, IResolvedSqlExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityConstantExpression, IUnresolvedSqlExpressionVisitor> (
           _expression,
           mock => mock.VisitSqlEntityConstantExpression(_expression));
     }

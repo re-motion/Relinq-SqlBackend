@@ -143,5 +143,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return base.VisitUnknownExpression (expression);
     }
+
+    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return base.VisitUnknownExpression (expression);
+    }
   }
 }

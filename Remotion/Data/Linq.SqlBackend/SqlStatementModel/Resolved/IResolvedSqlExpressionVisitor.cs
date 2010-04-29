@@ -28,6 +28,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     Expression VisitSqlEntityExpression (SqlEntityExpression expression);
     Expression VisitSqlColumnExpression (SqlColumnExpression expression);
     Expression VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression);
-    Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression);
-  }
+ }
 }
