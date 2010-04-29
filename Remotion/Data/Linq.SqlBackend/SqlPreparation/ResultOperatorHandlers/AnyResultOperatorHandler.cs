@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -33,13 +34,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+
       var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
 
       var sqlExistsExpression = new SqlExistsExpression (subStatementExpression);
 
       sqlStatementBuilder.SelectProjection = sqlExistsExpression;
-      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlSubStatement.DataInfo);
+      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlSubStatement.DataInfo);
     }
   }
 }

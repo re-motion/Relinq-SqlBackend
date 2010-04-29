@@ -21,6 +21,7 @@ using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -36,6 +37,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+
       Expression selectProjection;
       var fromExpression = queryModel.MainFromClause.FromExpression as ConstantExpression;
       IStreamedDataInfo dataInfo = sqlStatementBuilder.DataInfo;
@@ -66,7 +74,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       }
 
       sqlStatementBuilder.SelectProjection = selectProjection;
-      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (dataInfo);
+      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, dataInfo);
     }
   }
 }

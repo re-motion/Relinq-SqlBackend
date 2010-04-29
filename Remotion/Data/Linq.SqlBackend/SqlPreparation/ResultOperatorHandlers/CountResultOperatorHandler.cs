@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -35,8 +36,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      
       EnsureNoTopExpressionAndSetDataInfo (resultOperator, ref sqlStatementBuilder, generator, stage);
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder);
+      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsCountQuery = true;
     }

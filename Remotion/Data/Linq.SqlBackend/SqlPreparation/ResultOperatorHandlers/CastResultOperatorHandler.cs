@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -27,16 +28,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   public class CastResultOperatorHandler : ResultOperatorHandler<CastResultOperator>
   {
     public override void HandleResultOperator (
-        CastResultOperator resultOperator, 
+        CastResultOperator resultOperator,
         QueryModel queryModel,
-        ref SqlStatementBuilder sqlStatementBuilder, 
-        UniqueIdentifierGenerator generator, 
+        ref SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
-      // TODO Review 2620: Argument checks (here and in all implementations of this method)
-      // TODO Review 2620: Should call UpdateDataInfo instead (when this method exists; here and in all similar implementations)
-      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
     }
-    
   }
 }

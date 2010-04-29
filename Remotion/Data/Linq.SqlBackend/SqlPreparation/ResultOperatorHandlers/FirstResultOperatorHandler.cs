@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationStage stage)
     {
       EnsureNoTopExpressionAndSetDataInfo (resultOperator, ref sqlStatementBuilder, generator, stage);
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder);
+      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (1));
     }

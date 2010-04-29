@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
-      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
+      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       var typeCheckExpression = Expression.TypeIs (sqlStatementBuilder.SelectProjection, resultOperator.SearchedItemType);
       sqlStatementBuilder.AddWhereCondition (typeCheckExpression);
     }

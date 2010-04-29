@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -43,9 +44,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         sqlStatementBuilder = MoveStatementToSubQuery(sqlStatementBuilder, generator);
     }
 
-    protected void UpdateDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder)
+    protected void UpdateDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
     {
-      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
+      sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (dataInfo);
     }
 
     void IResultOperatorHandler.HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
