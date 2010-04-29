@@ -208,7 +208,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void Any_WithoutPredicate ()
+    public void Any_OnTopLevel_WithoutPredicate ()
     {
       CheckQuery(
         () => Cooks.Any(),
@@ -217,7 +217,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void Any_WithPredicate ()
+    public void Any_OnTopLevel_WithPredicate ()
     {
       CheckQuery (
         () => Cooks.Any (c=>c.FirstName=="Hugo"),
@@ -226,6 +226,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         );
     }
 
+    [Test]
+    public void Any_InSubquery ()
+    {
+      CheckQuery (
+          from s in Cooks where (from s2 in Cooks select s2).Any () select s.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE EXISTS((SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1]))");
+    }
+    
     [Test]
     public void Cast_TopLevel ()
     {
