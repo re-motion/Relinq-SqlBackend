@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class OfTypeResultOperatorHandler : ResultOperatorHandler<OfTypeResultOperator>
   {
-    protected override void HandleResultOperator (
+    public override void HandleResultOperator (
         OfTypeResultOperator resultOperator,
         QueryModel queryModel,
         ref SqlStatementBuilder sqlStatementBuilder,

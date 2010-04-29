@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class ContainsResultOperatorHandler : ResultOperatorHandler<ContainsResultOperator>
   {
-    protected override void HandleResultOperator (
+    public override void HandleResultOperator (
         ContainsResultOperator resultOperator,
         QueryModel queryModel,
         ref SqlStatementBuilder sqlStatementBuilder,

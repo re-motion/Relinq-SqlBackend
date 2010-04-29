@@ -19,6 +19,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -28,47 +29,57 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <typeparam name="T">The result operator type handled by the concrete subclass of <see cref="ResultOperatorHandler{T}"/>.</typeparam>
   public abstract class ResultOperatorHandler<T> : IResultOperatorHandler where T: ResultOperatorBase
   {
-    protected abstract void HandleResultOperator (T resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
+    public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
-    // TODO Review 2620: Make two methods of this: EnsureNoTopExpression, UpdateDataInfo
     // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)
     protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
-      // TODO Review 2620: argument checks
-
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      
       if (sqlStatementBuilder.TopExpression != null)
-      {
-        // TODO Review 2620: Put this part (the whole "then" block) into a separate method: MoveStatementToSubQuery
-        var sqlStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
-        sqlStatementBuilder = new SqlStatementBuilder (); // TODO Review 2620: this is already done by GetStatementAndResetBuilder 
+        sqlStatementBuilder = MoveStatementToSubQuery(sqlStatementBuilder, generator);
+    }
 
-        var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-            generator.GetUniqueIdentifier ("q"),
-            sqlStatement);
-        var sqlTable = new SqlTable (subStatementTableInfo);
-
-        sqlStatementBuilder.SqlTables.Add (sqlTable);
-        sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
-        // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
-        sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
-      }
-
+    protected void UpdateDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder)
+    {
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo);
     }
 
-    // TODO Review 2620: Make this an explicit interface implementation; make the abstract method public
-    public void HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    void IResultOperatorHandler.HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
-      // TODO Review 2620: Argument checks. Also check type of resultOperator: var castOperator = ArgumentUtility.CheckNotNullAndType<T> (resultOperator)
-      HandleResultOperator ((T) resultOperator, queryModel, ref sqlStatementBuilder, generator, stage);
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+      var castOperator = ArgumentUtility.CheckNotNullAndType<T> ("resultOperator", resultOperator);
+      HandleResultOperator (castOperator, queryModel, ref sqlStatementBuilder, generator, stage);
     }
 
-    // TODO Review 2620: Probably not necessary to make this virtual
-    protected virtual SqlStatement GetStatementAndResetBuilder (ref SqlStatementBuilder sqlStatementBuilder)
+    protected SqlStatement GetStatementAndResetBuilder (ref SqlStatementBuilder sqlStatementBuilder)
     {
       var sqlSubStatement = sqlStatementBuilder.GetSqlStatement ();
       sqlStatementBuilder = new SqlStatementBuilder ();
       return sqlSubStatement;
+    }
+
+    private SqlStatementBuilder MoveStatementToSubQuery (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
+    {
+      var sqlStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
+      var subStatementTableInfo = new ResolvedSubStatementTableInfo (
+          generator.GetUniqueIdentifier ("q"),
+          sqlStatement);
+      var sqlTable = new SqlTable (subStatementTableInfo);
+
+      sqlStatementBuilder.SqlTables.Add (sqlTable);
+      sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
+      // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
+      sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
+      return sqlStatementBuilder;
     }
   }
 }
