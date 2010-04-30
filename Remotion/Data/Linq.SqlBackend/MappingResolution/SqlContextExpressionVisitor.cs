@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (expression.Type == typeof (bool))
-        return new SqlColumnExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName, false);
+        return new SqlColumnExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName, false); // TODO Review 2597: reuse IsPrimaryKey from original expression; write a test showing this for a true and a false value
       else
         return expression; // rely on VisitExpression to apply correct semantics
     }

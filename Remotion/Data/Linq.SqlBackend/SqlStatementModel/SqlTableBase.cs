@@ -53,6 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _joinedTables.Values; }
     }
 
+    // TODO Review 2597: cardinality parameter can be removed
     public SqlJoinedTable GetOrAddJoin (IJoinInfo joinInfo, JoinCardinality cardinality)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);

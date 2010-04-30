@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -36,8 +35,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private IMappingResolver _resolverMock;
     private SqlTable _sqlTable;
     private UniqueIdentifierGenerator _generator;
-    private ResolvedJoinInfo _resolvedJoinInfo;
-    private PropertyInfo _kitchenCookMember;
     private IMappingResolutionStage _stageMock;
 
     [SetUp]
@@ -47,10 +44,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       _generator = new UniqueIdentifierGenerator();
-
-      _resolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-
-      _kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
     }
 
     [Test]
@@ -209,6 +202,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (constantExpression));
       _resolverMock.VerifyAllExpectations ();
     }
+
+    // TODO Review 2597: Test missing for VisitMemberExpression_OnEntityRef
 
     [Test]
     public void UnknownExpression ()

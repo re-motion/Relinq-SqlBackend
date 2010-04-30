@@ -108,12 +108,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
       var join = expression.SqlTable.GetOrAddJoin (joinInfo, JoinCardinality.One);
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      // TODO Review 2597: Use this.ResolveJoinInfo, not ResolvingJoinInfoVisitor.ResolveJoinInfo
       join.JoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (join.JoinInfo, _resolver, _uniqueIdentifierGenerator, this);
 
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
-      return (SqlEntityExpression)ResolveExpression(sqlTableReferenceExpression);
+      return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext context)
