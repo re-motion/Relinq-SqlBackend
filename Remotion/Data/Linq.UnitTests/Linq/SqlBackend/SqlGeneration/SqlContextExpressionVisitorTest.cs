@@ -498,16 +498,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlEntityConstantExpression ()
+    public void VisitSqlEntityConstantExpression_ValueRequired ()
+    {
+      var expression = new SqlEntityConstantExpression (typeof (int), 5, 1);
+      var result = _nonTopLevelVisitor.VisitSqlEntityConstantExpression (expression);
+
+      Assert.That (result, Is.SameAs(expression));
+    }
+
+    [Test]
+    public void VisitSqlEntityConstantExpression_SingleValueRequired ()
     {
       var expression = new SqlEntityConstantExpression (typeof (int), 5, 1);
 
-      var result = _nonTopLevelVisitor.VisitSqlEntityConstantExpression (expression);
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var result = nonTopLevelVisitor.VisitSqlEntityConstantExpression (expression);
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(1));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (1));
     }
-
+    
     [Test]
     public void VisitSqlSubStatementExpression ()
     {
