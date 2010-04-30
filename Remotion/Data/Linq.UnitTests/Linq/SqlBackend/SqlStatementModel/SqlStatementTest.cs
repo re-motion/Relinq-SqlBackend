@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -99,8 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
 
-      // TODO Review 2651: Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True); (and in all subsequent tests)
-      Assert.AreEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
 
     [Test]
@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo2, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -145,7 +145,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection2, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new[] { sqlTable2 }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -177,7 +177,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering2 }, null, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -193,7 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition2, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression2, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -223,7 +223,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -237,7 +237,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, true);
 
-      Assert.AreNotEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
     [Test]
@@ -248,7 +248,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement = new SqlStatement (
          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
      
-      Assert.AreNotEqual (sqlStatement, null);
+      Assert.That (sqlStatement.Equals(null), Is.False);
     }
 
     [Test]
@@ -259,10 +259,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement = new SqlStatement (
          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreNotEqual (sqlStatement, new object());
+      Assert.That (sqlStatement.Equals(new object()), Is.False);
     }
 
-    // TODO Review 2651: Also add one test called Equals_AssertPropertyCount asserting that SqlStatement has exactly 8 public properties. Add a message saying that the implementation of Equals and GetHashCode needs to be adapted when the check fails (as the third parameter to Assert.That)
+    [Test]
+    public void Equals_AssertPropertyCount ()
+    {
+      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (8), "The implementation of Equals and GetHashCode has to be adapted.");
+    }
+
 
     [Test]
     public void GetHashcode_EqualSqlStatementsWithAllMembers ()
@@ -293,7 +298,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
 
-      Assert.AreEqual (sqlStatement1, sqlStatement2);
+      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
     
   }
