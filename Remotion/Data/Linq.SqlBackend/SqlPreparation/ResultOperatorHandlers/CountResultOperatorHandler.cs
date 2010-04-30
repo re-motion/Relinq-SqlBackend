@@ -42,6 +42,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
+      if (sqlStatementBuilder.IsDistinctQuery)
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator);
+
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsCountQuery = true;

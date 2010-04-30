@@ -46,14 +46,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A SqlStatement cannot contain both Count and Top or Count and Distinct.")]
-    public void Initialization_WithCountAndDistinct_ThrowsException ()
-    {
-      new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, true, true);
-    }
-
-    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void Initialization_CollectionInSelectProjection_ThrowsException ()
     {

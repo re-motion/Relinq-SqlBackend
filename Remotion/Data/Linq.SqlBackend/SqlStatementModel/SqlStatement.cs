@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (whereCondition != null && whereCondition.Type != typeof (bool))
         throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
 
-      if ((isCountQuery && topExpression != null) || (isCountQuery && isDistinctQuery))
+      if (isCountQuery && topExpression != null)
         throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
 
       if (selectProjection.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (selectProjection.Type))
