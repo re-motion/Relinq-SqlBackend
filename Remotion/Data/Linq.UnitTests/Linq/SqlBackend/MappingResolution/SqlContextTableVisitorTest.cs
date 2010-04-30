@@ -133,8 +133,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (joinedTable.JoinInfo, Is.SameAs (unresolvedJoinInfo));
     }
 
-    // TODO Review 2597: Test missing for VisitResolvedJoinInfo
-
     [Test]
     public void ApplyContext_SqlStatementNotChanged_SameJoinInfo ()
     {
