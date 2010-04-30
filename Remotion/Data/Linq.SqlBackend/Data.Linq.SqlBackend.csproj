@@ -91,6 +91,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistry.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\CastResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ContainsResultOperatorHandler.cs" />
