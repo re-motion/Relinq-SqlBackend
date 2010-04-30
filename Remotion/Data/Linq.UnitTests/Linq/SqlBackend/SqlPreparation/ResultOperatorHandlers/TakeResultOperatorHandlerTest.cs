@@ -24,6 +24,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -71,6 +72,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _stageMock.VerifyAllExpectations ();
     }
 
-    // TODO Review 2620: Add a test showing that Take after a top expression leads to a subquery
+    [Test]
+    public void HandleResultOperator_TakeAfterTopExpression ()
+    {
+      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
+
+      var takeExpression = Expression.Constant (2);
+      var resultOperator = new TakeResultOperator (takeExpression);
+
+      _handler.HandleResultOperator (resultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+    }
+
   }
 }
