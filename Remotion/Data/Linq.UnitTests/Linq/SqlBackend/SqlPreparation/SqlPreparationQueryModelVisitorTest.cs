@@ -27,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -319,202 +320,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.Orderings[2].Expression, Is.SameAs (preparedOrderingExpression1));
     }
 
-    // TODO Review 2620: Remove all the result operator handler tests - their contents should already be tested in the handler tests
-    // TODO Review 2620: Only keep one with a handler mock showing that the handler is invoked
-
     [Test]
-    public void VisitResultOperator_First ()
+    public void VisitResultOperator_HandlerResultOperator ()
     {
-      var resultOperator = new FirstResultOperator (false);
-      _queryModel.ResultOperators.Add (resultOperator);
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), preparedExpression);
+      var resultOperator = new TestChoiceResultOperator(false);
+      
+      var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler>();
+      ResultOperatorHandlerRegistry registry = new ResultOperatorHandlerRegistry();
+      registry.Register (typeof (TestChoiceResultOperator), handlerMock);
+      var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
+      var sqlStatementBuilder = queryModelVisitor.SqlStatementBuilder;
 
-      _stageMock
-          .Expect (
-          mock => mock.PrepareTopExpression (
-                      Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (1))))
-          .Return (preparedExpression);
-      _stageMock.Replay();
+      handlerMock.Expect (mock => mock.HandleResultOperator (resultOperator, _queryModel, ref sqlStatementBuilder, _generator, _stageMock));
+      handlerMock.Replay();
 
-      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
+      queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf(typeof(StreamedSingleValueInfo)));
-      Assert.That (((StreamedSingleValueInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (Cook)));
+      handlerMock.VerifyAllExpectations();
     }
-
-    [Test]
-    public void VisitResultOperator_Single ()
-    {
-      var resultOperator = new SingleResultOperator (false);
-      _queryModel.ResultOperators.Add (resultOperator);
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), preparedExpression);
-
-      _stageMock
-          .Expect (
-          mock => mock.PrepareTopExpression (
-                      Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (2))))
-          .Return (preparedExpression);
-      _stageMock.Replay();
-
-      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
-
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf(typeof(StreamedSingleValueInfo)));
-      Assert.That (((StreamedSingleValueInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (Cook)));
-    }
-
-    [Test]
-    public void VisitResultOperator_Take ()
-    {
-      var takeExpression = Expression.Constant (2);
-      var resultOperator = new TakeResultOperator (takeExpression);
-      _queryModel.ResultOperators.Add (resultOperator);
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo(typeof (int[]), takeExpression);
-
-      _stageMock.Expect (mock => mock.PrepareTopExpression (takeExpression)).Return (preparedExpression);
-      _stageMock.Replay();
-
-      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
-
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_visitor.SqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
-      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType(typeof(int))));
-    }
-
-    [Test]
-    public void VisitResultOperator_TakeAndDistinct ()
-    {
-      var takeExpression = Expression.Constant (2);
-      var queryModel = new QueryModel (_mainFromClause, _selectClause);
-      var takeResultOperator = new TakeResultOperator (takeExpression);
-      queryModel.ResultOperators.Add (takeResultOperator);
-      var distinctResultOperator = new DistinctResultOperator();
-
-      _visitor.SqlStatementBuilder.DataInfo = queryModel.GetOutputDataInfo();
-      _visitor.SqlStatementBuilder.SelectProjection = Expression.Constant ("select");
-
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _stageMock
-          .Expect (mock => mock.PrepareTopExpression (takeExpression))
-          .Return (preparedExpression);
-      _stageMock.Replay();
-
-      _visitor.VisitResultOperator (takeResultOperator, queryModel, 0);
-      _visitor.VisitResultOperator (distinctResultOperator, queryModel, 0);
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) _visitor.SqlStatementBuilder.SelectProjection).SqlTable).TableInfo,
-          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-    }
-
-    [Test]
-    public void VisitResultOperator_Contains ()
-    {
-      var itemExpression = Expression.Constant (new Cook ());
-      var resultOperator = new ContainsResultOperator (itemExpression);
-      _queryModel.ResultOperators.Add (resultOperator);
-
-      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), itemExpression);
-      _visitor.SqlStatementBuilder.SelectProjection = Expression.Constant (1);
-      _visitor.SqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
-
-      var preparedExpression = Expression.Constant (new Cook(), typeof (Cook));
-      _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression)).Return (preparedExpression);
-      _stageMock.Replay();
-
-      var oldSqlStatementBuilder = _visitor.SqlStatementBuilder;
-
-      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
-
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (oldSqlStatementBuilder));
-      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
-      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
-      Assert.That (((StreamedScalarValueInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (Boolean)));
-
-      var binaryOperatorExpression = (SqlBinaryOperatorExpression) _visitor.SqlStatementBuilder.SelectProjection;
-      Assert.That (binaryOperatorExpression.LeftExpression, Is.SameAs (preparedExpression));
-      Assert.That (binaryOperatorExpression.RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
-
-      var subStatementExpression = ((SqlSubStatementExpression) binaryOperatorExpression.RightExpression);
-      Assert.That (subStatementExpression.SqlStatement.SelectProjection, Is.SameAs (oldSqlStatementBuilder.SelectProjection));
-      Assert.That (subStatementExpression.SqlStatement.SqlTables, Is.EqualTo (oldSqlStatementBuilder.SqlTables));
-      Assert.That (subStatementExpression.SqlStatement.DataInfo, Is.TypeOf (typeof(StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) subStatementExpression.SqlStatement.DataInfo).DataType, Is.EqualTo (typeof (Cook[])));
-    }
-
-    [Test]
-    public void VisitResultOperator_OfType ()
-    {
-      var resultOperator = new OfTypeResultOperator (typeof (Chef));
-      _queryModel.ResultOperators.Add (resultOperator);
-      var selectProjection = Expression.Constant (new Chef());
-      var dataInfo = new StreamedSequenceInfo (typeof (Chef[]), selectProjection);
-      _visitor.SqlStatementBuilder.DataInfo = dataInfo;
-      _visitor.SqlStatementBuilder.SelectProjection = selectProjection;
-
-      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
-
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
-      Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).Expression, Is.SameAs (selectProjection));
-      Assert.That (((TypeBinaryExpression) _visitor.SqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo (typeof (Chef)));
-      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf(typeof(StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(Chef))));
-    }
-
-    [Test]
-    public void VisitResultOperator_WithCount ()
-    {
-      var countResultOperator = new CountResultOperator ();
-      _queryModel.ResultOperators.Add (countResultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
-
-      Assert.That (result.IsCountQuery, Is.True);
-      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
-      Assert.That (((StreamedScalarValueInfo) result.DataInfo).DataType, Is.EqualTo (typeof (int)));
-    }
-
-    [Test]
-    public void VisitResultOperator_WithDistinct ()
-    {
-      var distinctResultOperator = new DistinctResultOperator ();
-      _queryModel.ResultOperators.Add (distinctResultOperator);
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
-
-      Assert.That (result.IsDistinctQuery, Is.True);
-      Assert.That (result.DataInfo, Is.TypeOf(typeof(StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) result.DataInfo).DataType, Is.EqualTo(_queryModel.SelectClause.GetOutputDataInfo().DataType));
-    }
-
-    [Test]
-    public void VisitResultOperator_WithCast ()
-    {
-      var castResultOperator = new CastResultOperator (typeof (Cook));
-      _queryModel.ResultOperators.Add (castResultOperator);
-      _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo ();
-
-      var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
-
-      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) result.DataInfo).DataType, Is.EqualTo (typeof(IQueryable<>).MakeGenericType(typeof (Cook))));
-    }
-
+    
     [Test]
     public void GetStatementAndResetBuilder ()
     {

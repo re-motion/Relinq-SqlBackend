@@ -28,6 +28,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
     }
 
+    public TestableSqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage,UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+      : base (context, stage, generator, registry)
+    {
+    }
+
     public new SqlStatementBuilder SqlStatementBuilder
     {
       get { return base.SqlStatementBuilder; }

@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private SqlStatementBuilder _sqlStatementBuilder;
     private readonly UniqueIdentifierGenerator _generator;
-    private ResultOperatorHandlerRegistry _registry;
+    private readonly ResultOperatorHandlerRegistry _registry;
 
     protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
