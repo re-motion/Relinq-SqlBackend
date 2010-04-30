@@ -28,39 +28,65 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlStatementBuilder
   {
+    private readonly ValueHolder _valueHolder;
+    
     public SqlStatementBuilder ()
     {
-      SqlTables = new List<SqlTableBase> ();
-      Orderings = new List<Ordering> ();
+      _valueHolder = new ValueHolder();
     }
 
     public SqlStatementBuilder (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      DataInfo = sqlStatement.DataInfo;
-      SelectProjection = sqlStatement.SelectProjection;
-      WhereCondition = sqlStatement.WhereCondition;
-      IsCountQuery = sqlStatement.IsCountQuery;
-      IsDistinctQuery = sqlStatement.IsDistinctQuery;
-      TopExpression = sqlStatement.TopExpression;
-      
-      SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
-      Orderings = new List<Ordering> (sqlStatement.Orderings);
+      _valueHolder = new ValueHolder (sqlStatement);
     }
 
-    public IStreamedDataInfo DataInfo { get; set; }
+    public IStreamedDataInfo DataInfo
+    {
+      get { return _valueHolder.DataInfo; }
+      set { _valueHolder.DataInfo = value; }
+    }
 
-    public bool IsCountQuery { get; set; }
-    public bool IsDistinctQuery { get; set; }
+    public bool IsCountQuery
+    {
+      get { return _valueHolder.IsCountQuery; }
+      set { _valueHolder.IsCountQuery = value; }
+    }
 
-    public Expression TopExpression { get; set; }
+    public bool IsDistinctQuery
+    {
+      get { return _valueHolder.IsDistinctQuery; }
+      set { _valueHolder.IsDistinctQuery = value; }
+    }
 
-    public Expression SelectProjection { get; set; }
-    public Expression WhereCondition { get; set; }
+    public Expression TopExpression
+    {
+      get { return _valueHolder.TopExpression; }
+      set { _valueHolder.TopExpression = value; }
+    }
 
-    public List<SqlTableBase> SqlTables { get; private set; }
-    public List<Ordering> Orderings { get; private set; }
+    public Expression SelectProjection
+    {
+      get { return _valueHolder.SelectProjection; }
+      set { _valueHolder.SelectProjection = value; }
+    }
+
+    public Expression WhereCondition
+    {
+      get { return _valueHolder.WhereCondition; }
+      set { _valueHolder.WhereCondition = value; }
+    }
+
+    public List<SqlTableBase> SqlTables
+    {
+      get { return _valueHolder.SqlTables; }
+    }
+
+    public List<Ordering> Orderings
+    {
+      get { return _valueHolder.Orderings; }
+    }
 
     public SqlStatement GetSqlStatement ()
     {
@@ -75,6 +101,41 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         WhereCondition = Expression.AndAlso (WhereCondition, translatedExpression);
       else
         WhereCondition = translatedExpression;
+    }
+
+    private class ValueHolder
+    {
+      public ValueHolder ()
+      {
+        SqlTables = new List<SqlTableBase> ();
+        Orderings = new List<Ordering> ();
+      }
+
+      public ValueHolder (SqlStatement sqlStatement)
+      {
+        DataInfo = sqlStatement.DataInfo;
+        SelectProjection = sqlStatement.SelectProjection;
+        WhereCondition = sqlStatement.WhereCondition;
+        IsCountQuery = sqlStatement.IsCountQuery;
+        IsDistinctQuery = sqlStatement.IsDistinctQuery;
+        TopExpression = sqlStatement.TopExpression;
+
+        SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
+        Orderings = new List<Ordering> (sqlStatement.Orderings);
+      }
+
+      public IStreamedDataInfo DataInfo { get; set; }
+
+      public bool IsCountQuery { get; set; }
+      public bool IsDistinctQuery { get; set; }
+
+      public Expression TopExpression { get; set; }
+
+      public Expression SelectProjection { get; set; }
+      public Expression WhereCondition { get; set; }
+
+      public List<SqlTableBase> SqlTables { get; private set; }
+      public List<Ordering> Orderings { get; private set; }
     }
 
   }
