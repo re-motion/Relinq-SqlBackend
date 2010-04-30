@@ -107,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void Convert ()
     {
       CheckQuery (
-          from c in Cooks select c.ID.ToString (),
+          from c in Cooks select c.ID.ToString(),
           "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
 
@@ -259,7 +259,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.FirstName.SqlContainsFulltext ("%ab%c", "de") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE CONTAINS([t0].[FirstName], @1, LANGUAGE @2)",
-          new CommandParameter ("@1", "%ab%c"), new CommandParameter("@2","de")
+          new CommandParameter ("@1", "%ab%c"),
+          new CommandParameter ("@2", "de")
           );
 
       CheckQuery (
@@ -278,8 +279,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks where c.FirstName.SqlContainsFreetext ("%ab%c", "de") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE @2)", 
-          new CommandParameter ("@1", "%ab%c"), new CommandParameter("@2","de")
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], @1, LANGUAGE @2)",
+          new CommandParameter ("@1", "%ab%c"),
+          new CommandParameter ("@2", "de")
           );
 
       CheckQuery (
