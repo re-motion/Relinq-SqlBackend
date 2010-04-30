@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel,  SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
     // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)
+    // TODO Review 2664: Rename this method to EnsureNoTopExpression
     protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
@@ -66,6 +67,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       HandleResultOperator (castOperator, queryModel, sqlStatementBuilder, generator, stage);
     }
 
+    // TODO Review 2664: Make protected and move up to UpdateDataInfo - it's probably of utility to some result operator handlers
+    // TODO Review 2664: Rename to MoveCurrentStatementToSqlTable
     private SqlStatementBuilder MoveStatementToSubQuery (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
     {
       var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
