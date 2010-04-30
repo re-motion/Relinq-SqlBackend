@@ -83,55 +83,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.EqualTo (expression));
     }
 
-    // TODO Review 2665: Can remove the following two tests - they should be handled by the following two tests
-    [Test]
-    public void VisitSubQueryExpression_NoContains ()
-    {
-      var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
-      var expression = new SubQueryExpression (querModel);
-      var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Kitchen));
-
-      _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (querModel))
-          .Return (fakeSqlStatement);
-      _stageMock.Replay();
-
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
-      Assert.That (result.Type, Is.EqualTo (fakeSqlStatement.DataInfo.DataType));
-    }
-
-    [Test]
-    public void VisitSubQueryExpression_WithContains ()
-    {
-      var querModel = ExpressionHelper.CreateQueryModel (_kitchenMainFromClause);
-      var constantExpression = Expression.Constant (new Kitchen());
-      var containsResultOperator = new ContainsResultOperator (constantExpression);
-      querModel.ResultOperators.Add (containsResultOperator);
-
-      var expression = new SubQueryExpression (querModel);
-      var fakeSqlStatement =
-          SqlStatementModelObjectMother.CreateSqlStatement (
-              new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
-              );
-
-      _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Matches (q => q.ResultOperators.Count == 1)))
-          .Return (fakeSqlStatement);
-      _stageMock.Replay();
-
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
-
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.SameAs (fakeSqlStatement.SelectProjection));
-    }
-
     [Test]
     public void VisitSubqueryExpressionTest_WithNoSqlTables ()
     {
@@ -175,7 +126,53 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
     }
 
-    // TODO Review 2665: Add tests for IsCountQuery == true and IsDistinctQuery == true
+    [Test]
+    public void VisitSubqueryExpressionTest_IsCountQuery ()
+    {
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+      var expression = new SubQueryExpression (querModel);
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
+      {
+        IsCountQuery = true
+      };
+     
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
+
+      _stageMock
+          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Return (fakeSqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement.IsCountQuery, Is.True);
+    }
+
+    [Test]
+    public void VisitSubqueryExpressionTest_IsDistinctQuery ()
+    {
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+      var expression = new SubQueryExpression (querModel);
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
+      {
+        IsDistinctQuery = true
+      };
+
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
+
+      _stageMock
+          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Return (fakeSqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement.IsDistinctQuery, Is.True);
+    }
 
     [Test]
     public void VisitBinaryExpression ()
