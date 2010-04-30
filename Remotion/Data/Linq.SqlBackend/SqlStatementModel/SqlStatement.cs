@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override bool Equals (object obj)
     {
-      if (obj == null)
+      if (obj == null) // TODO Review 2651: Can remove this check because the next check will catch this condition, too
         return false;
 
       var statement = obj as SqlStatement;

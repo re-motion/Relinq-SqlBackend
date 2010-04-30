@@ -107,6 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
 
+      // TODO Review 2651: Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True); (and in all subsequent tests)
       Assert.AreEqual (sqlStatement1, sqlStatement2);
     }
 
@@ -268,6 +269,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.AreNotEqual (sqlStatement, new object());
     }
+
+    // TODO Review 2651: Also add one test called Equals_AssertPropertyCount asserting that SqlStatement has exactly 8 public properties. Add a message saying that the implementation of Equals and GetHashCode needs to be adapted when the check fails (as the third parameter to Assert.That)
 
     [Test]
     public void GetHashcode_EqualSqlStatementsWithAllMembers ()
