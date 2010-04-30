@@ -17,9 +17,11 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
@@ -51,6 +53,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       registry.Register (typeof (CastResultOperator), handlerMock);
 
       Assert.That (registry.GetHandler (typeof (CastResultOperator)), Is.SameAs(handlerMock));
+    }
+
+    [Test]
+    public void RegisterHandlerForBaseResultOperator ()
+    {
+      var registry = new ResultOperatorHandlerRegistry ();
+      var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler> ();
+
+      registry.Register (typeof (ResultOperatorBase), handlerMock);
+
+      Assert.That (registry.GetHandler (typeof (InheritedResultOperator)), Is.SameAs (handlerMock));
+    }
+
+    class InheritedResultOperator : TestChoiceResultOperator 
+    {
+      public InheritedResultOperator (bool returnDefaultWhenEmpty)
+          : base(returnDefaultWhenEmpty)
+      {
+      }
     }
   }
 }

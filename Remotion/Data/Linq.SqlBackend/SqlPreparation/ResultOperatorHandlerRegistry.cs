@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
@@ -70,19 +71,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("resultOperatorType", resultOperatorType);
 
-      // TODO Review 2620: Write a test showing that it is possible to register a catch-all handler for ResultOperatorBase; implement by iterating over resultOperatorType.BaseType (currentType = resultOperatorType; while (currentType != null) ... currentType = currentType.BaseType)
-      
       IResultOperatorHandler handler;
       if (_handlers.TryGetValue (resultOperatorType, out handler))
         return handler;
-      else
-      {
-        string message =
+      
+      var currentType = resultOperatorType.BaseType;
+      if (currentType != null && typeof(ResultOperatorBase).IsAssignableFrom(currentType))
+        return GetHandler (currentType);
+      
+       string message =
             string.Format (
                 "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
                 resultOperatorType.FullName);
         throw new NotSupportedException (message);
-      }
     }
 
   }

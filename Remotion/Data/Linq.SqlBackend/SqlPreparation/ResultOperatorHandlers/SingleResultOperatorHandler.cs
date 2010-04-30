@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
-      EnsureNoTopExpressionAndSetDataInfo (resultOperator, sqlStatementBuilder, generator, stage);
+      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (2));

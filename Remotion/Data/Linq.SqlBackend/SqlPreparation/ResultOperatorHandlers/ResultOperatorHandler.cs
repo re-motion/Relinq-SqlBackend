@@ -37,9 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
     public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel,  SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
-    // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)
-    // TODO Review 2664: Rename this method to EnsureNoTopExpression
-    protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected void EnsureNoTopExpression (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -47,7 +45,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       
       if (sqlStatementBuilder.TopExpression != null)
-        sqlStatementBuilder = MoveStatementToSubQuery(sqlStatementBuilder, generator);
+        MoveCurrentStatementToSqlTable(sqlStatementBuilder, generator);
+    }
+
+    protected void MoveCurrentStatementToSqlTable (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
+    {
+      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
+      var subStatementTableInfo = new ResolvedSubStatementTableInfo (
+          generator.GetUniqueIdentifier ("q"),
+          sqlStatement);
+      var sqlTable = new SqlTable (subStatementTableInfo);
+
+      sqlStatementBuilder.SqlTables.Add (sqlTable);
+      sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
+      // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
+      sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
     }
 
     protected void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
@@ -67,21 +79,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       HandleResultOperator (castOperator, queryModel, sqlStatementBuilder, generator, stage);
     }
 
-    // TODO Review 2664: Make protected and move up to UpdateDataInfo - it's probably of utility to some result operator handlers
-    // TODO Review 2664: Rename to MoveCurrentStatementToSqlTable
-    private SqlStatementBuilder MoveStatementToSubQuery (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
-    {
-      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
-      var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-          generator.GetUniqueIdentifier ("q"),
-          sqlStatement);
-      var sqlTable = new SqlTable (subStatementTableInfo);
-
-      sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
-      // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
-      sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
-      return sqlStatementBuilder;
-    }
+    
   }
 }

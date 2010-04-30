@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
       
-      EnsureNoTopExpressionAndSetDataInfo (resultOperator, sqlStatementBuilder, generator, stage);
+      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsCountQuery = true;
