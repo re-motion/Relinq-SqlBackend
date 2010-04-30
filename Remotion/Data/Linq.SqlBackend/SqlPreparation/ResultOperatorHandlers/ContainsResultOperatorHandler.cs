@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
@@ -43,38 +42,44 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-
       Expression selectProjection;
-      var fromExpression = queryModel.MainFromClause.FromExpression as ConstantExpression;
-      IStreamedDataInfo dataInfo = sqlStatementBuilder.DataInfo;
+      var dataInfo = sqlStatementBuilder.DataInfo;
+      var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
 
-      if (queryModel.IsIdentityQuery () && fromExpression != null && typeof (ICollection).IsAssignableFrom (fromExpression.Type))
+      var constantCollection = GetConstantCollectionValue (queryModel);
+      if (constantCollection != null) // Scenario: where new[] { 1, 2, 3 }.Contains (...)
       {
         if (queryModel.ResultOperators.Count > 1)
-          throw new NotSupportedException ("Expression with more than one results operators are not allowed when using contains.");
+        {
+          throw new NotSupportedException (
+              "Queries with more than one results operators are not allowed when using Contains in conjunction with a constant collection.");
+        }
 
-        if (((ICollection) fromExpression.Value).Count > 0)
-        {
-          var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
-          selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, fromExpression);
-        }
-        else
-        {
-          selectProjection = Expression.Constant (false);
-        }
+        selectProjection = constantCollection.Count > 0
+                               ? (Expression) new SqlBinaryOperatorExpression ("IN", preparedItemExpression, Expression.Constant (constantCollection))
+                               : Expression.Constant (false);
 
         sqlStatementBuilder.SqlTables.Clear ();
       }
-      else
+      else // Scenario: where kitchen.Cooks.Contains (...)
       {
-        var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
+        var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
-        var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
+
         selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
       }
 
       sqlStatementBuilder.SelectProjection = selectProjection;
       UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);
+    }
+
+    private ICollection GetConstantCollectionValue (QueryModel queryModel)
+    {
+      var fromExpressionAsConstant = (queryModel.MainFromClause.FromExpression) as ConstantExpression;
+      if (queryModel.IsIdentityQuery () && fromExpressionAsConstant != null && typeof (ICollection).IsAssignableFrom (fromExpressionAsConstant.Type))
+        return (ICollection) fromExpressionAsConstant.Value;
+      else
+        return null;
     }
   }
 }

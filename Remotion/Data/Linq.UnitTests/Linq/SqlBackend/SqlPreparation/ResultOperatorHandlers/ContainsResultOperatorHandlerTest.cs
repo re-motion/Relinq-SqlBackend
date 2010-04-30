@@ -41,7 +41,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private ContainsResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private QueryModel _queryModel;
-    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -54,7 +53,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
         DataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()))
       };
       _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause ());
-      _context = new SqlPreparationContext ();
     }
 
     [Test]
@@ -73,6 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
+      // TODO Review 2665: Use expectedExpressions and ExpressionTreeComparer (here and in subsequent tests)
       var binaryOperatorExpression = (SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection;
       Assert.That (binaryOperatorExpression.LeftExpression, Is.SameAs (preparedExpression));
       Assert.That (binaryOperatorExpression.RightExpression, Is.TypeOf (typeof (SqlSubStatementExpression)));
@@ -81,6 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (subStatementExpression.SqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) subStatementExpression.SqlStatement.DataInfo).DataType, Is.EqualTo (typeof (Cook[])));
 
+      // TODO Review 2665: This should be above the assertions - will help find the cause of errors faster
       _stageMock.VerifyAllExpectations();
     }
 
@@ -106,7 +106,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).BinaryOperator, Is.EqualTo ("IN"));
       Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).LeftExpression, Is.EqualTo (fakeConstantExpression));
-      Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).RightExpression, Is.EqualTo (constantExpressionCollection));
+      Assert.That (
+          ((ConstantExpression) ((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).RightExpression).Value, 
+          Is.EqualTo (constantExpressionCollection.Value));
 
       _stageMock.VerifyAllExpectations ();
     }
@@ -121,6 +123,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var itemExpression = Expression.Constant (new Cook());
       var containsResultOperator = new ContainsResultOperator (itemExpression);
       queryModel.ResultOperators.Add (containsResultOperator);
+
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (itemExpression))
+          .Return (itemExpression);
+      _stageMock.Replay ();
 
       _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
      

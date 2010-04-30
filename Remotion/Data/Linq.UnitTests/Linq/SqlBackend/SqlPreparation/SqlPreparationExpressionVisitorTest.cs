@@ -83,6 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.EqualTo (expression));
     }
 
+    // TODO Review 2665: Can remove the following two tests - they should be handled by the following two tests
     [Test]
     public void VisitSubQueryExpression_NoContains ()
     {
@@ -173,6 +174,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
     }
+
+    // TODO Review 2665: Add tests for IsCountQuery == true and IsDistinctQuery == true
 
     [Test]
     public void VisitBinaryExpression ()
