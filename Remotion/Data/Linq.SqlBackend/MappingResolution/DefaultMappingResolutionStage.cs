@@ -111,11 +111,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
       var join = expression.SqlTable.GetOrAddJoin (joinInfo, JoinCardinality.One);
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      // TODO Review 2597: Use this.ResolveJoinInfo, not ResolvingJoinInfoVisitor.ResolveJoinInfo
-      join.JoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (join.JoinInfo, _resolver, _uniqueIdentifierGenerator, this);
-
+      join.JoinInfo = ResolveJoinInfo (join.JoinInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
+      
       return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression);
     }
 
