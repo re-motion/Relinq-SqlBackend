@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlStatementBuilder
   {
-    private readonly ValueHolder _valueHolder;
+    private ValueHolder _valueHolder;
     
     public SqlStatementBuilder ()
     {
@@ -101,6 +101,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         WhereCondition = Expression.AndAlso (WhereCondition, translatedExpression);
       else
         WhereCondition = translatedExpression;
+    }
+
+    public SqlStatement GetStatementAndResetBuilder ()
+    {
+      var sqlSubStatement = GetSqlStatement ();
+      _valueHolder = new ValueHolder ();
+      return sqlSubStatement;
     }
 
     private class ValueHolder
