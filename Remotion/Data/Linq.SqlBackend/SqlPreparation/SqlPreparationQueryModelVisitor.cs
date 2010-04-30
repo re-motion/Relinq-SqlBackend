@@ -147,41 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      // TODO Review 2620: Remove all those if checks, just use _registry.GetHandler for resultOperator.GetType(
-
-      if (resultOperator is ContainsResultOperator)
-      {
-        _registry.GetHandler (typeof (ContainsResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-        return;
-      }
-      else if (resultOperator is AnyResultOperator)
-      {
-        _registry.GetHandler (typeof (AnyResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-        return;
-      }
-      else if (resultOperator is CastResultOperator)
-      {
-        _registry.GetHandler (typeof (CastResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-        return;
-      }
-      else if (resultOperator is OfTypeResultOperator)
-      {
-        _registry.GetHandler (typeof (OfTypeResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-        return;
-      }
-
-      if (resultOperator is CountResultOperator)
-        _registry.GetHandler (typeof (CountResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-      else if (resultOperator is DistinctResultOperator)
-        _registry.GetHandler (typeof (DistinctResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-      else if (resultOperator is FirstResultOperator)
-        _registry.GetHandler (typeof (FirstResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-      else if (resultOperator is SingleResultOperator)
-        _registry.GetHandler (typeof (SingleResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-      else if (resultOperator is TakeResultOperator)
-        _registry.GetHandler (typeof (TakeResultOperator)).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-      else
-        throw new NotSupportedException (string.Format ("{0} is not supported.", resultOperator));
+      _registry.GetHandler (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
     }
 
     // TODO Review 2620: Move this method to SqlStatementBuilder. Implement it as follows:

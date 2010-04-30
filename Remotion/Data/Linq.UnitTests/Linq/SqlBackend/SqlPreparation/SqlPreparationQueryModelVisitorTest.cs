@@ -516,18 +516,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "DefaultIfEmpty(1) is not supported.")]
-    public void VisitResultOperator_NotSupported ()
-    {
-      var expression = Expression.Constant (1);
-      var resultOperator = new DefaultIfEmptyResultOperator (expression);
-      _queryModel.ResultOperators.Add (resultOperator);
-      _visitor.SqlStatementBuilder.DataInfo = new StreamedSequenceInfo(typeof(int[]), expression);
-
-      _visitor.VisitResultOperator (resultOperator, _queryModel, 0);
-    }
-    
-    [Test]
     public void GetStatementAndResetBuilder ()
     {
       var originalSqlStatementBuilder = _visitor.SqlStatementBuilder;
