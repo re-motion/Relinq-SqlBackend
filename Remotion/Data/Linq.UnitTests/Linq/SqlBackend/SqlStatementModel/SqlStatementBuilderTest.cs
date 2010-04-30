@@ -147,6 +147,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.IsCountQuery, Is.False);
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
+
+    [Test]
+    public void GetStatementAndResetBuilder ()
+    {
+      var selectProjection = Expression.Constant ("select");
+      var originalBuilder = new SqlStatementBuilder ()
+      {
+        DataInfo = new TestStreamedValueInfo (typeof (Cook)),
+        SelectProjection = selectProjection,
+        IsCountQuery = false,
+        IsDistinctQuery = true
+      };
+      var sqlStatement = originalBuilder.GetSqlStatement();
+      
+      var result = originalBuilder.GetStatementAndResetBuilder ();
+
+      Assert.That (result, Is.Not.SameAs (sqlStatement));
+    }
     
   }
 }

@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public override void HandleResultOperator (
         ContainsResultOperator resultOperator,
         QueryModel queryModel,
-        ref SqlStatementBuilder sqlStatementBuilder,
+        SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
@@ -67,14 +67,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       }
       else
       {
-        var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
+        var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
         var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
         var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
         selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
       }
 
       sqlStatementBuilder.SelectProjection = selectProjection;
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, dataInfo);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);
     }
   }
 }

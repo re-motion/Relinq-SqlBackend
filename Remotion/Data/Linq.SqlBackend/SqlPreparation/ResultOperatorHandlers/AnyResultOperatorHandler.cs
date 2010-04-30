@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public override void HandleResultOperator (
         AnyResultOperator resultOperator,
         QueryModel queryModel,
-        ref SqlStatementBuilder sqlStatementBuilder,
+        SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
@@ -41,13 +41,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
 
-      var sqlSubStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
+      var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
 
       var sqlExistsExpression = new SqlExistsExpression (subStatementExpression);
 
       sqlStatementBuilder.SelectProjection = sqlExistsExpression;
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlSubStatement.DataInfo);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlSubStatement.DataInfo);
     }
   }
 }

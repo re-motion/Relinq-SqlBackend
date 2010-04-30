@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public override void HandleResultOperator (
         CountResultOperator resultOperator,
         QueryModel queryModel,
-        ref SqlStatementBuilder sqlStatementBuilder,
+        SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
@@ -41,8 +41,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
       
-      EnsureNoTopExpressionAndSetDataInfo (resultOperator, ref sqlStatementBuilder, generator, stage);
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+      EnsureNoTopExpressionAndSetDataInfo (resultOperator, sqlStatementBuilder, generator, stage);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsCountQuery = true;
     }

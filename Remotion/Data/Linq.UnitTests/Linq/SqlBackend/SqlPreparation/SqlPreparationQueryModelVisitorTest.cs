@@ -331,7 +331,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
       var sqlStatementBuilder = queryModelVisitor.SqlStatementBuilder;
 
-      handlerMock.Expect (mock => mock.HandleResultOperator (resultOperator, _queryModel, ref sqlStatementBuilder, _generator, _stageMock));
+      handlerMock.Expect (mock => mock.HandleResultOperator (resultOperator, _queryModel, sqlStatementBuilder, _generator, _stageMock));
       handlerMock.Replay();
 
       queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
@@ -339,19 +339,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       handlerMock.VerifyAllExpectations();
     }
     
-    [Test]
-    public void GetStatementAndResetBuilder ()
-    {
-      var originalSqlStatementBuilder = _visitor.SqlStatementBuilder;
-
-      var constantExpression = Expression.Constant (1);
-      _visitor.SqlStatementBuilder.DataInfo = _queryModel.GetOutputDataInfo ();
-      _visitor.SqlStatementBuilder.SelectProjection = constantExpression;
-
-      var result = _visitor.GetStatementAndResetBuilder();
-
-      Assert.That (_visitor.SqlStatementBuilder, Is.Not.SameAs (originalSqlStatementBuilder));
-      Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
-    }
   }
 }

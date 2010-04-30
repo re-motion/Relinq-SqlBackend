@@ -29,11 +29,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public override void HandleResultOperator (
         OfTypeResultOperator resultOperator,
         QueryModel queryModel,
-        ref SqlStatementBuilder sqlStatementBuilder,
+        SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       var typeCheckExpression = Expression.TypeIs (sqlStatementBuilder.SelectProjection, resultOperator.SearchedItemType);
       sqlStatementBuilder.AddWhereCondition (typeCheckExpression);
     }

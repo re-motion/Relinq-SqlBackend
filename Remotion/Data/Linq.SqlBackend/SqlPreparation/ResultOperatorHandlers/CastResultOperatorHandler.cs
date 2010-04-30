@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public override void HandleResultOperator (
         CastResultOperator resultOperator,
         QueryModel queryModel,
-        ref SqlStatementBuilder sqlStatementBuilder,
+        SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage)
     {
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      UpdateDataInfo (resultOperator, ref sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
     }
   }
 }

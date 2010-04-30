@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var countResultOperator = new CountResultOperator ();
 
-      _handler.HandleResultOperator (countResultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (countResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.IsCountQuery, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       var resultOperator = new CountResultOperator ();
       
-      _handler.HandleResultOperator (resultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel,  _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));

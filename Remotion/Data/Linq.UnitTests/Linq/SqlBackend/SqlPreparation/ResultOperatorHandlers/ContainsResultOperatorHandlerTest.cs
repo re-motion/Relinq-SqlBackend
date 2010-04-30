@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression)).Return (preparedExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (resultOperator, _queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (fakeConstantExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (containsResultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlBinaryOperatorExpression)));
       Assert.That (((SqlBinaryOperatorExpression) _sqlStatementBuilder.SelectProjection).BinaryOperator, Is.EqualTo ("IN"));
@@ -122,7 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var containsResultOperator = new ContainsResultOperator (itemExpression);
       queryModel.ResultOperators.Add (containsResultOperator);
 
-      _handler.HandleResultOperator (containsResultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
      
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) _sqlStatementBuilder.SelectProjection).Value, Is.EqualTo (false));
@@ -145,7 +145,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       queryModel.ResultOperators.Add (resultOperator);
       queryModel.ResultOperators.Add (containsResultOperator);
 
-      _handler.HandleResultOperator (containsResultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
     }
 
   }

@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
@@ -47,7 +46,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly SqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
 
-    private SqlStatementBuilder _sqlStatementBuilder;
+    private readonly SqlStatementBuilder _sqlStatementBuilder;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly ResultOperatorHandlerRegistry _registry;
 
@@ -147,17 +146,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      _registry.GetHandler (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel, ref _sqlStatementBuilder, _generator, _stage);
-    }
-
-    // TODO Review 2620: Move this method to SqlStatementBuilder. Implement it as follows:
-    // TODO Review 2620: Implement SqlStatementBuilder.GetStatementAndResetBuilder via _valueHolder = new ValueHolder(); (after getting the statement)
-    // TODO Review 2620: Refactor IResultOperatorHandler to remove the ref parameter - it isn't required any longer
-    protected virtual SqlStatement GetStatementAndResetBuilder ()
-    {
-      var sqlSubStatement = SqlStatementBuilder.GetSqlStatement();
-      _sqlStatementBuilder = new SqlStatementBuilder();
-      return sqlSubStatement;
+      _registry.GetHandler (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel,  _sqlStatementBuilder, _generator, _stage);
     }
 
     private void AddFromClause (IQuerySource source, Expression fromExpression)

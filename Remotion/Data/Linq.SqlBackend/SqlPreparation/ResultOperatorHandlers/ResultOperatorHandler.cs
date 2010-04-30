@@ -35,10 +35,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       get { return typeof (T); }
     }
 
-    public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
+    public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel,  SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
 
     // TODO Review 2620: Add unit tests for these two methods (add a ResultOperatorHandlerTest and a TestResultOperatorHandler)
-    protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -49,12 +49,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         sqlStatementBuilder = MoveStatementToSubQuery(sqlStatementBuilder, generator);
     }
 
-    protected void UpdateDataInfo (ResultOperatorBase resultOperator, ref SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
+    protected void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
     {
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (dataInfo);
     }
 
-    void IResultOperatorHandler.HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, ref SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    void IResultOperatorHandler.HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -63,19 +63,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       var castOperator = ArgumentUtility.CheckNotNullAndType<T> ("resultOperator", resultOperator);
-      HandleResultOperator (castOperator, queryModel, ref sqlStatementBuilder, generator, stage);
-    }
-
-    protected SqlStatement GetStatementAndResetBuilder (ref SqlStatementBuilder sqlStatementBuilder)
-    {
-      var sqlSubStatement = sqlStatementBuilder.GetSqlStatement ();
-      sqlStatementBuilder = new SqlStatementBuilder ();
-      return sqlSubStatement;
+      HandleResultOperator (castOperator, queryModel, sqlStatementBuilder, generator, stage);
     }
 
     private SqlStatementBuilder MoveStatementToSubQuery (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
     {
-      var sqlStatement = GetStatementAndResetBuilder (ref sqlStatementBuilder);
+      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementTableInfo = new ResolvedSubStatementTableInfo (
           generator.GetUniqueIdentifier ("q"),
           sqlStatement);
