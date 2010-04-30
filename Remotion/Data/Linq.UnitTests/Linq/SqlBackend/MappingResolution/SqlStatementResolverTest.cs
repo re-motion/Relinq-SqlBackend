@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (
           new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo, JoinCardinality.One);
-      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
+      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo);
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
@@ -98,8 +98,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var unresolvedJoinInfo2 = new UnresolvedJoinInfo (
          new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), typeof (Kitchen).GetProperty ("Restaurant"), JoinCardinality.One);
-      var join1 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo1, JoinCardinality.One);
-      var join2 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo2, JoinCardinality.One);
+      var join1 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo1);
+      var join2 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo2);
 
       var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Restaurant));
@@ -135,9 +135,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var memberInfo3 = typeof (Cook).GetProperty ("Name");
       var unresolvedJoinInfo3 = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c2")), memberInfo3, JoinCardinality.One);
       
-      var join1 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo1, JoinCardinality.One);
-      var join2 = join1.GetOrAddJoin (unresolvedJoinInfo2, JoinCardinality.One);
-      var join3 = join1.GetOrAddJoin (unresolvedJoinInfo3, JoinCardinality.One);
+      var join1 = _sqlTable.GetOrAddJoin (unresolvedJoinInfo1);
+      var join2 = join1.GetOrAddJoin (unresolvedJoinInfo2);
+      var join3 = join1.GetOrAddJoin (unresolvedJoinInfo3);
 
       var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));

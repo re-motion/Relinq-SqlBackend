@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, memberInfo, JoinCardinality.One);
 
-      var joinedTable = sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
+      var joinedTable = sqlTable.GetOrAddJoin (unresolvedJoinInfo);
       Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingTable, Is.SameAs (sqlTable));
@@ -46,10 +46,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, memberInfo, JoinCardinality.One);
 
-      var joinedTable1 = sqlTable.GetOrAddJoin (unresolvedJoinInfo, JoinCardinality.One);
+      var joinedTable1 = sqlTable.GetOrAddJoin (unresolvedJoinInfo);
       var originalJoinInfo = joinedTable1.JoinInfo;
 
-      var joinedTable2 = sqlTable.GetOrAddJoin (originalJoinInfo, JoinCardinality.One);
+      var joinedTable2 = sqlTable.GetOrAddJoin (originalJoinInfo);
 
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
