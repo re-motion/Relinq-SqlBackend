@@ -252,7 +252,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, kitchenCookMember);
       var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, kitchenCookMember, JoinCardinality.One);
-      var fakeJoinInfo = new ResolvedJoinInfo (
+      var fakeJoinInfo = new ResolvedLeftJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (int), "k", "ID", true),
           new SqlColumnExpression (typeof (int), "c", "KitchenID", false));

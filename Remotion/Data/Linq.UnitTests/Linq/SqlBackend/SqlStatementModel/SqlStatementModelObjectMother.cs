@@ -151,17 +151,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new ResolvedSimpleTableInfo (type, "table", "t");
     }
 
-    public static ResolvedJoinInfo CreateResolvedJoinInfo ()
+    public static ResolvedLeftJoinInfo CreateResolvedJoinInfo ()
     {
       return CreateResolvedJoinInfo (typeof (Cook));
     }
 
-    public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type)
+    public static ResolvedLeftJoinInfo CreateResolvedJoinInfo (Type type)
     {
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID", false);
       var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
-      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedLeftJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 
     public static SqlEntityExpression CreateSqlEntityExpression (Type type)

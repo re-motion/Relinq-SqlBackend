@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     public void GetResolvedTableInfo_Throws ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-      joinInfo.GetResolvedJoinInfo();
+      joinInfo.GetResolvedLeftJoinInfo();
     }
   }
 }

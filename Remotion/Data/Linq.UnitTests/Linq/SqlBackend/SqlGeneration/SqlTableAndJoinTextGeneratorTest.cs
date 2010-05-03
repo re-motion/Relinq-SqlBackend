@@ -77,10 +77,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).LeftKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable.JoinInfo).LeftKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t1].[ID]"));
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).RightKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable.JoinInfo).RightKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[FK]"));
       _stageMock.Replay();
 
@@ -102,13 +102,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var foreignTableSource = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK", false);
-      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
+      joinedTable.JoinInfo = new ResolvedLeftJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).LeftKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable.JoinInfo).LeftKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t1].[ID]"));
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).RightKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable.JoinInfo).RightKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[FK]"));
       _stageMock.Replay();
 
@@ -134,16 +134,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       joinedTable2.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).LeftKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable1.JoinInfo).LeftKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t1].[ID]"));
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).RightKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable1.JoinInfo).RightKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[FK]"));
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).LeftKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable2.JoinInfo).LeftKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[ID2]"));
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).RightKey))
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedLeftJoinInfo) joinedTable2.JoinInfo).RightKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t3].[FK2]"));
       _stageMock.Replay();
 
@@ -222,13 +222,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false);
     }
 
-    private ResolvedJoinInfo CreateResolvedJoinInfo (
+    private ResolvedLeftJoinInfo CreateResolvedJoinInfo (
         Type type, string originalTableAlias, string leftSideKeyName, string joinedTableName, string joinedTableAlias, string rightSideKeyName)
     {
       var foreignTableSource = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
       var primaryColumn = new SqlColumnExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
       var foreignColumn = new SqlColumnExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
-      return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
+      return new ResolvedLeftJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
     }
   }
 }

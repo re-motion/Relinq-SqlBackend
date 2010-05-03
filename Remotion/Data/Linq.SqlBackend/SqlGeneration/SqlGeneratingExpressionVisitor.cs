@@ -105,8 +105,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var whereExpression = Expression.Equal (
-          expression.JoinedTable.JoinInfo.GetResolvedJoinInfo().LeftKey,
-          expression.JoinedTable.JoinInfo.GetResolvedJoinInfo().RightKey);
+          expression.JoinedTable.JoinInfo.GetResolvedLeftJoinInfo().LeftKey,
+          expression.JoinedTable.JoinInfo.GetResolvedLeftJoinInfo().RightKey);
       return VisitExpression (whereExpression);
     }
 

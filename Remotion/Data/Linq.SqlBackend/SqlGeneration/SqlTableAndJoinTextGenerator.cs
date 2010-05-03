@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlTableAndJoinTextGenerator"/> generates sql-text for <see cref="ResolvedSimpleTableInfo"/> and <see cref="ResolvedJoinInfo"/>.
+  /// <see cref="SqlTableAndJoinTextGenerator"/> generates sql-text for <see cref="ResolvedSimpleTableInfo"/> and <see cref="ResolvedLeftJoinInfo"/>.
   /// </summary>
   public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor
   {
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableInfo;
     }
 
-    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo tableSource)
+    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo tableSource)
     {
       _commandBuilder.Append (" LEFT OUTER JOIN ");
 

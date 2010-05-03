@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
 
-      var result = joinInfo.GetResolvedJoinInfo().ForeignTableInfo;
+      var result = joinInfo.GetResolvedLeftJoinInfo().ForeignTableInfo;
 
       Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
     }

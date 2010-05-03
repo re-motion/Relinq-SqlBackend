@@ -136,7 +136,7 @@
     <Compile Include="SqlStatementModel\JoinCardinality.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedTableInfo.cs" />
-    <Compile Include="SqlStatementModel\Resolved\ResolvedJoinInfo.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ResolvedLeftJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedSimpleTableInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedSubStatementTableInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlColumnExpression.cs" />

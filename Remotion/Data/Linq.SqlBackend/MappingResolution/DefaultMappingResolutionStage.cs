@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
+    public virtual ResolvedLeftJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 

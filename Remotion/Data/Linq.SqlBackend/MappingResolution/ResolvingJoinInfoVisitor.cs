@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="ResolvingJoinInfoVisitor"/> modifies <see cref="UnresolvedJoinInfo"/>s and generates <see cref="ResolvedJoinInfo"/>s.
+  /// <see cref="ResolvingJoinInfoVisitor"/> modifies <see cref="UnresolvedJoinInfo"/>s and generates <see cref="ResolvedLeftJoinInfo"/>s.
   /// </summary>
   public class ResolvingJoinInfoVisitor : IJoinInfoVisitor
   {
@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
 
-    public static ResolvedJoinInfo ResolveJoinInfo (
+    public static ResolvedLeftJoinInfo ResolveJoinInfo (
         IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       var visitor = new ResolvingJoinInfoVisitor (resolver, generator, stage);
-      return (ResolvedJoinInfo) joinInfo.Accept (visitor);
+      return (ResolvedLeftJoinInfo) joinInfo.Accept (visitor);
     }
 
     protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
@@ -70,10 +70,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return unresolvedJoinInfo.Accept (this);
     }
 
-    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
+    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo leftJoinInfo)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      return joinInfo;
+      ArgumentUtility.CheckNotNull ("joinInfo", leftJoinInfo);
+      return leftJoinInfo;
     }
   }
 }

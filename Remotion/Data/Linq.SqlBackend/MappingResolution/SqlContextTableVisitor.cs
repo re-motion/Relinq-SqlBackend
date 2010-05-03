@@ -100,14 +100,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return joinInfo;
     }
 
-    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
+    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo leftJoinInfo)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("joinInfo", leftJoinInfo);
 
-      var newTableInfo = joinInfo.ForeignTableInfo.Accept(this);
-      if (joinInfo.ForeignTableInfo != newTableInfo)
-        return new ResolvedJoinInfo((IResolvedTableInfo)newTableInfo, joinInfo.LeftKey, joinInfo.RightKey);
-      return joinInfo;
+      var newTableInfo = leftJoinInfo.ForeignTableInfo.Accept(this);
+      if (leftJoinInfo.ForeignTableInfo != newTableInfo)
+        return new ResolvedLeftJoinInfo((IResolvedTableInfo)newTableInfo, leftJoinInfo.LeftKey, leftJoinInfo.RightKey);
+      return leftJoinInfo;
     }
   }
 }
