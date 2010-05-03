@@ -235,12 +235,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void All ()
+    public void All_OnTopLevel ()
     {
       CheckQuery(
        () => Cooks.All(c => c.Name=="Hugo"),
         "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
         new CommandParameter("@1", "Hugo")
+        );
+    }
+
+    [Test]
+    public void All_InSubquery ()
+    {
+      CheckQuery (
+          from s in Cooks where (from s2 in Cooks select s2).All(c=>c.FirstName=="Hugo") select s.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE NOT EXISTS((SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "+
+        "WHERE NOT ([t1].[FirstName] = @1)))",
+        new CommandParameter ("@1", "Hugo")
         );
     }
     
