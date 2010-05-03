@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -57,6 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void HandleResultOperator ()
     {
       var resultOperator = new AnyResultOperator ();
+      var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
       _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
 
@@ -64,14 +66,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
-      var existsExpression = (SqlExistsExpression) _sqlStatementBuilder.SelectProjection;
-      Assert.That (existsExpression.Expression, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) existsExpression.Expression).SqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (
-          ((StreamedSequenceInfo) ((SqlSubStatementExpression) existsExpression.Expression).SqlStatement.DataInfo).DataType,
-          Is.EqualTo (typeof (Cook[])));
+      _stageMock.VerifyAllExpectations ();
 
-      _stageMock.VerifyAllExpectations();
+      var existsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
+      ExpressionTreeComparer.CheckAreEqualTrees (existsExpression, _sqlStatementBuilder.SelectProjection);
     }
   }
 }
