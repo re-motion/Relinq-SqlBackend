@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Utilities;
 
@@ -26,18 +27,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   public class ResolvedJoinInfo : IJoinInfo
   {
     private readonly IResolvedTableInfo _foreignTableInfo;
-    private readonly SqlColumnExpression _leftKeyColumn;
-    private readonly SqlColumnExpression _rightKeyColumn;
+    private readonly Expression _leftKey;
+    private readonly Expression _rightKey;
 
-    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, SqlColumnExpression leftKeyColumn, SqlColumnExpression rightKeyColumn)
+    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, Expression leftKey, Expression rightKey)
     {
       ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
-      ArgumentUtility.CheckNotNull ("leftKeyColumn", leftKeyColumn);
-      ArgumentUtility.CheckNotNull ("rightKeyColumn", rightKeyColumn);
+      ArgumentUtility.CheckNotNull ("leftKey", leftKey);
+      ArgumentUtility.CheckNotNull ("rightKey", rightKey);
       
       _foreignTableInfo = foreignTableInfo;
-      _leftKeyColumn = leftKeyColumn;
-      _rightKeyColumn = rightKeyColumn;
+      _leftKey = leftKey;
+      _rightKey = rightKey;
     }
 
     public virtual Type ItemType
@@ -50,14 +51,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _foreignTableInfo; }
     }
 
-    public SqlColumnExpression LeftKeyColumn
+    public Expression LeftKey
     {
-      get { return _leftKeyColumn; }
+      get { return _leftKey; }
     }
 
-    public SqlColumnExpression RightKeyColumn
+    public Expression RightKey
     {
-      get { return _rightKeyColumn; }
+      get { return _rightKey; }
     }
 
     public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)

@@ -197,8 +197,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         case SqlExpressionContext.ValueRequired:
           return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo);
         case SqlExpressionContext.SingleValueRequired:
-          if (resolvedJoinInfo.RightKeyColumn.IsPrimaryKey)
-            return resolvedJoinInfo.LeftKeyColumn;
+          var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
+          if (columnExpression!=null && columnExpression.IsPrimaryKey)
+            return resolvedJoinInfo.LeftKey;
           else
             return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn;
       }

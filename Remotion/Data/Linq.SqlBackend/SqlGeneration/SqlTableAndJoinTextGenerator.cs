@@ -106,9 +106,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.Append (" ON ");
 
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.LeftKeyColumn);
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.LeftKey);
       _commandBuilder.Append (" = ");
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.RightKeyColumn);
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.RightKey);
       return tableSource;
     }
 
