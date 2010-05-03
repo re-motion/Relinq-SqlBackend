@@ -158,7 +158,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo, JoinCardinality.One);
-      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo);
+      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo, memberInfo);
       var joinInfo = (UnresolvedJoinInfo) join.JoinInfo;
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));

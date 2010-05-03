@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _joinedTables.Values; }
     }
 
-    public SqlJoinedTable GetOrAddJoin (IJoinInfo joinInfo)
+    public SqlJoinedTable GetOrAddJoin (IJoinInfo joinInfo, MemberInfo memberInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 

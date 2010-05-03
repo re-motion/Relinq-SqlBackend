@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (originalTable, kitchenCookMember, JoinCardinality.One);
-      var joinedTable = originalTable.GetOrAddJoin (unresolvedJoinInfo);
+      var joinedTable = originalTable.GetOrAddJoin (unresolvedJoinInfo, kitchenCookMember);
 
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (originalTable, kitchenCookMember, JoinCardinality.One);
-      var joinedTable = originalTable.GetOrAddJoin (unresolvedJoinInfo);
+      var joinedTable = originalTable.GetOrAddJoin (unresolvedJoinInfo, kitchenCookMember);
 
       var foreignTableSource = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID", false);
@@ -123,10 +123,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateSql_ForJoinedTable_Recursive ()
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
-      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (originalTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
-      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (originalTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
-      var joinedTable1 = originalTable.GetOrAddJoin (unresolvedJoinInfo1);
-      var joinedTable2 = joinedTable1.GetOrAddJoin (unresolvedJoinInfo2);
+      var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
+      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (originalTable, memberInfo1, JoinCardinality.One);
+      var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
+      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (originalTable, memberInfo2, JoinCardinality.One);
+      var joinedTable1 = originalTable.GetOrAddJoin (unresolvedJoinInfo1, memberInfo1);
+      var joinedTable2 = joinedTable1.GetOrAddJoin (unresolvedJoinInfo2, memberInfo2);
 
       joinedTable1.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
       joinedTable2.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
@@ -215,7 +217,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (originalTable, kitchenCookMember, JoinCardinality.One);
 
-      originalTable.GetOrAddJoin (unresolvedJoinInfo);
+      originalTable.GetOrAddJoin (unresolvedJoinInfo, kitchenCookMember);
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false);
     }
