@@ -100,6 +100,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo tableSource)
     {
+      //TODO: 2669
+      //if (_first)
+      //  _commandBuilder.Append (" (SELECT NULL AS [Empty]) [Empty]");
+
       _commandBuilder.Append (" LEFT OUTER JOIN ");
 
       tableSource.ForeignTableInfo.Accept (this);

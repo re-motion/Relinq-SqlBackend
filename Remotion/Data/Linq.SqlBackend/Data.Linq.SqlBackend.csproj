@@ -96,6 +96,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\CastResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ContainsResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\CountResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\DefaultIfEmptyResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\DistinctResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\FirstResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\IResultOperatorHandler.cs" />
