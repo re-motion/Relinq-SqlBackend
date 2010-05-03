@@ -557,7 +557,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn, memberInfo);
+      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
       var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
@@ -584,7 +584,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn, memberInfo);
+      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
       var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
@@ -611,7 +611,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn, memberInfo);
+      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
 
       _stageMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))

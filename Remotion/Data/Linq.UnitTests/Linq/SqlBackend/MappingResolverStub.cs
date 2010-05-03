@@ -299,7 +299,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName, true);
       var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName, false);
 
-      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn, memberInfo);
+      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
   }
 }

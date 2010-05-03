@@ -255,7 +255,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (int), "k", "ID", true),
-          new SqlColumnExpression (typeof (int), "c", "KitchenID", false), kitchenCookMember);
+          new SqlColumnExpression (typeof (int), "c", "KitchenID", false));
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
       _resolverMock

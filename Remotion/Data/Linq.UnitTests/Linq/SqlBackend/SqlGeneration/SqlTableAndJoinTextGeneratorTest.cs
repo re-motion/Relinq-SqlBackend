@@ -102,7 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var foreignTableSource = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t2");
       var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK", false);
-      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn, kitchenCookMember);
+      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
 
       _stageMock
           .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).LeftKeyColumn))
@@ -228,7 +228,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var foreignTableSource = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
       var primaryColumn = new SqlColumnExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
       var foreignColumn = new SqlColumnExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
-      return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn, typeof(Cook).GetProperty("ID"));
+      return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
     }
   }
 }

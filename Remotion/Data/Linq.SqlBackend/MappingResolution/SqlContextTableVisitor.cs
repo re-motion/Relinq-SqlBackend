@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var newTableInfo = joinInfo.ForeignTableInfo.Accept(this);
       if (joinInfo.ForeignTableInfo != newTableInfo)
-        return new ResolvedJoinInfo((IResolvedTableInfo)newTableInfo, joinInfo.LeftKeyColumn, joinInfo.RightKeyColumn, joinInfo.MemberInfo);
+        return new ResolvedJoinInfo((IResolvedTableInfo)newTableInfo, joinInfo.LeftKeyColumn, joinInfo.RightKeyColumn);
       return joinInfo;
     }
   }
