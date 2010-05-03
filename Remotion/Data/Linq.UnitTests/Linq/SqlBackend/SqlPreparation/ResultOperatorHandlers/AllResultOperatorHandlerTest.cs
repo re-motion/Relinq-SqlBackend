@@ -57,13 +57,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void HandleResultOperator ()
     {
-      var predicate = Expression.Constant(true);
+      var predicate = Expression.Constant (true);
+      var preparedPredicate = Expression.Constant (false);
       var resultOperator = new AllResultOperator(predicate);
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
       _stageMock
-          .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches(e=> (((UnaryExpression)e).Operand==predicate))))
-          .Return (predicate);
+          .Expect (mock => mock.PrepareWhereExpression (
+              Arg<Expression>.Matches(e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate))))
+          .Return (preparedPredicate);
       _stageMock.Replay();
 
       _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
@@ -73,11 +75,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
-      sqlStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = predicate }.GetSqlStatement();
-      var existsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
-      var exprectedExpression = Expression.Not (existsExpression);
+      var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement ();
+      var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
+      var expectedExpression = Expression.Not (expectedExistsExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (exprectedExpression, _sqlStatementBuilder.SelectProjection);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, _sqlStatementBuilder.SelectProjection);
     }
   }
 }
