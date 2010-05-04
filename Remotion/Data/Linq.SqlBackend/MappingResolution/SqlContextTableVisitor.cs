@@ -109,5 +109,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return new ResolvedLeftJoinInfo((IResolvedTableInfo)newTableInfo, leftJoinInfo.LeftKey, leftJoinInfo.RightKey);
       return leftJoinInfo;
     }
+
+    ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
+    {
+      throw new InvalidOperationException ("SqlJoinedTable is not valid at this point.");
+    }
   }
 }

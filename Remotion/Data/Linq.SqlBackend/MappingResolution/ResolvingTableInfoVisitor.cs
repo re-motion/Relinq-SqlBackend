@@ -72,5 +72,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newSqlStatement = _stage.ResolveSqlSubStatement (tableInfo.SqlStatement);
       return new ResolvedSubStatementTableInfo (tableInfo.TableAlias, newSqlStatement);
     }
+
+    public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)
+    {
+      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo);
+      joinedTable.JoinInfo = resolvedJoinInfo;
+
+      return joinedTable.GetResolvedTableInfo ();
+    }
   }
 }

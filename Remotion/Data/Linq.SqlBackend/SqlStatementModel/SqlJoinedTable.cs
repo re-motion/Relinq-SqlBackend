@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="SqlJoinedTable"/> represents a joined data source in a <see cref="SqlStatement"/>.
   /// </summary>
-  public class SqlJoinedTable : SqlTableBase
+  public class SqlJoinedTable : SqlTableBase, ITableInfo
   {
     private IJoinInfo _joinInfo;
     private readonly JoinSemantics _joinSemantics;
@@ -62,12 +62,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override void Accept (ISqlTableBaseVisitor visitor)
     {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
       visitor.VisitSqlJoinedTable (this);
     }
 
     public override IResolvedTableInfo GetResolvedTableInfo ()
     {
       return JoinInfo.GetResolvedLeftJoinInfo().ForeignTableInfo;
+    }
+
+    public ITableInfo Accept (ITableInfoVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
+      return visitor.VisitSqlJoinedTable (this);
     }
   }
 }

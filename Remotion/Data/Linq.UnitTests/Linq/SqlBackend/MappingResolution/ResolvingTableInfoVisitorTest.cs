@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -101,6 +102,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 
       var result = ResolvingTableInfoVisitor.ResolveTableInfo (simpleTableInfo, _resolverMock, _generator, _stageMock);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (simpleTableInfo));
+    }
+
+    [Test]
+    public void ResolveTableInfo_SqlJoinedTable ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var leftJoinInfo = new ResolvedLeftJoinInfo (simpleTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var sqlJoinedTable = new SqlJoinedTable (leftJoinInfo, JoinSemantics.Left);
+
+      _stageMock
+          .Expect (mock => mock.ResolveJoinInfo(leftJoinInfo))
+          .Return(leftJoinInfo);
+      _resolverMock.Replay();
+
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedTable, _resolverMock, _generator, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (simpleTableInfo));

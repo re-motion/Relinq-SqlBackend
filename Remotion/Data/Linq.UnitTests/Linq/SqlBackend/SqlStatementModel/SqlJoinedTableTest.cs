@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
@@ -77,6 +78,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       visitorMock.VerifyAllExpectations ();
       Assert.That (sqlJoinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+    }
+
+    [Test]
+    public void Accept_ITableInfoVisitor ()
+    {
+      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
+      var fakeResult = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+
+      var visitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
+      visitorMock
+          .Expect (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
+          .Return (fakeResult);
+
+      var result = ((ITableInfo) sqlJoinedTable).Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
   }
 }
