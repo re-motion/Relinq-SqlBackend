@@ -43,12 +43,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void SameType ()
     {
       var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
-      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
+      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var newJoinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
       Assert.That (sqlJoinedTable.JoinInfo.ItemType, Is.EqualTo (newJoinInfo.ItemType));
+      Assert.That (sqlJoinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
 
     [Test]
@@ -56,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void DifferentType ()
     {
       var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
-      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
+      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var newJoinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
@@ -66,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void Accept_VisitorSupportingExpressionType ()
     {
       var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
-      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo);
+      var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
 
       var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor> ();
       visitorMock.Expect (mock => mock.VisitSqlJoinedTable (sqlJoinedTable));
@@ -75,6 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       sqlJoinedTable.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations ();
+      Assert.That (sqlJoinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
   }
 }

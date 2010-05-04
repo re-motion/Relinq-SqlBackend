@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
       var joinInfo = new UnresolvedJoinInfo (sqlTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
-      return new SqlJoinedTable (joinInfo);
+      return new SqlJoinedTable (joinInfo, JoinSemantics.Left);
     }
 
     public static UnresolvedTableInfo CreateUnresolvedTableInfo ()

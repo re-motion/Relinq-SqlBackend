@@ -135,6 +135,7 @@
     <Compile Include="SqlStatementModel\IJoinInfoVisitor.cs" />
     <Compile Include="SqlStatementModel\ITableInfoVisitor.cs" />
     <Compile Include="SqlStatementModel\JoinCardinality.cs" />
+    <Compile Include="SqlStatementModel\JoinSemantics.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedTableInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedLeftJoinInfo.cs" />

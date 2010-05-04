@@ -246,7 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveJoinedTable ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-      var joinedTable = new SqlJoinedTable (joinInfo);
+      var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
 
       var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
       

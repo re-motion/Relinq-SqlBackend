@@ -27,13 +27,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public class SqlJoinedTable : SqlTableBase
   {
     private IJoinInfo _joinInfo;
+    private readonly JoinSemantics _joinSemantics;
 
-    public SqlJoinedTable (IJoinInfo joinInfo)
+    public SqlJoinedTable (IJoinInfo joinInfo, JoinSemantics joinSemantics)
         : base (joinInfo.ItemType)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("joinSemanticd", joinSemantics);
 
       _joinInfo = joinInfo;
+      _joinSemantics = joinSemantics;
+
     }
 
     public IJoinInfo JoinInfo
@@ -49,6 +53,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         }
         _joinInfo = value;
       }
+    }
+
+    public JoinSemantics JoinSemantics
+    {
+      get { return _joinSemantics; }
     }
 
     public override void Accept (ISqlTableBaseVisitor visitor)

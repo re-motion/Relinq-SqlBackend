@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
       if (!_joinedTables.ContainsKey (memberInfo))
-        _joinedTables.Add (memberInfo, new SqlJoinedTable (joinInfo));
+        _joinedTables.Add (memberInfo, new SqlJoinedTable (joinInfo, JoinSemantics.Left));
 
       return _joinedTables[memberInfo];
     }
