@@ -26,11 +26,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallTransformer"/> instances.
   /// </summary>
-  public class MethodCallTransformerRegistry : RegistryBase<MethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer>
+  public class MethodCallTransformerRegistry : RegistryBase<MethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer, IMethodCallTransformer>
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="MethodCallTransformerRegistry"/> class. Use 
-    /// <see cref="RegistryBase{TRegistry,TKey,TItem}.CreateDefault"/> to create an instance pre-initialized with the default transformers instead.
+    /// <see cref="RegistryBase{TRegistry,TKey,TItem,TAssignable}.CreateDefault"/> to create an instance pre-initialized with the default transformers instead.
     /// </summary>
     public MethodCallTransformerRegistry ()
     {

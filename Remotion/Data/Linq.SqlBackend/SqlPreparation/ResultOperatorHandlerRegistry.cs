@@ -27,14 +27,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// The <see cref="ResultOperatorHandlerRegistry"/> holds the implementations of <see cref="IResultOperatorHandler"/> used by 
   /// <see cref="SqlPreparationQueryModelVisitor"/> for incorporating result operators into a <see cref="SqlStatement"/>.
-  /// Use <see cref="RegistryBase{TRegistry,TKey,TItem}.CreateDefault"/> to create the default set of result operator handlers, 
+  /// Use <see cref="RegistryBase{TRegistry,TKey,TItem,TAssignable}.CreateDefault"/> to create the default set of result operator handlers, 
   /// which can then be extended by custom handlers.
   /// </summary>
-  public class ResultOperatorHandlerRegistry : RegistryBase<ResultOperatorHandlerRegistry, Type, IResultOperatorHandler>
+  public class ResultOperatorHandlerRegistry : RegistryBase<ResultOperatorHandlerRegistry, Type, IResultOperatorHandler, IResultOperatorHandler>
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultOperatorHandlerRegistry"/> class. Use 
-    /// <see cref="RegistryBase{TRegistry,TKey,TItem}.CreateDefault"/> to create an instance pre-initialized with the default handlers instead.
+    /// <see cref="RegistryBase{TRegistry,TKey,TItem,TAssignable}.CreateDefault"/> to create an instance pre-initialized with the default handlers instead.
     /// </summary>
     public ResultOperatorHandlerRegistry ()
     {
