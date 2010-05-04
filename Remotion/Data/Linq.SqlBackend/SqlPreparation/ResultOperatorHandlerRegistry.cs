@@ -27,64 +27,45 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// The <see cref="ResultOperatorHandlerRegistry"/> holds the implementations of <see cref="IResultOperatorHandler"/> used by 
   /// <see cref="SqlPreparationQueryModelVisitor"/> for incorporating result operators into a <see cref="SqlStatement"/>.
-  /// Use <see cref="CreateDefault"/> to create the default set of result operator handlers, which can then be extended by custom handlers.
+  /// Use <see cref="RegistryBase{TRegistry,TKey,TItem}.CreateDefault"/> to create the default set of result operator handlers, 
+  /// which can then be extended by custom handlers.
   /// </summary>
-  public class ResultOperatorHandlerRegistry
+  public class ResultOperatorHandlerRegistry : RegistryBase<ResultOperatorHandlerRegistry, Type, IResultOperatorHandler>
   {
-    private readonly Dictionary<Type, IResultOperatorHandler> _handlers;
-
-    public static ResultOperatorHandlerRegistry CreateDefault ()
-    {
-      var handlerTypes = from t in typeof (ResultOperatorHandlerRegistry).Assembly.GetTypes ()
-                         where typeof (IResultOperatorHandler).IsAssignableFrom (t) && !t.IsAbstract 
-                         select t;
-
-      var registry = new ResultOperatorHandlerRegistry ();
-
-      foreach (var handlerType in handlerTypes)
-      {
-        var handler = (IResultOperatorHandler) Activator.CreateInstance (handlerType);
-        registry.Register (handler.SupportedResultOperatorType, handler);
-      }
-
-      return registry;
-    }
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultOperatorHandlerRegistry"/> class. Use <see cref="CreateDefault"/> to create an instance
-    /// pre-initialized with the default handlers instead.
+    /// Initializes a new instance of the <see cref="ResultOperatorHandlerRegistry"/> class. Use 
+    /// <see cref="RegistryBase{TRegistry,TKey,TItem}.CreateDefault"/> to create an instance pre-initialized with the default handlers instead.
     /// </summary>
     public ResultOperatorHandlerRegistry ()
     {
-      _handlers = new Dictionary<Type, IResultOperatorHandler> ();
     }
 
-    public void Register (Type resultOperatorType, IResultOperatorHandler handler)
+    public override IResultOperatorHandler GetItem (Type key)
     {
-      ArgumentUtility.CheckNotNull ("resultOperatorType", resultOperatorType);
-      ArgumentUtility.CheckNotNull ("handler", handler);
+      ArgumentUtility.CheckNotNull ("key", key);
 
-      _handlers[resultOperatorType] = handler;
-    }
-
-    public IResultOperatorHandler GetHandler (Type resultOperatorType)
-    {
-      ArgumentUtility.CheckNotNull ("resultOperatorType", resultOperatorType);
-
-      IResultOperatorHandler handler;
-      if (_handlers.TryGetValue (resultOperatorType, out handler))
+      IResultOperatorHandler handler = GetItemExact(key);
+      if (handler!=null)
         return handler;
-      
-      var currentType = resultOperatorType.BaseType;
-      if (currentType != null && typeof(ResultOperatorBase).IsAssignableFrom(currentType))
-        return GetHandler (currentType);
-      
-       string message =
-            string.Format (
-                "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
-                resultOperatorType.FullName);
-        throw new NotSupportedException (message);
+
+      var currentType = key.BaseType;
+      if (currentType != null && typeof (ResultOperatorBase).IsAssignableFrom (currentType))
+        return GetItem (currentType);
+
+      string message =
+           string.Format (
+               "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
+               key.FullName);
+      throw new NotSupportedException (message);
     }
 
+    protected override void RegisterForTypes (IEnumerable<Type> itemTypes)
+    {
+      foreach (var handlerType in itemTypes)
+      {
+        var handler = (IResultOperatorHandler) Activator.CreateInstance (handlerType);
+        Register (handler.SupportedResultOperatorType, handler);
+      }
+    }
   }
 }

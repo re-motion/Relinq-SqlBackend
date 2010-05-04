@@ -34,15 +34,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var registry = ResultOperatorHandlerRegistry.CreateDefault ();
 
-      Assert.That (registry.GetHandler (typeof (CastResultOperator)), Is.TypeOf (typeof (CastResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (ContainsResultOperator)), Is.TypeOf (typeof (ContainsResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (CountResultOperator)), Is.TypeOf (typeof (CountResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (DistinctResultOperator)), Is.TypeOf (typeof (DistinctResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (FirstResultOperator)), Is.TypeOf (typeof (FirstResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (OfTypeResultOperator)), Is.TypeOf (typeof (OfTypeResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (SingleResultOperator)), Is.TypeOf (typeof (SingleResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (TakeResultOperator)), Is.TypeOf (typeof (TakeResultOperatorHandler)));
-      Assert.That (registry.GetHandler (typeof (AnyResultOperator)), Is.TypeOf (typeof (AnyResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (CastResultOperator)), Is.TypeOf (typeof (CastResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (ContainsResultOperator)), Is.TypeOf (typeof (ContainsResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (CountResultOperator)), Is.TypeOf (typeof (CountResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (DistinctResultOperator)), Is.TypeOf (typeof (DistinctResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (FirstResultOperator)), Is.TypeOf (typeof (FirstResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (OfTypeResultOperator)), Is.TypeOf (typeof (OfTypeResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (SingleResultOperator)), Is.TypeOf (typeof (SingleResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (TakeResultOperator)), Is.TypeOf (typeof (TakeResultOperatorHandler)));
+      Assert.That (registry.GetItem(typeof (AnyResultOperator)), Is.TypeOf (typeof (AnyResultOperatorHandler)));
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler>();
       registry.Register (typeof (CastResultOperator), handlerMock);
 
-      Assert.That (registry.GetHandler (typeof (CastResultOperator)), Is.SameAs(handlerMock));
+      Assert.That (registry.GetItem(typeof (CastResultOperator)), Is.SameAs(handlerMock));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       registry.Register (typeof (ResultOperatorBase), handlerMock);
 
-      Assert.That (registry.GetHandler (typeof (InheritedResultOperator)), Is.SameAs (handlerMock));
+      Assert.That (registry.GetItem(typeof (InheritedResultOperator)), Is.SameAs (handlerMock));
     }
 
     class InheritedResultOperator : TestChoiceResultOperator 

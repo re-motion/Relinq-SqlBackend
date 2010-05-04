@@ -146,7 +146,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      _registry.GetHandler (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel,  _sqlStatementBuilder, _generator, _stage);
+      _registry.GetItem(resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel,  _sqlStatementBuilder, _generator, _stage);
     }
 
     private void AddFromClause (IQuerySource source, Expression fromExpression)
