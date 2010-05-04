@@ -73,6 +73,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo leftJoinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", leftJoinInfo);
+      var newForeignTableInfo = _stage.ResolveTableInfo (leftJoinInfo.ForeignTableInfo);
+      if (newForeignTableInfo != leftJoinInfo.ForeignTableInfo)
+        return new ResolvedLeftJoinInfo (newForeignTableInfo, leftJoinInfo.LeftKey, leftJoinInfo.RightKey);
       return leftJoinInfo;
     }
   }

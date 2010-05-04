@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -51,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-      
+
       var resolvedJoinInfo = new ResolvedLeftJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
 
       _resolverMock
@@ -59,17 +60,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedJoinInfo);
       _resolverMock.Replay();
 
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo (foreignTableInfo))
+          .Return (foreignTableInfo);
+      _stageMock.Replay ();
+      
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock, _generator, _stageMock);
 
       Assert.That (result, Is.SameAs (resolvedJoinInfo));
       _resolverMock.VerifyAllExpectations();
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
     public void ResolveJoinInfo_ResolvesUnresolvedJoinInfo_AndRevisitsResult ()
     {
+      var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
       var resolvedJoinInfo = new ResolvedLeftJoinInfo (
-          new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
+          foreignTableInfo,
           new SqlColumnExpression (typeof (string), "c", "ID", false),
           new SqlColumnExpression (typeof (string), "c", "ID", false));
       _resolverMock
@@ -77,10 +85,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedJoinInfo);
       _resolverMock.Replay();
 
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo (foreignTableInfo))
+          .Return (foreignTableInfo);
+      _stageMock.Replay ();
+
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock, _generator, _stageMock);
 
       Assert.That (result, Is.SameAs (resolvedJoinInfo));
       _resolverMock.VerifyAllExpectations();
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -103,12 +117,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock
           .Expect (
-          mock =>
-          mock.ResolveJoinInfo (
-              Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingTable == sqlEntityExpression.SqlTable),
-              Arg.Is (_generator)))
+              mock =>
+              mock.ResolveJoinInfo (
+                  Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingTable == sqlEntityExpression.SqlTable),
+                  Arg.Is (_generator)))
           .Return (expectedResolvedJoinInfo);
       _resolverMock.Replay();
+
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo (foreignTableInfo))
+          .Return (foreignTableInfo);
+      _stageMock.Replay ();
 
       var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock);
 
@@ -116,6 +135,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void ResolveJoinInfo_ResolvedLeftJoinInfo ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var leftJoinInfo = new ResolvedLeftJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo (tableInfo))
+          .Return (tableInfo);
+      _stageMock.Replay();
+
+      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (leftJoinInfo, _resolverMock, _generator, _stageMock);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (resolvedJoinInfo.ForeignTableInfo, Is.SameAs (tableInfo));
     }
   }
 }

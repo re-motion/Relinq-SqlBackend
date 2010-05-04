@@ -293,5 +293,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter("@1", 1));
     }
 
+    [Test]
+    [Ignore("TODO: 2669")]
+    public void DefaultIfEmpty ()
+    {
+      CheckQuery (
+          Cooks.DefaultIfEmpty (),
+          ""
+          );
+    }
+
   }
 }
