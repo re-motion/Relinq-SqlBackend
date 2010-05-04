@@ -153,14 +153,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression);
       var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, source.ItemType);
-
-      _context.AddQuerySourceMapping (source, sqlTableOrJoin);
-
+      
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
+      {
         SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-       
+        sqlTableOrJoin = new SqlTable (sqlJoinedTable);
+      }
+
+      _context.AddQuerySourceMapping (source, sqlTableOrJoin);
       SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
     }
+
   }
 }
