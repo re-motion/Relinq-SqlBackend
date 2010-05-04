@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _methodCallTransformerRegistry.Register (_methodInfo, _transformerStub);
 
-      var expectedTransformer = _methodCallTransformerRegistry.GetTransformer (_methodInfo);
+      var expectedTransformer = _methodCallTransformerRegistry.GetItem (_methodInfo);
       Assert.That (_transformerStub, Is.SameAs (expectedTransformer));
     }
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
       _methodCallTransformerRegistry.Register (_methodInfo, transformerStub);
 
-      var expectedTransformer = _methodCallTransformerRegistry.GetTransformer (_methodInfo);
+      var expectedTransformer = _methodCallTransformerRegistry.GetItem (_methodInfo);
       Assert.That (_transformerStub, Is.Not.EqualTo (expectedTransformer));
       Assert.That (transformerStub, Is.EqualTo (expectedTransformer));
     }
@@ -88,10 +88,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       IEnumerable<MethodInfo> methodInfos = new List<MethodInfo> { _methodInfo, methodInfo };
       _methodCallTransformerRegistry.Register (methodInfos, _transformerStub);
 
-      var expectedGenerator = _methodCallTransformerRegistry.GetTransformer (_methodInfo);
+      var expectedGenerator = _methodCallTransformerRegistry.GetItem (_methodInfo);
       Assert.That (_transformerStub, Is.SameAs (expectedGenerator));
 
-      var expectedGenerator2 = _methodCallTransformerRegistry.GetTransformer (methodInfo);
+      var expectedGenerator2 = _methodCallTransformerRegistry.GetItem (methodInfo);
       Assert.That (_transformerStub, Is.SameAs (expectedGenerator2));
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTransformer_DontFindGenerator_Exception ()
     {
       var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry ();
-      methodCallSqlGeneratorRegistry.GetTransformer (_methodInfo);
+      methodCallSqlGeneratorRegistry.GetItem(_methodInfo);
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _methodCallTransformerRegistry.Register (genericMethodDefinition, _transformerStub);
 
-      var expectedTransformer = _methodCallTransformerRegistry.GetTransformer (closedGenericMethod);
+      var expectedTransformer = _methodCallTransformerRegistry.GetItem(closedGenericMethod);
 
       Assert.That (expectedTransformer, Is.SameAs (_transformerStub));
     }
@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       int i = 5;
       var intMethodInfo = ReflectionUtility.GetMethod (() => i.ToString ());
-      var result = _methodCallTransformerRegistry.GetTransformer (intMethodInfo);
+      var result = _methodCallTransformerRegistry.GetItem(intMethodInfo);
 
       Assert.That (result, Is.EqualTo (_transformerStub));
     }
@@ -139,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (methodInfos.Length, Is.GreaterThan (0));
 
       foreach (var methodInfo in methodInfos)
-        Assert.That (registry.GetTransformer (methodInfo), Is.TypeOf (type));
+        Assert.That (registry.GetItem(methodInfo), Is.TypeOf (type));
     }
   }
 }

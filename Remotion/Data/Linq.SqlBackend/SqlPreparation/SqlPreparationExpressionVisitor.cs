@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newExpression = base.VisitMethodCallExpression (expression);
-      var transformedExpression = _registry.GetTransformer (expression.Method).Transform ((MethodCallExpression) newExpression);
+      var transformedExpression = _registry.GetItem(expression.Method).Transform ((MethodCallExpression) newExpression);
       return VisitExpression (transformedExpression);
     }
 

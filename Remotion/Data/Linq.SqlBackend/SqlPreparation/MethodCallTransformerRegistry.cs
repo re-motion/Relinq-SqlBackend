@@ -26,80 +26,47 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallTransformer"/> instances.
   /// </summary>
-  public class MethodCallTransformerRegistry
+  public class MethodCallTransformerRegistry : RegistryBase<MethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer>
   {
-    private readonly Dictionary<MethodInfo, IMethodCallTransformer> _transformers;
-
     /// <summary>
-    /// Creates a default <see cref="MethodCallTransformerRegistry"/>, which has all types implementing <see cref="IMethodCallTransformer"/> from the
-    /// SQL backend assembly automatically registered, as long as they offer a public static <c>SupportedMethods</c> field.
+    /// Initializes a new instance of the <see cref="MethodCallTransformerRegistry"/> class. Use 
+    /// <see cref="RegistryBase{TRegistry,TKey,TItem}.CreateDefault"/> to create an instance pre-initialized with the default transformers instead.
     /// </summary>
-    /// <returns>A default <see cref="MethodCallTransformerRegistry"/> with all <see cref="IMethodCallTransformer"/>s with a <c>SupportedMethods</c>
-    /// field registered.</returns>
-    public static MethodCallTransformerRegistry CreateDefault ()
+    public MethodCallTransformerRegistry ()
     {
-      var methodTransformers = from t in typeof (MethodCallTransformerRegistry).Assembly.GetTypes ()
-                               where typeof (IMethodCallTransformer).IsAssignableFrom (t) && !t.IsAbstract
-                               select t;
+    }
 
-      var supportedMethodsForTypes = from t in methodTransformers
+    public override IMethodCallTransformer GetItem (MethodInfo key)
+    {
+      ArgumentUtility.CheckNotNull ("key", key);
+
+      var transformer = GetItemExact (key);
+      if (transformer != null)
+        return transformer;
+
+      if (key.IsGenericMethod && !key.IsGenericMethodDefinition)
+        return GetItem (key.GetGenericMethodDefinition ());
+
+      var baseMethod = key.GetBaseDefinition ();
+      if (baseMethod != key)
+        return GetItem (baseMethod);
+
+      string message = string.Format (
+          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered.",
+          key.DeclaringType.FullName,
+          key.Name);
+      throw new NotSupportedException (message);
+    }
+
+    protected override void RegisterForTypes (IEnumerable<Type> itemTypes)
+    {
+      var supportedMethodsForTypes = from t in itemTypes
                                      let supportedMethodsField = t.GetField ("SupportedMethods", BindingFlags.Static | BindingFlags.Public)
                                      where supportedMethodsField != null
                                      select new { Generator = t, Methods = (IEnumerable<MethodInfo>) supportedMethodsField.GetValue (null) };
 
-      var registry = new MethodCallTransformerRegistry ();
-
       foreach (var supportedMethodsForType in supportedMethodsForTypes)
-      {
-        registry.Register (supportedMethodsForType.Methods, (IMethodCallTransformer) Activator.CreateInstance (supportedMethodsForType.Generator));
-      }
-
-      return registry;
-    }
-
-    public MethodCallTransformerRegistry ()
-    {
-      _transformers = new Dictionary<MethodInfo, IMethodCallTransformer>();
-    }
-
-    public void Register (MethodInfo methodInfo, IMethodCallTransformer transformer)
-    {
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      ArgumentUtility.CheckNotNull ("transformer", transformer);
-
-      _transformers[methodInfo] = transformer;
-    }
-
-    public void Register (IEnumerable<MethodInfo> methodInfos, IMethodCallTransformer transformer)
-    {
-      ArgumentUtility.CheckNotNull ("methodInfos", methodInfos);
-      ArgumentUtility.CheckNotNull ("transformer", transformer);
-
-      foreach (var methodInfo in methodInfos)
-      {
-        _transformers[methodInfo] = transformer;
-      }
-    }
-
-    public IMethodCallTransformer GetTransformer (MethodInfo methodInfo)
-    {
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-
-      if (_transformers.ContainsKey (methodInfo))
-        return _transformers[methodInfo];
-
-      if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
-        return GetTransformer (methodInfo.GetGenericMethodDefinition ());
-
-      var baseMethod = methodInfo.GetBaseDefinition ();
-      if (baseMethod != methodInfo)
-        return GetTransformer (baseMethod);
-
-      string message = string.Format (
-          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered.",
-          methodInfo.DeclaringType.FullName,
-          methodInfo.Name);
-      throw new NotSupportedException (message);
+        Register (supportedMethodsForType.Methods, (IMethodCallTransformer) Activator.CreateInstance (supportedMethodsForType.Generator));
     }
   }
 }
