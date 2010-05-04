@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -30,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     private readonly ISqlCommandBuilder _commandBuilder;
     private readonly ISqlGenerationStage _stage;
     private bool _first;
-    
+
     public static void GenerateSql (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
@@ -39,7 +40,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var visitor = new SqlTableAndJoinTextGenerator (commandBuilder, stage, first);
 
-      sqlTable.GetResolvedTableInfo().Accept (visitor);
+      var joinedTable = sqlTable as SqlJoinedTable;
+
+      if (joinedTable != null && joinedTable.JoinInfo is ResolvedLeftJoinInfo
+          && ((ResolvedLeftJoinInfo) joinedTable.JoinInfo).ForeignTableInfo is ResolvedSubStatementTableInfo)
+        joinedTable.JoinInfo.Accept (visitor);
+      else
+        sqlTable.GetResolvedTableInfo().Accept (visitor);
+
       GenerateSqlForJoins (sqlTable, visitor);
     }
 
@@ -85,24 +93,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
       if (!_first)
-      {
         _commandBuilder.Append (" CROSS APPLY ");
-      }
 
       _commandBuilder.Append ("(");
       _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
       _commandBuilder.Append (")");
       _commandBuilder.Append (" AS ");
       _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
-      
+
       return tableInfo;
     }
 
     public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo tableSource)
     {
-      //TODO: 2669
-      //if (_first)
-      //  _commandBuilder.Append (" (SELECT NULL AS [Empty]) [Empty]");
+      if (_first && tableSource.LeftKey is SqlLiteralExpression)
+        _commandBuilder.Append (" (SELECT NULL AS [Empty]) AS [Empty]");
 
       _commandBuilder.Append (" LEFT OUTER JOIN ");
 
@@ -116,7 +121,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableSource;
     }
 
-    public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
+    IJoinInfo IJoinInfoVisitor.VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
     {
       throw new InvalidOperationException ("UnresolvedJoinInfo is not valid at this point.");
     }
@@ -125,6 +130,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinInfo is not valid at this point.");
     }
-
   }
 }

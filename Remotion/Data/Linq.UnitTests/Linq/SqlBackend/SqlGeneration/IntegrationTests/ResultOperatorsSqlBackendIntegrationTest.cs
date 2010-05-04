@@ -294,13 +294,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("TODO: 2669")]
     public void DefaultIfEmpty ()
     {
       CheckQuery (
           Cooks.DefaultIfEmpty (),
-          ""
-          );
+          "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "+
+          "FROM  (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN "+
+          "(SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
+          "FROM [CookTable] AS [t0]) AS [q0] ON 1 = 1");
     }
 
   }
