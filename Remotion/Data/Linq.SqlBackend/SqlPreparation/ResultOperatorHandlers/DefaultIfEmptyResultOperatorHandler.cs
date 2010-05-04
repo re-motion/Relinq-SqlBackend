@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementTableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), sqlStatement);
-      var leftJoinInfo = new ResolvedLeftJoinInfo (subStatementTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var leftJoinInfo = new ResolvedJoinInfo (subStatementTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
       var joinedTable = new SqlJoinedTable (leftJoinInfo, JoinSemantics.Left);
 
       sqlStatementBuilder.SqlTables.Add (joinedTable);

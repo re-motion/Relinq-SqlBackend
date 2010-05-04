@@ -22,15 +22,15 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="ResolvedLeftJoinInfo"/> represents a join between two database tables.
+  /// <see cref="ResolvedJoinInfo"/> represents a join between two database tables.
   /// </summary>
-  public class ResolvedLeftJoinInfo : IJoinInfo
+  public class ResolvedJoinInfo : IJoinInfo
   {
     private readonly IResolvedTableInfo _foreignTableInfo;
     private readonly Expression _leftKey;
     private readonly Expression _rightKey;
 
-    public ResolvedLeftJoinInfo (IResolvedTableInfo foreignTableInfo, Expression leftKey, Expression rightKey)
+    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, Expression leftKey, Expression rightKey)
     {
       ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
       ArgumentUtility.CheckNotNull ("leftKey", leftKey);
@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       return visitor.VisitResolvedLeftJoinInfo (this);
     }
 
-    public ResolvedLeftJoinInfo GetResolvedLeftJoinInfo ()
+    public ResolvedJoinInfo GetResolvedLeftJoinInfo ()
     {
       return this;
     }

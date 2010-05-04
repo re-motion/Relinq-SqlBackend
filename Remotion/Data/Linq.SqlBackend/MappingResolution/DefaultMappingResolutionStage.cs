@@ -75,7 +75,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this);
     }
 
-    public virtual ResolvedLeftJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
+    public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var join = expression.SqlTable.GetOrAddJoin (joinInfo, expression.MemberInfo);
+      var join = expression.SqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
       join.JoinInfo = ResolveJoinInfo (join.JoinInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
       

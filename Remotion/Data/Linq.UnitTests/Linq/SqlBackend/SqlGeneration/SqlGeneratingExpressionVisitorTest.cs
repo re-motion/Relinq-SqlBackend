@@ -305,7 +305,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
       var primaryColumn = new SqlColumnExpression (typeof (Cook), "c", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (Cook), "a", "FK", false);
-      var joinInfo = new ResolvedLeftJoinInfo (resolvedTableInfo, primaryColumn, foreignColumn);
+      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, primaryColumn, foreignColumn);
       var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
       var joinConditionExpression = new JoinConditionExpression (sqlTable);
 

@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveTableInfo_SqlJoinedTable ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var leftJoinInfo = new ResolvedLeftJoinInfo (simpleTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var leftJoinInfo = new ResolvedJoinInfo (simpleTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
       var sqlJoinedTable = new SqlJoinedTable (leftJoinInfo, JoinSemantics.Left);
 
       _stageMock

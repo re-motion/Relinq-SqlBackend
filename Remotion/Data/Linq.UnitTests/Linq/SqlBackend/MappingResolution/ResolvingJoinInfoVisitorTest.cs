@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
 
-      var resolvedJoinInfo = new ResolvedLeftJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
 
       _resolverMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_generator)))
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveJoinInfo_ResolvesUnresolvedJoinInfo_AndRevisitsResult ()
     {
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var resolvedJoinInfo = new ResolvedLeftJoinInfo (
+      var resolvedJoinInfo = new ResolvedJoinInfo (
           foreignTableInfo,
           new SqlColumnExpression (typeof (string), "c", "ID", false),
           new SqlColumnExpression (typeof (string), "c", "ID", false));
@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
-      var expectedResolvedJoinInfo = new ResolvedLeftJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
 
       _stageMock
           .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression))
@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveJoinInfo_ResolvedLeftJoinInfo ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var leftJoinInfo = new ResolvedLeftJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var leftJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
 
       _stageMock
           .Expect (mock => mock.ResolveTableInfo (tableInfo))

@@ -158,7 +158,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo, JoinCardinality.One);
-      var join = _sqlTable.GetOrAddJoin (unresolvedJoinInfo, memberInfo);
+      var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
       var joinInfo = (UnresolvedJoinInfo) join.JoinInfo;
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
@@ -252,7 +252,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, kitchenCookMember);
       var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, kitchenCookMember, JoinCardinality.One);
-      var fakeJoinInfo = new ResolvedLeftJoinInfo (
+      var fakeJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (int), "k", "ID", true),
           new SqlColumnExpression (typeof (int), "c", "KitchenID", false));

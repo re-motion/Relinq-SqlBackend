@@ -66,24 +66,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.SqlTables[0], Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo, Is.TypeOf (typeof (ResolvedLeftJoinInfo)));
+      Assert.That (((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo, Is.TypeOf (typeof (ResolvedJoinInfo)));
       Assert.That (
-          ((ResolvedLeftJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).ForeignTableInfo,
+          ((ResolvedJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).ForeignTableInfo,
           Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (
-          ((ResolvedLeftJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).LeftKey,
+          ((ResolvedJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).LeftKey,
           Is.TypeOf (typeof (SqlLiteralExpression)));
       Assert.That (
-          ((SqlLiteralExpression) ((ResolvedLeftJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).LeftKey).Value,
+          ((SqlLiteralExpression) ((ResolvedJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).LeftKey).Value,
          Is.EqualTo(1));
       Assert.That (
-          ((ResolvedLeftJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).RightKey,
+          ((ResolvedJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).RightKey,
           Is.TypeOf(typeof (SqlLiteralExpression)));
       Assert.That (
-          ((SqlLiteralExpression) ((ResolvedLeftJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).RightKey).Value,
+          ((SqlLiteralExpression) ((ResolvedJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).RightKey).Value,
          Is.EqualTo (1));
       Assert.That (
-          ((ResolvedSubStatementTableInfo) ((ResolvedLeftJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).ForeignTableInfo).
+          ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) ((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo).ForeignTableInfo).
               SqlStatement,
           Is.EqualTo(sqlStatement));
     }

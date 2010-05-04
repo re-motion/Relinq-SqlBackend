@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -24,13 +25,20 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlTableAndJoinTextGenerator"/> generates sql-text for <see cref="ResolvedSimpleTableInfo"/> and <see cref="ResolvedLeftJoinInfo"/>.
+  /// <see cref="SqlTableAndJoinTextGenerator"/> generates sql-text for <see cref="ResolvedSimpleTableInfo"/> and <see cref="ResolvedJoinInfo"/>.
   /// </summary>
-  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor
+  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor, ISqlTableBaseVisitor
   {
+    public enum Context
+    {
+      FirstTable,
+      NonFirstTable,
+      JoinedTable
+    } 
+    
     private readonly ISqlCommandBuilder _commandBuilder;
     private readonly ISqlGenerationStage _stage;
-    private bool _first;
+    private readonly Context _context;
 
     public static void GenerateSql (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
     {
@@ -38,49 +46,37 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlTableAndJoinTextGenerator (commandBuilder, stage, first);
+      var visitor = new SqlTableAndJoinTextGenerator (commandBuilder, stage, first ? Context.FirstTable : Context.NonFirstTable);
 
-      var joinedTable = sqlTable as SqlJoinedTable;
-
-      if (joinedTable != null && joinedTable.JoinInfo is ResolvedLeftJoinInfo
-          && ((ResolvedLeftJoinInfo) joinedTable.JoinInfo).ForeignTableInfo is ResolvedSubStatementTableInfo)
-        joinedTable.JoinInfo.Accept (visitor);
-      else
-        sqlTable.GetResolvedTableInfo().Accept (visitor);
-
-      GenerateSqlForJoins (sqlTable, visitor);
+      sqlTable.Accept (visitor);
+      GenerateSqlForJoins (sqlTable, new SqlTableAndJoinTextGenerator (commandBuilder, stage, Context.JoinedTable));
     }
 
     private static void GenerateSqlForJoins (SqlTableBase sqlTable, SqlTableAndJoinTextGenerator visitor)
     {
       foreach (var joinedTable in sqlTable.JoinedTables)
       {
-        joinedTable.JoinInfo.Accept (visitor);
+        joinedTable.Accept (visitor);
         GenerateSqlForJoins (joinedTable, visitor);
       }
     }
 
-    protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
+    protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, Context context)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _commandBuilder = commandBuilder;
       _stage = stage;
-      _first = first;
-    }
-
-    public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
+      _context = context;
     }
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      if (!_first)
+      if (_context == Context.NonFirstTable)
       {
         _commandBuilder.Append (" CROSS JOIN ");
-        _first = true;
       }
 
       _commandBuilder.AppendIdentifier (tableInfo.TableName);
@@ -92,7 +88,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
-      if (!_first)
+      if (_context == Context.NonFirstTable)
         _commandBuilder.Append (" CROSS APPLY ");
 
       _commandBuilder.Append ("(");
@@ -104,13 +100,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableInfo;
     }
 
-    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo tableSource)
+    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo tableSource)
     {
-      if (_first && tableSource.LeftKey is SqlLiteralExpression)
-        _commandBuilder.Append (" (SELECT NULL AS [Empty]) AS [Empty]");
-
-      _commandBuilder.Append (" LEFT OUTER JOIN ");
-
       tableSource.ForeignTableInfo.Accept (this);
 
       _commandBuilder.Append (" ON ");
@@ -118,7 +109,42 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.LeftKey);
       _commandBuilder.Append (" = ");
       _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.RightKey);
+
       return tableSource;
+    }
+
+    public void VisitSqlTable (SqlTable sqlTable)
+    {
+      sqlTable.TableInfo.Accept (this);
+    }
+
+    public void VisitSqlJoinedTable (SqlJoinedTable sqlTable)
+    {
+      if (sqlTable.JoinSemantics == JoinSemantics.Left)
+      {
+        if (_context == Context.FirstTable)
+          _commandBuilder.Append (" (SELECT NULL AS [Empty]) AS [Empty]");
+
+        _commandBuilder.Append (" LEFT OUTER JOIN ");
+      }
+      else
+      {
+        if (_context != Context.FirstTable)
+          _commandBuilder.Append (" INNER JOIN ");
+      }
+
+      sqlTable.JoinInfo.Accept (this);
+    }
+
+    ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
+    {
+      VisitSqlJoinedTable (joinedTable);
+      return joinedTable;
+    }
+
+    ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
     }
 
     IJoinInfo IJoinInfoVisitor.VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
@@ -130,10 +156,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinInfo is not valid at this point.");
     }
-
-    ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
-    {
-      throw new InvalidOperationException ("SqlJoinedTable is not valid at this point.");
-    }
+    
   }
 }

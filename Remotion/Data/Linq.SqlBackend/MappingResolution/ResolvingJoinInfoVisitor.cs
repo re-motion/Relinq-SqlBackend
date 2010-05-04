@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="ResolvingJoinInfoVisitor"/> modifies <see cref="UnresolvedJoinInfo"/>s and generates <see cref="ResolvedLeftJoinInfo"/>s.
+  /// <see cref="ResolvingJoinInfoVisitor"/> modifies <see cref="UnresolvedJoinInfo"/>s and generates <see cref="ResolvedJoinInfo"/>s.
   /// </summary>
   public class ResolvingJoinInfoVisitor : IJoinInfoVisitor
   {
@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
 
-    public static ResolvedLeftJoinInfo ResolveJoinInfo (
+    public static ResolvedJoinInfo ResolveJoinInfo (
         IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       var visitor = new ResolvingJoinInfoVisitor (resolver, generator, stage);
-      return (ResolvedLeftJoinInfo) joinInfo.Accept (visitor);
+      return (ResolvedJoinInfo) joinInfo.Accept (visitor);
     }
 
     protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
@@ -70,13 +70,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return unresolvedJoinInfo.Accept (this);
     }
 
-    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedLeftJoinInfo leftJoinInfo)
+    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo joinInfo)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", leftJoinInfo);
-      var newForeignTableInfo = _stage.ResolveTableInfo (leftJoinInfo.ForeignTableInfo);
-      if (newForeignTableInfo != leftJoinInfo.ForeignTableInfo)
-        return new ResolvedLeftJoinInfo (newForeignTableInfo, leftJoinInfo.LeftKey, leftJoinInfo.RightKey);
-      return leftJoinInfo;
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      var newForeignTableInfo = _stage.ResolveTableInfo (joinInfo.ForeignTableInfo);
+      if (newForeignTableInfo != joinInfo.ForeignTableInfo)
+        return new ResolvedJoinInfo (newForeignTableInfo, joinInfo.LeftKey, joinInfo.RightKey);
+      return joinInfo;
     }
   }
 }
