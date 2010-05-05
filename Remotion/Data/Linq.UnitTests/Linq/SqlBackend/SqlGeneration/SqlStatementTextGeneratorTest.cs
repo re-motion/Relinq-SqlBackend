@@ -63,7 +63,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           null,
           null,
           false,
-          false,
           AggregationModifier.None);
       _commandBuilder = new SqlCommandBuilder();
     }
@@ -240,7 +239,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           null,
           null,
           false,
-          false,
           AggregationModifier.None);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
@@ -270,7 +268,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause1, orderByClause2, orderByClause3 },
           null,
           null,
-          false,
           false,
           AggregationModifier.None);
 
@@ -332,7 +329,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           Expression.Constant (true),
           null,
           false,
-          false,
           AggregationModifier.None);
 
       _stageMock.Expect (
@@ -364,7 +360,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause },
           null,
           null,
-          false,
           false,
           AggregationModifier.None);
 

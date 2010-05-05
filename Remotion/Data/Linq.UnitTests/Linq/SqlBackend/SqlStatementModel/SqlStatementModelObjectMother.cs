@@ -47,7 +47,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           null,
           null,
           false,
-          false,
           AggregationModifier.None);
     }
 
@@ -61,7 +60,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new Ordering[] { },
           null,
           null,
-          false,
           false,
           AggregationModifier.None);
     }
@@ -77,7 +75,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           null,
           null,
           false,
-          false,
           AggregationModifier.None);
     }
 
@@ -91,7 +88,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new Ordering[] { },
           null,
           null,
-          false,
           false,
           AggregationModifier.None);
     }

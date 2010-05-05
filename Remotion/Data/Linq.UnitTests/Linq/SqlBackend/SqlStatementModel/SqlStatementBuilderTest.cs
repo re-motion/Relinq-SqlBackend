@@ -54,7 +54,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new [] { ordering },
           whereCondition,
           topExpression,
-          false,
           true,
           AggregationModifier.None);
 

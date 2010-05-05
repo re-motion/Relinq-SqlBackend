@@ -99,7 +99,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (DataInfo == null)
         throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
       return new SqlStatement (
-          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery, AggregationModifier);
+          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsDistinctQuery, AggregationModifier);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
