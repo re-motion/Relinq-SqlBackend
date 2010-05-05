@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="SqlPreparationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTable"/>.
   /// </summary>
-  public class SqlPreparationContext
+  public class SqlPreparationContext : ISqlPreparationContext
   {
     private readonly Dictionary<IQuerySource, SqlTableBase> _mapping;
 
