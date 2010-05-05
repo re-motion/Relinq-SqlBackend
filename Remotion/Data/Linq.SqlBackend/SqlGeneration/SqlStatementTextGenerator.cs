@@ -60,11 +60,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       commandBuilder.Append ("SELECT ");
 
-      bool condition = !((sqlStatement.IsCountQuery && sqlStatement.TopExpression != null)
-                       || (sqlStatement.IsCountQuery && sqlStatement.IsDistinctQuery));
+      bool condition = !((sqlStatement.AggregationModifier == AggregationModifier.Count && sqlStatement.TopExpression != null)
+                       || (sqlStatement.AggregationModifier == AggregationModifier.Count && sqlStatement.IsDistinctQuery));
       Debug.Assert (condition, "A SqlStatement cannot contain both Count and Top or Count and Distinct.");
       
-      if (sqlStatement.IsCountQuery)
+      if (sqlStatement.AggregationModifier == AggregationModifier.Count)
       {
         commandBuilder.Append ("COUNT(*)");
       }

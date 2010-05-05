@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (result.IsCountQuery, Is.True);
+      Assert.That (result.AggregationModifier == AggregationModifier.Count, Is.True);
     }
 
     [Test]

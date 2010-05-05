@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.True);
-      Assert.That (sqlStatement.IsCountQuery, Is.False);
+      Assert.That (sqlStatement.AggregationModifier == AggregationModifier.Count, Is.False);
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
 

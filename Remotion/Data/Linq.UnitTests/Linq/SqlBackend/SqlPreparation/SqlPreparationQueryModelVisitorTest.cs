@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) result.SqlTables[0]).TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
       Assert.That (result.TopExpression, Is.Null);
-      Assert.That (result.IsCountQuery, Is.False);
+      Assert.That (result.AggregationModifier == AggregationModifier.Count, Is.False);
       Assert.That (result.IsDistinctQuery, Is.False);
     }
 

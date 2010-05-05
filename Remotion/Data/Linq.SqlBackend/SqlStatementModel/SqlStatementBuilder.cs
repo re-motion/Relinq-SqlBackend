@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         DataInfo = sqlStatement.DataInfo;
         SelectProjection = sqlStatement.SelectProjection;
         WhereCondition = sqlStatement.WhereCondition;
-        IsCountQuery = sqlStatement.IsCountQuery;
+        IsCountQuery = sqlStatement.AggregationModifier == AggregationModifier.Count;
         IsDistinctQuery = sqlStatement.IsDistinctQuery;
         TopExpression = sqlStatement.TopExpression;
         AggregationModifier = sqlStatement.AggregationModifier;

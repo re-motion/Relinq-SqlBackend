@@ -265,7 +265,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Equals_AssertPropertyCount ()
     {
-      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (9), "The implementation of Equals and GetHashCode has to be adapted.");
+      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (8), "The implementation of Equals and GetHashCode has to be adapted.");
     }
     
     [Test]

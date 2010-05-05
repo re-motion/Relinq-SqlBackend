@@ -147,7 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
-      Assert.That (((SqlSubStatementExpression) result).SqlStatement.IsCountQuery, Is.True);
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement.AggregationModifier == AggregationModifier.Count, Is.True);
     }
 
     [Test]

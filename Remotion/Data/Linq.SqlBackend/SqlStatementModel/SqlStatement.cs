@@ -83,11 +83,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _dataInfo; }
     }
 
-    public bool IsCountQuery
-    {
-      get { return _aggregationModifier == AggregationModifier.Count; }
-    }
-
     public AggregationModifier AggregationModifier
     {
       get { return _aggregationModifier; }
@@ -135,7 +130,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              (_orderings.SequenceEqual (statement._orderings)) &&
              (_whereCondition == statement._whereCondition) &&
              (_topExpression == statement._topExpression) &&
-             (IsCountQuery == statement.IsCountQuery) &&
+             (AggregationModifier == AggregationModifier.Count == (statement.AggregationModifier == AggregationModifier.Count)) &&
              (_isDistinctQuery == statement._isDistinctQuery);
     }
 
@@ -147,7 +142,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              HashCodeUtility.GetHashCodeForSequence (_orderings) ^
              HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
              HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
-             HashCodeUtility.GetHashCodeOrZero (IsCountQuery) ^
+             HashCodeUtility.GetHashCodeOrZero (AggregationModifier == AggregationModifier.Count) ^
              HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery);
     }
   }

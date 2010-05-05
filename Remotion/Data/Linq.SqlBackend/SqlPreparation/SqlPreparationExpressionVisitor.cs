@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel);
-      return sqlStatement.SqlTables.Count == 0 && !sqlStatement.IsCountQuery && !sqlStatement.IsDistinctQuery
+      return sqlStatement.SqlTables.Count == 0 && !(sqlStatement.AggregationModifier == AggregationModifier.Count) && !sqlStatement.IsDistinctQuery
                  ? sqlStatement.SelectProjection
                  : new SqlSubStatementExpression (sqlStatement);
     }
