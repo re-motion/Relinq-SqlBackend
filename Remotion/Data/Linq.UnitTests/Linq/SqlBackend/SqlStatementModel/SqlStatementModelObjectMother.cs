@@ -30,36 +30,72 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static SqlStatement CreateSqlStatement (Expression selectProjection)
     {
       return new SqlStatementBuilder
-      {
-        DataInfo = new TestStreamedValueInfo (typeof(Cook)),
-        SelectProjection =
-            new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
-      }.GetSqlStatement ();
+             {
+                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
+                 SelectProjection =
+                     new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+             }.GetSqlStatement();
     }
 
     public static SqlStatement CreateSqlStatement (Expression selectProjection, params SqlTable[] sqlTables)
     {
-      return new SqlStatement (new TestStreamedValueInfo(typeof(string)), selectProjection, sqlTables, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (
+          new TestStreamedValueInfo (typeof (string)),
+          selectProjection,
+          sqlTables,
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false,
+          AggregationModifier.None);
     }
 
     public static SqlStatement CreateSqlStatementWithCook ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      return new SqlStatement (new TestStreamedValueInfo (typeof (Cook)), new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (
+          new TestStreamedValueInfo (typeof (Cook)),
+          new SqlTableReferenceExpression (sqlTable),
+          new[] { sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false,
+          AggregationModifier.None);
     }
 
     public static SqlStatement CreateSqlStatement ()
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo();
-      return new SqlStatement (new TestStreamedValueInfo (typeof (string)), new SqlTableReferenceExpression (sqlTable), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (
+          new TestStreamedValueInfo (typeof (string)),
+          new SqlTableReferenceExpression (sqlTable),
+          new[] { sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false,
+          AggregationModifier.None);
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
     {
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
-      return new SqlStatement (new TestStreamedValueInfo (type), CreateSqlEntityExpression (type), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      return new SqlStatement (
+          new TestStreamedValueInfo (type),
+          CreateSqlEntityExpression (type),
+          new[] { sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false,
+          AggregationModifier.None);
     }
-    
+
     public static SqlTable CreateSqlTable ()
     {
       return CreateSqlTable (typeof (Cook));
@@ -138,7 +174,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedCollectionJoinInfo CreateUnresolvedCollectionJoinInfo_RestaurantCooks ()
     {
-      return new UnresolvedCollectionJoinInfo(Expression.Constant(new Restaurant()), typeof (Restaurant).GetProperty ("Cooks"));
+      return new UnresolvedCollectionJoinInfo (Expression.Constant (new Restaurant()), typeof (Restaurant).GetProperty ("Cooks"));
     }
 
     public static ResolvedSimpleTableInfo CreateResolvedTableInfo ()

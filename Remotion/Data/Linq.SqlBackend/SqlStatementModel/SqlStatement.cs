@@ -40,8 +40,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly Expression _topExpression;
     private readonly bool _isCountQuery;
     private readonly bool _isDistinctQuery;
+    private readonly AggregationModifier _aggregationModifier;
 
-    public SqlStatement (IStreamedDataInfo dataInfo, Expression selectProjection, IEnumerable<SqlTableBase> sqlTables, IEnumerable<Ordering> orderings, Expression whereCondition, Expression topExpression, bool isCountQuery, bool isDistinctQuery)
+    public SqlStatement (
+        IStreamedDataInfo dataInfo,
+        Expression selectProjection,
+        IEnumerable<SqlTableBase> sqlTables,
+        IEnumerable<Ordering> orderings,
+        Expression whereCondition,
+        Expression topExpression,
+        bool isCountQuery,
+        bool isDistinctQuery,
+        AggregationModifier aggregationModifier)
     {
       ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
@@ -65,6 +75,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       _topExpression = topExpression;
       _isCountQuery = isCountQuery;
       _isDistinctQuery = isDistinctQuery;
+      _aggregationModifier = aggregationModifier;
     }
 
     public IStreamedDataInfo DataInfo
@@ -74,7 +85,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public bool IsCountQuery
     {
-      get { return _isCountQuery; }
+      get { return _aggregationModifier == AggregationModifier.Count; }
+    }
+
+    public AggregationModifier AggregationModifier
+    {
+      get { return _aggregationModifier; }
     }
 
     public bool IsDistinctQuery
@@ -116,10 +132,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return (_dataInfo == statement._dataInfo) &&
              (_selectProjection == statement._selectProjection) &&
              (_sqlTables.SequenceEqual (statement._sqlTables)) &&
-             (_orderings.SequenceEqual(statement._orderings)) &&
+             (_orderings.SequenceEqual (statement._orderings)) &&
              (_whereCondition == statement._whereCondition) &&
              (_topExpression == statement._topExpression) &&
-             (_isCountQuery == statement._isCountQuery) &&
+             (IsCountQuery == statement.IsCountQuery) &&
              (_isDistinctQuery == statement._isDistinctQuery);
     }
 
@@ -131,7 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              HashCodeUtility.GetHashCodeForSequence (_orderings) ^
              HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
              HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
-             HashCodeUtility.GetHashCodeOrZero (_isCountQuery) ^
+             HashCodeUtility.GetHashCodeOrZero (IsCountQuery) ^
              HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery);
     }
   }

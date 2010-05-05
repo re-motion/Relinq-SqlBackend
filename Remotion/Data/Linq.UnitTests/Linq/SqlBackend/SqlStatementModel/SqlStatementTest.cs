@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           null,
           Expression.Constant ("top"),
           true,
-          false);
+          false, AggregationModifier.Count);
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           null,
           null,
           false,
-          false);
+          false, AggregationModifier.None);
     }
 
     [Test]
@@ -73,14 +73,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           Expression.Constant (1),
           null,
           false,
-          false);
+          false, AggregationModifier.None);
     }
 
     [Test]
     public void WhereCondition_CanBeSetToNull ()
     {
       var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          new TestStreamedValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement.WhereCondition, Is.Null);
     }
@@ -96,9 +96,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var topExpression = Expression.Constant ("top");
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
@@ -110,9 +110,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var selectProjection = Expression.Constant (1);
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
@@ -125,9 +125,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var selectProjection = Expression.Constant (1);
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo1, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo1, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo2, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo2, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -141,9 +141,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection1, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection1, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection2, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection2, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -157,9 +157,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable1 }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new[] { sqlTable1 }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable2 }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new[] { sqlTable2 }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -173,9 +173,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var ordering2 = new Ordering (Expression.Constant ("ordering2"), OrderingDirection.Desc);
       
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering1 }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering1 }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering2 }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new[] { ordering2 }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -189,9 +189,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var whereCondition2 = Expression.Constant (false);
       
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition1, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition1, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition2, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, whereCondition2, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -205,9 +205,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var topExpression2 = Expression.Constant ("top2");
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression1, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression1, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression2, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, topExpression2, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -219,9 +219,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var selectProjection = Expression.Constant (1);
       
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, true, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, true, false, AggregationModifier.Count);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -233,9 +233,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var selectProjection = Expression.Constant (1);
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, true);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, true, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
@@ -246,7 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
       var sqlStatement = new SqlStatement (
-         dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+         dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
      
       Assert.That (sqlStatement.Equals(null), Is.False);
     }
@@ -257,7 +257,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
       var sqlStatement = new SqlStatement (
-         dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+         dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement.Equals(new object()), Is.False);
     }
@@ -265,10 +265,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Equals_AssertPropertyCount ()
     {
-      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (8), "The implementation of Equals and GetHashCode has to be adapted.");
+      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (9), "The implementation of Equals and GetHashCode has to be adapted.");
     }
-
-
+    
     [Test]
     public void GetHashcode_EqualSqlStatementsWithAllMembers ()
     {
@@ -280,9 +279,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var topExpression = Expression.Constant ("top");
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false);
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.GetHashCode(), Is.EqualTo(sqlStatement2.GetHashCode()));
     }
@@ -294,9 +293,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var selectProjection = Expression.Constant (1);
 
       var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
       var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }

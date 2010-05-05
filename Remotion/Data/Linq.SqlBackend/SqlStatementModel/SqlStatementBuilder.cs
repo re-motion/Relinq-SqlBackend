@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public class SqlStatementBuilder
   {
     private ValueHolder _valueHolder;
-    
+
     public SqlStatementBuilder ()
     {
       _valueHolder = new ValueHolder();
@@ -50,8 +50,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public bool IsCountQuery
     {
-      get { return _valueHolder.IsCountQuery; }
-      set { _valueHolder.IsCountQuery = value; }
+      get { return _valueHolder.AggregationModifier == AggregationModifier.Count; }
+      set { _valueHolder.AggregationModifier = value ? AggregationModifier.Count : AggregationModifier.None; }
+    }
+
+    public AggregationModifier AggregationModifier
+    {
+      get { return _valueHolder.AggregationModifier; }
+      set { _valueHolder.AggregationModifier = value; }
     }
 
     public bool IsDistinctQuery
@@ -91,8 +97,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public SqlStatement GetSqlStatement ()
     {
       if (DataInfo == null)
-        throw new InvalidOperationException("A DataInfo must be set before the SqlStatement can be retrieved.");
-      return new SqlStatement (DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery);
+        throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
+      return new SqlStatement (
+          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsCountQuery, IsDistinctQuery, AggregationModifier);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -105,8 +112,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public SqlStatement GetStatementAndResetBuilder ()
     {
-      var sqlSubStatement = GetSqlStatement ();
-      _valueHolder = new ValueHolder ();
+      var sqlSubStatement = GetSqlStatement();
+      _valueHolder = new ValueHolder();
       return sqlSubStatement;
     }
 
@@ -114,8 +121,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       public ValueHolder ()
       {
-        SqlTables = new List<SqlTableBase> ();
-        Orderings = new List<Ordering> ();
+        SqlTables = new List<SqlTableBase>();
+        Orderings = new List<Ordering>();
       }
 
       public ValueHolder (SqlStatement sqlStatement)
@@ -126,6 +133,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         IsCountQuery = sqlStatement.IsCountQuery;
         IsDistinctQuery = sqlStatement.IsDistinctQuery;
         TopExpression = sqlStatement.TopExpression;
+        AggregationModifier = sqlStatement.AggregationModifier;
 
         SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
         Orderings = new List<Ordering> (sqlStatement.Orderings);
@@ -133,8 +141,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       public IStreamedDataInfo DataInfo { get; set; }
 
-      public bool IsCountQuery { get; set; }
+      private bool IsCountQuery
+      {
+        get { return AggregationModifier == AggregationModifier.Count; }
+        set { AggregationModifier = value ? AggregationModifier.Count : AggregationModifier.None; }
+      }
+
       public bool IsDistinctQuery { get; set; }
+      public AggregationModifier AggregationModifier { get; set; }
 
       public Expression TopExpression { get; set; }
 
@@ -144,6 +158,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       public List<SqlTableBase> SqlTables { get; private set; }
       public List<Ordering> Orderings { get; private set; }
     }
-
   }
 }

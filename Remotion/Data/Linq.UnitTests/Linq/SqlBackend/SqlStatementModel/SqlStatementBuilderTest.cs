@@ -18,12 +18,11 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -35,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      _statementBuilder = new SqlStatementBuilder ();
+      _statementBuilder = new SqlStatementBuilder();
       _statementBuilder.DataInfo = new TestStreamedValueInfo (typeof (int));
     }
 
@@ -48,7 +47,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
 
-      var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), selectProjection, new SqlTable[] { sqlTable }, new Ordering[] { ordering }, whereCondition, topExpression, false, true);
+      var sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          selectProjection,
+          new [] { sqlTable },
+          new [] { ordering },
+          whereCondition,
+          topExpression,
+          false,
+          true,
+          AggregationModifier.None);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
@@ -59,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.True);
       Assert.That (testedBuilder.IsCountQuery, Is.False);
-      Assert.That (testedBuilder.DataInfo, Is.SameAs(sqlStatement.DataInfo));
+      Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
     [Test]
@@ -74,17 +82,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (result.SqlTables[0], Is.SameAs(sqlTable));
+      Assert.That (result.SqlTables[0], Is.SameAs (sqlTable));
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentNullException))]
+    [ExpectedException (typeof (ArgumentNullException))]
     public void GetSqlStatement_NoSelectProjection ()
     {
       _statementBuilder.SelectProjection = null;
       _statementBuilder.GetSqlStatement();
     }
-    
+
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A DataInfo must be set before the SqlStatement can be retrieved.")]
     public void GetSqlStatement_NoDataInfoSet ()
@@ -116,7 +124,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void GetSqlStatement_CheckProperties()
+    public void GetSqlStatement_CheckProperties ()
     {
       var selectProjection = Expression.Constant ("select");
       var whereCondition = Expression.Constant (true);
@@ -126,7 +134,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       var statementBuilder = new SqlStatementBuilder()
                              {
-                                 DataInfo = new TestStreamedValueInfo(typeof(Cook)),
+                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
                                  TopExpression = topExpression,
@@ -152,19 +160,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void GetStatementAndResetBuilder ()
     {
       var selectProjection = Expression.Constant ("select");
-      var originalBuilder = new SqlStatementBuilder ()
-      {
-        DataInfo = new TestStreamedValueInfo (typeof (Cook)),
-        SelectProjection = selectProjection,
-        IsCountQuery = false,
-        IsDistinctQuery = true
-      };
+      var originalBuilder = new SqlStatementBuilder()
+                            {
+                                DataInfo = new TestStreamedValueInfo (typeof (Cook)),
+                                SelectProjection = selectProjection,
+                                IsCountQuery = false,
+                                IsDistinctQuery = true
+                            };
       var sqlStatement = originalBuilder.GetSqlStatement();
-      
-      var result = originalBuilder.GetStatementAndResetBuilder ();
+
+      var result = originalBuilder.GetStatementAndResetBuilder();
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
     }
-    
   }
 }
