@@ -305,6 +305,73 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     // TODO Review 2669: Add a test with DefaultIfEmpty in a subquery
-    // TODO Review 2669: Add a test with DefaultIfEmpty and join into; ignore it for now with the task number of join into
+    [Test]
+    public void Max_OnTopLevel ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.ID).Max(),
+          "SELECT MAX([t0].[ID]) AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void Max_InSubquery ()
+    {
+      CheckQuery (
+           from s in Cooks where (from s2 in Cooks select s2.ID).Max()>5 select s.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MAX([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
+          new CommandParameter("@1", 5));
+    }
+
+    [Test]
+    public void Min_OnTopLevel ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.ID).Min (),
+          "SELECT MIN([t0].[ID]) AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void Min_InSubquery ()
+    {
+      CheckQuery (
+           from s in Cooks where (from s2 in Cooks select s2.ID).Min () > 5 select s.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MIN([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
+          new CommandParameter ("@1", 5));
+    }
+
+    [Test]
+    public void Average_OnTopLevel ()
+    {
+      CheckQuery (
+          () => Kitchens.Average(k=>k.RoomNumber),
+          "SELECT AVERAGE([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]");
+    }
+
+    [Test]
+    public void Average_InSubquery ()
+    {
+      CheckQuery (
+           from s in Cooks where (from s2 in Cooks select s2).Average(c=>c.ID) > 5 select s.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVERAGE([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
+          new CommandParameter("@1", 5.0));
+    }
+
+    [Test]
+    public void Sum_OnTopLevel ()
+    {
+      CheckQuery (
+          () => Kitchens.Sum (k => k.RoomNumber),
+          "SELECT SUM([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]");
+    }
+
+    [Test]
+    public void Sum_InSubquery ()
+    {
+      CheckQuery (
+           from s in Cooks where (from s2 in Cooks select s2).Sum (c => c.ID) > 5 select s.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT SUM([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
+          new CommandParameter ("@1", 5));
+    }
+
   }
 }

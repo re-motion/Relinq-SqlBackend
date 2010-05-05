@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var statementBuilder = new SqlStatementBuilder ();
 
-      statementBuilder.AggregationModifier = sqlStatement.AggregationModifier == AggregationModifier.Count ? AggregationModifier.Count : AggregationModifier.None;
+      statementBuilder.AggregationModifier = sqlStatement.AggregationModifier;
       statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
 
       VisitSelectProjection(sqlStatement.SelectProjection, context, statementBuilder);
