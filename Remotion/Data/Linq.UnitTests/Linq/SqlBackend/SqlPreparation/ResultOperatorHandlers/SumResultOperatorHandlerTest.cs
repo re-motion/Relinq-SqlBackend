@@ -60,13 +60,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _handler.HandleResultOperator (averageResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
 
+      // TODO Review 2690: Use Assert.That (..., Is.EqualTo (AggregationModifier.Sum)); also for all other aggregation handler tests
       Assert.That (_sqlStatementBuilder.AggregationModifier == AggregationModifier.Sum, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }
 
     [Test]
-    public void HandleResultOperator_CountAfterTopExpression ()
+    public void HandleResultOperator_CountAfterTopExpression () // TODO Review 2690: Should be ..._SumAfter...
     {
       _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
 

@@ -60,16 +60,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       commandBuilder.Append ("SELECT ");
 
-      bool condition = !((sqlStatement.AggregationModifier == AggregationModifier.Count && sqlStatement.TopExpression != null)
-                       || (sqlStatement.AggregationModifier == AggregationModifier.Count && sqlStatement.IsDistinctQuery));
-      Debug.Assert (condition, "A SqlStatement cannot contain both Count and Top or Count and Distinct.");
-      
+      bool condition = !((sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.TopExpression != null)
+                       || (sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.IsDistinctQuery));
+      Debug.Assert (condition, "A SqlStatement cannot contain both aggregation and Top or aggregation and Distinct.");
+
       if (sqlStatement.AggregationModifier == AggregationModifier.None)
       {
+        // TODO Review 2690: Extract to method: BuildDistinctPart (sqlStatement, commandBuilder)
         if (sqlStatement.IsDistinctQuery)
         {
           commandBuilder.Append ("DISTINCT ");
         }
+        // TODO Review 2690: Extract to method: BuildTopPart (sqlStatement, commandBuilder)
         if (sqlStatement.TopExpression != null)
         {
           commandBuilder.Append ("TOP (");
@@ -103,6 +105,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
         commandBuilder.Append (") AS [value]");
       }
+
+      // TODO Review 2690: Try to make that code a little more compact by using switch and helper methods
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)

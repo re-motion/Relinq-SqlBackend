@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.True);
-      Assert.That (testedBuilder.AggregationModifier == AggregationModifier.Count, Is.False);
+      Assert.That (testedBuilder.AggregationModifier == AggregationModifier.Count, Is.False); // TODO Review 2689: Test with a non-None AggregationModifier; then check that the builder's modifier is correct
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
@@ -131,7 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
 
-      var statementBuilder = new SqlStatementBuilder()
+      var statementBuilder = new SqlStatementBuilder
                              {
                                  DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                                  SelectProjection = selectProjection,
@@ -151,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.True);
-      Assert.That (sqlStatement.AggregationModifier == AggregationModifier.Count, Is.False);
+      Assert.That (sqlStatement.AggregationModifier == AggregationModifier.Count, Is.False); // TODO Review 2689: Test with a non-None AggregationModifier
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
 
@@ -159,7 +159,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void GetStatementAndResetBuilder ()
     {
       var selectProjection = Expression.Constant ("select");
-      var originalBuilder = new SqlStatementBuilder()
+      var originalBuilder = new SqlStatementBuilder
                             {
                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                                 SelectProjection = selectProjection,

@@ -42,6 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
+      // TODO Review 2690: Add EnsureNoDistinctQuery method to base class, use in all aggregation handlers
       if (sqlStatementBuilder.IsDistinctQuery)
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator);
 

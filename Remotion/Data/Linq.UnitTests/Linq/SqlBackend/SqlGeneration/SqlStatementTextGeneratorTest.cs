@@ -467,6 +467,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
+    // TODO Review 2690: Remove this test?
     [Test]
     [Ignore ("TODO 2364")]
     public void GenerateSqlGeneratorRegistry ()
