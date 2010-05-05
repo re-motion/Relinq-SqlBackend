@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c).Count(),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Count(),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Count (name => name != null),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
     }
 
     [Test]

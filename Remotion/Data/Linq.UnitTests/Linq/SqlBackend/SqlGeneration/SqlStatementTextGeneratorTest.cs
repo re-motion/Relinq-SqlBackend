@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void BuildSelectPart_WithCountIsTrue ()
+    public void BuildSelectPart_WithCount ()
     {
       var sqlStatement =
           new SqlStatementBuilder
@@ -122,8 +122,92 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT COUNT(*)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT COUNT(*) AS [value]"));
       _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithAverage ()
+    {
+      var sqlStatement =
+          new SqlStatementBuilder
+          {
+            DataInfo = new TestStreamedValueInfo (typeof (int)),
+            SelectProjection = _columnListExpression,
+            AggregationModifier = AggregationModifier.Average
+          }.GetSqlStatement ();
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT AVERAGE([t].[ID]) AS [value]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithSum ()
+    {
+      var sqlStatement =
+          new SqlStatementBuilder
+          {
+            DataInfo = new TestStreamedValueInfo (typeof (int)),
+            SelectProjection = _columnListExpression,
+            AggregationModifier = AggregationModifier.Sum
+          }.GetSqlStatement ();
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT SUM([t].[ID]) AS [value]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithMin ()
+    {
+      var sqlStatement =
+          new SqlStatementBuilder
+          {
+            DataInfo = new TestStreamedValueInfo (typeof (int)),
+            SelectProjection = _columnListExpression,
+            AggregationModifier = AggregationModifier.Min
+          }.GetSqlStatement ();
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT MIN([t].[ID]) AS [value]"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSelectPart_WithMax ()
+    {
+      var sqlStatement =
+          new SqlStatementBuilder
+          {
+            DataInfo = new TestStreamedValueInfo (typeof (int)),
+            SelectProjection = _columnListExpression,
+            AggregationModifier = AggregationModifier.Max
+          }.GetSqlStatement ();
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT MAX([t].[ID]) AS [value]"));
+      _stageMock.VerifyAllExpectations ();
     }
 
     [Test]

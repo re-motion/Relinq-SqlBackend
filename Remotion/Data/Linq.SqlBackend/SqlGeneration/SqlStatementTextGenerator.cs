@@ -64,11 +64,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
                        || (sqlStatement.AggregationModifier == AggregationModifier.Count && sqlStatement.IsDistinctQuery));
       Debug.Assert (condition, "A SqlStatement cannot contain both Count and Top or Count and Distinct.");
       
-      if (sqlStatement.AggregationModifier == AggregationModifier.Count)
-      {
-        commandBuilder.Append ("COUNT(*)");
-      }
-      else
+      if (sqlStatement.AggregationModifier == AggregationModifier.None)
       {
         if (sqlStatement.IsDistinctQuery)
         {
@@ -85,6 +81,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
         if (!(sqlStatement.SelectProjection is SqlEntityExpression))
           commandBuilder.Append (" AS [value]");
+      }
+      else if (sqlStatement.AggregationModifier == AggregationModifier.Count)
+      {
+        commandBuilder.Append ("COUNT(*) AS [value]");
+      } 
+      else 
+      {
+        if (sqlStatement.AggregationModifier == AggregationModifier.Average)
+          commandBuilder.Append ("AVERAGE");
+        else if (sqlStatement.AggregationModifier == AggregationModifier.Max)
+          commandBuilder.Append ("MAX");
+        else if (sqlStatement.AggregationModifier == AggregationModifier.Min)
+          commandBuilder.Append ("MIN");
+        else if (sqlStatement.AggregationModifier == AggregationModifier.Sum)
+          commandBuilder.Append ("SUM");
+        else
+          throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", sqlStatement.AggregationModifier));
+
+        commandBuilder.Append ("(");
+        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+        commandBuilder.Append (") AS [value]");
       }
     }
 
