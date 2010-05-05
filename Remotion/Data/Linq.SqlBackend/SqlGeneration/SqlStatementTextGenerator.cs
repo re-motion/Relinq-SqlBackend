@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       else 
       {
         if (sqlStatement.AggregationModifier == AggregationModifier.Average)
-          commandBuilder.Append ("AVERAGE");
+          commandBuilder.Append ("AVG");
         else if (sqlStatement.AggregationModifier == AggregationModifier.Max)
           commandBuilder.Append ("MAX");
         else if (sqlStatement.AggregationModifier == AggregationModifier.Min)

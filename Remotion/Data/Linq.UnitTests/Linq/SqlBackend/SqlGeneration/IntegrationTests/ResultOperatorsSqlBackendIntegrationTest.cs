@@ -344,7 +344,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => Kitchens.Average(k=>k.RoomNumber),
-          "SELECT AVERAGE([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]");
+          "SELECT AVG([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]");
     }
 
     [Test]
@@ -352,7 +352,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2).Average(c=>c.ID) > 5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVERAGE([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVG([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter("@1", 5.0));
     }
 

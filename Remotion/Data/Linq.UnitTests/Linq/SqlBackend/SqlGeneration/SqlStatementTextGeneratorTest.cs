@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT AVERAGE([t].[ID]) AS [value]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT AVG([t].[ID]) AS [value]"));
       _stageMock.VerifyAllExpectations ();
     }
 
