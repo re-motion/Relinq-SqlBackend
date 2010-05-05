@@ -104,6 +104,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SingleResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandler.cs" />
+    <Compile Include="SqlStatementModel\AggregationModifier.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />

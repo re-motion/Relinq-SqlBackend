@@ -19,11 +19,11 @@ using System;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Defines whether a <see cref="SqlJoinedTable"/> represents a left- or inner join.
+  /// Defines the aggregation modifier for a <see cref="SqlStatement"/>.
   /// </summary>
-  public enum JoinSemantics
+  public enum AggregationModifier
   {
-    Left,
-    Inner
+    None,
+    Count
   }
 }
