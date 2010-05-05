@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _handler.HandleResultOperator (countResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
 
-      Assert.That (_sqlStatementBuilder.IsCountQuery, Is.True);
+      Assert.That (_sqlStatementBuilder.AggregationModifier == AggregationModifier.Count, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }

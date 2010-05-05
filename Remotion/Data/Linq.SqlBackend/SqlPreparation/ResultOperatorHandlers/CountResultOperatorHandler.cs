@@ -22,8 +22,8 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   /// <summary>
-  /// Handles the <see cref="CountResultOperator"/> by setting the <see cref="SqlStatementBuilder.IsCountQuery"/> flag. When the 
-  /// <see cref="CountResultOperator"/> occurs after a <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
+  /// Handles the <see cref="CountResultOperator"/>. When the <see cref="CountResultOperator"/> occurs after a 
+  /// <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
   /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
   /// </summary>
   public class CountResultOperatorHandler : ResultOperatorHandler<CountResultOperator>
@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.IsCountQuery = true;
+      sqlStatementBuilder.AggregationModifier = true ? AggregationModifier.Count : AggregationModifier.None;
     }
   }
 }

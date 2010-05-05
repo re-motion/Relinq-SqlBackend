@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
                                     {
-                                        IsCountQuery = false,
+                                        AggregationModifier = AggregationModifier.None,
                                         IsDistinctQuery = false
                                     };
       fakeSqlStatementBuilder.SqlTables.Clear();
@@ -134,7 +134,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
-        IsCountQuery = true
+        AggregationModifier = AggregationModifier.Count
       };
      
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();

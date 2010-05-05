@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.True);
-      Assert.That (testedBuilder.IsCountQuery, Is.False);
+      Assert.That (testedBuilder.AggregationModifier == AggregationModifier.Count, Is.False);
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
                                  TopExpression = topExpression,
-                                 IsCountQuery = false,
+                                 AggregationModifier = AggregationModifier.None,
                                  IsDistinctQuery = true
                              };
       statementBuilder.SqlTables.Add (sqlTable);
@@ -163,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                             {
                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                                 SelectProjection = selectProjection,
-                                IsCountQuery = false,
+                                AggregationModifier = AggregationModifier.Count,
                                 IsDistinctQuery = true
                             };
       var sqlStatement = originalBuilder.GetSqlStatement();

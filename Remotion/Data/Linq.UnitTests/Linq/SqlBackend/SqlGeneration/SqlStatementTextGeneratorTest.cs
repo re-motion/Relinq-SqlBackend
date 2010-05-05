@@ -114,7 +114,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement =
           new SqlStatementBuilder
-          { DataInfo = new TestStreamedValueInfo (typeof (int)), SelectProjection = _columnListExpression, IsCountQuery = true }.GetSqlStatement();
+          {
+              DataInfo = new TestStreamedValueInfo (typeof (int)),
+              SelectProjection = _columnListExpression,
+              AggregationModifier = AggregationModifier.Count
+          }.GetSqlStatement();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 

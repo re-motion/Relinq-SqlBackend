@@ -48,12 +48,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.DataInfo = value; }
     }
 
-    public bool IsCountQuery
-    {
-      get { return _valueHolder.AggregationModifier == AggregationModifier.Count; }
-      set { _valueHolder.AggregationModifier = value ? AggregationModifier.Count : AggregationModifier.None; }
-    }
-
     public AggregationModifier AggregationModifier
     {
       get { return _valueHolder.AggregationModifier; }
@@ -130,7 +124,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         DataInfo = sqlStatement.DataInfo;
         SelectProjection = sqlStatement.SelectProjection;
         WhereCondition = sqlStatement.WhereCondition;
-        IsCountQuery = sqlStatement.AggregationModifier == AggregationModifier.Count;
         IsDistinctQuery = sqlStatement.IsDistinctQuery;
         TopExpression = sqlStatement.TopExpression;
         AggregationModifier = sqlStatement.AggregationModifier;
@@ -140,12 +133,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       }
 
       public IStreamedDataInfo DataInfo { get; set; }
-
-      private bool IsCountQuery
-      {
-        get { return AggregationModifier == AggregationModifier.Count; }
-        set { AggregationModifier = value ? AggregationModifier.Count : AggregationModifier.None; }
-      }
 
       public bool IsDistinctQuery { get; set; }
       public AggregationModifier AggregationModifier { get; set; }

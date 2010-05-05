@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<IMappingResolutionStage> ();
+      _stageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
-      Assert.That (result.DataInfo, Is.SameAs(sqlStatement.DataInfo));
+      Assert.That (result.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
     [Test]
@@ -93,9 +93,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.WhereCondition, Is.SameAs (fakeWhereResult));
       Assert.That (result.TopExpression, Is.SameAs (fakeResult));
       Assert.That (result.Orderings[0].Expression, Is.SameAs (fakeResult));
-      Assert.That (result.Orderings[0].OrderingDirection, Is.EqualTo(OrderingDirection.Asc));
-      Assert.That (result.DataInfo, Is.TypeOf(typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) result.DataInfo).ItemExpression.Type, Is.EqualTo(typeof(string)));
+      Assert.That (result.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
+      Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) result.DataInfo).ItemExpression.Type, Is.EqualTo (typeof (string)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (fakeResult.Type)));
     }
 
@@ -124,19 +124,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlStatement_SelectExpressionAndStreamedScalarValueTypeChanged ()
     {
-      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ());
-      builder.DataInfo = new StreamedScalarValueInfo(builder.SelectProjection.Type);
-      var sqlStatement = builder.GetSqlStatement ();
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
+      builder.DataInfo = new StreamedScalarValueInfo (builder.SelectProjection.Type);
+      var sqlStatement = builder.GetSqlStatement();
       var fakeResult = Expression.Constant (new Cook());
 
       _stageMock
           .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .Return (fakeResult);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
@@ -148,7 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
       var sqlStatement = builder.GetSqlStatement();
-      
+
       _stageMock
           .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.SingleValueRequired))
           .Return (sqlStatement.SelectProjection);
@@ -165,7 +165,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlStatement_CopiesIsCountQueryFlag ()
     {
-      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook()) { IsCountQuery = true };
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
+                    { AggregationModifier = AggregationModifier.Count };
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock
