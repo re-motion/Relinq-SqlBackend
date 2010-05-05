@@ -22,32 +22,27 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   /// <summary>
-  /// Handles the <see cref="CountResultOperator"/>. When the <see cref="CountResultOperator"/> occurs after a 
+  /// Handles the <see cref="AverageResultOperator"/>. When the <see cref="AverageResultOperator"/> occurs after a 
   /// <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
   /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
   /// </summary>
-  public class CountResultOperatorHandler : ResultOperatorHandler<CountResultOperator>
+  public class AverageResultOperatorHandler : ResultOperatorHandler<AverageResultOperator>
   {
-    public override void HandleResultOperator (
-        CountResultOperator resultOperator,
-        QueryModel queryModel,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage)
+    public override void HandleResultOperator (AverageResultOperator resultOperator, QueryModel queryModel, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      
+
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
       if (sqlStatementBuilder.IsDistinctQuery)
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator);
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.AggregationModifier = AggregationModifier.Count;
+      sqlStatementBuilder.AggregationModifier = AggregationModifier.Average;
     }
   }
 }

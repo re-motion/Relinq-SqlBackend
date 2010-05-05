@@ -93,6 +93,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistry.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\AverageResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\CastResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ContainsResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\CountResultOperatorHandler.cs" />
@@ -100,9 +101,12 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\DistinctResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\FirstResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\IResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\MaxResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\MinResultoperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\OfTypeResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\ResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SingleResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SumResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandler.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />

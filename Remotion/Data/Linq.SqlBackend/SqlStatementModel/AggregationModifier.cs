@@ -24,6 +24,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public enum AggregationModifier
   {
     None,
-    Count
+    Count,
+    Sum,
+    Average,
+    Min,
+    Max
   }
 }
