@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -27,7 +25,8 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   /// <summary>
-  /// <see cref="DefaultIfEmptyResultOperatorHandler"/> handles the <see cref="DefaultIfEmptyResultOperator"/>.
+  /// <see cref="DefaultIfEmptyResultOperatorHandler"/> handles the <see cref="DefaultIfEmptyResultOperator"/>. It wraps the SQL statement into
+  /// a subquery and puts that subquery into a left join.
   /// </summary>
   public class DefaultIfEmptyResultOperatorHandler : ResultOperatorHandler<DefaultIfEmptyResultOperator>
   {
@@ -46,6 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       sqlStatementBuilder.SqlTables.Add (joinedTable);
       sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (joinedTable);
+
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
     }

@@ -304,5 +304,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "FROM [CookTable] AS [t0]) AS [q0] ON 1 = 1");
     }
 
+    // TODO Review 2669: Add a test with DefaultIfEmpty in a subquery
+    // TODO Review 2669: Add a test with DefaultIfEmpty and join into; ignore it for now with the task number of join into
   }
 }

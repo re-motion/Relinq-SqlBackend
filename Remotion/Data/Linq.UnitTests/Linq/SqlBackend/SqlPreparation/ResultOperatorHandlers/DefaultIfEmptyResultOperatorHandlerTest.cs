@@ -67,8 +67,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.SqlTables[0], Is.TypeOf (typeof (SqlJoinedTable)));
 
-      // TODO Review 2706: Check that JoinSemantics is Left
-      // TODO Review 2669: Extract join info into a variable - it is used very often
+      // TODO Review 2706: Check that JoinSemantics of SqlTable is Left; check that 
+      // TODO Review 2669: Extract join info into a variable of type ResolvedJoinInfo to avoid having to repeat all the casts
 
       Assert.That (((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo, Is.TypeOf (typeof (ResolvedJoinInfo)));
       Assert.That (
