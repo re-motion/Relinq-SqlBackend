@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   [TestFixture]
   public class SqlPreparationExpressionVisitorTest
   {
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
 
     private MainFromClause _cookMainFromClause;
     private QuerySourceReferenceExpression _cookQuerySourceReferenceExpression;

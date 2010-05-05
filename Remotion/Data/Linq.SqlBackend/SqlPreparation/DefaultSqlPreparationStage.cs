@@ -27,11 +27,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public class DefaultSqlPreparationStage : ISqlPreparationStage
   {
     private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
-    private readonly SqlPreparationContext _context;
+    private readonly ISqlPreparationContext _context;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
-    public DefaultSqlPreparationStage (MethodCallTransformerRegistry methodCallTransformerRegistry, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, SqlPreparationContext context, UniqueIdentifierGenerator generator)
+    public DefaultSqlPreparationStage (MethodCallTransformerRegistry methodCallTransformerRegistry, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, ISqlPreparationContext context, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("registry", methodCallTransformerRegistry);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);

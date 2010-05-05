@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   [TestFixture]
   public class DefaultSqlPreparationStageTest
   {
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private SqlTable _sqlTable;
     private QuerySourceReferenceExpression _querySourceReferenceExpression;
     private DefaultSqlPreparationStage _stage;

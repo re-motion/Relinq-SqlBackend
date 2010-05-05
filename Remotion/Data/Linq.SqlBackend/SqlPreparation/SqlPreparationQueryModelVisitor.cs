@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationQueryModelVisitor : QueryModelVisitorBase
   {
-    public static SqlStatement TransformQueryModel (QueryModel queryModel, SqlPreparationContext preparationContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+    public static SqlStatement TransformQueryModel (QueryModel queryModel, ISqlPreparationContext preparationContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("preparationContext", preparationContext);
@@ -43,14 +43,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return visitor.GetSqlStatement();
     }
 
-    private readonly SqlPreparationContext _context;
+    private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
 
     private readonly SqlStatementBuilder _sqlStatementBuilder;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly ResultOperatorHandlerRegistry _registry;
 
-    protected SqlPreparationQueryModelVisitor (SqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+    protected SqlPreparationQueryModelVisitor (ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _sqlStatementBuilder = new SqlStatementBuilder();
     }
 
-    public SqlPreparationContext Context
+    public ISqlPreparationContext Context
     {
       get { return _context; }
     }

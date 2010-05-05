@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   [TestFixture]
   public class SqlPreparationContextTest
   {
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private MainFromClause _source;
     private SqlTable _sqlTable;
 

@@ -31,12 +31,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor
   {
-    private readonly SqlPreparationContext _context;
+    private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
     private readonly MethodCallTransformerRegistry _registry;
 
     public static Expression TranslateExpression (
-        Expression projection, SqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+        Expression projection, ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("projection", projection);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return result;
     }
 
-    protected SqlPreparationExpressionVisitor (SqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+    protected SqlPreparationExpressionVisitor (ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);

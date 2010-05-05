@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   [TestFixture]
   public class SqlPreparationQueryModelVisitorTest
   {
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private DefaultSqlPreparationStage _defaultStage;
 
     private SelectClause _selectClause;
