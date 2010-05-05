@@ -23,7 +23,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public enum JoinSemantics
   {
+    /// <summary>
+    /// SQL-style LEFT OUTER JOIN semantics: All records of the left table are returned. If the right table holds no matching records, the right 
+    /// side's columns contain NULL. 
+    /// </summary>
     Left,
+    /// <summary>
+    /// SQL-style INNER JOIN semantics: Only records that produce a match are returned.
+    /// </summary>
     Inner
   }
 }

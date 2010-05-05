@@ -138,25 +138,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitMainFromClause_AddsWhereCondition_AndCreatesNewSqlTable ()
+    public void AddFromClause_WithJoinedTable_AddsOldStyleJoin_WithWhereCondition_AndSqlTable ()
     {
-      var constantExpression = Expression.Constant (0);
-      var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
+      var fromClause = ExpressionHelper.CreateAdditionalFromClause();
 
       var preparedExpression = Expression.Constant (0);
-      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlJoinedTable_WithUnresolvedJoinInfo();
+      var preparedJoinedTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook (), JoinSemantics.Inner);
 
-      _stageMock.Expect (mock => mock.PrepareFromExpression (additionalFromClause.FromExpression)).Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlTable);
+      _stageMock.Expect (mock => mock.PrepareFromExpression (fromClause.FromExpression)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedJoinedTable);
 
       _stageMock.Replay();
 
-      _visitor.VisitAdditionalFromClause (additionalFromClause, _queryModel, 0);
+      _visitor.VisitAdditionalFromClause (fromClause, _queryModel, 0);
 
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (JoinConditionExpression)));
+
+      // TODO Review 2706: Check that SqlStatementBuilder.SqlTables holds a SqlTable (not SqlJoinedTable) whose TableInfo is the preparedJoinTable
+      // TODO Review 2706: Check that JoinConditionExpression points to preparedJoinTable
+      // TODO Review 2706: Check that _context maps the from clause to the sqlTable, not the joined table
     }
 
     [Test]

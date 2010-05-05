@@ -74,6 +74,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
       Assert.That (sqlTable.JoinedTables.ToArray().Contains (result), Is.False);
 
+      // TODO Review 2706: Check that JoinSemantics is Inner
+
       var joinInfo = ((SqlJoinedTable) result).JoinInfo;
       Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
 

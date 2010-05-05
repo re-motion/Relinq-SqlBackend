@@ -93,34 +93,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_ForJoinedTable_ValueSemantics ()
-    {
-      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
-      var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (originalTable, kitchenCookMember, JoinCardinality.One);
-      var joinedTable = originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
-
-      var foreignTableSource = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t2");
-      var primaryColumn = new SqlColumnExpression (typeof (bool), "t1", "ID", false);
-      var foreignColumn = new SqlColumnExpression (typeof (bool), "t2", "FK", false);
-      joinedTable.JoinInfo = new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
-
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).LeftKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t1].[ID]"));
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).RightKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[FK]"));
-      _stageMock.Replay();
-
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true);
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (
-          _commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
-    }
-
-    [Test]
     public void GenerateSql_ForJoinedTable_Recursive ()
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
@@ -158,6 +130,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               + "[CookTable] AS [t2] ON [t1].[ID] = [t2].[FK] LEFT OUTER JOIN "
               + "[CookTable2] AS [t3] ON [t2].[ID2] = [t3].[FK2]"));
     }
+
+    // TODO Review 2706: Remove the following tests, add a TestableSqlTableAndJoinTextGenerator, and test each Visit method separately. One test per execution path per method.
 
     [Test]
     public void VisitSubStatementTableInfo_WithFirstIsFalse ()

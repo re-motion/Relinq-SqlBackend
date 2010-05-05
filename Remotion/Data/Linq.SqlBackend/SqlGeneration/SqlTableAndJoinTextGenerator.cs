@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -72,55 +73,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _context = context;
     }
 
-    public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
-    {
-      if (_context == Context.NonFirstTable)
-      {
-        _commandBuilder.Append (" CROSS JOIN ");
-      }
-
-      _commandBuilder.AppendIdentifier (tableInfo.TableName);
-      _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
-
-      return tableInfo;
-    }
-
-    public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
-    {
-      if (_context == Context.NonFirstTable)
-        _commandBuilder.Append (" CROSS APPLY ");
-
-      _commandBuilder.Append ("(");
-      _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
-      _commandBuilder.Append (")");
-      _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
-
-      return tableInfo;
-    }
-
-    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo tableSource)
-    {
-      tableSource.ForeignTableInfo.Accept (this);
-
-      _commandBuilder.Append (" ON ");
-
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.LeftKey);
-      _commandBuilder.Append (" = ");
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, tableSource.RightKey);
-
-      return tableSource;
-    }
-
     public void VisitSqlTable (SqlTable sqlTable)
     {
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+
       sqlTable.TableInfo.Accept (this);
     }
 
-    public void VisitSqlJoinedTable (SqlJoinedTable sqlTable)
+    public void VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
-      if (sqlTable.JoinSemantics == JoinSemantics.Left)
+      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+
+      if (joinedTable.JoinSemantics == JoinSemantics.Left)
       {
         if (_context == Context.FirstTable)
           _commandBuilder.Append (" (SELECT NULL AS [Empty]) AS [Empty]");
@@ -133,11 +97,63 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           _commandBuilder.Append (" INNER JOIN ");
       }
 
-      sqlTable.JoinInfo.Accept (this);
+      joinedTable.JoinInfo.Accept (this);
+    }
+
+    public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      
+      if (_context == Context.NonFirstTable)
+        _commandBuilder.Append (" CROSS JOIN ");
+
+      _commandBuilder.AppendIdentifier (tableInfo.TableName);
+      _commandBuilder.Append (" AS ");
+      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
+
+      return tableInfo;
+    }
+
+    public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
+      if (_context == Context.NonFirstTable)
+        _commandBuilder.Append (" CROSS APPLY ");
+
+      _commandBuilder.Append ("(");
+      _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
+      _commandBuilder.Append (")");
+      _commandBuilder.Append (" AS ");
+      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
+
+      return tableInfo;
+    }
+
+    // TODO Review 2706: Rename to VisitResolvedJoinInfo
+    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo joinInfo)
+    {
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+
+      Debug.Assert (
+          !(joinInfo.ForeignTableInfo is ResolvedSubStatementTableInfo), 
+          "Once we support substatements in joins, we need to be able to nerge LEFT OUTER JOIN and CROSS APPLY to OUTER APPLY.");
+
+      joinInfo.ForeignTableInfo.Accept (this);
+
+      _commandBuilder.Append (" ON ");
+
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, joinInfo.LeftKey);
+      _commandBuilder.Append (" = ");
+      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, joinInfo.RightKey);
+
+      return joinInfo;
     }
 
     ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
+      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+
       VisitSqlJoinedTable (joinedTable);
       return joinedTable;
     }

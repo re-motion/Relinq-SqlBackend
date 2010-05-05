@@ -56,12 +56,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       sqlTable.TableInfo = newTableInfo;
     }
 
-    public void VisitSqlJoinedTable (SqlJoinedTable sqlTable)
+    public void VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      var newJoinInfo = sqlTable.JoinInfo.Accept (this);
-      sqlTable.JoinInfo = newJoinInfo;
+      var newJoinInfo = joinedTable.JoinInfo.Accept (this);
+      joinedTable.JoinInfo = newJoinInfo;
     }
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
