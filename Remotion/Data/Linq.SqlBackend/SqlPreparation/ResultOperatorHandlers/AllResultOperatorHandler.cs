@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -26,20 +25,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class AllResultOperatorHandler : ResultOperatorHandler<AllResultOperator>
   {
-    public override void HandleResultOperator (AllResultOperator resultOperator, QueryModel queryModel, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    public override void HandleResultOperator (
+        AllResultOperator resultOperator,
+        QueryModel queryModel,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      sqlStatementBuilder.AddWhereCondition (stage.PrepareWhereExpression(Expression.Not (resultOperator.Predicate)));
-      var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
+      sqlStatementBuilder.AddWhereCondition (stage.PrepareWhereExpression (Expression.Not (resultOperator.Predicate), context));
+      var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
       var sqlExistsExpression = new SqlExistsExpression (subStatementExpression);
 
-      sqlStatementBuilder.SelectProjection = Expression.Not(sqlExistsExpression);
+      sqlStatementBuilder.SelectProjection = Expression.Not (sqlExistsExpression);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlSubStatement.DataInfo);
     }
   }

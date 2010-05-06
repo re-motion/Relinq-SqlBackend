@@ -60,7 +60,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [Ignore("TODO: 2668")]
     public void AddQuerySourceMapping ()
     {
       _context.AddQuerySourceMapping (_source, _sqlTable);
@@ -113,7 +112,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
 
-      _stageMock.Expect (mock => mock.PrepareFromExpression (groupJoinClause.JoinClause.InnerSequence)).Return (preparedExpression);
+      _stageMock
+          .Expect (
+              mock =>
+              mock.PrepareFromExpression (
+                  Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
+                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+          .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
       _stageMock.Replay ();
 
@@ -131,7 +136,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
 
-      _stageMock.Expect (mock => mock.PrepareFromExpression (groupJoinClause.JoinClause.InnerSequence)).Return (preparedExpression);
+      _stageMock
+          .Expect (
+              mock =>
+              mock.PrepareFromExpression (
+                  Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
+                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+          .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
       _stageMock.Replay ();
 

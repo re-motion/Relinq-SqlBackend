@@ -41,6 +41,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           +"CROSS JOIN [CookTable] AS [t1] WHERE ([t2].[ID] = [t1].[ID])"
           );
     }
+
+    [Test]
+    [Ignore("2668")]
+    public void ExplicitJoinWithInto_Once ()
+    {
+      CheckQuery (
+          from k in Kitchens
+          join c in Cooks on k.Cook.ID equals c.ID into gkc
+          from kc in gkc
+          select kc.Name,
+          ""
+          );
+    }
     
   }
 }

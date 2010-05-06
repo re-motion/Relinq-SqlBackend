@@ -25,14 +25,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public interface ISqlPreparationStage
   {
-    Expression PrepareSelectExpression (Expression expression);
-    Expression PrepareWhereExpression (Expression expression);
-    Expression PrepareTopExpression (Expression expression);
-    Expression PrepareFromExpression (Expression expression);
-    Expression PrepareOrderByExpression (Expression expression);
-    Expression PrepareItemExpression (Expression expression);
+    Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context);
+    Expression PrepareWhereExpression (Expression expression, ISqlPreparationContext context);
+    Expression PrepareTopExpression (Expression expression, ISqlPreparationContext context);
+    Expression PrepareFromExpression (Expression expression, ISqlPreparationContext context);
+    Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context);
+    Expression PrepareItemExpression (Expression expression, ISqlPreparationContext context);
     SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType);
-    SqlStatement PrepareSqlStatement (QueryModel queryModel);
-
+    SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context);
   }
 }

@@ -26,12 +26,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 {
   public class TestableResultOperatorHandler : ResultOperatorHandler<TestChoiceResultOperator>
   {
-    public override void HandleResultOperator (TestChoiceResultOperator resultOperator, QueryModel queryModel, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    public override void HandleResultOperator (
+        TestChoiceResultOperator resultOperator,
+        QueryModel queryModel,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       throw new NotImplementedException();
     }
 
-    public new void EnsureNoTopExpressionAndSetDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    public new void EnsureNoTopExpressionAndSetDataInfo (
+        ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       base.EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
     }
@@ -40,7 +47,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       base.UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);
     }
-
-
   }
 }

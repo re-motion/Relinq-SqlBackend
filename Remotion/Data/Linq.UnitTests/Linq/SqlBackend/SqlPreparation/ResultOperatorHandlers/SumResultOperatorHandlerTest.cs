@@ -39,6 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private SumResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private QueryModel _queryModel;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -51,6 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
         DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5))
       };
       _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
+      _context = new SqlPreparationContext ();
     }
 
     [Test]
@@ -58,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var averageResultOperator = new SumResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (averageResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       // TODO Review 2690: Use Assert.That (..., Is.EqualTo (AggregationModifier.Sum)); also for all other aggregation handler tests
       Assert.That (_sqlStatementBuilder.AggregationModifier == AggregationModifier.Sum, Is.True);
@@ -73,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       var resultOperator = new SumResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));

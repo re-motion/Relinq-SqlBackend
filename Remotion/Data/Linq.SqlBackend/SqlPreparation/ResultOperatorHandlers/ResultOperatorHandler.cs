@@ -28,29 +28,37 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// Default implementation of <see cref="IResultOperatorHandler"/> providing commonly needed functionality.
   /// </summary>
   /// <typeparam name="T">The result operator type handled by the concrete subclass of <see cref="ResultOperatorHandler{T}"/>.</typeparam>
-  public abstract class ResultOperatorHandler<T> : IResultOperatorHandler where T: ResultOperatorBase
+  public abstract class ResultOperatorHandler<T> : IResultOperatorHandler
+      where T: ResultOperatorBase
   {
-    public Type SupportedResultOperatorType 
-    { 
+    public Type SupportedResultOperatorType
+    {
       get { return typeof (T); }
     }
 
-    public abstract void HandleResultOperator (T resultOperator, QueryModel queryModel,  SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage);
+    public abstract void HandleResultOperator (
+        T resultOperator,
+        QueryModel queryModel,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context);
 
-    protected void EnsureNoTopExpression (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    protected void EnsureNoTopExpression (
+        ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      
+
       if (sqlStatementBuilder.TopExpression != null)
-        MoveCurrentStatementToSqlTable(sqlStatementBuilder, generator);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator);
     }
 
     protected void MoveCurrentStatementToSqlTable (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
     {
-      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
+      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementTableInfo = new ResolvedSubStatementTableInfo (
           generator.GetUniqueIdentifier ("q"),
           sqlStatement);
@@ -67,18 +75,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (dataInfo);
     }
 
-    void IResultOperatorHandler.HandleResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    void IResultOperatorHandler.HandleResultOperator (
+        ResultOperatorBase resultOperator,
+        QueryModel queryModel,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       var castOperator = ArgumentUtility.CheckNotNullAndType<T> ("resultOperator", resultOperator);
-      HandleResultOperator (castOperator, queryModel, sqlStatementBuilder, generator, stage);
+      HandleResultOperator (castOperator, queryModel, sqlStatementBuilder, generator, stage, context);
     }
-
-    
   }
 }

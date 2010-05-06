@@ -31,12 +31,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage)
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count);
+      sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
     }
   }
 }

@@ -33,13 +33,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage)
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
       
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
       // TODO Review 2690: Add EnsureNoDistinctQuery method to base class, use in all aggregation handlers

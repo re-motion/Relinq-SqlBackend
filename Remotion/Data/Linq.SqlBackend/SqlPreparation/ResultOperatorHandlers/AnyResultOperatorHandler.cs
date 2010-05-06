@@ -32,15 +32,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage)
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
-
-
+      ArgumentUtility.CheckNotNull ("context", context);
+      
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
 

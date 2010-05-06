@@ -39,6 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private CastResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private QueryModel _queryModel;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -51,6 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
       };
       _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
+      _context = new SqlPreparationContext ();
     }
 
     [Test]
@@ -58,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var castResultOperator = new CastResultOperator (typeof (Chef));
 
-      _handler.HandleResultOperator (castResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (castResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Chef))));

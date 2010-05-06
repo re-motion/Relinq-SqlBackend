@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
           queryModel,
           preparationContext,
-          new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault (), resultOperatorHandlerRegistry, preparationContext, uniqueIdentifierGenerator), _generator, resultOperatorHandlerRegistry);
+          new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault (), resultOperatorHandlerRegistry, uniqueIdentifierGenerator), _generator, resultOperatorHandlerRegistry);
 
       var resolver = new MappingResolverStub();
       var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);

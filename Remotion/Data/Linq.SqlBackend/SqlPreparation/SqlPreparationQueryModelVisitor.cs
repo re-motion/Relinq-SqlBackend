@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      var translatedExpression = _stage.PrepareWhereExpression (whereClause.Predicate);
+      var translatedExpression = _stage.PrepareWhereExpression (whereClause.Predicate, _context);
       SqlStatementBuilder.AddWhereCondition (translatedExpression);
     }
 
@@ -121,7 +121,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      SqlStatementBuilder.SelectProjection = _stage.PrepareSelectExpression (selectClause.Selector);
+      SqlStatementBuilder.SelectProjection = _stage.PrepareSelectExpression (selectClause.Selector, _context);
       SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();
     }
 
@@ -131,7 +131,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var orderings = from ordering in orderByClause.Orderings
-                      let orderByExpression = _stage.PrepareOrderByExpression (ordering.Expression)
+                      let orderByExpression = _stage.PrepareOrderByExpression (ordering.Expression, _context)
                       select new Ordering (orderByExpression, ordering.OrderingDirection);
       SqlStatementBuilder.Orderings.InsertRange (0, orderings);
     }
@@ -144,7 +144,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       AddQuerySource (joinClause, joinClause.InnerSequence);
 
       var whereCondition = Expression.Equal (joinClause.OuterKeySelector, joinClause.InnerKeySelector);
-      SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression (whereCondition));
+      SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression (whereCondition, _context));
     }
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
@@ -152,12 +152,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      _registry.GetItem (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel, _sqlStatementBuilder, _generator, _stage);
+      _registry.GetItem (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel, _sqlStatementBuilder, _generator, _stage, _context);
     }
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
-      var preparedFromExpression = _stage.PrepareFromExpression (fromExpression);
+      var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
       var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, source.ItemType);
 
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;

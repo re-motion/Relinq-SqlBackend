@@ -29,7 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public class SqlPreparationQueryModelVisitorContext : ISqlPreparationContext
   {
     private readonly ISqlPreparationContext _parentContext;
-    private SqlPreparationQueryModelVisitor _visitor;
+    private readonly SqlPreparationQueryModelVisitor _visitor;
     private readonly Dictionary<IQuerySource, SqlTableBase> _mapping;
 
     public SqlPreparationQueryModelVisitorContext (ISqlPreparationContext parentContext, SqlPreparationQueryModelVisitor visitor)
@@ -52,8 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("source", source);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      _parentContext.AddQuerySourceMapping (source, sqlTable);
-      //_mapping.Add (source, sqlTable); //TODO: 2668
+      _mapping.Add (source, sqlTable);
     }
 
     public SqlTableBase GetSqlTableForQuerySource (IQuerySource source)

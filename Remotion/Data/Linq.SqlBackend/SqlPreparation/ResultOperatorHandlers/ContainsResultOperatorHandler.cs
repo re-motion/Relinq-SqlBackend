@@ -34,17 +34,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage)
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       Expression selectProjection;
       var dataInfo = sqlStatementBuilder.DataInfo;
-      var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item);
+      var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item, context);
 
       var constantCollection = GetConstantCollectionValue (queryModel);
       if (constantCollection != null) // Scenario: where new[] { 1, 2, 3 }.Contains (...)

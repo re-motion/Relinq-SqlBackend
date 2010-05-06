@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
@@ -140,7 +140,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
 
       _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
@@ -164,7 +164,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
 
       _stageMock
-          .Expect (mock => mock.PrepareSqlStatement (querModel))
+          .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);

@@ -29,6 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage);
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context);
   }
 }

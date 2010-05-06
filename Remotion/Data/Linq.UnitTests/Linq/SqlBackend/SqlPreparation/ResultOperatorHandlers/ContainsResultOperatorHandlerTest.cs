@@ -42,6 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private ContainsResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private QueryModel _queryModel;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -54,6 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
         DataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()))
       };
       _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause ());
+      _context = new SqlPreparationContext ();
     }
 
     [Test]
@@ -64,10 +66,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement ();
 
       var preparedExpression = Expression.Constant (new Cook (), typeof (Cook));
-      _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression, _context)).Return (preparedExpression);
       _stageMock.Replay ();
       
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations ();
       
@@ -93,11 +95,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var fakeConstantExpression = Expression.Constant (new Cook());
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (itemExpression))
+          .Expect (mock => mock.PrepareItemExpression (itemExpression, _context))
           .Return (fakeConstantExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       var expectedExpression = new SqlBinaryOperatorExpression (
         "IN", fakeConstantExpression, Expression.Constant (constantExpressionCollection.Value));
@@ -119,11 +121,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       queryModel.ResultOperators.Add (containsResultOperator);
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (itemExpression))
+          .Expect (mock => mock.PrepareItemExpression (itemExpression, _context))
           .Return (itemExpression);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
      
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) _sqlStatementBuilder.SelectProjection).Value, Is.EqualTo (false));
@@ -146,7 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       queryModel.ResultOperators.Add (resultOperator);
       queryModel.ResultOperators.Add (containsResultOperator);
 
-      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (containsResultOperator, queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
     }
 
   }

@@ -27,51 +27,48 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public class DefaultSqlPreparationStage : ISqlPreparationStage
   {
     private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
-    private readonly ISqlPreparationContext _context;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
-    public DefaultSqlPreparationStage (MethodCallTransformerRegistry methodCallTransformerRegistry, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, ISqlPreparationContext context, UniqueIdentifierGenerator generator)
+    public DefaultSqlPreparationStage (MethodCallTransformerRegistry methodCallTransformerRegistry, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("registry", methodCallTransformerRegistry);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       _methodCallTransformerRegistry = methodCallTransformerRegistry;
       _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
-      _context = context;
       _generator = generator;
     }
 
-    public virtual Expression PrepareSelectExpression (Expression expression)
+    public virtual Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression);
+      return PrepareExpression (expression, context);
     }
 
-    public virtual Expression PrepareWhereExpression (Expression expression)
+    public virtual Expression PrepareWhereExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression);
+      return PrepareExpression (expression, context);
     }
 
-    public virtual Expression PrepareTopExpression (Expression expression)
+    public virtual Expression PrepareTopExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression);
+      return PrepareExpression (expression, context);
     }
 
-    public virtual Expression PrepareFromExpression (Expression expression)
+    public virtual Expression PrepareFromExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression);
+      return PrepareExpression (expression, context);
     }
 
-    public virtual Expression PrepareOrderByExpression (Expression expression)
+    public virtual Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression);
+      return PrepareExpression (expression, context);
     }
 
-    public virtual Expression PrepareItemExpression (Expression expression)
+    public virtual Expression PrepareItemExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression);
+      return PrepareExpression (expression, context);
     }
 
     public virtual SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType)
@@ -79,16 +76,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return SqlPreparationFromExpressionVisitor.GetTableForFromExpression (fromExpression, itemType, this, _generator);
     }
 
-    public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
+    public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context)
     {
-      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, this, _generator, _resultOperatorHandlerRegistry);
+      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, context, this, _generator, _resultOperatorHandlerRegistry);
     }
 
-    protected virtual Expression PrepareExpression (Expression expression)
+    protected virtual Expression PrepareExpression (Expression expression, ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, this, _methodCallTransformerRegistry);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerRegistry);
     }
   }
 }

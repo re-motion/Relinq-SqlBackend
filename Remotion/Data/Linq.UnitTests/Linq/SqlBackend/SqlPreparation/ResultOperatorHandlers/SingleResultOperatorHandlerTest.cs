@@ -39,18 +39,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private SingleResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private QueryModel _queryModel;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
-      _generator = new UniqueIdentifierGenerator ();
-      _handler = new SingleResultOperatorHandler ();
-      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
+      _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
+      _generator = new UniqueIdentifierGenerator();
+      _handler = new SingleResultOperatorHandler();
+      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
+                             {
+                                 DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                             };
+      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause());
+      _context = new SqlPreparationContext();
     }
 
     [Test]
@@ -59,14 +61,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new SingleResultOperator (false);
 
       var preparedExpression = Expression.Constant (null, typeof (Cook));
+
       _stageMock
           .Expect (
-          mock => mock.PrepareTopExpression (
-                      Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (2))))
+              mock => mock.PrepareTopExpression (
+                  Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (2)),
+                  Arg<ISqlPreparationContext>.Matches (c => c==_context)))
           .Return (preparedExpression);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
@@ -79,13 +83,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
 
+      var preparedExpression = Expression.Constant (null, typeof (Cook));
       var resultOperator = new SingleResultOperator (false);
 
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock);
+      _stageMock
+          .Expect (
+              mock => mock.PrepareTopExpression (
+                  Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (2)),
+                  Arg<ISqlPreparationContext>.Matches (c => c == _context)))
+          .Return (preparedExpression);
+      _stageMock.Replay ();
 
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf(typeof(ResolvedSubStatementTableInfo)));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
-
   }
 }

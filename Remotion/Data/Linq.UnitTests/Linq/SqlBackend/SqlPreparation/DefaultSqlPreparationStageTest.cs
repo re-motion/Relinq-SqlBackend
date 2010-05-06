@@ -49,13 +49,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _querySourceReferenceExpression = new QuerySourceReferenceExpression (querySource);
 
       _stage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _context, new UniqueIdentifierGenerator());
+          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), new UniqueIdentifierGenerator());
     }
 
     [Test]
     public void PrepareSelectExpression ()
     {
-      var result = _stage.PrepareSelectExpression (_querySourceReferenceExpression);
+      var result = _stage.PrepareSelectExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void PrepareWhereExpression ()
     {
-      var result = _stage.PrepareWhereExpression (_querySourceReferenceExpression);
+      var result = _stage.PrepareWhereExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void PrepareTopExpression ()
     {
-      var result = _stage.PrepareTopExpression (_querySourceReferenceExpression);
+      var result = _stage.PrepareTopExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void PrepareFromExpression ()
     {
-      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression);
+      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void PrepareItemExpression ()
     {
-      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression);
+      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var queryModel = ExpressionHelper.CreateQueryModel_Cook();
 
-      var result = _stage.PrepareSqlStatement (queryModel);
+      var result = _stage.PrepareSqlStatement (queryModel, _context);
 
       Assert.That (result, Is.Not.Null);
     }
