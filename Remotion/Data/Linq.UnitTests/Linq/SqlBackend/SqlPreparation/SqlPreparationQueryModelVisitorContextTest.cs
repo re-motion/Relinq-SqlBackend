@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _context.AddQuerySourceMapping (_source, _sqlTable);
 
       SqlTableBase result;
-      var found = _context.TryGetSqlTableForQuerySource (_source, out result);
+      var found = _context.TryGetSqlTableFromHierarchy (_source, out result);
 
       Assert.That (found, Is.True);
       Assert.That (result, Is.SameAs (_sqlTable));
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _parentContext.AddQuerySourceMapping (_parentSource, _parentSqlTable);
 
       SqlTableBase result;
-      var found = _context.TryGetSqlTableForQuerySource (_parentSource, out result);
+      var found = _context.TryGetSqlTableFromHierarchy (_parentSource, out result);
 
       Assert.That (found, Is.True);
       Assert.That (result, Is.SameAs (_parentSqlTable));
@@ -129,6 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [Ignore("TODO: 2668")]
     public void TryGetSqlTableForQuerySource_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
@@ -147,7 +148,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.Replay ();
 
       SqlTableBase result;
-      var found = _context.TryGetSqlTableForQuerySource (groupJoinClause, out result);
+      var found = _context.TryGetSqlTableFromHierarchy (groupJoinClause, out result);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (found, Is.True);
@@ -167,7 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void TryGetSqlTableForQuerySource_ReturnsFalseWhenSourceNotAdded ()
     {
       SqlTableBase result;
-      var found = _context.TryGetSqlTableForQuerySource (_source, out result);
+      var found = _context.TryGetSqlTableFromHierarchy (_source, out result);
 
       Assert.That (found, Is.False);
       Assert.That (result, Is.Null);

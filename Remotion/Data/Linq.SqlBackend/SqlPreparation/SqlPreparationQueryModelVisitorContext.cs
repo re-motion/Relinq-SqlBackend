@@ -60,19 +60,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("source", source);
       
       SqlTableBase result;
-      if (_mapping.TryGetValue (source, out result))
+      if (TryGetSqlTableFromHierarchy (source, out result)) // search this context and parent context's for query source
         return result;
 
-      if(_parentContext.TryGetSqlTableForQuerySource(source, out result))
-      {
-        return result;
-      }
-      else
-      {
-        var groupJoinClause = source as GroupJoinClause;
-        if (groupJoinClause != null)
-          return _visitor.AddJoinClause (groupJoinClause.JoinClause);
-      }
+      // if whole hierarchy doesn't contain source, check whether it's a group join; group joins are lazily added
+      var groupJoinClause = source as GroupJoinClause;
+      if (groupJoinClause != null)
+        return _visitor.AddJoinClause (groupJoinClause.JoinClause);
+
+      // nobody knows this source in the whole hierarchy, and it is no lazy join => error
       var message = string.Format (
            "The query source '{0}' ({1}) could not be found in the list of processed query sources. Probably, the feature declaring '{0}' isn't "
            + "supported yet.",
@@ -81,20 +77,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       throw new KeyNotFoundException (message);
     }
 
-    public bool TryGetSqlTableForQuerySource (IQuerySource source, out SqlTableBase sqlTableBase)
+    // TODO: Refactor to return null if none is found, get rid of out parameter
+    public bool TryGetSqlTableFromHierarchy (IQuerySource source, out SqlTableBase sqlTableBase)
     {
       if (_mapping.TryGetValue (source, out sqlTableBase))
         return true;
 
-      if (_parentContext.TryGetSqlTableForQuerySource (source, out sqlTableBase))
+      if (_parentContext.TryGetSqlTableFromHierarchy (source, out sqlTableBase))
         return true;
-
-      var groupJoinClause = source as GroupJoinClause;
-      if (groupJoinClause != null)
-      {
-        sqlTableBase = _visitor.AddJoinClause (groupJoinClause.JoinClause);
-        return true;
-      }
 
       return false;
     }
