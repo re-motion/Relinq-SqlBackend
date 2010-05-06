@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var groupJoinClause = source as GroupJoinClause;
         if (groupJoinClause != null)
-          return _visitor.AddQuerySource (groupJoinClause.JoinClause, groupJoinClause.JoinClause.InnerSequence);
+          return _visitor.AddJoinClause (groupJoinClause.JoinClause);
       }
       var message = string.Format (
            "The query source '{0}' ({1}) could not be found in the list of processed query sources. Probably, the feature declaring '{0}' isn't "
@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var groupJoinClause = source as GroupJoinClause;
       if (groupJoinClause != null)
       {
-        sqlTableBase = _visitor.AddQuerySource (groupJoinClause.JoinClause, groupJoinClause.JoinClause.InnerSequence);
+        sqlTableBase = _visitor.AddJoinClause (groupJoinClause.JoinClause);
         return true;
       }
 

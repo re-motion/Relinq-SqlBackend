@@ -95,16 +95,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
     [ExpectedException (typeof (NotSupportedException))]
     [Test]
-    public void VisitTableReferenceExpression_ThrowsNotSupportException ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (int));
-      var expression = new SqlTableReferenceExpression (sqlTable);
-
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
-    }
-
-    [ExpectedException (typeof (NotSupportedException))]
-    [Test]
     public void VisitEntityRefMemberExpression_ThrowsNotSupportException ()
     {
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
@@ -147,7 +137,39 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((SqlJoinedTable) result).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
       Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
       Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).MemberInfo, Is.EqualTo (memberExpression.Member));
-
     }
-  }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression ()
+    {
+      var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
+
+      Assert.That (result, Is.SameAs (sqlTable));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void VisitSqlEntityRefMemberExpression ()
+    {
+      var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
+      var expression = new SqlEntityRefMemberExpression(sqlTable, memberInfo);
+
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void VisitSqlEntityConstantExpression ()
+    {
+      var expression = new SqlEntityConstantExpression (typeof (Cook), "test", "test");
+
+      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
+    }
+
+   }
 }

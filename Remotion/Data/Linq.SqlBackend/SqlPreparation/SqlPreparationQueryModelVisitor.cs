@@ -141,10 +141,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddQuerySource (joinClause, joinClause.InnerSequence);
+      AddJoinClause(joinClause);
+    }
+
+    public SqlTableBase AddJoinClause (JoinClause joinClause)
+    {
+      ArgumentUtility.CheckNotNull ("joinClause", joinClause);
+
+      var table = AddQuerySource (joinClause, joinClause.InnerSequence);
 
       var whereCondition = Expression.Equal (joinClause.OuterKeySelector, joinClause.InnerKeySelector);
       SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression (whereCondition, _context));
+
+      return table;
     }
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
@@ -158,18 +167,34 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
-      var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, source.ItemType);
-
-      var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
-      if (sqlJoinedTable != null)
-      {
-        SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-        sqlTableOrJoin = new SqlTable (sqlJoinedTable);
-      }
+      var sqlTableOrJoin = GetTableForFromExpression(preparedFromExpression, source.ItemType);
 
       _context.AddQuerySourceMapping (source, sqlTableOrJoin);
-      SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
       return sqlTableOrJoin;
+    }
+
+    private SqlTableBase GetTableForFromExpression (Expression preparedFromExpression, Type itemType)
+    {
+      var existingTableReference = preparedFromExpression as SqlTableReferenceExpression; // is from expression already a reference to an existing table?
+      
+      if (existingTableReference != null) // yes, table already exists
+      {
+        return existingTableReference.SqlTable;
+      }
+      else // no, a new table must be created
+      {
+        var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, itemType);
+
+        var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
+        if (sqlJoinedTable != null)
+        {
+          SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
+          sqlTableOrJoin = new SqlTable (sqlJoinedTable);
+        }
+
+        SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
+        return sqlTableOrJoin;
+      }
     }
   }
 }
