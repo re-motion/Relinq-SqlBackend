@@ -52,7 +52,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("source", source);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      _mapping.Add (source, sqlTable);
+      _parentContext.AddQuerySourceMapping (source, sqlTable);
+      //_mapping.Add (source, sqlTable); //TODO: 2668
     }
 
     public SqlTableBase GetSqlTableForQuerySource (IQuerySource source)
@@ -63,15 +64,40 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (_mapping.TryGetValue (source, out result))
         return result;
 
-      try
+      if(_parentContext.TryGetSqlTableForQuerySource(source, out result))
       {
-        return _parentContext.GetSqlTableForQuerySource (source);
+        return result;
       }
-      catch (KeyNotFoundException ex)
+      else
       {
-        //TODO: 2668 if(groupJoinClause!=null)
-        throw;
+        var groupJoinClause = source as GroupJoinClause;
+        if (groupJoinClause != null)
+          return _visitor.AddQuerySource (groupJoinClause.JoinClause, groupJoinClause.JoinClause.InnerSequence);
       }
+      var message = string.Format (
+           "The query source '{0}' ({1}) could not be found in the list of processed query sources. Probably, the feature declaring '{0}' isn't "
+           + "supported yet.",
+           source.ItemName,
+           source.GetType ().Name);
+      throw new KeyNotFoundException (message);
+    }
+
+    public bool TryGetSqlTableForQuerySource (IQuerySource source, out SqlTableBase sqlTableBase)
+    {
+      if (_mapping.TryGetValue (source, out sqlTableBase))
+        return true;
+
+      if (_parentContext.TryGetSqlTableForQuerySource (source, out sqlTableBase))
+        return true;
+
+      var groupJoinClause = source as GroupJoinClause;
+      if (groupJoinClause != null)
+      {
+        sqlTableBase = _visitor.AddQuerySource (groupJoinClause.JoinClause, groupJoinClause.JoinClause.InnerSequence);
+        return true;
+      }
+
+      return false;
     }
   }
 }

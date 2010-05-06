@@ -66,6 +66,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void Initialization ()
+    {
+      Assert.That (_visitor.Context, Is.TypeOf (typeof (SqlPreparationQueryModelVisitorContext)));
+      Assert.That (_visitor.Context, Is.Not.SameAs(_context));
+    }
+
+    [Test]
     public void TransformQueryModel_EmptyQueryModel ()
     {
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (_queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault ());
@@ -109,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
-      Assert.That (_context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (preparedSqlTable));
+      Assert.That (_visitor.Context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (preparedSqlTable));
     }
 
     [Test]
@@ -134,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
-      Assert.That (_context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlTable));
+      Assert.That (_visitor.Context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlTable));
     }
 
     [Test]
@@ -340,6 +347,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
       handlerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void AddQuerySource ()
+    {
+      var preparedExpression = Expression.Constant (0);
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+
+      _stageMock.Expect (mock => mock.PrepareFromExpression (_mainFromClause.FromExpression)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Replay();
+
+      var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (preparedSqlTable));
+      Assert.That (_visitor.Context.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
     }
     
   }

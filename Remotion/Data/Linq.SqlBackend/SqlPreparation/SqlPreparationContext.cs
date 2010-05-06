@@ -64,5 +64,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       return result;
     }
+
+    public bool TryGetSqlTableForQuerySource (IQuerySource source, out SqlTableBase sqlTableBase)
+    {
+      return _mapping.TryGetValue (source, out sqlTableBase);
+    }
   }
 }

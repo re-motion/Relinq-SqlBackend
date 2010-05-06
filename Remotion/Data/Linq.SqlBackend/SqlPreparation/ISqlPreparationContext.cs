@@ -28,5 +28,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     int QuerySourceMappingCount { get; }
     void AddQuerySourceMapping (IQuerySource source, SqlTableBase sqlTable);
     SqlTableBase GetSqlTableForQuerySource (IQuerySource source);
+    bool TryGetSqlTableForQuerySource (IQuerySource source, out SqlTableBase sqlTableBase);
   }
 }

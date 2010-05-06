@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -23,6 +24,8 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
@@ -47,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _parentContext = new SqlPreparationContext();
       _parentSource = ExpressionHelper.CreateMainFromClause_Cook();
       _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
-      
+
       _visitor = new TestableSqlPreparationQueryModelVisitor (
           _parentContext, _stageMock, new UniqueIdentifierGenerator(), ResultOperatorHandlerRegistry.CreateDefault());
       _context = new SqlPreparationQueryModelVisitorContext (_parentContext, _visitor);
@@ -57,6 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [Ignore("TODO: 2668")]
     public void AddQuerySourceMapping ()
     {
       _context.AddQuerySourceMapping (_source, _sqlTable);
@@ -71,10 +75,72 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void TryGetSqlTableForQuerySource ()
+    {
+      _context.AddQuerySourceMapping (_source, _sqlTable);
+
+      SqlTableBase result;
+      var found = _context.TryGetSqlTableForQuerySource (_source, out result);
+
+      Assert.That (found, Is.True);
+      Assert.That (result, Is.SameAs (_sqlTable));
+    }
+
+    [Test]
     public void GetSqlTableForQuerySource_GetFromParentContext ()
     {
       _parentContext.AddQuerySourceMapping (_parentSource, _parentSqlTable);
       Assert.That (_context.GetSqlTableForQuerySource (_parentSource), Is.SameAs (_parentSqlTable));
+    }
+
+    [Test]
+    public void TryGetSqlTableForQuerySource_GetFromParentContext ()
+    {
+      _parentContext.AddQuerySourceMapping (_parentSource, _parentSqlTable);
+
+      SqlTableBase result;
+      var found = _context.TryGetSqlTableForQuerySource (_parentSource, out result);
+
+      Assert.That (found, Is.True);
+      Assert.That (result, Is.SameAs (_parentSqlTable));
+    }
+
+    [Test]
+    public void GetSqlTableForQuerySource_GroupJoinClause ()
+    {
+      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
+
+      var preparedExpression = Expression.Constant (0);
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+
+      _stageMock.Expect (mock => mock.PrepareFromExpression (groupJoinClause.JoinClause.InnerSequence)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Replay ();
+
+      var result = _context.GetSqlTableForQuerySource (groupJoinClause);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.Not.Null);
+    }
+
+    [Test]
+    public void TryGetSqlTableForQuerySource_GroupJoinClause ()
+    {
+      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
+
+      var preparedExpression = Expression.Constant (0);
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+
+      _stageMock.Expect (mock => mock.PrepareFromExpression (groupJoinClause.JoinClause.InnerSequence)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Replay ();
+
+      SqlTableBase result;
+      var found = _context.TryGetSqlTableForQuerySource (groupJoinClause, out result);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (found, Is.True);
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -84,6 +150,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetSqlTableForQuerySource_Throws_WhenSourceNotAdded ()
     {
       _context.GetSqlTableForQuerySource (_source);
+    }
+
+    [Test]
+    public void TryGetSqlTableForQuerySource_ReturnsFalseWhenSourceNotAdded ()
+    {
+      SqlTableBase result;
+      var found = _context.TryGetSqlTableForQuerySource (_source, out result);
+
+      Assert.That (found, Is.False);
+      Assert.That (result, Is.Null);
     }
   }
 }

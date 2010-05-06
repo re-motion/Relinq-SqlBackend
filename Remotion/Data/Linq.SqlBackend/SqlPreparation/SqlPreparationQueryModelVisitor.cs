@@ -29,7 +29,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationQueryModelVisitor : QueryModelVisitorBase
   {
-    public static SqlStatement TransformQueryModel (QueryModel queryModel, ISqlPreparationContext preparationContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+    public static SqlStatement TransformQueryModel (
+        QueryModel queryModel,
+        ISqlPreparationContext preparationContext,
+        ISqlPreparationStage stage,
+        UniqueIdentifierGenerator generator,
+        ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("preparationContext", preparationContext);
@@ -50,14 +55,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly UniqueIdentifierGenerator _generator;
     private readonly ResultOperatorHandlerRegistry _registry;
 
-    protected SqlPreparationQueryModelVisitor (ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+    protected SqlPreparationQueryModelVisitor (
+        ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
-      _context = context;
+      _context = new SqlPreparationQueryModelVisitorContext (context, this);
       _stage = stage;
       _generator = generator;
       _registry = registry;
@@ -90,7 +96,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddFromClause (fromClause, fromClause.FromExpression);
+      AddQuerySource (fromClause, fromClause.FromExpression);
     }
 
     public override void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index)
@@ -98,7 +104,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddFromClause (fromClause, fromClause.FromExpression);
+      AddQuerySource (fromClause, fromClause.FromExpression);
     }
 
     public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
@@ -135,7 +141,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddFromClause (joinClause, joinClause.InnerSequence);
+      AddQuerySource (joinClause, joinClause.InnerSequence);
 
       var whereCondition = Expression.Equal (joinClause.OuterKeySelector, joinClause.InnerKeySelector);
       SqlStatementBuilder.AddWhereCondition (_stage.PrepareWhereExpression (whereCondition));
@@ -146,14 +152,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      _registry.GetItem(resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel,  _sqlStatementBuilder, _generator, _stage);
+      _registry.GetItem (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel, _sqlStatementBuilder, _generator, _stage);
     }
 
-    private void AddFromClause (IQuerySource source, Expression fromExpression)
+    public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression);
       var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, source.ItemType);
-      
+
       var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
       if (sqlJoinedTable != null)
       {
@@ -163,7 +169,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       _context.AddQuerySourceMapping (source, sqlTableOrJoin);
       SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
+      return sqlTableOrJoin;
     }
-
   }
 }

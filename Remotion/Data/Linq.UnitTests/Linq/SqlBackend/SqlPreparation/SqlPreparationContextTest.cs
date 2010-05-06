@@ -57,6 +57,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void TryGetSqlTableForQuerySource ()
+    {
+      _context.AddQuerySourceMapping (_source, _sqlTable);
+      SqlTableBase result;
+      var found = _context.TryGetSqlTableForQuerySource (_source, out result);
+      Assert.That (found, Is.True);
+      Assert.That (result, Is.SameAs (_sqlTable));
+    }
+
+    [Test]
     [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = 
         "The query source 's' (MainFromClause) could not be found in the list of processed query sources. Probably, the feature declaring 's' isn't "
         + "supported yet.")]
@@ -64,6 +74,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _source = ExpressionHelper.CreateMainFromClause_Cook();
       _context.GetSqlTableForQuerySource (_source);
+    }
+
+    [Test]
+    public void TryGetSqlTableForQuerySource_ReturnsFalseWhenSourceNotAdded ()
+    {
+      _source = ExpressionHelper.CreateMainFromClause_Cook ();
+      SqlTableBase result;
+      var found = _context.TryGetSqlTableForQuerySource (_source, out result);
+
+      Assert.That (found, Is.False);
+      Assert.That (result, Is.Null);
     }
   }
 }
