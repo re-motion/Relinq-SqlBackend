@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
+  // TODO Review 2668: This class is more or less identical to SqlPreparationQueryModelVisitorContext; I'd suggest unifying both classes into one SqlPreparationContext that has a ParentContext property that is allowed to be null.
   /// <summary>
   /// <see cref="SqlPreparationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTable"/>.
   /// </summary>

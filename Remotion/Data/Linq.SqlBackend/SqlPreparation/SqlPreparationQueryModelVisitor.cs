@@ -32,6 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     public static SqlStatement TransformQueryModel (
         QueryModel queryModel,
+      // TODO Review 2668: Rename to parentPreparationContext
         ISqlPreparationContext preparationContext,
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
@@ -57,7 +58,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly ResultOperatorHandlerRegistry _registry;
 
     protected SqlPreparationQueryModelVisitor (
-        ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+      // TODO Review 2668: Rename to parentContext  
+      ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -145,6 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       AddJoinClause(joinClause);
     }
 
+    // TODO Review 2668: Test this method, now that it is public
     public SqlTableBase AddJoinClause (JoinClause joinClause)
     {
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
@@ -156,6 +159,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       return table;
     }
+
+    // TODO Review 2668: Add an empty override for VisitGroupJoinClause and add a comment to it explaining how GroupJoinClauses are handled (that the respective join is added on demand in SqlPreparationContextVisitor)
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
     {

@@ -72,6 +72,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
     }
 
+    // TODO Review 2668: Add tests that _uses_ the into variable twice; in the same statement, in the same statement and a substatement, in two substatements
+
     [Test]
     public void ExplicitJoinWithInto_InSubstatement_Once ()
     {

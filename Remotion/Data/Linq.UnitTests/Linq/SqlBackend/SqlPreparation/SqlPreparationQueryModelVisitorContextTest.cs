@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private MainFromClause _source;
     private SqlTable _sqlTable;
 
-    private ISqlPreparationStage _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+    private ISqlPreparationStage _stageMock;
     private SqlPreparationQueryModelVisitor _visitor;
 
     [SetUp]
@@ -58,6 +58,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _source = ExpressionHelper.CreateMainFromClause_Cook ();
       _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
+
+      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
     }
 
     [Test]
@@ -131,6 +133,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.Null);
+      
+      // TODO Review 2668: Assert that the join was added to the visitor (both SqlTable and WhereCondition)
+      // TODO Review 2668: The returned value should be a SqlTableReferenceExpression pointing to the SqlTable
     }
 
     [Test]
@@ -152,7 +157,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetContextMappingFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
+    public void TryGetContextMappingFromHierarchy_ReturnsNullWhenSourceNotAdded ()
     {
       Expression result = _context.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression(_source));
       

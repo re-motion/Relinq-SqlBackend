@@ -76,6 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return SqlPreparationFromExpressionVisitor.GetTableForFromExpression (fromExpression, itemType, this, _generator);
     }
 
+    // TODO Review 2668: Rename to parentContext
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context)
     {
       return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, context, this, _generator, _resultOperatorHandlerRegistry);
