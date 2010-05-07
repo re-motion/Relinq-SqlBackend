@@ -59,8 +59,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("source", source);
       
-      SqlTableBase result;
-      if (TryGetSqlTableFromHierarchy (source, out result)) // search this context and parent context's for query source
+      SqlTableBase result = TryGetSqlTableFromHierarchy (source);
+      if (result!=null) // search this context and parent context's for query source
         return result;
 
       // if whole hierarchy doesn't contain source, check whether it's a group join; group joins are lazily added
@@ -77,16 +77,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       throw new KeyNotFoundException (message);
     }
 
-    // TODO: Refactor to return null if none is found, get rid of out parameter
-    public bool TryGetSqlTableFromHierarchy (IQuerySource source, out SqlTableBase sqlTableBase)
+    public SqlTableBase TryGetSqlTableFromHierarchy (IQuerySource source)
     {
+      SqlTableBase sqlTableBase;
       if (_mapping.TryGetValue (source, out sqlTableBase))
-        return true;
+        return sqlTableBase;
 
-      if (_parentContext.TryGetSqlTableFromHierarchy (source, out sqlTableBase))
-        return true;
-
-      return false;
+      return _parentContext.TryGetSqlTableFromHierarchy (source);
     }
   }
 }

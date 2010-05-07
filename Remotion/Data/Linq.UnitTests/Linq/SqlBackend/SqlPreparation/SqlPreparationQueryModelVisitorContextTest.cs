@@ -74,14 +74,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetSqlTableForQuerySource ()
+    public void TryGetSqlTableFromHierarchy ()
     {
       _context.AddQuerySourceMapping (_source, _sqlTable);
 
-      SqlTableBase result;
-      var found = _context.TryGetSqlTableFromHierarchy (_source, out result);
-
-      Assert.That (found, Is.True);
+      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
+      
       Assert.That (result, Is.SameAs (_sqlTable));
     }
 
@@ -93,14 +91,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetSqlTableForQuerySource_GetFromParentContext ()
+    public void TryGetSqlTableFromHierarchy_GetFromParentContext ()
     {
       _parentContext.AddQuerySourceMapping (_parentSource, _parentSqlTable);
 
-      SqlTableBase result;
-      var found = _context.TryGetSqlTableFromHierarchy (_parentSource, out result);
-
-      Assert.That (found, Is.True);
+      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_parentSource);
+      
       Assert.That (result, Is.SameAs (_parentSqlTable));
     }
 
@@ -129,30 +125,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [Ignore("TODO: 2668")]
-    public void TryGetSqlTableForQuerySource_GroupJoinClause ()
+    public void TryGetSqlTableFromHierarchy_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
 
-      var preparedExpression = Expression.Constant (0);
-      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
-
-      _stageMock
-          .Expect (
-              mock =>
-              mock.PrepareFromExpression (
-                  Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
-          .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
-      _stageMock.Replay ();
-
-      SqlTableBase result;
-      var found = _context.TryGetSqlTableFromHierarchy (groupJoinClause, out result);
-
-      _stageMock.VerifyAllExpectations ();
-      Assert.That (found, Is.True);
-      Assert.That (result, Is.Not.Null);
+      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (groupJoinClause);
+      
+      Assert.That (result, Is.Null);
     }
 
     [Test]
@@ -165,12 +144,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetSqlTableForQuerySource_ReturnsFalseWhenSourceNotAdded ()
+    public void TryGetSqlTableFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
     {
-      SqlTableBase result;
-      var found = _context.TryGetSqlTableFromHierarchy (_source, out result);
-
-      Assert.That (found, Is.False);
+      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
+      
       Assert.That (result, Is.Null);
     }
   }

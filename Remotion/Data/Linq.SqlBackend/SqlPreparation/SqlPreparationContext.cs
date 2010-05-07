@@ -65,9 +65,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return result;
     }
 
-    public bool TryGetSqlTableFromHierarchy (IQuerySource source, out SqlTableBase sqlTableBase)
+    public SqlTableBase TryGetSqlTableFromHierarchy (IQuerySource source)
     {
-      return _mapping.TryGetValue (source, out sqlTableBase);
+      SqlTableBase sqlTableBase;
+      if(_mapping.TryGetValue (source, out sqlTableBase))
+        return sqlTableBase;
+      return null;
     }
   }
 }

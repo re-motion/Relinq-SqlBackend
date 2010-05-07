@@ -57,12 +57,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetSqlTableForQuerySource ()
+    public void TryGetSqlTableFromHierarchy ()
     {
       _context.AddQuerySourceMapping (_source, _sqlTable);
-      SqlTableBase result;
-      var found = _context.TryGetSqlTableFromHierarchy (_source, out result);
-      Assert.That (found, Is.True);
+      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
       Assert.That (result, Is.SameAs (_sqlTable));
     }
 
@@ -77,13 +75,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetSqlTableForQuerySource_ReturnsFalseWhenSourceNotAdded ()
+    public void TryGetSqlTableFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
     {
       _source = ExpressionHelper.CreateMainFromClause_Cook ();
-      SqlTableBase result;
-      var found = _context.TryGetSqlTableFromHierarchy (_source, out result);
-
-      Assert.That (found, Is.False);
+      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
+      
       Assert.That (result, Is.Null);
     }
   }
