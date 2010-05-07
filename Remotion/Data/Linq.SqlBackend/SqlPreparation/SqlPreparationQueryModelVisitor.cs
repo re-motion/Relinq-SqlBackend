@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
@@ -169,7 +170,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
       var sqlTableOrJoin = GetTableForFromExpression(preparedFromExpression, source.ItemType);
 
-      _context.AddQuerySourceMapping (source, sqlTableOrJoin);
+      _context.AddContextMapping (new QuerySourceReferenceExpression(source) , new SqlTableReferenceExpression(sqlTableOrJoin));
       return sqlTableOrJoin;
     }
 

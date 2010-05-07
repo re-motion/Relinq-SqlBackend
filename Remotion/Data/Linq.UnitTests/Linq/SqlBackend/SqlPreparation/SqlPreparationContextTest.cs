@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -43,42 +45,44 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddQuerySourceMapping ()
+    public void AddContextMapping ()
     {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
+      _context.AddContextMapping (new QuerySourceReferenceExpression(_source), new SqlTableReferenceExpression(_sqlTable));
       Assert.That (_context.QuerySourceMappingCount, Is.EqualTo (1));
     }
 
     [Test]
-    public void GetSqlTableForQuerySource ()
+    public void GetContextMapping ()
     {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
-      Assert.That (_context.GetSqlTableForQuerySource (_source), Is.SameAs (_sqlTable));
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
+      _context.AddContextMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
+      Assert.That (((SqlTableReferenceExpression) _context.GetContextMapping (querySourceReferenceExpression)).SqlTable, 
+        Is.SameAs (_sqlTable));
     }
 
     [Test]
-    public void TryGetSqlTableFromHierarchy ()
+    public void TryGetContextMappingFromHierarchy ()
     {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
-      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
-      Assert.That (result, Is.SameAs (_sqlTable));
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
+      _context.AddContextMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
+      Expression result = _context.TryGetContextMappingFromHierarchy (querySourceReferenceExpression);
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = 
-        "The query source 's' (MainFromClause) could not be found in the list of processed query sources. Probably, the feature declaring 's' isn't "
-        + "supported yet.")]
-    public void GetSqlTableForQuerySource_Throws_WhenSourceNotAdded ()
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage =
+        "The expression 'Cook' could not be found in the list of processed expressions. Probably, the feature declaring 'Cook' isn't supported yet.")]
+    public void GetContextMapping_Throws_WhenExpressionNotAdded ()
     {
       _source = ExpressionHelper.CreateMainFromClause_Cook();
-      _context.GetSqlTableForQuerySource (_source);
+      _context.GetContextMapping (new QuerySourceReferenceExpression(_source));
     }
 
     [Test]
-    public void TryGetSqlTableFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
+    public void TryGetContextMappingFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
     {
       _source = ExpressionHelper.CreateMainFromClause_Cook ();
-      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
+      Expression result = _context.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression(_source));
       
       Assert.That (result, Is.Null);
     }

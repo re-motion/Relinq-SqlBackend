@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -26,8 +27,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public interface ISqlPreparationContext
   {
     int QuerySourceMappingCount { get; }
-    void AddQuerySourceMapping (IQuerySource source, SqlTableBase sqlTable);
-    SqlTableBase GetSqlTableForQuerySource (IQuerySource source);
-    SqlTableBase TryGetSqlTableFromHierarchy (IQuerySource source);
+    void AddContextMapping (Expression key, Expression value);
+    Expression GetContextMapping (Expression key);
+    Expression TryGetContextMappingFromHierarchy (Expression key);
   }
 }

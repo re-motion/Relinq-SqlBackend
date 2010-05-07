@@ -63,8 +63,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var referencedTable = _context.GetSqlTableForQuerySource (expression.ReferencedQuerySource);
-      return new SqlTableReferenceExpression (referencedTable);
+      var referencedTable = (SqlTableReferenceExpression)_context.GetContextMapping (expression);
+      return new SqlTableReferenceExpression (referencedTable.SqlTable);
     }
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)

@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -30,7 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly ISqlPreparationContext _parentContext;
     private readonly SqlPreparationQueryModelVisitor _visitor;
-    private readonly Dictionary<IQuerySource, SqlTableBase> _mapping;
+    private readonly Dictionary<Expression, Expression> _mapping;
 
     public SqlPreparationQueryModelVisitorContext (ISqlPreparationContext parentContext, SqlPreparationQueryModelVisitor visitor)
     {
@@ -39,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       _parentContext = parentContext;
       _visitor = visitor;
-      _mapping = new Dictionary<IQuerySource, SqlTableBase>();
+      _mapping = new Dictionary<Expression, Expression>();
     }
     
     public int QuerySourceMappingCount
@@ -47,43 +50,46 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       get { return _mapping.Count;  }
     }
 
-    public void AddQuerySourceMapping (IQuerySource source, SqlTableBase sqlTable)
+    public void AddContextMapping (Expression key, Expression value)
     {
-      ArgumentUtility.CheckNotNull ("source", source);
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("value", value);
 
-      _mapping.Add (source, sqlTable);
+      _mapping.Add (key, value);
     }
 
-    public SqlTableBase GetSqlTableForQuerySource (IQuerySource source)
+    public Expression GetContextMapping (Expression key)
     {
-      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("key", key);
       
-      SqlTableBase result = TryGetSqlTableFromHierarchy (source);
+      Expression result = TryGetContextMappingFromHierarchy (key);
       if (result!=null) // search this context and parent context's for query source
         return result;
 
       // if whole hierarchy doesn't contain source, check whether it's a group join; group joins are lazily added
-      var groupJoinClause = source as GroupJoinClause;
-      if (groupJoinClause != null)
-        return _visitor.AddJoinClause (groupJoinClause.JoinClause);
+      var keyAsQuerySourceReferenceExpression = key as QuerySourceReferenceExpression;
+      if (keyAsQuerySourceReferenceExpression != null)
+      {
+        var groupJoinClause = keyAsQuerySourceReferenceExpression.ReferencedQuerySource as GroupJoinClause;
+        if (groupJoinClause != null)
+          return new SqlTableReferenceExpression(_visitor.AddJoinClause (groupJoinClause.JoinClause));
+      }
 
       // nobody knows this source in the whole hierarchy, and it is no lazy join => error
       var message = string.Format (
-           "The query source '{0}' ({1}) could not be found in the list of processed query sources. Probably, the feature declaring '{0}' isn't "
+           "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
            + "supported yet.",
-           source.ItemName,
-           source.GetType ().Name);
+           key.Type.Name);
       throw new KeyNotFoundException (message);
     }
 
-    public SqlTableBase TryGetSqlTableFromHierarchy (IQuerySource source)
+    public Expression TryGetContextMappingFromHierarchy (Expression key)
     {
-      SqlTableBase sqlTableBase;
-      if (_mapping.TryGetValue (source, out sqlTableBase))
-        return sqlTableBase;
+      Expression result;
+      if (_mapping.TryGetValue (key, out result))
+        return result;
 
-      return _parentContext.TryGetSqlTableFromHierarchy (source);
+      return _parentContext.TryGetContextMappingFromHierarchy (key);
     }
   }
 }

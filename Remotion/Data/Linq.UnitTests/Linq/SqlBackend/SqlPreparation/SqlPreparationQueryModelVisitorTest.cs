@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -123,7 +124,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
-      Assert.That (_visitor.Context.GetSqlTableForQuerySource (_mainFromClause), Is.SameAs (preparedSqlTable));
+      Assert.That (
+          ((SqlTableReferenceExpression) _visitor.Context.GetContextMapping (new QuerySourceReferenceExpression(_mainFromClause))).SqlTable, 
+          Is.SameAs (preparedSqlTable));
     }
 
     [Test]
@@ -154,7 +157,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
-      Assert.That (_visitor.Context.GetSqlTableForQuerySource (additionalFromClause), Is.SameAs (preparedSqlTable));
+      Assert.That (
+          ((SqlTableReferenceExpression) _visitor.Context.GetContextMapping (new QuerySourceReferenceExpression(additionalFromClause))).SqlTable, 
+          Is.SameAs (preparedSqlTable));
     }
 
     [Test]
@@ -454,7 +459,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (preparedSqlTable));
-      Assert.That (_visitor.Context.GetSqlTableForQuerySource (_mainFromClause), Is.Not.Null);
+      Assert.That (_visitor.Context.GetContextMapping (new QuerySourceReferenceExpression(_mainFromClause)), Is.Not.Null);
     }
   }
 }

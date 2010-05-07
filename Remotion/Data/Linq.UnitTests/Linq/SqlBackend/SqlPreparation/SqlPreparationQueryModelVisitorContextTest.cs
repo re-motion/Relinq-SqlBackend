@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -60,48 +61,56 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddQuerySourceMapping ()
+    public void AddContextMapping ()
     {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
+      _context.AddContextMapping (new QuerySourceReferenceExpression(_source), new SqlTableReferenceExpression(_sqlTable));
       Assert.That (_context.QuerySourceMappingCount, Is.EqualTo (1));
     }
 
     [Test]
-    public void GetSqlTableForQuerySource ()
+    public void GetContextMapping ()
     {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
-      Assert.That (_context.GetSqlTableForQuerySource (_source), Is.SameAs (_sqlTable));
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression(_source);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression(_sqlTable);
+      _context.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
+      Assert.That (_context.GetContextMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
-    public void TryGetSqlTableFromHierarchy ()
+    public void TryGetContextMappingFromHierarchy ()
     {
-      _context.AddQuerySourceMapping (_source, _sqlTable);
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression(_source);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression(_sqlTable);
+      _context.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
 
-      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
+      Expression result = _context.TryGetContextMappingFromHierarchy (querySourceReferenceExpression);
       
-      Assert.That (result, Is.SameAs (_sqlTable));
+      Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
-    public void GetSqlTableForQuerySource_GetFromParentContext ()
+    public void GetContextMapping_GetFromParentContext ()
     {
-      _parentContext.AddQuerySourceMapping (_parentSource, _parentSqlTable);
-      Assert.That (_context.GetSqlTableForQuerySource (_parentSource), Is.SameAs (_parentSqlTable));
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression(_parentSource);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression(_parentSqlTable);
+      _parentContext.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
+      Assert.That (_context.GetContextMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
-    public void TryGetSqlTableFromHierarchy_GetFromParentContext ()
+    public void TryGetContextMappingFromHierarchy_GetFromParentContext ()
     {
-      _parentContext.AddQuerySourceMapping (_parentSource, _parentSqlTable);
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression(_parentSource);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression(_parentSqlTable);
+      _parentContext.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
 
-      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_parentSource);
+      Expression result = _context.TryGetContextMappingFromHierarchy (querySourceReferenceExpression);
       
-      Assert.That (result, Is.SameAs (_parentSqlTable));
+      Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
-    public void GetSqlTableForQuerySource_GroupJoinClause ()
+    public void GetContextMapping_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
 
@@ -118,35 +127,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
       _stageMock.Replay ();
 
-      var result = _context.GetSqlTableForQuerySource (groupJoinClause);
+      var result = _context.GetContextMapping (new QuerySourceReferenceExpression(groupJoinClause));
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.Null);
     }
 
     [Test]
-    public void TryGetSqlTableFromHierarchy_GroupJoinClause ()
+    public void TryGetContextMapping_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
 
-      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (groupJoinClause);
+      Expression result = _context.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression(groupJoinClause));
       
       Assert.That (result, Is.Null);
     }
 
     [Test]
     [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage =
-        "The query source 's' (MainFromClause) could not be found in the list of processed query sources. Probably, the feature declaring 's' isn't "
-        + "supported yet.")]
-    public void GetSqlTableForQuerySource_Throws_WhenSourceNotAdded ()
+        "The expression 'Cook' could not be found in the list of processed expressions. Probably, the feature declaring 'Cook' isn't supported yet.")]
+    public void GetContextMapping_Throws_WhenSourceNotAdded ()
     {
-      _context.GetSqlTableForQuerySource (_source);
+      _context.GetContextMapping (new QuerySourceReferenceExpression(_source));
     }
 
     [Test]
-    public void TryGetSqlTableFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
+    public void TryGetContextMappingFromHierarchy_ReturnsFalseWhenSourceNotAdded ()
     {
-      SqlTableBase result = _context.TryGetSqlTableFromHierarchy (_source);
+      Expression result = _context.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression(_source));
       
       Assert.That (result, Is.Null);
     }
