@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       
       if (_context == Context.NonFirstTable)
-        _commandBuilder.Append (" CROSS JOIN ");
+        _commandBuilder.Append (" CROSS JOIN "); //TODO: move to VisitSqlTable
 
       _commandBuilder.AppendIdentifier (tableInfo.TableName);
       _commandBuilder.Append (" AS ");
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
       if (_context == Context.NonFirstTable)
-        _commandBuilder.Append (" CROSS APPLY ");
+        _commandBuilder.Append (" CROSS APPLY "); //TODO: emit "CROSS JOIN" here and move to VisitSqlTable
 
       _commandBuilder.Append ("(");
       _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
@@ -134,10 +134,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-
-      Debug.Assert (
-          !(joinInfo.ForeignTableInfo is ResolvedSubStatementTableInfo), 
-          "Once we support substatements in joins, we need to be able to nerge LEFT OUTER JOIN and CROSS APPLY to OUTER APPLY.");
 
       joinInfo.ForeignTableInfo.Accept (this);
 

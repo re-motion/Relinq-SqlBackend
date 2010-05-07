@@ -304,7 +304,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "FROM [CookTable] AS [t0]) AS [q0] ON 1 = 1");
     }
 
-    // TODO Review 2669: Add a test with DefaultIfEmpty in a subquery
+    [Test]
+    public void DefaultIfEmpty_InSubquery ()
+    {
+      CheckQuery (
+           from s in Cooks where (from s2 in Cooks select s2.ID).DefaultIfEmpty().Max() > 5 select s.Name,
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t1] WHERE ((SELECT MAX([q0].[value]) AS [value] FROM  "+
+          "(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2]) AS [q0] ON 1 = 1) > @1)",
+          new CommandParameter ("@1", 5));
+    }
+    
     [Test]
     public void Max_OnTopLevel ()
     {
