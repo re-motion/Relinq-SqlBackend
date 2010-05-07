@@ -62,15 +62,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public override Expression VisitExpression (Expression expression)
     {
-      var newExpression = expression;
-      if (newExpression != null)
+      // TODO Review 2691: Refactor as follows:
+      // - move error message from GetContextMapping out to VisitQuerySourceReferenceExpression; change GetContextMapping to return null if none found
+      // - use GetContextMapping here (not TryGetContextMappingFromHierarchy)
+      // - in VisitQuerySourceReferenceExpression, remove the context lookup - it should already have happened here. Only leave the error message in - whenever the VisitQuerySourceReferenceExpression method is executed, that is an error
+      if (expression != null)
       {
         var replacementExpression = _context.TryGetContextMappingFromHierarchy (expression);
-        if (replacementExpression != null)
-          newExpression = ReplacingExpressionTreeVisitor.Replace (expression, replacementExpression, expression);
+        if (replacementExpression != null) // TODO Review 2691: Actually, the visitor is not required - replacementExpression is already a replacement for expression (if it is not null)
+          expression = ReplacingExpressionTreeVisitor.Replace (expression, replacementExpression, expression);
       }
 
-      return base.VisitExpression (newExpression);
+      return base.VisitExpression (expression);
     }
 
     protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)

@@ -55,6 +55,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
+
+      // TODO Review 2691: This code should also add an expression mapping. Use MoveCurrentStatementToSubQuery. Don't forget the unit test
     }
   }
 }

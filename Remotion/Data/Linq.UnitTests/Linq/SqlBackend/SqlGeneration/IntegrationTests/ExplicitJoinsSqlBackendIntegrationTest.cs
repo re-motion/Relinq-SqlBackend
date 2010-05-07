@@ -151,6 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter("@1", 1)
           );
      }
-    
+
+    // TODO Review 2691: Add integration test for DefaultIfEmpty on group join variable (from kc in gkc.DefaultIfEmpty())
   }
 }

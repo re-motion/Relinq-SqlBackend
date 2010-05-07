@@ -20,6 +20,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -56,6 +57,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
         ISqlPreparationContext context)
     {
       base.EnsureNoDistinctQuery(resultOperator, sqlStatementBuilder, generator, stage, context);
+    }
+
+    public new void MoveCurrentStatementToSqlTable (
+       SqlStatementBuilder sqlStatementBuilder,
+       UniqueIdentifierGenerator generator,
+       ISqlPreparationContext context,
+       Func<ResolvedSubStatementTableInfo, SqlTableBase> tableGenerator)
+    {
+      base.MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, tableGenerator);
     }
 
     public new void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)

@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if (joinedTable.JoinSemantics == JoinSemantics.Left)
       {
         if (_context == Context.FirstTable)
-          _commandBuilder.Append (" (SELECT NULL AS [Empty]) AS [Empty]");
+          _commandBuilder.Append (" (SELECT NULL AS [Empty]) AS [Empty]"); // TODO Review 2691: Remove space
 
         _commandBuilder.Append (" LEFT OUTER JOIN ");
       }

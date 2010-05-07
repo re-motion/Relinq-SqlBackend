@@ -33,6 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   public class ResultOperatorHandlerTest
   {
     private TestableResultOperatorHandler _handler;
+    private TestChoiceResultOperator _resultOperator;
     private SqlStatementBuilder _statementBuilder;
     private UniqueIdentifierGenerator _generator;
     private ISqlPreparationStage _stageMock;
@@ -42,6 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void SetUp ()
     {
       _handler = new TestableResultOperatorHandler();
+      _resultOperator = new TestChoiceResultOperator (false);
       _statementBuilder = new SqlStatementBuilder();
       _statementBuilder.SelectProjection = Expression.Constant ("select");
       _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()));
@@ -51,31 +53,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
+    public void MoveCurrentStatementToSqlTable ()
+    {
+      var originalStatement = _statementBuilder.GetSqlStatement ();
+
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info));
+
+      CheckStatementMovedToSqlTable (originalStatement);
+    }
+
+    [Test]
     public void EnsureNoTopExpressionAndSetDataInfo_WithTopExpression ()
     {
-      var resultOperator = new TestChoiceResultOperator (false);
       _statementBuilder.TopExpression = Expression.Constant ("top");
-      var sqlStatement = _statementBuilder.GetSqlStatement();
+      var originalStatement = _statementBuilder.GetSqlStatement();
 
-      _handler.EnsureNoTopExpression (resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoTopExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
-      Assert.That (_context.TryGetContextMappingFromHierarchy (((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression), Is.Not.Null);
-      Assert.That (
-          ((ResolvedSubStatementTableInfo) ((SqlTable)
-                                            ((SqlTableReferenceExpression)
-                                             _context.TryGetContextMappingFromHierarchy (
-                                                 ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression)).SqlTable).TableInfo).SqlStatement,
-          Is.EqualTo (sqlStatement));
+      Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
+
+      CheckStatementMovedToSqlTable (originalStatement);
     }
 
     [Test]
     public void EnsureNoTopExpressionAndSetDataInfo_WithoutTopExpression ()
     {
-      var resultOperator = new TestChoiceResultOperator (false);
       var sqlStatement = _statementBuilder.GetSqlStatement();
 
-      _handler.EnsureNoTopExpression (resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoTopExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement()));
     }
@@ -114,12 +119,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void UpdateDataInfo ()
     {
-      var resultOperator = new TestChoiceResultOperator (false);
       var streamDataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()));
 
-      _handler.UpdateDataInfo (resultOperator, _statementBuilder, streamDataInfo);
+      _handler.UpdateDataInfo (_resultOperator, _statementBuilder, streamDataInfo);
 
       Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
+    }
+
+    private void CheckStatementMovedToSqlTable (SqlStatement originalStatement)
+    {
+      Assert.That (((SqlTable) _statementBuilder.SqlTables[0]).TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
+      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement;
+
+      Assert.That (subStatement, Is.EqualTo (originalStatement));
+      Assert.That (_statementBuilder.SelectProjection, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) _statementBuilder.SelectProjection).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
+
+      var mappedItemExpression = _context.TryGetContextMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
+      Assert.That (mappedItemExpression, Is.Not.Null);
+      Assert.That (mappedItemExpression, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) mappedItemExpression).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
     }
   }
 }
