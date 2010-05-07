@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -57,6 +58,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _context = context;
       _stage = stage;
       _registry = registry;
+    }
+
+    public override Expression VisitExpression (Expression expression)
+    {
+      var newExpression = expression;
+      if (newExpression != null)
+      {
+        var replacementExpression = _context.TryGetContextMappingFromHierarchy (expression);
+        if (replacementExpression != null)
+          newExpression = ReplacingExpressionTreeVisitor.Replace (expression, replacementExpression, expression);
+      }
+
+      return base.VisitExpression (newExpression);
     }
 
     protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)

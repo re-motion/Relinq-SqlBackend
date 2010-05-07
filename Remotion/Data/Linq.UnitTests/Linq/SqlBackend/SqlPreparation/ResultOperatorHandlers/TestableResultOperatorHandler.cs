@@ -37,10 +37,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       throw new NotImplementedException();
     }
 
-    public new void EnsureNoTopExpressionAndSetDataInfo (
-        ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+    public new void EnsureNoTopExpression (
+        ResultOperatorBase resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
+        
     {
-      base.EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
+      base.EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
     }
 
     public new void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)

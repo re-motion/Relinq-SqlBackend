@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("value", value);
 
-      _mapping.Add (key, value);
+      _mapping[key] = value;
     }
 
     public Expression GetContextMapping (Expression key)

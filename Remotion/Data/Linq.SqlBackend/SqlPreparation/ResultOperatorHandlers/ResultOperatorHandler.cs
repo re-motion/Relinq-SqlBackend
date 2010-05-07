@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -45,7 +46,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationContext context);
 
     protected void EnsureNoTopExpression (
-        ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage)
+        ResultOperatorBase resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -53,19 +58,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.TopExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context);
     }
 
-    protected void MoveCurrentStatementToSqlTable (SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator)
+    protected void MoveCurrentStatementToSqlTable (
+        SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationContext context)
     {
       var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
+
       var subStatementTableInfo = new ResolvedSubStatementTableInfo (
           generator.GetUniqueIdentifier ("q"),
           sqlStatement);
       var sqlTable = new SqlTable (subStatementTableInfo);
 
+      var newSqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+
+      if (sqlStatement.DataInfo is StreamedSequenceInfo)
+      {
+        //update SqlTableReferenceExpression in SqlPreparationExpressionVisitor using the QuerSourceReferenceExpression from the sql statement datainfo
+        //because the select projection is already transformed and so a complex expression compare would be necessary to do the replacement 
+        var itemExpression = ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression;
+        context.AddContextMapping (itemExpression, newSqlTableReferenceExpression);
+      }
+
       sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (sqlTable);
+      sqlStatementBuilder.SelectProjection = newSqlTableReferenceExpression;
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
     }

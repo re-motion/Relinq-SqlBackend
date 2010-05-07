@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationStage stage,
         ISqlPreparationContext context)
     {
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage);
+      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsDistinctQuery = true;

@@ -52,14 +52,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _parentSource = ExpressionHelper.CreateMainFromClause_Cook();
       _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
 
+      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _visitor = new TestableSqlPreparationQueryModelVisitor (
           _parentContext, _stageMock, new UniqueIdentifierGenerator(), ResultOperatorHandlerRegistry.CreateDefault());
       _context = new SqlPreparationQueryModelVisitorContext (_parentContext, _visitor);
 
       _source = ExpressionHelper.CreateMainFromClause_Cook ();
       _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
-
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
+     
     }
 
     [Test]

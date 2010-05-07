@@ -171,5 +171,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 1)
           );
     }
+
+    [Test]
+    public void All_AfterResultOperatorInducedSubquery ()
+    {
+      CheckQuery (
+          () => (from s in Cooks select s).Take (10).Take (20).All (s => s.IsStarredCook),
+        "SELECT CASE WHEN NOT EXISTS((SELECT TOP (@1) [q0].[ID] AS [value] FROM (SELECT TOP (@2) [t0].[ID],[t0].[FirstName],[t0].[Name]," +
+        "[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]) AS [q0] " +
+        "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]",
+        new CommandParameter ("@1", 20),
+        new CommandParameter ("@2", 10)
+        );
+
+      CheckQuery (
+          () => (from s in Cooks select s.FirstName).Take (10).Take (20).All (s => s != null),
+          "SELECT CASE WHEN NOT EXISTS((SELECT TOP (@1) [q1].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] "+
+          "FROM [CookTable] AS [t0]) AS [q1] WHERE NOT ([q1].[value] IS NOT NULL))) THEN 1 ELSE 0 END AS [value]",
+          new CommandParameter ("@1", 20),
+          new CommandParameter ("@2", 10)
+        );
+    }
+
   }
 }

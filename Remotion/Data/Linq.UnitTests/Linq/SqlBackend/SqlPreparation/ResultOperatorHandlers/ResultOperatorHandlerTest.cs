@@ -21,8 +21,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -35,6 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private SqlStatementBuilder _statementBuilder;
     private UniqueIdentifierGenerator _generator;
     private ISqlPreparationStage _stageMock;
+    private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -42,9 +44,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _handler = new TestableResultOperatorHandler();
       _statementBuilder = new SqlStatementBuilder();
       _statementBuilder.SelectProjection = Expression.Constant ("select");
-      _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant(new Cook()));
+      _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()));
       _generator = new UniqueIdentifierGenerator();
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _context = new SqlPreparationContext();
     }
 
     [Test]
@@ -52,11 +55,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var resultOperator = new TestChoiceResultOperator (false);
       _statementBuilder.TopExpression = Expression.Constant ("top");
-      var sqlStatement = _statementBuilder.GetSqlStatement ();
+      var sqlStatement = _statementBuilder.GetSqlStatement();
 
-      _handler.EnsureNoTopExpressionAndSetDataInfo (resultOperator, _statementBuilder, _generator, _stageMock);
+      _handler.EnsureNoTopExpression (resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
+      Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
+      Assert.That (_context.TryGetContextMappingFromHierarchy (((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression), Is.Not.Null);
+      Assert.That (
+          ((ResolvedSubStatementTableInfo) ((SqlTable)
+                                            ((SqlTableReferenceExpression)
+                                             _context.TryGetContextMappingFromHierarchy (
+                                                 ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression)).SqlTable).TableInfo).SqlStatement,
+          Is.EqualTo (sqlStatement));
     }
 
     [Test]
@@ -65,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new TestChoiceResultOperator (false);
       var sqlStatement = _statementBuilder.GetSqlStatement();
 
-      _handler.EnsureNoTopExpressionAndSetDataInfo (resultOperator, _statementBuilder, _generator, _stageMock);
+      _handler.EnsureNoTopExpression (resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement()));
     }
@@ -75,11 +85,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var resultOperator = new TestChoiceResultOperator (false);
       var streamDataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()));
-      
+
       _handler.UpdateDataInfo (resultOperator, _statementBuilder, streamDataInfo);
 
       Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
     }
-
   }
 }
