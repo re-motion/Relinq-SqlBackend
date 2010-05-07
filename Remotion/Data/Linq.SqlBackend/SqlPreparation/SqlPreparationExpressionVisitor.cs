@@ -84,8 +84,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
       var sqlStatement = _stage.PrepareSqlStatement (expression.QueryModel, _context);
-      // TODO Review 2689: check for sqlStatement.AggregationModifier == None here
-      return sqlStatement.SqlTables.Count == 0 && sqlStatement.AggregationModifier != AggregationModifier.Count && !sqlStatement.IsDistinctQuery
+      return sqlStatement.SqlTables.Count == 0 && sqlStatement.AggregationModifier == AggregationModifier.None && !sqlStatement.IsDistinctQuery
                  ? sqlStatement.SelectProjection
                  : new SqlSubStatementExpression (sqlStatement);
     }

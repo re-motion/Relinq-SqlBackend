@@ -54,8 +54,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new [] { ordering },
           whereCondition,
           topExpression,
-          true,
-          AggregationModifier.None);
+          false,
+          AggregationModifier.Max);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
@@ -64,8 +64,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
-      Assert.That (testedBuilder.IsDistinctQuery, Is.True);
-      Assert.That (testedBuilder.AggregationModifier == AggregationModifier.Count, Is.False); // TODO Review 2689: Test with a non-None AggregationModifier; then check that the builder's modifier is correct
+      Assert.That (testedBuilder.IsDistinctQuery, Is.False);
+      Assert.That (testedBuilder.AggregationModifier, Is.EqualTo(AggregationModifier.Max));
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
@@ -137,8 +137,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
                                  TopExpression = topExpression,
-                                 AggregationModifier = AggregationModifier.None,
-                                 IsDistinctQuery = true
+                                 AggregationModifier = AggregationModifier.Min,
+                                 IsDistinctQuery = false
                              };
       statementBuilder.SqlTables.Add (sqlTable);
       statementBuilder.Orderings.Add (ordering);
@@ -150,8 +150,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
-      Assert.That (sqlStatement.IsDistinctQuery, Is.True);
-      Assert.That (sqlStatement.AggregationModifier == AggregationModifier.Count, Is.False); // TODO Review 2689: Test with a non-None AggregationModifier
+      Assert.That (sqlStatement.IsDistinctQuery, Is.False);
+      Assert.That (sqlStatement.AggregationModifier, Is.EqualTo(AggregationModifier.Min));
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
 

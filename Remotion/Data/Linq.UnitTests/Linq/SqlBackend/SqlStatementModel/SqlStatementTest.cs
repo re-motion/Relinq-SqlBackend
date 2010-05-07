@@ -209,9 +209,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
     }
 
-    // TODO Review 2689: Rename to DifferentAggregationModifier
     [Test]
-    public void Equals_DifferentCountCondition ()
+    public void DifferentAggregationModifier ()
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
