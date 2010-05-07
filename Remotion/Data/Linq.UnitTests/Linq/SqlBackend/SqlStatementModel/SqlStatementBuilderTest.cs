@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           whereCondition,
           topExpression,
           false,
-          AggregationModifier.Max);
+          AggregationModifier.None);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.False);
-      Assert.That (testedBuilder.AggregationModifier, Is.EqualTo(AggregationModifier.Max));
+      Assert.That (testedBuilder.AggregationModifier, Is.EqualTo(AggregationModifier.None));
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
@@ -136,7 +136,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                                  DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
-                                 TopExpression = topExpression,
+                                 TopExpression = null,
                                  AggregationModifier = AggregationModifier.Min,
                                  IsDistinctQuery = false
                              };
@@ -146,7 +146,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement = statementBuilder.GetSqlStatement();
 
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
+      Assert.That (sqlStatement.TopExpression, Is.Null);
       Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));

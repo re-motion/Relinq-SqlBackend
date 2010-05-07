@@ -81,6 +81,37 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
+    public void EnsureNoDistinctQuery_DistinctQuery ()
+    {
+      var resultOperator = new TestChoiceResultOperator (false);
+      _statementBuilder.IsDistinctQuery = true;
+      var sqlStatement = _statementBuilder.GetSqlStatement ();
+
+      _handler.EnsureNoDistinctQuery(resultOperator, _statementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
+      Assert.That (_context.TryGetContextMappingFromHierarchy (((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression), Is.Not.Null);
+      Assert.That (
+          ((ResolvedSubStatementTableInfo) ((SqlTable)
+                                            ((SqlTableReferenceExpression)
+                                             _context.TryGetContextMappingFromHierarchy (
+                                                 ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression)).SqlTable).TableInfo).SqlStatement,
+          Is.EqualTo (sqlStatement));
+    }
+
+    [Test]
+    public void EnsureDistinctQuery_NoDistinctQuery ()
+    {
+      var resultOperator = new TestChoiceResultOperator (false);
+      _statementBuilder.IsDistinctQuery = false;
+      var sqlStatement = _statementBuilder.GetSqlStatement ();
+
+      _handler.EnsureNoDistinctQuery(resultOperator, _statementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
+    }
+
+    [Test]
     public void UpdateDataInfo ()
     {
       var resultOperator = new TestChoiceResultOperator (false);

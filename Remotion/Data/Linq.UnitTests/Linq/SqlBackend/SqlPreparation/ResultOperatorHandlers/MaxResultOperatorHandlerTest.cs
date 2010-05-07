@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -62,13 +63,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _handler.HandleResultOperator (averageResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (_sqlStatementBuilder.AggregationModifier == AggregationModifier.Max, Is.True);
+      Assert.That (_sqlStatementBuilder.AggregationModifier, Is.EqualTo (AggregationModifier.Max));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
       Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }
 
     [Test]
-    public void HandleResultOperator_CountAfterTopExpression ()
+    public void HandleResultOperator_MaxAfterTopExpression ()
     {
       _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
 
@@ -78,6 +79,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+    }
+
+    [Test]
+    public void HandleResultOperator_MaxAfterDistinctExpression ()
+    {
+      _sqlStatementBuilder.IsDistinctQuery = true;
+      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
+
+      var resultOperator = new MaxResultOperator ();
+
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (
+          ((SqlTable) ((SqlTableReferenceExpression) _sqlStatementBuilder.SelectProjection).SqlTable).TableInfo,
+          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
   }
 }

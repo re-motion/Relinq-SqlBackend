@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -62,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _handler.HandleResultOperator (countResultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (_sqlStatementBuilder.AggregationModifier == AggregationModifier.Count, Is.True);
+      Assert.That (_sqlStatementBuilder.AggregationModifier, Is.EqualTo (AggregationModifier.Count));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }
@@ -80,7 +81,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
 
-    // TODO Review 2690: Add test for CountAfterDistinctExpression; also add for all other aggregation handlers
+    [Test]
+    public void HandleResultOperator_CountAfterDistinctExpression ()
+    {
+      _sqlStatementBuilder.IsDistinctQuery = true;
+      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
+
+      var resultOperator = new CountResultOperator ();
+
+      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (
+          ((SqlTable) ((SqlTableReferenceExpression) _sqlStatementBuilder.SelectProjection).SqlTable).TableInfo,
+          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+    }
    
   }
 }

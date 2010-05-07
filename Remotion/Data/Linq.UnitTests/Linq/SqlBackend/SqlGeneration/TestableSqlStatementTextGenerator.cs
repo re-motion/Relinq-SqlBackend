@@ -46,5 +46,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       base.BuildOrderByPart (sqlStatement, commandBuilder);
     }
+
+    public new void BuildDistinctPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      base.BuildDistinctPart (sqlStatement, commandBuilder);
+    }
+
+    public new void BuildTopPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      base.BuildTopPart (sqlStatement, commandBuilder);
+    }
+
+    public new void BuildAggregationPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      base.BuildAggregationPart(sqlStatement, commandBuilder);
+    }
   }
 }

@@ -48,6 +48,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       base.EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
     }
 
+    public new void EnsureNoDistinctQuery (
+        ResultOperatorBase resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
+    {
+      base.EnsureNoDistinctQuery(resultOperator, sqlStatementBuilder, generator, stage, context);
+    }
+
     public new void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
     {
       base.UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);

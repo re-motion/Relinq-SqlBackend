@@ -66,18 +66,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       if (sqlStatement.AggregationModifier == AggregationModifier.None)
       {
-        // TODO Review 2690: Extract to method: BuildDistinctPart (sqlStatement, commandBuilder)
-        if (sqlStatement.IsDistinctQuery)
-        {
-          commandBuilder.Append ("DISTINCT ");
-        }
-        // TODO Review 2690: Extract to method: BuildTopPart (sqlStatement, commandBuilder)
-        if (sqlStatement.TopExpression != null)
-        {
-          commandBuilder.Append ("TOP (");
-          _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression);
-          commandBuilder.Append (") ");
-        }
+        BuildDistinctPart(sqlStatement, commandBuilder);
+        BuildTopPart(sqlStatement, commandBuilder);
 
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
 
@@ -90,23 +80,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       } 
       else 
       {
-        if (sqlStatement.AggregationModifier == AggregationModifier.Average)
-          commandBuilder.Append ("AVG");
-        else if (sqlStatement.AggregationModifier == AggregationModifier.Max)
-          commandBuilder.Append ("MAX");
-        else if (sqlStatement.AggregationModifier == AggregationModifier.Min)
-          commandBuilder.Append ("MIN");
-        else if (sqlStatement.AggregationModifier == AggregationModifier.Sum)
-          commandBuilder.Append ("SUM");
-        else
-          throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", sqlStatement.AggregationModifier));
-
+        BuildAggregationPart (sqlStatement, commandBuilder);
+        
         commandBuilder.Append ("(");
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
         commandBuilder.Append (") AS [value]");
       }
-
-      // TODO Review 2690: Try to make that code a little more compact by using switch and helper methods
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
@@ -170,6 +149,38 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           first = false;
         }
       }
+    }
+
+    protected virtual void BuildTopPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      if (sqlStatement.TopExpression != null)
+      {
+        commandBuilder.Append ("TOP (");
+        _stage.GenerateTextForTopExpression (commandBuilder, sqlStatement.TopExpression);
+        commandBuilder.Append (") ");
+      }
+    }
+
+    protected virtual void BuildDistinctPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      if (sqlStatement.IsDistinctQuery)
+      {
+        commandBuilder.Append ("DISTINCT ");
+      }
+    }
+
+    protected virtual void BuildAggregationPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      if (sqlStatement.AggregationModifier == AggregationModifier.Average)
+        commandBuilder.Append ("AVG");
+      else if (sqlStatement.AggregationModifier == AggregationModifier.Max)
+        commandBuilder.Append ("MAX");
+      else if (sqlStatement.AggregationModifier == AggregationModifier.Min)
+        commandBuilder.Append ("MIN");
+      else if (sqlStatement.AggregationModifier == AggregationModifier.Sum)
+        commandBuilder.Append ("SUM");
+      else
+        throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", sqlStatement.AggregationModifier));
     }
   }
 }

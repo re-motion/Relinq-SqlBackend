@@ -44,9 +44,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      if (sqlStatementBuilder.IsDistinctQuery)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context);
-      
+      EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.AggregationModifier = AggregationModifier.Average;

@@ -374,6 +374,125 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void BuildDistinctPart ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _columnListExpression,
+          new[] { _sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          true,
+          AggregationModifier.None);
+
+      _generator.BuildDistinctPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("DISTINCT "));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildTopPart ()
+    {
+      var topExpression = Expression.Constant("top");
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _columnListExpression,
+          new[] { _sqlTable },
+          new Ordering[] { },
+          null,
+          topExpression,
+          false,
+          AggregationModifier.None);
+
+      _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, topExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("top"));
+      _stageMock.Replay ();
+
+      _generator.BuildTopPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("TOP (top) "));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildAggregationPart_Min ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _columnListExpression,
+          new[] { _sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          AggregationModifier.Min);
+
+      _generator.BuildAggregationPart(_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MIN"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildAggregationPart_Max ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _columnListExpression,
+          new[] { _sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          AggregationModifier.Max);
+
+      _generator.BuildAggregationPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MAX"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildAggregationPart_Sum ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _columnListExpression,
+          new[] { _sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          AggregationModifier.Sum);
+
+      _generator.BuildAggregationPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SUM"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildAggregationPart_Average ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _columnListExpression,
+          new[] { _sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          AggregationModifier.Average);
+
+      _generator.BuildAggregationPart (_sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("AVG"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void Build_WithSelectAndFrom ()
     {
       _stageMock.Expect (
@@ -466,13 +585,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] ORDER BY [t].[Name] ASC"));
       _stageMock.VerifyAllExpectations();
     }
-
-    // TODO Review 2690: Remove this test?
-    [Test]
-    [Ignore ("TODO 2364")]
-    public void GenerateSqlGeneratorRegistry ()
-    {
-      Assert.Fail();
-    }
+    
   }
 }
