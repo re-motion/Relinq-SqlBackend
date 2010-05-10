@@ -193,7 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlTableAndJoinTextGenerator.GenerateSql (sqlJoinedTable, _commandBuilder, _stageMock, true);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [c] ON leftKey = rightKey"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [c] ON leftKey = rightKey"));
     }
 
     [Test]

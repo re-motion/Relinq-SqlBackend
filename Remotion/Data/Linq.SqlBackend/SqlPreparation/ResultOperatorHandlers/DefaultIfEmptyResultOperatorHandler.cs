@@ -45,18 +45,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
-      var subStatementTableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), sqlStatement);
-      var leftJoinInfo = new ResolvedJoinInfo (subStatementTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-      var joinedTable = new SqlJoinedTable (leftJoinInfo, JoinSemantics.Left);
-
-      sqlStatementBuilder.SqlTables.Add (joinedTable);
-      sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (joinedTable);
-
-      // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
-      sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
-
-      // TODO Review 2691: This code should also add an expression mapping. Use MoveCurrentStatementToSubQuery. Don't forget the unit test
+      MoveCurrentStatementToSqlTable (
+          sqlStatementBuilder,
+          generator,
+          context,
+          info => new SqlJoinedTable (new ResolvedJoinInfo (info, new SqlLiteralExpression (1), new SqlLiteralExpression (1)), JoinSemantics.Left));
     }
   }
 }
