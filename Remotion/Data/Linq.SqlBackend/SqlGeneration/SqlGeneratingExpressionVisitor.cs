@@ -122,7 +122,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
         var collection = ((ICollection) expression.Value);
         if (collection.Count == 0)
-          throw new NotSupportedException ("Empty collections are not supported.");
+          _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
 
         var items = collection.Cast<object>();
         _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));

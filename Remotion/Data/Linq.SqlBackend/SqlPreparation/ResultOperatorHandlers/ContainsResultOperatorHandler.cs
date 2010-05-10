@@ -44,44 +44,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      Expression selectProjection;
       var dataInfo = sqlStatementBuilder.DataInfo;
       var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item, context);
-
-      var constantCollection = GetConstantCollectionValue (queryModel);
-      if (constantCollection != null) // Scenario: where new[] { 1, 2, 3 }.Contains (...)
-      {
-        if (queryModel.ResultOperators.Count > 1)
-        {
-          throw new NotSupportedException (
-              "Queries with more than one results operators are not allowed when using Contains in conjunction with a constant collection.");
-        }
-
-        selectProjection = constantCollection.Count > 0
-                               ? (Expression) new SqlBinaryOperatorExpression ("IN", preparedItemExpression, Expression.Constant (constantCollection))
-                               : Expression.Constant (false);
-
-        sqlStatementBuilder.SqlTables.Clear ();
-      }
-      else // Scenario: where kitchen.Cooks.Contains (...)
-      {
-        var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
-        var subStatementExpression = sqlSubStatement.CreateExpression();
-        
-        selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
-      }
-
-      sqlStatementBuilder.SelectProjection = selectProjection;
+      var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
+      var subStatementExpression = sqlSubStatement.CreateExpression();
+      
+      sqlStatementBuilder.SelectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
+      
       UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);
-    }
-
-    private ICollection GetConstantCollectionValue (QueryModel queryModel)
-    {
-      var fromExpressionAsConstant = (queryModel.MainFromClause.FromExpression) as ConstantExpression;
-      if (queryModel.IsIdentityQuery () && fromExpressionAsConstant != null && typeof (ICollection).IsAssignableFrom (fromExpressionAsConstant.Type))
-        return (ICollection) fromExpressionAsConstant.Value;
-      else
-        return null;
     }
   }
 }

@@ -203,8 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var cookNames = new string[] { };
       CheckQuery (
           from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
-          new CommandParameter("@1", 0));
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (SELECT NULL WHERE 1 = 0)");
     }
 
     [Test]

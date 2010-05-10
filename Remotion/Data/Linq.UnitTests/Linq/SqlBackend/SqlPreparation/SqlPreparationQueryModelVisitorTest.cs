@@ -104,6 +104,56 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitMainFromClause_ConstantExpression_Collection ()
+    {
+      var constantExpression = Expression.Constant (new [] { "t1", "t2" });
+      var dataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
+
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      _visitor.VisitQueryModel (_queryModel);
+
+      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (
+          ((ConstantExpression) _visitor.SqlStatementBuilder.SelectProjection).Value, Is.EqualTo (constantExpression.Value));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs(dataInfo.ItemExpression));
+    }
+
+    [Test]
+    public void VisitMainFromClause_ConstantExpression_NoCollection ()
+    {
+      var preparedExpression = Expression.Constant (0);
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var constantExpression = Expression.Constant ("test");
+      
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      _stageMock
+         .Expect (
+             mock =>
+             mock.PrepareFromExpression (
+                 Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
+                 Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+         .Return (preparedExpression);
+      _stageMock
+         .Expect (
+             mock =>
+             mock.PrepareSelectExpression (
+                 Arg<Expression>.Matches (e => e == _queryModel.SelectClause.Selector),
+                 Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+         .Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+
+      _stageMock.Replay ();
+
+      _visitor.VisitQueryModel (_queryModel);
+
+      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs(preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo(1));
+    }
+
+    [Test]
     public void VisitMainFromClause_CreatesFromExpression ()
     {
       var preparedExpression = Expression.Constant (0);

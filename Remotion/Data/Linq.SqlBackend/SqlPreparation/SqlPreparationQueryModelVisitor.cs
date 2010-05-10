@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -88,6 +89,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlStatement GetSqlStatement ()
     {
       return SqlStatementBuilder.GetSqlStatement();
+    }
+
+    public override void VisitQueryModel (QueryModel queryModel)
+    {
+      var constantCollection = GetConstantCollectionValue (queryModel);
+      if (constantCollection != null)
+      {
+        SqlStatementBuilder.SelectProjection = Expression.Constant (constantCollection);
+        SqlStatementBuilder.DataInfo = queryModel.SelectClause.GetOutputDataInfo ();
+        VisitResultOperators (queryModel.ResultOperators, queryModel);
+      }
+      else
+      {
+        base.VisitQueryModel (queryModel);
+      }
     }
 
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
@@ -199,6 +215,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
         return sqlTableOrJoin;
       }
+    }
+
+    private ICollection GetConstantCollectionValue (QueryModel queryModel)
+    {
+      var fromExpressionAsConstant = (queryModel.MainFromClause.FromExpression) as ConstantExpression;
+      if (queryModel.IsIdentityQuery () && fromExpressionAsConstant != null && typeof (ICollection).IsAssignableFrom (fromExpressionAsConstant.Type))
+        return (ICollection) fromExpressionAsConstant.Value;
+      else
+        return null;
     }
   }
 }
