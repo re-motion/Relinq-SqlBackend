@@ -72,7 +72,62 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
     }
 
-    // TODO Review 2668: Add tests that _uses_ the into variable twice; in the same statement, in the same statement and a substatement, in two substatements
+    [Test]
+    public void ExplicitJoinWithInto_UseIntoVariableTwiceInSameStatement ()
+    {
+      CheckQuery (
+          from k in Kitchens
+          join c in Cooks on k.Cook equals c into gkc
+          from kc in gkc
+          where kc.Name == "Steiner"
+          select kc.FirstName,
+          "SELECT [t1].[FirstName] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t2] ON [t0].[ID] = [t2].[KitchenID] "+
+          "CROSS JOIN [CookTable] AS [t1] WHERE (([t2].[ID] = [t1].[ID]) AND ([t1].[Name] = @1))",
+          new CommandParameter("@1", "Steiner")
+          );
+    }
+
+    [Test]
+    public void ExplicitJoinWithInto_UseIntoVariableTwiceInSameStatementAndInSubStatement ()
+    {
+      CheckQuery(
+      from k in Kitchens
+          join c in Cooks on k.Cook equals c into gkc
+          from kc in gkc
+           where k.Name == 
+            (from sk in Kitchens 
+             from skc in gkc select skc.Name).First ()
+      select kc.Name, 
+      "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t4] ON [t0].[ID] = [t4].[KitchenID] "+
+      "CROSS JOIN [CookTable] AS [t1] WHERE (([t4].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (@1) [t3].[Name] AS [value] "+
+      "FROM [KitchenTable] AS [t2] CROSS JOIN [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID]))))",
+      new CommandParameter("@1", 1));
+    }
+
+    [Test]
+    public void ExplicitJoinWithInto_UseIntoVariableTwiceInSameStatementAndTwoSubStatement ()
+    {
+      CheckQuery (
+      from k in Kitchens
+      join c in Cooks on k.Cook equals c into gkc
+      from kc in gkc
+      where k.Name ==
+       (from sk in Kitchens
+        from skc in gkc
+        where sk.Name ==
+       (from ssk in Kitchens
+        from sskc in gkc
+        select skc.Name).First ()
+        select skc.Name).First ()
+      select kc.Name,
+      "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t6] ON [t0].[ID] = [t6].[KitchenID] "+
+      "CROSS JOIN [CookTable] AS [t1] WHERE (([t6].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (@1) [t3].[Name] AS [value] "+
+      "FROM [KitchenTable] AS [t2] CROSS JOIN [CookTable] AS [t3] WHERE (([t6].[ID] = [t3].[ID]) AND ([t2].[Name] = "+
+      "(SELECT TOP (@2) [t3].[Name] AS [value] FROM [KitchenTable] AS [t4] CROSS JOIN [CookTable] AS [t5] WHERE ([t6].[ID] = [t5].[ID])))))))",
+      new CommandParameter("@1", 1),
+      new CommandParameter("@2", 1));
+    }
+
 
     [Test]
     public void ExplicitJoinWithInto_InSubstatement_Once ()
