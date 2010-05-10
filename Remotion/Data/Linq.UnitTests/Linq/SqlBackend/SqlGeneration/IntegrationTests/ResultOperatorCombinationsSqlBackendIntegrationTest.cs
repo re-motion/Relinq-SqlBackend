@@ -194,12 +194,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 2691")]
     public void All_AfterDefaultIfEmpty ()
     {
       CheckQuery (
           () => (from s in Cooks select s).DefaultIfEmpty().All (s => s.IsStarredCook),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [q0].[ID] AS [value] FROM  (SELECT NULL AS [Empty]) AS [Empty] "
+        "SELECT CASE WHEN NOT EXISTS((SELECT [q0].[ID] AS [value] FROM (SELECT NULL AS [Empty]) AS [Empty] "
         + "LEFT OUTER JOIN (SELECT [t0].[ID],[t0].[FirstName],[t0].[Name]," +
         "[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]) AS [q0] ON 1 = 1 " +
         "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]"

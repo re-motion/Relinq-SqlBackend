@@ -152,6 +152,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
      }
 
-    // TODO Review 2691: Add integration test for DefaultIfEmpty on group join variable (from kc in gkc.DefaultIfEmpty())
+    [Test]
+    public void ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable ()
+    {
+      CheckQuery (
+          from k in Kitchens
+          join c in Cooks on k.Cook equals c into gkc
+          from kc in gkc.DefaultIfEmpty()
+          select kc.Name,
+          "SELECT [q1].[Name] AS [value] FROM [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] "+
+          "CROSS APPLY (SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "+
+          "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN "+
+          "(SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "+
+          "FROM [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID])) AS [q0] ON 1 = 1) AS [q1]");
+    }
+
   }
 }
