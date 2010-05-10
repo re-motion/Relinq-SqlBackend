@@ -143,7 +143,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       AddJoinClause(joinClause);
     }
 
-    // TODO Review 2668: Test this method, now that it is public
     public SqlTableBase AddJoinClause (JoinClause joinClause)
     {
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
