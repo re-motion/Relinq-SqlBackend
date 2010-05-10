@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      return visitor.VisitResolvedLeftJoinInfo (this);
+      return visitor.VisitResolvedJoinInfo (this);
     }
 
     public ResolvedJoinInfo GetResolvedLeftJoinInfo ()

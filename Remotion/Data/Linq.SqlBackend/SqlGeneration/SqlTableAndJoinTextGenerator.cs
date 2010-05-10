@@ -130,8 +130,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return tableInfo;
     }
 
-    // TODO Review 2706: Rename to VisitResolvedJoinInfo
-    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo joinInfo)
+    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 

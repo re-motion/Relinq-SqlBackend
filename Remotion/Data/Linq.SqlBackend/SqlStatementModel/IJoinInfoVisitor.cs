@@ -26,6 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   {
     IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo);
     IJoinInfo VisitUnresolvedCollectionJoinInfo (UnresolvedCollectionJoinInfo joinInfo);
-    IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo joinInfo);
+    IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo);
   }
 }

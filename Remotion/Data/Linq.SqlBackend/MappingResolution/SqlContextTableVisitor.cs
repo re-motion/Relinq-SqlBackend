@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return joinInfo;
     }
 
-    public IJoinInfo VisitResolvedLeftJoinInfo (ResolvedJoinInfo joinInfo)
+    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
