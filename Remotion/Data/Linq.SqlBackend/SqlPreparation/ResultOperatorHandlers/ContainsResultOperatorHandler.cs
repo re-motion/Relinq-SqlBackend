@@ -66,8 +66,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       else // Scenario: where kitchen.Cooks.Contains (...)
       {
         var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
-        var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
-
+        var subStatementExpression = sqlSubStatement.CreateExpression();
+        
         selectProjection = new SqlBinaryOperatorExpression ("IN", preparedItemExpression, subStatementExpression);
       }
 
