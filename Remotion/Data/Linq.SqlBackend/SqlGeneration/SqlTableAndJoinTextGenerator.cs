@@ -53,15 +53,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       GenerateSqlForJoins (sqlTable, new SqlTableAndJoinTextGenerator (commandBuilder, stage, Context.JoinedTable));
     }
 
-    private static void GenerateSqlForJoins (SqlTableBase sqlTable, SqlTableAndJoinTextGenerator visitor)
-    {
-      foreach (var joinedTable in sqlTable.JoinedTables)
-      {
-        joinedTable.Accept (visitor);
-        GenerateSqlForJoins (joinedTable, visitor);
-      }
-    }
-
     protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, Context context)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -166,6 +157,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     IJoinInfo IJoinInfoVisitor.VisitUnresolvedCollectionJoinInfo (UnresolvedCollectionJoinInfo joinInfo)
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinInfo is not valid at this point.");
+    }
+
+    private static void GenerateSqlForJoins (SqlTableBase sqlTable, SqlTableAndJoinTextGenerator visitor)
+    {
+      foreach (var joinedTable in sqlTable.JoinedTables)
+      {
+        joinedTable.Accept (visitor);
+        GenerateSqlForJoins (joinedTable, visitor);
+      }
     }
     
   }

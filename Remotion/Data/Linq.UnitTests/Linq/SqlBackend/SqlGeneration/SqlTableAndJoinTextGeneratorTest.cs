@@ -21,6 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -36,12 +37,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   {
     private SqlCommandBuilder _commandBuilder;
     private ISqlGenerationStage _stageMock;
+    private TestableSqlTableAndJoinTextGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage>();
       _commandBuilder = new SqlCommandBuilder();
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.FirstTable);
     }
 
     [Test]
@@ -131,48 +134,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               + "[CookTable2] AS [t3] ON [t2].[ID2] = [t3].[FK2]"));
     }
 
-    // TODO Review 2706: Remove the following tests, add a TestableSqlTableAndJoinTextGenerator, and test each Visit method separately. One test per execution path per method.
-
     [Test]
-    public void VisitSubStatementTableInfo_WithFirstIsFalse ()
+    public void VisitSqlTable ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
+      sqlTable.TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
 
-      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
-      var sqlTable = new SqlTable (resolvedSubTableInfo);
-
-      _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
-
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false);
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" CROSS APPLY (XXX) AS [cook]"));
-    }
-
-    [Test]
-    public void VisitSubStatementTableInfo_WithFirstIsTrue ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-
-      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
-      var sqlTable = new SqlTable (resolvedSubTableInfo);
-
-      _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
-
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, true);
-      _stageMock.VerifyAllExpectations();
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(XXX) AS [cook]"));
+      _generator.VisitSqlTable (sqlTable);
+      
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table] AS [t]"));
     }
 
     [Test]
@@ -180,28 +150,134 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var leftKey = new SqlLiteralExpression (1);
       var rightKey = new SqlLiteralExpression (1);
-      var resolvedLeftJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey);
-      var sqlJoinedTable = new SqlJoinedTable (resolvedLeftJoinInfo, JoinSemantics.Left);
+      var sqlTable =
+          new SqlJoinedTable (
+              new ResolvedJoinInfo (
+                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey),JoinSemantics.Left);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
+        .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
       _stageMock
           .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, rightKey))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("rightKey"));
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlJoinedTable, _commandBuilder, _stageMock, true);
+      _generator.VisitSqlJoinedTable (sqlTable);
 
-      _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [c] ON leftKey = rightKey"));
     }
 
+    [Test]
+    public void VisitSqlJoinedTable_WithInnerJoinSemantic ()
+    {
+      var leftKey = new SqlLiteralExpression (1);
+      var rightKey = new SqlLiteralExpression (1);
+      var sqlTable =
+          new SqlJoinedTable (
+              new ResolvedJoinInfo (
+                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey), JoinSemantics.Inner);
+
+      _stageMock
+        .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
+      _stageMock
+          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, rightKey))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("rightKey"));
+
+      _generator.VisitSqlJoinedTable (sqlTable);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON leftKey = rightKey"));
+    }
+
+    [Test]
+    public void VisitSimpleTableInfo_FirstTable ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+
+      _generator.VisitSimpleTableInfo (simpleTableInfo);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c]"));
+    }
+
+    [Test]
+    public void VisitSimpleTableInfo_NonFirstTable ()
+    {
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+
+      _generator.VisitSimpleTableInfo (simpleTableInfo);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS JOIN [CookTable] AS [c]"));
+    }
+
+    [Test]
+    public void VisitSubStatementTableInfo_FirstTable ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
+
+      _stageMock
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
+      _stageMock.Replay();
+
+      _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
+    }
+
+    [Test]
+    public void VisitSubStatementTableInfo_NonFirstTable ()
+    {
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
+
+      _stageMock
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
+      _stageMock.Replay();
+
+      _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY (XXX) AS [cook]"));
+    }
+
+    [Test]
+    public void VisitResolvedJoinInfo ()
+    {
+      var leftKey = new SqlLiteralExpression (1);
+      var rightKey = new SqlLiteralExpression (1);
+      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey);
+
+      _stageMock
+        .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
+      _stageMock
+         .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, rightKey))
+         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("rightKey"));
+      _stageMock.Replay();
+
+      _generator.VisitResolvedJoinInfo (resolvedJoinInfo);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON leftKey = rightKey"));
+    }
+    
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedTableInfo is not valid at this point.")
     ]
     public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false);
     }
 
