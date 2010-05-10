@@ -18,21 +18,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
-  // TODO Review 2668: This class is more or less identical to SqlPreparationQueryModelVisitorContext; I'd suggest unifying both classes into one SqlPreparationContext that has a ParentContext property that is allowed to be null.
+  
   /// <summary>
   /// <see cref="SqlPreparationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTable"/>.
   /// </summary>
   public class SqlPreparationContext : ISqlPreparationContext
   {
+    private readonly ISqlPreparationContext _parentContext;
+    private readonly SqlPreparationQueryModelVisitor _visitor;
     private readonly Dictionary<Expression, Expression> _mapping;
 
-    public SqlPreparationContext ()
+    public SqlPreparationContext () : this(null, null)
     {
+      
+    }
+
+    public SqlPreparationContext (ISqlPreparationContext parentContext, SqlPreparationQueryModelVisitor visitor)
+    {
+      _parentContext = parentContext;
+      _visitor = visitor;
       _mapping = new Dictionary<Expression, Expression>();
     }
 
@@ -52,27 +63,61 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public Expression GetContextMapping (Expression key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      
-      Expression result;
-      if (!_mapping.TryGetValue (key, out result))
+
+      Expression result = TryGetContextMappingFromHierarchy (key);
+      if (result != null) // search this context and parent context's for query source
+        return result;
+
+      if (_visitor != null)
       {
-        var message = string.Format (
-            "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
-            + "supported yet.", 
-            key.Type.Name
-         );
-        throw new KeyNotFoundException (message);
+        // if whole hierarchy doesn't contain source, check whether it's a group join; group joins are lazily added
+        var keyAsQuerySourceReferenceExpression = key as QuerySourceReferenceExpression;
+        if (keyAsQuerySourceReferenceExpression != null)
+        {
+          var groupJoinClause = keyAsQuerySourceReferenceExpression.ReferencedQuerySource as GroupJoinClause;
+          if (groupJoinClause != null)
+            return new SqlTableReferenceExpression (_visitor.AddJoinClause (groupJoinClause.JoinClause));
+        }
       }
 
-      return result;
+      // nobody knows this source in the whole hierarchy, and it is no lazy join => error
+      var message = string.Format (
+           "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
+           + "supported yet.",
+           key.Type.Name);
+      throw new KeyNotFoundException (message);
+
+      //Expression result;
+      //if (!_mapping.TryGetValue (key, out result))
+      //{
+      //  var message = string.Format (
+      //      "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
+      //      + "supported yet.", 
+      //      key.Type.Name
+      //   );
+      //  throw new KeyNotFoundException (message);
+      //}
+
+      //return result;
     }
 
     public Expression TryGetContextMappingFromHierarchy (Expression key)
     {
+      ArgumentUtility.CheckNotNull ("key", key);
+
       Expression result;
-      if(_mapping.TryGetValue (key, out result))
+      if (_mapping.TryGetValue (key, out result))
         return result;
-      return null;
+
+      if (_parentContext != null)
+        return _parentContext.TryGetContextMappingFromHierarchy (key);
+      else
+        return null;
+
+      //Expression result;
+      //if(_mapping.TryGetValue (key, out result))
+      //  return result;
+      //return null;
     }
   }
 }

@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void Initialization ()
     {
-      Assert.That (_visitor.Context, Is.TypeOf (typeof (SqlPreparationQueryModelVisitorContext)));
+      Assert.That (_visitor.Context, Is.TypeOf (typeof (SqlPreparationContext)));
       Assert.That (_visitor.Context, Is.Not.SameAs (_context));
     }
 
@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == constantExpression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlTable);
 
@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == fromClause.FromExpression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedJoinedTable);
 
@@ -207,7 +207,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareWhereExpression (
                   Arg<Expression>.Matches (e => e == whereClause.Predicate),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression);
       _stageMock.Replay();
 
@@ -235,14 +235,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareWhereExpression (
                   Arg<Expression>.Matches (e => e == predicate1),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression1);
       _stageMock
           .Expect (
               mock =>
               mock.PrepareWhereExpression (
                   Arg<Expression>.Matches (e => e == predicate2),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression2);
       _stageMock.Replay();
 
@@ -265,7 +265,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareSelectExpression (
                   Arg<Expression>.Matches (e => e == _selectClause.Selector),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression);
       _stageMock.Replay();
 
@@ -290,7 +290,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == joinClause.InnerSequence),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (constantExpression);
       _stageMock
           .Expect (
@@ -301,7 +301,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareWhereExpression (
                   Arg<Expression>.Is.Anything,
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (fakeWhereCondition);
       _stageMock.Replay();
 
@@ -325,7 +325,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == joinClause.InnerSequence),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (Expression.Constant (5));
       _stageMock
           .Expect (
@@ -336,7 +336,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareWhereExpression (
                   Arg<Expression>.Is.Anything,
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (fakeWhereCondition);
       _stageMock.Replay();
 
@@ -358,7 +358,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareOrderByExpression (
                   Arg<Expression>.Matches (e => e == _orderByClause.Orderings[0].Expression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedOrdering.Expression);
       _stageMock.Replay();
 
@@ -391,14 +391,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareOrderByExpression (
                   Arg<Expression>.Matches (e => e == _orderByClause.Orderings[0].Expression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedOrderingExpression2);
       _stageMock
           .Expect (
               mock =>
               mock.PrepareOrderByExpression (
                   Arg<Expression>.Matches (e => e == _orderByClause.Orderings[1].Expression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedOrderingExpression3);
       _stageMock.Replay();
 
@@ -431,7 +431,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               Arg<SqlStatementBuilder>.Matches(sb=>sb==sqlStatementBuilder),
               Arg<UniqueIdentifierGenerator>.Matches(g=>g==_generator),
               Arg<ISqlPreparationStage>.Matches(s=>s==_stageMock),
-              Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)));
+              Arg<ISqlPreparationContext>.Matches (c => c!=_context)));
       handlerMock.Replay();
 
       queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
@@ -450,7 +450,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock =>
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
-                  Arg<ISqlPreparationContext>.Matches (c => c is SqlPreparationQueryModelVisitorContext)))
+                  Arg<ISqlPreparationContext>.Matches (c => c!=_context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
       _stageMock.Replay();

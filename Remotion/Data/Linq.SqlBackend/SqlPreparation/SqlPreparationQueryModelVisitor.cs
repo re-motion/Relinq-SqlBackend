@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
-      _context = new SqlPreparationQueryModelVisitorContext (context, this);
+      _context = new SqlPreparationContext (context, this);
       _stage = stage;
       _generator = generator;
       _registry = registry;
