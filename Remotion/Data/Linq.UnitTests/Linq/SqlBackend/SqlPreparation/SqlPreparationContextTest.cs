@@ -62,56 +62,56 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddContextMapping ()
+    public void AddExpressionMapping ()
     {
-      _context.AddContextMapping (new QuerySourceReferenceExpression(_source), new SqlTableReferenceExpression(_sqlTable));
-      Assert.That (_context.GetContextMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression(_source), new SqlTableReferenceExpression(_sqlTable));
+      Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
     }
 
     [Test]
-    public void GetContextMapping ()
+    public void GetExpressionMapping ()
     {
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
-      _context.AddContextMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
-      Assert.That (((SqlTableReferenceExpression) _context.GetContextMapping (querySourceReferenceExpression)).SqlTable, 
+      _context.AddExpressionMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
+      Assert.That (((SqlTableReferenceExpression) _context.GetExpressionMapping (querySourceReferenceExpression)).SqlTable, 
         Is.SameAs (_sqlTable));
     }
 
     [Test]
-    public void TryGetContextMappingFromHierarchy ()
+    public void TryGetExpressiontMappingFromHierarchy ()
     {
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
-      _context.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
+      _context.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
 
-      Expression result = _context.TryGetContextMappingFromHierarchy (querySourceReferenceExpression);
-
-      Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
-    }
-
-    [Test]
-    public void GetContextMapping_GetFromParentContext ()
-    {
-      var querySourceReferenceExpression = new QuerySourceReferenceExpression (_parentSource);
-      var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
-      _parentContext.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
-      Assert.That (_contextWithParent.GetContextMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
-    }
-
-    [Test]
-    public void TryGetContextMappingFromHierarchy_GetFromParentContext ()
-    {
-      var querySourceReferenceExpression = new QuerySourceReferenceExpression (_parentSource);
-      var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
-      _parentContext.AddContextMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
-
-      Expression result = _contextWithParent.TryGetContextMappingFromHierarchy (querySourceReferenceExpression);
+      Expression result = _context.TryGetExpressionMappingFromHierarchy (querySourceReferenceExpression);
 
       Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
-    public void GetContextMapping_GroupJoinClause ()
+    public void GetExpressionMapping_GetFromParentContext ()
+    {
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (_parentSource);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
+      _parentContext.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
+      Assert.That (_contextWithParent.GetExpressionMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
+    }
+
+    [Test]
+    public void TryGetExpressionMappingFromHierarchy_GetFromParentContext ()
+    {
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (_parentSource);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
+      _parentContext.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
+
+      Expression result = _contextWithParent.TryGetExpressionMappingFromHierarchy (querySourceReferenceExpression);
+
+      Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
+    }
+
+    [Test]
+    public void GetExpressionMapping_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
 
@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
       _stageMock.Replay ();
 
-      var result = _contextWithParent.GetContextMapping (new QuerySourceReferenceExpression (groupJoinClause));
+      var result = _contextWithParent.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause));
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.Null);
@@ -138,19 +138,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void TryGetContextMapping_GroupJoinClause ()
+    public void TryGetExpressionMapping_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
 
-      Expression result = _contextWithParent.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression (groupJoinClause));
+      Expression result = _contextWithParent.TryGetExpressionMappingFromHierarchy (new QuerySourceReferenceExpression (groupJoinClause));
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    public void TryGetContextMappingFromHierarchy_ReturnsNullWhenSourceNotAdded ()
+    public void TryGetExpressionMappingFromHierarchy_ReturnsNullWhenSourceNotAdded ()
     {
-      Expression result = _context.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression (_source));
+      Expression result = _context.TryGetExpressionMappingFromHierarchy (new QuerySourceReferenceExpression (_source));
 
       Assert.That (result, Is.Null);
     }

@@ -24,8 +24,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public interface ISqlPreparationContext
   {
-    void AddContextMapping (Expression key, Expression value); // TODO Review 2668: Maybe rename to "ExpressionMapping"? (Here and in the Get methods) Also, I'd prefer "original", "replacement" instead of "key", "value"
-    Expression GetContextMapping (Expression key);
-    Expression TryGetContextMappingFromHierarchy (Expression key);
+    void AddExpressionMapping (Expression original, Expression replacement); 
+    Expression GetExpressionMapping (Expression original);
+    Expression TryGetExpressionMappingFromHierarchy (Expression original);
   }
 }

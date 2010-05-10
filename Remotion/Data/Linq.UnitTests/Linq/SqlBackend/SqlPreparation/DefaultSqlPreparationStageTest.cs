@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySource = ExpressionHelper.CreateMainFromClause_Cook();
       _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
 
-      _context.AddContextMapping (new QuerySourceReferenceExpression(querySource), new SqlTableReferenceExpression(_sqlTable));
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression(querySource), new SqlTableReferenceExpression(_sqlTable));
 
       _querySourceReferenceExpression = new QuerySourceReferenceExpression (querySource);
 

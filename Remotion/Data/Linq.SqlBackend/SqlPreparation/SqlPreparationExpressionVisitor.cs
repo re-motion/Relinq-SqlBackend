@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       if (expression != null)
       {
-        var replacementExpression = _context.GetContextMapping(expression);
+        var replacementExpression = _context.GetExpressionMapping(expression);
         if (replacementExpression != null) 
           expression = replacementExpression;
       }

@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _kitchenMainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen();
       var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
-      _context.AddContextMapping (new QuerySourceReferenceExpression(_cookMainFromClause), new SqlTableReferenceExpression(_sqlTable));
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression(_cookMainFromClause), new SqlTableReferenceExpression(_sqlTable));
       _registry = MethodCallTransformerRegistry.CreateDefault();
     }
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var visitor = new TestableSqlPreparationExpressionVisitorTest (_context, _stageMock, _registry);
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
-      _context.AddContextMapping (_cookQuerySourceReferenceExpression, tableReferenceExpression);
+      _context.AddExpressionMapping (_cookQuerySourceReferenceExpression, tableReferenceExpression);
       
       var result = visitor.VisitExpression (_cookQuerySourceReferenceExpression);
 

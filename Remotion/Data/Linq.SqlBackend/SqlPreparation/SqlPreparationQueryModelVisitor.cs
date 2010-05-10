@@ -174,7 +174,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
       var sqlTableOrJoin = GetTableForFromExpression(preparedFromExpression, source.ItemType);
 
-      _context.AddContextMapping (new QuerySourceReferenceExpression(source) , new SqlTableReferenceExpression(sqlTableOrJoin));
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression(source) , new SqlTableReferenceExpression(sqlTableOrJoin));
       return sqlTableOrJoin;
     }
 

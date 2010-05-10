@@ -47,26 +47,26 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping = new Dictionary<Expression, Expression>();
     }
 
-    public void AddContextMapping (Expression key, Expression value)
+    public void AddExpressionMapping (Expression original, Expression replacement)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("original", original);
+      ArgumentUtility.CheckNotNull ("replacement", replacement);
 
-      _mapping[key] = value;
+      _mapping[original] = replacement;
     }
 
-    public Expression GetContextMapping (Expression key)
+    public Expression GetExpressionMapping (Expression original)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("original", original);
 
-      Expression result = TryGetContextMappingFromHierarchy (key);
+      Expression result = TryGetExpressionMappingFromHierarchy (original);
       if (result != null) // search this context and parent context's for query source
         return result;
 
       if (_visitor != null)
       {
         // if whole hierarchy doesn't contain source, check whether it's a group join; group joins are lazily added
-        var keyAsQuerySourceReferenceExpression = key as QuerySourceReferenceExpression;
+        var keyAsQuerySourceReferenceExpression = original as QuerySourceReferenceExpression;
         if (keyAsQuerySourceReferenceExpression != null)
         {
           var groupJoinClause = keyAsQuerySourceReferenceExpression.ReferencedQuerySource as GroupJoinClause;
@@ -77,16 +77,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return null;
     }
 
-    public Expression TryGetContextMappingFromHierarchy (Expression key)
+    public Expression TryGetExpressionMappingFromHierarchy (Expression original)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("original", original);
 
       Expression result;
-      if (_mapping.TryGetValue (key, out result))
+      if (_mapping.TryGetValue (original, out result))
         return result;
 
       if (_parentContext != null)
-        return _parentContext.TryGetContextMappingFromHierarchy (key);
+        return _parentContext.TryGetExpressionMappingFromHierarchy (original);
 
       return null;
     }

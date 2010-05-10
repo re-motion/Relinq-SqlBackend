@@ -95,11 +95,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _handler.EnsureNoDistinctQuery(resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
-      Assert.That (_context.TryGetContextMappingFromHierarchy (((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression), Is.Not.Null);
+      Assert.That (_context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression), Is.Not.Null);
       Assert.That (
           ((ResolvedSubStatementTableInfo) ((SqlTable)
                                             ((SqlTableReferenceExpression)
-                                             _context.TryGetContextMappingFromHierarchy (
+                                             _context.TryGetExpressionMappingFromHierarchy (
                                                  ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression)).SqlTable).TableInfo).SqlStatement,
           Is.EqualTo (sqlStatement));
     }
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_statementBuilder.SelectProjection, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) _statementBuilder.SelectProjection).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
 
-      var mappedItemExpression = _context.TryGetContextMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
+      var mappedItemExpression = _context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
       Assert.That (mappedItemExpression, Is.Not.Null);
       Assert.That (mappedItemExpression, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) mappedItemExpression).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));

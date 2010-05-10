@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.GetContextMapping (new QuerySourceReferenceExpression(_mainFromClause))).SqlTable, 
+          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression(_mainFromClause))).SqlTable, 
           Is.SameAs (preparedSqlTable));
     }
 
@@ -158,7 +158,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.GetContextMapping (new QuerySourceReferenceExpression(additionalFromClause))).SqlTable, 
+          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression(additionalFromClause))).SqlTable, 
           Is.SameAs (preparedSqlTable));
     }
 
@@ -189,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.TypeOf(typeof(SqlTable)));
       Assert.That (((SqlTable) _visitor.SqlStatementBuilder.SqlTables[0]).TableInfo, Is.SameAs(preparedJoinedTable));
       Assert.That (((JoinConditionExpression) _visitor.SqlStatementBuilder.WhereCondition).JoinedTable, Is.SameAs(preparedJoinedTable));
-      Assert.That (((SqlTableReferenceExpression) _visitor.Context.GetContextMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
+      Assert.That (((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
           Is.SameAs (_visitor.SqlStatementBuilder.SqlTables[0]));
     }
 
@@ -459,7 +459,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (preparedSqlTable));
-      Assert.That (_visitor.Context.GetContextMapping (new QuerySourceReferenceExpression(_mainFromClause)), Is.Not.Null);
+      Assert.That (_visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression(_mainFromClause)), Is.Not.Null);
     }
 
     // TODO Review 2668: Test AddQuerySource with a fromExpression that is already a table reference => no table must be prepared, the existing table must not be added again, no where condition must be added when the reference points to a joined table, but an expression mapping must be created, and the existing table should be returned by the method

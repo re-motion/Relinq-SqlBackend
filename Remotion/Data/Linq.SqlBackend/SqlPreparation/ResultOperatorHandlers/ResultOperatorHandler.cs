@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // the front-end's lambda resolution process.)
 
       var itemExpressionNowInSqlTable = ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression;
-      context.AddContextMapping (itemExpressionNowInSqlTable, newSqlTableReferenceExpression);
+      context.AddExpressionMapping (itemExpressionNowInSqlTable, newSqlTableReferenceExpression);
     }
 
     protected void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
