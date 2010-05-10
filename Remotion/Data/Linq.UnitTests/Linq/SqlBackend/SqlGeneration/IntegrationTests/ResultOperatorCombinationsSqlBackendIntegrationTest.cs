@@ -184,7 +184,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         new CommandParameter ("@2", 10)
         );
 
-      // TODO Review 2691: Check why the subquery uses q1 instead of q0. Is this expected?
       CheckQuery (
           () => (from s in Cooks select s.FirstName).Take (10).Take (20).All (s => s != null),
           "SELECT CASE WHEN NOT EXISTS((SELECT TOP (@1) [q1].[value] AS [value] FROM (SELECT TOP (@2) [t0].[FirstName] AS [value] "+

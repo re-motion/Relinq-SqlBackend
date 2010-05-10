@@ -148,15 +148,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage =
-        "The expression 'Cook' could not be found in the list of processed expressions. Probably, the feature declaring 'Cook' isn't supported yet.")]
-    public void GetContextMapping_Throws_WhenExpressionNotAdded ()
-    {
-      _source = ExpressionHelper.CreateMainFromClause_Cook();
-      _context.GetContextMapping (new QuerySourceReferenceExpression(_source));
-    }
-
-    [Test]
     public void TryGetContextMappingFromHierarchy_ReturnsNullWhenSourceNotAdded ()
     {
       Expression result = _context.TryGetContextMappingFromHierarchy (new QuerySourceReferenceExpression (_source));

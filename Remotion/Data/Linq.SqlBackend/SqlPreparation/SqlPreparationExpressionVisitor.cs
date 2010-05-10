@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
@@ -62,15 +63,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public override Expression VisitExpression (Expression expression)
     {
-      // TODO Review 2691: Refactor as follows:
-      // - move error message from GetContextMapping out to VisitQuerySourceReferenceExpression; change GetContextMapping to return null if none found
-      // - use GetContextMapping here (not TryGetContextMappingFromHierarchy)
-      // - in VisitQuerySourceReferenceExpression, remove the context lookup - it should already have happened here. Only leave the error message in - whenever the VisitQuerySourceReferenceExpression method is executed, that is an error
       if (expression != null)
       {
-        var replacementExpression = _context.TryGetContextMappingFromHierarchy (expression);
-        if (replacementExpression != null) // TODO Review 2691: Actually, the visitor is not required - replacementExpression is already a replacement for expression (if it is not null)
-          expression = ReplacingExpressionTreeVisitor.Replace (expression, replacementExpression, expression);
+        var replacementExpression = _context.GetContextMapping(expression);
+        if (replacementExpression != null) 
+          expression = replacementExpression;
       }
 
       return base.VisitExpression (expression);
@@ -80,8 +77,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var referencedTable = (SqlTableReferenceExpression)_context.GetContextMapping (expression);
-      return new SqlTableReferenceExpression (referencedTable.SqlTable);
+      var message = string.Format (
+           "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
+           + "supported yet.",
+           expression.Type.Name);
+      throw new KeyNotFoundException (message);
     }
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)

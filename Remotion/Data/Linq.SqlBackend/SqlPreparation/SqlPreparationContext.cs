@@ -79,26 +79,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             return new SqlTableReferenceExpression (_visitor.AddJoinClause (groupJoinClause.JoinClause));
         }
       }
-
-      // nobody knows this source in the whole hierarchy, and it is no lazy join => error
-      var message = string.Format (
-           "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
-           + "supported yet.",
-           key.Type.Name);
-      throw new KeyNotFoundException (message);
-
-      //Expression result;
-      //if (!_mapping.TryGetValue (key, out result))
-      //{
-      //  var message = string.Format (
-      //      "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
-      //      + "supported yet.", 
-      //      key.Type.Name
-      //   );
-      //  throw new KeyNotFoundException (message);
-      //}
-
-      //return result;
+      return null;
     }
 
     public Expression TryGetContextMappingFromHierarchy (Expression key)
@@ -111,13 +92,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       if (_parentContext != null)
         return _parentContext.TryGetContextMappingFromHierarchy (key);
-      else
-        return null;
 
-      //Expression result;
-      //if(_mapping.TryGetValue (key, out result))
-      //  return result;
-      //return null;
+      return null;
     }
   }
 }
