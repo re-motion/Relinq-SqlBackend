@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -295,6 +296,57 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, AggregationModifier.None);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
+    }
+
+    [Test]
+    public void CreateExpression_WithSqlTables ()
+    {
+      var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
+      sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
+      var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
+
+      var result = sqlStatement.CreateExpression();
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
+    }
+
+    [Test]
+    public void CreateExpression_HasAggregationModifier ()
+    {
+      var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
+      sqlStatementBuilder.AggregationModifier = AggregationModifier.Max;
+      var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
+
+      var result = sqlStatement.CreateExpression ();
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
+    }
+
+    [Test]
+    public void CreateExpression_IsDistinctQuery ()
+    {
+      var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
+      sqlStatementBuilder.IsDistinctQuery = true;
+      var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
+
+      var result = sqlStatement.CreateExpression ();
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
+    }
+
+    [Test]
+    public void CreateExpression_WithNoSqlTablesAndNoDistinctQueryAndNoAggregationModifier ()
+    {
+      var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
+      sqlStatementBuilder.SqlTables.Clear();
+      var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
+
+      var result = sqlStatement.CreateExpression ();
+
+      Assert.That (result, Is.SameAs(sqlStatement.SelectProjection));
     }
     
   }

@@ -41,7 +41,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly bool _isDistinctQuery;
     private readonly AggregationModifier _aggregationModifier;
 
-    public SqlStatement (IStreamedDataInfo dataInfo, Expression selectProjection, IEnumerable<SqlTableBase> sqlTables, IEnumerable<Ordering> orderings, Expression whereCondition, Expression topExpression, bool isDistinctQuery, AggregationModifier aggregationModifier)
+    public SqlStatement (
+        IStreamedDataInfo dataInfo,
+        Expression selectProjection,
+        IEnumerable<SqlTableBase> sqlTables,
+        IEnumerable<Ordering> orderings,
+        Expression whereCondition,
+        Expression topExpression,
+        bool isDistinctQuery,
+        AggregationModifier aggregationModifier)
     {
       ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
@@ -51,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (whereCondition != null && whereCondition.Type != typeof (bool))
         throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
 
-      if (aggregationModifier!=AggregationModifier.None && topExpression != null)
+      if (aggregationModifier != AggregationModifier.None && topExpression != null)
         throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
 
       if (selectProjection.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (selectProjection.Type))
@@ -105,6 +113,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public ReadOnlyCollection<Ordering> Orderings
     {
       get { return Array.AsReadOnly (_orderings); }
+    }
+
+    public Expression CreateExpression ()
+    {
+      return SqlTables.Count == 0 && AggregationModifier == AggregationModifier.None && !IsDistinctQuery
+                 ? SelectProjection
+                 : new SqlSubStatementExpression (this);
     }
 
     public override bool Equals (object obj)
