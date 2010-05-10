@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
@@ -38,6 +39,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
       GenerateTextForExpression (commandBuilder, expression);
     }

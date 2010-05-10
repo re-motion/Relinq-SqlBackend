@@ -61,10 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       if (aggregationModifier != AggregationModifier.None && topExpression != null)
         throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
-
-      if (selectProjection.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (selectProjection.Type))
-        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
-
+      
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;
       _sqlTables = sqlTables.ToArray();

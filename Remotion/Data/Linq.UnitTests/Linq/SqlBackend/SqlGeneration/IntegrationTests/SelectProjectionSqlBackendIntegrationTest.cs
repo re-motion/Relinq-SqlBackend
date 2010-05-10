@@ -78,5 +78,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT CASE WHEN ([t0].[Name] = @1) THEN 1 ELSE 0 END AS [value] FROM [KitchenTable] AS [t0]",
           new CommandParameter ("@1", "SpecialKitchen"));
     }
+   
   }
 }

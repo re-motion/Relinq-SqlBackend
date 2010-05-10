@@ -23,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestUtilities;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -82,6 +83,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
+    public void GenerateTextForSelectExpression_CollectionInSelectProjection_ThrowsException ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          Expression.Constant (new Cook[] { }),
+          new SqlTable[] { },
+          new Ordering[] { },
+          null,
+          null,
+          false, AggregationModifier.None);
+
+      _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
     }
 
     [Test]

@@ -134,15 +134,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
-    public void InSelectProjection_ThrowsNotSupportedException ()
-    {
-      CheckQuery (
-          from c in Cooks select (from k in Kitchens select k.Name),
-          "SELECT (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
-    }
-
-    [Test]
     public void InOrderByClause ()
     {
       CheckQuery (
@@ -158,6 +149,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] "
           + "WHERE ([t0].[ID] = (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] "
           + "WHERE ([t1].[ID] = (SELECT COUNT(*) AS [value] FROM [RestaurantTable] AS [t2]))))");
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
+    public void InSelectProjection_ThrowsNotSupportedException ()
+    {
+      CheckQuery (
+          from c in Cooks select (from k in Kitchens select k.Name),
+          "SELECT (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) FROM [CookTable] AS [t0]");
     }
 
     [Test]

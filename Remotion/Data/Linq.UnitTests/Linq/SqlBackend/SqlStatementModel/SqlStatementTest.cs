@@ -47,20 +47,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
-    public void Initialization_CollectionInSelectProjection_ThrowsException ()
-    {
-      new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          Expression.Constant (new Cook[] { }),
-          new SqlTable[] { },
-          new Ordering[] { },
-          null,
-          null,
-          false, AggregationModifier.None);
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void WhereCondition_ChecksType ()
     {
