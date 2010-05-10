@@ -462,6 +462,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression(_mainFromClause)), Is.Not.Null);
     }
 
-    // TODO Review 2668: Test AddQuerySource with a fromExpression that is already a table reference => no table must be prepared, the existing table must not be added again, no where condition must be added when the reference points to a joined table, but an expression mapping must be created, and the existing table should be returned by the method
+    [Test]
+    public void AddQuerySource_FromExpressionIsAlreadyATableReference ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedExpression = new SqlTableReferenceExpression (sqlTable);
+      
+      _stageMock
+          .Expect (
+              mock =>
+              mock.PrepareFromExpression (
+                  Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+          .Return (preparedExpression);
+      _stageMock.Replay();
+
+      var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (sqlTable));
+      Assert.That (_visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
+    }
   }
 }

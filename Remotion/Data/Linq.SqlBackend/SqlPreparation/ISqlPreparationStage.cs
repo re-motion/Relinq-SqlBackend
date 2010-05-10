@@ -32,6 +32,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareItemExpression (Expression expression, ISqlPreparationContext context);
     SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType);
-    SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context);
+    SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext);
   }
 }

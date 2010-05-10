@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -52,19 +51,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var source = new UnresolvedTableInfo (typeof (int));
       _sqlTable = new SqlTable (source);
 
-      _parentContext = new SqlPreparationContext ();
-      _parentSource = ExpressionHelper.CreateMainFromClause_Cook ();
+      _parentContext = new SqlPreparationContext();
+      _parentSource = ExpressionHelper.CreateMainFromClause_Cook();
       _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
+      _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
       _visitor = new TestableSqlPreparationQueryModelVisitor (
-          _parentContext, _stageMock, new UniqueIdentifierGenerator (), ResultOperatorHandlerRegistry.CreateDefault ());
+          _parentContext, _stageMock, new UniqueIdentifierGenerator(), ResultOperatorHandlerRegistry.CreateDefault());
       _contextWithParent = new SqlPreparationContext (_parentContext, _visitor);
     }
 
     [Test]
     public void AddExpressionMapping ()
     {
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression(_source), new SqlTableReferenceExpression(_sqlTable));
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (_source), new SqlTableReferenceExpression (_sqlTable));
       Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
     }
 
@@ -73,8 +72,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
       _context.AddExpressionMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
-      Assert.That (((SqlTableReferenceExpression) _context.GetExpressionMapping (querySourceReferenceExpression)).SqlTable, 
-        Is.SameAs (_sqlTable));
+      Assert.That (
+          ((SqlTableReferenceExpression) _context.GetExpressionMapping (querySourceReferenceExpression)).SqlTable,
+          Is.SameAs (_sqlTable));
     }
 
     [Test]
@@ -113,10 +113,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void GetExpressionMapping_GroupJoinClause ()
     {
-      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
+      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause();
 
       var preparedExpression = Expression.Constant (0);
-      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
 
       _stageMock
           .Expect (
@@ -126,21 +126,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
-      _stageMock.Replay ();
+      _stageMock
+          .Expect (
+              mock =>
+              mock.PrepareWhereExpression (
+                  Arg<Expression>.Matches (
+                      e =>
+                      ((BinaryExpression) e).Left == groupJoinClause.JoinClause.OuterKeySelector
+                      && ((BinaryExpression) e).Right == groupJoinClause.JoinClause.InnerKeySelector),
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+          .Return (preparedExpression);
+      _stageMock.Replay();
 
       var result = _contextWithParent.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause));
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.Null);
-
-      // TODO Review 2668: Assert that the join was added to the visitor (both SqlTable and WhereCondition)
-      // TODO Review 2668: The returned value should be a SqlTableReferenceExpression pointing to the SqlTable
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (preparedSqlTable));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (preparedExpression));
     }
 
     [Test]
     public void TryGetExpressionMapping_GroupJoinClause ()
     {
-      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause ();
+      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause();
 
       Expression result = _contextWithParent.TryGetExpressionMappingFromHierarchy (new QuerySourceReferenceExpression (groupJoinClause));
 
