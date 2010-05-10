@@ -51,8 +51,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       var joinedTable2 = sqlTable.GetOrAddLeftJoin (originalJoinInfo, memberInfo);
 
-      // TODO Review 2706: Check that JoinSemantics is Left
-
+      Assert.That (joinedTable1.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+      Assert.That (joinedTable2.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
     }

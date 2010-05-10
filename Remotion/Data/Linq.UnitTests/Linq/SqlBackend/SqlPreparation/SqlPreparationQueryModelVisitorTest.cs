@@ -166,7 +166,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void AddFromClause_WithJoinedTable_AddsOldStyleJoin_WithWhereCondition_AndSqlTable ()
     {
       var fromClause = ExpressionHelper.CreateAdditionalFromClause();
-
       var preparedExpression = Expression.Constant (0);
       var preparedJoinedTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Inner);
 
@@ -187,10 +186,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (JoinConditionExpression)));
-
-      // TODO Review 2706: Check that SqlStatementBuilder.SqlTables holds a SqlTable (not SqlJoinedTable) whose TableInfo is the preparedJoinTable
-      // TODO Review 2706: Check that JoinConditionExpression points to preparedJoinTable
-      // TODO Review 2706: Check that _context maps the from clause to the sqlTable, not the joined table
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.TypeOf(typeof(SqlTable)));
+      Assert.That (((SqlTable) _visitor.SqlStatementBuilder.SqlTables[0]).TableInfo, Is.SameAs(preparedJoinedTable));
+      Assert.That (((JoinConditionExpression) _visitor.SqlStatementBuilder.WhereCondition).JoinedTable, Is.SameAs(preparedJoinedTable));
+      Assert.That (((SqlTableReferenceExpression) _visitor.Context.GetContextMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
+          Is.SameAs (_visitor.SqlStatementBuilder.SqlTables[0]));
     }
 
     [Test]
