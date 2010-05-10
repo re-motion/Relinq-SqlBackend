@@ -47,11 +47,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping = new Dictionary<Expression, Expression>();
     }
 
-    public int QuerySourceMappingCount
-    {
-      get { return _mapping.Count; }
-    }
-
     public void AddContextMapping (Expression key, Expression value)
     {
       ArgumentUtility.CheckNotNull ("key", key);

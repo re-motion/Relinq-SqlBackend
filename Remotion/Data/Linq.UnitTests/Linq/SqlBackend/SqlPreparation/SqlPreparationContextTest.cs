@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void AddContextMapping ()
     {
       _context.AddContextMapping (new QuerySourceReferenceExpression(_source), new SqlTableReferenceExpression(_sqlTable));
-      Assert.That (_context.QuerySourceMappingCount, Is.EqualTo (1));
+      Assert.That (_context.GetContextMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
     }
 
     [Test]

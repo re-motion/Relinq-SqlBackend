@@ -24,7 +24,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public interface ISqlPreparationContext
   {
-    int QuerySourceMappingCount { get; } // TODO Review 2668: It should be possible to remove this property, it's only used for tests
     void AddContextMapping (Expression key, Expression value); // TODO Review 2668: Maybe rename to "ExpressionMapping"? (Here and in the Get methods) Also, I'd prefer "original", "replacement" instead of "key", "value"
     Expression GetContextMapping (Expression key);
     Expression TryGetContextMappingFromHierarchy (Expression key);
