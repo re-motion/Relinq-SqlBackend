@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new DefaultIfEmptyResultOperator (Expression.Constant (null));
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
 

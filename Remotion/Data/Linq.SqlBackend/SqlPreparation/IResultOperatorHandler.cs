@@ -26,7 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     void HandleResultOperator (
         ResultOperatorBase resultOperator,
-        QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,

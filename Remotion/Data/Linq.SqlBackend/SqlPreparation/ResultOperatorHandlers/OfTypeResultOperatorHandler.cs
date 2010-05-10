@@ -26,13 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class OfTypeResultOperatorHandler : ResultOperatorHandler<OfTypeResultOperator>
   {
-    public override void HandleResultOperator (
-        OfTypeResultOperator resultOperator,
-        QueryModel queryModel,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage,
-        ISqlPreparationContext context)
+    public override void HandleResultOperator (OfTypeResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       var typeCheckExpression = Expression.TypeIs (sqlStatementBuilder.SelectProjection, resultOperator.SearchedItemType);

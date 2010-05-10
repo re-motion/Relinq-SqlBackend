@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression, _context)).Return (preparedExpression);
       _stageMock.Replay ();
       
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations ();
       

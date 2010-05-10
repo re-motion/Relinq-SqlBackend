@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new AnyResultOperator ();
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
-      _handler.HandleResultOperator (resultOperator, _queryModel, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));

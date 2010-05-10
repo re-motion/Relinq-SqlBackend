@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      _registry.GetItem (resultOperator.GetType()).HandleResultOperator (resultOperator, queryModel, _sqlStatementBuilder, _generator, _stage, _context);
+      _registry.GetItem (resultOperator.GetType()).HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
     }
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)

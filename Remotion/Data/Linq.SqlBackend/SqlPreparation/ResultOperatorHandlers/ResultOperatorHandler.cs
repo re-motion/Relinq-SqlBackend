@@ -39,7 +39,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
     public abstract void HandleResultOperator (
         T resultOperator,
-        QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
@@ -78,8 +77,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     }
 
     protected void MoveCurrentStatementToSqlTable (
-        SqlStatementBuilder sqlStatementBuilder, 
-        UniqueIdentifierGenerator generator, 
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
         ISqlPreparationContext context,
         Func<ResolvedSubStatementTableInfo, SqlTableBase> tableGenerator)
     {
@@ -94,7 +93,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       sqlStatementBuilder.SqlTables.Add (sqlTable);
       sqlStatementBuilder.SelectProjection = newSqlTableReferenceExpression;
-      
+
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
 
@@ -119,21 +118,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
     void IResultOperatorHandler.HandleResultOperator (
         ResultOperatorBase resultOperator,
-        QueryModel queryModel,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
       var castOperator = ArgumentUtility.CheckNotNullAndType<T> ("resultOperator", resultOperator);
-      HandleResultOperator (castOperator, queryModel, sqlStatementBuilder, generator, stage, context);
+      HandleResultOperator (castOperator, sqlStatementBuilder, generator, stage, context);
     }
   }
 }

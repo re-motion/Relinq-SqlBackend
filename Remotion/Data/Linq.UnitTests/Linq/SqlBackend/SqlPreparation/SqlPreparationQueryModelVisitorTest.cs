@@ -478,7 +478,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           mock =>
           mock.HandleResultOperator (
               Arg<ResultOperatorBase>.Matches (o => o == resultOperator),
-              Arg<QueryModel>.Matches (qm => qm == _queryModel),
               Arg<SqlStatementBuilder>.Matches (sb => sb == sqlStatementBuilder),
               Arg<UniqueIdentifierGenerator>.Matches (g => g == _generator),
               Arg<ISqlPreparationStage>.Matches (s => s == _stageMock),
