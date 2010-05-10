@@ -156,7 +156,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return table;
     }
 
-    // TODO Review 2668: Add an empty override for VisitGroupJoinClause and add a comment to it explaining how GroupJoinClauses are handled (that the respective join is added on demand in SqlPreparationContextVisitor)
+    public override void VisitGroupJoinClause (GroupJoinClause groupJoinClause, QueryModel queryModel, int index)
+    {
+      //the joins for the group join clauses ared added in SqlPreparationContextVisitor on demand
+    }
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
     {
