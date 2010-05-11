@@ -103,13 +103,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result.SqlTables.Count, Is.EqualTo (2));
     }
 
+    // TODO Review 2705: The following two tests are for VisitQueryModel, not VisitMainFromClause - rename them
     [Test]
     public void VisitMainFromClause_ConstantExpression_Collection ()
     {
       var constantExpression = Expression.Constant (new [] { "t1", "t2" });
-      var dataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
-
-      _queryModel.MainFromClause.FromExpression = constantExpression;
+      _queryModel.MainFromClause.FromExpression = constantExpression; // TODO Review 2705: Consider creating a new, representative query model (here and in the other constant tests), maybe with a helper method in ExpressionHelper. In this query model here, the SelectProjection (and DataInfo) doesn't really match the new MainFromClause.
 
       _visitor.VisitQueryModel (_queryModel);
 
@@ -117,17 +116,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (
           ((ConstantExpression) _visitor.SqlStatementBuilder.SelectProjection).Value, Is.EqualTo (constantExpression.Value));
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
-      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs(dataInfo.ItemExpression));
+
+      var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
     }
+
+    // TODO Review 2705: Add a test showing that result operators are still handled even when a ConstantExpression_Collection is stored in the query model. (This tests that VisitResultOperators is called from the if statement.)
 
     [Test]
     public void VisitMainFromClause_ConstantExpression_NoCollection ()
     {
+      var constantExpression = Expression.Constant ("test");
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
-      var constantExpression = Expression.Constant ("test");
-      
-      _queryModel.MainFromClause.FromExpression = constantExpression;
 
       _stageMock
          .Expect (

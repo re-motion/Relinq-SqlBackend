@@ -78,6 +78,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT CASE WHEN ([t0].[Name] = @1) THEN 1 ELSE 0 END AS [value] FROM [KitchenTable] AS [t0]",
           new CommandParameter ("@1", "SpecialKitchen"));
     }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.")]
+    // TODO Review 2705: This code currently throws an UnmappedItemException. Catch that situation in ResolvingExpressionVisitor.ResolveMemberExpression (member applied to entity part): if the member implements IEnumerable (and is no string), throw an exception
+    [Ignore ("TODO 2705")]
+    public void Collection_ThrowsNotSupportedException ()
+    {
+      CheckQuery (
+          from c in Cooks select c.Assistants,
+          "");
+    }
    
   }
 }

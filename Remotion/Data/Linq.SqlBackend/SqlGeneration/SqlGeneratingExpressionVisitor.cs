@@ -121,7 +121,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         _commandBuilder.Append ("(");
 
-        var collection = ((ICollection) expression.Value);
+        var collection = (ICollection) expression.Value;
         if (collection.Count == 0)
           _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
 

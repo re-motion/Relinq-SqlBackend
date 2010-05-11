@@ -36,14 +36,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         ISqlPreparationContext parentPreparationContext,
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
-        ResultOperatorHandlerRegistry registry)
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var visitor = new SqlPreparationQueryModelVisitor (parentPreparationContext, stage, generator, registry);
+      var visitor = new SqlPreparationQueryModelVisitor (parentPreparationContext, stage, generator, resultOperatorHandlerRegistry);
       queryModel.Accept (visitor);
 
       return visitor.GetSqlStatement();
@@ -54,19 +54,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private readonly SqlStatementBuilder _sqlStatementBuilder;
     private readonly UniqueIdentifierGenerator _generator;
-    private readonly ResultOperatorHandlerRegistry _registry;
+    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
     protected SqlPreparationQueryModelVisitor (
-      ISqlPreparationContext parentContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry registry)
+      ISqlPreparationContext parentContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
       _context = new SqlPreparationContext (parentContext, this);
       _stage = stage;
       _generator = generator;
-      _registry = registry;
+      _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
 
       _sqlStatementBuilder = new SqlStatementBuilder();
     }
@@ -181,7 +181,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      _registry.GetItem (resultOperator.GetType()).HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      var resultOperatorHandler = _resultOperatorHandlerRegistry.GetItem (resultOperator.GetType());
+      resultOperatorHandler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
     }
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
@@ -195,7 +196,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private SqlTableBase GetTableForFromExpression (Expression preparedFromExpression, Type itemType)
     {
-      var existingTableReference = preparedFromExpression as SqlTableReferenceExpression; // is from expression already a reference to an existing table?
+      // is from expression already a reference to an existing table?
+      var existingTableReference = preparedFromExpression as SqlTableReferenceExpression;
       
       if (existingTableReference != null) // yes, table already exists
       {

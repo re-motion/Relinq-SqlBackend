@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
-    public void HandleResultOperator_TopLevel ()
+    public void HandleResultOperator ()
     {
       var itemExpression = Expression.Constant (new Cook ());
       var resultOperator = new ContainsResultOperator (itemExpression);

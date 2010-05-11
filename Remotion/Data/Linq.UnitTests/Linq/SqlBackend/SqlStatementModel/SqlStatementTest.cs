@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -284,11 +283,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
 
+    // TODO Review 2705: Don't use "new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())" - that leads to wrong tests here. The statement created that way already has a SqlTable; therefore the IsDistinct and HasAggregationModifier tests don't really test the right thing. If you remove the "AggregationModifier == AggregationModifier.None && !IsDistinctQuery" part from the CreateExpression method, all tests still pass!
+
     [Test]
     public void CreateExpression_WithSqlTables ()
     {
       var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
-      sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
+      sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable ()); // TODO Review 2705: sqlStatement already has a table
       var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
 
       var result = sqlStatement.CreateExpression();
@@ -298,7 +299,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void CreateExpression_HasAggregationModifier ()
+    public void CreateExpression_HasAggregationModifier () // TODO Review 2705: Doesn't test the right thing because sqlStatement has a table
     {
       var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
       sqlStatementBuilder.AggregationModifier = AggregationModifier.Max;
@@ -311,7 +312,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void CreateExpression_IsDistinctQuery ()
+    public void CreateExpression_IsDistinctQuery () // TODO Review 2705: Doesn't test the right thing because SqlStatement has a table
     {
       var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
       sqlStatementBuilder.IsDistinctQuery = true;
