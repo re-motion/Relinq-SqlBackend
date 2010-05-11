@@ -433,5 +433,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("TestableSqlCustomTextGeneratorExpression"));
     }
+
+    [Test]
+    public void VisitNamedExpression ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new NamedExpression ("test", columnExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [test]"));
+    }
   }
 }
