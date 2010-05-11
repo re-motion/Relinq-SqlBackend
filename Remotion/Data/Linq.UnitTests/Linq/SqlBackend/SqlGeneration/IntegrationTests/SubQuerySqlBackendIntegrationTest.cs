@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.ID == (from k in Kitchens select k).Count() select c.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1]))");
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT COUNT(*) FROM [KitchenTable] AS [t1]))");
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name).Count(),
-          "SELECT (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1]) AS [value] FROM [CookTable] AS [t0]");
+          "SELECT (SELECT COUNT(*) FROM [KitchenTable] AS [t1]) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks orderby (from k in Kitchens select k).Count() select c.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1]) ASC");
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY (SELECT COUNT(*) FROM [KitchenTable] AS [t1]) ASC");
     }
 
     [Test]
@@ -147,8 +147,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.ID == (from k in Kitchens where k.ID == (from r in Restaurants select r).Count() select k).Count() select c.Name,
           "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] "
-          + "WHERE ([t0].[ID] = (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] "
-          + "WHERE ([t1].[ID] = (SELECT COUNT(*) AS [value] FROM [RestaurantTable] AS [t2]))))");
+          + "WHERE ([t0].[ID] = (SELECT COUNT(*) FROM [KitchenTable] AS [t1] "
+          + "WHERE ([t1].[ID] = (SELECT COUNT(*) FROM [RestaurantTable] AS [t2]))))");
     }
 
     [Test]
@@ -168,10 +168,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[ID] AS [value] "
           + "FROM [RestaurantTable] AS [t0] "
           + "WHERE ([t0].[ID] = "
-          + "(SELECT COUNT(*) AS [value] FROM [CookTable] AS [t1] "
+          + "(SELECT COUNT(*) FROM [CookTable] AS [t1] "
           + "WHERE "
           + "(([t0].[ID] = [t1].[RestaurantID]) AND "
-          + "([t1].[ID] = (SELECT COUNT(*) AS [value] FROM [CookTable] AS [t2] "
+          + "([t1].[ID] = (SELECT COUNT(*) FROM [CookTable] AS [t2] "
           + "WHERE ([t1].[ID] = [t2].[AssistedID]))))))");
     }
 

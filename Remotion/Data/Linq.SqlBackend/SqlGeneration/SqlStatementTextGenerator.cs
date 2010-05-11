@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -33,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public SqlStatementTextGenerator (ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
-      
+
       _stage = stage;
     }
 
@@ -46,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      
+
       BuildSelectPart (sqlStatement, commandBuilder);
       BuildFromPart (sqlStatement, commandBuilder);
       BuildWherePart (sqlStatement, commandBuilder);
@@ -61,30 +60,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       commandBuilder.Append ("SELECT ");
 
       bool condition = !((sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.TopExpression != null)
-                       || (sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.IsDistinctQuery));
+                         || (sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.IsDistinctQuery));
       Debug.Assert (condition, "A SqlStatement cannot contain both aggregation and Top or aggregation and Distinct.");
 
       if (sqlStatement.AggregationModifier == AggregationModifier.None)
       {
-        BuildDistinctPart(sqlStatement, commandBuilder);
-        BuildTopPart(sqlStatement, commandBuilder);
+        BuildDistinctPart (sqlStatement, commandBuilder);
+        BuildTopPart (sqlStatement, commandBuilder);
 
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
-
-        if (!(sqlStatement.SelectProjection is SqlEntityExpression))
-          commandBuilder.Append (" AS [value]");
       }
       else if (sqlStatement.AggregationModifier == AggregationModifier.Count)
-      {
-        commandBuilder.Append ("COUNT(*) AS [value]");
-      } 
-      else 
+        commandBuilder.Append ("COUNT(*)");
+      else
       {
         BuildAggregationPart (sqlStatement, commandBuilder);
-        
+
         commandBuilder.Append ("(");
-        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
-        commandBuilder.Append (") AS [value]");
+        _stage.GenerateTextForSelectExpression (
+            commandBuilder,
+            sqlStatement.SelectProjection is NamedExpression
+                ? ((NamedExpression) sqlStatement.SelectProjection).Expression
+                : sqlStatement.SelectProjection);
+        commandBuilder.Append (")"); // AS [value]");
       }
     }
 
@@ -141,9 +139,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
             commandBuilder.Append (")");
           }
           else
-          {
             _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
-          }
 
           commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString().ToUpper()));
           first = false;
@@ -164,9 +160,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     protected virtual void BuildDistinctPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
       if (sqlStatement.IsDistinctQuery)
-      {
         commandBuilder.Append ("DISTINCT ");
-      }
     }
 
     protected virtual void BuildAggregationPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)

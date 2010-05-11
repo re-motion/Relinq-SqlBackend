@@ -303,7 +303,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _stage.ApplyContext (sqlStatement, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
-      Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));
+      Assert.That (((NamedExpression) result.SelectProjection).Expression, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
     [Test]
@@ -319,7 +319,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stage.ApplyContext (sqlTable, SqlExpressionContext.ValueRequired);
 
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.SameAs (sqlStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.SelectProjection, Is.TypeOf(typeof(NamedExpression)));
     }
   }
 }

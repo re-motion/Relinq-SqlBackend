@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Distinct().Count(),
-          "SELECT COUNT(*) AS [value] FROM (SELECT DISTINCT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]");
+          "SELECT COUNT(*) FROM (SELECT DISTINCT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]");
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Count(),
-          "SELECT COUNT(*) AS [value] FROM (SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
+          "SELECT COUNT(*) FROM (SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
           new CommandParameter ("@1", 5));
     }
 

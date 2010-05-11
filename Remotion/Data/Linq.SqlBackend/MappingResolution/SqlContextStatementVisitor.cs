@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
@@ -78,6 +79,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private void VisitSelectProjection (Expression selectProjection, SqlExpressionContext selectContext, SqlStatementBuilder statementBuilder)
     {
       var newSelectProjection = _stage.ApplyContext (selectProjection, selectContext);
+      if (!(newSelectProjection is SqlEntityExpression))
+        newSelectProjection = new NamedExpression ("value", newSelectProjection);
       statementBuilder.SelectProjection = newSelectProjection;
     }
 

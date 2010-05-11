@@ -310,7 +310,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSelectClause_CreatesSelectProjection ()
+    public void VisitSelectClause_CreatesSelectProjection_NoSqlTableRefereenceExpression ()
     {
       var preparedExpression = Expression.Constant (null, typeof (Cook));
 
