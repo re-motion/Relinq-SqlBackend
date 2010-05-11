@@ -111,6 +111,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandler.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\INamedExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />
     <Compile Include="MappingResolution\ResolvingExpressionVisitor.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="SqlStatementModel\ITableInfoVisitor.cs" />
     <Compile Include="SqlStatementModel\JoinCardinality.cs" />
     <Compile Include="SqlStatementModel\JoinSemantics.cs" />
+    <Compile Include="SqlStatementModel\NamedExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedTableInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedJoinInfo.cs" />
