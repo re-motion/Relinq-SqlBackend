@@ -61,24 +61,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       statementBuilder.AggregationModifier = sqlStatement.AggregationModifier;
       statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
 
-      VisitSelectProjection(sqlStatement.SelectProjection, context, statementBuilder);
+      VisitSelectProjection(sqlStatement, context, statementBuilder);
       VisitWhereCondition(sqlStatement.WhereCondition, statementBuilder);
       VisitOrderings (sqlStatement.Orderings, statementBuilder);
       VisitTopExpression(sqlStatement.TopExpression, statementBuilder);
       VisitSqlTables (sqlStatement.SqlTables, statementBuilder);
 
-      if (statementBuilder.SelectProjection != sqlStatement.SelectProjection)
-        statementBuilder.DataInfo = GetNewDataInfo (sqlStatement.DataInfo, statementBuilder.SelectProjection);
-      else
-        statementBuilder.DataInfo = sqlStatement.DataInfo;
-
       var newSqlStatement = statementBuilder.GetSqlStatement();
       return newSqlStatement.Equals (sqlStatement) ? sqlStatement : newSqlStatement;
     }
 
-    private void VisitSelectProjection (Expression selectProjection, SqlExpressionContext selectContext, SqlStatementBuilder statementBuilder)
+    private void VisitSelectProjection (SqlStatement sqlStatement  , SqlExpressionContext selectContext, SqlStatementBuilder statementBuilder)
     {
-      var newSelectProjection = _stage.ApplyContext (selectProjection, selectContext);
+      var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, selectContext);
+      UpdateDataInfo (newSelectProjection, sqlStatement, statementBuilder);  //if the expression was changed by the context visitor the cast type information might be lost
       if (!(newSelectProjection is SqlEntityExpression))
         newSelectProjection = new NamedExpression ("value", newSelectProjection);
       statementBuilder.SelectProjection = newSelectProjection;
@@ -125,6 +121,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return new StreamedSingleValueInfo (newSelectProjection.Type, previousSingleValueInfo.ReturnDefaultWhenEmpty);
 
       return previousDataInfo;
+    }
+
+    private void UpdateDataInfo (Expression newSelectProjection, SqlStatement sqlStatement, SqlStatementBuilder statementBuilder)
+    {
+      if (newSelectProjection != sqlStatement.SelectProjection)
+        statementBuilder.DataInfo = GetNewDataInfo (sqlStatement.DataInfo, newSelectProjection);
+      else
+        statementBuilder.DataInfo = sqlStatement.DataInfo;
     }
   }
 }
