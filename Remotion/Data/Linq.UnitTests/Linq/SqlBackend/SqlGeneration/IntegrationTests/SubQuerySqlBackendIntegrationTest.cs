@@ -84,6 +84,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 2718")]
+    public void SubQuery_SelectingEntityMember_InAdditionalFromClause ()
+    {
+      CheckQuery (
+          from s in Cooks from s2 in (from s3 in Cooks select s3.Substitution) from s4 in s2.Assistants select s.FirstName,
+          "TODO");
+    }
+
+    [Test]
     public void ComplexSubQueryInAdditionalFromClause ()
     {
       CheckQuery (
