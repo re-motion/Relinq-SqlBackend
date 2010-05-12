@@ -39,8 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly Expression _whereCondition;
     private readonly Expression _topExpression;
     private readonly bool _isDistinctQuery;
-    private readonly AggregationModifier _aggregationModifier;
-
+    
     public SqlStatement (
         IStreamedDataInfo dataInfo,
         Expression selectProjection,
@@ -48,8 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         IEnumerable<Ordering> orderings,
         Expression whereCondition,
         Expression topExpression,
-        bool isDistinctQuery,
-        AggregationModifier aggregationModifier)
+        bool isDistinctQuery)
     {
       ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
@@ -59,9 +57,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (whereCondition != null && whereCondition.Type != typeof (bool))
         throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
 
-      if (aggregationModifier != AggregationModifier.None && topExpression != null)
-        throw new NotSupportedException ("A SqlStatement cannot contain both Count and Top or Count and Distinct.");
-      
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;
       _sqlTables = sqlTables.ToArray();
@@ -69,17 +64,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       _whereCondition = whereCondition;
       _topExpression = topExpression;
       _isDistinctQuery = isDistinctQuery;
-      _aggregationModifier = aggregationModifier;
     }
 
     public IStreamedDataInfo DataInfo
     {
       get { return _dataInfo; }
-    }
-
-    public AggregationModifier AggregationModifier
-    {
-      get { return _aggregationModifier; }
     }
 
     public bool IsDistinctQuery
@@ -114,9 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public Expression CreateExpression ()
     {
-      return SqlTables.Count == 0 && AggregationModifier == AggregationModifier.None && !IsDistinctQuery
-                 ? SelectProjection
-                 : new SqlSubStatementExpression (this);
+      return SqlTables.Count == 0 && !IsDistinctQuery ? SelectProjection : new SqlSubStatementExpression (this);
     }
 
     public override bool Equals (object obj)
@@ -131,7 +118,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              (_orderings.SequenceEqual (statement._orderings)) &&
              (_whereCondition == statement._whereCondition) &&
              (_topExpression == statement._topExpression) &&
-             (_aggregationModifier == statement._aggregationModifier) &&
              (_isDistinctQuery == statement._isDistinctQuery);
     }
 
@@ -143,7 +129,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              HashCodeUtility.GetHashCodeForSequence (_orderings) ^
              HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
              HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
-             HashCodeUtility.GetHashCodeOrZero (_aggregationModifier) ^
              HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery);
     }
   }

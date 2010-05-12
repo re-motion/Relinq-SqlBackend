@@ -54,8 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new [] { ordering },
           whereCondition,
           topExpression,
-          false,
-          AggregationModifier.None);
+          false);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
@@ -65,7 +64,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.False);
-      Assert.That (testedBuilder.AggregationModifier, Is.EqualTo(AggregationModifier.None));
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
@@ -125,9 +123,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void GetSqlStatement_CheckProperties ()
     {
-      var selectProjection = Expression.Constant ("select");
+      var selectProjection = new AggregationExpression(Expression.Constant ("select"),AggregationModifier.Min);
       var whereCondition = Expression.Constant (true);
-      var topExpression = Expression.Constant ("top");
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
 
@@ -137,7 +134,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
                                  TopExpression = null,
-                                 AggregationModifier = AggregationModifier.Min,
                                  IsDistinctQuery = false
                              };
       statementBuilder.SqlTables.Add (sqlTable);
@@ -151,19 +147,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.False);
-      Assert.That (sqlStatement.AggregationModifier, Is.EqualTo(AggregationModifier.Min));
+      Assert.That (((AggregationExpression) sqlStatement.SelectProjection).AggregationModifier, Is.EqualTo(AggregationModifier.Min));
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
 
     [Test]
     public void GetStatementAndResetBuilder ()
     {
-      var selectProjection = Expression.Constant ("select");
+      var selectProjection = new AggregationExpression(Expression.Constant ("select"),AggregationModifier.Count);
       var originalBuilder = new SqlStatementBuilder
                             {
                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                                 SelectProjection = selectProjection,
-                                AggregationModifier = AggregationModifier.Count,
                                 IsDistinctQuery = true
                             };
       var sqlStatement = originalBuilder.GetSqlStatement();

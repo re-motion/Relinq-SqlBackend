@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (_sqlStatementBuilder.AggregationModifier, Is.EqualTo (AggregationModifier.Sum));
+      Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Sum));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }

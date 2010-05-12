@@ -65,8 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
       _commandBuilder = new SqlCommandBuilder();
     }
 
@@ -115,13 +114,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithCount ()
     {
+      var aggregationExpression = new AggregationExpression(_entityExpression,AggregationModifier.Count);
       var sqlStatement =
           new SqlStatementBuilder
           {
               DataInfo = new TestStreamedValueInfo (typeof (int)),
-              SelectProjection = _entityExpression,
-              AggregationModifier = AggregationModifier.Count
+              SelectProjection = aggregationExpression
           }.GetSqlStatement();
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("COUNT(*)"));
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
@@ -132,17 +135,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithAverage ()
     {
+      var aggregationExpression = new AggregationExpression(_namedExpression, AggregationModifier.Average);
       var sqlStatement =
           new SqlStatementBuilder
           {
             DataInfo = new TestStreamedValueInfo (typeof (int)),
-            SelectProjection = _namedExpression,
-            AggregationModifier = AggregationModifier.Average
+            SelectProjection = aggregationExpression
           }.GetSqlStatement ();
 
       _stageMock.Expect (
-          mock => mock.GenerateTextForSelectExpression (_commandBuilder, _entityExpression))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("AVG([t].[ID])"));
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
@@ -153,17 +156,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithSum ()
     {
+      var aggregationExpression = new AggregationExpression( _namedExpression, AggregationModifier.Sum);
       var sqlStatement =
           new SqlStatementBuilder
           {
             DataInfo = new TestStreamedValueInfo (typeof (int)),
-            SelectProjection = _namedExpression,
-            AggregationModifier = AggregationModifier.Sum
+            SelectProjection = aggregationExpression
           }.GetSqlStatement ();
 
       _stageMock.Expect (
-          mock => mock.GenerateTextForSelectExpression (_commandBuilder, _entityExpression))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SUM([t].[ID])"));
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
@@ -174,17 +177,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithMin ()
     {
+      var aggregationExpression = new AggregationExpression( _namedExpression, AggregationModifier.Min);
       var sqlStatement =
           new SqlStatementBuilder
           {
             DataInfo = new TestStreamedValueInfo (typeof (int)),
-            SelectProjection = _namedExpression,
-            AggregationModifier = AggregationModifier.Min
+            SelectProjection = aggregationExpression
           }.GetSqlStatement ();
 
       _stageMock.Expect (
-          mock => mock.GenerateTextForSelectExpression (_commandBuilder, _entityExpression))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("MIN([t].[ID])"));
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
@@ -195,17 +198,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithMax ()
     {
+      var aggregationExpression = new AggregationExpression(_namedExpression,AggregationModifier.Max);
       var sqlStatement =
           new SqlStatementBuilder
           {
             DataInfo = new TestStreamedValueInfo (typeof (int)),
-            SelectProjection = _namedExpression,
-            AggregationModifier = AggregationModifier.Max
+            SelectProjection = aggregationExpression
           }.GetSqlStatement ();
 
       _stageMock.Expect (
-          mock => mock.GenerateTextForSelectExpression (_commandBuilder, _entityExpression))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("MAX([t].[ID])"));
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder);
 
@@ -329,8 +332,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name]"));
@@ -359,8 +361,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause1, orderByClause2, orderByClause3 },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
@@ -386,8 +387,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           null,
-          true,
-          AggregationModifier.None);
+          true);
 
       _generator.BuildDistinctPart (_sqlStatement, _commandBuilder);
 
@@ -406,8 +406,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           topExpression,
-          false,
-          AggregationModifier.None);
+          false);
 
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, topExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("top"));
@@ -419,82 +418,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations ();
     }
 
-    [Test]
-    public void BuildAggregationPart_Min ()
-    {
-      _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false,
-          AggregationModifier.Min);
-
-      _generator.BuildAggregationPart(_sqlStatement, _commandBuilder);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MIN"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void BuildAggregationPart_Max ()
-    {
-      _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false,
-          AggregationModifier.Max);
-
-      _generator.BuildAggregationPart (_sqlStatement, _commandBuilder);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MAX"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void BuildAggregationPart_Sum ()
-    {
-      _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false,
-          AggregationModifier.Sum);
-
-      _generator.BuildAggregationPart (_sqlStatement, _commandBuilder);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SUM"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void BuildAggregationPart_Average ()
-    {
-      _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false,
-          AggregationModifier.Average);
-
-      _generator.BuildAggregationPart (_sqlStatement, _commandBuilder);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("AVG"));
-      _stageMock.VerifyAllExpectations ();
-    }
-
+    
     [Test]
     public void Build_WithSelectAndFrom ()
     {
@@ -538,8 +462,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           Expression.Constant (true),
           null,
-          false,
-          AggregationModifier.None);
+          false);
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -570,8 +493,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))

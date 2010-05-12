@@ -15,18 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
@@ -60,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _kitchenMainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen();
       var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression(_cookMainFromClause), new SqlTableReferenceExpression(_sqlTable));
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (_cookMainFromClause), new SqlTableReferenceExpression (_sqlTable));
       _registry = MethodCallTransformerRegistry.CreateDefault();
     }
 
@@ -70,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var visitor = new TestableSqlPreparationExpressionVisitorTest (_context, _stageMock, _registry);
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
       _context.AddExpressionMapping (_cookQuerySourceReferenceExpression, tableReferenceExpression);
-      
+
       var result = visitor.VisitExpression (_cookQuerySourceReferenceExpression);
 
       Assert.That (result, Is.SameAs (tableReferenceExpression));
@@ -103,7 +99,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
                                     {
-                                        AggregationModifier = AggregationModifier.None,
                                         IsDistinctQuery = false
                                     };
       fakeSqlStatementBuilder.SqlTables.Clear();
@@ -121,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSubqueryExpressionTest_WithSqlTables ()
     {
-      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement());
@@ -141,15 +136,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSubqueryExpressionTest_IsCountQuery ()
     {
-      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
       var expression = new SubQueryExpression (querModel);
-      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        AggregationModifier = AggregationModifier.Count
-      };
-     
-      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (sqlStatement)
+                                    {
+                                        SelectProjection = new AggregationExpression (sqlStatement.SelectProjection, AggregationModifier.Count)
+                                    };
+
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
@@ -159,21 +155,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
-      Assert.That (((SqlSubStatementExpression) result).SqlStatement.AggregationModifier == AggregationModifier.Count, Is.True);
+      Assert.That (
+          ((AggregationExpression) ((SqlSubStatementExpression) result).SqlStatement.SelectProjection).AggregationModifier,
+          Is.EqualTo (AggregationModifier.Count));
     }
 
     [Test]
     public void VisitSubqueryExpressionTest_IsDistinctQuery ()
     {
-      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
       var expression = new SubQueryExpression (querModel);
-      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        IsDistinctQuery = true
-      };
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
+                                    {
+                                        IsDistinctQuery = true
+                                    };
 
-      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
@@ -294,7 +292,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
-      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.EqualTo(testPredicate));
+      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.EqualTo (testPredicate));
       Assert.That (((SqlCaseExpression) result).ThenValue, Is.EqualTo (ifTrueExpression));
       Assert.That (((SqlCaseExpression) result).ElseValue, Is.EqualTo (ifFalseExpression));
     }
@@ -310,11 +308,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
-      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.TypeOf(typeof(SqlCaseExpression)));
+      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.TypeOf (typeof (SqlCaseExpression)));
       Assert.That (((SqlCaseExpression) result).ThenValue, Is.TypeOf (typeof (SqlCaseExpression)));
       Assert.That (((SqlCaseExpression) result).ElseValue, Is.TypeOf (typeof (SqlCaseExpression)));
     }
-    
+
     [Test]
     public void VisitBinaryExpression_WithConditionalExpressionInBinaryExpression ()
     {
@@ -363,7 +361,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (methodCallExpression);
       transformerMock.Replay();
 
-      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry ();
+      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry();
       registry.Register (method, transformerMock);
 
       SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
@@ -377,19 +375,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var method = MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString");
       var methodCallExpression = Expression.Call (_cookQuerySourceReferenceExpression, method);
 
-      var transformerMock = MockRepository.GenerateMock<IMethodCallTransformer> ();
+      var transformerMock = MockRepository.GenerateMock<IMethodCallTransformer>();
       transformerMock
           .Expect (mock => mock.Transform (Arg<MethodCallExpression>.Matches (m => m.Object is SqlTableReferenceExpression)))
           .Return (_cookQuerySourceReferenceExpression);
-      transformerMock.Replay ();
+      transformerMock.Replay();
 
-      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry ();
+      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry();
       registry.Register (method, transformerMock);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      transformerMock.VerifyAllExpectations ();
+      transformerMock.VerifyAllExpectations();
     }
   }
 }

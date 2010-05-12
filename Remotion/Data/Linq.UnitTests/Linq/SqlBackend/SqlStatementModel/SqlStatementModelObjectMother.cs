@@ -46,8 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new Ordering[] { },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
     }
 
     public static SqlStatement CreateSqlStatementWithCook ()
@@ -60,8 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new Ordering[] { },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
     }
 
     public static SqlStatement CreateSqlStatement ()
@@ -74,8 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new Ordering[] { },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
@@ -88,8 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new Ordering[] { },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
     }
 
     public static SqlTable CreateSqlTable ()

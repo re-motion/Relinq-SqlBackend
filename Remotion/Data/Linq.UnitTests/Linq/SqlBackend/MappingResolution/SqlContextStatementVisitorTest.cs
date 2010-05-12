@@ -189,8 +189,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlStatement_CopiesIsCountQueryFlag ()
     {
-      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
-                    { AggregationModifier = AggregationModifier.Count };
+      var sqlStatementWithCook = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
+      var builder = new SqlStatementBuilder (sqlStatementWithCook)
+                    { SelectProjection = new AggregationExpression(sqlStatementWithCook.SelectProjection, AggregationModifier.Count) };
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock
@@ -200,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
-      Assert.That (result.AggregationModifier == AggregationModifier.Count, Is.True);
+      Assert.That (((AggregationExpression) result.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Count));
     }
 
     [Test]

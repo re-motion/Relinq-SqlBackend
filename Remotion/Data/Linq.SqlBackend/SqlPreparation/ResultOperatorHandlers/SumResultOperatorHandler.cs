@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.AggregationModifier = AggregationModifier.Sum;
+      sqlStatementBuilder.SelectProjection = new AggregationExpression(sqlStatementBuilder.SelectProjection, AggregationModifier.Sum);
     }
   }
 }

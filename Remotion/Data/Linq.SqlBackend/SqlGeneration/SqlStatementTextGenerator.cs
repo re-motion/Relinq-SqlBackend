@@ -59,31 +59,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       commandBuilder.Append ("SELECT ");
 
-      bool condition = !((sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.TopExpression != null)
-                         || (sqlStatement.AggregationModifier != AggregationModifier.None && sqlStatement.IsDistinctQuery));
-      Debug.Assert (condition, "A SqlStatement cannot contain both aggregation and Top or aggregation and Distinct.");
-
-      if (sqlStatement.AggregationModifier == AggregationModifier.None)
+      if (!(sqlStatement.SelectProjection is AggregationExpression))
       {
         BuildDistinctPart (sqlStatement, commandBuilder);
         BuildTopPart (sqlStatement, commandBuilder);
-
-        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
       }
-      else if (sqlStatement.AggregationModifier == AggregationModifier.Count)
-        commandBuilder.Append ("COUNT(*)");
-      else
-      {
-        BuildAggregationPart (sqlStatement, commandBuilder);
 
-        commandBuilder.Append ("(");
-        _stage.GenerateTextForSelectExpression (
-            commandBuilder,
-            sqlStatement.SelectProjection is NamedExpression
-                ? ((NamedExpression) sqlStatement.SelectProjection).Expression
-                : sqlStatement.SelectProjection);
-        commandBuilder.Append (")");
-      }
+      _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
@@ -162,19 +144,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if (sqlStatement.IsDistinctQuery)
         commandBuilder.Append ("DISTINCT ");
     }
-
-    protected virtual void BuildAggregationPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
-    {
-      if (sqlStatement.AggregationModifier == AggregationModifier.Average)
-        commandBuilder.Append ("AVG");
-      else if (sqlStatement.AggregationModifier == AggregationModifier.Max)
-        commandBuilder.Append ("MAX");
-      else if (sqlStatement.AggregationModifier == AggregationModifier.Min)
-        commandBuilder.Append ("MIN");
-      else if (sqlStatement.AggregationModifier == AggregationModifier.Sum)
-        commandBuilder.Append ("SUM");
-      else
-        throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", sqlStatement.AggregationModifier));
-    }
+    
   }
 }

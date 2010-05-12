@@ -309,21 +309,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      if (expression.AggregationModifier == AggregationModifier.Count) {
+        _commandBuilder.Append ("COUNT(*)");
+        return expression;
+      }
+
       if (expression.AggregationModifier == AggregationModifier.Average)
-        _commandBuilder.Append(" AVG");
+        _commandBuilder.Append("AVG");
       else if (expression.AggregationModifier == AggregationModifier.Max)
-        _commandBuilder.Append (" MAX");
+        _commandBuilder.Append ("MAX");
       else if (expression.AggregationModifier == AggregationModifier.Min)
-        _commandBuilder.Append (" MIN");
+        _commandBuilder.Append ("MIN");
       else if (expression.AggregationModifier == AggregationModifier.Sum)
-        _commandBuilder.Append (" SUM");
-      else if (expression.AggregationModifier == AggregationModifier.Count)
-        _commandBuilder.Append (" COUNT");
+        _commandBuilder.Append ("SUM");
       else
         throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", expression.AggregationModifier));
 
       _commandBuilder.Append ("(");
-      VisitExpression (expression.Expression);
+      var namedExpression = expression.Expression as NamedExpression;
+      VisitExpression (namedExpression!=null ? namedExpression.Expression : expression.Expression);
       _commandBuilder.Append (")");
 
       return expression;

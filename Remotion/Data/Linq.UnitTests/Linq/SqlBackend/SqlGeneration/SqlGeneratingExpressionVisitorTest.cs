@@ -463,7 +463,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" MAX([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MAX([c].[Name])"));
     }
 
     [Test]
@@ -474,7 +474,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" MIN([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MIN([c].[Name])"));
     }
 
     [Test]
@@ -485,7 +485,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" SUM([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SUM([c].[Name])"));
     }
 
     [Test]
@@ -496,7 +496,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" AVG([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("AVG([c].[Name])"));
     }
 
     [Test]
@@ -507,7 +507,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" COUNT([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("COUNT(*)"));
     }
   }
 }

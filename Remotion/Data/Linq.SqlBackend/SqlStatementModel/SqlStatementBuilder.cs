@@ -48,12 +48,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.DataInfo = value; }
     }
 
-    public AggregationModifier AggregationModifier
-    {
-      get { return _valueHolder.AggregationModifier; }
-      set { _valueHolder.AggregationModifier = value; }
-    }
-
     public bool IsDistinctQuery
     {
       get { return _valueHolder.IsDistinctQuery; }
@@ -93,7 +87,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (DataInfo == null)
         throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
       return new SqlStatement (
-          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsDistinctQuery, AggregationModifier);
+          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsDistinctQuery);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -126,8 +120,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         WhereCondition = sqlStatement.WhereCondition;
         IsDistinctQuery = sqlStatement.IsDistinctQuery;
         TopExpression = sqlStatement.TopExpression;
-        AggregationModifier = sqlStatement.AggregationModifier;
-
+        
         SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
         Orderings = new List<Ordering> (sqlStatement.Orderings);
       }
@@ -135,8 +128,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       public IStreamedDataInfo DataInfo { get; set; }
 
       public bool IsDistinctQuery { get; set; }
-      public AggregationModifier AggregationModifier { get; set; }
-
+      
       public Expression TopExpression { get; set; }
 
       public Expression SelectProjection { get; set; }

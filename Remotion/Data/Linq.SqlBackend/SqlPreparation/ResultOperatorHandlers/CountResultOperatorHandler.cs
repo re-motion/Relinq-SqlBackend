@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.AggregationModifier = AggregationModifier.Count;
+      sqlStatementBuilder.SelectProjection = new AggregationExpression(sqlStatementBuilder.SelectProjection, AggregationModifier.Count);
     }
   }
 }
