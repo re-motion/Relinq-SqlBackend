@@ -298,9 +298,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (" AS [");
-      _commandBuilder.Append (expression.Name);
-      _commandBuilder.Append ("]");
+      _commandBuilder.Append (" AS ");
+      _commandBuilder.AppendIdentifier (expression.Name);
 
       return expression;
     }

@@ -20,9 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -31,13 +29,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   public class NamedExpressionTest
   {
     private NamedExpression _namedExpression;
-    private ConstantExpression _wrappredExpression;
+    private ConstantExpression _wrappedExpression;
 
     [SetUp]
     public void SetUp ()
     {
-      _wrappredExpression = Expression.Constant (1);
-      _namedExpression = new NamedExpression ("test", _wrappredExpression);
+      _wrappedExpression = Expression.Constant (1);
+      _namedExpression = new NamedExpression ("test", _wrappedExpression);
     }
 
     [Test]
@@ -52,8 +50,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_wrappredExpression))
-          .Return (_wrappredExpression);
+          .Expect (mock => mock.VisitExpression (_wrappedExpression))
+          .Return (_wrappedExpression);
       visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_namedExpression, visitorMock);
@@ -69,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
       
       visitorMock
-          .Expect (mock => mock.VisitExpression (_wrappredExpression))
+          .Expect (mock => mock.VisitExpression (_wrappedExpression))
           .Return (newExpression);
       visitorMock.Replay ();
 
