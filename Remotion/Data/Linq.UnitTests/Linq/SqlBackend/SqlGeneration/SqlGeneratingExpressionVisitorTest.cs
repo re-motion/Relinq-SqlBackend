@@ -434,7 +434,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitNamedExpression ()
+    public void VisitNamedExpression_NameIsNotNull ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
       var expression = new NamedExpression ("test", columnExpression);
@@ -442,6 +442,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [test]"));
+    }
+
+    [Test]
+    public void VisitNamedExpression_NameIstNull ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new NamedExpression (null, columnExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [value]"));
     }
 
     [Test]

@@ -300,7 +300,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       VisitExpression (expression.Expression);
       _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (expression.Name /*?? "value"*/);
+      _commandBuilder.AppendIdentifier (expression.Name ?? "value");
 
       return expression;
     }
