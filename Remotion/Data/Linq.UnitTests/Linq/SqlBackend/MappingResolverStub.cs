@@ -113,11 +113,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      if (resolvedTableInfo is ResolvedSubStatementTableInfo &&
-          (tableReferenceExpression.Type == typeof (string) || (tableReferenceExpression.Type == typeof (int))
-           || (tableReferenceExpression.Type == typeof (object))))
-        return new SqlValueTableReferenceExpression (new SqlTable (resolvedTableInfo));
-      else
+      //if (resolvedTableInfo is ResolvedSubStatementTableInfo &&
+      //    (tableReferenceExpression.Type == typeof (string) || (tableReferenceExpression.Type == typeof (int))
+      //     || (tableReferenceExpression.Type == typeof (object))))
+      //  return new SqlValueTableReferenceExpression (new SqlTable (resolvedTableInfo));
+      //else
         return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
     }
 

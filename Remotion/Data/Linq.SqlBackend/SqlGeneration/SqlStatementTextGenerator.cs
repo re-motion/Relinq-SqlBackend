@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
             sqlStatement.SelectProjection is NamedExpression
                 ? ((NamedExpression) sqlStatement.SelectProjection).Expression
                 : sqlStatement.SelectProjection);
-        commandBuilder.Append (")"); // AS [value]");
+        commandBuilder.Append (")");
       }
     }
 

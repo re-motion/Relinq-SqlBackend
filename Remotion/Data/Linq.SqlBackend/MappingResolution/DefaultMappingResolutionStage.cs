@@ -117,6 +117,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression);
     }
 
+    public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return SqlTableReferenceResolver.ResolveTableReference (expression, _resolver, _uniqueIdentifierGenerator);
+    }
+
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

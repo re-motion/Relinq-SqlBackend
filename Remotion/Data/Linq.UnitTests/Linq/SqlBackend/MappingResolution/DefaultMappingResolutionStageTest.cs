@@ -58,14 +58,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSelectExpression ()
     {
-      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
+      var expression = new SqlTableReferenceExpression (sqlTable);
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -79,14 +77,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveWhereExpression ()
     {
-      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
+      var expression = new SqlTableReferenceExpression (sqlTable);
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -100,14 +96,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveOrderingExpression ()
     {
-      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
+      var expression = new SqlTableReferenceExpression (sqlTable);
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -121,14 +115,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveTopExpression ()
     {
-      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
+      var expression = new SqlTableReferenceExpression (sqlTable);
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 

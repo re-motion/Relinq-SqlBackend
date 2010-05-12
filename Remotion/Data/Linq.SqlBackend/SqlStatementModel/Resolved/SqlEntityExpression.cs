@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly SqlTableBase _sqlTable;
     private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _projectionColumns;
-    
+
     public SqlEntityExpression (SqlTableBase sqlTable, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
         : base (sqlTable.ItemType)
     {
@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       get { return _sqlTable; }
     }
-    
+
     public SqlColumnExpression PrimaryKeyColumn
     {
       get { return _primaryKeyColumn; }
@@ -76,6 +76,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
         return specificVisitor.VisitSqlEntityExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public SqlEntityExpression Clone (SqlTableBase newSqlTable)
+    {
+      var newAlias = newSqlTable.GetResolvedTableInfo().TableAlias;
+
+      var primaryKeyColumn = CreateClonedColumn (PrimaryKeyColumn, newAlias);
+      var projectionColumns = ProjectionColumns.Select ( columnExpression => CreateClonedColumn(columnExpression, newAlias)).ToArray();
+
+      return new SqlEntityExpression (newSqlTable, primaryKeyColumn, projectionColumns);
+    }
+
+    private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
+    {
+      return new SqlColumnExpression (originalColumn.Type, newAlias, originalColumn.ColumnName, originalColumn.IsPrimaryKey);
     }
   }
 }

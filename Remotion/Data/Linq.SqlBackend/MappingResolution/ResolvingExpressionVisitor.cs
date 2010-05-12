@@ -61,16 +61,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = _resolver.ResolveTableReferenceExpression (expression, _generator);
-      if (newExpression == expression)
-        return expression;
-      else
-        return VisitExpression (newExpression);
+      return _stage.ResolveTableReferenceExpression (expression);
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
       return _resolver.ResolveConstantExpression (expression);
     }
 

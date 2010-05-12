@@ -68,6 +68,7 @@
     <Compile Include="MappingResolution\IMappingResolver.cs" />
     <Compile Include="MappingResolution\SqlContextStatementVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextTableVisitor.cs" />
+    <Compile Include="MappingResolution\SqlTableReferenceResolver.cs" />
     <Compile Include="SqlPreparation\IMethodCallTransformer.cs" />
     <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />
     <Compile Include="SqlGeneration\ISqlCustomTextGeneratorExpressionVisitor.cs" />
