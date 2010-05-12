@@ -416,8 +416,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlValueTableReferenceExpression ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (string));
-      var expression = new SqlValueTableReferenceExpression (sqlTable);
+      var expression = new SqlValueReferenceExpression (typeof(string), "value", "t");
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 

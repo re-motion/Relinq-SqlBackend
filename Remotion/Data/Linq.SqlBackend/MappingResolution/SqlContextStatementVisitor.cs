@@ -75,8 +75,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, selectContext);
       UpdateDataInfo (newSelectProjection, sqlStatement, statementBuilder);  //if the expression was changed by the context visitor the cast type information might be lost
-      if (!(newSelectProjection is SqlEntityExpression))
-        newSelectProjection = new NamedExpression ("value", newSelectProjection);
       statementBuilder.SelectProjection = newSelectProjection;
     }
 

@@ -20,20 +20,20 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class SqlValueTableReferenceExpressionTest
+  public class SqlValueReferenceExpressionTest
   {
-    private SqlValueTableReferenceExpression _expression;
+    private SqlValueReferenceExpression _expression;
 
     [SetUp]
     public void SetUp ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (string));
-      _expression = new SqlValueTableReferenceExpression (sqlTable);
+      _expression = new SqlValueReferenceExpression (typeof(Cook), "Test", "t");
     }
 
     [Test]
@@ -51,9 +51,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlValueTableReferenceExpression, IResolvedSqlExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlValueReferenceExpression, IResolvedSqlExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlValueTableReferenceExpression(_expression));
+          mock => mock.VisitSqlValueTableReferenceExpression (_expression));
     }
 
     [Test]

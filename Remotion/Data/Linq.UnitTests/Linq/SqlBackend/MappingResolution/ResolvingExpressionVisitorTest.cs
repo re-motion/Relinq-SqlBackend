@@ -192,6 +192,62 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitNamedExpression_SqlEntityExression ()
+    {
+      var constantExpression = Expression.Constant (5);
+      var namedExpression = new NamedExpression ("test", constantExpression);
+      var fakeResult = new SqlEntityExpression (
+          SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)), new SqlColumnExpression (typeof (string), "c", "Name", false));
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (fakeResult);
+      _resolverMock.Replay();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
+
+      _resolverMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void VisitNamedExpression_SqlEntityRefMemberExpression ()
+    {
+      var constantExpression = Expression.Constant (5);
+      var namedExpression = new NamedExpression("test", constantExpression);
+      var fakeResult = new SqlEntityRefMemberExpression(SqlStatementModelObjectMother.CreateSqlTable(typeof(Cook)), typeof(Cook).GetProperty("Substitution"));
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (fakeResult);
+      _resolverMock.Replay();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void VisitNamedExpression_NoSqlEntityExpressionAndNoSqlEntityRefMemberExpression ()
+    {
+      var constantExpression = Expression.Constant (5);
+      var namedExpression = new NamedExpression ("test", constantExpression);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (constantExpression);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf(typeof(NamedExpression)));
+      Assert.That (((NamedExpression) result).Name, Is.EqualTo(namedExpression.Name));
+    }
+
+
+    [Test]
     public void UnknownExpression ()
     {
       var unknownExpression = new CustomExpression (typeof (int));

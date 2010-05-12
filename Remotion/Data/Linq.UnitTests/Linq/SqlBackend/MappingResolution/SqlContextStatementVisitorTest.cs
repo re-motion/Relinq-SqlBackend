@@ -24,6 +24,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -54,8 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (result.SelectProjection, Is.TypeOf(typeof(NamedExpression)));
-      Assert.That (((NamedExpression) result.SelectProjection).Expression, Is.SameAs (sqlStatement.SelectProjection));
+      Assert.That (result.SelectProjection, Is.TypeOf(typeof(SqlTableReferenceExpression)));
       Assert.That (result.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
-      Assert.That (((NamedExpression) result.SelectProjection).Expression, Is.SameAs (fakeResult));
+      Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
       Assert.That (result.WhereCondition, Is.SameAs (fakeWhereResult));
       Assert.That (result.TopExpression, Is.SameAs (fakeResult));
       Assert.That (result.Orderings[0].Expression, Is.SameAs (fakeResult));
@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
-      Assert.That (((NamedExpression) result.SelectProjection).Expression, Is.SameAs (fakeResult));
+      Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (fakeResult.Type));
     }
@@ -162,7 +162,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
-      Assert.That (((NamedExpression) result.SelectProjection).Expression, Is.SameAs (fakeResult));
+      Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (fakeResult.Type));
     }

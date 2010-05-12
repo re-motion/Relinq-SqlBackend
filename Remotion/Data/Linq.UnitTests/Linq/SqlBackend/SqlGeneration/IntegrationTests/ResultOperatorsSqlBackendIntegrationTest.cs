@@ -150,7 +150,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
           +"FROM [CookTable] AS [t0] "
           +"WHERE [t0].[ID] "
-          +"IN (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1])");
+          +"IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
     }
 
     [Test]
@@ -160,7 +160,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2).Contains (cook) select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1])",
+          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])",
           new CommandParameter("@1", 23));
     }
 
@@ -171,7 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from s in Cooks where s.Assistants.Contains (cook) select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID]))",
+          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID]))",
           new CommandParameter("@1", 23));
     }
 
@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           ( () => (from s in Cooks select s).Contains(cook)),
-          "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END AS [value]",
+          "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END",
           new CommandParameter("@1", 23) );
     }
 
@@ -211,7 +211,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery(
         () => Cooks.Any(),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]"
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END"
         );
     }
 
@@ -220,7 +220,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         () => Cooks.Any (c=>c.FirstName=="Hugo"),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END AS [value]",
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END",
         new CommandParameter("@1", "Hugo")
         );
     }
@@ -230,7 +230,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2).Any () select s.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE EXISTS((SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1]))");
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE EXISTS((SELECT [t1].[ID] FROM [CookTable] AS [t1]))");
     }
 
     [Test]
@@ -238,7 +238,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery(
        () => Cooks.All(c => c.Name=="Hugo"),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
+        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END",
         new CommandParameter("@1", "Hugo")
         );
     }
@@ -248,7 +248,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2).All(c=>c.FirstName=="Hugo") select s.Name,
-        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE NOT EXISTS((SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] " +
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE NOT EXISTS((SELECT [t1].[ID] FROM [CookTable] AS [t1] " +
         "WHERE NOT ([t1].[FirstName] = @1)))",
         new CommandParameter ("@1", "Hugo")
         );

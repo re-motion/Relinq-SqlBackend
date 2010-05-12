@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// <see cref="ResolvingExpressionVisitor"/> implements <see cref="IUnresolvedSqlExpressionVisitor"/> and <see cref="ThrowingExpressionTreeVisitor"/>.
   /// </summary>
-  public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
+  public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor, INamedExpressionVisitor
   {
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
@@ -134,6 +134,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return new SqlSubStatementExpression (newSqlStatement);
     }
 
+    public Expression VisitNamedExpression (NamedExpression expression)
+    {
+      var newExpression = VisitExpression (expression.Expression);
+      if (newExpression is SqlEntityExpression || newExpression is SqlEntityRefMemberExpression)
+        return newExpression;
+      var expressionAsValueTableReference = newExpression as SqlValueReferenceExpression;
+      if (newExpression != expression.Expression)
+        return new NamedExpression (expressionAsValueTableReference!=null ? expressionAsValueTableReference.Name : expression.Name , newExpression);
+      return expression;
+    }
+
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -147,5 +158,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return base.VisitUnknownExpression (expression);
     }
+   
   }
 }

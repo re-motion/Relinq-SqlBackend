@@ -52,14 +52,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// <summary>
     /// Analyses the <see cref="SqlTableReferenceExpression"/> and returns a resolved version of the expression. The resolved version will usually
     /// be a <see cref="SqlEntityExpression"/> representing the entity described by the <paramref name="tableReferenceExpression"/> in the database. 
-    /// If the item type of the table is not a queryable entity, the resolver should return a <see cref="SqlValueTableReferenceExpression"/>.
+    /// If the item type of the table is not a queryable entity, the resolver should return a <see cref="SqlValueReferenceExpression"/>.
     /// </summary>
     /// <param name="tableReferenceExpression">A <see cref="SqlTableReferenceExpression"/> which has to be resolved. 
     /// The expression represents a reference to an entity retrieved from a <see cref="SqlTableBase"/>.</param>
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as column aliases.</param>
     /// <returns>A resolved version of <paramref name="tableReferenceExpression"/>, usually a <see cref="SqlEntityExpression"/> containing all the 
     /// columns of the referenced <see cref="SqlTableBase"/>. If the <see cref="SqlTableReferenceExpression"/> is not a queryable entity, 
-    /// the resolver has to return a <see cref="SqlValueTableReferenceExpression"/>. 
+    /// the resolver has to return a <see cref="SqlValueReferenceExpression"/>. 
     /// This method can return a partial result that itself again needs to be resolved, but it must not return the unresolved 
     /// <paramref name="tableReferenceExpression"/>.</returns>
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator);

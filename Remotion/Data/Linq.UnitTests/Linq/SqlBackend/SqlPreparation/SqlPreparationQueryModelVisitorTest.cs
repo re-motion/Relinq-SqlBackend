@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var result = SqlPreparationQueryModelVisitor.TransformQueryModel (
           _queryModel, _context, _defaultStage, _generator, ResultOperatorHandlerRegistry.CreateDefault());
-      Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (result.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) result.SqlTables[0]).TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _visitor.VisitQueryModel (_queryModel);
 
-      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs(preparedExpression));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs(preparedExpression));
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo(1));
     }
 
@@ -310,6 +310,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitSelectClause_CreatesSelectProjection_SqlTableRefereenceExpression ()
+    {
+      var preparedExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
+
+      _stageMock
+          .Expect (
+              mock =>
+              mock.PrepareSelectExpression (
+                  Arg<Expression>.Matches (e => e == _selectClause.Selector),
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+          .Return (preparedExpression);
+      _stageMock.Replay ();
+
+      _visitor.VisitSelectClause (_selectClause, _queryModel);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (preparedExpression));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Name, Is.Null);
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (_selectClause.GetOutputDataInfo ().DataType));
+    }
+
+    [Test]
     public void VisitSelectClause_CreatesSelectProjection_NoSqlTableRefereenceExpression ()
     {
       var preparedExpression = Expression.Constant (null, typeof (Cook));
@@ -326,7 +349,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _visitor.VisitSelectClause (_selectClause, _queryModel);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (preparedExpression));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Name, Is.EqualTo("value"));
       Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (_selectClause.GetOutputDataInfo().DataType));
     }

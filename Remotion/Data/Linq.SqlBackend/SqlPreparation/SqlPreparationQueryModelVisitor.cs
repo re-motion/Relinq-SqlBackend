@@ -136,7 +136,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("selectClause", selectClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      SqlStatementBuilder.SelectProjection = _stage.PrepareSelectExpression (selectClause.Selector, _context);
+      var preparedExpression = _stage.PrepareSelectExpression (selectClause.Selector, _context);
+      if (preparedExpression is SqlTableReferenceExpression)
+        preparedExpression = new NamedExpression (null, preparedExpression);
+      else
+        preparedExpression = new NamedExpression ("value", preparedExpression);
+
+      SqlStatementBuilder.SelectProjection = preparedExpression;
       SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();
     }
 

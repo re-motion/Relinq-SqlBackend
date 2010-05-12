@@ -153,7 +153,7 @@
     <Compile Include="SqlStatementModel\Resolved\SqlColumnExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityConstantExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityExpression.cs" />
-    <Compile Include="SqlStatementModel\Resolved\SqlValueTableReferenceExpression.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlValueReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />

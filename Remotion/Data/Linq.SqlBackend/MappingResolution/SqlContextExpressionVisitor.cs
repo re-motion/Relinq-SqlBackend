@@ -211,7 +211,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitUnknownExpression (expression);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlValueTableReferenceExpression (SqlValueTableReferenceExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlValueTableReferenceExpression (SqlValueReferenceExpression expression)
     {
       return VisitUnknownExpression (expression);
     }

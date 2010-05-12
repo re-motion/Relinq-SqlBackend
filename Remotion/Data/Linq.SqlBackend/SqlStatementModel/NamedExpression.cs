@@ -33,7 +33,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public NamedExpression (string name, Expression expression)
         : base(expression.Type)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _name = name;

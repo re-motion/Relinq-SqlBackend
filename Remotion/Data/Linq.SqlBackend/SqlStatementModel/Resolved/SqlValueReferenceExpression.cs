@@ -23,23 +23,32 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="SqlValueTableReferenceExpression"/> represents a reference to a <see cref="SqlTableBase"/> that returns non-entity items.
+  /// <see cref="SqlValueReferenceExpression"/> represents a reference to a <see cref="SqlTableBase"/> that returns non-entity items.
   /// </summary>
-  public class SqlValueTableReferenceExpression : ExtensionExpression
+  public class SqlValueReferenceExpression : ExtensionExpression
   {
-    private readonly SqlTableBase _sqlTable;
+    private readonly string _name;
+    private readonly string _alias;
 
-    public SqlValueTableReferenceExpression (SqlTableBase sqlTable)
-        : base(sqlTable.ItemType)
+    public SqlValueReferenceExpression (Type type, string name, string alias)
+        : base(type)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("alias", alias);
 
-      _sqlTable = sqlTable;
+      _name = name;
+      _alias = alias;
     }
 
-    public SqlTableBase SqlTable
+    public string Name
     {
-      get { return _sqlTable; }
+      get { return _name; }
+    }
+
+    public string Alias
+    {
+      get { return _alias; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
