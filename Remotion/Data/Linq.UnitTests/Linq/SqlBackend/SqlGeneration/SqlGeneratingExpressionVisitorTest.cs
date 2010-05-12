@@ -443,5 +443,60 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [test]"));
     }
+
+    [Test]
+    public void VisitAggregationExpression_Max ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new AggregationExpression(columnExpression, AggregationModifier.Max);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" MAX([c].[Name])"));
+    }
+
+    [Test]
+    public void VisitAggregationExpression_Min ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new AggregationExpression (columnExpression, AggregationModifier.Min);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" MIN([c].[Name])"));
+    }
+
+    [Test]
+    public void VisitAggregationExpression_Sum ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new AggregationExpression (columnExpression, AggregationModifier.Sum);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" SUM([c].[Name])"));
+    }
+
+    [Test]
+    public void VisitAggregationExpression_Average ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new AggregationExpression (columnExpression, AggregationModifier.Average);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" AVG([c].[Name])"));
+    }
+
+    [Test]
+    public void VisitAggregationExpression_Count ()
+    {
+      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var expression = new AggregationExpression (columnExpression, AggregationModifier.Count);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" COUNT([c].[Name])"));
+    }
   }
 }

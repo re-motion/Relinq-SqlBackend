@@ -38,7 +38,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         ISqlSubStatementVisitor,
         IJoinConditionExpressionVisitor,
         ISqlCustomTextGeneratorExpressionVisitor,
-        INamedExpressionVisitor
+        INamedExpressionVisitor,
+        IAggregationExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -299,7 +300,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       VisitExpression (expression.Expression);
       _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (expression.Name);
+      _commandBuilder.AppendIdentifier (expression.Name /*?? "value"*/);
+
+      return expression;
+    }
+
+    public Expression VisitAggregationExpression (AggregationExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (expression.AggregationModifier == AggregationModifier.Average)
+        _commandBuilder.Append(" AVG");
+      else if (expression.AggregationModifier == AggregationModifier.Max)
+        _commandBuilder.Append (" MAX");
+      else if (expression.AggregationModifier == AggregationModifier.Min)
+        _commandBuilder.Append (" MIN");
+      else if (expression.AggregationModifier == AggregationModifier.Sum)
+        _commandBuilder.Append (" SUM");
+      else if (expression.AggregationModifier == AggregationModifier.Count)
+        _commandBuilder.Append (" COUNT");
+      else
+        throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", expression.AggregationModifier));
+
+      _commandBuilder.Append ("(");
+      VisitExpression (expression.Expression);
+      _commandBuilder.Append (")");
 
       return expression;
     }
