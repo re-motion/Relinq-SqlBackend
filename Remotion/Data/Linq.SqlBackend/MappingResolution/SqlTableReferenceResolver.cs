@@ -76,25 +76,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var innerSqlEntityExpression = selectProjection as SqlEntityExpression;
       if (innerSqlEntityExpression != null)
-      {
         _expression = innerSqlEntityExpression.Clone (sqlTable);
-      }
-      else if(selectProjection is NamedExpression || selectProjection is SqlValueReferenceExpression)
-      {
-        string name;
-        var innerNamedExpression = subStatementTableInfo.SqlStatement.SelectProjection as NamedExpression;
-        if (innerNamedExpression != null)
-          name = innerNamedExpression.Name;
-        else
-          name = ((SqlValueReferenceExpression) selectProjection).Name;
-
-        _expression = new SqlValueReferenceExpression (sqlTable.ItemType, name, sqlTable.GetResolvedTableInfo ().TableAlias);
-      }
+      else if(selectProjection is NamedExpression)
+        _expression = new SqlValueReferenceExpression (sqlTable.ItemType, ((NamedExpression) selectProjection).Name, sqlTable.GetResolvedTableInfo ().TableAlias);
       else
-      {
         throw new NotSupportedException ("The table projection for a referenced sub-statement must be named or an entity.");
-      }
-
+      
       return subStatementTableInfo;
     }
 

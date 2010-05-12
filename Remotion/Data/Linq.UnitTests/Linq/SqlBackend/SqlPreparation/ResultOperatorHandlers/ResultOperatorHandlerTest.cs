@@ -132,8 +132,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement;
 
       Assert.That (subStatement, Is.EqualTo (originalStatement));
-      Assert.That (_statementBuilder.SelectProjection, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) _statementBuilder.SelectProjection).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
+      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) ((NamedExpression) _statementBuilder.SelectProjection).Expression).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
 
       var mappedItemExpression = _context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
       Assert.That (mappedItemExpression, Is.Not.Null);

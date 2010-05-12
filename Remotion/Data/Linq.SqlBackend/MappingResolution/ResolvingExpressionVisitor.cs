@@ -139,9 +139,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpression = VisitExpression (expression.Expression);
       if (newExpression is SqlEntityExpression || newExpression is SqlEntityRefMemberExpression)
         return newExpression;
-      var expressionAsValueTableReference = newExpression as SqlValueReferenceExpression;
       if (newExpression != expression.Expression)
-        return new NamedExpression (expressionAsValueTableReference!=null ? expressionAsValueTableReference.Name : expression.Name , newExpression);
+        return new NamedExpression (expression.Name , newExpression);
       return expression;
     }
 

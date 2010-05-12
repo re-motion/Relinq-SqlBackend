@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) _sqlStatementBuilder.SelectProjection).SqlTable).TableInfo,
+          ((SqlTable) ((SqlTableReferenceExpression) ((NamedExpression) _sqlStatementBuilder.SelectProjection).Expression).SqlTable).TableInfo,
           Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
    

@@ -34,7 +34,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
         : base(type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("alias", alias);
 
       _name = name;

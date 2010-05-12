@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var newSqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
       sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.SelectProjection = newSqlTableReferenceExpression;
+      sqlStatementBuilder.SelectProjection = new NamedExpression (null, newSqlTableReferenceExpression);
 
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;

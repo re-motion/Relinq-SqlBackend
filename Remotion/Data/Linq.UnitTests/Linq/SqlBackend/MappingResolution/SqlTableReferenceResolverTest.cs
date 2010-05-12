@@ -80,27 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlValueReferenceExpression) result).Alias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (sqlTable.ItemType));
     }
-
-    [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_SqlValueReferenceExpression ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = new SqlValueReferenceExpression(typeof(Cook), "test", "t"),
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-
-      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
-      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
-      Assert.That (((SqlValueReferenceExpression) result).Alias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.EqualTo (sqlTable.ItemType));
-    }
-
+    
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The table projection for a referenced sub-statement must be named or an entity.")]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_NotSupportedExpression ()
