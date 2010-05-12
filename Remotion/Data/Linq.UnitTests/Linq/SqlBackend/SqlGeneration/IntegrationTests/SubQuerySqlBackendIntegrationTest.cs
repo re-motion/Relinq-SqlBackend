@@ -84,12 +84,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2718")]
+    [Ignore ("TODO 2765")]
     public void SubQuery_SelectingEntityMember_InAdditionalFromClause ()
     {
       CheckQuery (
           from s in Cooks from s2 in (from s3 in Cooks select s3.Substitution) from s4 in s2.Assistants select s.FirstName,
-          "TODO");
+          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1] "
+          + "CROSS APPLY ("
+          + "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          + "FROM [CookTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[SubstitutedID]) "
+          + "AS [q0] "
+          + "CROSS JOIN [CookTable] AS [t4] WHERE ([q0].[ID] = [t4].[AssistedID])");
     }
 
     [Test]

@@ -20,7 +20,6 @@ using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
@@ -51,18 +50,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "SubstitutedID",
-                joinInfo.MemberInfo);
+                "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "AssistedID",
-                joinInfo.MemberInfo);
+                "AssistedID");
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -71,18 +68,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "KitchenID",
-                joinInfo.MemberInfo);
+                "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "ID",
-                joinInfo.MemberInfo);
+                "ID");
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Restaurant))
@@ -91,18 +86,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "RestaurantID",
-                joinInfo.MemberInfo);
+                "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                (ResolvedSimpleTableInfo) joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "RestaurantID",
-                joinInfo.MemberInfo);
+                "RestaurantID");
         }
       }
 
@@ -294,7 +287,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (
-        ResolvedSimpleTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName, MemberInfo memberInfo)
+        IResolvedTableInfo originatingTableInfo, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName)
     {
       var primaryColumn = CreateColumn (typeof (int), originatingTableInfo, primaryKeyName, true);
       var foreignColumn = CreateColumn (typeof (int), foreignTableInfo, foreignKeyName, false);
