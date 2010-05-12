@@ -23,30 +23,30 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="NamedExpression"/> holds an expression and a name for it.
+  /// <see cref="AggregationExpression"/> holds an aggregation modifier for a warapped expression.
   /// </summary>
-  public class NamedExpression : ExtensionExpression
+  public class AggregationExpression : ExtensionExpression
   {
-    private readonly string _name;
     private readonly Expression _expression;
+    private readonly AggregationModifier _aggregationModifier;
 
-    public NamedExpression (string name, Expression expression)
+    public AggregationExpression (Expression expression, AggregationModifier aggregationModifier)
         : base(expression.Type)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _name = name;
       _expression = expression;
-    }
-
-    public string Name
-    {
-      get { return _name; }
+      _aggregationModifier = aggregationModifier;
     }
 
     public Expression Expression
     {
       get { return _expression; }
+    }
+
+    public AggregationModifier AggregationModifier
+    {
+      get { return _aggregationModifier; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       var newExpression = visitor.VisitExpression (_expression);
       if (newExpression != _expression)
-        return new NamedExpression(_name, newExpression);
+        return new AggregationExpression(newExpression,  _aggregationModifier);
       else
         return this;
     }
@@ -64,13 +64,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var specificVisitor = visitor as INamedExpressionVisitor;
+      var specificVisitor = visitor as IAggregationExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitNamedExpression (this);
+        return specificVisitor.VisitAggregationExpression (this);
       else
         return base.Accept (visitor);
     }
   }
-
-  
 }

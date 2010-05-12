@@ -110,7 +110,9 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SingleResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SumResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandler.cs" />
+    <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
+    <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\INamedExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
