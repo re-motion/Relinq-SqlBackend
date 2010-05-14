@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
@@ -103,6 +104,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       var sqlSubStatement = GetSqlStatement();
       _valueHolder = new ValueHolder();
       return sqlSubStatement;
+    }
+
+    public void RecalculateDataInfo (Expression previousSelectProjection)
+    {
+      if (SelectProjection.Type != previousSelectProjection.Type)
+        DataInfo = GetNewDataInfo (previousSelectProjection);
+    }
+
+    private IStreamedDataInfo GetNewDataInfo (Expression previousSelectProjection)
+    {
+      var previousStreamedSequenceInfo = DataInfo as StreamedSequenceInfo;
+      if (previousStreamedSequenceInfo != null)
+        return new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (SelectProjection.Type), SelectProjection);
+
+      var previousSingleValueInfo = DataInfo as StreamedSingleValueInfo;
+      if (previousSingleValueInfo != null)
+        return new StreamedSingleValueInfo (SelectProjection.Type, previousSingleValueInfo.ReturnDefaultWhenEmpty);
+
+      return DataInfo;
     }
 
     private class ValueHolder

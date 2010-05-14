@@ -57,6 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         throw new InvalidOperationException ("A SqlStatement cannot be used as a predicate.");
 
       var statementBuilder = new SqlStatementBuilder ();
+      statementBuilder.DataInfo = sqlStatement.DataInfo;
 
       statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
 
@@ -73,8 +74,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private void VisitSelectProjection (SqlStatement sqlStatement  , SqlExpressionContext selectContext, SqlStatementBuilder statementBuilder)
     {
       var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, selectContext);
-      UpdateDataInfo (newSelectProjection, sqlStatement, statementBuilder);  //if the expression was changed by the context visitor the cast type information might be lost
       statementBuilder.SelectProjection = newSelectProjection;
+      statementBuilder.RecalculateDataInfo (sqlStatement.SelectProjection);
     }
 
     private void VisitWhereCondition (Expression whereCondition, SqlStatementBuilder statementBuilder)
@@ -106,26 +107,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         statementBuilder.SqlTables.Add (table);
       }
     }
-
-    private IStreamedDataInfo GetNewDataInfo (IStreamedDataInfo previousDataInfo, Expression newSelectProjection)
-    {
-      var previousStreamedSequenceInfo = previousDataInfo as StreamedSequenceInfo;
-      if (previousStreamedSequenceInfo != null)
-        return new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (newSelectProjection.Type), newSelectProjection);
-
-      var previousSingleValueInfo = previousDataInfo as StreamedSingleValueInfo;
-      if (previousSingleValueInfo != null)
-        return new StreamedSingleValueInfo (newSelectProjection.Type, previousSingleValueInfo.ReturnDefaultWhenEmpty);
-
-      return previousDataInfo;
-    }
-
-    private void UpdateDataInfo (Expression newSelectProjection, SqlStatement sqlStatement, SqlStatementBuilder statementBuilder)
-    {
-      if (newSelectProjection != sqlStatement.SelectProjection)
-        statementBuilder.DataInfo = GetNewDataInfo (sqlStatement.DataInfo, newSelectProjection);
-      else
-        statementBuilder.DataInfo = sqlStatement.DataInfo;
-    }
+   
   }
 }

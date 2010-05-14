@@ -100,7 +100,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var sqlStatementBuilder = new SqlStatementBuilder(sqlStatement);
 
+      var previousSelectProjection = sqlStatementBuilder.SelectProjection;
       sqlStatementBuilder.SelectProjection = _stage.ResolveSelectExpression (sqlStatementBuilder.SelectProjection);
+      sqlStatementBuilder.RecalculateDataInfo (previousSelectProjection);
 
       if (sqlStatementBuilder.WhereCondition != null)
         sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition);

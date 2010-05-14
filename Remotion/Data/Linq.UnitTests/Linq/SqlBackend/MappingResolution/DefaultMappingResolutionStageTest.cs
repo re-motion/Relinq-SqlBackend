@@ -90,7 +90,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations();
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (((BinaryExpression) result).Left, Is.SameAs (fakeResult));
+      Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo(1));
     }
 
     [Test]

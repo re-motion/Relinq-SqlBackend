@@ -44,28 +44,32 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolveExpression (expression);
+      var resolvedExpression = ResolveExpression (expression);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired);
     }
 
     public virtual Expression ResolveWhereExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolveExpression (expression);
+      var resolvedExpression = ResolveExpression (expression);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.PredicateRequired);
     }
 
     public virtual Expression ResolveOrderingExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolveExpression (expression);
+      var resolvedExpression = ResolveExpression (expression);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired);
     }
 
     public virtual Expression ResolveTopExpression (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return ResolveExpression (expression);
+      var resolvedExpression = ResolveExpression (expression);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired);
     }
 
     public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo)

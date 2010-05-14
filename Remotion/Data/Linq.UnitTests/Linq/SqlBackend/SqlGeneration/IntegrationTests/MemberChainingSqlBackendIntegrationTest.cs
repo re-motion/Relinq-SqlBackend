@@ -87,13 +87,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook,
-          "SELECT [t4].[ID],[t4].[FirstName],[t4].[Name],[t4].[IsStarredCook],[t4].[IsFullTimeCook],[t4].[SubstitutedID],[t4].[KitchenID] "
-          +"FROM [KitchenTable] AS [t0] "
-          +"LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
-          +"LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
-          +"LEFT OUTER JOIN [RestaurantTable] AS [t3] ON [t2].[RestaurantID] = [t3].[ID] "
-          +"LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] "
-          +"WHERE ([t3].[ID] = @1)",
+          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "+
+          "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] LEFT OUTER JOIN "+
+          "[KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "+
+          "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON [t2].[RestaurantID] = [t4].[ID] WHERE ([t4].[ID] = @1)",
           new CommandParameter ("@1", 0));
     }
 
