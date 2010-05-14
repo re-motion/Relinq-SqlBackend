@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return _stage.ResolveTableReferenceExpression (expression);
+      return _stage.ResolveTableReferenceExpression (expression); // TODO Review 2718: result shoult be revisited - add a test that shows that if ResolveTableReferenceExpression returns an unresolved expression, that expression is resolved again; implement by calling VisitExpression on result
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)

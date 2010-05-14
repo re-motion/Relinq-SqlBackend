@@ -45,6 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _name; }
     }
 
+    // TODO Review 2718: rename to TableAlias for symmetry with ITableInfo
     public string Alias
     {
       get { return _alias; }

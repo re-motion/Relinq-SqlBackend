@@ -106,6 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
+      // TODO Review 2718: Don't leave commented code behind
       //if (resolvedTableInfo is ResolvedSubStatementTableInfo &&
       //    (tableReferenceExpression.Type == typeof (string) || (tableReferenceExpression.Type == typeof (int))
       //     || (tableReferenceExpression.Type == typeof (object))))
@@ -278,7 +279,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "LetterOfRecommendation", false)
             });
       }
-      return null;
+      return null; // TODO Review 2718: throw an UnmappedItemExpression here
     }
 
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)

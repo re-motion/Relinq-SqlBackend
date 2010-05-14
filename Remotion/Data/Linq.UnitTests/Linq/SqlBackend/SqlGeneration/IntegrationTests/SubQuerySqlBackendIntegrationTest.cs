@@ -62,9 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void SubQueryInMainFromClause ()
     {
       CheckQuery (
-          from s in (
-            from s2 in Cooks select s2
-            ).Take (1) select s,
+          from s in (from s2 in Cooks select s2).Take (1) select s,
           "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "
           + "FROM "
           +

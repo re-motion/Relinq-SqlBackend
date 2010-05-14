@@ -46,7 +46,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      
+
+      // TODO Review 2718: don't store the expression, only store the SqlTable
+      // TODO 2719: As soon as SqlEntity is decoupled from SqlTable, don't store the SqlTable any longer
       _expression = expression;
       _generator = generator;
       _resolver = resolver;
@@ -58,11 +60,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       expression.SqlTable.GetResolvedTableInfo ().Accept (this);
 
-      return _expression;
+      return _expression; // TODO Review 2718: rename field to _result
     }
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
+      // TODO Review 2718: Refactor ResolveTableReferenceExpression to take SimpleTableInfo instead of a SqlTableReferenceExpression, rename it to ResolveTableReference, don't forget to update the docs on IMappingResolver
       _expression = _resolver.ResolveTableReferenceExpression ((SqlTableReferenceExpression) _expression, _generator);
       return tableInfo;
     }
@@ -74,13 +77,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var selectProjection = subStatementTableInfo.SqlStatement.SelectProjection;
       var sqlTable = ((SqlTableReferenceExpression) _expression).SqlTable;
 
-      var innerSqlEntityExpression = selectProjection as SqlEntityExpression;
-      if (innerSqlEntityExpression != null)
+      SqlEntityExpression innerSqlEntityExpression;
+      NamedExpression innerNamedExpression;
+
+      if ((innerSqlEntityExpression = selectProjection as SqlEntityExpression) != null)
         _expression = innerSqlEntityExpression.Clone (sqlTable);
-      else if(selectProjection is NamedExpression)
-        _expression = new SqlValueReferenceExpression (sqlTable.ItemType, ((NamedExpression) selectProjection).Name, sqlTable.GetResolvedTableInfo ().TableAlias);
+      else if ((innerNamedExpression = selectProjection as  NamedExpression) != null) // TODO Review 2718: Use as and check for null for symmetry with the if above
+        _expression = new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, sqlTable.GetResolvedTableInfo ().TableAlias); // TODO Review 2718: use subStatementTableInfo.TableAlias
       else
-        throw new NotSupportedException ("The table projection for a referenced sub-statement must be named or an entity.");
+        throw new NotSupportedException ("The table projection for a referenced sub-statement must be named or an entity."); // TODO Review 2718: change to InvalidOperationException; NotSupportedException is for an unsupported feature/usage, here we have an invalid operation due to unsupported input data
       
       return subStatementTableInfo;
     }

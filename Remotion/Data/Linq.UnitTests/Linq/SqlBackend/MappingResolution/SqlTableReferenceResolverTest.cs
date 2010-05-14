@@ -22,7 +22,6 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -76,7 +75,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
-      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo("test"));
+      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
       Assert.That (((SqlValueReferenceExpression) result).Alias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (sqlTable.ItemType));
     }
@@ -115,11 +114,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.TypeOf (typeof (SqlEntityExpression)));
       Assert.That (((SqlEntityExpression) result).SqlTable, Is.SameAs (sqlTable));
+      // TODO Review 2718: check column
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")
-    ]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "This table has not yet been resolved; call the resolution step first.")]
     public void ResolveSqlTableReferenceExpression_VisitUnresolvedTableInfo ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
@@ -127,6 +127,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator);
     }
-    
   }
 }

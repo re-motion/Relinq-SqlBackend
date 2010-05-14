@@ -121,6 +121,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression);
     }
 
+    // TODO Review 2718: test missing
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

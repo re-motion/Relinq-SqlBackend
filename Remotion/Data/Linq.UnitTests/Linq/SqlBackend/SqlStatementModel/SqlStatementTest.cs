@@ -324,6 +324,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (result, Is.SameAs(sqlStatement.SelectProjection));
     }
 
+    // TODO Review 2718: belongs to SqlEntityExpressionTest, not SqlStatementTest
     [Test]
     public void Clone ()
     {
