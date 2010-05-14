@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly AggregationModifier _aggregationModifier;
 
     public AggregationExpression (Expression expression, AggregationModifier aggregationModifier)
-        : base(expression.Type)
+        : base (expression.Type) // TODO Review 2760: expression type must be passed in - it is not always the type of the inner expression; for example, Count is always int, Average is decimal or double, etc. Use the data type of the DataInfo in the result operator handlers; don't forget to adapt the handler tests to check the expression type.
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 

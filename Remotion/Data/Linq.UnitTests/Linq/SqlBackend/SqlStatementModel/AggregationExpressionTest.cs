@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void VisitChildren_ReturnsNewSqlInExpression ()
+    public void VisitChildren_ReturnsNewExpression ()
     {
       var newExpression = Expression.Constant (5);
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
