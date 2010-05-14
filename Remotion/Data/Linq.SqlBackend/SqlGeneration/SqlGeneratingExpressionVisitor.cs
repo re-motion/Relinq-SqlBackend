@@ -98,6 +98,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO Review 2720: should use the name from the expression; "value" should be used if expression.Name is null
+      // TODO Review 2720: use two tests; one with a non-null name different from "value"; one with a null name
       var columnExpression = new SqlColumnExpression (expression.Type, expression.Alias, "value", false);
       return VisitExpression (columnExpression);
     }

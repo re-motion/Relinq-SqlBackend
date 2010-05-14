@@ -23,7 +23,12 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="NamedExpression"/> holds an expression and a name for it.
+  /// <see cref="NamedExpression"/> holds an expression and a name for it. If the name is null, a default name is used (or omitted if possible).
+  /// When a <see cref="NamedExpression"/> holds an expression resolved to a 
+  /// <see cref="Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved.SqlEntityExpression"/>, the entity's name is set to the 
+  /// <see cref="NamedExpression"/>'s name. Otherwise, the <see cref="NamedExpression"/> is retained and used to emit "AS ..." clauses in SQL 
+  /// generation. Therefore, <see cref="NamedExpression"/> must only be used in parts of a <see cref="SqlStatement"/> where "AS ..." clauses are 
+  /// allowed.
   /// </summary>
   public class NamedExpression : ExtensionExpression
   {

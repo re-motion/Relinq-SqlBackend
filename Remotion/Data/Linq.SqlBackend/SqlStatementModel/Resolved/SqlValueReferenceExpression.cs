@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="SqlValueReferenceExpression"/> represents a reference to a <see cref="SqlTableBase"/> that returns non-entity items.
+  /// <see cref="SqlValueReferenceExpression"/> represents a reference to a <see cref="NamedExpression"/>.
   /// </summary>
   public class SqlValueReferenceExpression : ExtensionExpression
   {
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _name; }
     }
 
-    // TODO Review 2718: rename to TableAlias for symmetry with ITableInfo
+    // TODO Review 2720: rename to TableAlias for symmetry with ITableInfo
     public string Alias
     {
       get { return _alias; }

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
@@ -27,6 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   {
     Expression VisitSqlEntityExpression (SqlEntityExpression expression);
     Expression VisitSqlColumnExpression (SqlColumnExpression expression);
-    Expression VisitSqlValueTableReferenceExpression (SqlValueReferenceExpression expression);
+    Expression VisitSqlValueTableReferenceExpression (SqlValueReferenceExpression expression); // TODO Review 2720: Rename to VisitSqlValueReferenceExpression
  }
 }

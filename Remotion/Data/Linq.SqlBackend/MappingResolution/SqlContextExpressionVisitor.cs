@@ -195,13 +195,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       switch (_currentContext)
       {
         case SqlExpressionContext.ValueRequired:
-          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo);
+          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo); // TODO 2719: Later, the entity's name should be set from the entity ref
         case SqlExpressionContext.SingleValueRequired:
           var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
           if (columnExpression!=null && columnExpression.IsPrimaryKey)
-            return resolvedJoinInfo.LeftKey;
+            return resolvedJoinInfo.LeftKey; // TODO Review 2720: return a NamedExpression with the entity ref's name containing the key here
           else
-            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn;
+            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn; // TODO Review 2720: return a NamedExpression here as well
       }
       throw new NotSupportedException (string.Format("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
     }

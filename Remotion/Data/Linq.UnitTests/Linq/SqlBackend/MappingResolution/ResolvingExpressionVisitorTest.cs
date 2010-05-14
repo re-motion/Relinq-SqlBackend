@@ -225,7 +225,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.SameAs (fakeResult)); // TODO Review 2718: After refactoring of SqlEntityRefExpression, compare with an expected expression here
     }
 
     [Test]
@@ -242,10 +242,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (result, Is.TypeOf(typeof(NamedExpression)));
+      // TODO Review 2720: Assert.That (result, Is.SameAs (namedExpression));
+      // TODO Review 2720: Add a second test where the Resolve method does not return the same expression, but a new one. compare against an expected expression (new NamedExpression (namedExpression.Name, newExpression))
+      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) result).Name, Is.EqualTo(namedExpression.Name));
     }
-
 
     [Test]
     public void UnknownExpression ()

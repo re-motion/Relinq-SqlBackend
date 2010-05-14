@@ -445,7 +445,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitNamedExpression_NameIstNull ()
+    public void VisitNamedExpression_NameIsNull ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
       var expression = new NamedExpression (null, columnExpression);
