@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
             .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo ((UnresolvedJoinInfo) join.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join.JoinInfo))
             .Return (fakeResolvedJoinInfo);
       }
       _stageMock.Replay();
@@ -259,5 +259,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (joinedTable.JoinInfo, Is.SameAs (fakeJoinInfo));
     }
+
+    // TODO Review 2765: Add a test showing that ResolveSqlStatement correctly recalculates the DataInfo
+    // TODO Review 2765: Also, there don't seem to be any tests for the ResolveSqlStatement method?
   }
 }

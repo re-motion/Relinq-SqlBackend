@@ -62,6 +62,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       statementBuilder.SelectProjection = newSelectProjection;
       statementBuilder.RecalculateDataInfo (sqlStatement.SelectProjection);
 
+      // TODO Review 2765: Don't keep commented code, also remove unused methods
       //statementBuilder.DataInfo = sqlStatement.DataInfo;
       //statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
 

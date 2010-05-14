@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -54,6 +53,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stage = new DefaultMappingResolutionStage (_resolverMock, _uniqueIdentifierGenerator);
     }
+
+    // TODO Review 2765: test that each of the Resolve methods perform the context application by returning an expression that will be changed by the context visitor (the test for ResolveWhereExpression already does this)
 
     [Test]
     public void ResolveSelectExpression ()
@@ -301,6 +302,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
+    // TODO Review 2765: For the following two tests, use an input that actually changes (e.g., a subquery with entities and SingleValueRequired)
     [Test]
     public void ApplyContext_TableInfo ()
     {

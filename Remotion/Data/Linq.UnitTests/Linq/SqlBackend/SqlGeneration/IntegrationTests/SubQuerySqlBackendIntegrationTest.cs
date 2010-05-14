@@ -189,12 +189,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO: Subquery with Contains")]
     public void Contains ()
     {
       CheckQuery (
           from c in Cooks where (from k in Cooks select k.Substitution).Contains (c) select c.FirstName,
-          "SELECT [c].[FirstName] FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [k].[ID] FROM [CookTable] AS [t1])"); //@1 = [c].[ID]
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] "
+          + "WHERE [t0].[ID] IN (SELECT [t2].[ID] FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID])");
     }
   }
 }

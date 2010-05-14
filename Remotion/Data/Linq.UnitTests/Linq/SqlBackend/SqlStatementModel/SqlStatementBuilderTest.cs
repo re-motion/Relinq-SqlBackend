@@ -196,6 +196,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (((StreamedSingleValueInfo) _statementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }
 
+    // TODO Review 2765: Also test with scalar data info
+
     [Test]
     public void RecalculateDataInfo_SameDataInfo ()
     {
@@ -207,5 +209,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
       Assert.That (((TestStreamedValueInfo) _statementBuilder.DataInfo).DataType, Is.EqualTo(typeof (int)));
     }
+
+    // TODO Review 2765: Also test with unchanged projection type (but changed projection)
   }
 }
