@@ -92,14 +92,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      var resolvedStatement = SqlStatementResolver.ResolveExpressions (this, sqlStatement);
-      return SqlContextSelectionAdjuster.ApplyContext (resolvedStatement, SqlExpressionContext.ValueRequired, this);
-    }
-
-    public virtual SqlStatement ResolveSqlSubStatement (SqlStatement sqlStatement)
-    {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-
       return SqlStatementResolver.ResolveExpressions (this, sqlStatement);
     }
 

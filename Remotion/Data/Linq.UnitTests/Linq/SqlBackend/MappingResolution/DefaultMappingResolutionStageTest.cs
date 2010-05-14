@@ -192,30 +192,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveSqlSubStatement ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)), tableReferenceExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false);
-      var fakeEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (int), "c", "ID", false));
-
-      _resolverMock
-          .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
-          .Return (_fakeResolvedSimpleTableInfo);
-      _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _uniqueIdentifierGenerator))
-          .Return (fakeEntityExpression);
-      _resolverMock.Replay();
-
-      var newSqlStatment = _stage.ResolveSqlSubStatement (sqlStatement);
-
-      _resolverMock.VerifyAllExpectations();
-      Assert.That (((SqlTable) newSqlStatment.SqlTables[0]).TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
-      Assert.That (newSqlStatment.SelectProjection, Is.SameAs (fakeEntityExpression));
-    }
-
-    [Test]
     public void ResolveCollectionSourceExpression ()
     {
       var constantExpression = Expression.Constant (new Cook());
