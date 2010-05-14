@@ -93,7 +93,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       var resolvedStatement = SqlStatementResolver.ResolveExpressions (this, sqlStatement);
-      return SqlContextStatementVisitor.ApplyContext (resolvedStatement, SqlExpressionContext.ValueRequired, this);
+      return SqlContextSelectionAdjuster.ApplyContext (resolvedStatement, SqlExpressionContext.ValueRequired, this);
     }
 
     public virtual SqlStatement ResolveSqlSubStatement (SqlStatement sqlStatement)
@@ -138,11 +138,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, context, this);
     }
 
-    public virtual SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context)
+    public virtual SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext context)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      return SqlContextStatementVisitor.ApplyContext (sqlStatement, context, this);
+      return SqlContextSelectionAdjuster.ApplyContext (sqlStatement, context, this);
     }
 
     public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext context)

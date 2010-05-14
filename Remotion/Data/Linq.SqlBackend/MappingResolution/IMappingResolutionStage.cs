@@ -40,8 +40,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression);
 
     Expression ApplyContext (Expression expression, SqlExpressionContext context);
-    SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context);
     ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext context);
     IJoinInfo ApplyContext (IJoinInfo tableInfo, SqlExpressionContext context);
+
+    SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext context);
   }
 }

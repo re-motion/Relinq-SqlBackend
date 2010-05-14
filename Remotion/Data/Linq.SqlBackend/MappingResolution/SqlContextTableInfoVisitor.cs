@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      var newStatement = _stage.ApplyContext (tableInfo.SqlStatement, _context);
+      var newStatement = _stage.ApplySelectionContext (tableInfo.SqlStatement, _context);
       if (newStatement != tableInfo.SqlStatement)
         return new ResolvedSubStatementTableInfo (tableInfo.TableAlias, newStatement);
       return tableInfo;

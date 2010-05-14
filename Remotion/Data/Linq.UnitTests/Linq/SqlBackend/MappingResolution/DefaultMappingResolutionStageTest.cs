@@ -293,7 +293,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                              SelectProjection = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook))
                          }.GetSqlStatement();
 
-      var result = _stage.ApplyContext (sqlStatement, SqlExpressionContext.SingleValueRequired);
+      var result = _stage.ApplySelectionContext (sqlStatement, SqlExpressionContext.SingleValueRequired);
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));

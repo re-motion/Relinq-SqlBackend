@@ -537,7 +537,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var fakeResult = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired))
           .Return (fakeResult);
       _stageMock.Replay();
 

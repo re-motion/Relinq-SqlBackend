@@ -27,9 +27,9 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="SqlContextStatementVisitor"/> applies <see cref="SqlExpressionContext"/> to a <see cref="SqlStatement"/>.
+  /// <see cref="SqlContextSelectionAdjuster"/> applies <see cref="SqlExpressionContext"/> to a <see cref="SqlStatement"/>.
   /// </summary>
-  public class SqlContextStatementVisitor
+  public class SqlContextSelectionAdjuster
   {
     private readonly IMappingResolutionStage _stage;
 
@@ -38,11 +38,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlContextStatementVisitor (stage);
+      var visitor = new SqlContextSelectionAdjuster (stage);
       return visitor.VisitSqlStatement (sqlStatement, context);
     }
 
-    private SqlContextStatementVisitor (IMappingResolutionStage stage)
+    private SqlContextSelectionAdjuster (IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
 
@@ -56,16 +56,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (context == SqlExpressionContext.PredicateRequired)
         throw new InvalidOperationException ("A SqlStatement cannot be used as a predicate.");
 
-      var statementBuilder = new SqlStatementBuilder ();
-      statementBuilder.DataInfo = sqlStatement.DataInfo;
+      var statementBuilder = new SqlStatementBuilder (sqlStatement);
 
-      statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
+      var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, context);
+      statementBuilder.SelectProjection = newSelectProjection;
+      statementBuilder.RecalculateDataInfo (sqlStatement.SelectProjection);
 
-      VisitSelectProjection(sqlStatement, context, statementBuilder);
-      VisitWhereCondition(sqlStatement.WhereCondition, statementBuilder);
-      VisitOrderings (sqlStatement.Orderings, statementBuilder);
-      VisitTopExpression(sqlStatement.TopExpression, statementBuilder);
-      VisitSqlTables (sqlStatement.SqlTables, statementBuilder);
+      //statementBuilder.DataInfo = sqlStatement.DataInfo;
+      //statementBuilder.IsDistinctQuery = sqlStatement.IsDistinctQuery;
+
+      //VisitSelectProjection(sqlStatement, context, statementBuilder);
+      //VisitWhereCondition(sqlStatement.WhereCondition, statementBuilder);
+      //VisitOrderings (sqlStatement.Orderings, statementBuilder);
+      //VisitTopExpression(sqlStatement.TopExpression, statementBuilder);
+      //VisitSqlTables (sqlStatement.SqlTables, statementBuilder);
 
       var newSqlStatement = statementBuilder.GetSqlStatement();
       return newSqlStatement.Equals (sqlStatement) ? sqlStatement : newSqlStatement;
@@ -78,35 +82,35 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       statementBuilder.RecalculateDataInfo (sqlStatement.SelectProjection);
     }
 
-    private void VisitWhereCondition (Expression whereCondition, SqlStatementBuilder statementBuilder)
-    {
-      if (whereCondition != null)
-        statementBuilder.WhereCondition = _stage.ApplyContext (whereCondition, SqlExpressionContext.PredicateRequired);
-    }
+    //private void VisitWhereCondition (Expression whereCondition, SqlStatementBuilder statementBuilder)
+    //{
+    //  if (whereCondition != null)
+    //    statementBuilder.WhereCondition = _stage.ApplyContext (whereCondition, SqlExpressionContext.PredicateRequired);
+    //}
 
-    private void VisitOrderings (IEnumerable<Ordering> orderings, SqlStatementBuilder statementBuilder)
-    {
-      foreach (var ordering in orderings)
-      {
-        var newExpression = _stage.ApplyContext (ordering.Expression, SqlExpressionContext.SingleValueRequired);
-        statementBuilder.Orderings.Add (new Ordering (newExpression, ordering.OrderingDirection));
-      }
-    }
+    //private void VisitOrderings (IEnumerable<Ordering> orderings, SqlStatementBuilder statementBuilder)
+    //{
+    //  foreach (var ordering in orderings)
+    //  {
+    //    var newExpression = _stage.ApplyContext (ordering.Expression, SqlExpressionContext.SingleValueRequired);
+    //    statementBuilder.Orderings.Add (new Ordering (newExpression, ordering.OrderingDirection));
+    //  }
+    //}
 
-    private void VisitTopExpression (Expression topExpression, SqlStatementBuilder statementBuilder)
-    {
-      if (topExpression != null)
-        statementBuilder.TopExpression = _stage.ApplyContext (topExpression, SqlExpressionContext.SingleValueRequired);
-    }
+    //private void VisitTopExpression (Expression topExpression, SqlStatementBuilder statementBuilder)
+    //{
+    //  if (topExpression != null)
+    //    statementBuilder.TopExpression = _stage.ApplyContext (topExpression, SqlExpressionContext.SingleValueRequired);
+    //}
 
-    private void VisitSqlTables (IEnumerable<SqlTableBase> tables, SqlStatementBuilder statementBuilder)
-    {
-      foreach (var table in tables)
-      {
-        //_stage.ApplyContext (table, SqlExpressionContext.ValueRequired);
-        statementBuilder.SqlTables.Add (table);
-      }
-    }
+    //private void VisitSqlTables (IEnumerable<SqlTableBase> tables, SqlStatementBuilder statementBuilder)
+    //{
+    //  foreach (var table in tables)
+    //  {
+    //    //_stage.ApplyContext (table, SqlExpressionContext.ValueRequired);
+    //    statementBuilder.SqlTables.Add (table);
+    //  }
+    //}
    
   }
 }

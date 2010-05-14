@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newSqlStatement = _stage.ApplyContext (expression.SqlStatement, _currentContext);
+      var newSqlStatement = _stage.ApplySelectionContext (expression.SqlStatement, _currentContext);
       if (expression.SqlStatement != newSqlStatement)
         return new SqlSubStatementExpression (newSqlStatement);
       return expression;

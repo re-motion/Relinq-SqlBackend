@@ -32,7 +32,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class SqlContextStatementVisitorTest
+  public class SqlContextSelectionAdjusterTest
   {
     private IMappingResolutionStage _stageMock;
 
@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (sqlStatement.SelectProjection);
       _stageMock.Replay();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result.SelectProjection, Is.TypeOf(typeof(SqlTableReferenceExpression)));
@@ -63,37 +63,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitSqlStatement_ExpressionsAndStreamedSequenceDataTypeChanged ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
-      builder.TopExpression = Expression.Constant ("top");
-      builder.WhereCondition = Expression.Constant (true);
-      builder.Orderings.Add (new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc));
+      var topExpression = Expression.Constant ("top");
+      builder.TopExpression = topExpression;
+      var whereCondition = Expression.Constant (true);
+      builder.WhereCondition = whereCondition;
+      var orderingExpression = Expression.Constant ("ordering");
+      builder.Orderings.Add (new Ordering (orderingExpression, OrderingDirection.Asc));
       builder.DataInfo = new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (builder.SelectProjection.Type), builder.SelectProjection);
       var sqlStatement = builder.GetSqlStatement();
 
       var fakeResult = Expression.Constant ("test");
-      var fakeWhereResult = Expression.Equal (fakeResult, fakeResult);
-
+      
       _stageMock
           .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
           .Return (fakeResult);
-      _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.TopExpression, SqlExpressionContext.SingleValueRequired))
-          .Return (fakeResult);
-      _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.WhereCondition, SqlExpressionContext.PredicateRequired))
-          .Return (fakeWhereResult);
-      _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.Orderings[0].Expression, SqlExpressionContext.SingleValueRequired))
-          .Return (fakeResult);
-      _stageMock.Replay();
+     _stageMock.Replay();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
-      Assert.That (result.WhereCondition, Is.SameAs (fakeWhereResult));
-      Assert.That (result.TopExpression, Is.SameAs (fakeResult));
-      Assert.That (result.Orderings[0].Expression, Is.SameAs (fakeResult));
+      Assert.That (result.WhereCondition, Is.SameAs (whereCondition));
+      Assert.That (result.TopExpression, Is.SameAs (topExpression));
+      Assert.That (result.Orderings[0].Expression, Is.SameAs (orderingExpression));
       Assert.That (result.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) result.DataInfo).ItemExpression.Type, Is.EqualTo (typeof (string)));
@@ -113,7 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
@@ -136,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay ();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
@@ -158,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
@@ -180,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (sqlStatement.SelectProjection);
       _stageMock.Replay();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       Assert.That (((AggregationExpression) result.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Count));
     }
@@ -196,7 +189,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (sqlStatement.SelectProjection);
       _stageMock.Replay();
 
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result.IsDistinctQuery, Is.True);
@@ -208,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
-      SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.PredicateRequired, _stageMock);
     }
   }
 }

@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
      
       _stageMock
-          .Expect (mock => mock.ApplyContext (subStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired))
           .Return (subStatement);
       _stageMock.Replay ();
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       }.GetSqlStatement ();
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (subStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired))
           .Return (returnedStatement);
       _stageMock.Replay ();
 
