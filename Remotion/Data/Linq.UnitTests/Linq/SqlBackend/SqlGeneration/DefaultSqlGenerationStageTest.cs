@@ -101,7 +101,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
     }
 
-    // TODO Review 2705: Add a test showing that strings are not detected as collections (tests the second part of the if condition)
+    [Test]
+    public void  GenerateTextForSelectExpression_CollectionInSelectProjection_StringsNotDetectedAsCollections ()
+    {
+      _sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (string)),
+          Expression.Constant ("test"),
+          new SqlTable[] { },
+          new Ordering[] { },
+          null,
+          null,
+          false);
+
+      _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
+    }
 
     [Test]
     public void GenerateTextForTopExpression ()
