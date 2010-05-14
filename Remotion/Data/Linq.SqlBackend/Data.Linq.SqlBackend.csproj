@@ -66,8 +66,9 @@
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
+    <Compile Include="MappingResolution\SqlContextJoinInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextStatementVisitor.cs" />
-    <Compile Include="MappingResolution\SqlContextTableVisitor.cs" />
+    <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlTableReferenceResolver.cs" />
     <Compile Include="SqlPreparation\IMethodCallTransformer.cs" />
     <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />

@@ -82,7 +82,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2765")]
     public void SubQuery_SelectingEntityMember_InAdditionalFromClause ()
     {
       CheckQuery (

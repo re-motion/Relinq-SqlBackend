@@ -300,19 +300,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ApplyContext_Table ()
+    public void ApplyContext_TableInfo ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
-                         {
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      
+      var result = _stage.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired);
 
-      var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
-      var sqlTable = new SqlTable (subStatementTableInfo);
-      _stage.ApplyContext (sqlTable, SqlExpressionContext.ValueRequired);
+      Assert.That (result, Is.SameAs(tableInfo));
+    }
 
-      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.SelectProjection, Is.TypeOf(typeof(SqlTableReferenceExpression)));
+    [Test]
+    public void ApplyContext_JoinInfo ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var joinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+
+      var result = _stage.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired);
+
+      Assert.That (result, Is.SameAs (joinInfo));
     }
   }
 }

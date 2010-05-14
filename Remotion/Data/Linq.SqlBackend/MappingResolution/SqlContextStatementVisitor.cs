@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       foreach (var table in tables)
       {
-        _stage.ApplyContext (table, SqlExpressionContext.ValueRequired);
+        //_stage.ApplyContext (table, SqlExpressionContext.ValueRequired);
         statementBuilder.SqlTables.Add (table);
       }
     }

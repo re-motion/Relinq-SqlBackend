@@ -168,25 +168,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlStatement_SqlTablesAreVisited ()
-    {
-      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
-      var sqlStatement = builder.GetSqlStatement();
-
-      _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.SingleValueRequired))
-          .Return (sqlStatement.SelectProjection);
-      _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SqlTables[0], SqlExpressionContext.ValueRequired));
-      _stageMock.Replay();
-
-      var result = SqlContextStatementVisitor.ApplyContext (sqlStatement, SqlExpressionContext.SingleValueRequired, _stageMock);
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (result.SqlTables[0], Is.SameAs (sqlStatement.SqlTables[0]));
-    }
-
-    [Test]
     public void VisitSqlStatement_CopiesIsCountQueryFlag ()
     {
       var sqlStatementWithCook = SqlStatementModelObjectMother.CreateSqlStatementWithCook();

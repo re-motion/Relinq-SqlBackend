@@ -109,18 +109,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo (Expression previousSelectProjection)
     {
       if (SelectProjection.Type != previousSelectProjection.Type)
-        DataInfo = GetNewDataInfo (previousSelectProjection);
+        DataInfo = GetNewDataInfo ();
     }
 
-    private IStreamedDataInfo GetNewDataInfo (Expression previousSelectProjection)
+    private IStreamedDataInfo GetNewDataInfo ()
     {
-      var previousStreamedSequenceInfo = DataInfo as StreamedSequenceInfo;
-      if (previousStreamedSequenceInfo != null)
+      var sequenceInfo = DataInfo as StreamedSequenceInfo;
+      if (sequenceInfo != null)
         return new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (SelectProjection.Type), SelectProjection);
 
-      var previousSingleValueInfo = DataInfo as StreamedSingleValueInfo;
-      if (previousSingleValueInfo != null)
-        return new StreamedSingleValueInfo (SelectProjection.Type, previousSingleValueInfo.ReturnDefaultWhenEmpty);
+      var singleValueInfo = DataInfo as StreamedSingleValueInfo;
+      if (singleValueInfo != null)
+        return new StreamedSingleValueInfo (SelectProjection.Type, singleValueInfo.ReturnDefaultWhenEmpty);
 
       return DataInfo;
     }

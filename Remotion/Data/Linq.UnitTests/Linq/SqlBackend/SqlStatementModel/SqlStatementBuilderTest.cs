@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
@@ -166,6 +168,44 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var result = originalBuilder.GetStatementAndResetBuilder();
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
+    }
+
+    [Test]
+    public void RecalculateDataInfo_StreamedSequenceInfo ()
+    {
+      var previousSelectProjection = Expression.Constant (typeof (Restaurant));
+      _statementBuilder.SelectProjection = new SqlColumnExpression(typeof(string), "c", "Name", false);
+      _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (typeof (Restaurant)), Expression.Constant (new Restaurant()));
+      
+      _statementBuilder.RecalculateDataInfo(previousSelectProjection);
+
+      Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _statementBuilder.DataInfo).DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(string))));
+    }
+
+    [Test]
+    public void RecalculateDataInfo_StreamedSingleValueInfo ()
+    {
+      var previousSelectProjection = Expression.Constant ("test");
+      _statementBuilder.SelectProjection = new SqlColumnExpression (typeof (int), "c", "Length", false);
+      _statementBuilder.DataInfo = new StreamedSingleValueInfo (typeof(string), false);
+
+      _statementBuilder.RecalculateDataInfo (previousSelectProjection);
+
+      Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
+      Assert.That (((StreamedSingleValueInfo) _statementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
+    public void RecalculateDataInfo_SameDataInfo ()
+    {
+      var previousSelectProjection = Expression.Constant ("test");
+      _statementBuilder.SelectProjection = new SqlColumnExpression (typeof (int), "c", "Length", false);
+     
+      _statementBuilder.RecalculateDataInfo (previousSelectProjection);
+
+      Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
+      Assert.That (((TestStreamedValueInfo) _statementBuilder.DataInfo).DataType, Is.EqualTo(typeof (int)));
     }
   }
 }

@@ -76,14 +76,16 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      return ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this);
+      var resolvedTableInfo = ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this);
+      return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired);
     }
 
     public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      return ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this);
+      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this);
+      return (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired);
     }
 
     public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
@@ -143,11 +145,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return SqlContextStatementVisitor.ApplyContext (sqlStatement, context, this);
     }
 
-    public virtual void ApplyContext (SqlTableBase sqlTableBase, SqlExpressionContext context)
+    public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext context)
     {
-      ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      SqlContextTableVisitor.ApplyContext (sqlTableBase, context, this);
+      return SqlContextTableInfoVisitor.ApplyContext (tableInfo, context, this);
+    }
+
+    public virtual IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+
+      return SqlContextJoinInfoVisitor.ApplyContext (joinInfo, context, this);
     }
 
     protected virtual Expression ResolveExpression (Expression expression)
