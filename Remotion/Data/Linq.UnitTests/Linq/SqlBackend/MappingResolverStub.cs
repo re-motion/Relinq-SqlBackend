@@ -106,13 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      // TODO Review 2718: Don't leave commented code behind
-      //if (resolvedTableInfo is ResolvedSubStatementTableInfo &&
-      //    (tableReferenceExpression.Type == typeof (string) || (tableReferenceExpression.Type == typeof (int))
-      //     || (tableReferenceExpression.Type == typeof (object))))
-      //  return new SqlValueTableReferenceExpression (new SqlTable (resolvedTableInfo));
-      //else
-        return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
+      return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
@@ -279,7 +273,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo, "LetterOfRecommendation", false)
             });
       }
-      return null; // TODO Review 2718: throw an UnmappedItemExpression here
+      throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
     }
 
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)

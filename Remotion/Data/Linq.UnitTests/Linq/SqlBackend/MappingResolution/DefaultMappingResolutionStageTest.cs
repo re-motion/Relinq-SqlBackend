@@ -65,6 +65,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
           .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = _stage.ResolveSelectExpression (expression);
@@ -83,6 +86,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -104,6 +110,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
           .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = _stage.ResolveOrderingExpression (expression);
@@ -122,6 +131,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -189,6 +201,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
       Assert.That (((SqlTable) newSqlStatment.SqlTables[0]).TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
       Assert.That (newSqlStatment.SelectProjection, Is.SameAs (fakeEntityExpression));
+    }
+
+    [Test]
+    public void ResolveTableReferenceExpression ()
+    {
+      var expression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo(typeof (Cook)));
+
+      _resolverMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Return (expression);
+
+      var result = _stage.ResolveTableReferenceExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
     }
 
     [Test]
@@ -295,5 +321,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (joinInfo));
     }
+    
   }
 }

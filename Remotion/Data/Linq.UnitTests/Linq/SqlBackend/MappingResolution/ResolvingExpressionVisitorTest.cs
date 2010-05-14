@@ -57,10 +57,38 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay ();
 
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
+      _resolverMock.Replay();
+
       var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator, _stageMock);
 
-      Assert.That (result, Is.SameAs (fakeResult));
       _stageMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression_RevisitsResult ()
+    {
+      var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
+
+      _stageMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression))
+          .Return (fakeResult);
+      _stageMock.Replay ();
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
+      _resolverMock.Replay();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _generator, _stageMock);
+
+      _stageMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
     
     [Test]

@@ -322,35 +322,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result, Is.SameAs(sqlStatement.SelectProjection));
     }
-
-    // TODO Review 2718: belongs to SqlEntityExpressionTest, not SqlStatementTest
-    [Test]
-    public void Clone ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo(typeof (Cook));
-      var columns = new[]
-                   {
-                       new SqlColumnExpression (typeof (string), "c", "Name", false),
-                       new SqlColumnExpression (typeof (string), "c", "FirstName", false)
-                   };
-
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (int), "c", "ID", true), columns);
-      var newSqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("CookTable", "c1");
-
-      var expectedResult = new SqlEntityExpression (
-          newSqlTable,
-          new SqlColumnExpression (typeof (int), "c1", "ID", true),
-          new[]
-          {
-              new SqlColumnExpression (typeof (string), "c1", "Name", false),
-              new SqlColumnExpression (typeof (string), "c1", "FirstName", false)
-          });
-
-      var result = entityExpression.Clone (newSqlTable);
-
-      Assert.That (result.SqlTable, Is.SameAs (newSqlTable));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
     
   }
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -25,7 +26,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   public class SqlTableReferenceResolver : ITableInfoVisitor
   {
-    private Expression _expression;
+    private Expression _result;
+    private readonly SqlTableReferenceExpression _expression;
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
 
@@ -47,8 +49,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      // TODO Review 2718: don't store the expression, only store the SqlTable
-      // TODO 2719: As soon as SqlEntity is decoupled from SqlTable, don't store the SqlTable any longer
+      // TODO 2719: don't store the expression, only store the SqlTable
+      // TODO 2719: As soon as SqlEntity is decoupled from SqlTable, don't store the SqlTable(Expression) any longer
       _expression = expression;
       _generator = generator;
       _resolver = resolver;
@@ -60,13 +62,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       expression.SqlTable.GetResolvedTableInfo ().Accept (this);
 
-      return _expression; // TODO Review 2718: rename field to _result
+      return _result;
     }
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      // TODO Review 2718: Refactor ResolveTableReferenceExpression to take SimpleTableInfo instead of a SqlTableReferenceExpression, rename it to ResolveTableReference, don't forget to update the docs on IMappingResolver
-      _expression = _resolver.ResolveTableReferenceExpression ((SqlTableReferenceExpression) _expression, _generator);
+      // TODO 2719: Refactor ResolveTableReferenceExpression to take SimpleTableInfo instead of a SqlTableReferenceExpression, rename it to ResolveTableReference, don't forget to update the docs on IMappingResolver
+      _result = _resolver.ResolveTableReferenceExpression(_expression, _generator);
       return tableInfo;
     }
 
@@ -75,17 +77,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("subStatementTableInfo", subStatementTableInfo);
 
       var selectProjection = subStatementTableInfo.SqlStatement.SelectProjection;
-      var sqlTable = ((SqlTableReferenceExpression) _expression).SqlTable;
+      var sqlTable = _expression.SqlTable;
 
-      SqlEntityExpression innerSqlEntityExpression;
-      NamedExpression innerNamedExpression;
+      var innerSqlEntityExpression = selectProjection as SqlEntityExpression;
+      var innerNamedExpression = selectProjection as NamedExpression;
 
-      if ((innerSqlEntityExpression = selectProjection as SqlEntityExpression) != null)
-        _expression = innerSqlEntityExpression.Clone (sqlTable);
-      else if ((innerNamedExpression = selectProjection as  NamedExpression) != null) // TODO Review 2718: Use as and check for null for symmetry with the if above
-        _expression = new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, sqlTable.GetResolvedTableInfo ().TableAlias); // TODO Review 2718: use subStatementTableInfo.TableAlias
+      if (innerSqlEntityExpression != null)
+        _result = innerSqlEntityExpression.Clone (sqlTable);
+      else if (innerNamedExpression != null)
+        _result = new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
       else
-        throw new NotSupportedException ("The table projection for a referenced sub-statement must be named or an entity."); // TODO Review 2718: change to InvalidOperationException; NotSupportedException is for an unsupported feature/usage, here we have an invalid operation due to unsupported input data
+        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be named or an entity.");
       
       return subStatementTableInfo;
     }
