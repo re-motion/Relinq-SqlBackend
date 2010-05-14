@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -100,6 +102,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpressionAsEntityExpression = newExpression as SqlEntityExpression;
       if (newExpressionAsEntityExpression != null)
       {
+        var propertyInfoType = ((PropertyInfo) expression.Member).PropertyType;
+        if (typeof (IEnumerable).IsAssignableFrom (propertyInfoType) && propertyInfoType!=typeof(string))
+          throw new NotSupportedException (
+              "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.");
+        
         var sqlTable = newExpressionAsEntityExpression.SqlTable;
 
         var resolvedMemberExpression = _resolver.ResolveMemberExpression (sqlTable, expression.Member, _generator);

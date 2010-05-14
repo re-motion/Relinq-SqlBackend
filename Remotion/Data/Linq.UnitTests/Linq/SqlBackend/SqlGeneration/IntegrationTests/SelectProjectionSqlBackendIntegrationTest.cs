@@ -82,8 +82,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.")]
-    // TODO Review 2705: This code currently throws an UnmappedItemException. Catch that situation in ResolvingExpressionVisitor.ResolveMemberExpression (member applied to entity part): if the member implements IEnumerable (and is no string), throw an exception
-    [Ignore ("TODO 2705")]
     public void Collection_ThrowsNotSupportedException ()
     {
       CheckQuery (

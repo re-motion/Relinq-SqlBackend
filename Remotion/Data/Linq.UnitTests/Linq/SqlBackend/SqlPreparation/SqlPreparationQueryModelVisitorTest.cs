@@ -102,12 +102,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result.SqlTables.Count, Is.EqualTo (2));
     }
 
-    // TODO Review 2705: The following two tests are for VisitQueryModel, not VisitMainFromClause - rename them
     [Test]
-    public void VisitMainFromClause_ConstantExpression_Collection ()
+    public void VisitQueryModel_ConstantExpression_Collection ()
     {
       var constantExpression = Expression.Constant (new [] { "t1", "t2" });
-      _queryModel.MainFromClause.FromExpression = constantExpression; // TODO Review 2705: Consider creating a new, representative query model (here and in the other constant tests), maybe with a helper method in ExpressionHelper. In this query model here, the SelectProjection (and DataInfo) doesn't really match the new MainFromClause.
+      _queryModel.MainFromClause.FromExpression = constantExpression;
 
       _visitor.VisitQueryModel (_queryModel);
 
@@ -120,10 +119,37 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
     }
 
-    // TODO Review 2705: Add a test showing that result operators are still handled even when a ConstantExpression_Collection is stored in the query model. (This tests that VisitResultOperators is called from the if statement.)
+    [Test]
+    public void VisitQueryModel_ConstantExpressionCollection_VisitResultOperatorsIsCalled ()
+    {
+      var handlerMock = MockRepository.GenerateStrictMock<IResultOperatorHandler> ();
+      ResultOperatorHandlerRegistry registry = new ResultOperatorHandlerRegistry ();
+      registry.Register (typeof (TestChoiceResultOperator), handlerMock);
+      var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
+
+      var constantExpression = Expression.Constant (new[] { "t1", "t2" });
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+      var resultOperator = new TestChoiceResultOperator (false);
+      _queryModel.ResultOperators.Add (resultOperator);
+      var sqlStatementBuilder = queryModelVisitor.SqlStatementBuilder;
+      
+      handlerMock.Expect (
+          mock =>
+          mock.HandleResultOperator (
+              Arg<ResultOperatorBase>.Matches (o => o == resultOperator),
+              Arg<SqlStatementBuilder>.Matches (sb => sb == sqlStatementBuilder),
+              Arg<UniqueIdentifierGenerator>.Matches (g => g == _generator),
+              Arg<ISqlPreparationStage>.Matches (s => s == _stageMock),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context)));
+      handlerMock.Replay ();
+
+      queryModelVisitor.VisitQueryModel (_queryModel);
+
+      handlerMock.VerifyAllExpectations();
+    }
 
     [Test]
-    public void VisitMainFromClause_ConstantExpression_NoCollection ()
+    public void VisitQueryModel_ConstantExpression_NoCollection ()
     {
       var constantExpression = Expression.Constant ("test");
       _queryModel.MainFromClause.FromExpression = constantExpression;
