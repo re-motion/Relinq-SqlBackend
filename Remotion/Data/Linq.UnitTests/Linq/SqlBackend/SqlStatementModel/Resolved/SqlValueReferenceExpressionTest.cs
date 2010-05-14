@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlValueReferenceExpression, IResolvedSqlExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlValueTableReferenceExpression (_expression));
+          mock => mock.VisitSqlValueReferenceExpression (_expression));
     }
 
     [Test]

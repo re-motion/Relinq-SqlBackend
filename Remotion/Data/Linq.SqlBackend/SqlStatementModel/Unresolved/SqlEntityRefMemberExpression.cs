@@ -30,12 +30,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   {
     private readonly SqlTableBase _sqlTable;
     private readonly MemberInfo _memberInfo;
-
+    
     public SqlEntityRefMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo)
       : base (ReflectionUtility.GetFieldOrPropertyType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      
 
       _sqlTable = sqlTable;
       _memberInfo = memberInfo;

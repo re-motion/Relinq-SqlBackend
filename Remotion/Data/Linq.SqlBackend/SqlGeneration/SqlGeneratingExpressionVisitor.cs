@@ -94,13 +94,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlValueTableReferenceExpression (SqlValueReferenceExpression expression)
+    public Expression VisitSqlValueReferenceExpression (SqlValueReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2720: should use the name from the expression; "value" should be used if expression.Name is null
-      // TODO Review 2720: use two tests; one with a non-null name different from "value"; one with a null name
-      var columnExpression = new SqlColumnExpression (expression.Type, expression.Alias, "value", false);
+      var columnExpression = new SqlColumnExpression (expression.Type, expression.TableAlias, expression.Name ?? "value", false);
       return VisitExpression (columnExpression);
     }
 

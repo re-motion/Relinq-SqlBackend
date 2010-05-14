@@ -145,9 +145,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       var newExpression = VisitExpression (expression.Expression);
-      // TODO Review 2720: refactor SqlEntityRefMemberExpression to get a name property; if newExpression is a SqlEntityRefMemberExpression, return a new SqlEntityRefMemberExpression with the name taken from the NamedExpression
-      if (newExpression is SqlEntityExpression || newExpression is SqlEntityRefMemberExpression)
+      if (newExpression is SqlEntityExpression)
         return newExpression;
+      if (newExpression is SqlEntityRefMemberExpression)
+        return new SqlEntityRefMemberExpression (
+            ((SqlEntityRefMemberExpression) newExpression).SqlTable, ((SqlEntityRefMemberExpression) newExpression).MemberInfo);
       if (newExpression != expression.Expression)
         return new NamedExpression (expression.Name, newExpression);
       return expression;

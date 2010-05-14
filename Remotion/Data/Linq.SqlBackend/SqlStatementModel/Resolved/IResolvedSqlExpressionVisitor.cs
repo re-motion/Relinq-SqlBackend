@@ -26,6 +26,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   {
     Expression VisitSqlEntityExpression (SqlEntityExpression expression);
     Expression VisitSqlColumnExpression (SqlColumnExpression expression);
-    Expression VisitSqlValueTableReferenceExpression (SqlValueReferenceExpression expression); // TODO Review 2720: Rename to VisitSqlValueReferenceExpression
+    Expression VisitSqlValueReferenceExpression (SqlValueReferenceExpression expression);
  }
 }

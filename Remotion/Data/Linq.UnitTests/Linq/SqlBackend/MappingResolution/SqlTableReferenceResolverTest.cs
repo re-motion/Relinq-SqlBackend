@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
       Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
-      Assert.That (((SqlValueReferenceExpression) result).Alias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (sqlTable.ItemType));
     }
     

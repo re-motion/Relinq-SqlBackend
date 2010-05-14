@@ -137,11 +137,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var preparedExpression = _stage.PrepareSelectExpression (selectClause.Selector, _context);
-      if (preparedExpression is SqlTableReferenceExpression)
-        preparedExpression = new NamedExpression (null, preparedExpression); // TODO Review 2720: remove if clause, always use null - that's our "default " name
-      else
-        preparedExpression = new NamedExpression ("value", preparedExpression);
-
+      preparedExpression = new NamedExpression (null, preparedExpression);
+      
       SqlStatementBuilder.SelectProjection = preparedExpression;
       SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();
     }

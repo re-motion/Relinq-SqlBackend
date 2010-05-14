@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (innerSqlEntityExpression != null)
         _result = innerSqlEntityExpression.Clone (sqlTable);
       else if (innerNamedExpression != null)
-        _result = new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+        _result = new SqlValueReferenceExpression(sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
       else
         throw new InvalidOperationException ("The table projection for a referenced sub-statement must be named or an entity.");
       

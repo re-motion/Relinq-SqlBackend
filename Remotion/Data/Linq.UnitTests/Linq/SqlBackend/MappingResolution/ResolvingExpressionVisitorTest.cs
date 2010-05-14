@@ -23,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -243,7 +244,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var constantExpression = Expression.Constant (5);
       var namedExpression = new NamedExpression("test", constantExpression);
-      var fakeResult = new SqlEntityRefMemberExpression(SqlStatementModelObjectMother.CreateSqlTable(typeof(Cook)), typeof(Cook).GetProperty("Substitution"));
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof(Cook));
+      var memberInfo = typeof(Cook).GetProperty("Substitution");
+      var fakeResult = new SqlEntityRefMemberExpression(sqlTable, memberInfo);
+      var expectedResult = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
@@ -253,7 +257,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult)); // TODO 2719: After refactoring of SqlEntityRefExpression, compare with an expected expression here
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -270,10 +274,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
 
       _resolverMock.VerifyAllExpectations ();
-      // TODO Review 2720: Assert.That (result, Is.SameAs (namedExpression));
-      // TODO Review 2720: Add a second test where the Resolve method does not return the same expression, but a new one. compare against an expected expression (new NamedExpression (namedExpression.Name, newExpression))
+      Assert.That (result, Is.SameAs (namedExpression));
       Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) result).Name, Is.EqualTo(namedExpression.Name));
+    }
+
+    [Test]
+    public void VisitNamedExpression_NoSqlEntityExpressionAndNoSqlEntityRefMemberExpression_ReturnsDifferentNamedExpression ()
+    {
+      var constantExpression = Expression.Constant (5);
+      var namedExpression = new NamedExpression ("test", constantExpression);
+      var fakeResult = Expression.Constant ("test");
+      var expectedResult = new NamedExpression (namedExpression.Name, fakeResult);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
+
+      _resolverMock.VerifyAllExpectations ();
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

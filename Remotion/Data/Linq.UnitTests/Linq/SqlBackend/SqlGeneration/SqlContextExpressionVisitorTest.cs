@@ -640,6 +640,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlContextExpressionVisitor.ApplySqlExpressionContext (entityRefMemberExpression, SqlExpressionContext.PredicateRequired, _stageMock);
     }
 
+    [Test]
+    public void VisitNamedExpression_NoSqlEntityExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var expression = new NamedExpression ("test", Expression.Constant ("test"));
+
+      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
+
+      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
+    }
+    
     public static bool FakeAndOperator (bool operand1, bool operand2)
     {
       throw new NotImplementedException();

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -36,7 +35,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// and boolean columns are interpreted as integer values. In scenarios where a predicate is required, boolean expressions are constructed by 
   /// comparing those integer values to 1 and 0 literals.
   /// </remarks>
-  public class SqlContextExpressionVisitor : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
+  public class SqlContextExpressionVisitor
+      : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor, INamedExpressionVisitor
   {
     public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage)
     {
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     }
 
     private readonly SqlExpressionContext _currentContext;
-    
+
     private bool _isTopLevelExpression;
     private readonly IMappingResolutionStage _stage;
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
     }
-     
+
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       // Always convert boolean constants to int constants because in the database, there are no boolean constants
@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       if (left != expression.Left || right != expression.Right)
         expression = Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
-      
+
       return expression;
     }
 
@@ -172,8 +172,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if(_currentContext==SqlExpressionContext.SingleValueRequired)
-        return Expression.Constant (expression.PrimaryKeyValue, expression.PrimaryKeyValue.GetType ());
+      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+        return Expression.Constant (expression.PrimaryKeyValue, expression.PrimaryKeyValue.GetType());
       return expression;
     }
 
@@ -195,15 +195,27 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       switch (_currentContext)
       {
         case SqlExpressionContext.ValueRequired:
-          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo); // TODO 2719: Later, the entity's name should be set from the entity ref
+          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo);
         case SqlExpressionContext.SingleValueRequired:
           var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
-          if (columnExpression!=null && columnExpression.IsPrimaryKey)
-            return resolvedJoinInfo.LeftKey; // TODO Review 2720: return a NamedExpression with the entity ref's name containing the key here
+          if (columnExpression != null && columnExpression.IsPrimaryKey)
+            return resolvedJoinInfo.LeftKey;
           else
-            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn; // TODO Review 2720: return a NamedExpression here as well
+            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn;
       }
-      throw new NotSupportedException (string.Format("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
+      throw new NotSupportedException (string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
+    }
+
+    public Expression VisitNamedExpression (NamedExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newExpression = VisitExpression (expression.Expression);
+
+      if (newExpression is SqlEntityExpression)
+        return expression.Expression;
+      else
+        return new NamedExpression(expression.Name, newExpression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
@@ -211,7 +223,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitUnknownExpression (expression);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlValueTableReferenceExpression (SqlValueReferenceExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlValueReferenceExpression (SqlValueReferenceExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
@@ -240,7 +252,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       return VisitUnknownExpression (expression);
     }
-    
+
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)
     {
       switch (expressionType)
@@ -271,7 +283,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression HandleSingleValueSemantics (Expression expression)
     {
       _isTopLevelExpression = false;
-      
+
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool))
         return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -282,8 +294,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression HandleValueSemantics (Expression expression)
     {
       if (!_isTopLevelExpression)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired,_stage);
-      
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
+
       _isTopLevelExpression = false;
 
       var newExpression = base.VisitExpression (expression);
@@ -297,9 +309,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       if (!_isTopLevelExpression)
         return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
-      
+
       _isTopLevelExpression = false;
-      
+
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool))
         return newExpression;

@@ -375,7 +375,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (preparedExpression));
-      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Name, Is.EqualTo("value"));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Name, Is.Null);
       Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (_selectClause.GetOutputDataInfo().DataType));
     }

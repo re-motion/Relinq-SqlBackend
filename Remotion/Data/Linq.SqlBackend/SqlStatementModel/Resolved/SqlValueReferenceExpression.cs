@@ -28,16 +28,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   public class SqlValueReferenceExpression : ExtensionExpression
   {
     private readonly string _name;
-    private readonly string _alias;
+    private readonly string _tableAlias;
 
-    public SqlValueReferenceExpression (Type type, string name, string alias)
+    public SqlValueReferenceExpression (Type type, string name, string tableAlias)
         : base(type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("alias", alias);
+      ArgumentUtility.CheckNotNull ("alias", tableAlias);
 
       _name = name;
-      _alias = alias;
+      _tableAlias = tableAlias;
     }
 
     public string Name
@@ -45,10 +45,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _name; }
     }
 
-    // TODO Review 2720: rename to TableAlias for symmetry with ITableInfo
-    public string Alias
+    public string TableAlias
     {
-      get { return _alias; }
+      get { return _tableAlias; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -60,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlValueTableReferenceExpression (this);
+        return specificVisitor.VisitSqlValueReferenceExpression (this);
       else
         return base.Accept (visitor);
     }
