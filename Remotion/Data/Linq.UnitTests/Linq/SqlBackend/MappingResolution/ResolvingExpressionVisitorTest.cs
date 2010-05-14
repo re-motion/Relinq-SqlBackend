@@ -253,7 +253,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock);
 
       _resolverMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult)); // TODO Review 2718: After refactoring of SqlEntityRefExpression, compare with an expected expression here
+      Assert.That (result, Is.SameAs (fakeResult)); // TODO 2719: After refactoring of SqlEntityRefExpression, compare with an expected expression here
     }
 
     [Test]

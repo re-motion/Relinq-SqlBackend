@@ -23,6 +23,7 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -109,12 +110,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).Clone (sqlTable);
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlEntityExpression)));
-      Assert.That (((SqlEntityExpression) result).SqlTable, Is.SameAs (sqlTable));
-      // TODO Review 2718: check column
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
