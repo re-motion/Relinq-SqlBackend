@@ -79,7 +79,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // stage, we should refactor this into an UnresolvedSubStatemenTableInfo. (Of course, the statement inside the ResolvedSubStatementTableInfo is 
       // resolved anyway.)
 
-      var type = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "expression");
       var tableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), expression.SqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       return new SqlTableReferenceExpression (sqlTable);
