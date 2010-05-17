@@ -59,17 +59,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.DataInfo, Is.SameAs (sqlStatement.DataInfo));
     }
 
-    // TODO Review 2765: only select projection needed for this test
     [Test]
     public void VisitSqlStatement_ExpressionsAndStreamedSequenceDataTypeChanged ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
-      var topExpression = Expression.Constant ("top");
-      builder.TopExpression = topExpression;
-      var whereCondition = Expression.Constant (true);
-      builder.WhereCondition = whereCondition;
-      var orderingExpression = Expression.Constant ("ordering");
-      builder.Orderings.Add (new Ordering (orderingExpression, OrderingDirection.Asc));
       builder.DataInfo = new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (builder.SelectProjection.Type), builder.SelectProjection);
       var sqlStatement = builder.GetSqlStatement();
 
@@ -85,35 +78,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
-      Assert.That (result.WhereCondition, Is.SameAs (whereCondition));
-      Assert.That (result.TopExpression, Is.SameAs (topExpression));
-      Assert.That (result.Orderings[0].Expression, Is.SameAs (orderingExpression));
-      Assert.That (result.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) result.DataInfo).ItemExpression.Type, Is.EqualTo (typeof (string)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (fakeResult.Type)));
     }
 
     [Test]
-    public void VisitSqlStatement_CopiesIsCountQueryFlag () // TODO Review 2765: there is no count flag any more, remove test
-    {
-      var sqlStatementWithCook = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
-      var builder = new SqlStatementBuilder (sqlStatementWithCook)
-                    { SelectProjection = new AggregationExpression(typeof(int), sqlStatementWithCook.SelectProjection, AggregationModifier.Count) };
-      var sqlStatement = builder.GetSqlStatement();
-
-      _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
-          .Return (sqlStatement.SelectProjection);
-      _stageMock.Replay();
-
-      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
-
-      Assert.That (((AggregationExpression) result.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Count));
-    }
-
-    [Test]
-    public void VisitSqlStatement_CopiesIsDistinctQueryFlag () // TODO Review 2765: write one test that checks that everything is copied (all expressions + flags) when the select expression is changed
+    public void VisitSqlStatement_CopiesIsDistinctQueryFlag ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook()) { IsDistinctQuery = true };
       var sqlStatement = builder.GetSqlStatement();
@@ -126,6 +97,45 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
 
       _stageMock.VerifyAllExpectations();
+      Assert.That (result.IsDistinctQuery, Is.True);
+    }
+
+    [Test]
+    public void VisitSqlStatement_EverthingIsCopiedIfSelectionProjectionHasChanged ()
+    {
+      var selectProjection = Expression.Constant("select");
+      var whereCondition = Expression.Constant(true);
+      var topExpression = Expression.Constant("top");
+      var dataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()));
+      var builder = new SqlStatementBuilder () 
+      {  
+        SelectProjection = selectProjection,
+        WhereCondition = whereCondition,
+        TopExpression = topExpression,
+        IsDistinctQuery = true,
+        DataInfo = dataInfo
+      };
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      builder.SqlTables.Add (sqlTable);
+      var ordering = new Ordering (Expression.Constant ("order"),OrderingDirection.Asc);
+      builder.Orderings.Add (ordering);
+      var sqlStatement = builder.GetSqlStatement();
+      var fakeResult = Expression.Constant ("fake");
+
+      _stageMock
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Return (fakeResult);
+      _stageMock.Replay ();
+
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
+      Assert.That (result.DataInfo, Is.SameAs (dataInfo));
+      Assert.That (result.WhereCondition, Is.SameAs (whereCondition));
+      Assert.That (result.TopExpression, Is.SameAs (topExpression));
+      Assert.That (result.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (result.Orderings[0], Is.SameAs (ordering));
       Assert.That (result.IsDistinctQuery, Is.True);
     }
 

@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -54,14 +55,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stage = new DefaultMappingResolutionStage (_resolverMock, _uniqueIdentifierGenerator);
     }
 
-    // TODO Review 2765: test that each of the Resolve methods perform the context application by returning an expression that will be changed by the context visitor (the test for ResolveWhereExpression already does this)
-
     [Test]
     public void ResolveSelectExpression ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var fakeResult = Expression.Constant (0);
+      var fakeResult = Expression.Constant (true);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
@@ -75,7 +74,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations();
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.TypeOf(typeof(ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(1));
     }
 
     [Test]
@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var fakeResult = Expression.Constant (0);
+      var fakeResult = Expression.Constant (true);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
@@ -120,7 +120,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations();
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (1));
     }
 
     [Test]
@@ -128,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var fakeResult = Expression.Constant (0);
+      var fakeResult = Expression.Constant (true);
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
@@ -142,21 +143,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations();
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (1));
     }
 
     [Test]
     public void ResolveTableInfo ()
     {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        DataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()))
+
+      }.GetSqlStatement();
+      var fakeResolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
+
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
-          .Return (_fakeResolvedSimpleTableInfo);
+          .Return (fakeResolvedSubStatementTableInfo);
       _resolverMock.Replay();
 
       var result = _stage.ResolveTableInfo (_sqlTable.TableInfo);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (_fakeResolvedSimpleTableInfo));
+      Assert.That (result, Is.Not.SameAs (fakeResolvedSubStatementTableInfo));
     }
 
     [Test]
@@ -302,26 +311,39 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlColumnExpression)));
     }
 
-    // TODO Review 2765: For the following two tests, use an input that actually changes (e.g., a subquery with entities and SingleValueRequired)
     [Test]
     public void ApplyContext_TableInfo ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+                         {
+                           SelectProjection = Expression.Constant(true),
+                           DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                         }.GetSqlStatement();
+      var tableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
       
       var result = _stage.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired);
 
-      Assert.That (result, Is.SameAs(tableInfo));
+      Assert.That (result, Is.Not.SameAs(tableInfo));
+      Assert.That (((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection, Is.TypeOf(typeof(ConstantExpression)));
+      Assert.That (((ConstantExpression) ((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection).Value, Is.EqualTo(1));
     }
 
     [Test]
     public void ApplyContext_JoinInfo ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        SelectProjection = Expression.Constant (true),
+        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
       var joinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
 
       var result = _stage.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired);
 
-      Assert.That (result, Is.SameAs (joinInfo));
+      Assert.That (result, Is.Not.SameAs(joinInfo));
+      Assert.That (((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection).Value, Is.EqualTo (1));
     }
     
   }

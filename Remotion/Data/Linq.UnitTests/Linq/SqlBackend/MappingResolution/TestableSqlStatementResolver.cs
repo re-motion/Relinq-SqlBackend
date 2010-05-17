@@ -57,5 +57,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       base.ResolveJoinedTable (joinedTable);
     }
+
+    public new SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
+    {
+      return base.ResolveSqlStatement (sqlStatement);
+    }
   }
 }

@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -41,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
+      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage>();
 
       _visitor = new TestableSqlStatementResolver (_stageMock);
 
@@ -260,7 +263,52 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (joinedTable.JoinInfo, Is.SameAs (fakeJoinInfo));
     }
 
-    // TODO Review 2765: Add a test showing that ResolveSqlStatement correctly recalculates the DataInfo
-    // TODO Review 2765: Also, there don't seem to be any tests for the ResolveSqlStatement method?
+    [Test]
+    public void ResolveSqlStatement ()
+    {
+      var constantExpression = Expression.Constant(new Restaurant());
+      var whereCondition = Expression.Constant(true);
+      var topExpression = Expression.Constant("top");
+      var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Desc);
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+                                {
+                                    SelectProjection = constantExpression,
+                                    DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
+                                    WhereCondition = whereCondition,
+                                    TopExpression = topExpression,
+                                };
+      builder.Orderings.Add (ordering);
+      var sqlStatement = builder.GetSqlStatement();
+      var fakeExpression = Expression.Constant (new Cook());
+
+      _stageMock
+          .Expect (mock => mock.ResolveSelectExpression (constantExpression))
+          .Return (fakeExpression);
+      _stageMock
+          .Expect (mock => mock.ResolveWhereExpression(whereCondition))
+          .Return (whereCondition);
+      _stageMock
+          .Expect (mock => mock.ResolveTopExpression(topExpression))
+          .Return (topExpression);
+      _stageMock
+          .Expect (mock => mock.ResolveOrderingExpression(ordering.Expression))
+          .Return (ordering.Expression);
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo(((SqlTable) sqlStatement.SqlTables[0]).TableInfo))
+          .Return (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"));
+      _stageMock.Replay();
+
+      var resolveSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (resolveSqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) resolveSqlStatement.DataInfo).DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(Cook))));
+      Assert.That (resolveSqlStatement.SelectProjection, Is.SameAs(fakeExpression));
+      Assert.That (resolveSqlStatement.WhereCondition, Is.SameAs (whereCondition));
+      Assert.That (resolveSqlStatement.TopExpression, Is.SameAs (topExpression));
+      Assert.That (resolveSqlStatement.Orderings[0].Expression, Is.SameAs (ordering.Expression));
+   }
+  
+
   }
 }
