@@ -26,27 +26,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
   /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
   /// </summary>
-  public class AverageResultOperatorHandler : ResultOperatorHandler<AverageResultOperator>
+  public class AverageResultOperatorHandler : AggregationResultOperatorHandler<AverageResultOperator>
   {
-    public override void HandleResultOperator (
-        AverageResultOperator resultOperator,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage,
-        ISqlPreparationContext context)
+    public override AggregationModifier AggregationModifier
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
-      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-
-      sqlStatementBuilder.SelectProjection = new AggregationExpression (
-          sqlStatementBuilder.DataInfo.DataType, sqlStatementBuilder.SelectProjection, AggregationModifier.Average);
+      get { return AggregationModifier.Average; }
     }
   }
 }

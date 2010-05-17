@@ -16,21 +16,20 @@
 // 
 using System;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
-  /// <summary>
-  /// Handles the <see cref="SumResultOperator"/>. When the <see cref="SumResultOperator"/> occurs after a 
-  /// <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
-  /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
-  /// </summary>
-  public class SumResultOperatorHandler : AggregationResultOperatorHandler<SumResultOperator>
+  public class TestableAggregationResultOperatorHandler : AggregationResultOperatorHandler<MaxResultOperator>
   {
+    public TestableAggregationResultOperatorHandler ()
+    {
+    }
+
     public override AggregationModifier AggregationModifier
     {
-      get { return AggregationModifier.Sum; }
+      get { return AggregationModifier.Max; }
     }
   }
 }
