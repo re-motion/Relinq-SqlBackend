@@ -187,7 +187,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var selectProjectionWithCountAggregation = new AggregationExpression(selectProjection, AggregationModifier.Count);
+      var selectProjectionWithCountAggregation = new AggregationExpression(typeof(int), selectProjection, AggregationModifier.Count);
       
       var sqlStatement1 = new SqlStatement (
           dataInfo, selectProjectionWithCountAggregation, new SqlTable[] { }, new Ordering[] { }, null, null, false);
@@ -288,7 +288,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ());
       sqlStatementBuilder.SqlTables.Clear();
-      var selectProjection = new AggregationExpression(sqlStatementBuilder.SelectProjection, AggregationModifier.Max);
+      var selectProjection = new AggregationExpression(typeof(double ), sqlStatementBuilder.SelectProjection, AggregationModifier.Max);
       sqlStatementBuilder.SelectProjection = selectProjection;
       var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
 

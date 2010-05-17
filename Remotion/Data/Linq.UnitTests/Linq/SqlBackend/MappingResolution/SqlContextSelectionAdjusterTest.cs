@@ -99,7 +99,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatementWithCook = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var builder = new SqlStatementBuilder (sqlStatementWithCook)
-                    { SelectProjection = new AggregationExpression(sqlStatementWithCook.SelectProjection, AggregationModifier.Count) };
+                    { SelectProjection = new AggregationExpression(typeof(int), sqlStatementWithCook.SelectProjection, AggregationModifier.Count) };
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock

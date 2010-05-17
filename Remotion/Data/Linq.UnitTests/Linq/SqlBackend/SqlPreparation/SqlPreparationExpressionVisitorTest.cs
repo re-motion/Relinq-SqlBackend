@@ -142,7 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
       var fakeSqlStatementBuilder = new SqlStatementBuilder (sqlStatement)
                                     {
-                                        SelectProjection = new AggregationExpression (sqlStatement.SelectProjection, AggregationModifier.Count)
+                                        SelectProjection = new AggregationExpression (typeof(int), sqlStatement.SelectProjection, AggregationModifier.Count)
                                     };
 
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();

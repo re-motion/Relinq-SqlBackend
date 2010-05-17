@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithCount ()
     {
-      var aggregationExpression = new AggregationExpression(_entityExpression,AggregationModifier.Count);
+      var aggregationExpression = new AggregationExpression(typeof(int), _entityExpression,AggregationModifier.Count);
       var sqlStatement =
           new SqlStatementBuilder
           {
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithAverage ()
     {
-      var aggregationExpression = new AggregationExpression(_namedExpression, AggregationModifier.Average);
+      var aggregationExpression = new AggregationExpression(typeof(double), _namedExpression, AggregationModifier.Average);
       var sqlStatement =
           new SqlStatementBuilder
           {
@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithSum ()
     {
-      var aggregationExpression = new AggregationExpression( _namedExpression, AggregationModifier.Sum);
+      var aggregationExpression = new AggregationExpression(typeof(double), _namedExpression, AggregationModifier.Sum);
       var sqlStatement =
           new SqlStatementBuilder
           {
@@ -177,7 +177,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithMin ()
     {
-      var aggregationExpression = new AggregationExpression( _namedExpression, AggregationModifier.Min);
+      var aggregationExpression = new AggregationExpression(typeof(int), _namedExpression, AggregationModifier.Min);
       var sqlStatement =
           new SqlStatementBuilder
           {
@@ -198,7 +198,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void BuildSelectPart_WithMax ()
     {
-      var aggregationExpression = new AggregationExpression(_namedExpression,AggregationModifier.Max);
+      var aggregationExpression = new AggregationExpression(typeof(int), _namedExpression,AggregationModifier.Max);
       var sqlStatement =
           new SqlStatementBuilder
           {

@@ -28,7 +28,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class SumResultOperatorHandler : ResultOperatorHandler<SumResultOperator>
   {
-    public override void HandleResultOperator (SumResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    public override void HandleResultOperator (
+        SumResultOperator resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -41,7 +46,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.SelectProjection = new AggregationExpression(sqlStatementBuilder.SelectProjection, AggregationModifier.Sum);
+      sqlStatementBuilder.SelectProjection = new AggregationExpression (
+          sqlStatementBuilder.DataInfo.DataType, sqlStatementBuilder.SelectProjection, AggregationModifier.Sum);
     }
   }
 }

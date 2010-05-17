@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void SetUp ()
     {
       _wrappedExpression = Expression.Constant (1);
-      _aggregationEpression = new AggregationExpression(_wrappedExpression, AggregationModifier.Max);
+      _aggregationEpression = new AggregationExpression(typeof(int), _wrappedExpression, AggregationModifier.Max);
     }
 
     [Test]

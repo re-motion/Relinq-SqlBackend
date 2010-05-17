@@ -326,7 +326,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", expression.AggregationModifier));
 
       _commandBuilder.Append ("(");
-      // TODO Review 2760: The aggregation handlers should unwrap the NamedExpressions given to them and put themselves into new NamedExpressions (with the names of the old ones). They can assume that the SelectExpression they wrap is always a NamedExpression; they can throw an exception if that isn't so. Extract a base class for AggregationResultOperatorHandlers to group common functionality - implement HandleResultOperator as a template method that uses an abstract AggregationModifier property that is overridden by each concrete handler
+      // TODO Review 2760: The aggregation handlers should unwrap the NamedExpressions given to them and put themselves into new NamedExpressions (with the names of the old ones). 
+      //They can assume that the SelectExpression they wrap is always a NamedExpression; they can throw an exception if that isn't so. 
+      //Extract a base class for AggregationResultOperatorHandlers to group common functionality - 
+      //implement HandleResultOperator as a template method that uses an abstract AggregationModifier property that is overridden by each concrete handler
       var namedExpression = expression.Expression as NamedExpression;
       VisitExpression (namedExpression!=null ? namedExpression.Expression : expression.Expression);
       _commandBuilder.Append (")");

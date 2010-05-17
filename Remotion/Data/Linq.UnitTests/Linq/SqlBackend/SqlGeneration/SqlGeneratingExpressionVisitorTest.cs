@@ -469,7 +469,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitAggregationExpression_Max ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
-      var expression = new AggregationExpression(columnExpression, AggregationModifier.Max);
+      var expression = new AggregationExpression(typeof(int), columnExpression, AggregationModifier.Max);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
@@ -480,7 +480,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitAggregationExpression_Min ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
-      var expression = new AggregationExpression (columnExpression, AggregationModifier.Min);
+      var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Min);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
@@ -491,7 +491,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitAggregationExpression_Sum ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
-      var expression = new AggregationExpression (columnExpression, AggregationModifier.Sum);
+      var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Sum);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
@@ -502,7 +502,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitAggregationExpression_Average ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
-      var expression = new AggregationExpression (columnExpression, AggregationModifier.Average);
+      var expression = new AggregationExpression (typeof(double), columnExpression, AggregationModifier.Average);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
@@ -513,7 +513,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitAggregationExpression_Count ()
     {
       var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
-      var expression = new AggregationExpression (columnExpression, AggregationModifier.Count);
+      var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Count);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 

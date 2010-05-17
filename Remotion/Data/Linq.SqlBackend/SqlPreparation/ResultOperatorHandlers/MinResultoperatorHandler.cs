@@ -28,7 +28,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class MinResultOperatorHandler : ResultOperatorHandler<MinResultOperator>
   {
-    public override void HandleResultOperator (MinResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    public override void HandleResultOperator (
+        MinResultOperator resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -40,7 +45,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.SelectProjection = new AggregationExpression(sqlStatementBuilder.SelectProjection, AggregationModifier.Min);
+      sqlStatementBuilder.SelectProjection = new AggregationExpression (
+          sqlStatementBuilder.DataInfo.DataType, sqlStatementBuilder.SelectProjection, AggregationModifier.Min);
     }
   }
 }

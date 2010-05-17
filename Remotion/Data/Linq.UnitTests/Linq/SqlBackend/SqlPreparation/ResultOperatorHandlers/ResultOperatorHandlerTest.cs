@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement;
 
       Assert.That (subStatement, Is.EqualTo (originalStatement));
-      // TODO Review 2760: check name of SelectProjection (null)
+      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Name, Is.Null);
       Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) ((NamedExpression) _statementBuilder.SelectProjection).Expression).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
 

@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void GetSqlStatement_CheckProperties ()
     {
-      var selectProjection = new AggregationExpression(Expression.Constant ("select"),AggregationModifier.Min);
+      var selectProjection = new AggregationExpression(typeof(int), Expression.Constant (1),AggregationModifier.Min);
       var whereCondition = Expression.Constant (true);
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
@@ -150,13 +150,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.False);
       Assert.That (((AggregationExpression) sqlStatement.SelectProjection).AggregationModifier, Is.EqualTo(AggregationModifier.Min));
+      Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo(typeof(int)));
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
     }
 
     [Test]
     public void GetStatementAndResetBuilder ()
     {
-      var selectProjection = new AggregationExpression(Expression.Constant ("select"),AggregationModifier.Count);
+      var selectProjection = new AggregationExpression(typeof(int), Expression.Constant ("select"),AggregationModifier.Count);
       var originalBuilder = new SqlStatementBuilder
                             {
                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),

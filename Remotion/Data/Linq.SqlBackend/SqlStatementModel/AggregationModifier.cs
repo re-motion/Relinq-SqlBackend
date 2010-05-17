@@ -23,7 +23,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public enum AggregationModifier
   {
-    None, // TODO Review 2760: can now be removed
     Count,
     Sum,
     Average,
