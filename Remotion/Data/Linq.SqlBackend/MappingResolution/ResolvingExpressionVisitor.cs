@@ -142,14 +142,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return new SqlSubStatementExpression (newSqlStatement);
     }
 
+    // TODO: Probably, this method can be removed because context visitor performs the same afterwards
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       var newExpression = VisitExpression (expression.Expression);
+      
       if (newExpression is SqlEntityExpression)
-        return newExpression;
-      if (newExpression is SqlEntityRefMemberExpression)
-        return new SqlEntityRefMemberExpression (
-            ((SqlEntityRefMemberExpression) newExpression).SqlTable, ((SqlEntityRefMemberExpression) newExpression).MemberInfo);
+        return newExpression; // becomes: return ((SqlEntityExpression) newExpression).Update (expression.Name, ...)
+
+      //if (newExpression is SqlEntityRefMemberExpression)
+      //  return new SqlEntityRefMemberExpression (
+      //      ((SqlEntityRefMemberExpression) newExpression).SqlTable, ((SqlEntityRefMemberExpression) newExpression).MemberInfo);
+      
       if (newExpression != expression.Expression)
         return new NamedExpression (expression.Name, newExpression);
       return expression;

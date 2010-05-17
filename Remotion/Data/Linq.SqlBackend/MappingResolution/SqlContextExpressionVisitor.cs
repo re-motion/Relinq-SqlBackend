@@ -90,6 +90,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (expression.Type == typeof (bool))
+        // becomes expression.Update (...)
         return new SqlColumnExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
       else
         return expression; // rely on VisitExpression to apply correct semantics
@@ -210,12 +211,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = VisitExpression (expression.Expression);
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage);
 
       if (newExpression is SqlEntityExpression)
-        return expression.Expression;
-      else
-        return new NamedExpression(expression.Name, newExpression);
+        // becomes: return ((SqlEntityExpression) newExpression).Update (expression.Name, ...)
+        return newExpression; // TODO: Unit test that newExpression is returned; e.g., NamedExpression (SqlEntityRefMemberExpression ()) with ValueRequired => entity expression should be returned, not entity ref expression
+      else // TODO: if newExpression != expression.Expression
+        return new NamedExpression (expression.Name, newExpression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)

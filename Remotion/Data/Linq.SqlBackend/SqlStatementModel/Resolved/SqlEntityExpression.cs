@@ -78,14 +78,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
         return base.Accept (visitor);
     }
 
-    public SqlEntityExpression Clone (SqlTableBase newSqlTable)
+    public SqlEntityExpression Clone (SqlTableBase newSqlTable) // becomes CreateReference
     {
       var newAlias = newSqlTable.GetResolvedTableInfo().TableAlias;
 
       var primaryKeyColumn = CreateClonedColumn (PrimaryKeyColumn, newAlias);
       var projectionColumns = ProjectionColumns.Select ( columnExpression => CreateClonedColumn(columnExpression, newAlias)).ToArray();
 
-      return new SqlEntityExpression (newSqlTable, primaryKeyColumn, projectionColumns);
+      return new SqlEntityExpression (newSqlTable, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
     }
 
     private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)

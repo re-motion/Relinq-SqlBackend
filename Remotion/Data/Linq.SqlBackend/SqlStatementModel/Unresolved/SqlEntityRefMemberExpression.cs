@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class SqlEntityRefMemberExpression : ExtensionExpression
   {
-    private readonly SqlTableBase _sqlTable;
+    private readonly SqlTableBase _sqlTable; // becomes SqlEntityExpression
     private readonly MemberInfo _memberInfo;
     
     public SqlEntityRefMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo)

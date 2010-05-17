@@ -247,7 +247,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof(Cook));
       var memberInfo = typeof(Cook).GetProperty("Substitution");
       var fakeResult = new SqlEntityRefMemberExpression(sqlTable, memberInfo);
-      var expectedResult = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var expectedResult = new NamedExpression("test", new SqlEntityRefMemberExpression (sqlTable, memberInfo));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))

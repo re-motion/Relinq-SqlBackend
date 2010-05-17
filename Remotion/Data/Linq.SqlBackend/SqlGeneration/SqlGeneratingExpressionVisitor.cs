@@ -19,6 +19,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -69,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.AppendSeparated (",", expression.ProjectionColumns, (cb, column) => column.Accept (this));
+      _commandBuilder.AppendSeparated (",", expression.ProjectionColumns, (cb, column) => AppendColumnForEntity(expression, column));
       return expression;
     }
 
@@ -77,20 +78,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var prefix = expression.OwningTableAlias;
-      var columnName = expression.ColumnName;
-      if (columnName == "*")
-      {
-        _commandBuilder.AppendIdentifier (prefix);
-        _commandBuilder.Append (".*");
-      }
-      else
-      {
-        _commandBuilder.AppendIdentifier (prefix);
-        _commandBuilder.Append (".");
-        _commandBuilder.AppendIdentifier (columnName);
-      }
-
+      AppendColumn (expression.ColumnName, expression.OwningTableAlias);
       return expression;
     }
 
@@ -98,6 +86,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // becomes SqlColumnDefinitionExpression _or_ directly emit corresponding SQL
       var columnExpression = new SqlColumnExpression (expression.Type, expression.TableAlias, expression.Name ?? "value", false);
       return VisitExpression (columnExpression);
     }
@@ -335,6 +324,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append (")");
 
       return expression;
+    }
+
+    private void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
+    {
+      column.Accept (this);
+      // if (entity.Name != null)
+      //   Append " AS ";
+      //   AppendIdentifier (entity.Name + "_" + column.Name);
+    }
+
+    private void AppendColumn (string columnName, string prefix) // add string referencedEntityName; pass null for column definitions; pass name for column references
+    {
+      if (columnName == "*")
+      {
+        _commandBuilder.AppendIdentifier (prefix);
+        _commandBuilder.Append (".*");
+      }
+      else
+      {
+        _commandBuilder.AppendIdentifier (prefix);
+        _commandBuilder.Append (".");
+        // if referencedEntityName != null, append referencedEntityName, append "_" here
+        _commandBuilder.AppendIdentifier (columnName);
+      }
     }
   }
 }
