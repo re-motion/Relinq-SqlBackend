@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [SetUp]
     public void SetUp ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo(typeof (Cook));
 
       _tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _columnExpression1 = new SqlColumnExpression (typeof (int), "t", "ID", false);
@@ -51,6 +51,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
       _entityExpression = new SqlEntityExpression (_tableReferenceExpression.SqlTable, _columnExpression1, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.ProjectionColumns;
+    }
+
+    [Test]
+    public void GetColumn ()
+    {
+      var column = _entityExpression.GetColumn (typeof (int), "Test", false);
+
+      Assert.That (column.OwningTableAlias, Is.EqualTo ("t"));
+      Assert.That (column.ColumnName, Is.EqualTo("Test"));
+      Assert.That (column.IsPrimaryKey, Is.False);
+      Assert.That (column.Type, Is.EqualTo(typeof (int)));
     }
 
     [Test]

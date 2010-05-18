@@ -60,6 +60,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _projectionColumns; }
     }
 
+    public SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)
+    {
+      return new SqlColumnExpression(type, SqlTable.GetResolvedTableInfo().TableAlias, columnName, isPrimaryKeyColumn);
+    }
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newColumns = visitor.VisitAndConvert (ProjectionColumns, "VisitChildren");
