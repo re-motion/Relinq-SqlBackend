@@ -29,14 +29,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly MemberInfo _memberInfo;
     private readonly JoinCardinality _cardinality;
     private readonly Type _itemType;
-    private readonly SqlTableBase _originatingTable; // becomes SqlEntityExpression _originatingEntity
+    private readonly SqlEntityExpression _originatingEntity;
 
-    public UnresolvedJoinInfo (SqlTableBase originatingTable, MemberInfo memberInfo, JoinCardinality cardinality)
+    public UnresolvedJoinInfo (SqlEntityExpression originatingEntity, MemberInfo memberInfo, JoinCardinality cardinality)
     {
-      ArgumentUtility.CheckNotNull ("originatingTable", originatingTable);
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      _originatingTable = originatingTable;
+      _originatingEntity = originatingEntity;
       _memberInfo = memberInfo;
       _cardinality = cardinality;
 
@@ -47,9 +47,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
         _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (memberReturnType, "memberInfo");
     }
 
-    public SqlTableBase OriginatingTable
+    public SqlEntityExpression OriginatingEntity
     {
-      get { return _originatingTable; }
+      get { return _originatingEntity; }
     }
 
     public MemberInfo MemberInfo

@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var join = expression.SqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
+      var join = expression.EntityExpression.SqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
       join.JoinInfo = ResolveJoinInfo (join.JoinInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
       

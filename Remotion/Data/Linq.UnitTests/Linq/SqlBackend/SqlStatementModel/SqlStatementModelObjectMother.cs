@@ -143,7 +143,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
     {
       var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
-      var joinInfo = new UnresolvedJoinInfo (sqlTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var joinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
       return new SqlJoinedTable (joinInfo, JoinSemantics.Left);
     }
 
@@ -161,7 +162,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
     {
       var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Kitchen)));
-      return new UnresolvedJoinInfo (sqlTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      return new UnresolvedJoinInfo (entityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
     public static UnresolvedCollectionJoinInfo CreateUnresolvedCollectionJoinInfo_RestaurantCooks ()

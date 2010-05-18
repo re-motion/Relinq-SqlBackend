@@ -43,7 +43,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
       var sqlTable = new SqlTable (tableInfo);
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, typeof (Cook).GetProperty ("ID"), JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("ID"), JoinCardinality.One);
       
       var result = SqlContextJoinInfoVisitor.ApplyContext (unresolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock);
 

@@ -43,9 +43,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldEntityExpression = new SqlEntityExpression (_kitchenTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newJoinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var newEntityExpression = new SqlEntityExpression (_cookTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var newJoinInfo = new UnresolvedJoinInfo (newEntityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
@@ -57,9 +59,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldEntityExpression = new SqlEntityExpression (_kitchenTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newJoinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var newEntityExpression = new SqlEntityExpression (_cookTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var newJoinInfo = new UnresolvedJoinInfo (newEntityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }
@@ -67,7 +71,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldEntityExpression = new SqlEntityExpression (_kitchenTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
 
       var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor> ();
@@ -83,7 +88,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_ITableInfoVisitor ()
     {
-      var oldJoinInfo = new UnresolvedJoinInfo (_kitchenTable, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldEntityExpression = new SqlEntityExpression (_kitchenTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var fakeResult = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 

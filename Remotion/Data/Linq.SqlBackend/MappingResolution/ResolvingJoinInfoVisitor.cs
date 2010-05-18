@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
       var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression);
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression.SqlTable, joinInfo.MemberInfo, JoinCardinality.Many);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression, joinInfo.MemberInfo, JoinCardinality.Many);
       return unresolvedJoinInfo.Accept (this);
     }
 

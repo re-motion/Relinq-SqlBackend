@@ -99,7 +99,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
-      var expression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
     }
@@ -157,7 +158,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
-      var expression = new SqlEntityRefMemberExpression(sqlTable, memberInfo);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var expression = new SqlEntityRefMemberExpression(entityExpression, memberInfo);
 
       SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
     }

@@ -50,13 +50,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "AssistedID");
@@ -68,13 +68,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo(),
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
@@ -86,13 +86,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingTable.GetResolvedTableInfo(),
+                joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo(),
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
     }
 
-    public virtual Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
+    public virtual Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
     {
       var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
       if (memberInfo.DeclaringType == typeof (Cook))
@@ -117,16 +117,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
           case "FirstName":
           case "Name":
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
           case "MetaID":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo(), memberInfo.Name, false);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo(), memberInfo.Name, false);
           case "Substitution":
-            return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
           
         }
       }
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "SpecificInformation":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Chef))
@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "LetterOfRecommendation":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Kitchen))
@@ -151,13 +151,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
           case "Name":
           case "RoomNumber":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo (), memberInfo.Name, false);
           case "Cook":
           case "Restaurant":
-            return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Restaurant))
@@ -165,9 +165,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, sqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
+            return CreateColumn (memberType, originatingEntity.SqlTable.GetResolvedTableInfo (), memberInfo.Name, true);
           case "SubKitchen":
-            return new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
         }
       }
 

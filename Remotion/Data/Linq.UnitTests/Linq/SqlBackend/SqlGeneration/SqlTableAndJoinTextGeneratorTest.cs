@@ -75,7 +75,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (originalTable, kitchenCookMember, JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (originalTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
       var joinedTable = originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
 
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
@@ -100,9 +101,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (originalTable, memberInfo1, JoinCardinality.One);
+      var entityExpression1 = new SqlEntityExpression (originalTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
       var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
-      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (originalTable, memberInfo2, JoinCardinality.One);
+      var entityExpression2 = new SqlEntityExpression (originalTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
       var joinedTable1 = originalTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
       var joinedTable2 = joinedTable1.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
 
@@ -287,7 +290,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (originalTable, kitchenCookMember, JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (originalTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
 
       originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
 

@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -33,13 +34,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     private SqlTable _sqlTable;
     private PropertyInfo _memberInfo;
     private SqlEntityRefMemberExpression _expression;
+    private SqlEntityExpression _entityExpression;
 
     [SetUp]
     public void SetUp ()
     {
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       _memberInfo = typeof (Cook).GetProperty ("FirstName");
-      _expression = new SqlEntityRefMemberExpression (_sqlTable, _memberInfo);
+      _entityExpression = new SqlEntityExpression (
+          _sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _expression = new SqlEntityRefMemberExpression (_entityExpression, _memberInfo);
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
@@ -31,20 +32,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, memberInfo, JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (
+          sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
       var joinedTable = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
       Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
-      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingTable, Is.SameAs (sqlTable));
+      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingEntity.SqlTable, Is.SameAs (sqlTable));
     }
-
+    
     [Test]
     public void GetOrAddJoin_GetEntry_Twice ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, memberInfo, JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (
+          sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
       var joinedTable1 = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
       var originalJoinInfo = joinedTable1.JoinInfo;

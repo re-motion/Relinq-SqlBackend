@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (
               mock =>
               mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingTable == sqlEntityExpression.SqlTable),
+                  Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingEntity.SqlTable == sqlEntityExpression.SqlTable),
                   Arg.Is (_generator)))
           .Return (expectedResolvedJoinInfo);
       _resolverMock.Replay();

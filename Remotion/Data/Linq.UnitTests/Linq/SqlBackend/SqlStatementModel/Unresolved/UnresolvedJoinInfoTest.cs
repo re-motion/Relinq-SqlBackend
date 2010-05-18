@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
@@ -30,11 +31,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   public class UnresolvedJoinInfoTest
   {
     private SqlTable _cookTable;
+    private SqlEntityExpression _entityExpression;
 
     [SetUp]
     public void SetUp ()
     {
       _cookTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
+      _entityExpression = new SqlEntityExpression (_cookTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
     }
 
     [Test]
@@ -42,13 +45,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
         "Expected a type implementing IEnumerable<T>, but found 'Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain.Cook'.\r\nParameter name: memberInfo")]
     public void Initialization_CardinalityMany_NonEnumerable_Throws ()
     {
-      new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
+      new UnresolvedJoinInfo (_entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
     }
 
     [Test]
     public void ItemType_CardinalityOne ()
     {
-      var joinInfo = new UnresolvedJoinInfo (_cookTable, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
+      var joinInfo = new UnresolvedJoinInfo (_entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 
@@ -56,7 +59,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     public void ItemType_CardinalityMany ()
     {
       var restaurantTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Restaurant));
-      var joinInfo = new UnresolvedJoinInfo (restaurantTable, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
+      _entityExpression = new SqlEntityExpression (restaurantTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var joinInfo = new UnresolvedJoinInfo (_entityExpression, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 

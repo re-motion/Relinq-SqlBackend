@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -28,23 +29,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class SqlEntityRefMemberExpression : ExtensionExpression
   {
-    private readonly SqlTableBase _sqlTable; // becomes SqlEntityExpression
+    private readonly SqlEntityExpression _entityExpression;
     private readonly MemberInfo _memberInfo;
     
-    public SqlEntityRefMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo)
+    public SqlEntityRefMemberExpression (SqlEntityExpression entityExpression, MemberInfo memberInfo)
       : base (ReflectionUtility.GetFieldOrPropertyType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       
 
-      _sqlTable = sqlTable;
+      _entityExpression = entityExpression;
       _memberInfo = memberInfo;
     }
 
-    public SqlTableBase SqlTable
+    public SqlEntityExpression EntityExpression
     {
-      get { return _sqlTable; }
+      get { return _entityExpression; }
     }
 
     public MemberInfo MemberInfo

@@ -172,7 +172,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveJoinInfo ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")), memberInfo, JoinCardinality.One);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
       var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
       var joinInfo = (UnresolvedJoinInfo) join.JoinInfo;
 
@@ -255,8 +257,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, kitchenCookMember);
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (sqlTable, kitchenCookMember, JoinCardinality.One);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, kitchenCookMember);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
       var fakeJoinInfo = new ResolvedJoinInfo (
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnExpression (typeof (int), "k", "ID", true),
@@ -283,8 +286,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
-      Assert.That (entityRefMemberExpression.SqlTable.GetJoin (kitchenCookMember), Is.Not.Null);
-      Assert.That (entityRefMemberExpression.SqlTable.GetJoin (kitchenCookMember).JoinInfo, Is.SameAs (fakeJoinInfo));
+      Assert.That (entityRefMemberExpression.EntityExpression.SqlTable.GetJoin (kitchenCookMember), Is.Not.Null);
+      Assert.That (entityRefMemberExpression.EntityExpression.SqlTable.GetJoin (kitchenCookMember).JoinInfo, Is.SameAs (fakeJoinInfo));
     }
 
     [Test]

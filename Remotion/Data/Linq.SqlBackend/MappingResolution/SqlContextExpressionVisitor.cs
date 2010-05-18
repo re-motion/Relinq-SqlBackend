@@ -192,7 +192,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (new UnresolvedJoinInfo (expression.SqlTable, expression.MemberInfo, JoinCardinality.One));
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (new UnresolvedJoinInfo (expression.EntityExpression, expression.MemberInfo, JoinCardinality.One));
       switch (_currentContext)
       {
         case SqlExpressionContext.ValueRequired:

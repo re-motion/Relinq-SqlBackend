@@ -554,14 +554,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
       var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.SqlTable == sqlTable)))
           .Return (fakeJoinInfo);
       _stageMock
           .Expect (mock => mock.ResolveEntityRefMemberExpression(entityRefMemberExpression, fakeJoinInfo))
@@ -581,14 +582,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
       var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.SqlTable == sqlTable)))
           .Return (fakeJoinInfo);
       _stageMock
           .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfo))
@@ -608,13 +610,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingTable == sqlTable)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.SqlTable == sqlTable)))
           .Return (fakeJoinInfo);
       _stageMock.Replay();
 
@@ -629,8 +632,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlEntityRefMemberExpression_PredicateSemantic ()
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
       var memberInfo = typeof (Cook).GetProperty ("ID");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (sqlTable, memberInfo);
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       _stageMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything))

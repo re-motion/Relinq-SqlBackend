@@ -68,14 +68,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     /// usually be a <see cref="SqlColumnExpression"/> if the member represents a simple column, or a
     /// <see cref="SqlEntityRefMemberExpression"/> if the member references another entity.
     /// </summary>
-    /// <param name="sqlTable">The <see cref="SqlTableBase"/> representing the table the member is accessed on.</param> 
+    /// <param name="originatingEntity">The <see cref="SqlEntityExpression"/> representing the entity the member is accessed on.</param> 
     /// <param name="memberInfo">The <see cref="MemberInfo"/> to be resolved.</param>
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as column aliases.</param>
     /// <returns>Usually a <see cref="SqlColumnExpression"/> if the member is resolved to a simple column, or a 
     /// <see cref="SqlEntityRefMemberExpression"/>  if the member references another entity.
     /// This method can return a partial result that itself again needs to be resolved.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="MemberInfo"/> cannot be resolved to a mapped database item.</exception>
-    Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator);
+    Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
     /// Analyzes a <see cref="MemberInfo"/> that is applied to a column and returns an expression representing that member in the database. The 

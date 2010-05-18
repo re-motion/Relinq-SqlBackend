@@ -95,7 +95,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpressionAsSqlEntityRefMemberExpression != null)
       {
         var unresolvedJoinInfo = new UnresolvedJoinInfo (
-            newExpressionAsSqlEntityRefMemberExpression.SqlTable, newExpressionAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
+            newExpressionAsSqlEntityRefMemberExpression.EntityExpression, newExpressionAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
         newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression, unresolvedJoinInfo);
       }
 
@@ -108,9 +108,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           throw new NotSupportedException (
               "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.");
         
-        var sqlTable = newExpressionAsEntityExpression.SqlTable;
-
-        var resolvedMemberExpression = _resolver.ResolveMemberExpression (sqlTable, expression.Member, _generator);
+        var resolvedMemberExpression = _resolver.ResolveMemberExpression (newExpressionAsEntityExpression, expression.Member, _generator);
         return VisitExpression (resolvedMemberExpression);
       }
 
