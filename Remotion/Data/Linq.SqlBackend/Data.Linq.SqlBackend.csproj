@@ -158,6 +158,7 @@
     <Compile Include="SqlStatementModel\Resolved\ResolvedSubStatementTableInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlColumnExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityConstantExpression.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlEntityDefinitionExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlValueReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />

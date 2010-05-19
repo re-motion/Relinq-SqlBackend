@@ -213,7 +213,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       if (type == typeof (Cook))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityExpression (
+        return new SqlEntityDefinitionExpression (
             sqlTable.ItemType,
             tableInfo.TableAlias,
             primaryKeyColumn,
@@ -231,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       else if (type == typeof (Kitchen))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityExpression (
+        return new SqlEntityDefinitionExpression (
             sqlTable.ItemType,
             tableInfo.TableAlias,
             primaryKeyColumn,
@@ -247,7 +247,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       else if (type == typeof (Restaurant))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityExpression (
+        return new SqlEntityDefinitionExpression (
             sqlTable.ItemType,
             tableInfo.TableAlias,
             primaryKeyColumn,
@@ -261,7 +261,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       else if (type == typeof (Chef))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityExpression (
+        return new SqlEntityDefinitionExpression (
              sqlTable.ItemType,
             tableInfo.TableAlias,
             primaryKeyColumn,

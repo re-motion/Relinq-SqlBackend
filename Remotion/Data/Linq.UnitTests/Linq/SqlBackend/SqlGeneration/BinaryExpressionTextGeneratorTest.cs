@@ -111,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => _commandBuilder.Append ("false"))
           .Return (_falseExpression);
 
-      _sqlEntityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (int), "c", "ID", false));
+      _sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (int), "c", "ID", false));
       _expressionVisitorStub
           .Stub (stub => stub.VisitExpression (_sqlEntityExpression))
           .WhenCalled (mi => _commandBuilder.Append ("[c].[ID]"))

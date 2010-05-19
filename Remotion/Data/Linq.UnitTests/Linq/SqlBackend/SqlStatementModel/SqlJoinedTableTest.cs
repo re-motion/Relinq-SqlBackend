@@ -43,10 +43,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldEntityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newEntityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var newEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var newJoinInfo = new UnresolvedJoinInfo (newEntityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
@@ -59,10 +59,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldEntityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newEntityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var newEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var newJoinInfo = new UnresolvedJoinInfo (newEntityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      var oldEntityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
 
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_ITableInfoVisitor ()
     {
-      var oldEntityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var fakeResult = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");

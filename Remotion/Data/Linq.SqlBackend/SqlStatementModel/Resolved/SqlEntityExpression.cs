@@ -27,53 +27,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="SqlEntityExpression"/> holds a list of <see cref="SqlColumnExpression"/> instances.
   /// </summary>
-  public class SqlEntityExpression : ExtensionExpression
+  public abstract class SqlEntityExpression : ExtensionExpression
   {
     private readonly string _tableAlias;
-    private readonly SqlColumnExpression _primaryKeyColumn;
-    private readonly ReadOnlyCollection<SqlColumnExpression> _projectionColumns;
-
-    public SqlEntityExpression (Type itemType, string tableAlias, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
+    
+    protected SqlEntityExpression (Type itemType, string tableAlias)
         : base (ArgumentUtility.CheckNotNull ("itemType", itemType))
     {
       ArgumentUtility.CheckNotNull ("tableAlias", tableAlias);
-      ArgumentUtility.CheckNotNull ("projectionColumns", projectionColumns);
-      ArgumentUtility.CheckNotNull ("primaryKeyColumn", primaryKeyColumn);
-
+      
       _tableAlias = tableAlias;
-      _projectionColumns = Array.AsReadOnly (projectionColumns);
-      _primaryKeyColumn = primaryKeyColumn;
     }
+
+    public abstract SqlColumnExpression PrimaryKeyColumn { get; }
+    public abstract ReadOnlyCollection<SqlColumnExpression> Columns { get; }
 
     public string TableAlias
     {
       get { return _tableAlias; }
     }
 
-    public SqlColumnExpression PrimaryKeyColumn
-    {
-      get { return _primaryKeyColumn; }
-    }
-
-    public ReadOnlyCollection<SqlColumnExpression> ProjectionColumns
-    {
-      get { return _projectionColumns; }
-    }
-
-    public SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)
-    {
-      return new SqlColumnExpression(type, TableAlias, columnName, isPrimaryKeyColumn);
-    }
-
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
-    {
-      var newColumns = visitor.VisitAndConvert (ProjectionColumns, "VisitChildren");
-      if (newColumns != ProjectionColumns)
-        return new SqlEntityExpression (Type, TableAlias, PrimaryKeyColumn, newColumns.ToArray());
-      else
-        return this;
-    }
-
+    public abstract SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn);
+    public abstract SqlEntityExpression CreateReference (string newTableAlias);
+    
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
@@ -82,20 +58,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       else
         return base.Accept (visitor);
     }
-
-    public SqlEntityExpression Clone (SqlTableBase newSqlTable) // becomes CreateReference  (parameter newTableAlias instead of newSqltable)
-    {
-      var newAlias = newSqlTable.GetResolvedTableInfo().TableAlias;
-
-      var primaryKeyColumn = CreateClonedColumn (PrimaryKeyColumn, newAlias);
-      var projectionColumns = ProjectionColumns.Select ( columnExpression => CreateClonedColumn(columnExpression, newAlias)).ToArray();
-
-      return new SqlEntityExpression (Type, newAlias, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
-    }
-
-    private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
-    {
-      return new SqlColumnExpression (originalColumn.Type, newAlias, originalColumn.ColumnName, originalColumn.IsPrimaryKey);
-    }
+    
   }
 }

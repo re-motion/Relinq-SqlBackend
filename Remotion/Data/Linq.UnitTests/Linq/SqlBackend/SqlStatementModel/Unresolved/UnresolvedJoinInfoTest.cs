@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [SetUp]
     public void SetUp ()
     {
-      _entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void ItemType_CardinalityMany ()
     {
-      _entityExpression = new SqlEntityExpression (typeof(Restaurant), "r", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityDefinitionExpression (typeof (Restaurant), "r", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var joinInfo = new UnresolvedJoinInfo (_entityExpression, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }

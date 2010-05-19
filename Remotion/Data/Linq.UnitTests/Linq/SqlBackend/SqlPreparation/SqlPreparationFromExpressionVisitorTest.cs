@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitEntityRefMemberExpression_ThrowsNotSupportException ()
     {
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
-      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);
@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitSqlEntityRefMemberExpression ()
     {
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
-      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var expression = new SqlEntityRefMemberExpression(entityExpression, memberInfo);
 
       SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, typeof (Cook), _stageMock, _generator);

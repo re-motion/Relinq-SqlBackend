@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
       var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
 
@@ -100,10 +100,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo_Multiple ()
     {
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression1 = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression1 = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
       var memberInfo2 = typeof (Kitchen).GetProperty ("Restaurant");
-      var entityExpression2 = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression2 = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
       var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
       var join2 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
@@ -136,13 +136,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo_Recursive ()
     {
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression1 = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression1 = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
       var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression2 = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression2 = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
       var memberInfo3 = typeof (Cook).GetProperty ("Name");
-      var entityExpression3 = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression3 = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo3 = new UnresolvedJoinInfo (entityExpression3, memberInfo3, JoinCardinality.One);
       
       var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);

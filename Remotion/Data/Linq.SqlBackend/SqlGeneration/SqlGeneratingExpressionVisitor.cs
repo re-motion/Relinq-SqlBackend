@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.AppendSeparated (",", expression.ProjectionColumns, (cb, column) => AppendColumnForEntity(expression, column));
+      _commandBuilder.AppendSeparated (",", expression.Columns, (cb, column) => AppendColumnForEntity(expression, column));
       return expression;
     }
 

@@ -556,12 +556,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityExpression (typeof(Cook), "c", primaryKeyColumn, primaryKeyColumn);
+      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof(Cook)), Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
@@ -584,12 +584,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityExpression (typeof(Cook), "c", primaryKeyColumn, primaryKeyColumn);
+      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof(Cook)), Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
@@ -612,7 +612,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
@@ -633,8 +633,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException(typeof(NotSupportedException))]
     public void VisitSqlEntityRefMemberExpression_PredicateSemantic ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
-      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var memberInfo = typeof (Cook).GetProperty ("ID");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 

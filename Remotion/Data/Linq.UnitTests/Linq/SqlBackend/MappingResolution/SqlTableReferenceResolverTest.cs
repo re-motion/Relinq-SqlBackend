@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var fakeResult = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       _resolverMock
           .Expect (mock => mock.ResolveTableReferenceExpression (expression, _generator))
@@ -106,18 +106,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
                              SelectProjection =
-                                 new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false)),
+                                 new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false)),
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).Clone (sqlTable);
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference("q0");
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlEntityExpression)));
-      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
+      Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
+      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityDefinitionExpression) result), Is.SameAs (sqlTable));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

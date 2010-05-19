@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _context = new MappingResolutionContext();
-      _entityExpression = new SqlEntityExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       _sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
     }
 

@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateSql_VisitSqlEntityExpression ()
     {
       var primaryKeyColumn = new SqlColumnExpression (typeof (string), "t", "ID", true);
-      var sqlColumnListExpression = new SqlEntityExpression (
+      var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof(string),
           "t",
           primaryKeyColumn,

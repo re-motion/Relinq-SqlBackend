@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       if (innerSqlEntityExpression != null)
       {
-        _result = innerSqlEntityExpression.Clone (sqlTable);
+        _result = innerSqlEntityExpression.CreateReference(sqlTable.GetResolvedTableInfo().TableAlias);
         _context.AddSqlEntityMapping ((SqlEntityExpression) _result, sqlTable);
       }
       else if (innerNamedExpression != null)

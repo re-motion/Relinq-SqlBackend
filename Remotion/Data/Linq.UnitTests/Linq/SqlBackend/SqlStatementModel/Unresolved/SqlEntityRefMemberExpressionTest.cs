@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     public void SetUp ()
     {
       _memberInfo = typeof (Cook).GetProperty ("FirstName");
-      _entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       _expression = new SqlEntityRefMemberExpression (_entityExpression, _memberInfo);
     }
 
