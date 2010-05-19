@@ -30,13 +30,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   public abstract class SqlEntityExpression : ExtensionExpression
   {
     private readonly string _tableAlias;
-    
-    protected SqlEntityExpression (Type itemType, string tableAlias)
+    private readonly string _name;
+
+    protected SqlEntityExpression (Type itemType, string tableAlias, string entityName)
         : base (ArgumentUtility.CheckNotNull ("itemType", itemType))
     {
       ArgumentUtility.CheckNotNull ("tableAlias", tableAlias);
       
       _tableAlias = tableAlias;
+      _name = entityName;
     }
 
     public abstract SqlColumnExpression PrimaryKeyColumn { get; }
@@ -45,6 +47,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public string TableAlias
     {
       get { return _tableAlias; }
+    }
+
+    public string Name
+    {
+      get { return _name; }
     }
 
     public abstract SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn);

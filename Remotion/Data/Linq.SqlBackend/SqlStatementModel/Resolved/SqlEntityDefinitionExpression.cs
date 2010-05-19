@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
 
     public SqlEntityDefinitionExpression (Type itemType, string tableAlias, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
-        : base(itemType, tableAlias)
+        : base(itemType, tableAlias, null)
     {
       _columns = Array.AsReadOnly (projectionColumns);
       _primaryKeyColumn = primaryKeyColumn;
