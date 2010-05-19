@@ -80,7 +80,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       var resolver = new MappingResolverStub();
       var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
-      var newSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement);
+      var mappingResolutionContext = new MappingResolutionContext();
+      var newSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);
 
       var commandBuilder = new SqlCommandBuilder();
       var sqlGenerationStage = new DefaultSqlGenerationStage();

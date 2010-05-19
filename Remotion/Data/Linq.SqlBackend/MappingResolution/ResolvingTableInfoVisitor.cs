@@ -30,26 +30,30 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
 
-    public static IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    public static IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new ResolvingTableInfoVisitor (resolver, generator, stage);
+      var visitor = new ResolvingTableInfoVisitor (resolver, generator, stage, context);
       return (IResolvedTableInfo) tableInfo.Accept (visitor);
     }
 
-    protected ResolvingTableInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    protected ResolvingTableInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _resolver = resolver;
       _generator = generator;
       _stage= stage;
+      _context = context;
     }
 
     public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
@@ -69,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement);
+      var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement, _context);
       return new ResolvedSubStatementTableInfo (tableInfo.TableAlias, newSqlStatement);
     }
 
@@ -77,7 +81,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo);
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo, _context);
       joinedTable.JoinInfo = resolvedJoinInfo;
 
       return joinedTable.GetResolvedTableInfo ();

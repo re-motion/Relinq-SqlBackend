@@ -31,7 +31,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   [TestFixture]
   public class SqlEntityRefMemberExpressionTest
   {
-    private SqlTable _sqlTable;
     private PropertyInfo _memberInfo;
     private SqlEntityRefMemberExpression _expression;
     private SqlEntityExpression _entityExpression;
@@ -39,10 +38,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       _memberInfo = typeof (Cook).GetProperty ("FirstName");
-      _entityExpression = new SqlEntityExpression (
-          _sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       _expression = new SqlEntityRefMemberExpression (_entityExpression, _memberInfo);
     }
 

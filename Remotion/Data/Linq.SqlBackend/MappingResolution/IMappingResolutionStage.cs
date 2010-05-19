@@ -27,21 +27,21 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public interface IMappingResolutionStage
   {
-    Expression ResolveSelectExpression (Expression expression);
-    Expression ResolveWhereExpression (Expression expression);
-    Expression ResolveOrderingExpression (Expression expression);
-    Expression ResolveTopExpression (Expression expression);
-    IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo);
-    ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo);
-    SqlStatement ResolveSqlStatement (SqlStatement sqlStatement);
-    SqlEntityExpression ResolveCollectionSourceExpression (Expression expression);
-    SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo);
-    Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression);
+    Expression ResolveSelectExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveWhereExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveTopExpression (Expression expression, IMappingResolutionContext context);
+    IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context);
+    ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolutionContext context);
+    SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context);
+    SqlEntityExpression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context);
+    SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context);
+    Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression, IMappingResolutionContext context);
 
-    Expression ApplyContext (Expression expression, SqlExpressionContext context);
-    ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext context);
-    IJoinInfo ApplyContext (IJoinInfo tableInfo, SqlExpressionContext context);
+    Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
+    ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
+    IJoinInfo ApplyContext (IJoinInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
 
-    SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext context);
+    SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
   }
 }

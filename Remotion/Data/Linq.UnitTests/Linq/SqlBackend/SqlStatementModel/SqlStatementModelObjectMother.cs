@@ -142,8 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
     {
-      var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var joinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
       return new SqlJoinedTable (joinInfo, JoinSemantics.Left);
     }
@@ -161,8 +160,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
     {
-      var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Kitchen)));
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       return new UnresolvedJoinInfo (entityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
@@ -198,7 +196,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID", true);
       return new SqlEntityExpression (
-          CreateSqlTable(),
+          type,
+          "t",
           primaryKeyColumn,
           new[]
           {

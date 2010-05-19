@@ -27,35 +27,39 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public class SqlStatementResolver : ISqlTableBaseVisitor
   {
     private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
 
-    public static SqlStatement ResolveExpressions (IMappingResolutionStage stage, SqlStatement statement)
+    public static SqlStatement ResolveExpressions (IMappingResolutionStage stage, SqlStatement statement, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("context", context);
       
-      var resolver = new SqlStatementResolver (stage);
+      var resolver = new SqlStatementResolver (stage, context);
       return resolver.ResolveSqlStatement (statement);
     }
 
-    protected SqlStatementResolver (IMappingResolutionStage stage)
+    protected SqlStatementResolver (IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
       
       _stage = stage;
+      _context = context;
     }
 
     protected Expression ResolveSelectProjection (Expression selectProjection) 
     {
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
 
-      return _stage.ResolveSelectExpression (selectProjection);
+      return _stage.ResolveSelectExpression (selectProjection, _context);
     }
 
     protected void ResolveSqlTable (SqlTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       
-      sqlTable.TableInfo = _stage.ResolveTableInfo (sqlTable.TableInfo);
+      sqlTable.TableInfo = _stage.ResolveTableInfo (sqlTable.TableInfo, _context);
       ResolveJoins (sqlTable);
     }
 
@@ -63,7 +67,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      joinedTable.JoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo);
+      joinedTable.JoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo, _context);
 
       foreach (var table in joinedTable.JoinedTables)
         ResolveJoinedTable (table);
@@ -73,21 +77,21 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("whereCondition", whereCondition);
 
-      return _stage.ResolveWhereExpression (whereCondition);
+      return _stage.ResolveWhereExpression (whereCondition, _context);
     }
 
     protected Expression ResolveOrderingExpression (Expression orderByExpression)
     {
       ArgumentUtility.CheckNotNull ("orderByExpression", orderByExpression);
 
-      return _stage.ResolveOrderingExpression (orderByExpression);
+      return _stage.ResolveOrderingExpression (orderByExpression, _context);
     }
 
     protected Expression ResolveTopExpression (Expression topExpression)
     {
       ArgumentUtility.CheckNotNull ("topExpression", topExpression);
 
-      return _stage.ResolveTopExpression (topExpression);
+      return _stage.ResolveTopExpression (topExpression, _context);
     }
 
     protected SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
@@ -100,19 +104,19 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var sqlStatementBuilder = new SqlStatementBuilder(sqlStatement);
 
       var previousSelectProjection = sqlStatementBuilder.SelectProjection;
-      sqlStatementBuilder.SelectProjection = _stage.ResolveSelectExpression (sqlStatementBuilder.SelectProjection);
+      sqlStatementBuilder.SelectProjection = _stage.ResolveSelectExpression (sqlStatementBuilder.SelectProjection, _context);
       sqlStatementBuilder.RecalculateDataInfo (previousSelectProjection);
 
       if (sqlStatementBuilder.WhereCondition != null)
-        sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition);
+        sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context);
 
       if (sqlStatementBuilder.TopExpression != null)
-        sqlStatementBuilder.TopExpression = _stage.ResolveTopExpression (sqlStatementBuilder.TopExpression);
+        sqlStatementBuilder.TopExpression = _stage.ResolveTopExpression (sqlStatementBuilder.TopExpression, _context);
 
       if (sqlStatementBuilder.Orderings.Count > 0)
       {
         foreach (var orderByClause in sqlStatementBuilder.Orderings)
-          orderByClause.Expression = _stage.ResolveOrderingExpression (orderByClause.Expression);
+          orderByClause.Expression = _stage.ResolveOrderingExpression (orderByClause.Expression, _context);
       }
       
       return sqlStatementBuilder.GetSqlStatement();

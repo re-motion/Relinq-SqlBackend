@@ -30,30 +30,33 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly SqlTableReferenceExpression _expression;
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
+    private readonly IMappingResolutionContext _context;
 
     public static Expression ResolveTableReference (
-        SqlTableReferenceExpression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator)
+        SqlTableReferenceExpression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlTableReferenceResolver (expression, resolver, generator);
+      var visitor = new SqlTableReferenceResolver (expression, resolver, generator, context);
       return visitor.ResolveSqlTableReferenceExpression (expression);
     }
 
-    protected SqlTableReferenceResolver (
-        SqlTableReferenceExpression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator)
+    protected SqlTableReferenceResolver (SqlTableReferenceExpression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       // TODO 2719: don't store the expression, only store the SqlTable
       // TODO 2719: As soon as SqlEntity is decoupled from SqlTable, don't store the SqlTable(Expression) any longer
       _expression = expression;
       _generator = generator;
       _resolver = resolver;
+      _context = context;
     }
 
     public Expression ResolveSqlTableReferenceExpression (SqlTableReferenceExpression expression)
@@ -69,6 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       // TODO 2719: Refactor ResolveTableReferenceExpression to take SimpleTableInfo instead of a SqlTableReferenceExpression, rename it to ResolveTableReference, don't forget to update the docs on IMappingResolver
       _result = _resolver.ResolveTableReferenceExpression(_expression, _generator);
+      _context.AddSqlEntityMapping ((SqlEntityExpression)_result, _expression.SqlTable);
       return tableInfo;
     }
 
@@ -83,12 +87,19 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var innerNamedExpression = selectProjection as NamedExpression;
 
       if (innerSqlEntityExpression != null)
+      {
         _result = innerSqlEntityExpression.Clone (sqlTable);
+        _context.AddSqlEntityMapping ((SqlEntityExpression) _result, sqlTable);
+      }
       else if (innerNamedExpression != null)
-        _result = new SqlValueReferenceExpression(sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+      {
+        _result = new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+      }
       else
+      {
         throw new InvalidOperationException ("The table projection for a referenced sub-statement must be named or an entity.");
-      
+      }
+
       return subStatementTableInfo;
     }
 

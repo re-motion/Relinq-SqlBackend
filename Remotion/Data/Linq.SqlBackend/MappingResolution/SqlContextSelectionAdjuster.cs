@@ -32,33 +32,37 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public class SqlContextSelectionAdjuster
   {
     private readonly IMappingResolutionStage _stage;
+    private IMappingResolutionContext _mappingResolutionContext;
 
-    public static SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext context, IMappingResolutionStage stage)
+    public static SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionStage stage, IMappingResolutionContext mappingresolutionContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("mappingresolutionContext", mappingresolutionContext);
 
-      var visitor = new SqlContextSelectionAdjuster (stage);
-      return visitor.VisitSqlStatement (sqlStatement, context);
+      var visitor = new SqlContextSelectionAdjuster (stage, mappingresolutionContext);
+      return visitor.VisitSqlStatement (sqlStatement, expressionContext);
     }
 
-    private SqlContextSelectionAdjuster (IMappingResolutionStage stage)
+    private SqlContextSelectionAdjuster (IMappingResolutionStage stage, IMappingResolutionContext mappingresolutionContext)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("mappingresolutionContext", mappingresolutionContext);
 
       _stage = stage;
+      _mappingResolutionContext = mappingresolutionContext;
     }
     
-    public SqlStatement VisitSqlStatement (SqlStatement sqlStatement, SqlExpressionContext context)
+    public SqlStatement VisitSqlStatement (SqlStatement sqlStatement, SqlExpressionContext expressionContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      if (context == SqlExpressionContext.PredicateRequired)
+      if (expressionContext == SqlExpressionContext.PredicateRequired)
         throw new InvalidOperationException ("A SqlStatement cannot be used as a predicate.");
 
       var statementBuilder = new SqlStatementBuilder (sqlStatement);
 
-      var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, context);
+      var newSelectProjection = _stage.ApplyContext (sqlStatement.SelectProjection, expressionContext, _mappingResolutionContext);
       statementBuilder.SelectProjection = newSelectProjection;
       statementBuilder.RecalculateDataInfo (sqlStatement.SelectProjection);
 

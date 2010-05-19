@@ -35,11 +35,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   public class SqlContextSelectionAdjusterTest
   {
     private IMappingResolutionStage _stageMock;
+    private IMappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
+      _mappingResolutionContext = new MappingResolutionContext();
     }
 
     [Test]
@@ -48,11 +50,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
           .Return (sqlStatement.SelectProjection);
       _stageMock.Replay();
 
-      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result.SelectProjection, Is.TypeOf(typeof(SqlTableReferenceExpression)));
@@ -69,11 +71,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant ("test");
       
       _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
           .Return (fakeResult);
      _stageMock.Replay();
 
-      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (sqlStatement));
@@ -90,11 +92,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
           .Return (sqlStatement.SelectProjection);
       _stageMock.Replay();
 
-      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result.IsDistinctQuery, Is.True);
@@ -123,11 +125,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant ("fake");
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay ();
 
-      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
@@ -145,7 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
-      SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
     }
   }
 }

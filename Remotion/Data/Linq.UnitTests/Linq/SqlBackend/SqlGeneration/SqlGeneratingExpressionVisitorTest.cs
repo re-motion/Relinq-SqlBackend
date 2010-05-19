@@ -72,7 +72,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var primaryKeyColumn = new SqlColumnExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityExpression (
-          SqlStatementModelObjectMother.CreateSqlTable(),
+          typeof(string),
+          "t",
           primaryKeyColumn,
           new[]
           {

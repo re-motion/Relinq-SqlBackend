@@ -36,12 +36,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   {
     private TestableSqlContextExpressionVisitor _nonTopLevelVisitor;
     private IMappingResolutionStage _stageMock;
+    private IMappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage> ();
-      _nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock);
+      _mappingResolutionContext = new MappingResolutionContext();
+      _nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
     }
 
     [Test]
@@ -50,8 +52,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var valueExpression = Expression.Constant (0);
       var predicateExpression = Expression.Constant (true);
 
-      var convertedValue = SqlContextExpressionVisitor.ApplySqlExpressionContext (valueExpression, SqlExpressionContext.PredicateRequired, _stageMock);
-      var convertedPredicate = SqlContextExpressionVisitor.ApplySqlExpressionContext (predicateExpression, SqlExpressionContext.SingleValueRequired, _stageMock);
+      var convertedValue = SqlContextExpressionVisitor.ApplySqlExpressionContext (valueExpression, SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+      var convertedPredicate = SqlContextExpressionVisitor.ApplySqlExpressionContext (predicateExpression, SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
 
       var expectedConvertedValue = Expression.Equal (valueExpression, new SqlLiteralExpression (1));
       var expectedConvertedPredicate = Expression.Constant (1);
@@ -72,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
@@ -83,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
       
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
       var expected = new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -96,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
       var expected = new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -109,7 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -120,7 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -131,7 +133,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (bool));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -142,7 +144,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
       var expected = Expression.Equal (expression, new SqlLiteralExpression (1));
@@ -157,7 +159,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (string));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock, _mappingResolutionContext);
       visitor.VisitExpression (expression);
     }
 
@@ -167,7 +169,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new CustomExpression (typeof (string));
 
-      var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), true, _stageMock, _mappingResolutionContext);
       visitor.VisitExpression (expression);
     }
 
@@ -176,7 +178,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.Not.SameAs (entityExpression));
@@ -188,7 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
@@ -200,7 +202,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var childExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
       var parentExpression = new CustomCompositeExpression (typeof (bool), childExpression);
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (parentExpression);
 
       var expectedExpression = new CustomCompositeExpression (typeof (bool), childExpression.PrimaryKeyColumn);
@@ -270,7 +272,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var result =  visitor.VisitSqlEntityExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
@@ -281,7 +283,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitSqlEntityExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
@@ -522,7 +524,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = new SqlEntityConstantExpression (typeof (int), 5, 1);
 
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var result = nonTopLevelVisitor.VisitSqlEntityConstantExpression (expression);
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
@@ -537,7 +539,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var fakeResult = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
       _stageMock
-          .Expect (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay();
 
@@ -554,18 +556,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
+      var fakeEntityExpression = new SqlEntityExpression (typeof(Cook), "c", primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.SqlTable == sqlTable)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof(Cook)), Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
           .Return (fakeJoinInfo);
       _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression(entityRefMemberExpression, fakeJoinInfo))
+          .Expect (mock => mock.ResolveEntityRefMemberExpression(entityRefMemberExpression, fakeJoinInfo, _mappingResolutionContext))
           .Return (fakeEntityExpression);
       _stageMock.Replay();
 
@@ -578,22 +580,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlEntityRefMemberExpression_SingleValueSemantic_PrimaryKeyColumnOnLeftSide ()
     {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityExpression (sqlTable, primaryKeyColumn, primaryKeyColumn);
+      var fakeEntityExpression = new SqlEntityExpression (typeof(Cook), "c", primaryKeyColumn, primaryKeyColumn);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.SqlTable == sqlTable)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof(Cook)), Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
           .Return (fakeJoinInfo);
       _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfo))
+          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfo, _mappingResolutionContext))
           .Return (fakeEntityExpression);
       _stageMock.Replay ();
 
@@ -606,18 +608,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlEntityRefMemberExpression_SingleValueSemantic_PrimaryKeyColumnOnRightSide ()
     {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.SqlTable == sqlTable)))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof(Cook)), Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
           .Return (fakeJoinInfo);
       _stageMock.Replay();
 
@@ -632,22 +634,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlEntityRefMemberExpression_PredicateSemantic ()
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var memberInfo = typeof (Cook).GetProperty ("ID");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything))
+          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
           .Return (null);
       _stageMock.Replay();
 
-      SqlContextExpressionVisitor.ApplySqlExpressionContext (entityRefMemberExpression, SqlExpressionContext.PredicateRequired, _stageMock);
+      SqlContextExpressionVisitor.ApplySqlExpressionContext (entityRefMemberExpression, SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
     }
 
     [Test]
     public void VisitNamedExpression_NoSqlEntityExpression ()
     {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock);
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var expression = new NamedExpression ("test", Expression.Constant ("test"));
 
       var result = nonTopLevelVisitor.VisitNamedExpression (expression);

@@ -64,8 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
+    <Compile Include="MappingResolution\IMappingResolutionContext.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
+    <Compile Include="MappingResolution\MappingResolutionContext.cs" />
     <Compile Include="MappingResolution\SqlContextJoinInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextSelectionAdjuster.cs" />
     <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />

@@ -32,14 +32,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var entityExpression = new SqlEntityExpression (
-          sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var owningTableAlias = "c";
+      var entityExpression = new SqlEntityExpression (typeof(Cook), owningTableAlias, new SqlColumnExpression (typeof (string), owningTableAlias, "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
       var joinedTable = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
       Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
       Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
-      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingEntity.SqlTable, Is.SameAs (sqlTable));
+      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingEntity.TableAlias, Is.SameAs (owningTableAlias));
     }
     
     [Test]
@@ -47,8 +47,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var entityExpression = new SqlEntityExpression (
-          sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var owningTableAlias = "c";
+      var entityExpression = new SqlEntityExpression (typeof(Cook), owningTableAlias, new SqlColumnExpression (typeof (string), owningTableAlias, "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
       var joinedTable1 = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);

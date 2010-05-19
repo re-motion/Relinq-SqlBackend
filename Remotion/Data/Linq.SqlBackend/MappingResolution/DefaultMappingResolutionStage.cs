@@ -40,121 +40,136 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _resolver = resolver;
     }
 
-    public virtual Expression ResolveSelectExpression (Expression expression)
+    public virtual Expression ResolveSelectExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolveExpression (expression);
-      return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired);
+      var resolvedExpression = ResolveExpression (expression, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual Expression ResolveWhereExpression (Expression expression)
+    public virtual Expression ResolveWhereExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolveExpression (expression);
-      return ApplyContext (resolvedExpression, SqlExpressionContext.PredicateRequired);
+      var resolvedExpression = ResolveExpression (expression, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.PredicateRequired, context);
     }
 
-    public virtual Expression ResolveOrderingExpression (Expression expression)
+    public virtual Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolveExpression (expression);
-      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired);
+      var resolvedExpression = ResolveExpression (expression, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired, context);
     }
 
-    public virtual Expression ResolveTopExpression (Expression expression)
+    public virtual Expression ResolveTopExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolveExpression (expression);
-      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired);
+      var resolvedExpression = ResolveExpression (expression, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired, context);
     }
 
-    public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo)
+    public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedTableInfo = ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this);
-      return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired);
+      var resolvedTableInfo = ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this, context);
+      return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo)
+    public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this);
-      return (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired);
+      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
+      return (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
+    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-
-      return SqlStatementResolver.ResolveExpressions (this, sqlStatement);
+      ArgumentUtility.CheckNotNull ("context", context);
+      
+      return SqlStatementResolver.ResolveExpressions (this, sqlStatement, context);
     }
 
-    public virtual SqlEntityExpression ResolveCollectionSourceExpression (Expression expression)
+    public virtual SqlEntityExpression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolveExpression (expression);
-      return (SqlEntityExpression) ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired);
+      var resolvedExpression = ResolveExpression (expression, context);
+      return (SqlEntityExpression) ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo)
+    public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-
-      var join = expression.EntityExpression.SqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
-      join.JoinInfo = ResolveJoinInfo (join.JoinInfo);
+      ArgumentUtility.CheckNotNull ("context", context);
+      
+      var join = context.GetSqlTableForEntityExpression(expression.EntityExpression).GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
+      join.JoinInfo = ResolveJoinInfo (join.JoinInfo, context);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
       
-      return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression);
+      return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression, context);
     }
 
-    public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression)
+    public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      return SqlTableReferenceResolver.ResolveTableReference (expression, _resolver, _uniqueIdentifierGenerator);
+      return SqlTableReferenceResolver.ResolveTableReference (expression, _resolver, _uniqueIdentifierGenerator, context);
     }
 
-    public virtual Expression ApplyContext (Expression expression, SqlExpressionContext context)
+    public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
-      return SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, context, this);
+      return SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, expressionContext, this, mappingResolutionContext);
     }
 
-    public virtual SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext context)
+    public virtual SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
-      return SqlContextSelectionAdjuster.ApplyContext (sqlStatement, context, this);
+      return SqlContextSelectionAdjuster.ApplyContext (sqlStatement, expressionContext, this, mappingResolutionContext);
     }
 
-    public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext context)
+    public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
-      return SqlContextTableInfoVisitor.ApplyContext (tableInfo, context, this);
+      return SqlContextTableInfoVisitor.ApplyContext (tableInfo, expressionContext, this, mappingResolutionContext);
     }
 
-    public virtual IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext context)
+    public virtual IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
-      return SqlContextJoinInfoVisitor.ApplyContext (joinInfo, context, this);
+      return SqlContextJoinInfoVisitor.ApplyContext (joinInfo, expressionContext, this, mappingResolutionContext);
     }
 
-    protected virtual Expression ResolveExpression (Expression expression)
+    protected virtual Expression ResolveExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this);
+      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this, context);
     }
   }
 }

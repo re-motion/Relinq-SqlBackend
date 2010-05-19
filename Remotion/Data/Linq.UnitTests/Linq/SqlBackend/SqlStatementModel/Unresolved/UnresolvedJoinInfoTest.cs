@@ -30,14 +30,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   [TestFixture]
   public class UnresolvedJoinInfoTest
   {
-    private SqlTable _cookTable;
     private SqlEntityExpression _entityExpression;
 
     [SetUp]
     public void SetUp ()
     {
-      _cookTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      _entityExpression = new SqlEntityExpression (_cookTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
     }
 
     [Test]
@@ -58,8 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void ItemType_CardinalityMany ()
     {
-      var restaurantTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Restaurant));
-      _entityExpression = new SqlEntityExpression (restaurantTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityExpression (typeof(Restaurant), "r", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var joinInfo = new UnresolvedJoinInfo (_entityExpression, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }

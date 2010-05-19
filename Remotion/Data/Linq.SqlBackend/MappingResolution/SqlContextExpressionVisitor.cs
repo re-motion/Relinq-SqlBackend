@@ -38,12 +38,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public class SqlContextExpressionVisitor
       : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor, INamedExpressionVisitor
   {
-    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage)
+    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlContextExpressionVisitor (initialSemantics, true, stage);
+      var visitor = new SqlContextExpressionVisitor (initialSemantics, true, stage, context);
       return visitor.VisitExpression (expression);
     }
 
@@ -51,12 +52,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private bool _isTopLevelExpression;
     private readonly IMappingResolutionStage _stage;
+    private IMappingResolutionContext _context;
 
-    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage)
+    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
+
       _currentContext = currentContext;
       _isTopLevelExpression = isTopLevelExpression;
       _stage = stage;
+      _context = context;
     }
 
     public override Expression VisitExpression (Expression expression)
@@ -106,9 +112,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
     {
-      var testPredicate = ApplySqlExpressionContext (expression.TestPredicate, SqlExpressionContext.PredicateRequired, _stage);
-      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.SingleValueRequired, _stage);
-      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.SingleValueRequired, _stage);
+      var testPredicate = ApplySqlExpressionContext (expression.TestPredicate, SqlExpressionContext.PredicateRequired, _stage, _context);
+      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.SingleValueRequired, _stage, _context);
 
       if (testPredicate != expression.TestPredicate || thenValue != expression.ThenValue || elseValue != expression.ElseValue)
         return new SqlCaseExpression (testPredicate, thenValue, elseValue);
@@ -124,8 +130,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return base.VisitBinaryExpression (expression);
 
       var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
-      var left = ApplySqlExpressionContext (expression.Left, childContext, _stage);
-      var right = ApplySqlExpressionContext (expression.Right, childContext, _stage);
+      var left = ApplySqlExpressionContext (expression.Left, childContext, _stage, _context);
+      var right = ApplySqlExpressionContext (expression.Right, childContext, _stage, _context);
 
       if (left != expression.Left || right != expression.Right)
         expression = Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
@@ -141,7 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return base.VisitUnaryExpression (expression);
 
       var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
-      var operand = ApplySqlExpressionContext (expression.Operand, childContext, _stage);
+      var operand = ApplySqlExpressionContext (expression.Operand, childContext, _stage, _context);
 
       if (operand != expression.Operand)
         expression = Expression.MakeUnary (expression.NodeType, operand, expression.Type, expression.Method);
@@ -153,7 +159,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage);
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
       if (newExpression != expression.Expression)
         return new SqlIsNullExpression (newExpression);
       return expression;
@@ -163,7 +169,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage);
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
       if (newExpression != expression.Expression)
         return new SqlIsNotNullExpression (newExpression);
       return expression;
@@ -182,7 +188,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newSqlStatement = _stage.ApplySelectionContext (expression.SqlStatement, _currentContext);
+      var newSqlStatement = _stage.ApplySelectionContext (expression.SqlStatement, _currentContext, _context);
       if (expression.SqlStatement != newSqlStatement)
         return new SqlSubStatementExpression (newSqlStatement);
       return expression;
@@ -192,17 +198,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (new UnresolvedJoinInfo (expression.EntityExpression, expression.MemberInfo, JoinCardinality.One));
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (new UnresolvedJoinInfo (expression.EntityExpression, expression.MemberInfo, JoinCardinality.One), _context);
       switch (_currentContext)
       {
         case SqlExpressionContext.ValueRequired:
-          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo);
+          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context);
         case SqlExpressionContext.SingleValueRequired:
           var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
           if (columnExpression != null && columnExpression.IsPrimaryKey)
             return resolvedJoinInfo.LeftKey;
           else
-            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo).PrimaryKeyColumn;
+            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKeyColumn;
       }
       throw new NotSupportedException (string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
     }
@@ -211,7 +217,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage);
+      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
 
       if (newExpression is SqlEntityExpression)
         // becomes: return ((SqlEntityExpression) newExpression).Update (expression.Name, ...)
@@ -296,7 +302,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression HandleValueSemantics (Expression expression)
     {
       if (!_isTopLevelExpression)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
 
       _isTopLevelExpression = false;
 
@@ -310,7 +316,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression HandlePredicateSemantics (Expression expression)
     {
       if (!_isTopLevelExpression)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage);
+        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
 
       _isTopLevelExpression = false;
 

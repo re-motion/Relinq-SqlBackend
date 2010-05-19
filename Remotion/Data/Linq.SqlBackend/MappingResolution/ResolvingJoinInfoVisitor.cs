@@ -30,28 +30,31 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
 
-    public static ResolvedJoinInfo ResolveJoinInfo (
-        IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    public static ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new ResolvingJoinInfoVisitor (resolver, generator, stage);
+      var visitor = new ResolvingJoinInfoVisitor (resolver, generator, stage, context);
       return (ResolvedJoinInfo) joinInfo.Accept (visitor);
     }
 
-    protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _resolver = resolver;
       _generator = generator;
       _stage = stage;
+      _context = context;
     }
 
     public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
@@ -65,7 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression);
+      var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression, _context);
       var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression, joinInfo.MemberInfo, JoinCardinality.Many);
       return unresolvedJoinInfo.Accept (this);
     }
@@ -73,7 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      var newForeignTableInfo = _stage.ResolveTableInfo (joinInfo.ForeignTableInfo);
+      var newForeignTableInfo = _stage.ResolveTableInfo (joinInfo.ForeignTableInfo, _context);
       if (newForeignTableInfo != joinInfo.ForeignTableInfo)
         return new ResolvedJoinInfo (newForeignTableInfo, joinInfo.LeftKey, joinInfo.RightKey);
       return joinInfo;

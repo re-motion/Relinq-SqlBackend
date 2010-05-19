@@ -24,24 +24,28 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   public class SqlContextJoinInfoVisitor : IJoinInfoVisitor
   {
-    public static IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext context, IMappingResolutionStage stage)
+    public static IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext expressionContext, IMappingResolutionStage stage, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlContextJoinInfoVisitor (stage, context);
+      var visitor = new SqlContextJoinInfoVisitor (stage, expressionContext, mappingResolutionContext);
       return joinInfo.Accept (visitor);
     }
 
     private readonly IMappingResolutionStage _stage;
-    private readonly SqlExpressionContext _context;
+    private readonly SqlExpressionContext _expressionContext;
+    private IMappingResolutionContext _mappingResolutionContext;
 
-    protected SqlContextJoinInfoVisitor (IMappingResolutionStage stage, SqlExpressionContext context)
+    protected SqlContextJoinInfoVisitor (IMappingResolutionStage stage, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("expressionContext", expressionContext);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
       _stage = stage;
-      _context = context;
+      _expressionContext = expressionContext;
+      _mappingResolutionContext = mappingResolutionContext;
     }
 
     public IJoinInfo VisitUnresolvedJoinInfo (UnresolvedJoinInfo joinInfo)
@@ -62,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var newTableInfo = (IResolvedTableInfo) _stage.ApplyContext(joinInfo.ForeignTableInfo, _context); 
+      var newTableInfo = (IResolvedTableInfo) _stage.ApplyContext(joinInfo.ForeignTableInfo, _expressionContext, _mappingResolutionContext); 
       if (joinInfo.ForeignTableInfo != newTableInfo)
         return new ResolvedJoinInfo (newTableInfo, joinInfo.LeftKey, joinInfo.RightKey);
       return joinInfo;

@@ -44,7 +44,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
       var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID", true);
       _columnListExpression = new SqlEntityExpression (
-          sqlTable,
+          typeof(string),
+          "t",
           primaryKeyColumn,
           new[]
           {

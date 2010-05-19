@@ -34,36 +34,39 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
 
-    public static Expression ResolveExpression (
-        Expression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    public static Expression ResolveExpression (Expression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new ResolvingExpressionVisitor (resolver, generator, stage);
+      var visitor = new ResolvingExpressionVisitor (resolver, generator, stage, context);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
-    protected ResolvingExpressionVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage)
+    protected ResolvingExpressionVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _resolver = resolver;
       _generator = generator;
       _stage = stage;
+      _context = context;
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var resolvedExpression = _stage.ResolveTableReferenceExpression (expression);
+      var resolvedExpression = _stage.ResolveTableReferenceExpression (expression, _context);
       return VisitExpression (resolvedExpression);
     }
 
@@ -96,7 +99,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       {
         var unresolvedJoinInfo = new UnresolvedJoinInfo (
             newExpressionAsSqlEntityRefMemberExpression.EntityExpression, newExpressionAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
-        newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression, unresolvedJoinInfo);
+        newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression, unresolvedJoinInfo, _context);
       }
 
       // member applied to an entity?
@@ -136,7 +139,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement);
+      var newSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
       return new SqlSubStatementExpression (newSqlStatement);
     }
 
@@ -148,10 +151,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpression is SqlEntityExpression)
         return newExpression; // becomes: return ((SqlEntityExpression) newExpression).Update (expression.Name, ...)
 
-      //if (newExpression is SqlEntityRefMemberExpression)
-      //  return new SqlEntityRefMemberExpression (
-      //      ((SqlEntityRefMemberExpression) newExpression).SqlTable, ((SqlEntityRefMemberExpression) newExpression).MemberInfo);
-      
       if (newExpression != expression.Expression)
         return new NamedExpression (expression.Name, newExpression);
       return expression;

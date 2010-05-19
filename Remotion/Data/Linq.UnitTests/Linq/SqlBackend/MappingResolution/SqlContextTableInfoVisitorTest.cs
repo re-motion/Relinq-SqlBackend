@@ -35,11 +35,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   public class SqlContextTableInfoVisitorTest
   {
     private IMappingResolutionStage _stageMock;
+    private IMappingResolutionContext _mappingresolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateMock<IMappingResolutionStage> ();
+      _mappingresolutionContext = new MappingResolutionContext();
     }
 
     [Test]
@@ -47,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
 
       Assert.That (result, Is.SameAs (tableInfo));
     }
@@ -57,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var tableInfo = new UnresolvedTableInfo (typeof (Cook));
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
 
       Assert.That (result, Is.SameAs (tableInfo));
     }
@@ -72,11 +74,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
      
       _stageMock
-          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
           .Return (subStatement);
       _stageMock.Replay ();
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (subStatementTableInfo, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextTableInfoVisitor.ApplyContext (subStatementTableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
 
       Assert.That (result, Is.SameAs (subStatementTableInfo));
       _stageMock.VerifyAllExpectations ();
@@ -96,11 +98,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       }.GetSqlStatement ();
 
       _stageMock
-          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
           .Return (returnedStatement);
       _stageMock.Replay ();
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (subStatementTableInfo, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextTableInfoVisitor.ApplyContext (subStatementTableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.SameAs (subStatementTableInfo));
@@ -114,11 +116,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left);
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
           .Return (resolvedJoinInfo);
       _stageMock.Replay ();
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (sqlJoinedTable));
@@ -133,11 +135,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired))
+          .Expect (mock => mock.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
           .Return (fakeJoinInfo);
       _stageMock.Replay ();
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock);
+      var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (((SqlJoinedTable) result).JoinInfo, Is.SameAs (fakeJoinInfo));

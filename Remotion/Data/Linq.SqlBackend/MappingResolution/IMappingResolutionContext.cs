@@ -14,26 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using System;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
-  public class TestableSqlContextExpressionVisitor : SqlContextExpressionVisitor
+  /// <summary>
+  /// <see cref="IMappingResolutionContext"/> provides methods to handle a concrete mapping resolution context.
+  /// </summary>
+  public interface IMappingResolutionContext
   {
-    public TestableSqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
-        : base (currentContext, isTopLevelExpression, stage, context)
-    {
-    }
-
-    public new Expression VisitBinaryExpression (BinaryExpression expression)
-    {
-      return base.VisitBinaryExpression (expression);
-    }
-
-    public new Expression VisitUnaryExpression (UnaryExpression expression)
-    {
-      return base.VisitUnaryExpression (expression);
-    }
+    void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable);
+    SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression);
   }
 }

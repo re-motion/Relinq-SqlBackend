@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name", false);
       _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City", false);
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _entityExpression = new SqlEntityExpression (_tableReferenceExpression.SqlTable, _columnExpression1, _orginalColumns);
+      _entityExpression = new SqlEntityExpression (typeof(Cook), "t", _columnExpression1, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.ProjectionColumns;
     }
 
@@ -119,11 +119,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
                        new SqlColumnExpression (typeof (string), "c", "FirstName", false)
                    };
 
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (int), "c", "ID", true), columns);
+      var entityExpression = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (int), "c", "ID", true), columns);
       var newSqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("CookTable", "c1");
 
       var expectedResult = new SqlEntityExpression (
-          newSqlTable,
+          typeof(Cook),
+          "c1",
           new SqlColumnExpression (typeof (int), "c1", "ID", true),
           new[]
           {
@@ -133,7 +134,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       var result = entityExpression.Clone (newSqlTable);
 
-      Assert.That (result.SqlTable, Is.SameAs (newSqlTable));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }

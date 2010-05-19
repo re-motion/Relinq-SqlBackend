@@ -40,13 +40,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private SqlTable _sqlTable;
     private ResolvedSimpleTableInfo _fakeResolvedSimpleTableInfo;
     private IMappingResolutionStage _stageMock;
+    private IMappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage>();
+      _mappingResolutionContext = new MappingResolutionContext();
 
-      _visitor = new TestableSqlStatementResolver (_stageMock);
+      _visitor = new TestableSqlStatementResolver (_stageMock, _mappingResolutionContext);
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
@@ -57,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesTableInfo ()
     {
       _stageMock
-          .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
+          .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
           .Return (_fakeResolvedSimpleTableInfo);
       _stageMock.Replay();
 
@@ -71,8 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo ()
     {
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
       var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
 
@@ -81,10 +82,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       using (_stageMock.GetMockRepository().Ordered())
       {
         _stageMock
-            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join.JoinInfo, _mappingResolutionContext))
             .Return (fakeResolvedJoinInfo);
       }
       _stageMock.Replay();
@@ -99,12 +100,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo_Multiple ()
     {
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
-      var entityExpression1 = new SqlEntityExpression (sqlTable1, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression1 = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
       var memberInfo2 = typeof (Kitchen).GetProperty ("Restaurant");
-      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
-      var entityExpression2 = new SqlEntityExpression (sqlTable2, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression2 = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
       var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
       var join2 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
@@ -115,13 +114,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       using (_stageMock.GetMockRepository().Ordered())
       {
         _stageMock
-            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join1.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join1.JoinInfo, _mappingResolutionContext))
             .Return (fakeResolvedJoinInfo1);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join2.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join2.JoinInfo, _mappingResolutionContext))
             .Return (fakeResolvedJoinInfo2);
       }
       _stageMock.Replay();
@@ -137,16 +136,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTable_ResolvesJoinInfo_Recursive ()
     {
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-      var sqlTable1 = new SqlTable(new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"));
-      var entityExpression1 = new SqlEntityExpression (sqlTable1, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression1 = new SqlEntityExpression (typeof(Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
       var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
-      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c1"));
-      var entityExpression2 = new SqlEntityExpression (sqlTable2, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression2 = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
       var memberInfo3 = typeof (Cook).GetProperty ("Name");
-      var sqlTable3 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c2"));
-      var entityExpression3 = new SqlEntityExpression (sqlTable3, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression3 = new SqlEntityExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo3 = new UnresolvedJoinInfo (entityExpression3, memberInfo3, JoinCardinality.One);
       
       var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
@@ -160,16 +156,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       using (_stageMock.GetMockRepository().Ordered())
       {
         _stageMock
-            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo))
+            .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
             .Return (_fakeResolvedSimpleTableInfo);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join1.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join1.JoinInfo, _mappingResolutionContext))
             .Return (fakeResolvedJoinInfo1);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join2.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join2.JoinInfo, _mappingResolutionContext))
             .Return (fakeResolvedJoinInfo2);
         _stageMock
-            .Expect (mock => mock.ResolveJoinInfo (join3.JoinInfo))
+            .Expect (mock => mock.ResolveJoinInfo (join3.JoinInfo, _mappingResolutionContext))
             .Return (fakeResolvedJoinInfo3);
       }
       _stageMock.Replay();
@@ -189,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-          .Expect (mock => mock.ResolveSelectExpression (expression))
+          .Expect (mock => mock.ResolveSelectExpression (expression, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay();
 
@@ -207,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-          .Expect (mock => mock.ResolveTopExpression (expression))
+          .Expect (mock => mock.ResolveTopExpression (expression, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay();
 
@@ -225,7 +221,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-          .Expect (mock => mock.ResolveWhereExpression (expression))
+          .Expect (mock => mock.ResolveWhereExpression (expression, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay();
 
@@ -243,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-          .Expect (mock => mock.ResolveOrderingExpression (expression))
+          .Expect (mock => mock.ResolveOrderingExpression (expression, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay();
 
@@ -263,7 +259,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
       
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (joinInfo))
+          .Expect (mock => mock.ResolveJoinInfo (joinInfo, _mappingResolutionContext))
           .Return (fakeJoinInfo);
       _stageMock.Replay();
 
@@ -291,19 +287,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeExpression = Expression.Constant (new Cook());
 
       _stageMock
-          .Expect (mock => mock.ResolveSelectExpression (constantExpression))
+          .Expect (mock => mock.ResolveSelectExpression (constantExpression, _mappingResolutionContext))
           .Return (fakeExpression);
       _stageMock
-          .Expect (mock => mock.ResolveWhereExpression(whereCondition))
+          .Expect (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
           .Return (whereCondition);
       _stageMock
-          .Expect (mock => mock.ResolveTopExpression(topExpression))
+          .Expect (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
           .Return (topExpression);
       _stageMock
-          .Expect (mock => mock.ResolveOrderingExpression(ordering.Expression))
+          .Expect (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
           .Return (ordering.Expression);
       _stageMock
-          .Expect (mock => mock.ResolveTableInfo(((SqlTable) sqlStatement.SqlTables[0]).TableInfo))
+          .Expect (mock => mock.ResolveTableInfo(((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _mappingResolutionContext))
           .Return (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"));
       _stageMock.Replay();
 
