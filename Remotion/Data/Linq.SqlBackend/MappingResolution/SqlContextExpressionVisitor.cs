@@ -220,8 +220,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
 
       if (newExpression is SqlEntityExpression)
-        // becomes: return ((SqlEntityExpression) newExpression).Update (expression.Name, ...)
-        return newExpression; // TODO: Unit test that newExpression is returned; e.g., NamedExpression (SqlEntityRefMemberExpression ()) with ValueRequired => entity expression should be returned, not entity ref expression
+        // TODO: Unit test that newExpression is returned; e.g., NamedExpression (SqlEntityRefMemberExpression ()) with ValueRequired => entity expression should be returned, not entity ref expression
+        return ((SqlEntityExpression) newExpression).Update (newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, expression.Name);
       else // TODO: if newExpression != expression.Expression
         return new NamedExpression (expression.Name, newExpression);
     }

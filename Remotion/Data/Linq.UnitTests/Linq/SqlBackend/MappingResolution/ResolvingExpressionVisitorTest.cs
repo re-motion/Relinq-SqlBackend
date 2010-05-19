@@ -230,6 +230,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    [Ignore("TODO 2781")]
     public void VisitNamedExpression_SqlEntityExression ()
     {
       var constantExpression = Expression.Constant (5);
