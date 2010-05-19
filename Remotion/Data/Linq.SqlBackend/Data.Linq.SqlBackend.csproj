@@ -43,9 +43,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591;419</NoWarn>
-    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <DocumentationFile>bin\Debug\Remotion.Data.Linq.SqlBackend.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,6 +57,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591;0419</NoWarn>
+    <DocumentationFile>bin\Release\Remotion.Data.Linq.SqlBackend.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
