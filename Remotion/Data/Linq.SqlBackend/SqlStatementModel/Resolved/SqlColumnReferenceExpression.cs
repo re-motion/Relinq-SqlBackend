@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -37,6 +39,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public SqlEntityExpression ReferencedEntity
     {
       get { return _referencedEntity; }
+    }
+
+    public override Expression Accept (ExpressionTreeVisitor visitor)
+    {
+      var specificVisitor = visitor as ISqlColumnExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlColumnReferenceExpression (this);
+      else
+        return base.Accept (visitor);
     }
 
     public override SqlColumnExpression Update (Type type, string tableAlias, string columnName, bool isPrimaryKey)

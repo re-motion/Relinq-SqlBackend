@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
@@ -26,28 +27,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
   [TestFixture]
   public class SqlColumnReferenceExpressionTest
   {
+    private SqlEntityDefinitionExpression _entityExpression;
+    private SqlColumnReferenceExpression _columnExpression;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
+      
+      _columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, _entityExpression);
+    }
+
     [Test]
     public void Initialize_SetReferenceEntity ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
-      var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
-
-      Assert.That (columnExpression.ReferencedEntity, Is.SameAs (entityExpression));
+      Assert.That (_columnExpression.ReferencedEntity, Is.SameAs (_entityExpression));
     }
 
     [Test]
     public void Update ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
-      var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
+      var result = _columnExpression.Update (typeof (char), "f", "test", false);
 
-      var result = columnExpression.Update (typeof (char), "f", "test", false);
-
-      var expectedResult = new SqlColumnReferenceExpression (typeof (char), "f", "test", false, entityExpression);
+      var expectedResult = new SqlColumnReferenceExpression (typeof (char), "f", "test", false, _entityExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
+    }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnReferenceExpression, ISqlColumnExpressionVisitor> (
+          _columnExpression,
+          mock => mock.VisitSqlColumnReferenceExpression (_columnExpression));
     }
   }
 }

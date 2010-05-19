@@ -16,33 +16,12 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
-  public class SqlColumnDefinitionExpression : SqlColumnExpression
+  public interface ISqlColumnExpressionVisitor
   {
-    public SqlColumnDefinitionExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
-        : base(type, owningTableAlias, columnName, isPrimaryKey)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
-      
-     
-    }
-
-    public override SqlColumnExpression Update (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
-    {
-      return new SqlColumnDefinitionExpression (type, owningTableAlias, columnName, isPrimaryKey);
-    }
-
-    public override Expression Accept (ExpressionTreeVisitor visitor)
-    {
-      var specificVisitor = visitor as ISqlColumnExpressionVisitor;
-      if (specificVisitor != null)
-        return specificVisitor.VisitSqlColumnDefinitionExpression (this);
-      else
-        return base.Accept (visitor);
-    }
+    Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression);
+    Expression VisitSqlColumnReferenceExpression (SqlColumnReferenceExpression expression);
   }
 }

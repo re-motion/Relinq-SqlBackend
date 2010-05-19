@@ -25,7 +25,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
   [TestFixture]
   public class SqlColumnDefinitionExpressionTest
   {
-    private SqlColumnExpression _columnExpression;
+    private SqlColumnDefinitionExpression _columnExpression;
 
     [SetUp]
     public void SetUp ()
@@ -35,6 +35,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnDefinitionExpression, ISqlColumnExpressionVisitor> (
+          _columnExpression,
+          mock => mock.VisitSqlColumnDefinitionExpression (_columnExpression));
+    }
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType_BaseAccept ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnExpression, IResolvedSqlExpressionVisitor> (
           _columnExpression,

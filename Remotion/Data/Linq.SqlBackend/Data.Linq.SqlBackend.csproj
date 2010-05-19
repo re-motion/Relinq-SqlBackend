@@ -153,6 +153,7 @@
     <Compile Include="SqlStatementModel\NamedExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\IResolvedTableInfo.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ISqlColumnExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedSimpleTableInfo.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedSubStatementTableInfo.cs" />
