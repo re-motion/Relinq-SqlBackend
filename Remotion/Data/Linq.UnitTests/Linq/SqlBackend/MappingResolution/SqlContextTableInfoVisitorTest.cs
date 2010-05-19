@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ApplyContext_SqlJoinedTable_SameJoinInfo ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID", false), new SqlColumnExpression (typeof (int), "r", "CookID", false));
+      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false), new SqlColumnDefinitionExpression (typeof (int), "r", "CookID", false));
       var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left);
 
       _stageMock
@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ApplyContext_SqlJoinedTable_NewJoinInfo ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnExpression (typeof (int), "c", "ID", false), new SqlColumnExpression (typeof (int), "r", "CookID", false));
+      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false), new SqlColumnDefinitionExpression (typeof (int), "r", "CookID", false));
       var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left);
       var fakeJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
 

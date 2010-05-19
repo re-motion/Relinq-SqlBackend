@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo_StreamedSequenceInfo ()
     {
       var previousSelectProjection = Expression.Constant (typeof (Restaurant));
-      _statementBuilder.SelectProjection = new SqlColumnExpression(typeof(string), "c", "Name", false);
+      _statementBuilder.SelectProjection = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
       _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (typeof (Restaurant)), Expression.Constant (new Restaurant()));
       
       _statementBuilder.RecalculateDataInfo(previousSelectProjection);
@@ -188,7 +188,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo_StreamedSingleValueInfo ()
     {
       var previousSelectProjection = Expression.Constant ("test");
-      _statementBuilder.SelectProjection = new SqlColumnExpression (typeof (int), "c", "Length", false);
+      _statementBuilder.SelectProjection = new SqlColumnDefinitionExpression (typeof (int), "c", "Length", false);
       _statementBuilder.DataInfo = new StreamedSingleValueInfo (typeof(string), false);
 
       _statementBuilder.RecalculateDataInfo (previousSelectProjection);
@@ -201,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo_StreamedScalarValueInfo_SameDataInfo ()
     {
       var previousSelectProjection = Expression.Constant ("test");
-      _statementBuilder.SelectProjection = new SqlColumnExpression (typeof (int), "c", "Length", false);
+      _statementBuilder.SelectProjection = new SqlColumnDefinitionExpression (typeof (int), "c", "Length", false);
       _statementBuilder.DataInfo = new StreamedScalarValueInfo(typeof(string));
 
       _statementBuilder.RecalculateDataInfo (previousSelectProjection);
@@ -214,7 +214,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo_SameDataInfo ()
     {
       var previousSelectProjection = Expression.Constant ("test");
-      _statementBuilder.SelectProjection = new SqlColumnExpression (typeof (int), "c", "Length", false);
+      _statementBuilder.SelectProjection = new SqlColumnDefinitionExpression (typeof (int), "c", "Length", false);
      
       _statementBuilder.RecalculateDataInfo (previousSelectProjection);
 
@@ -226,7 +226,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo_UnchangedProjectionType_SameDataInfo ()
     {
       var previousSelectProjection = Expression.Constant ("test");
-      _statementBuilder.SelectProjection = new SqlColumnExpression (typeof (string), "c", "Length", false);
+      _statementBuilder.SelectProjection = new SqlColumnDefinitionExpression (typeof (string), "c", "Length", false);
 
       _statementBuilder.RecalculateDataInfo (previousSelectProjection);
 

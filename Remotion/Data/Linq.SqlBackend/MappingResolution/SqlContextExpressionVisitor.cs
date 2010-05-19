@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (expression.Type == typeof (bool))
         // becomes expression.Update (...)
-        return new SqlColumnExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
+        return new SqlColumnDefinitionExpression (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
       else
         return expression; // rely on VisitExpression to apply correct semantics
     }

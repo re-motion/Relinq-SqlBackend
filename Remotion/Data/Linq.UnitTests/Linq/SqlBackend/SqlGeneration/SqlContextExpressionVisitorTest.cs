@@ -238,29 +238,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlColumnExpression_BoolColumn_ConvertedToIntColumn_NoPrimaryColumn ()
     {
-      var column = new SqlColumnExpression (typeof (bool), "x", "y", false);
+      var column = new SqlColumnDefinitionExpression (typeof (bool), "x", "y", false);
 
       var result = _nonTopLevelVisitor.VisitSqlColumnExpression (column);
 
-      var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y", false);
+      var expectedExpression = new SqlColumnDefinitionExpression (typeof (int), "x", "y", false);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
     public void VisitSqlColumnExpression_BoolColumn_ConvertedToIntColumn_IsPrimaryColumn ()
     {
-      var column = new SqlColumnExpression (typeof (bool), "x", "y", true);
+      var column = new SqlColumnDefinitionExpression (typeof (bool), "x", "y", true);
 
       var result = _nonTopLevelVisitor.VisitSqlColumnExpression (column);
 
-      var expectedExpression = new SqlColumnExpression (typeof (int), "x", "y", true);
+      var expectedExpression = new SqlColumnDefinitionExpression (typeof (int), "x", "y", true);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
     public void VisitSqlColumnExpression_OtherColumn ()
     {
-      var column = new SqlColumnExpression (typeof (string), "x", "y", false);
+      var column = new SqlColumnDefinitionExpression (typeof (string), "x", "y", false);
 
       var result = _nonTopLevelVisitor.VisitSqlColumnExpression (column);
 
@@ -556,10 +556,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
-      var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
+      var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
       var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", primaryKeyColumn, primaryKeyColumn);
 
@@ -584,10 +584,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
-      var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
+      var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
       var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", primaryKeyColumn, primaryKeyColumn);
 
@@ -610,12 +610,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
-      var sqlTable = new SqlTable (resolvedSimpleTableInfo);
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "k", "ID", true);
-      var foreignKeyColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
+      var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
       var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
 
       _stageMock
@@ -633,7 +632,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException(typeof(NotSupportedException))]
     public void VisitSqlEntityRefMemberExpression_PredicateSemantic ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var memberInfo = typeof (Cook).GetProperty ("ID");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 

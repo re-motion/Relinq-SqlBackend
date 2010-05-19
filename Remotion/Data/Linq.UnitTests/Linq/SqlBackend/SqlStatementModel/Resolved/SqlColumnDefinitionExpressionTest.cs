@@ -22,14 +22,14 @@ using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class SqlColumnExpressionTest
+  public class SqlColumnDefinitionExpressionTest
   {
     private SqlColumnExpression _columnExpression;
 
     [SetUp]
     public void SetUp ()
     {
-      _columnExpression = new SqlColumnExpression (typeof (int), "t", "name", false);
+      _columnExpression = new SqlColumnDefinitionExpression (typeof (int), "t", "name", false);
     }
 
     [Test]

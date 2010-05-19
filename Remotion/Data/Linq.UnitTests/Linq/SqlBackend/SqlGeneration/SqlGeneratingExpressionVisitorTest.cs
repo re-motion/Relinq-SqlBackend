@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnExpression ()
     {
-      var sqlColumnExpression = new SqlColumnExpression (typeof (int), "s", "ID", false);
+      var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnExpression, _commandBuilder, _stageMock);
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnExpressionWithStart ()
     {
-      var sqlColumnExpression = new SqlColumnExpression (typeof (Cook), "c", "*", false);
+      var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (Cook), "c", "*", false);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].*"));
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression ()
     {
-      var primaryKeyColumn = new SqlColumnExpression (typeof (string), "t", "ID", true);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof(string),
           "t",
@@ -78,8 +78,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnExpression (typeof (string), "t", "Name", false),
-              new SqlColumnExpression (typeof (string), "t", "City", false)
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnListExpression, _commandBuilder, _stageMock);
@@ -305,8 +305,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitJoinConditionExpression ()
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var primaryColumn = new SqlColumnExpression (typeof (Cook), "c", "ID", false);
-      var foreignColumn = new SqlColumnExpression (typeof (Cook), "a", "FK", false);
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (Cook), "a", "FK", false);
       var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, primaryColumn, foreignColumn);
       var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
       var joinConditionExpression = new JoinConditionExpression (sqlTable);
@@ -447,7 +447,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitNamedExpression_NameIsNotNull ()
     {
-      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
       var expression = new NamedExpression ("test", columnExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
@@ -458,7 +458,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitNamedExpression_NameIsNull ()
     {
-      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
       var expression = new NamedExpression (null, columnExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
@@ -469,7 +469,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitAggregationExpression_Max ()
     {
-      var columnExpression = new NamedExpression(null, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new AggregationExpression(typeof(int), columnExpression, AggregationModifier.Max);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
@@ -480,7 +480,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitAggregationExpression_Min ()
     {
-      var columnExpression = new NamedExpression(null, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Min);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
@@ -491,7 +491,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitAggregationExpression_Sum ()
     {
-      var columnExpression = new NamedExpression(null, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Sum);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
@@ -502,7 +502,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitAggregationExpression_Average ()
     {
-      var columnExpression = new NamedExpression(null, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new AggregationExpression (typeof(double), columnExpression, AggregationModifier.Average);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
@@ -513,7 +513,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitAggregationExpression_Count ()
     {
-      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
       var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Count);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);

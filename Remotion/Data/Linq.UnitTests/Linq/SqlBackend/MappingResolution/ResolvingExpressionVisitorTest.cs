@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant (new Cook());
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (int), "c", "ID", false));
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
 
       var fakeResult = Expression.Constant (0);
 
@@ -126,10 +126,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitMemberExpression_OnEntityRefMemberExpression ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (int), "c", "ID", true));
+      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
       var fakeResult = Expression.Constant (0);
 
       _stageMock
@@ -164,7 +164,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitMemberExpression_OnConvertExpression ()
     {
-      var operand = new SqlColumnExpression (typeof (Cook), "c", "ID", false);
+      var operand = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
       var convertExpression = Expression.Convert (operand, typeof (Chef));
       var memberExpression = Expression.MakeMemberAccess (convertExpression, typeof (Chef).GetProperty ("LetterOfRecommendation"));
 
@@ -210,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expression = Expression.Constant (new Cook());
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
       var constantExpression = Expression.Constant ("test");
-      var columnExpression = new SqlColumnExpression (typeof (string), "c", "Name", false);
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
@@ -234,7 +234,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var constantExpression = Expression.Constant (5);
       var namedExpression = new NamedExpression ("test", constantExpression);
-      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
@@ -253,7 +253,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var constantExpression = Expression.Constant (5);
       var namedExpression = new NamedExpression ("test", constantExpression);
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var fakeResult = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       var expectedResult = new NamedExpression ("test", new SqlEntityRefMemberExpression (entityExpression, memberInfo));
 
@@ -403,7 +403,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var memberInfo = typeof (Cook).GetProperty ("ID");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var entityRefmemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       var result = ResolvingExpressionVisitor.ResolveExpression (entityRefmemberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);

@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)
     {
-      return new SqlColumnExpression (type, TableAlias, columnName, isPrimaryKeyColumn);
+      return new SqlColumnDefinitionExpression (type, TableAlias, columnName, isPrimaryKeyColumn);
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
     {
-      return new SqlColumnExpression (originalColumn.Type, newAlias, originalColumn.ColumnName, originalColumn.IsPrimaryKey);
+      return new SqlColumnDefinitionExpression (originalColumn.Type, newAlias, originalColumn.ColumnName, originalColumn.IsPrimaryKey);
     }
   }
 }

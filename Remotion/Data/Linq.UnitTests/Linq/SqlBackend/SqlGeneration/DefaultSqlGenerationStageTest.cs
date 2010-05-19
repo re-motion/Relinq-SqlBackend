@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID", true);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
       _columnListExpression = new SqlEntityDefinitionExpression (
           typeof(string),
           "t",
@@ -50,8 +50,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnExpression (typeof (int), "t", "Name", false),
-              new SqlColumnExpression (typeof (int), "t", "City", false)
+              new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
 
       _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false);
@@ -196,7 +196,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForJoinKeyExpression ()
     {
-      var expression = new SqlColumnExpression (typeof (int), "c", "ID", false);
+      var expression = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
 
       _stageMock
           .Expect (

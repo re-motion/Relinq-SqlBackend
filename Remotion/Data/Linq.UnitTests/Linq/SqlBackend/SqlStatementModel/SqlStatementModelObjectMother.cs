@@ -142,7 +142,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var joinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
       return new SqlJoinedTable (joinInfo, JoinSemantics.Left);
     }
@@ -160,7 +160,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       return new UnresolvedJoinInfo (entityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
     }
 
@@ -186,15 +186,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type)
     {
-      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
-      var foreignColumn = new SqlColumnExpression (typeof (int), "s", "ID", false);
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
       var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 
     public static SqlEntityExpression CreateSqlEntityExpression (Type type)
     {
-      var primaryKeyColumn = new SqlColumnExpression (typeof (int), "t", "ID", true);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
       return new SqlEntityDefinitionExpression (
           type,
           "t",
@@ -202,8 +202,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnExpression (typeof (int), "t", "Name", false),
-              new SqlColumnExpression (typeof (int), "t", "City", false)
+              new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
     }
   }

@@ -25,21 +25,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="SqlColumnExpression"/> represents a sql-specific column expression.
   /// </summary>
-  public class SqlColumnExpression : ExtensionExpression
+  public abstract class SqlColumnExpression : ExtensionExpression
   {
     private readonly string _owningTableAlias;
     private readonly string _columnName;
     private readonly bool _isPrimaryKey;
 
-    public SqlColumnExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
+    protected SqlColumnExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
         : base(type)
     {
       ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
       ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
       ArgumentUtility.CheckNotNull ("isPrimaryKey", isPrimaryKey);
 
-      _columnName = columnName;
       _owningTableAlias = owningTableAlias;
+      _columnName = columnName;
       _isPrimaryKey = isPrimaryKey;
     }
 

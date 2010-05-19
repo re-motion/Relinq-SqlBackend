@@ -52,8 +52,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveJoinInfo_ResolvesUnresolvedJoinInfo ()
     {
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
-      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
-      var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
 
       var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
 
@@ -80,8 +80,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
       var resolvedJoinInfo = new ResolvedJoinInfo (
           foreignTableInfo,
-          new SqlColumnExpression (typeof (string), "c", "ID", false),
-          new SqlColumnExpression (typeof (string), "c", "ID", false));
+          new SqlColumnDefinitionExpression (typeof (string), "c", "ID", false),
+          new SqlColumnDefinitionExpression (typeof (string), "c", "ID", false));
       _resolverMock
           .Expect (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
           .Return (resolvedJoinInfo);
@@ -108,8 +108,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
 
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
-      var primaryColumn = new SqlColumnExpression (typeof (int), "k", "ID", false);
-      var foreignColumn = new SqlColumnExpression (typeof (int), "c", "KitchenID", false);
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
       var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
 
       _stageMock

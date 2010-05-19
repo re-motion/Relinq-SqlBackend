@@ -40,9 +40,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [SetUp]
     public void SetUp ()
     {
-      _columnExpression1 = new SqlColumnExpression (typeof (int), "t", "ID", false);
-      _columnExpression2 = new SqlColumnExpression (typeof (int), "t", "Name", false);
-      _columnExpression3 = new SqlColumnExpression (typeof (int), "t", "City", false);
+      _columnExpression1 = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", false);
+      _columnExpression2 = new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false);
+      _columnExpression3 = new SqlColumnDefinitionExpression (typeof (int), "t", "City", false);
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
       _entityExpression = new SqlEntityDefinitionExpression (typeof(Cook), "t", _columnExpression1, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.Columns;
@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [Test]
     public void VisitChildren_ChangeColumn ()
     {
-      var newColumnExpression = new SqlColumnExpression (typeof (string), "o", "Test", false);
+      var newColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Test", false);
 
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };
@@ -109,20 +109,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var columns = new[]
                    {
-                       new SqlColumnExpression (typeof (string), "c", "Name", false),
-                       new SqlColumnExpression (typeof (string), "c", "FirstName", false)
+                       new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false),
+                       new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
                    };
 
-      var entityExpression = new SqlEntityDefinitionExpression (typeof(Cook), "c", new SqlColumnExpression (typeof (int), "c", "ID", true), columns);
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
       
       var expectedResult = new SqlEntityDefinitionExpression (
           typeof(Cook),
           "c1",
-          new SqlColumnExpression (typeof (int), "c1", "ID", true),
+          new SqlColumnDefinitionExpression (typeof (int), "c1", "ID", true),
           new[]
           {
-              new SqlColumnExpression (typeof (string), "c1", "Name", false),
-              new SqlColumnExpression (typeof (string), "c1", "FirstName", false)
+              new SqlColumnDefinitionExpression (typeof (string), "c1", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "c1", "FirstName", false)
           });
 
       var result = entityExpression.CreateReference("c1");

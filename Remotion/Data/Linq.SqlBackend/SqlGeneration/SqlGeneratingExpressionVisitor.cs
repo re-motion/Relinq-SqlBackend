@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       // becomes SqlColumnDefinitionExpression _or_ directly emit corresponding SQL
-      var columnExpression = new SqlColumnExpression (expression.Type, expression.TableAlias, expression.Name ?? "value", false);
+      var columnExpression = new SqlColumnDefinitionExpression (expression.Type, expression.TableAlias, expression.Name ?? "value", false);
       return VisitExpression (columnExpression);
     }
 

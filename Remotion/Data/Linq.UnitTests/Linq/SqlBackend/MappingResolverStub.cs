@@ -179,7 +179,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       if (memberInfo.DeclaringType == typeof (MetaID))
       {
         if (memberInfo.Name == "ClassID")
-          return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
+          return new SqlColumnDefinitionExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
       }
       throw new UnmappedItemException ("Cannot resolve member for: " + memberInfo.Name);
     }
@@ -204,7 +204,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
 
     private SqlColumnExpression CreateColumn (Type columnType, string tableAlias, string columnName, bool isPriamryKey)
     {
-      return new SqlColumnExpression (columnType, tableAlias, columnName, isPriamryKey);
+      return new SqlColumnDefinitionExpression (columnType, tableAlias, columnName, isPriamryKey);
     }
 
     private SqlEntityExpression CreateEntityExpression (SqlTableBase sqlTable, IResolvedTableInfo tableInfo)
