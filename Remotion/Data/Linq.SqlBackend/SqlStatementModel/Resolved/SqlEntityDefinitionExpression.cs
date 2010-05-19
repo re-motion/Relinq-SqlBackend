@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
       //return new SqlEntityDefinitionExpression (Type, newTableAlias, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
 
-      return new SqlEntityReferenceExpression (Type, newTableAlias, this); //TODO 2778: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
+      return new SqlEntityReferenceExpression (Type, newTableAlias, this); //TODO 2779: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
     }
 
     private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
