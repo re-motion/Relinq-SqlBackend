@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
       _columnListExpression = new SqlEntityDefinitionExpression (
           typeof(string),
-          "t",
+          "t", null,
           primaryKeyColumn,
           new[]
           {

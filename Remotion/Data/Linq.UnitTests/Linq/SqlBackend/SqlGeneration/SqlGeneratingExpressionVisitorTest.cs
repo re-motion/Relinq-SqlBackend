@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof(string),
-          "t",
+          "t", null,
           primaryKeyColumn,
           new[]
           {
@@ -85,6 +85,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           sqlColumnListExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_NamedEntity ()
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
+      var sqlColumnListExpression = new SqlEntityDefinitionExpression (
+          typeof (string),
+          "t", 
+          "Test",
+          primaryKeyColumn,
+          new[]
+          {
+              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+          });
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlColumnListExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID] AS [Test_ID],[t].[Name] AS [Test_Name],[t].[City] AS [Test_City]"));
     }
 
     [Test]

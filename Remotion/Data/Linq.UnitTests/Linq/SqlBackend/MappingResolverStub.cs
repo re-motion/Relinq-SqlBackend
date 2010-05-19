@@ -215,7 +215,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
             sqlTable.ItemType,
-            tableInfo.TableAlias,
+            tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
             {
@@ -233,7 +233,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
             sqlTable.ItemType,
-            tableInfo.TableAlias,
+            tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
             {
@@ -249,7 +249,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
             sqlTable.ItemType,
-            tableInfo.TableAlias,
+            tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
             {
@@ -263,7 +263,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
              sqlTable.ItemType,
-            tableInfo.TableAlias,
+            tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
             {

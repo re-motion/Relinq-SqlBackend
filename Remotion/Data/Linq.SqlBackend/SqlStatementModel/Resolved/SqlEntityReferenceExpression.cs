@@ -29,8 +29,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
     private readonly SqlEntityExpression _referencedEntity;
 
-    public SqlEntityReferenceExpression (Type itemType, string tableAlias, SqlEntityExpression referencedEntity)
-        : base(itemType, tableAlias, null)
+    public SqlEntityReferenceExpression (Type itemType, string tableAlias, SqlEntityExpression referencedEntity, string entityName)
+        : base(itemType, tableAlias, entityName)
     {
       ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
 
@@ -63,12 +63,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression Update (Type itemType, string tableAlias)
     {
-      return new SqlEntityReferenceExpression (itemType, tableAlias, _referencedEntity);
+      return new SqlEntityReferenceExpression (itemType, tableAlias, _referencedEntity, null);
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
     {
-      return new SqlEntityReferenceExpression(Type, newTableAlias, _referencedEntity);
+      return new SqlEntityReferenceExpression(Type, newTableAlias, _referencedEntity, null);
     }
   }
 }

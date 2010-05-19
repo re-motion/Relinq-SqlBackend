@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       _columnExpression2 = new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false);
       _columnExpression3 = new SqlColumnDefinitionExpression (typeof (int), "t", "City", false);
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _entityExpression = new SqlEntityDefinitionExpression (typeof(Cook), "t", _columnExpression1, _orginalColumns);
+      _entityExpression = new SqlEntityDefinitionExpression (typeof(Cook), "t", null, _columnExpression1, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.Columns;
     }
 
@@ -113,12 +113,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
                        new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
                    };
 
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
       var expectedResult = new SqlEntityReferenceExpression (
           typeof(Cook),
           "c1",
-          entityExpression);
+          entityExpression, null);
 
       var result = entityExpression.CreateReference("c1");
 
@@ -134,10 +134,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
                        new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
                    };
 
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
       var expectedResult = new SqlEntityDefinitionExpression (
-          typeof (Kitchen), "f", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+          typeof (Kitchen), "f", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
       var result = entityExpression.Update (typeof (Kitchen), "f");
 

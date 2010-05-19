@@ -30,9 +30,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression, null);
 
       var exptecedPrimaryColumn = new SqlColumnReferenceExpression (typeof (int), "t", "ID", true, entityDefinitionExpression);
       var exppectedColumn = new SqlColumnReferenceExpression (typeof (string), "t", "Name", false, entityDefinitionExpression);
@@ -46,9 +46,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression, null);
 
       var result = entityReferenceExpression.GetColumn (typeof (string), "Test", false);
 
@@ -62,11 +62,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression, null);
       
-      var exptectedResult = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var exptectedResult = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression, null);
 
       var result = entityReferenceExpression.CreateReference ("t");
 
@@ -78,13 +78,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression, null);
 
       var result = entityReferenceExpression.Update (typeof (Kitchen), "f");
 
-      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", entityDefinitionExpression);
+      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", entityDefinitionExpression, null);
 
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
     }

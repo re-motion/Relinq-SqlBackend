@@ -324,9 +324,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     private void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       column.Accept (this);
-      // if (entity.Name != null)
-      //   Append " AS ";
-      //   AppendIdentifier (entity.Name + "_" + column.Name);
+      if (entity.Name != null)
+      {
+        _commandBuilder.Append (" AS ");
+        _commandBuilder.AppendIdentifier (entity.Name + "_" + column.ColumnName);
+      }
     }
 
     private void AppendColumn (string columnName, string prefix) // add string referencedEntityName; pass null for column definitions; pass name for column references

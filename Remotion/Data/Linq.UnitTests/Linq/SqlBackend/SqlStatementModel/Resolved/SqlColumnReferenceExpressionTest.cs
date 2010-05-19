@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     public void Initialize_SetReferenceEntity ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
       var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
 
       Assert.That (columnExpression.ReferencedEntity, Is.SameAs (entityExpression));
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     public void Update ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
       var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
 
       var result = columnExpression.Update (typeof (char), "f", "test", false);

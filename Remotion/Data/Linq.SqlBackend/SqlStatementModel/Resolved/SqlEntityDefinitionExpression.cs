@@ -27,8 +27,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
 
-    public SqlEntityDefinitionExpression (Type itemType, string tableAlias, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
-        : base(itemType, tableAlias, null)
+    public SqlEntityDefinitionExpression (Type itemType, string tableAlias, string entityName, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
+        : base(itemType, tableAlias, entityName)
     {
       _columns = Array.AsReadOnly (projectionColumns);
       _primaryKeyColumn = primaryKeyColumn;
@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
       if (newColumns != Columns)
-        return new SqlEntityDefinitionExpression (Type, TableAlias, PrimaryKeyColumn, newColumns.ToArray ());
+        return new SqlEntityDefinitionExpression (Type, TableAlias, null, PrimaryKeyColumn, newColumns.ToArray ());
       else
         return this;
     }
@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression Update (Type itemType, string tableAlias)
     {
-      return new SqlEntityDefinitionExpression (itemType, tableAlias, PrimaryKeyColumn, Columns.ToArray ());
+      return new SqlEntityDefinitionExpression (itemType, tableAlias, null, PrimaryKeyColumn, Columns.ToArray ());
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
       //return new SqlEntityDefinitionExpression (Type, newTableAlias, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
 
-      return new SqlEntityReferenceExpression (Type, newTableAlias, this); //TODO 2779: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
+      return new SqlEntityReferenceExpression (Type, newTableAlias, this, null); //TODO 2779: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
     }
 
     private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
