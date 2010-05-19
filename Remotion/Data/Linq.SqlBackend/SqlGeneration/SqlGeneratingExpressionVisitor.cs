@@ -40,7 +40,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         IJoinConditionExpressionVisitor,
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
-        IAggregationExpressionVisitor
+        IAggregationExpressionVisitor,
+        ISqlColumnExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -78,7 +79,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      AppendColumn (expression.ColumnName, expression.OwningTableAlias);
+      AppendColumn (expression.ColumnName, expression.OwningTableAlias, null);
+      return expression;
+    }
+
+    public Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      AppendColumn (expression.ColumnName, expression.OwningTableAlias, null);
+
+      return expression;
+    }
+
+    public Expression VisitSqlColumnReferenceExpression (SqlColumnReferenceExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      AppendColumn (expression.ColumnName, expression.OwningTableAlias, expression.ReferencedEntity.Name);
+
       return expression;
     }
 
@@ -331,7 +350,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    private void AppendColumn (string columnName, string prefix) // add string referencedEntityName; pass null for column definitions; pass name for column references
+    private void AppendColumn (string columnName, string prefix, string referencedEntityName)
     {
       if (columnName == "*")
       {
@@ -342,9 +361,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         _commandBuilder.AppendIdentifier (prefix);
         _commandBuilder.Append (".");
-        // if referencedEntityName != null, append referencedEntityName, append "_" here
+        if(referencedEntityName != null)
+        {
+          _commandBuilder.AppendIdentifier (referencedEntityName);
+          _commandBuilder.Append ("_");
+        }
         _commandBuilder.AppendIdentifier (columnName);
       }
     }
+    
   }
 }

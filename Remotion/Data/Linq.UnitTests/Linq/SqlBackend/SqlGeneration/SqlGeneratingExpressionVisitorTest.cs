@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnExpression ()
     {
-      var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
+      SqlColumnExpression sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnExpression, _commandBuilder, _stageMock);
 
@@ -65,6 +65,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].*"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlColumnDefinitionExpression ()
+    {
+      var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlColumnExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlColumnReferenceExpression ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", "Test", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[Test]_[ID]"));
     }
 
     [Test]
