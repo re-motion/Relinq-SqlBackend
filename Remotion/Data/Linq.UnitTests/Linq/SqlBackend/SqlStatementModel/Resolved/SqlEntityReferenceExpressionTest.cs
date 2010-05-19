@@ -72,5 +72,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
     }
+
+    [Test]
+    public void Update ()
+    {
+      var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
+      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+
+      var result = entityReferenceExpression.Update (typeof (Kitchen), "f");
+
+      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", entityDefinitionExpression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
+    }
   }
 }

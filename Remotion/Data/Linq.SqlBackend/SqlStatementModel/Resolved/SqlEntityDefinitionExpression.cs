@@ -58,6 +58,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       return new SqlColumnDefinitionExpression (type, TableAlias, columnName, isPrimaryKeyColumn);
     }
 
+    public override SqlEntityExpression Update (Type itemType, string tableAlias)
+    {
+      return new SqlEntityDefinitionExpression (itemType, tableAlias, PrimaryKeyColumn, Columns.ToArray ());
+    }
+
     public override SqlEntityExpression CreateReference (string newTableAlias)
     {
       //var primaryKeyColumn = CreateClonedColumn (PrimaryKeyColumn, newTableAlias); 

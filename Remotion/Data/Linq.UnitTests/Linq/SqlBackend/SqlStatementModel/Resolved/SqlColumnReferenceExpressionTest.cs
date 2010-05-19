@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -33,6 +34,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
 
       Assert.That (columnExpression.ReferencedEntity, Is.SameAs (entityExpression));
+    }
+
+    [Test]
+    public void Update ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
+      var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
+
+      var result = columnExpression.Update (typeof (char), "f", "test", false);
+
+      var expectedResult = new SqlColumnReferenceExpression (typeof (char), "f", "test", false, entityExpression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
     }
   }
 }

@@ -124,5 +124,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
+
+    [Test]
+    public void Update ()
+    {
+      var columns = new[]
+                   {
+                       new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false),
+                       new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
+                   };
+
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+
+      var expectedResult = new SqlEntityDefinitionExpression (
+          typeof (Kitchen), "f", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+
+      var result = entityExpression.Update (typeof (Kitchen), "f");
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
   }
 }

@@ -58,6 +58,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _isPrimaryKey; }
     }
 
+    public abstract SqlColumnExpression Update (Type type, string owningTableAlias, string columnName, bool isPrimaryKey);
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;

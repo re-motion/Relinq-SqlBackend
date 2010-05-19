@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
@@ -44,6 +45,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_columnExpression);
+    }
+
+    [Test]
+    public void Update ()
+    {
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "columnName", false);
+
+      var result = columnExpression.Update (typeof (char), "f", "test", false);
+
+      var expectedResult = new SqlColumnDefinitionExpression (typeof (char), "f", "test", false);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
     }
   }
 }

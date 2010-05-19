@@ -28,5 +28,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       
      
     }
+
+    public override SqlColumnExpression Update (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
+    {
+      return new SqlColumnDefinitionExpression (type, owningTableAlias, columnName, isPrimaryKey);
+    }
   }
 }

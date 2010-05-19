@@ -38,5 +38,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       get { return _referencedEntity; }
     }
+
+    public override SqlColumnExpression Update (Type type, string tableAlias, string columnName, bool isPrimaryKey)
+    {
+      return new SqlColumnReferenceExpression (type, tableAlias, columnName, isPrimaryKey, _referencedEntity);
+    }
   }
 }
