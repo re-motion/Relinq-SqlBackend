@@ -58,9 +58,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       return new SqlColumnDefinitionExpression (type, TableAlias, columnName, isPrimaryKeyColumn);
     }
 
-    public override SqlEntityExpression Update (Type itemType, string tableAlias)
+    public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
-      return new SqlEntityDefinitionExpression (itemType, tableAlias, null, PrimaryKeyColumn, Columns.ToArray ());
+      return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, PrimaryKeyColumn, Columns.ToArray ());
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
       //return new SqlEntityDefinitionExpression (Type, newTableAlias, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
 
-      return new SqlEntityReferenceExpression (Type, newTableAlias, this, null); //TODO 2779: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
+      return new SqlEntityReferenceExpression (Type, newTableAlias, this); //TODO 2779: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
     }
 
     private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)

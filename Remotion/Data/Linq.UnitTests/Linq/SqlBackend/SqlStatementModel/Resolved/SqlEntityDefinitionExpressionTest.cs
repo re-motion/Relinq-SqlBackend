@@ -118,7 +118,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var expectedResult = new SqlEntityReferenceExpression (
           typeof(Cook),
           "c1",
-          entityExpression, null);
+          entityExpression);
 
       var result = entityExpression.CreateReference("c1");
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var expectedResult = new SqlEntityDefinitionExpression (
           typeof (Kitchen), "f", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var result = entityExpression.Update (typeof (Kitchen), "f");
+      var result = entityExpression.Update (typeof (Kitchen), "f", null);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

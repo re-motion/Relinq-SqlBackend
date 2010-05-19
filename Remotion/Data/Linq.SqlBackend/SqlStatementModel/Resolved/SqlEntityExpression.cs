@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public abstract SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn);
     public abstract SqlEntityExpression CreateReference (string newTableAlias);
-    public abstract SqlEntityExpression Update (Type itemType, string tableAlias);
+    public abstract SqlEntityExpression Update (Type itemType, string tableAlias, string entityName);
     
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
