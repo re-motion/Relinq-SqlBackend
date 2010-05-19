@@ -116,8 +116,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
-      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityDefinitionExpression) result), Is.SameAs (sqlTable));
+      Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
+      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

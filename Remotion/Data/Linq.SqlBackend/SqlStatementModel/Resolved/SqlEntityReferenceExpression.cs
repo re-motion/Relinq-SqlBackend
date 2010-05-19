@@ -19,58 +19,51 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
-  public class SqlEntityDefinitionExpression : SqlEntityExpression
+  public class SqlEntityReferenceExpression : SqlEntityExpression
   {
     private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
+    private readonly SqlEntityExpression _referencedEntity;
 
-    public SqlEntityDefinitionExpression (Type itemType, string tableAlias, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
+    public SqlEntityReferenceExpression (Type itemType, string tableAlias, SqlEntityExpression referencedEntity)
         : base(itemType, tableAlias)
     {
-      _columns = Array.AsReadOnly (projectionColumns);
-      _primaryKeyColumn = primaryKeyColumn;
+      ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
+
+      _referencedEntity = referencedEntity;
+      _columns = Array.AsReadOnly(referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
+      _primaryKeyColumn = GetColumn (referencedEntity.PrimaryKeyColumn.Type, referencedEntity.PrimaryKeyColumn.ColumnName, true);
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
-      if (newColumns != Columns)
-        return new SqlEntityDefinitionExpression (Type, TableAlias, PrimaryKeyColumn, newColumns.ToArray ());
-      else
-        return this;
+      return this;
     }
 
     public override SqlColumnExpression PrimaryKeyColumn
     {
-      get { return _primaryKeyColumn;  }
+      get { return _primaryKeyColumn; }
     }
 
     public override ReadOnlyCollection<SqlColumnExpression> Columns
     {
-      get { return _columns; }
+      get { return _columns;  }
     }
 
+    // Returns a column from this entity. The column will be represented as: TableAlias.ReferencedEntityName_ColumnBaseName.
+    // For example, for an entity referencing another entity "e0" from a substatement "q0", the column "ID" will be represented as: q0.e0_ID
     public override SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)
     {
-      return new SqlColumnDefinitionExpression (type, TableAlias, columnName, isPrimaryKeyColumn);
+      return new SqlColumnReferenceExpression (type, TableAlias, columnName, isPrimaryKeyColumn, _referencedEntity);
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
     {
-      //var primaryKeyColumn = CreateClonedColumn (PrimaryKeyColumn, newTableAlias); 
-      //var projectionColumns = Columns.Select (columnExpression => CreateClonedColumn (columnExpression, newTableAlias)).ToArray ();
-
-      //return new SqlEntityDefinitionExpression (Type, newTableAlias, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
-
-      return new SqlEntityReferenceExpression (Type, newTableAlias, this); //TODO 2778: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
-    }
-
-    private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
-    {
-      return new SqlColumnDefinitionExpression (originalColumn.Type, newAlias, originalColumn.ColumnName, originalColumn.IsPrimaryKey);
+      return new SqlEntityReferenceExpression(Type, newTableAlias, _referencedEntity);
     }
   }
 }

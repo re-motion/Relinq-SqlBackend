@@ -114,16 +114,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
                    };
 
       var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
-      
-      var expectedResult = new SqlEntityDefinitionExpression (
+
+      var expectedResult = new SqlEntityReferenceExpression (
           typeof(Cook),
           "c1",
-          new SqlColumnDefinitionExpression (typeof (int), "c1", "ID", true),
-          new[]
-          {
-              new SqlColumnDefinitionExpression (typeof (string), "c1", "Name", false),
-              new SqlColumnDefinitionExpression (typeof (string), "c1", "FirstName", false)
-          });
+          entityExpression);
 
       var result = entityExpression.CreateReference("c1");
 
