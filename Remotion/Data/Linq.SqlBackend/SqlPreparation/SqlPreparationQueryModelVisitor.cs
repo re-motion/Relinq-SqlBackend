@@ -137,7 +137,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var preparedExpression = _stage.PrepareSelectExpression (selectClause.Selector, _context);
-      preparedExpression = new NamedExpression (null, preparedExpression);
+      if (!(preparedExpression is NamedExpression))
+        preparedExpression = new NamedExpression (null, preparedExpression);
       
       SqlStatementBuilder.SelectProjection = preparedExpression;
       SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();

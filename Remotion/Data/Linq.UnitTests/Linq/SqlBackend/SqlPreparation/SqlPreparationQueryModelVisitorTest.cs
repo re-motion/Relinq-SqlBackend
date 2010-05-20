@@ -358,7 +358,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSelectClause_CreatesSelectProjection_NoSqlTableRefereenceExpression ()
+    public void VisitSelectClause_CreatesSelectProjection_NamedExpression ()
+    {
+      var preparedExpression = new NamedExpression("test", new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook))));
+
+      _stageMock
+          .Expect (
+              mock =>
+              mock.PrepareSelectExpression (
+                  Arg<Expression>.Matches (e => e == _selectClause.Selector),
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+          .Return (preparedExpression);
+      _stageMock.Replay ();
+
+      _visitor.VisitSelectClause (_selectClause, _queryModel);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
+    }
+
+    [Test]
+    public void VisitSelectClause_CreatesSelectProjection_NoSqlTableRefereenceExpressionAndNoNamedExpression ()
     {
       var preparedExpression = Expression.Constant (null, typeof (Cook));
 

@@ -230,7 +230,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [Ignore("TODO 2781")]
     public void VisitNamedExpression_SqlEntityExression ()
     {
       var constantExpression = Expression.Constant (5);
@@ -245,7 +244,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.Not.SameAs(fakeResult));
+      Assert.That (result, Is.TypeOf(typeof(SqlEntityDefinitionExpression)));
+      Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test"));
     }
 
     [Test]

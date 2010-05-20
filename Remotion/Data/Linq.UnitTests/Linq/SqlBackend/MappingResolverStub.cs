@@ -117,14 +117,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, true);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
           case "FirstName":
           case "Name":
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
           case "MetaID":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, false);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Substitution":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
           
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "SpecificInformation":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, false);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Chef))
@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "LetterOfRecommendation":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, false);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (Kitchen))
@@ -151,10 +151,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, true);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
           case "Name":
           case "RoomNumber":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, false);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Cook":
           case "Restaurant":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
@@ -165,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return CreateColumn (memberType, originatingEntity.TableAlias, memberInfo.Name, true);
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
           case "SubKitchen":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
         }
