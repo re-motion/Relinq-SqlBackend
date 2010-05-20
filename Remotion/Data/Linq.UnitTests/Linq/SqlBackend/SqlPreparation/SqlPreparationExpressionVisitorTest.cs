@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -26,6 +28,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -388,6 +391,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       transformerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void VisitNewExpression ()
+    {
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (result, Is.Not.SameAs (expression));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo(1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf(typeof(NamedExpression)));
+      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo("A"));
+      Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
+    }
+  }
+
+  class TestableTypeForNew
+  {
+    public TestableTypeForNew ()
+    {
+      
     }
   }
 }

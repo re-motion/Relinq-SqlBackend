@@ -16,13 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -65,8 +64,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       if (expression != null)
       {
-        var replacementExpression = _context.GetExpressionMapping(expression);
-        if (replacementExpression != null) 
+        var replacementExpression = _context.GetExpressionMapping (expression);
+        if (replacementExpression != null)
           expression = replacementExpression;
       }
 
@@ -78,9 +77,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var message = string.Format (
-           "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
-           + "supported yet.",
-           expression.Type.Name);
+          "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
+          + "supported yet.",
+          expression.Type.Name);
       throw new KeyNotFoundException (message);
     }
 
@@ -120,7 +119,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newExpression = base.VisitMethodCallExpression (expression);
-      var transformedExpression = _registry.GetItem(expression.Method).Transform ((MethodCallExpression) newExpression);
+      var transformedExpression = _registry.GetItem (expression.Method).Transform ((MethodCallExpression) newExpression);
       return VisitExpression (transformedExpression);
     }
 
@@ -129,6 +128,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return new SqlCaseExpression (VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
+    }
+
+    protected override Expression VisitNewExpression (NewExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var sqlSelectNewExpression = Expression.New (
+          expression.Constructor,
+          expression.Arguments.Select ((e, i) => new NamedExpression (expression.Members[i].Name, VisitExpression (e))).ToArray(),
+          expression.Members);
+      return sqlSelectNewExpression;
     }
 
     private bool IsNullConstant (Expression expression)
