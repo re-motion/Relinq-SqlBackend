@@ -83,24 +83,33 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var selectProjection = subStatementTableInfo.SqlStatement.SelectProjection;
       var sqlTable = _expression.SqlTable;
 
-      var innerSqlEntityExpression = selectProjection as SqlEntityExpression;
-      var innerNamedExpression = selectProjection as NamedExpression;
+      _result = CreateReferenceExpression (selectProjection, subStatementTableInfo, sqlTable);
+
+      return subStatementTableInfo;
+    }
+
+    private Expression CreateReferenceExpression (Expression referencedExpression, ResolvedSubStatementTableInfo subStatementTableInfo, SqlTableBase sqlTable)
+    {
+      var innerSqlEntityExpression = referencedExpression as SqlEntityExpression;
+      var innerNamedExpression = referencedExpression as NamedExpression;
+      var innerNewExpression = referencedExpression as NewExpression;
 
       if (innerSqlEntityExpression != null)
       {
-        _result = innerSqlEntityExpression.CreateReference(sqlTable.GetResolvedTableInfo().TableAlias);
-        _context.AddSqlEntityMapping ((SqlEntityExpression) _result, sqlTable);
+        var referencedEntityExpression = innerSqlEntityExpression.CreateReference (sqlTable.GetResolvedTableInfo().TableAlias);
+        _context.AddSqlEntityMapping (referencedEntityExpression, sqlTable);
+        return referencedEntityExpression;
       }
       else if (innerNamedExpression != null)
       {
-        _result = new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+        return new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+      }
+      else if (innerNewExpression != null)
+      {
+        return new SqlCompoundReferenceExpression (referencedExpression.Type, null, sqlTable, subStatementTableInfo, innerNewExpression);
       }
       else
-      {
-        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be named or an entity.");
-      }
-
-      return subStatementTableInfo;
+        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be a new-expression, named or an entity.");
     }
 
     ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)

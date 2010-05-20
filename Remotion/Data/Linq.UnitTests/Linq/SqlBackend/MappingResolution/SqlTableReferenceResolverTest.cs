@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses.StreamedData;
@@ -24,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -85,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
     
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The table projection for a referenced sub-statement must be named or an entity.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The table projection for a referenced sub-statement must be a new-expression, named or an entity.")]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_NotSupportedExpression ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
@@ -118,6 +120,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
       Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_SqlCompoundReferenceExpression ()
+    {
+      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+                         {
+                             SelectProjection = newExpression,
+           DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      var expectedResult = new SqlCompoundReferenceExpression (typeof(TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
+      
+      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
+
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
