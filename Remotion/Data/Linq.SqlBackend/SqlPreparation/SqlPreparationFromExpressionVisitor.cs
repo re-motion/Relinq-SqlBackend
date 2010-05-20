@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationFromExpressionVisitor : SqlPreparationExpressionVisitor, ISqlSubStatementVisitor, IUnresolvedSqlExpressionVisitor
   {
-    public static SqlTableBase GetTableForFromExpression (
+    public static FromExpressionInfo AnalyzeFromExpression (
         Expression fromExpression,
         IQuerySource querySource,
         ISqlPreparationStage stage,
@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var result = visitor.VisitExpression (fromExpression);
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
-        return resultAsTableReferenceExpression.SqlTable;
+        return new FromExpressionInfo(resultAsTableReferenceExpression.SqlTable, new Ordering[] {}, querySource);
 
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
       throw new NotSupportedException (message);

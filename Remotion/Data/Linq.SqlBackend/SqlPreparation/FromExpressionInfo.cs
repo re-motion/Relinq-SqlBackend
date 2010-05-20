@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// <see cref="FromExpressionInfo"/> is returned by <see cref="SqlPreparationFromExpressionVisitor.GetTableForFromExpression"/>.
+  /// <see cref="FromExpressionInfo"/> is returned by <see cref="SqlPreparationFromExpressionVisitor.AnalyzeFromExpression"/>.
   /// </summary>
   public struct FromExpressionInfo
   {

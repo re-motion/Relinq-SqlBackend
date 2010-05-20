@@ -53,12 +53,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var expression = Expression.Constant (new Cook[0]);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
 
-      var tableInfo = ((SqlTable) result).TableInfo;
+      var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
 
       Assert.That (tableInfo.ItemType, Is.SameAs (typeof (Cook)));
@@ -74,14 +74,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Restaurant()), memberInfo);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           memberExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (sqlTable.JoinedTables.ToArray().Contains (result), Is.False);
-      Assert.That (((SqlJoinedTable) result).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (sqlTable.JoinedTables.ToArray().Contains (result.SqlTable), Is.False);
+      Assert.That (((SqlJoinedTable) result.SqlTable).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
 
-      var joinInfo = ((SqlJoinedTable) result).JoinInfo;
+      var joinInfo = ((SqlJoinedTable) result.SqlTable).JoinInfo;
 
       Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var customExpression = new CustomExpression (typeof (Cook[]));
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           customExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
     }
 
@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
     }
 
@@ -123,13 +123,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = (SqlTable) SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      var result = (SqlTable) SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
           new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())),
           _stageMock,
           _generator,
           _registry,
-          _context);
+          _context).SqlTable;
 
       Assert.That (result.TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
       var condition = (ResolvedSubStatementTableInfo) result.TableInfo;
@@ -142,13 +142,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitMemberExpression ()
     {
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("IllnessDays"));
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           memberExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (((SqlJoinedTable) result).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
-      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
-      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result).JoinInfo).MemberInfo, Is.EqualTo (memberExpression.Member));
+      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (((SqlJoinedTable) result.SqlTable).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
+      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result.SqlTable).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
+      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result.SqlTable).JoinInfo).MemberInfo, Is.EqualTo (memberExpression.Member));
     }
 
     [Test]
@@ -158,10 +158,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
       var expression = new SqlTableReferenceExpression (sqlTable);
 
-      var result = SqlPreparationFromExpressionVisitor.GetTableForFromExpression (
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
 
-      Assert.That (result, Is.SameAs (sqlTable));
+      Assert.That (result.SqlTable, Is.SameAs (sqlTable));
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
+      SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
     }
 
     [Test]
@@ -182,7 +182,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var expression = new SqlEntityConstantExpression (typeof (Cook), "test", "test");
 
-      SqlPreparationFromExpressionVisitor.GetTableForFromExpression (expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
+      SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
     }
   }
 }
