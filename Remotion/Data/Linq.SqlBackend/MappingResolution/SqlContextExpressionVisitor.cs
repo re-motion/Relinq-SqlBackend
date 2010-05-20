@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
@@ -229,6 +230,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
             sqlSelectNewExpression.Members
             );
         return ApplySqlExpressionContext (newNewExpression, _currentContext, _stage, _context);
+      }
+      if (newExpression is SqlCompoundReferenceExpression)
+      {
+        var sqlCompoundExpression = (SqlCompoundReferenceExpression) newExpression;
+        var newCompoundExpression = new SqlCompoundReferenceExpression (
+            sqlCompoundExpression.Type,
+            expression.Name,
+            sqlCompoundExpression.ReferencedTable,
+            sqlCompoundExpression.SubStatementTableInfo,
+            sqlCompoundExpression.ReferencedNewExpression);
+        return ApplySqlExpressionContext (newCompoundExpression, _currentContext, _stage, _context);
       }
       else if (newExpression is SqlEntityExpression)
       {
