@@ -89,15 +89,39 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "");
     }
 
-    //[Test]
-    //public void NestedSelectProjections ()
-    //{
-    //  CheckQuery (
-    //      from c in (from sc in Cooks select new { A = sc, B = sc.Name }) select c,
-    //      ""
+    [Test]
+    public void NestedSelectProjections_MainFromClause ()
+    {
+      CheckQuery (
+          from c in (from sc in Cooks select new { A = sc.Name, B = sc.ID }) select c,
+            "SELECT [t0].[Name] AS [get_A],[t0].[ID] AS [get_B] FROM [CookTable] AS [t0]"
+          );
+    }
 
-    //      );
-    //}
+    [Test]
+    public void NestedNestedSelectProjection_AdditionalMainFromClause ()
+    {
+      CheckQuery (
+          from x in Kitchens
+          from c in
+            ( // SubStatementTableInfo (SqlStatement (
+              from sc in Cooks
+              select // SelectProjection = NamedExpression (null, 
+                new
+                { // NewExpression (
+                  A = 10, // NamedExpression ("get_A", ...),  => SqlValueReference ("get_A")
+                  B = sc.Name, // NamedExpression ("get_B", ...),  => SqlValueReference ("get_B")
+                  C = new
+                  { // NewExpression ( => SqlCompoundReference
+                    D = sc.Name
+                  }
+                }) // NamedExpression ("get_C_get_D", ...))))) => SqlValueReference ("get_C_get_D")
+          where c.C.D != null // MemberExpression (MemberExpression (SqlTableReferenceExpression))
+          select c,
+          "SELECT [q0].[get_A], [q0].[get_B], [q0].[get_C] AS [value] FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT @1 AS [get_A],"+
+          "[t2].[Name] AS [get_B],[t2].[Name] AS [get_C_get_D] FROM [CookTable] AS [t2]) AS [q0] WHERE ([q0].[get_C_get_D] IS NOT NULL)",
+          new CommandParameter("@1", 10));
+    }
    
   }
 }
