@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -23,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -147,6 +149,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           boolExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1 = @2)"));
+    }
+
+    [Test]
+    public void GenerateSql_VistNewExpression ()
+    {
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
+      Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (0));
     }
 
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =

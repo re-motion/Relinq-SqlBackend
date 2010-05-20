@@ -340,6 +340,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    protected override Expression VisitNewExpression (NewExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      bool first = true;
+      foreach (var expr in expression.Arguments)
+      {
+        if (!first)
+          _commandBuilder.Append (",");
+        first = false;
+        VisitExpression (expr);
+      }
+      return expression;
+    }
+
     private void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       column.Accept (this);
