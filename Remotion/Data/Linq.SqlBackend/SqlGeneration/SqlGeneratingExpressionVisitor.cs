@@ -19,6 +19,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -41,7 +42,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
-        ISqlColumnExpressionVisitor
+        ISqlColumnExpressionVisitor,
+        ISqlCompoundReferenceExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -340,6 +342,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public Expression VisitSqlCompoundReferenceExpression (SqlCompoundReferenceExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _commandBuilder.AppendSeparated (", ", expression.ReferencedNewExpression.Members, (c, m) => AppendReferencedMember (expression.SubStatementTableInfo, m));
+
+      return expression;
+    }
+
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -383,6 +394,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         }
         _commandBuilder.AppendIdentifier (columnName);
       }
+    }
+
+    private void AppendReferencedMember (ResolvedSubStatementTableInfo subStatementTableInfo, MemberInfo memberInfo)
+    {
+      var column = new SqlColumnDefinitionExpression (typeof (int), subStatementTableInfo.TableAlias, memberInfo.Name, false);
+      VisitExpression (column);
     }
     
   }
