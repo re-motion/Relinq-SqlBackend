@@ -32,20 +32,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     public static SqlTableBase GetTableForFromExpression (
         Expression fromExpression,
-        Type itemType,
+        IQuerySource querySource,
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
         MethodCallTransformerRegistry registry,
         ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
-      ArgumentUtility.CheckNotNull ("itemType", itemType);
+      ArgumentUtility.CheckNotNull ("querySource", querySource);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("registry", registry);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (itemType, generator, stage, registry, context);
+      var visitor = new SqlPreparationFromExpressionVisitor (querySource, generator, stage, registry, context);
       var result = visitor.VisitExpression (fromExpression);
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
@@ -55,21 +55,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       throw new NotSupportedException (message);
     }
 
-    private readonly Type _itemType;
+    private readonly IQuerySource _querySource;
     private readonly UniqueIdentifierGenerator _generator;
 
     protected SqlPreparationFromExpressionVisitor (
-        Type itemType,
+        IQuerySource querySource,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         MethodCallTransformerRegistry registry,
         ISqlPreparationContext context)
         : base (context, stage, registry)
     {
-      ArgumentUtility.CheckNotNull ("itemType", itemType);
+      ArgumentUtility.CheckNotNull ("querySource", querySource);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      _itemType = itemType;
+      _querySource = querySource;
       _generator = generator;
     }
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var sqlTable = new SqlTable (new UnresolvedTableInfo (_itemType));
+      var sqlTable = new SqlTable (new UnresolvedTableInfo (_querySource.ItemType));
       return new SqlTableReferenceExpression (sqlTable);
     }
 

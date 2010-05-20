@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -71,9 +72,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return PrepareExpression (expression, context);
     }
 
-    public virtual SqlTableBase PrepareSqlTable (Expression fromExpression, Type itemType, ISqlPreparationContext context)
+    public virtual SqlTableBase PrepareSqlTable (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context)
     {
-      return SqlPreparationFromExpressionVisitor.GetTableForFromExpression (fromExpression, itemType, this, _generator, _methodCallTransformerRegistry, context);
+      return SqlPreparationFromExpressionVisitor.GetTableForFromExpression (fromExpression, querySource, this, _generator, _methodCallTransformerRegistry, context);
     }
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext)

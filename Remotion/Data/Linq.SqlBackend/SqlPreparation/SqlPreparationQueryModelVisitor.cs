@@ -192,13 +192,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
-      var sqlTableOrJoin = GetTableForFromExpression(preparedFromExpression, source.ItemType);
+      var sqlTableOrJoin = GetTableForFromExpression(preparedFromExpression, source);
 
       _context.AddExpressionMapping (new QuerySourceReferenceExpression(source) , new SqlTableReferenceExpression(sqlTableOrJoin));
       return sqlTableOrJoin;
     }
 
-    private SqlTableBase GetTableForFromExpression (Expression preparedFromExpression, Type itemType)
+    private SqlTableBase GetTableForFromExpression (Expression preparedFromExpression, IQuerySource querySource)
     {
       // is from expression already a reference to an existing table?
       var existingTableReference = preparedFromExpression as SqlTableReferenceExpression;
@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else // no, a new table must be created
       {
-        var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, itemType, _context);
+        var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
 
         var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
         if (sqlJoinedTable != null)

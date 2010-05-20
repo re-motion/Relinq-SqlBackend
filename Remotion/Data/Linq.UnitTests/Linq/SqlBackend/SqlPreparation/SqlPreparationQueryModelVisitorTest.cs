@@ -175,7 +175,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           mock =>
           mock.PrepareSqlTable (
               Arg<Expression>.Matches (e => e == preparedExpression),
-              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return
           (preparedSqlTable);
 
@@ -201,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
-              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
 
       _stageMock.Replay();
@@ -236,7 +236,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
-              Arg<Type>.Matches (t => t == typeof (int)),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
 
       _stageMock.Replay();
@@ -265,7 +265,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
-              Arg<Type>.Matches (t => t == typeof (int)),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedJoinedTable);
 
       _stageMock.Replay();
@@ -431,7 +431,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock
           .Expect (
               mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == constantExpression),
-              Arg<Type>.Matches (t => t == joinClause.ItemType),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedSqlTable);
       _stageMock
@@ -467,7 +467,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (Expression.Constant (5));
       _stageMock
           .Expect (
-              mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
+              mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<IQuerySource>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
           .Return (preparedSqlTable);
       _stageMock
           .Expect (
@@ -590,7 +590,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
-              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
       _stageMock.Replay();
 

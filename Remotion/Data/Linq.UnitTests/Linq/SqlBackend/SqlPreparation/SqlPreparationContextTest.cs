@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.Expect (
           mock => mock.PrepareSqlTable (
               Arg<Expression>.Matches (e => e == preparedExpression),
-              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
       _stageMock
           .Expect (

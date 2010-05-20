@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -101,7 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTableForFromExpression ()
     {
       var fromExpression = Expression.Constant (new Cook[0]);
-      var result = _stage.PrepareSqlTable (fromExpression, typeof (Cook), _context);
+      var result = _stage.PrepareSqlTable (fromExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTable)));
     }
