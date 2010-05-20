@@ -44,6 +44,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return visitor.ResolveSqlTableReferenceExpression (expression);
     }
 
+    public static Expression CreateReferenceExpression (Expression referencedExpression, ResolvedSubStatementTableInfo subStatementTableInfo, SqlTableBase sqlTable)
+    {
+      var innerSqlEntityExpression = referencedExpression as SqlEntityExpression;
+      var innerNamedExpression = referencedExpression as NamedExpression;
+      var innerNewExpression = referencedExpression as NewExpression;
+
+      if (innerSqlEntityExpression != null)
+        return innerSqlEntityExpression.CreateReference (sqlTable.GetResolvedTableInfo ().TableAlias);
+      else if (innerNamedExpression != null)
+        return new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+      else if (innerNewExpression != null)
+        return new SqlCompoundReferenceExpression (referencedExpression.Type, null, sqlTable, subStatementTableInfo, innerNewExpression);
+      else
+        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be a new-expression, named or an entity.");
+    }
+
     protected SqlTableReferenceResolver (SqlTableReferenceExpression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -84,32 +100,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var sqlTable = _expression.SqlTable;
 
       _result = CreateReferenceExpression (selectProjection, subStatementTableInfo, sqlTable);
+      if(_result is SqlEntityExpression)
+        _context.AddSqlEntityMapping ((SqlEntityExpression) _result, sqlTable);
 
       return subStatementTableInfo;
-    }
-
-    private Expression CreateReferenceExpression (Expression referencedExpression, ResolvedSubStatementTableInfo subStatementTableInfo, SqlTableBase sqlTable)
-    {
-      var innerSqlEntityExpression = referencedExpression as SqlEntityExpression;
-      var innerNamedExpression = referencedExpression as NamedExpression;
-      var innerNewExpression = referencedExpression as NewExpression;
-
-      if (innerSqlEntityExpression != null)
-      {
-        var referencedEntityExpression = innerSqlEntityExpression.CreateReference (sqlTable.GetResolvedTableInfo().TableAlias);
-        _context.AddSqlEntityMapping (referencedEntityExpression, sqlTable);
-        return referencedEntityExpression;
-      }
-      else if (innerNamedExpression != null)
-      {
-        return new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
-      }
-      else if (innerNewExpression != null)
-      {
-        return new SqlCompoundReferenceExpression (referencedExpression.Type, null, sqlTable, subStatementTableInfo, innerNewExpression);
-      }
-      else
-        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be a new-expression, named or an entity.");
     }
 
     ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)

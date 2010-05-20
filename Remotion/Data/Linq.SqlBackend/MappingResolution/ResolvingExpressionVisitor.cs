@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Parsing;
@@ -65,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-
+      
       var resolvedExpression = _stage.ResolveTableReferenceExpression (expression, _context);
       return VisitExpression (resolvedExpression);
     }
@@ -121,6 +122,26 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       {
         var resolvedMemberExpression = _resolver.ResolveMemberExpression (newExpressionAsColumnExpression, expression.Member);
         return VisitExpression (resolvedMemberExpression);
+      }
+
+      // member applied to a compound expression?
+      var newExpressionAsCompoundReferenceExpression = newExpression as SqlCompoundReferenceExpression;
+      if (newExpressionAsCompoundReferenceExpression != null)
+      {
+        var property = (PropertyInfo) expression.Member;
+        var getterMethod = property.GetGetMethod (true);
+
+        var expressionsAndMembers = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Members
+            .Select ((m, i) => new { Member = m, Argument = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Arguments[i] });
+        var expressionOfMatchingMember =
+            expressionsAndMembers.Single (c => c.Member == getterMethod)
+                .Argument;
+
+        var referenceExpression = SqlTableReferenceResolver.CreateReferenceExpression (
+            expressionOfMatchingMember,
+            newExpressionAsCompoundReferenceExpression.SubStatementTableInfo,
+            newExpressionAsCompoundReferenceExpression.ReferencedTable);
+        return VisitExpression (referenceExpression);
       }
 
       throw new NotSupportedException (string.Format ("Resolved inner expression of type {0} is not supported.", newExpression.Type.Name));

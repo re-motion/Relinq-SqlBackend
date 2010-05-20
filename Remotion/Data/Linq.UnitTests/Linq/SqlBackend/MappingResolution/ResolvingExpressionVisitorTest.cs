@@ -19,12 +19,14 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -227,6 +229,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (constantExpression));
       _resolverMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    [Ignore("TODO 2744")]
+    public void VisitMemberExpression_SqlCompoundReferenceExpression ()
+    {
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (TypeForNewExpression), "NewTable", "n")));
+      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (1) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (TypeForNewExpression)))
+                         {
+                             SelectProjection = newExpression,
+                             DataInfo = new StreamedSequenceInfo (typeof (TypeForNewExpression[]), Expression.Constant (new TypeForNewExpression(1)))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
+      var fakeResult = new SqlCompoundReferenceExpression (typeof(TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
+      var memberExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof(TypeForNewExpression).GetProperty("A"));
+
+      _stageMock
+        .Expect (mock => mock.ResolveTableReferenceExpression (sqlTableReferenceExpression, _mappingResolutionContext))
+          .Return (fakeResult);
+      _stageMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (SqlCompoundReferenceExpression)));
     }
 
     [Test]
