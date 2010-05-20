@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -52,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private bool _isTopLevelExpression;
     private readonly IMappingResolutionStage _stage;
-    private IMappingResolutionContext _context;
+    private readonly IMappingResolutionContext _context;
 
     protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
@@ -219,12 +220,46 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
 
-      if (newExpression is SqlEntityExpression)
+      if (newExpression is NewExpression)
+      {
+        var sqlSelectNewExpression = (NewExpression) newExpression;
+        var newNewExpression = Expression.New (
+            sqlSelectNewExpression.Constructor,
+            sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr)),
+            sqlSelectNewExpression.Members
+            );
+        return ApplySqlExpressionContext (newNewExpression, _currentContext, _stage, _context);
+      }
+      else if (newExpression is SqlEntityExpression)
+      {
         return ((SqlEntityExpression) newExpression).Update (newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, expression.Name);
-      else if (newExpression != expression.Expression)
+      }
+      else if (newExpression is NamedExpression)
+      {
+        var namedExpression = (NamedExpression) newExpression;
+
+        string newName;
+        if (expression.Name == null)
+          newName = namedExpression.Name;
+        else if (namedExpression.Name == null)
+          newName = expression.Name;
+        else
+          newName = expression.Name + "_" + namedExpression.Name;
+
+        return new NamedExpression (newName, namedExpression.Expression);
+      }
+
+      if(newExpression != expression.Expression)
         return new NamedExpression (expression.Name, newExpression);
-      else
-        return expression;
+      return expression;
+    }
+
+    protected override Expression VisitNewExpression (NewExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var expressions = expression.Arguments.Select (expr => ApplySqlExpressionContext (expr, SqlExpressionContext.ValueRequired, _stage, _context));
+      return Expression.New (expression.Constructor, expressions, expression.Members);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)

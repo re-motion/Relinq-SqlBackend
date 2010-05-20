@@ -43,8 +43,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private MainFromClause _cookMainFromClause;
     private QuerySourceReferenceExpression _cookQuerySourceReferenceExpression;
 
-    private MainFromClause _kitchenMainFromClause;
-
     private SqlTable _sqlTable;
     private ISqlPreparationStage _stageMock;
     private MethodCallTransformerRegistry _registry;
@@ -56,7 +54,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _context = new SqlPreparationContext();
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
-      _kitchenMainFromClause = ExpressionHelper.CreateMainFromClause_Kitchen();
       var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source);
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (_cookMainFromClause), new SqlTableReferenceExpression (_sqlTable));
@@ -409,12 +406,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
     }
   }
-
-  class TestableTypeForNew
-  {
-    public TestableTypeForNew ()
-    {
-      
-    }
-  }
+  
 }

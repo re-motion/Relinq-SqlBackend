@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -24,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -681,6 +683,45 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitNamedExpression_ReturnsNamedExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new NamedExpression ("outer", new NamedExpression ("inner", Expression.Constant ("test")));
+
+      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
+
+      Assert.That (result, Is.TypeOf(typeof(NamedExpression)));
+      Assert.That (((NamedExpression) result).Name, Is.EqualTo("outer_inner"));
+    }
+
+    [Test]
+    public void VisitNamedExpression_ReturnsNamedExpression_InnerNameIsNull ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new NamedExpression ("outer", new NamedExpression (null, Expression.Constant ("test")));
+
+      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
+
+      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("outer"));
+    }
+
+    [Test]
+    public void VisitNamedExpression_ReturnsNamedExpression_OuterNameIsNull ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new NamedExpression (null, new NamedExpression ("inner", Expression.Constant ("test")));
+
+      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
+
+      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("inner"));
+    }
+
+    [Test]
     public void VisitNamedExpression_NoSqlEntityExpression_DifferentExpression ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
@@ -718,6 +759,41 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result, Is.Not.SameAs (fakeResult));
       Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
       Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void VisitNamedExpression_NewExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      var namedExpression = new NamedExpression ("test", expression);
+      
+      var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
+
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
+      Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void VisitNewExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
+      var result = nonTopLevelVisitor.VisitNewExpression(expression);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (result, Is.Not.SameAs (expression));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
+      Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
     }
 
     public static bool FakeAndOperator (bool operand1, bool operand2)

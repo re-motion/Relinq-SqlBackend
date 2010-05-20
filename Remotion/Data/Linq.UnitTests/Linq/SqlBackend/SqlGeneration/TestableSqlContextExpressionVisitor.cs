@@ -35,5 +35,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       return base.VisitUnaryExpression (expression);
     }
+
+    public new Expression VisitNewExpression (NewExpression expression)
+    {
+      return base.VisitNewExpression (expression);
+    }
   }
 }
