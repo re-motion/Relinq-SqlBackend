@@ -88,6 +88,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks select c.Assistants,
           "");
     }
+
+    //[Test]
+    //public void NestedSelectProjections ()
+    //{
+    //  CheckQuery (
+    //      from c in (from sc in Cooks select new { A = sc, B = sc.Name }) select c,
+    //      ""
+
+    //      );
+    //}
    
   }
 }
