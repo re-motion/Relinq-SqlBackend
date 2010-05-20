@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fromExpression = Expression.Constant (new Cook[0]);
       var result = _stage.PrepareSqlTable (fromExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
     }
 
     [Test]

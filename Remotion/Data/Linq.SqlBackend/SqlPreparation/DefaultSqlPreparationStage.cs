@@ -72,10 +72,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return PrepareExpression (expression, context);
     }
 
-    public virtual SqlTableBase PrepareSqlTable (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context)
+    public virtual FromExpressionInfo PrepareSqlTable (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context)
     {
-      var fromExpressionInfo = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (fromExpression, querySource, this, _generator, _methodCallTransformerRegistry, context);
-      return fromExpressionInfo.SqlTable;
+      return SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (fromExpression, querySource, this, _generator, _methodCallTransformerRegistry, context);
     }
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext)

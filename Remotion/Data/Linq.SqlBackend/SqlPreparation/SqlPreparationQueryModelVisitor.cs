@@ -209,7 +209,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else // no, a new table must be created
       {
-        var sqlTableOrJoin = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
+        var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
+        var sqlTableOrJoin = fromExpressionInfo.SqlTable;
 
         var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
         if (sqlJoinedTable != null)

@@ -156,6 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, _queryModel.MainFromClause);
 
       _stageMock
           .Expect (
@@ -177,7 +178,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return
-          (preparedSqlTable);
+          (preparedFromExpressionInfo);
 
       _stageMock.Replay();
 
@@ -192,6 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, _mainFromClause);
 
       _stageMock
           .Expect (
@@ -202,7 +204,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
 
       _stageMock.Replay();
 
@@ -227,6 +229,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, additionalFromClause);
 
       _stageMock
           .Expect (
@@ -237,7 +240,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
 
       _stageMock.Replay();
 
@@ -256,6 +259,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fromClause = ExpressionHelper.CreateAdditionalFromClause();
       var preparedExpression = Expression.Constant (0);
       var preparedJoinedTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Inner);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedJoinedTable, new Ordering[] { }, fromClause);
 
       _stageMock
           .Expect (
@@ -266,7 +270,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedJoinedTable);
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
 
       _stageMock.Replay();
 
@@ -418,6 +422,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, joinClause);
       var constantExpression = Expression.Constant (5);
       var fakeWhereCondition = Expression.Constant (1);
 
@@ -433,7 +438,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == constantExpression),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context)))
-          .Return (preparedSqlTable);
+          .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
               mock =>
@@ -455,6 +460,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, joinClause);
 
       var fakeWhereCondition = Expression.Constant (1);
 
@@ -468,7 +474,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock
           .Expect (
               mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<IQuerySource>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
-          .Return (preparedSqlTable);
+          .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
               mock =>
@@ -581,6 +587,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, _mainFromClause);
 
       _stageMock
           .Expect (
@@ -591,7 +598,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (preparedExpression);
       _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
       _stageMock.Replay();
 
       var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);

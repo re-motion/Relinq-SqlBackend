@@ -117,6 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, groupJoinClause);
 
       _stageMock
           .Expect (
@@ -129,7 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           mock => mock.PrepareSqlTable (
               Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
               mock =>
