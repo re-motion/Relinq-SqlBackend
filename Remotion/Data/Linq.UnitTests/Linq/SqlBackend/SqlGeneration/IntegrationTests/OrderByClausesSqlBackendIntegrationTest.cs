@@ -83,5 +83,54 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] ORDER BY (([t0].[Name] + @1) + [t0].[FirstName]) ASC",
           new CommandParameter ("@1", " "));
     }
+
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithoutTopExpression ()
+    {
+      CheckQuery (
+          from k in Kitchens 
+          from c in (from sc in Cooks orderby sc.Name select sc) select c,
+          "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "+
+          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],"+
+          "[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0]");
+    }
+
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithTopExpression ()
+    {
+      CheckQuery (
+          from k in Kitchens
+          from c in
+            (from sc in Cooks orderby sc.Name select sc).Take(10)
+          select c,
+          "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "+
+          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT TOP (@1) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],"+
+          "[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2] ORDER BY [t2].[Name] ASC) AS [q0]",
+          new CommandParameter("@1", 10));
+    }
+
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression ()
+    {
+      CheckQuery (
+          from c in Cooks
+          where c.Name== (from sc in Cooks orderby sc.Name select sc.Name).Single()
+          select c,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
+          "FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (@1) [t1].[Name] AS [value] FROM [CookTable] AS [t1] " +
+          "ORDER BY [t1].[Name] ASC))",
+          new CommandParameter("@1", 2));
+    }
+
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
+    {
+      CheckQuery (
+          from c in Cooks
+          where (from sc in Cooks orderby sc.Name select sc).Contains(c)
+          select c,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
+          "FROM [CookTable] AS [t0] WHERE [t0].[ID] IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
+    }
   }
 }

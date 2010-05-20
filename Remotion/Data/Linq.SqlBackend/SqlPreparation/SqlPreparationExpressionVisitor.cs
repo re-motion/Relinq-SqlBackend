@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <see cref="SqlPreparationExpressionVisitor"/> transforms the expressions stored by <see cref="SqlStatement.SelectProjection"/> to a SQL-specific
   /// format.
   /// </summary>
-  public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor
+  public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor, ISqlSubStatementVisitor
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
@@ -85,7 +85,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
-      return _stage.PrepareSqlStatement (expression.QueryModel, _context).CreateExpression();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newExpression = _stage.PrepareSqlStatement (expression.QueryModel, _context).CreateExpression();
+
+      return VisitExpression (newExpression);
+    }
+
+    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression==null)
+      {
+        var builder = new SqlStatementBuilder (expression.SqlStatement);
+        builder.Orderings.Clear();
+        return new SqlSubStatementExpression (builder.GetSqlStatement());
+      }
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
@@ -151,5 +168,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       return false;
     }
+    
   }
 }

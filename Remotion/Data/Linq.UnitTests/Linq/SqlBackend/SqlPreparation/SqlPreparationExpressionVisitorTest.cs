@@ -185,6 +185,64 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitSubqueryExpressionTest_RevisitsResult ()
+    {
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
+      var expression = new SubQueryExpression (querModel);
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
+      {
+        TopExpression = null
+      };
+      fakeSqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"),OrderingDirection.Asc));
+      fakeSqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
+      fakeSqlStatementBuilder.Orderings.Clear();
+      var expectedStatement = fakeSqlStatementBuilder.GetSqlStatement();
+      
+      _stageMock
+          .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
+          .Return (fakeSqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo(expectedStatement));
+    }
+
+    [Test]
+    public void VisitSqlSubStatmentExpression_NoTopExpression_ReturnsSame ()
+    {
+      var builder = new SqlStatementBuilder(SqlStatementModelObjectMother.CreateSqlStatementWithCook());
+      builder.Orderings.Clear();
+      var sqlStatement = builder.GetSqlStatement();
+
+      var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (subStatementExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.SameAs (subStatementExpression));
+    }
+
+    [Test]
+    public void VisitSqlSubStatmentExpression_HasTopExpression_ReturnsNew ()
+    {
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ());
+      builder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
+      var sqlStatement = builder.GetSqlStatement ();
+      builder.Orderings.Clear();
+      var expectedStatement = builder.GetSqlStatement();
+
+      var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (subStatementExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.Not.SameAs (subStatementExpression));
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo(expectedStatement));
+    }
+
+    [Test]
     public void VisitBinaryExpression ()
     {
       var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
