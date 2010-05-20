@@ -125,7 +125,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Expect (
+          mock => mock.PrepareSqlTable (
+              Arg<Expression>.Matches (e => e == preparedExpression),
+              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
       _stageMock
           .Expect (
               mock =>

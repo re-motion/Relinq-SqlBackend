@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitQueryModel_ConstantExpression_Collection ()
     {
-      var constantExpression = Expression.Constant (new [] { "t1", "t2" });
+      var constantExpression = Expression.Constant (new[] { "t1", "t2" });
       _queryModel.MainFromClause.FromExpression = constantExpression;
 
       _visitor.VisitQueryModel (_queryModel);
@@ -115,15 +115,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           ((ConstantExpression) _visitor.SqlStatementBuilder.SelectProjection).Value, Is.EqualTo (constantExpression.Value));
       Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
 
-      var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
+      var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo();
       Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
     }
 
     [Test]
     public void VisitQueryModel_ConstantExpressionCollection_VisitResultOperatorsIsCalled ()
     {
-      var handlerMock = MockRepository.GenerateStrictMock<IResultOperatorHandler> ();
-      ResultOperatorHandlerRegistry registry = new ResultOperatorHandlerRegistry ();
+      var handlerMock = MockRepository.GenerateStrictMock<IResultOperatorHandler>();
+      ResultOperatorHandlerRegistry registry = new ResultOperatorHandlerRegistry();
       registry.Register (typeof (TestChoiceResultOperator), handlerMock);
       var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
 
@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var resultOperator = new TestChoiceResultOperator (false);
       _queryModel.ResultOperators.Add (resultOperator);
       var sqlStatementBuilder = queryModelVisitor.SqlStatementBuilder;
-      
+
       handlerMock.Expect (
           mock =>
           mock.HandleResultOperator (
@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
               Arg<UniqueIdentifierGenerator>.Matches (g => g == _generator),
               Arg<ISqlPreparationStage>.Matches (s => s == _stageMock),
               Arg<ISqlPreparationContext>.Matches (c => c != _context)));
-      handlerMock.Replay ();
+      handlerMock.Replay();
 
       queryModelVisitor.VisitQueryModel (_queryModel);
 
@@ -155,30 +155,36 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _queryModel.MainFromClause.FromExpression = constantExpression;
 
       var preparedExpression = Expression.Constant (0);
-      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
 
       _stageMock
-         .Expect (
-             mock =>
-             mock.PrepareFromExpression (
-                 Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
-                 Arg<ISqlPreparationContext>.Matches (c => c != _context)))
-         .Return (preparedExpression);
+          .Expect (
+              mock =>
+              mock.PrepareFromExpression (
+                  Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+          .Return (preparedExpression);
       _stageMock
-         .Expect (
-             mock =>
-             mock.PrepareSelectExpression (
-                 Arg<Expression>.Matches (e => e == _queryModel.SelectClause.Selector),
-                 Arg<ISqlPreparationContext>.Matches (c => c != _context)))
-         .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+          .Expect (
+              mock =>
+              mock.PrepareSelectExpression (
+                  Arg<Expression>.Matches (e => e == _queryModel.SelectClause.Selector),
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+          .Return (preparedExpression);
+      _stageMock.Expect (
+          mock =>
+          mock.PrepareSqlTable (
+              Arg<Expression>.Matches (e => e == preparedExpression),
+              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return
+          (preparedSqlTable);
 
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _visitor.VisitQueryModel (_queryModel);
 
-      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs(preparedExpression));
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo(1));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (preparedExpression));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -194,7 +200,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
 
       _stageMock.Replay();
 
@@ -227,7 +235,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == constantExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedSqlTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+              Arg<Type>.Matches (t => t == typeof (int)),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
 
       _stageMock.Replay();
 
@@ -254,7 +264,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == fromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (int))).Return (preparedJoinedTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+              Arg<Type>.Matches (t => t == typeof (int)),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedJoinedTable);
 
       _stageMock.Replay();
 
@@ -346,21 +358,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == _selectClause.Selector),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _visitor.VisitSelectClause (_selectClause, _queryModel);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
       Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (preparedExpression));
       Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Name, Is.Null);
       Assert.That (_visitor.SqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (_selectClause.GetOutputDataInfo ().DataType));
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).DataType, Is.EqualTo (_selectClause.GetOutputDataInfo().DataType));
     }
 
     [Test]
     public void VisitSelectClause_CreatesSelectProjection_NamedExpression ()
     {
-      var preparedExpression = new NamedExpression("test", new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook))));
+      var preparedExpression = new NamedExpression (
+          "test", new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook))));
 
       _stageMock
           .Expect (
@@ -369,11 +382,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == _selectClause.Selector),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _visitor.VisitSelectClause (_selectClause, _queryModel);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
       Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.SameAs (preparedExpression));
     }
 
@@ -417,7 +430,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (constantExpression);
       _stageMock
           .Expect (
-              mock => mock.PrepareSqlTable (constantExpression, joinClause.ItemType))
+              mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == constantExpression),
+              Arg<Type>.Matches (t => t == joinClause.ItemType),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedSqlTable);
       _stageMock
           .Expect (
@@ -452,7 +467,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (Expression.Constant (5));
       _stageMock
           .Expect (
-              mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything))
+              mock => mock.PrepareSqlTable (Arg<Expression>.Is.Anything, Arg<Type>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
           .Return (preparedSqlTable);
       _stageMock
           .Expect (
@@ -574,7 +589,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (preparedExpression, typeof (Cook))).Return (preparedSqlTable);
+      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+              Arg<Type>.Matches (t => t == typeof (Cook)),
+              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedSqlTable);
       _stageMock.Replay();
 
       var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);

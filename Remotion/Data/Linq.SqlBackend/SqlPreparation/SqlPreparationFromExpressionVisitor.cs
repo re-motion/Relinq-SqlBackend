@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -29,25 +28,43 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// Analyzes the <see cref="FromClauseBase.FromExpression"/> of a <see cref="FromClauseBase"/> and returns a <see cref="SqlTableBase"/> that 
   /// represents the data source of the <see cref="FromClauseBase"/>.
   /// </summary>
-  public class SqlPreparationFromExpressionVisitor : ThrowingExpressionTreeVisitor, ISqlSubStatementVisitor, IUnresolvedSqlExpressionVisitor
+  public class SqlPreparationFromExpressionVisitor : SqlPreparationExpressionVisitor, ISqlSubStatementVisitor, IUnresolvedSqlExpressionVisitor
   {
     public static SqlTableBase GetTableForFromExpression (
-        Expression fromExpression, Type itemType, ISqlPreparationStage stage, UniqueIdentifierGenerator generator)
+        Expression fromExpression,
+        Type itemType,
+        ISqlPreparationStage stage,
+        UniqueIdentifierGenerator generator,
+        MethodCallTransformerRegistry registry,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("itemType", itemType);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (itemType, generator);
-      var result = (SqlTableReferenceExpression) visitor.VisitExpression (fromExpression);
-      return result.SqlTable;
+      var visitor = new SqlPreparationFromExpressionVisitor (itemType, generator, stage, registry, context);
+      var result = visitor.VisitExpression (fromExpression);
+      var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
+      if (resultAsTableReferenceExpression != null)
+        return resultAsTableReferenceExpression.SqlTable;
+
+      var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
+      throw new NotSupportedException (message);
     }
 
     private readonly Type _itemType;
     private readonly UniqueIdentifierGenerator _generator;
 
-    protected SqlPreparationFromExpressionVisitor (Type itemType, UniqueIdentifierGenerator generator)
+    protected SqlPreparationFromExpressionVisitor (
+        Type itemType,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        MethodCallTransformerRegistry registry,
+        ISqlPreparationContext context)
+        : base (context, stage, registry)
     {
       ArgumentUtility.CheckNotNull ("itemType", itemType);
       ArgumentUtility.CheckNotNull ("generator", generator);
@@ -55,6 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _itemType = itemType;
       _generator = generator;
     }
+
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
@@ -72,7 +90,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return new SqlTableReferenceExpression (joinedTable);
     }
 
-    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public new Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       // Note: This is a case where the SQL preparation stage already generates a resolved table info (including a table alias) rather than passing
       // on an unresolved table info to the mapping resolution stage. Should we ever have the need to resolve subqueries in the mapping resolution 
@@ -100,15 +118,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       return base.VisitUnknownExpression (expression);
     }
-
-    protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
-    {
-      ArgumentUtility.CheckNotNull ("unhandledItem", unhandledItem);
-      ArgumentUtility.CheckNotNullOrEmpty ("visitMethod", visitMethod);
-
-      var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", unhandledItem.GetType().Name);
-      return new NotSupportedException (message);
-    }
-   
+    
   }
 }

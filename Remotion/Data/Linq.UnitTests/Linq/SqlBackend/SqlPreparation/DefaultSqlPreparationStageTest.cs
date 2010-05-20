@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTableForFromExpression ()
     {
       var fromExpression = Expression.Constant (new Cook[0]);
-      var result = _stage.PrepareSqlTable (fromExpression, typeof (Cook));
+      var result = _stage.PrepareSqlTable (fromExpression, typeof (Cook), _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTable)));
     }
