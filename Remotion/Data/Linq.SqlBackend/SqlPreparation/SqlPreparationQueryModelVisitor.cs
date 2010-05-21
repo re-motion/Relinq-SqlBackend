@@ -20,6 +20,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
@@ -57,7 +59,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
     protected SqlPreparationQueryModelVisitor (
-      ISqlPreparationContext parentContext, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+        ISqlPreparationContext parentContext,
+        ISqlPreparationStage stage,
+        UniqueIdentifierGenerator generator,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
@@ -97,13 +102,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (constantCollection != null)
       {
         SqlStatementBuilder.SelectProjection = Expression.Constant (constantCollection);
-        SqlStatementBuilder.DataInfo = queryModel.SelectClause.GetOutputDataInfo ();
+        SqlStatementBuilder.DataInfo = queryModel.SelectClause.GetOutputDataInfo();
         VisitResultOperators (queryModel.ResultOperators, queryModel);
       }
       else
-      {
         base.VisitQueryModel (queryModel);
-      }
     }
 
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
@@ -139,7 +142,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var preparedExpression = _stage.PrepareSelectExpression (selectClause.Selector, _context);
       if (!(preparedExpression is NamedExpression))
         preparedExpression = new NamedExpression (null, preparedExpression);
-      
+
       SqlStatementBuilder.SelectProjection = preparedExpression;
       SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();
     }
@@ -160,7 +163,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      AddJoinClause(joinClause);
+      AddJoinClause (joinClause);
     }
 
     public SqlTableBase AddJoinClause (JoinClause joinClause)
@@ -192,21 +195,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
-      var sqlTableOrJoin = GetTableForFromExpression(preparedFromExpression, source);
+      var sqlTableOrJoinReference = GetTableReferenceForFromExpression (preparedFromExpression, source);
 
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression(source) , new SqlTableReferenceExpression(sqlTableOrJoin));
-      return sqlTableOrJoin;
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), sqlTableOrJoinReference);
+      return sqlTableOrJoinReference.SqlTable;
     }
 
-    private SqlTableBase GetTableForFromExpression (Expression preparedFromExpression, IQuerySource querySource)
+    private SqlTableReferenceExpression GetTableReferenceForFromExpression (Expression preparedFromExpression, IQuerySource querySource)
     {
       // is from expression already a reference to an existing table?
       var existingTableReference = preparedFromExpression as SqlTableReferenceExpression;
       
       if (existingTableReference != null) // yes, table already exists
-      {
-        return existingTableReference.SqlTable;
-      }
+        return existingTableReference;
       else // no, a new table must be created
       {
         var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
@@ -219,15 +220,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           sqlTableOrJoin = new SqlTable (sqlJoinedTable);
         }
 
+        var innerSelectorMapping = new QuerySourceMapping ();
+        innerSelectorMapping.AddMapping (fromExpressionInfo.ItemSelector, new SqlTableReferenceExpression (sqlTableOrJoin));
+        var adjustesItemSelector = ReferenceReplacingExpressionTreeVisitor.ReplaceClauseReferences (new QuerySourceReferenceExpression (querySource), innerSelectorMapping, false);
+
         SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
-        return sqlTableOrJoin;
+        return (SqlTableReferenceExpression) adjustesItemSelector;
       }
     }
 
     private ICollection GetConstantCollectionValue (QueryModel queryModel)
     {
       var fromExpressionAsConstant = (queryModel.MainFromClause.FromExpression) as ConstantExpression;
-      if (queryModel.IsIdentityQuery () && fromExpressionAsConstant != null && typeof (ICollection).IsAssignableFrom (fromExpressionAsConstant.Type))
+      if (queryModel.IsIdentityQuery() && fromExpressionAsConstant != null && typeof (ICollection).IsAssignableFrom (fromExpressionAsConstant.Type))
         return (ICollection) fromExpressionAsConstant.Value;
       else
         return null;

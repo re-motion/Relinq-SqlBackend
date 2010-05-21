@@ -254,7 +254,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddFromClause_WithJoinedTable_AddsOldStyleJoin_WithWhereCondition_AndSqlTable ()
+    public void AddFromClause_WithJoinedTable_AddsOldStyleJoin_WithWhereCondition_AndSqlTable_ContextHoldsMappingToSqlTableReferenceExpression ()
     {
       var fromClause = ExpressionHelper.CreateAdditionalFromClause();
       var preparedExpression = Expression.Constant (0);
