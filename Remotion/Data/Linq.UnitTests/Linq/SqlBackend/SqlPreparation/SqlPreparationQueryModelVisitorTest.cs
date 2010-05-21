@@ -202,7 +202,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+      _stageMock.Expect (
+          mock => mock.PrepareSqlTable (
+              Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
 
@@ -238,7 +240,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == constantExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+      _stageMock.Expect (
+          mock => mock.PrepareSqlTable (
+              Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
 
@@ -268,7 +272,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == fromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+      _stageMock.Expect (
+          mock => mock.PrepareSqlTable (
+              Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
 
@@ -435,9 +441,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (constantExpression);
       _stageMock
           .Expect (
-              mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == constantExpression),
-              Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context)))
+              mock => mock.PrepareSqlTable (
+                  Arg<Expression>.Matches (e => e == constantExpression),
+                  Arg<IQuerySource>.Is.Anything,
+                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
@@ -583,11 +590,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddQuerySource ()
+    public void AddQuerySource_ContextMappingIsAddedWithAdjustedItemSelector_OrderingIsAddedWithAdjustedOrdering ()
     {
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, _mainFromClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new[] { new Ordering (new QuerySourceReferenceExpression(_mainFromClause), OrderingDirection.Asc) }, _mainFromClause);
 
       _stageMock
           .Expect (
@@ -596,7 +603,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context)))
           .Return (preparedExpression);
-      _stageMock.Expect (mock => mock.PrepareSqlTable (Arg<Expression>.Matches (e => e == preparedExpression),
+      _stageMock.Expect (
+          mock => mock.PrepareSqlTable (
+              Arg<Expression>.Matches (e => e == preparedExpression),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
       _stageMock.Replay();
@@ -606,6 +615,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (preparedSqlTable));
       Assert.That (_visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
+      Assert.That (
+          _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)),
+          Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (
+          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause))).SqlTable,
+          Is.SameAs (preparedSqlTable));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0].Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) _visitor.SqlStatementBuilder.Orderings[0].Expression).SqlTable, Is.SameAs(preparedSqlTable));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0].OrderingDirection, Is.EqualTo(OrderingDirection.Asc));
+
     }
 
     [Test]

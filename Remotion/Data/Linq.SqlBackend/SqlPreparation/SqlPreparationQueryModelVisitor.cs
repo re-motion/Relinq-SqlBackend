@@ -220,9 +220,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           sqlTableOrJoin = new SqlTable (sqlJoinedTable);
         }
 
-        var innerSelectorMapping = new QuerySourceMapping ();
-        innerSelectorMapping.AddMapping (fromExpressionInfo.ItemSelector, new SqlTableReferenceExpression (sqlTableOrJoin));
-        var adjustesItemSelector = ReferenceReplacingExpressionTreeVisitor.ReplaceClauseReferences (new QuerySourceReferenceExpression (querySource), innerSelectorMapping, false);
+        var adjustesItemSelector = ReplacingExpressionTreeVisitor.Replace (
+              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (sqlTableOrJoin), new QuerySourceReferenceExpression (fromExpressionInfo.ItemSelector));
+         
+        foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
+        {
+          var adjustedOrdering = ReplacingExpressionTreeVisitor.Replace (
+              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (fromExpressionInfo.SqlTable), ordering.Expression);
+          SqlStatementBuilder.Orderings.Add (new Ordering (adjustedOrdering, ordering.OrderingDirection));
+        }
 
         SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
         return (SqlTableReferenceExpression) adjustesItemSelector;
