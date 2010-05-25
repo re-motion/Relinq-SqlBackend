@@ -57,8 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     public void VisitChildren_ReturnsSame ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      var expression = Expression.Constant (3);
-
+      
       visitorMock
           .Expect (mock => mock.VisitExpression (_sqlIsNullExpression.Expression))
           .Return (_sqlIsNullExpression.Expression);
@@ -82,6 +81,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlIsNullExpression);
+    }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _sqlIsNullExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("2 IS NULL"));
     }
 
   }
