@@ -64,5 +64,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
         return base.Accept (visitor);
     }
 
+    public override string ToString ()
+    {
+      return string.Format ("[{0}].[{1}]", _tableAlias, _name ?? "value");
+    }
+
   }
 }
