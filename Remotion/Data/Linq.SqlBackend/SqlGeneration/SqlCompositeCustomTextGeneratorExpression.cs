@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
@@ -57,6 +58,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         return new SqlCompositeCustomTextGeneratorExpression (Type, newExpressions.ToArray());
       else
         return this;
+    }
+
+    public override string ToString ()
+    {
+      return String.Join (",", _expressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr)).ToArray());
     }
 
   }

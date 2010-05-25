@@ -90,5 +90,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       visitorMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.SameAs (_sqlCompositeCustomTextGeneratorExpression));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _sqlCompositeCustomTextGeneratorExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("\"5\",\"1\""));
+    }
   }
 }
