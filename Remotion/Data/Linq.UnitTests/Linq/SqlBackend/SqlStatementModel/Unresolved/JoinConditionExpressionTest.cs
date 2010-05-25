@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
@@ -64,6 +65,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
+    }
+
+    [Test]
+    public void To_String_Unresolved ()
+    {
+      var result = _expression.ToString();
+
+      Assert.That (result, Is.EqualTo ("Unresolved join condition expression"));
+    }
+
+    [Test]
+    public void To_String_Resolved ()
+    {
+      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression(1), new SqlLiteralExpression(1));
+      var expression = new JoinConditionExpression (new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left));
+
+      var result = expression.ToString();
+
+      Assert.That (result, Is.EqualTo ("1=1"));
     }
   }
 }

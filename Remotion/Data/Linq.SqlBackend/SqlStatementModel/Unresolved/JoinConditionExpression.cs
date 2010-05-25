@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
@@ -28,9 +29,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class JoinConditionExpression : ExtensionExpression
   {
-    private readonly SqlJoinedTable _joinedTable; 
+    private readonly SqlJoinedTable _joinedTable;
 
-    public JoinConditionExpression (SqlJoinedTable joinedTable) : base (typeof(bool))
+    public JoinConditionExpression (SqlJoinedTable joinedTable)
+        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
@@ -53,9 +55,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       var specificVisitor = visitor as IJoinConditionExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitJoinConditionExpression(this);
+        return specificVisitor.VisitJoinConditionExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public override string ToString ()
+    {
+      if (_joinedTable.JoinInfo is ResolvedJoinInfo)
+        return string.Format (
+            "{0}={1}",
+            FormattingExpressionTreeVisitor.Format (_joinedTable.JoinInfo.GetResolvedLeftJoinInfo ().LeftKey),
+            FormattingExpressionTreeVisitor.Format (_joinedTable.JoinInfo.GetResolvedLeftJoinInfo ().RightKey));
+      else
+        return "Unresolved join condition expression";
     }
   }
 }
