@@ -93,6 +93,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_namedExpression);
     }
 
+    [Test]
+    public void To_String ()
+    {
+      var result = _namedExpression.ToString();
 
+      Assert.That (result, Is.EqualTo ("1 AS test"));
+    }
   }
 }

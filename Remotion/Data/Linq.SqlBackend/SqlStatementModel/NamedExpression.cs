@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
@@ -74,6 +75,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         return specificVisitor.VisitNamedExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name);
     }
   }
 
