@@ -64,5 +64,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       else
         return base.Accept (visitor);
     }
+
+    public override string ToString ()
+    {
+      return _primaryKeyValue.ToString();
+    }
   }
 }
