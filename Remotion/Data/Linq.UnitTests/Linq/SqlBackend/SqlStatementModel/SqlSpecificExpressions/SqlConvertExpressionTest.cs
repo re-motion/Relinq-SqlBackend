@@ -102,6 +102,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_convertExpresion);
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _convertExpresion.ToString();
+
+      Assert.That (result, Is.EqualTo ("CONVERT(INT, \"1\")"));
+    }
     
   }
 }
