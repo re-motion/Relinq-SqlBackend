@@ -31,17 +31,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly NewExpression _referencedNewExpression;
 
     public SqlCompoundReferenceExpression (
-        Type type, string name, SqlTableBase referencedTable, ResolvedSubStatementTableInfo subStatementTableInfo, NewExpression referencedNewExpressio)
+        Type type, string name, SqlTableBase referencedTable, ResolvedSubStatementTableInfo subStatementTableInfo, NewExpression referencedNewExpression)
         : base (ArgumentUtility.CheckNotNull ("type", type))
     {
       ArgumentUtility.CheckNotNull ("referencedTable", referencedTable);
       ArgumentUtility.CheckNotNull ("subStatementTableInfo", subStatementTableInfo);
-      ArgumentUtility.CheckNotNull ("referencedNewExpressio", referencedNewExpressio);
+      ArgumentUtility.CheckNotNull ("referencedNewExpression", referencedNewExpression);
 
       _name = name;
       _referencedTable = referencedTable;
       _subStatementTableInfo = subStatementTableInfo;
-      _referencedNewExpression = referencedNewExpressio;
+      _referencedNewExpression = referencedNewExpression;
     }
 
     public string Name

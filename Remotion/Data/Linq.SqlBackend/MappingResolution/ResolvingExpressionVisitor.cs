@@ -131,11 +131,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var property = (PropertyInfo) expression.Member;
         var getterMethod = property.GetGetMethod (true);
 
-        var expressionsAndMembers = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Members
+        var membersAndAssignedExpressions = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Members
             .Select ((m, i) => new { Member = m, Argument = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Arguments[i] });
-        var expressionOfMatchingMember =
-            expressionsAndMembers.Single (c => c.Member == getterMethod)
-                .Argument;
+        var expressionOfMatchingMember = membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
 
         var referenceExpression = SqlTableReferenceResolver.CreateReferenceExpression (
             expressionOfMatchingMember,

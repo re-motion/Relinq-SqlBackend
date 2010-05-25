@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -232,30 +233,49 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [Ignore("TODO 2744")]
     public void VisitMemberExpression_SqlCompoundReferenceExpression ()
     {
-      var sqlTableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (TypeForNewExpression), "NewTable", "n")));
-      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (1) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (TypeForNewExpression)))
-                         {
-                             SelectProjection = newExpression,
-                             DataInfo = new StreamedSequenceInfo (typeof (TypeForNewExpression[]), Expression.Constant (new TypeForNewExpression(1)))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      var fakeResult = new SqlCompoundReferenceExpression (typeof(TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
-      var memberExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof(TypeForNewExpression).GetProperty("A"));
+      // from x in (from c in Cooks
+      //            select new { A = 1 })
+      // select x.A <-- resolve this
 
+      // construct substatement
+      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) });
+      var subStatementSelectProjection = Expression.New (
+          constructorInfo, 
+          new[] { new NamedExpression ("value", Expression.Constant (1)) }, 
+          typeof (TypeForNewExpression).GetMethod ("get_A"));
+      var cookTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t0"));
+      var subStatement = new SqlStatement (
+          new StreamedSequenceInfo (typeof (TypeForNewExpression[]), Expression.Constant (null, typeof (TypeForNewExpression))),
+          subStatementSelectProjection,
+          new[] { cookTable },
+          new Ordering[0],
+          null,
+          null,
+          false);
+
+      // construct outer statement
+      var outerTableInfo = new ResolvedSubStatementTableInfo ("q0", subStatement);
+      var outerTable = new SqlTable (outerTableInfo);
+
+      // x.A
+      var sqlTableReference = new SqlTableReferenceExpression (outerTable);
+      var memberExpression = Expression.MakeMemberAccess (sqlTableReference, typeof (TypeForNewExpression).GetProperty ("A"));
+
+      // x is first resolved into a SqlCompoundReferenceExpression before the member A is resolved
+      var compoundExpression = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), null, outerTable, outerTableInfo, subStatementSelectProjection);
       _stageMock
-        .Expect (mock => mock.ResolveTableReferenceExpression (sqlTableReferenceExpression, _mappingResolutionContext))
-          .Return (fakeResult);
+          .Expect (mock => mock.ResolveTableReferenceExpression (sqlTableReference, _mappingResolutionContext))
+          .Return (compoundExpression);
       _stageMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
       _stageMock.VerifyAllExpectations ();
-      Assert.That (result, Is.TypeOf (typeof (SqlCompoundReferenceExpression)));
+
+      var expectedResult = new SqlValueReferenceExpression (typeof (int), "value", outerTableInfo.TableAlias);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
