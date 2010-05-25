@@ -116,6 +116,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlFunctionExpression);
     }
 
+    [Test]
+    public void To_String ()
+    {
+      var result = _sqlFunctionExpression.ToString();
 
+      Assert.That (result, Is.EqualTo ("Test(\"test\",1,2)"));
+    }
   }
 }
