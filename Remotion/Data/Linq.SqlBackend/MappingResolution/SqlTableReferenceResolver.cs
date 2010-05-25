@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (innerSqlEntityExpression != null)
         return innerSqlEntityExpression.CreateReference (sqlTable.GetResolvedTableInfo ().TableAlias);
       else if (innerNamedExpression != null)
-        return new SqlValueReferenceExpression (sqlTable.ItemType, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+        return new SqlValueReferenceExpression (referencedExpression.Type, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
       else if (innerNewExpression != null)
         return new SqlCompoundReferenceExpression (referencedExpression.Type, null, sqlTable, subStatementTableInfo, innerNewExpression);
       else
