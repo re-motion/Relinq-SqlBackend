@@ -59,5 +59,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       visitorMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (_sqlCustomTextExpression));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _sqlCustomTextExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("test"));
+    }
   }
 }

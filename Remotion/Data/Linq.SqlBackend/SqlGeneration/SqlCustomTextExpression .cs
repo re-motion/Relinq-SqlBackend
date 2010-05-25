@@ -51,5 +51,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return this;
     }
 
+    public override string ToString ()
+    {
+      return _sqlText;
+    }
+
   }
 }
