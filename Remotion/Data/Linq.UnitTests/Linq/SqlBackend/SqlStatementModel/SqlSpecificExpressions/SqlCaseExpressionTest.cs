@@ -146,5 +146,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_caseExpression);
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _caseExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("CASE WHEN True THEN 1 ELSE 0 END"));
+    }
   }
 }
