@@ -208,7 +208,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
      }
 
     [Test]
-    [Ignore ("TODO 2779")]
     public void ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable ()
     {
       CheckQuery (
