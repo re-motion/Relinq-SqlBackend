@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
@@ -65,6 +66,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var expectedResult = new SqlColumnDefinitionExpression (typeof (char), "f", "test", false);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
+    }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _columnExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("[t].[name]"));
     }
   }
 }
