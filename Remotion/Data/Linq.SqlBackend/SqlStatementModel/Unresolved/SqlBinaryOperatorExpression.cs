@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -77,6 +78,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
         return specificVisitor.VisitSqlBinaryOperatorExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public override string ToString ()
+    {
+      return string.Format (
+          "{0} {1} {2}",
+          FormattingExpressionTreeVisitor.Format (_leftExpression),
+          _binaryOperator,
+          FormattingExpressionTreeVisitor.Format (_rightExpression));
     }
   }
 }
