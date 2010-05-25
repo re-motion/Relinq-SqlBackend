@@ -143,5 +143,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _entityExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("FROM [t].[Cook]"));
+    }
   }
 }

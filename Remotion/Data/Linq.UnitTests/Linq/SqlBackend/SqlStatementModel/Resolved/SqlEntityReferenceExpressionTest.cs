@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -87,6 +88,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", entityDefinitionExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
+    }
+
+    [Test]
+    public void To_String ()
+    {
+       var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
+      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+
+      var result = entityReferenceExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("FROM [t].[Cook](REF FROM [c].[Cook])"));
     }
   }
 }

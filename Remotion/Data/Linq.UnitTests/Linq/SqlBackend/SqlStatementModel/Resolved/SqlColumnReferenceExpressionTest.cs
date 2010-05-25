@@ -62,5 +62,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
           _columnExpression,
           mock => mock.VisitSqlColumnReferenceExpression (_columnExpression));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _columnExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("[c].[columnName] FROM [c].[Cook]"));
+    }
   }
 }

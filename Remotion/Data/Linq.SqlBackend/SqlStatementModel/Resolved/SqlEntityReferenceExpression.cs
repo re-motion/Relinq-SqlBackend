@@ -70,5 +70,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       return new SqlEntityReferenceExpression(Type, newTableAlias, _referencedEntity);
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0}(REF {1})", base.ToString(), _referencedEntity);
+    }
   }
 }

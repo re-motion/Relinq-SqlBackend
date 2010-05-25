@@ -54,5 +54,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       return new SqlColumnReferenceExpression (type, tableAlias, columnName, isPrimaryKey, _referencedEntity);
     }
+
+    public override string ToString ()
+    {
+      return string.Format("{0} {1}", base.ToString(), _referencedEntity);
+    }
   }
 }
