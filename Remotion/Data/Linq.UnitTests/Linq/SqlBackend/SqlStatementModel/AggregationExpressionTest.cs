@@ -92,5 +92,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_aggregationEpression);
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _aggregationEpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("Max(1)"));
+    }
   }
 }

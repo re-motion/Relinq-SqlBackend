@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
@@ -69,6 +70,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         return specificVisitor.VisitAggregationExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0}({1})", _aggregationModifier, FormattingExpressionTreeVisitor.Format(_expression));
     }
   }
 }
