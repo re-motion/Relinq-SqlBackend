@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
@@ -58,6 +59,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         return specificVisitor.VisitSqlExistsExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public override string ToString ()
+    {
+      return string.Format ("EXISTS({0})", FormattingExpressionTreeVisitor.Format (_expression));
     }
   }
 }

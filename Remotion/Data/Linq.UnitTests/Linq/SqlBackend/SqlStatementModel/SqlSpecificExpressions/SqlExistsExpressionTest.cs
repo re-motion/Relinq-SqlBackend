@@ -90,5 +90,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlExistsExpression);
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _sqlExistsExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("EXISTS(\"test\")"));
+    }
   }
 }
