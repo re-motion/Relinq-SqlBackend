@@ -59,6 +59,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
         return base.Accept (visitor);
     }
 
-
+    public override string ToString ()
+    {
+      return _sqlTable.ItemType.Name;
+    }
   }
 }
