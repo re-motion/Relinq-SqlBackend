@@ -83,5 +83,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlIsNotNullExpression);
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _sqlIsNotNullExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("2 IS NOT NULL"));
+    }
   }
 }
