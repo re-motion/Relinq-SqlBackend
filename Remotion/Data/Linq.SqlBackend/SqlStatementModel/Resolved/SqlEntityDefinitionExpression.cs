@@ -65,17 +65,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
     {
-      //var primaryKeyColumn = CreateClonedColumn (PrimaryKeyColumn, newTableAlias); 
-      //var projectionColumns = Columns.Select (columnExpression => CreateClonedColumn (columnExpression, newTableAlias)).ToArray ();
-
-      //return new SqlEntityDefinitionExpression (Type, newTableAlias, primaryKeyColumn, projectionColumns); // becomes SqlEntityReferenceExpression
-
-      return new SqlEntityReferenceExpression (Type, newTableAlias, this); //TODO 2779: integration test 'ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable' failed!
+      return new SqlEntityReferenceExpression (Type, newTableAlias, this);
     }
-
-    private SqlColumnExpression CreateClonedColumn (SqlColumnExpression originalColumn, string newAlias)
-    {
-      return new SqlColumnDefinitionExpression (originalColumn.Type, newAlias, originalColumn.ColumnName, originalColumn.IsPrimaryKey);
-    }
+    
   }
 }
