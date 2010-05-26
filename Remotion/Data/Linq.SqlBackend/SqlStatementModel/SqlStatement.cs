@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly Expression _whereCondition;
     private readonly Expression _topExpression;
     private readonly bool _isDistinctQuery;
-    
+
     public SqlStatement (
         IStreamedDataInfo dataInfo,
         Expression selectProjection,
@@ -130,6 +130,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
              HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
              HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery);
+    }
+
+    public override string ToString ()
+    {
+      var distinct = _isDistinctQuery ? " DISTINCT" : string.Empty;
+      var top = _topExpression != null ? string.Format (" TOP ({0})", FormattingExpressionTreeVisitor.Format (_topExpression)) : string.Empty;
+      var select = _selectProjection != null
+                       ? string.Format ("SELECT{0}{1} " + FormattingExpressionTreeVisitor.Format (_selectProjection), distinct, top)
+                       : string.Empty;
+      var from = SqlTables.Count > 0 ? " FROM " + String.Join (",", _sqlTables.Select (t => t.ItemType.Name).ToArray()) : string.Empty;
+      var where = _whereCondition != null ? " WHERE " + FormattingExpressionTreeVisitor.Format (_whereCondition) : string.Empty;
+      var order = Orderings.Count > 0
+                      ? " ORDER BY " + String.Join (",", _orderings.Select (o => FormattingExpressionTreeVisitor.Format (o.Expression)).ToArray())
+                      : string.Empty;
+      return string.Format ("{0}{1}{2}{3}", select, from, where, order);
     }
   }
 }

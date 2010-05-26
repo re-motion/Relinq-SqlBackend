@@ -322,6 +322,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result, Is.SameAs(sqlStatement.SelectProjection));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
+      var whereCondition = Expression.Constant (true);
+      var topExpression = Expression.Constant ("top");
+      var sqlStatement = new SqlStatement (
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false);
+
+      var result = sqlStatement.ToString();
+      
+      Assert.That (result, Is.EqualTo("SELECT TOP (\"top\") 1 FROM Cook WHERE True ORDER BY \"ordering\""));
+    }
     
   }
 }
