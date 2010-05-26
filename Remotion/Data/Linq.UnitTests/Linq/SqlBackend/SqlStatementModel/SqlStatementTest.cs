@@ -22,7 +22,6 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
@@ -324,20 +323,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void To_String ()
+    public void ToString_AllProperties ()
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
-      var topExpression = Expression.Constant ("top");
+      var topExpression = Expression.Constant (10);
+      
       var sqlStatement = new SqlStatement (
-          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, false);
+          dataInfo, selectProjection, new[] { sqlTable }, new[] { ordering }, whereCondition, topExpression, true);
 
       var result = sqlStatement.ToString();
       
-      Assert.That (result, Is.EqualTo("SELECT TOP (\"top\") 1 FROM Cook WHERE True ORDER BY \"ordering\""));
+      Assert.That (result, Is.EqualTo ("SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c] WHERE True ORDER BY \"ordering\" ASC"));
+    }
+
+    [Test]
+    public void ToString_MandatoryProperties ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+
+      var sqlStatement = new SqlStatement (dataInfo, selectProjection, new SqlTable[0], new Ordering[0], null, null, false);
+
+      var result = sqlStatement.ToString ();
+
+      Assert.That (result, Is.EqualTo ("SELECT 1"));
     }
     
   }

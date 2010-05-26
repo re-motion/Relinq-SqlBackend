@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -70,6 +71,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public ResolvedJoinInfo GetResolvedLeftJoinInfo ()
     {
       return this;
+    }
+
+    public override string ToString ()
+    {
+      return string.Format (
+          "{0} ON {1} = {2}", 
+          ForeignTableInfo, 
+          FormattingExpressionTreeVisitor.Format (LeftKey), 
+          FormattingExpressionTreeVisitor.Format (RightKey));
     }
   }
 }

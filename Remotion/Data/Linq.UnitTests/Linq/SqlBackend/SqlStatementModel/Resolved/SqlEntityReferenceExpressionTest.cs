@@ -91,17 +91,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     }
 
     [Test]
-    public void To_String ()
+    public void ToString_UnnamedReferencedEntity ()
     {
-       var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+      var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null); 
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "q0", referencedEntity);
 
       var result = entityReferenceExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("[t].[Cook](REF [c].[Cook])"));
+      Assert.That (result, Is.EqualTo ("[q0] (REF)"));
+    }
+
+    [Test]
+    public void ToString_NamedReferencedEntity ()
+    {
+      var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "e1");
+
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "q0", referencedEntity);
+
+      var result = entityReferenceExpression.ToString ();
+
+      Assert.That (result, Is.EqualTo ("[q0].[e1] (REF)"));
     }
   }
 }

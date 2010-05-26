@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
@@ -59,6 +60,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public override IResolvedTableInfo GetResolvedTableInfo ()
     {
       return TableInfo.GetResolvedTableInfo();
+    }
+
+    public override string ToString ()
+    {
+      return TableInfo + JoinedTables.Aggregate ("", (s, t) => s + " " + t);
     }
   }
 }

@@ -145,11 +145,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     }
 
     [Test]
-    public void To_String ()
+    public void ToString_UnnamedEntity ()
     {
       var result = _entityExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("[t].[Cook]"));
+      Assert.That (result, Is.EqualTo ("[t]"));
+    }
+
+    [Test]
+    public void ToString_NamedEntity ()
+    {
+      var namedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "e1");
+      var result = namedEntity.ToString ();
+
+      Assert.That (result, Is.EqualTo ("[t] AS [e1]"));
     }
   }
 }

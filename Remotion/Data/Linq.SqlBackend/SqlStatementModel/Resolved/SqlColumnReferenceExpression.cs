@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return string.Format("{0}(REF {1})", base.ToString(), _referencedEntity);
+      return string.Format ("[{0}].[{1}{2}] (REF)", OwningTableAlias, ReferencedEntity.Name != null ? ReferencedEntity.Name + "_" : "", ColumnName);
     }
   }
 }

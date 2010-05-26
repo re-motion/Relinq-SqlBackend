@@ -62,13 +62,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      if (_joinedTable.JoinInfo is ResolvedJoinInfo)
-        return string.Format (
-            "{0}={1}",
-            FormattingExpressionTreeVisitor.Format (_joinedTable.JoinInfo.GetResolvedLeftJoinInfo ().LeftKey),
-            FormattingExpressionTreeVisitor.Format (_joinedTable.JoinInfo.GetResolvedLeftJoinInfo ().RightKey));
-      else
-        return "Unresolved join condition expression";
+      return "CONDITION(" + JoinedTable + ")";
     }
   }
 }

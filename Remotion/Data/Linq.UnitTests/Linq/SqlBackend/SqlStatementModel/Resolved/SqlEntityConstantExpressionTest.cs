@@ -51,11 +51,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     }
 
     [Test]
-    public void To_String ()
+    public new void ToString ()
     {
       var result = _expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("5"));
+      Assert.That (result, Is.EqualTo ("ENTITY(5)"));
     }
   }
 }

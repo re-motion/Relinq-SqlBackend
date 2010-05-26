@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return _sqlStatement.ToString();
+      return "(" + _sqlStatement+ ")";
     }
   }
 }

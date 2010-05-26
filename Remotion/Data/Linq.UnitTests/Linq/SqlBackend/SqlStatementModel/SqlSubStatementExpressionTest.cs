@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       
       var result = expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("SELECT [t].[Cook] FROM Cook"));
+      Assert.That (result, Is.EqualTo ("(SELECT [t] FROM [Table] [t])"));
     }
   }
 }

@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return _primaryKeyValue.ToString();
+      return string.Format ("ENTITY({0})", _primaryKeyValue);
     }
   }
 }

@@ -68,22 +68,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     }
 
     [Test]
-    public void To_String_Unresolved ()
+    public void ToString_Unresolved ()
     {
       var result = _expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("Unresolved join condition expression"));
+      Assert.That (result, Is.EqualTo ("CONDITION(LEFT JOIN Cook.FirstName)"));
     }
 
     [Test]
-    public void To_String_Resolved ()
+    public void ToString_Resolved ()
     {
       var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression(1), new SqlLiteralExpression(1));
       var expression = new JoinConditionExpression (new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left));
 
       var result = expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("1=1"));
+      Assert.That (result, Is.EqualTo ("CONDITION(LEFT JOIN [CookTable] [c] ON 1 = 1)"));
     }
   }
 }

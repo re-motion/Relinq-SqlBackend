@@ -20,7 +20,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.Utilities;
 using Rhino.Mocks;
 
@@ -67,6 +69,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       _sqlTable.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void ToString_WithoutJoins ()
+    {
+      var result = _sqlTable.ToString ();
+      Assert.That (result, Is.EqualTo ("[table1] [t]"));
+    }
+
+    [Test]
+    public void ToString_WithJoins ()
+    {
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      _sqlTable.GetOrAddLeftJoin (joinInfo, memberInfo);
+
+      var result = _sqlTable.ToString ();
+      Assert.That (result, Is.EqualTo ("[table1] [t] LEFT JOIN Kitchen.Cook"));
     }
 
   }

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -26,16 +27,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   [TestFixture]
   public class UnresolvedTableInfoTest
   {
+    private UnresolvedTableInfo _tableInfo;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
+    }
+
     [Test]
     public void Accept ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
-
       var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
-      tableInfoVisitorMock.Expect (mock => mock.VisitUnresolvedTableInfo (tableInfo));
+      tableInfoVisitorMock.Expect (mock => mock.VisitUnresolvedTableInfo (_tableInfo));
 
       tableInfoVisitorMock.Replay();
-      tableInfo.Accept (tableInfoVisitorMock);
+      _tableInfo.Accept (tableInfoVisitorMock);
       tableInfoVisitorMock.VerifyAllExpectations();
     }
 
@@ -44,8 +51,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     ]
     public void GetResolvedTableInfo_Throws ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo();
-      tableInfo.GetResolvedTableInfo();
+      _tableInfo.GetResolvedTableInfo();
+    }
+
+    [Test]
+    public new void ToString ()
+    {
+      var result = _tableInfo.ToString ();
+      Assert.That (result, Is.EqualTo ("TABLE(Cook)"));
     }
   }
 }

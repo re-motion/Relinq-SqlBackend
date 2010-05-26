@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
       var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook()), memberInfo);
 
-      var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
       var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);

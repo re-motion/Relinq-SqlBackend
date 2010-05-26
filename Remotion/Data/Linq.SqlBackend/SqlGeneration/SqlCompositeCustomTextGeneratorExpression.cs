@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public override string ToString ()
     {
-      return String.Join (",", _expressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr)).ToArray());
+      return String.Join (" ", _expressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr)).ToArray());
     }
 
   }

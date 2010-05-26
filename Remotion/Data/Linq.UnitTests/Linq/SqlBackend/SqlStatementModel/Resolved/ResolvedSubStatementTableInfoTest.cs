@@ -54,5 +54,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       
       new ResolvedSubStatementTableInfo ("c", sqlStatement);
     }
+
+     [Test]
+    public new void ToString ()
+    {
+      var sqlStatement = new SqlStatementBuilder ()
+      {
+        SelectProjection = Expression.Constant (new Cook ()),
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0))
+      }.GetSqlStatement ();
+      var subStatementInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
+
+      var result = subStatementInfo.ToString ();
+      Assert.That (result, Is.EqualTo ("(" + sqlStatement + ") [c]"));
+    }
   }
 }

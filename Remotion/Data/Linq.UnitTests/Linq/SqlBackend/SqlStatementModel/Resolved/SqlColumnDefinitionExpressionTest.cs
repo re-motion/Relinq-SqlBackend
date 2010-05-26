@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     }
 
     [Test]
-    public void To_String ()
+    public new void ToString ()
     {
       var result = _columnExpression.ToString();
 

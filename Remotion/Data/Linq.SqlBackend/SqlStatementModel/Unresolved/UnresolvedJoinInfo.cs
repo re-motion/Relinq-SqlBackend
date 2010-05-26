@@ -77,5 +77,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       throw new InvalidOperationException ("This join has not yet been resolved; call the resolution step first.");
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0}.{1}", MemberInfo.DeclaringType.Name, MemberInfo.Name);
+    }
   }
 }

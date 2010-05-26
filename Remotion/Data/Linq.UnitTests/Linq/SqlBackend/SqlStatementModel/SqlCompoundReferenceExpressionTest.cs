@@ -74,11 +74,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void To_String ()
+    public new void ToString ()
     {
       var result = _compoundExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("Table=\"Cook\", SubStatement=\"SELECT [t].[Cook] FROM Cook\", NewExpression=\"new TypeForNewExpression(A = 0)\""));
+      Assert.That (result, Is.EqualTo ("COMPOUND-REF([q0].(new TypeForNewExpression(A = 0)))"));
     }
   }
 }

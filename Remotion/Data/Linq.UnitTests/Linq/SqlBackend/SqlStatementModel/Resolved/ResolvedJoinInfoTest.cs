@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
@@ -31,6 +34,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var result = joinInfo.GetResolvedLeftJoinInfo().ForeignTableInfo;
 
       Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
+    }
+
+    [Test]
+    public new void ToString ()
+    {
+      var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var joinInfo = new ResolvedJoinInfo (foreignTableInfo, Expression.Constant (0), Expression.Constant (1));
+      var result = joinInfo.ToString ();
+
+      Assert.That (result, Is.EqualTo ("[CookTable] [c] ON 0 = 1"));
     }
   }
 }

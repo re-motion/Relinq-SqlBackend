@@ -63,11 +63,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     }
 
     [Test]
-    public void To_String ()
+    public void ToString_Name ()
     {
-      var result = _expression.ToString();
+      var expression = new SqlValueReferenceExpression (typeof (int), "Test", "t");
+      var result = expression.ToString();
 
       Assert.That (result, Is.EqualTo ("[t].[Test]"));
+    }
+
+    [Test]
+    public void ToString_DefaultName ()
+    {
+      var expression = new SqlValueReferenceExpression (typeof (int), null, "t");
+      var result = expression.ToString ();
+
+      Assert.That (result, Is.EqualTo ("[t].[value]"));
     }
   }
 }

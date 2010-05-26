@@ -67,6 +67,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       return new SqlEntityReferenceExpression (Type, newTableAlias, this);
     }
-    
+
+    public override string ToString ()
+    {
+      var entityName = Name != null ? string.Format (" AS [{0}]", Name) : string.Empty;
+      return string.Format ("[{0}]{1}", TableAlias, entityName);
+    }
   }
 }

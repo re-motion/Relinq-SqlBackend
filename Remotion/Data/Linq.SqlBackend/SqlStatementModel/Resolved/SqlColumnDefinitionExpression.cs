@@ -44,5 +44,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       else
         return base.Accept (visitor);
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("[{0}].[{1}]", OwningTableAlias, ColumnName);
+    }
   }
 }

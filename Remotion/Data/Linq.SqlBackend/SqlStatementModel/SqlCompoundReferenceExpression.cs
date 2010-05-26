@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
@@ -80,11 +81,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return string.Format (
-          "Table=\"{0}\", SubStatement=\"{1}\", NewExpression=\"{2}\"",
-          _referencedTable.ItemType.Name,
-          SubStatementTableInfo.SqlStatement,
-          ReferencedNewExpression);
+      return "COMPOUND-REF([" + SubStatementTableInfo.TableAlias + "].(" + FormattingExpressionTreeVisitor.Format (ReferencedNewExpression) + "))";
     }
   }
 }

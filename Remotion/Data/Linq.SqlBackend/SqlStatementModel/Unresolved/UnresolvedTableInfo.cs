@@ -50,5 +50,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       throw new InvalidOperationException ("This table has not yet been resolved; call the resolution step first.");
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("TABLE({0})", ItemType.Name);
+    }
   }
 }

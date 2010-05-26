@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var result = _sqlCompositeCustomTextGeneratorExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("\"5\",\"1\""));
+      Assert.That (result, Is.EqualTo ("\"5\" \"1\""));
     }
   }
 }

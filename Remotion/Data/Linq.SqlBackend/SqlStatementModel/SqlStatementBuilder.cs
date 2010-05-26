@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Clauses.StreamedData;
@@ -115,17 +116,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      var distinct = IsDistinctQuery ? " DISTINCT" : string.Empty;
-      var top = TopExpression != null ? string.Format (" TOP ({0})", FormattingExpressionTreeVisitor.Format (TopExpression)) : string.Empty;
-      var select = SelectProjection != null
-                       ? string.Format ("SELECT{0}{1} " + FormattingExpressionTreeVisitor.Format (SelectProjection), distinct, top)
-                       : string.Empty;
-      var from = SqlTables.Count > 0 ? " FROM " + String.Join (",", SqlTables.Select (t => t.ItemType.Name).ToArray ()) : string.Empty;
-      var where = WhereCondition != null ? " WHERE " + FormattingExpressionTreeVisitor.Format (WhereCondition) : string.Empty;
-      var order = Orderings.Count > 0
-                      ? " ORDER BY " + String.Join (",", Orderings.Select (o => FormattingExpressionTreeVisitor.Format (o.Expression)).ToArray ())
-                      : string.Empty;
-      return string.Format ("{0}{1}{2}{3}", select, from, where, order);
+      var sb = new StringBuilder ("SELECT ");
+      if (IsDistinctQuery)
+        sb.Append ("DISTINCT ");
+      if (TopExpression != null)
+        sb.Append ("TOP (").Append (FormattingExpressionTreeVisitor.Format (TopExpression)).Append (") ");
+      if (SelectProjection != null)
+        sb.Append (FormattingExpressionTreeVisitor.Format (SelectProjection));
+      if (SqlTables.Count > 0)
+      {
+        sb.Append (" FROM ");
+        SqlTables.Aggregate (sb, (builder, table) => builder.Append (table));
+      }
+      if (WhereCondition != null)
+        sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
+      if (Orderings.Count > 0)
+      {
+        sb.Append (" ORDER BY ");
+        Orderings.Aggregate (sb, (builder, ordering) => builder
+            .Append (FormattingExpressionTreeVisitor.Format (ordering.Expression))
+            .Append (" ")
+            .Append (ordering.OrderingDirection.ToString ().ToUpper ()));
+      }
+
+      return sb.ToString ();
     }
 
     private IStreamedDataInfo GetNewDataInfo ()

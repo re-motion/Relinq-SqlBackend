@@ -78,5 +78,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       return visitor.VisitSqlJoinedTable (this);
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0} JOIN {1}", JoinSemantics.ToString ().ToUpper (), JoinInfo);
+    }
   }
 }

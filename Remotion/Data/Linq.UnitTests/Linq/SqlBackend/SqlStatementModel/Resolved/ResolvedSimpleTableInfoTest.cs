@@ -18,22 +18,31 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class ResolvedTableInfoTest
+  public class ResolvedSimpleTableInfoTest
   {
+    private ResolvedSimpleTableInfo _tableInfo;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
+    }
+
     [Test]
     public void Accept ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
       var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
-      tableInfoVisitorMock.Expect (mock => mock.VisitSimpleTableInfo (tableInfo));
+      tableInfoVisitorMock.Expect (mock => mock.VisitSimpleTableInfo (_tableInfo));
 
       tableInfoVisitorMock.Replay();
-      tableInfo.Accept (tableInfoVisitorMock);
+      _tableInfo.Accept (tableInfoVisitorMock);
 
       tableInfoVisitorMock.VerifyAllExpectations();
     }
@@ -41,11 +50,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     [Test]
     public void GetResolvedTableInfo ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
+      var result = _tableInfo.GetResolvedTableInfo();
 
-      var result = tableInfo.GetResolvedTableInfo();
+      Assert.That (result, Is.SameAs (_tableInfo));
+    }
 
-      Assert.That (result, Is.SameAs (tableInfo));
+    [Test]
+    public new void ToString ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t0");
+      var result = tableInfo.ToString ();
+      
+      Assert.That (result, Is.EqualTo ("[CookTable] [t0]"));
     }
   }
 }

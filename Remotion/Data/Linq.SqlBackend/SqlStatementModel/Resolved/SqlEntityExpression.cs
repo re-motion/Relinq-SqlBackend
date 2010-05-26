@@ -66,12 +66,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       else
         return base.Accept (visitor);
     }
-
-    public override string ToString ()
-    {
-      var entityName = string.IsNullOrEmpty (_name) ? string.Empty : string.Format(" AS [{0}]",_name);
-      return string.Format ("[{0}].[{1}]{2}", _tableAlias, Type.Name, entityName);
-    }
-    
   }
 }

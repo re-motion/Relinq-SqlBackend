@@ -56,11 +56,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     }
 
     [Test]
-    public void To_String ()
+    public new void ToString ()
     {
       var result = _tableReferenceExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("Cook"));
+      Assert.That (result, Is.EqualTo ("REF(TABLE(Cook))"));
     }
   }
 }

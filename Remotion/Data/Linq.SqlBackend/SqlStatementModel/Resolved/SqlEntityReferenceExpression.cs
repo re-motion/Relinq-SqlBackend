@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     // Returns a column from this entity. The column will be represented as: TableAlias.ReferencedEntityName_ColumnBaseName.
     // For example, for an entity referencing another entity "e0" from a substatement "q0", the column "ID" will be represented as: q0.e0_ID
-    public override SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)
+    public override sealed SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)
     {
       return new SqlColumnReferenceExpression (type, TableAlias, columnName, isPrimaryKeyColumn, _referencedEntity);
     }
@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return string.Format ("{0}(REF {1})", base.ToString(), _referencedEntity);
+      return string.Format ("[{0}]{1} (REF)", TableAlias, _referencedEntity.Name != null ? string.Format (".[{0}]", _referencedEntity.Name) : "");
     }
   }
 }

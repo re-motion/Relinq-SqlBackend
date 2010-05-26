@@ -82,5 +82,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       joinInfo.GetResolvedLeftJoinInfo();
     }
+
+    [Test]
+    public new void ToString ()
+    {
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
+      var result = joinInfo.ToString ();
+
+      Assert.That (result, Is.EqualTo ("Kitchen.Cook"));
+    }
   }
 }

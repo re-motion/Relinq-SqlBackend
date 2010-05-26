@@ -253,7 +253,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false));
       _mappingResolutionContext.AddSqlEntityMapping (entityExpression, new SqlTable(new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")));
 
-      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
           .Expect (
@@ -295,7 +295,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
                          {
-                             SelectProjection = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook))
+                             SelectProjection = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook))
                          }.GetSqlStatement();
 
       var result = _stage.ApplySelectionContext (sqlStatement, SqlExpressionContext.SingleValueRequired, _mappingResolutionContext);

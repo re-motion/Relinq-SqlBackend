@@ -64,11 +64,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     }
 
     [Test]
-    public void To_String ()
+    public void ToString_NoEntityName ()
     {
-      var result = _columnExpression.ToString();
+      var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null);
+      var columnExpression = new SqlColumnReferenceExpression (typeof (int), "t0", "ID", true, referencedEntity);
+      var result = columnExpression.ToString ();
 
-      Assert.That (result, Is.EqualTo ("[c].[columnName](REF [c].[Cook])"));
+      Assert.That (result, Is.EqualTo ("[t0].[ID] (REF)"));
+    }
+
+    [Test]
+    public void ToString_WithEntityName ()
+    {
+      var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "e1");
+      var columnExpression = new SqlColumnReferenceExpression (typeof (int), "t0", "ID", true, referencedEntity);
+      var result = columnExpression.ToString ();
+
+      Assert.That (result, Is.EqualTo ("[t0].[e1_ID] (REF)"));
     }
   }
 }

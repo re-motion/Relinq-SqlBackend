@@ -30,16 +30,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlJoinedTableTest
   {
-    private SqlTable _cookTable;
-    private SqlTable _kitchenTable;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _cookTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      _kitchenTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Kitchen));
-    }
-
     [Test]
     public void SameType ()
     {
@@ -102,6 +92,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       visitorMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public new void ToString ()
+    {
+      var joinedTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Left);
+
+      var result = joinedTable.ToString ();
+
+      Assert.That (result, Is.EqualTo ("LEFT JOIN Kitchen.Cook"));
     }
   }
 }

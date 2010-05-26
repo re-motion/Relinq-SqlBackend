@@ -73,11 +73,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       else
         return base.Accept (visitor);
     }
-
-    public override string ToString ()
-    {
-      string primaryKey = IsPrimaryKey ? "(PK)" : string.Empty;
-      return string.Format ("[{0}].[{1}]{2}", _owningTableAlias, _columnName, primaryKey);
-    }
   }
 }

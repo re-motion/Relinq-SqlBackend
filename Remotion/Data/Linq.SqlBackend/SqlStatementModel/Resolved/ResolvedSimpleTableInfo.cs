@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="ResolvedSimpleTableInfo"/> represents the data source defined by a table in a relational database.
   /// </summary>
-  public class ResolvedSimpleTableInfo : ITableInfo, IResolvedTableInfo
+  public class ResolvedSimpleTableInfo : IResolvedTableInfo
   {
     private readonly Type _itemType;
     private readonly string _tableName;
@@ -63,6 +63,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public virtual IResolvedTableInfo GetResolvedTableInfo ()
     {
       return this;
+    }
+
+    public override string ToString ()
+    {
+      return string.Format ("[{0}] [{1}]", TableName, TableAlias);
     }
   }
 }

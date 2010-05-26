@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitExpression_CallsNodeSpecificVisitMethods ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
@@ -180,7 +180,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitExpression_NonTopLevel_AlwaysAppliesSingleValueSemantics ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
@@ -192,7 +192,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitExpression_TopLevel_AppliesSpecifiedSemantics ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, true, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitExpression_ChildNode_GetsSingleValueSemantics ()
     {
-      var childExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var childExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var parentExpression = new CustomCompositeExpression (typeof (bool), childExpression);
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock, _mappingResolutionContext);
@@ -274,7 +274,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlEntityExpression_WithSingleValueSemantics_ConvertsEntityToPrimaryKey ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitSqlEntityExpression (entityExpression);
@@ -285,7 +285,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlEntityExpression_WithNonSingleValueSemantics_LeavesEntity ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitSqlEntityExpression (entityExpression);
@@ -496,7 +496,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNullExpression_AppliesSingleValueSemantics ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var sqlIsNullExpressionWithValue = new SqlIsNullExpression (Expression.Constant (1));
       var sqlIsNullExpressionWithEntity = new SqlIsNullExpression (entityExpression);
 
@@ -513,7 +513,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlIsNotNullExpression_AppliesSingleValueSemantics ()
     {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression (typeof (Cook));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var sqlIsNotNullExpressionWithValue = new SqlIsNotNullExpression (Expression.Constant (1));
       var sqlIsNotNullExpressionWithEntity = new SqlIsNotNullExpression (entityExpression);
 

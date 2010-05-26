@@ -81,7 +81,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
       return new SqlStatement (
           new TestStreamedValueInfo (type),
-          CreateSqlEntityExpression (type),
+          CreateSqlEntityDefinitionExpression (type),
           new[] { sqlTable },
           new Ordering[] { },
           null,
@@ -193,12 +193,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 
-    public static SqlEntityExpression CreateSqlEntityExpression (Type type)
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type)
+    {
+      return CreateSqlEntityDefinitionExpression(type, null);
+    }
+
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name)
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
       return new SqlEntityDefinitionExpression (
           type,
-          "t", null,
+          "t", 
+          name,
           primaryKeyColumn,
           new[]
           {

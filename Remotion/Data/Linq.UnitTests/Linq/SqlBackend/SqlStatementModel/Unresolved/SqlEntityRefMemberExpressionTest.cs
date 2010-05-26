@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [SetUp]
     public void SetUp ()
     {
-      _memberInfo = typeof (Cook).GetProperty ("FirstName");
+      _memberInfo = typeof (Cook).GetProperty ("Substitution");
       _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       _expression = new SqlEntityRefMemberExpression (_entityExpression, _memberInfo);
     }
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void Initialization_TypeInferredFromMemberType ()
     {
-      Assert.That (_expression.Type, Is.SameAs (typeof (string)));
+      Assert.That (_expression.Type, Is.SameAs (typeof (Cook)));
     }
 
     [Test]
@@ -76,11 +76,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     }
 
     [Test]
-    public void To_String ()
+    public new void ToString ()
     {
       var result = _expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("[c].[Cook].[FirstName]"));
+      Assert.That (result, Is.EqualTo ("[c].[Substitution]"));
     }
   }
 }

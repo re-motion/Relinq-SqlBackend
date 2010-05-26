@@ -52,5 +52,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       _joinInfo.Accept (joinInfoVisitorMock);
       joinInfoVisitorMock.VerifyAllExpectations ();
     }
+
+    [Test]
+    public new void ToString ()
+    {
+      var result = _joinInfo.ToString ();
+
+      Assert.That (result, Is.EqualTo ("Restaurant.Cooks"));
+    }
   }
 }
