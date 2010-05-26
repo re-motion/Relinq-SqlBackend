@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Utilities;
 
@@ -112,6 +113,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         DataInfo = GetNewDataInfo ();
     }
 
+    public override string ToString ()
+    {
+      var distinct = IsDistinctQuery ? " DISTINCT" : string.Empty;
+      var top = TopExpression != null ? string.Format (" TOP ({0})", FormattingExpressionTreeVisitor.Format (TopExpression)) : string.Empty;
+      var select = SelectProjection != null
+                       ? string.Format ("SELECT{0}{1} " + FormattingExpressionTreeVisitor.Format (SelectProjection), distinct, top)
+                       : string.Empty;
+      var from = SqlTables.Count > 0 ? " FROM " + String.Join (",", SqlTables.Select (t => t.ItemType.Name).ToArray ()) : string.Empty;
+      var where = WhereCondition != null ? " WHERE " + FormattingExpressionTreeVisitor.Format (WhereCondition) : string.Empty;
+      var order = Orderings.Count > 0
+                      ? " ORDER BY " + String.Join (",", Orderings.Select (o => FormattingExpressionTreeVisitor.Format (o.Expression)).ToArray ())
+                      : string.Empty;
+      return string.Format ("{0}{1}{2}{3}", select, from, where, order);
+    }
+
     private IStreamedDataInfo GetNewDataInfo ()
     {
       var sequenceInfo = DataInfo as StreamedSequenceInfo;
@@ -157,5 +173,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       public List<SqlTableBase> SqlTables { get; private set; }
       public List<Ordering> Orderings { get; private set; }
     }
+
   }
 }
