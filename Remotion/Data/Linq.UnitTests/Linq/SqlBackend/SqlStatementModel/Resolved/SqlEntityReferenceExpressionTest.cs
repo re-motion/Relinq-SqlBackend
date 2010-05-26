@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       var result = entityReferenceExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("FROM [t].[Cook](REF FROM [c].[Cook])"));
+      Assert.That (result, Is.EqualTo ("[t].[Cook](REF [c].[Cook])"));
     }
   }
 }

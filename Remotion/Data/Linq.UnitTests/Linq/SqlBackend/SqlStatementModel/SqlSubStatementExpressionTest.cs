@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -67,6 +68,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_expression);
+    }
+
+    [Test]
+    public void To_String ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var expression = new SqlSubStatementExpression (sqlStatement);
+      
+      var result = expression.ToString();
+
+      Assert.That (result, Is.EqualTo ("SELECT [t].[Cook] FROM Cook"));
     }
   }
 }

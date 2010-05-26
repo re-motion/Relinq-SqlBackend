@@ -149,7 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var result = _entityExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("FROM [t].[Cook]"));
+      Assert.That (result, Is.EqualTo ("[t].[Cook]"));
     }
   }
 }

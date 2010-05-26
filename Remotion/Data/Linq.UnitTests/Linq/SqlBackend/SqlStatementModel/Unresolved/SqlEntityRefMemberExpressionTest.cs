@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     {
       var result = _expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("FROM [c].[Cook].[FirstName]"));
+      Assert.That (result, Is.EqualTo ("[c].[Cook].[FirstName]"));
     }
   }
 }

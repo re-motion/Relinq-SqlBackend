@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var result = _columnExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("[c].[columnName] FROM [c].[Cook]"));
+      Assert.That (result, Is.EqualTo ("[c].[columnName](REF [c].[Cook])"));
     }
   }
 }

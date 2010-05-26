@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     public override string ToString ()
     {
       var entityName = string.IsNullOrEmpty (_name) ? string.Empty : string.Format(" AS [{0}]",_name);
-      return string.Format ("FROM [{0}].[{1}]{2}", _tableAlias, Type.Name, entityName);
+      return string.Format ("[{0}].[{1}]{2}", _tableAlias, Type.Name, entityName);
     }
     
   }
