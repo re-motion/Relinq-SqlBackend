@@ -437,13 +437,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "'Convert' expressions are not supported with boolean type.")]
-    public void VisitUnaryExpression_BooleanConvertUnaryExpression_NotSupported ()
+    public void VisitUnaryExpression_ConvertExpression_OperandChanged ()
     {
-      var unaryExpression = Expression.Convert (Expression.Constant (true), typeof (bool));
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var unaryExpression = Expression.Convert (new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)), typeof (object));
 
-      _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
+      var result = nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
+
+      Assert.That (result, Is.Not.SameAs (unaryExpression));
+      Assert.That (((UnaryExpression) result).Operand, Is.TypeOf(typeof(SqlColumnDefinitionExpression)));
+    }
+
+    [Test]
+    public void VisitUnaryExpression_ConvertExpression_SameOperand ()
+    {
+      var unaryExpression = Expression.Convert (new SqlEntityDefinitionExpression(typeof(Cook), "c", "CookTable", new SqlColumnDefinitionExpression(typeof(int),"c", "ID", true)), typeof (object));
+
+      var result = _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
+
+      Assert.That (result, Is.SameAs(unaryExpression));
     }
 
     [Test]

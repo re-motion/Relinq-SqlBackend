@@ -58,10 +58,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void VisitResultOperator_WithCast ()
     {
+      var constantExpression = Expression.Constant (new Cook());
+      _sqlStatementBuilder.SelectProjection = constantExpression;
       var castResultOperator = new CastResultOperator (typeof (Chef));
 
       _handler.HandleResultOperator (castResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
+      Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (UnaryExpression)));
+      Assert.That (_sqlStatementBuilder.SelectProjection.NodeType, Is.EqualTo(ExpressionType.Convert));
+      Assert.That (((UnaryExpression) _sqlStatementBuilder.SelectProjection).Operand, Is.SameAs(constantExpression));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Chef))));
     }

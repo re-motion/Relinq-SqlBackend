@@ -85,6 +85,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
+
+    [Test]
+    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_UnaryExpression_Revisitsresult ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        SelectProjection = Expression.Convert(new NamedExpression ("test", Expression.Constant (5)), typeof(object)),
+        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
+      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
+      Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
+    }
     
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The table projection for a referenced sub-statement must be a new-expression, named or an entity.")]

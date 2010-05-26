@@ -146,16 +146,24 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Type != typeof (bool))
+      if (expression.NodeType == ExpressionType.Convert)
+      {
+        var newOperand = ApplySqlExpressionContext (expression.Operand, _currentContext, _stage, _context);
+        if (newOperand != expression.Operand)
+          expression = Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
+        return expression;
+      }
+      else if (expression.Type == typeof (bool))
+      {
+        var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
+        var operand = ApplySqlExpressionContext (expression.Operand, childContext, _stage, _context);
+
+        if (operand != expression.Operand)
+          expression = Expression.MakeUnary (expression.NodeType, operand, expression.Type, expression.Method);
+        return expression;
+      }
+      else
         return base.VisitUnaryExpression (expression);
-
-      var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
-      var operand = ApplySqlExpressionContext (expression.Operand, childContext, _stage, _context);
-
-      if (operand != expression.Operand)
-        expression = Expression.MakeUnary (expression.NodeType, operand, expression.Type, expression.Method);
-
-      return expression;
     }
 
     public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)

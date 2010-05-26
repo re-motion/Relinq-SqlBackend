@@ -49,6 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var innerSqlEntityExpression = referencedExpression as SqlEntityExpression;
       var innerNamedExpression = referencedExpression as NamedExpression;
       var innerNewExpression = referencedExpression as NewExpression;
+      var innerUnaryExpression = referencedExpression as UnaryExpression;
 
       if (innerSqlEntityExpression != null)
         return innerSqlEntityExpression.CreateReference (sqlTable.GetResolvedTableInfo ().TableAlias);
@@ -56,6 +57,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return new SqlValueReferenceExpression (referencedExpression.Type, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
       else if (innerNewExpression != null)
         return new SqlCompoundReferenceExpression (referencedExpression.Type, null, sqlTable, subStatementTableInfo, innerNewExpression);
+      else if (innerUnaryExpression != null)
+        return CreateReferenceExpression (innerUnaryExpression.Operand, subStatementTableInfo, sqlTable);
       else
         throw new InvalidOperationException ("The table projection for a referenced sub-statement must be a new-expression, named or an entity.");
     }
