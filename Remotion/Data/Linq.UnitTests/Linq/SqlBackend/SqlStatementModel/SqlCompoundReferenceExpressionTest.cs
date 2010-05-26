@@ -72,5 +72,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result, Is.SameAs (_compoundExpression));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _compoundExpression.ToString();
+
+      Assert.That (result, Is.EqualTo ("Table=\"Cook\", SubStatement=\"SELECT [t].[Cook] FROM Cook\", NewExpression=\"new TypeForNewExpression(A = 0)\""));
+    }
   }
 }

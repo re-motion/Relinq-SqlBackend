@@ -77,5 +77,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       else
         return base.Accept (visitor);
     }
+
+    public override string ToString ()
+    {
+      return string.Format (
+          "Table=\"{0}\", SubStatement=\"{1}\", NewExpression=\"{2}\"",
+          _referencedTable.ItemType.Name,
+          SubStatementTableInfo.SqlStatement,
+          ReferencedNewExpression);
+    }
   }
 }
