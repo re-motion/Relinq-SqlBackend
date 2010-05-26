@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -212,7 +213,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           else
             return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKeyColumn;
       }
-      throw new NotSupportedException (string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, expression));
+      throw new NotSupportedException (string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, FormattingExpressionTreeVisitor.Format(expression)));
     }
 
     public Expression VisitNamedExpression (NamedExpression expression)
