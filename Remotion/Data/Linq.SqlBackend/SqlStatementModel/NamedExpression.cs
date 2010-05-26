@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return string.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name);
+      return string.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name ?? "value");
     }
   }
 
