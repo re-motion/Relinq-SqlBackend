@@ -221,18 +221,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         if (fromExpressionInfo.WhereCondition != null)
           SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
 
-        var adjustesItemSelector = ReplacingExpressionTreeVisitor.Replace (
-              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (fromExpressionInfo.SqlTable), fromExpressionInfo.ItemSelector);
-
         foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
-        {
-          var adjustedOrdering = ReplacingExpressionTreeVisitor.Replace (
-              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (fromExpressionInfo.SqlTable), ordering.Expression);
-          SqlStatementBuilder.Orderings.Add (new Ordering (adjustedOrdering, ordering.OrderingDirection));
-        }
-
+          SqlStatementBuilder.Orderings.Add (ordering);
+        
         SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
-        return new FromExpressionInfo (fromExpressionInfo.SqlTable, new Ordering[0], adjustesItemSelector, null); // TODO: When Replace calls above are removed, just return fromExpressionInfo
+        return fromExpressionInfo;
       }
     }
 

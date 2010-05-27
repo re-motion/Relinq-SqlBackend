@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var result = visitor.VisitExpression (fromExpression);
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
-        return new FromExpressionInfo (resultAsTableReferenceExpression.SqlTable, visitor._extractedOrderings.ToArray(), visitor._itemSelector, visitor._whereCondition);
+        return new FromExpressionInfo (resultAsTableReferenceExpression.SqlTable, visitor._extractedOrderings.ToArray (), resultAsTableReferenceExpression, visitor._whereCondition);
 
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
       throw new NotSupportedException (message);
@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private readonly IQuerySource _querySource;
     private readonly UniqueIdentifierGenerator _generator;
-    private Expression _itemSelector;
+    //private Expression _itemSelector;
     private List<Ordering> _extractedOrderings;
     private Expression _whereCondition;
 
@@ -77,7 +77,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _querySource = querySource;
       _generator = generator;
 
-      _itemSelector = new QuerySourceReferenceExpression (querySource);
       _extractedOrderings = new List<Ordering>();
     }
     
