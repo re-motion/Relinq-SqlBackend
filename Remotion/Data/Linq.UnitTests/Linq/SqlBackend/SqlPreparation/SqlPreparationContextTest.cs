@@ -116,7 +116,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (groupJoinClause.JoinClause), null); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null);
 
       _stageMock
           .Expect (
