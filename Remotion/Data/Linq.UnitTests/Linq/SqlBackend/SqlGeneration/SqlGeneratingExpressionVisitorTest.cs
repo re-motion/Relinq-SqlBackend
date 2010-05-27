@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[Test]_[ID]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[Test_ID]"));
     }
 
     [Test]

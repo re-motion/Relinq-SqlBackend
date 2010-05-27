@@ -758,7 +758,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               typeof (Cook).GetProperty ("Substitution"));
       var namedExpression = new NamedExpression ("test", refMemberExpression);
       var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression(1), new SqlLiteralExpression(1));
-      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", "test2", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
 
       _stageMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<IJoinInfo>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything))
@@ -771,7 +771,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (result, Is.Not.SameAs (fakeResult));
       Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
-      Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test"));
+      Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test_test2"));
     }
 
     [Test]
@@ -805,13 +805,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       }.GetSqlStatement ();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
-      var compoundExpression = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
+      var compoundExpression = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), "test2", sqlTable, tableInfo, newExpression);
       var namedExpression = new NamedExpression ("test", compoundExpression);
 
       var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (SqlCompoundReferenceExpression)));
-      Assert.That (((SqlCompoundReferenceExpression) result).Name, Is.EqualTo("test"));
+      Assert.That (((SqlCompoundReferenceExpression) result).Name, Is.EqualTo("test_test2"));
     }
 
     [Test]

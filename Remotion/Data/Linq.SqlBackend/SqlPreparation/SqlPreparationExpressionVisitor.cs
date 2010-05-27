@@ -60,6 +60,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _registry = registry;
     }
 
+    protected ISqlPreparationContext Context
+    {
+      get { return _context; }
+    }
+
+    protected ISqlPreparationStage Stage
+    {
+      get { return _stage; }
+    }
+
+    protected MethodCallTransformerRegistry Registry
+    {
+      get { return _registry; }
+    }
+
     public override Expression VisitExpression (Expression expression)
     {
       if (expression != null)
@@ -96,12 +111,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression==null)
-      {
-        var builder = new SqlStatementBuilder (expression.SqlStatement);
-        builder.Orderings.Clear();
-        return new SqlSubStatementExpression (builder.GetSqlStatement());
-      }
+      //TODO: 2772
+      //if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression == null)
+      //{
+      //  var builder = new SqlStatementBuilder (expression.SqlStatement);
+      //  builder.Orderings.Clear ();
+      //  return new SqlSubStatementExpression (builder.GetSqlStatement ());
+      //}
       return expression;
     }
 

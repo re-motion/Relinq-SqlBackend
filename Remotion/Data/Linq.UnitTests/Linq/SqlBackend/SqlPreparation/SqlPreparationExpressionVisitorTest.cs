@@ -185,6 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [Ignore("TODO 2772")]
     public void VisitSubqueryExpressionTest_RevisitsResult ()
     {
       var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
@@ -225,6 +226,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [Ignore("TODO 2772")]
     public void VisitSqlSubStatmentExpression_HasTopExpression_ReturnsNew ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ());

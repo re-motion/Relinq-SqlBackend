@@ -90,9 +90,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from k in Kitchens 
           from c in (from sc in Cooks orderby sc.Name select sc) select c,
-          "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "+
-          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],"+
-          "[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0]");
+          "SELECT [q0].[get_Key_ID],[q0].[get_Key_FirstName],[q0].[get_Key_Name],[q0].[get_Key_IsStarredCook],[q0].[get_Key_IsFullTimeCook],"+
+          "[q0].[get_Key_SubstitutedID],[q0].[get_Key_KitchenID] FROM [KitchenTable] AS [t1] CROSS APPLY "+
+          "(SELECT [t2].[ID] AS [get_Key_ID],[t2].[FirstName] AS [get_Key_FirstName],[t2].[Name] AS [get_Key_Name],"+
+          "[t2].[IsStarredCook] AS [get_Key_IsStarredCook],[t2].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],"+
+          "[t2].[SubstitutedID] AS [get_Key_SubstitutedID],[t2].[KitchenID] AS [get_Key_KitchenID],[t2].[Name] AS [get_Value_get_Key],"+
+          "NULL AS [get_Value_get_Value] FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[get_Value_get_Key] ASC");
     }
 
     [Test]
@@ -123,12 +126,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore("TODO 2772")]
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
       CheckQuery (
-          from c in Cooks
+          (from c in Cooks
           where (from sc in Cooks orderby sc.Name select sc).Contains(c)
-          select c,
+          select c),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
           "FROM [CookTable] AS [t0] WHERE [t0].[ID] IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
     }

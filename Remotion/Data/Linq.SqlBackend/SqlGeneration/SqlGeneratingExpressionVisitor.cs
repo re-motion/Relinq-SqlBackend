@@ -387,12 +387,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         _commandBuilder.AppendIdentifier (prefix);
         _commandBuilder.Append (".");
-        if(referencedEntityName != null)
-        {
-          _commandBuilder.AppendIdentifier (referencedEntityName);
-          _commandBuilder.Append ("_");
-        }
-        _commandBuilder.AppendIdentifier (columnName);
+        if (referencedEntityName != null)
+          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + columnName);
+        else
+          _commandBuilder.AppendIdentifier (columnName);
       }
     }
 

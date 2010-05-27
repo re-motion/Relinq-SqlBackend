@@ -43,13 +43,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var outerQuery = new QueryModel (outerMainFromClause, outerSelectClause);
       outerQuery.BodyClauses.Add (outerWhereClause);
 
-      CheckQuery (outerQuery, "SELECT [q0].[inner]_[ID] AS [inner_ID],[q0].[inner]_[FirstName] AS [inner_FirstName],"+
-                              "[q0].[inner]_[Name] AS [inner_Name],[q0].[inner]_[IsStarredCook] AS [inner_IsStarredCook],"+
-                              "[q0].[inner]_[IsFullTimeCook] AS [inner_IsFullTimeCook],[q0].[inner]_[SubstitutedID] AS [inner_SubstitutedID],"+
-                              "[q0].[inner]_[KitchenID] AS [inner_KitchenID] FROM (SELECT [t1].[ID] AS [inner_ID],"+
+      CheckQuery (outerQuery, "SELECT [q0].[inner_ID],[q0].[inner_FirstName],[q0].[inner_Name],[q0].[inner_IsStarredCook],[q0].[inner_IsFullTimeCook],"+
+                              "[q0].[inner_SubstitutedID],[q0].[inner_KitchenID] FROM (SELECT [t1].[ID] AS [inner_ID],"+
                               "[t1].[FirstName] AS [inner_FirstName],[t1].[Name] AS [inner_Name],[t1].[IsStarredCook] AS [inner_IsStarredCook],"+
                               "[t1].[IsFullTimeCook] AS [inner_IsFullTimeCook],[t1].[SubstitutedID] AS [inner_SubstitutedID],"+
-                              "[t1].[KitchenID] AS [inner_KitchenID] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[inner]_[ID] = @1)",
+                              "[t1].[KitchenID] AS [inner_KitchenID] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[inner_ID] = @1)",
                               new CommandParameter("@1", 1));
     }
 

@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly SqlEntityExpression _referencedEntity;
 
     public SqlEntityReferenceExpression (Type itemType, string tableAlias, SqlEntityExpression referencedEntity)
-        : base(itemType, tableAlias, referencedEntity.Name)
+        : base(itemType, tableAlias, null)
     {
       ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
 

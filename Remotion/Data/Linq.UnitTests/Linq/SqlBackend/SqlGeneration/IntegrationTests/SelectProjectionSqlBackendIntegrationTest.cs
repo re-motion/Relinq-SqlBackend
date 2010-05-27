@@ -90,16 +90,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void NestedSelectProjections_MainFromClause ()
+    public void NestedSelectProjection ()
     {
       CheckQuery (
-          from c in (from sc in Cooks select new { A = sc.Name, B = sc.ID }) select c,
-            "SELECT [t0].[Name] AS [get_A],[t0].[ID] AS [get_B] FROM [CookTable] AS [t0]"
+          from c in (from sc in Cooks select new { A = sc.Name, B = sc.ID }).Distinct() where c.B != 0 select c.A,
+            "SELECT [q0].[get_A] AS [value] FROM ("
+            + "SELECT DISTINCT [t1].[Name] AS [get_A],[t1].[ID] AS [get_B] FROM [CookTable] AS [t1]) AS [q0] "
+            + "WHERE ([q0].[get_B] <> @1)",
+            new CommandParameter("@1", 0)
           );
     }
 
     [Test]
-    public void NestedNestedSelectProjection_AdditionalMainFromClause ()
+    public void NestedSelectProjection_AccessingEntity ()
+    {
+      CheckQuery (
+          from c in (from sc in Cooks select new { A = sc, B = sc.ID }).Distinct () where c.B != 0 select c.A,
+            "SELECT [q0].[get_A_ID],[q0].[get_A_FirstName],[q0].[get_A_Name],[q0].[get_A_IsStarredCook],[q0].[get_A_IsFullTimeCook],"
+            + "[q0].[get_A_SubstitutedID],[q0].[get_A_KitchenID] FROM ("
+            + "SELECT DISTINCT [t1].[ID] AS [get_A_ID],[t1].[FirstName] AS [get_A_FirstName],[t1].[Name] AS [get_A_Name],"
+            + "[t1].[IsStarredCook] AS [get_A_IsStarredCook],[t1].[IsFullTimeCook] AS [get_A_IsFullTimeCook],"
+            + "[t1].[SubstitutedID] AS [get_A_SubstitutedID],[t1].[KitchenID] AS [get_A_KitchenID],[t1].[ID] AS [get_B] "
+            + "FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[get_B] <> @1)",
+            new CommandParameter ("@1", 0)
+          );
+    }
+
+    [Test]
+    public void NestedNestedSelectProjection ()
     {
       CheckQuery (
           from x in Kitchens
@@ -117,8 +135,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
                   }
                 }) // NamedExpression ("get_C_get_D", ...))))) => SqlValueReference ("get_C_get_D")
           where c.C.D != null // MemberExpression (MemberExpression (SqlTableReferenceExpression))
-          select c,
-          "SELECT [q0].[get_A], [q0].[get_B], [q0].[get_C] FROM [KitchenTable] AS [t1] CROSS APPLY "+
+          select c.B,
+          "SELECT [q0].[get_B] AS [value] FROM [KitchenTable] AS [t1] CROSS APPLY "+
           "(SELECT @1 AS [get_A],[t2].[Name] AS [get_B],[t2].[Name] AS [get_C_get_D] FROM [CookTable] AS [t2]) AS [q0] "+
           "WHERE ([q0].[get_C_get_D] IS NOT NULL)",
           new CommandParameter("@1", 10));
