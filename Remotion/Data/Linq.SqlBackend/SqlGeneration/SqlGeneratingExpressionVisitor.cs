@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -77,6 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    // TODO Review 2779: This method is probably never used because the more specific visit methods are implemented; call VisitUnknownExpression and make it an explicit interface implementation
     public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

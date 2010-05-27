@@ -23,6 +23,11 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
+  /// <summary>
+  /// Implementation of <see cref="SqlEntityExpression"/> for entity references, i.e., entities that stem from a substatement. Entity references
+  /// know the <see cref="SqlEntityExpression"/> inside the substatement (the referenced entity), and their columns are of type
+  /// <see cref="SqlColumnReferenceExpression"/>.
+  /// </summary>
   public class SqlEntityReferenceExpression : SqlEntityExpression
   {
     private readonly SqlColumnExpression _primaryKeyColumn;
@@ -35,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
 
       _referencedEntity = referencedEntity;
-      _columns = Array.AsReadOnly(referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
+      _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
       _primaryKeyColumn = GetColumn (referencedEntity.PrimaryKeyColumn.Type, referencedEntity.PrimaryKeyColumn.ColumnName, true);
     }
 
@@ -68,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression CreateReference (string newTableAlias)
     {
-      return new SqlEntityReferenceExpression(Type, newTableAlias, _referencedEntity);
+      return new SqlEntityReferenceExpression (Type, newTableAlias, _referencedEntity); // TODO Review 2779: should be _this_, not _referencedEntity; see NestedSelectProjection_TwoSubStatements_ReferencedEntity_NamedAgain integration test
     }
 
     public override string ToString ()

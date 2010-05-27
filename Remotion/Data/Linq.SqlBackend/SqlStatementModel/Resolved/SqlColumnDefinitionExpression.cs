@@ -17,18 +17,17 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
+  /// <summary>
+  /// Defines a SQL column as an item with a given name coming from a given table alias. The column is represented as [alias].[name].
+  /// </summary>
   public class SqlColumnDefinitionExpression : SqlColumnExpression
   {
     public SqlColumnDefinitionExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
         : base(type, owningTableAlias, columnName, isPrimaryKey)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
-      
-     
     }
 
     public override SqlColumnExpression Update (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)

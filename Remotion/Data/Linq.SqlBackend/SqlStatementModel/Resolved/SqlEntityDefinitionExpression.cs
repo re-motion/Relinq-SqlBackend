@@ -19,17 +19,29 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
+  /// <summary>
+  /// Implementation of <see cref="SqlEntityExpression"/> for entity definitions, i.e., entities that are directly defined by a table.
+  /// </summary>
   public class SqlEntityDefinitionExpression : SqlEntityExpression
   {
     private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
 
-    public SqlEntityDefinitionExpression (Type itemType, string tableAlias, string entityName, SqlColumnExpression primaryKeyColumn, params SqlColumnExpression[] projectionColumns)
-        : base(itemType, tableAlias, entityName)
+    public SqlEntityDefinitionExpression (
+        Type entityType, 
+        string tableAlias, 
+        string entityName, 
+        SqlColumnExpression primaryKeyColumn, 
+        params SqlColumnExpression[] projectionColumns)
+        : base (entityType, tableAlias, entityName)
     {
+      ArgumentUtility.CheckNotNull ("primaryKeyColumn", primaryKeyColumn);
+      ArgumentUtility.CheckNotNull ("projectionColumns", projectionColumns);
+
       _columns = Array.AsReadOnly (projectionColumns);
       _primaryKeyColumn = primaryKeyColumn;
     }

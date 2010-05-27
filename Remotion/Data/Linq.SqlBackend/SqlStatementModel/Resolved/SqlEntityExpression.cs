@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
@@ -25,15 +24,17 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="SqlEntityExpression"/> holds a list of <see cref="SqlColumnExpression"/> instances.
+  /// <see cref="SqlEntityExpression"/> represents an entity in a SQL expression. It consists of a list of columns, a primary key (which is usually
+  /// part of the columns list), and a table alias identifying the table or substatement the entity stems from. An entity can have a name, which
+  /// is used to prefix all of its columns with in the generated SQL. 
   /// </summary>
   public abstract class SqlEntityExpression : ExtensionExpression
   {
     private readonly string _tableAlias;
     private readonly string _name;
 
-    protected SqlEntityExpression (Type itemType, string tableAlias, string entityName)
-        : base (ArgumentUtility.CheckNotNull ("itemType", itemType))
+    protected SqlEntityExpression (Type entityType, string tableAlias, string entityName)
+      : base (ArgumentUtility.CheckNotNull ("entityType", entityType))
     {
       ArgumentUtility.CheckNotNull ("tableAlias", tableAlias);
       
@@ -56,6 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public abstract SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn);
     public abstract SqlEntityExpression CreateReference (string newTableAlias);
+    
     public abstract SqlEntityExpression Update (Type itemType, string tableAlias, string entityName);
     
     public override Expression Accept (ExpressionTreeVisitor visitor)

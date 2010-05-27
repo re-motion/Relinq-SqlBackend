@@ -152,6 +152,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "FROM (SELECT DISTINCT [t0].[ID] AS [get_A_ID],... FROM [CookTable] AS [t0]) AS [q1] "
           + "LEFT OUTER JOIN [CookTable] AS [t2] ON [q1].[get_A_ID] = [t2].[SubstitutedID]");
     }
+
+    [Test]
+    [Ignore ("TODO Review 2779 - correct SQL should look very similar to the SQL below")]
+    public void NestedSelectProjection_TwoSubStatements_ReferencedEntity_NamedAgain ()
+    {
+      CheckQuery (
+          from x in (from c in (from y in Cooks select new { A = y, B = y.ID }).Distinct () select new { X = c.A }).Distinct () select x.X.FirstName,
+          "SELECT [q1].[get_X_FirstName] FROM (SELECT [q0].[get_A_ID] AS [get_X_ID],[q0].[get_A_FirstName] AS [get_X_FirstName],... FROM (SELECT [t2].[ID] AS [get_A_ID],[t2].[FirstName] AS [get_A_FirstName],... FROM [CookTable] [t2]) AS [q0]) AS [q1]");
+    }
+
+    [Test]
+    [Ignore ("TODO Review 2820 - correct SQL should look very similar to the SQL below")]
+    public void NestedSelectProjection_TwoSubStatements_ReferencedEntity_NotNamedAgain ()
+    {
+      CheckQuery (
+          from x in (from c in (from y in Cooks select new { A = y, B = y.ID }).Distinct () select c.A).Distinct () select x.FirstName,
+          "SELECT [q1].[FirstName] FROM (SELECT [q0].[get_A_ID] AS [ID],[q0].[get_A_FirstName] AS [FirstName],... FROM (SELECT [t2].[ID] AS [get_A_ID],[t2].[FirstName] AS [get_A_FirstName],... FROM [CookTable] [t2]) AS [q0]) AS [q1]");
+    }
    
   }
 }

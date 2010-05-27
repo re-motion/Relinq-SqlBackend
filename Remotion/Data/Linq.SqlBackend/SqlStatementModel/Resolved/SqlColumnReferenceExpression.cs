@@ -22,7 +22,9 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="SqlColumnReferenceExpression"/> represents a column that references another column defined by a SQL substatement.
+  /// Defines a SQL column as a reference to a column of a <see cref="SqlEntityExpression"/>. The column is represented as [alias].[entityname_name].
+  /// This is used to reference columns of entities defined by substatements, e.g., in from x in (from c in Cooks select c).Distinct() select x.FirstName;
+  /// x.FirstName is a column that references the entity defined by the substatement.
   /// </summary>
   public class SqlColumnReferenceExpression : SqlColumnExpression
   {
