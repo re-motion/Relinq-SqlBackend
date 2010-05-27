@@ -195,19 +195,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
-      var sqlTableOrJoinReference = GetTableReferenceForFromExpression (preparedFromExpression, source);
+      var fromExpressionInfo = GetFromExpressionInfo (preparedFromExpression, source);
 
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), sqlTableOrJoinReference);
-      return sqlTableOrJoinReference.SqlTable;
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
+      return fromExpressionInfo.SqlTable;
     }
 
-    private SqlTableReferenceExpression GetTableReferenceForFromExpression (Expression preparedFromExpression, IQuerySource querySource)
+    private FromExpressionInfo GetFromExpressionInfo (Expression preparedFromExpression, IQuerySource querySource)
     {
       // is from expression already a reference to an existing table?
       var existingTableReference = preparedFromExpression as SqlTableReferenceExpression;
-      
+
       if (existingTableReference != null) // yes, table already exists
-        return existingTableReference;
+      {
+        return new FromExpressionInfo (
+            existingTableReference.SqlTable,
+            new Ordering[0],
+            new SqlTableReferenceExpression (existingTableReference.SqlTable));
+      }
       else // no, a new table must be created
       {
         var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
@@ -220,9 +225,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           sqlTableOrJoin = new SqlTable (sqlJoinedTable);
         }
 
+        // if (FromExpressionInfo.OldStyleJoinCondition != null) SqlStatementBuilder.AddWhereCondition (FEI.OldStyleJoinCondition);
+
         var adjustesItemSelector = ReplacingExpressionTreeVisitor.Replace (
-              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (sqlTableOrJoin), new QuerySourceReferenceExpression (fromExpressionInfo.ItemSelector));
-         
+              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (sqlTableOrJoin), fromExpressionInfo.ItemSelector);
+
         foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
         {
           var adjustedOrdering = ReplacingExpressionTreeVisitor.Replace (
@@ -231,7 +238,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         }
 
         SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
-        return (SqlTableReferenceExpression) adjustesItemSelector;
+        return new FromExpressionInfo(sqlTableOrJoin, new Ordering[0], adjustesItemSelector); // TODO: When Replace calls above are removed, just return fromExpressionInfo
       }
     }
 

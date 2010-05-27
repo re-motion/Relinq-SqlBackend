@@ -24,7 +24,6 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
@@ -117,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, groupJoinClause.JoinClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (groupJoinClause.JoinClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       _stageMock
           .Expect (

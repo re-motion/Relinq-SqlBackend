@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
@@ -27,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public struct FromExpressionInfo
   {
-    public FromExpressionInfo (SqlTableBase sqlTable, Ordering[] extractedOrderings, IQuerySource itemSelector)
+    public FromExpressionInfo (SqlTableBase sqlTable, Ordering[] extractedOrderings, Expression itemSelector)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("extractedOrderings", extractedOrderings);
@@ -40,6 +41,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public readonly SqlTableBase SqlTable;
     public readonly ReadOnlyCollection<Ordering> ExtractedOrderings;
-    public readonly IQuerySource ItemSelector;
+    public readonly Expression ItemSelector;
   }
 }

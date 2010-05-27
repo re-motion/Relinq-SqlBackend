@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, _queryModel.MainFromClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (_queryModel.MainFromClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       _stageMock
           .Expect (
@@ -193,7 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, _mainFromClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (_queryModel.MainFromClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       _stageMock
           .Expect (
@@ -231,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, additionalFromClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (additionalFromClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       _stageMock
           .Expect (
@@ -263,7 +263,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fromClause = ExpressionHelper.CreateAdditionalFromClause();
       var preparedExpression = Expression.Constant (0);
       var preparedJoinedTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Inner);
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedJoinedTable, new Ordering[] { }, fromClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedJoinedTable, new Ordering[] { }, new QuerySourceReferenceExpression (fromClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       _stageMock
           .Expect (
@@ -428,7 +428,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, joinClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (joinClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
       var constantExpression = Expression.Constant (5);
       var fakeWhereCondition = Expression.Constant (1);
 
@@ -467,7 +467,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, joinClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new Ordering[] { }, new QuerySourceReferenceExpression (joinClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       var fakeWhereCondition = Expression.Constant (1);
 
@@ -594,7 +594,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new[] { new Ordering (new QuerySourceReferenceExpression(_mainFromClause), OrderingDirection.Asc) }, _mainFromClause);
+      var preparedFromExpressionInfo = new FromExpressionInfo (preparedSqlTable, new[] { new Ordering (new QuerySourceReferenceExpression (_mainFromClause), OrderingDirection.Asc) }, new QuerySourceReferenceExpression (_mainFromClause)); // TODO: Will become new SqlTableReferenceExpression (preparedTable)
 
       _stageMock
           .Expect (

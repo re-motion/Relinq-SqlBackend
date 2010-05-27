@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var result = visitor.VisitExpression (fromExpression);
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
-        return new FromExpressionInfo(resultAsTableReferenceExpression.SqlTable, visitor.ExtractedOrderings.ToArray(), visitor.ItemSelector);
+        return new FromExpressionInfo (resultAsTableReferenceExpression.SqlTable, visitor._extractedOrderings.ToArray(), visitor._itemSelector);
 
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
       throw new NotSupportedException (message);
@@ -59,8 +59,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private readonly IQuerySource _querySource;
     private readonly UniqueIdentifierGenerator _generator;
-    private IQuerySource ItemSelector { get; set; }
-    private List<Ordering> ExtractedOrderings { get; set; }
+    
+    private Expression _itemSelector;
+    private List<Ordering> _extractedOrderings;
 
     protected SqlPreparationFromExpressionVisitor (
         IQuerySource querySource,
@@ -76,8 +77,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _querySource = querySource;
       _generator = generator;
 
-      ItemSelector = querySource;
-      ExtractedOrderings = new List<Ordering>();
+      _itemSelector = new QuerySourceReferenceExpression (querySource);
+      _extractedOrderings = new List<Ordering>();
     }
 
 
@@ -94,6 +95,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var joinedTable = new SqlJoinedTable (new UnresolvedCollectionJoinInfo (expression.Expression, expression.Member), JoinSemantics.Inner);
+
+      //_oldStyleJoinCondition = new JoinConditionExpression (joinedTable);
+      //var oldStyleJoinedTable = new SqlTable (joinedTable);
+      //return new SqlTableReferenceExpression (oldStyleJoinedTable);
+
       return new SqlTableReferenceExpression (joinedTable);
     }
 
