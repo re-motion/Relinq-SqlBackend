@@ -87,11 +87,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_UnaryExpression_Revisitsresult ()
+    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_UnaryExpression_RevisitsResult ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
       {
-        SelectProjection = Expression.Convert(new NamedExpression ("test", Expression.Constant (5)), typeof(object)),
+        SelectProjection = Expression.Convert (new NamedExpression ("test", Expression.Constant (5)), typeof(object)),
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
       }.GetSqlStatement ();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
@@ -103,11 +103,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
       Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
       Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.EqualTo (typeof (int)));
+      Assert.That (result.Type, Is.EqualTo (typeof (int))); // TODO Review 2766: should be typeof (object); implementing this will require you to pass type information to CreateReferenceExpression; this will require a refactoring of SqlEntityExpression.CreateReference to allow creating entities with a different type
     }
     
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The table projection for a referenced sub-statement must be a new-expression, named or an entity.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The table projection for a referenced sub-statement must be a NewExpression, named or an entity.")]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_NotSupportedExpression ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
@@ -146,7 +145,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newOperand = ApplySqlExpressionContext (expression.Operand, GetChildSemanticsForUnaryExpression(expression), _stage, _context);
+      var newOperand = ApplySqlExpressionContext (expression.Operand, GetChildSemanticsForUnaryExpression (expression), _stage, _context);
+      
       if (newOperand != expression.Operand)
         expression = Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
       return expression;
@@ -320,7 +320,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       }
     }
 
-    private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)
+    private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType) // TODO Review 2766: rename to GetChildSemanticsForBinaryBoolExpression
     {
       switch (expressionType)
       {
@@ -335,10 +335,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         case ExpressionType.ExclusiveOr:
           return SqlExpressionContext.PredicateRequired;
 
-        case ExpressionType.Not:
+        case ExpressionType.Not: // TODO Review 2766: Should not be required any more
           return SqlExpressionContext.PredicateRequired;
 
-        case ExpressionType.Convert:
+        case ExpressionType.Convert: // TODO Review 2766: Should not be required any more
           var message = string.Format ("'{0}' expressions are not supported with boolean type.", expressionType);
           throw new NotSupportedException (message);
 
