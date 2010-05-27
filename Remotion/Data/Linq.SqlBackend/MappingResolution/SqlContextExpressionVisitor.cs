@@ -146,24 +146,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.NodeType == ExpressionType.Convert)
-      {
-        var newOperand = ApplySqlExpressionContext (expression.Operand, _currentContext, _stage, _context);
-        if (newOperand != expression.Operand)
-          expression = Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
-        return expression;
-      }
-      else if (expression.Type == typeof (bool))
-      {
-        var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
-        var operand = ApplySqlExpressionContext (expression.Operand, childContext, _stage, _context);
-
-        if (operand != expression.Operand)
-          expression = Expression.MakeUnary (expression.NodeType, operand, expression.Type, expression.Method);
-        return expression;
-      }
-      else
-        return base.VisitUnaryExpression (expression);
+      var newOperand = ApplySqlExpressionContext (expression.Operand, GetChildSemanticsForUnaryExpression(expression), _stage, _context);
+      if (newOperand != expression.Operand)
+        expression = Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
+      return expression;
     }
 
     public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
@@ -316,6 +302,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ISqlSpecificExpressionVisitor.VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
       return VisitUnknownExpression (expression);
+    }
+
+    private SqlExpressionContext GetChildSemanticsForUnaryExpression (Expression expression)
+    {
+      switch (expression.NodeType)
+      {
+        case ExpressionType.Convert:
+          return _currentContext;
+        case ExpressionType.Not:
+          if (expression.Type == typeof (bool))
+            return SqlExpressionContext.PredicateRequired;
+          else
+            return SqlExpressionContext.SingleValueRequired;
+        default:
+          return SqlExpressionContext.SingleValueRequired;
+      }
     }
 
     private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType)

@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -49,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var result = visitor.VisitExpression (fromExpression);
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
-        return new FromExpressionInfo(resultAsTableReferenceExpression.SqlTable, new Ordering[] {}, querySource);
+        return new FromExpressionInfo(resultAsTableReferenceExpression.SqlTable, visitor.ExtractedOrderings.ToArray(), visitor.ItemSelector);
 
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
       throw new NotSupportedException (message);
@@ -57,6 +59,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private readonly IQuerySource _querySource;
     private readonly UniqueIdentifierGenerator _generator;
+    private IQuerySource ItemSelector { get; set; }
+    private List<Ordering> ExtractedOrderings { get; set; }
 
     protected SqlPreparationFromExpressionVisitor (
         IQuerySource querySource,
@@ -71,6 +75,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       _querySource = querySource;
       _generator = generator;
+
+      ItemSelector = querySource;
+      ExtractedOrderings = new List<Ordering>();
     }
 
 
@@ -97,9 +104,48 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // stage, we should refactor this into an UnresolvedSubStatemenTableInfo. (Of course, the statement inside the ResolvedSubStatementTableInfo is 
       // resolved anyway.)
 
-      var tableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), expression.SqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      return new SqlTableReferenceExpression (sqlTable);
+      var sqlStatement = expression.SqlStatement;
+      //if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression == null)
+      //{
+      //  Expression newSelectProjection = Expression.Constant (null);
+      //  var tupleType = typeof (KeyValuePair<,>);
+
+      //  for (int i = sqlStatement.Orderings.Count - 1; i >= 0; --i)
+      //  {
+      //    tupleType = typeof (KeyValuePair<,>).MakeGenericType (newSelectProjection.Type, sqlStatement.Orderings[i].Expression.Type);
+
+      //    newSelectProjection = Expression.New (tupleType.MakeGenericType (sqlStatement.Orderings[i].Expression.Type, newSelectProjection.Type).GetConstructors ()[0],
+      //      new[] { sqlStatement.Orderings[i].Expression, newSelectProjection },
+      //      new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      //  }
+
+      //  newSelectProjection = Expression.New (
+      //      tupleType.MakeGenericType (sqlStatement.SelectProjection.Type, newSelectProjection.Type).GetConstructors ()[0],
+      //        new[] { sqlStatement.SelectProjection, newSelectProjection },
+      //        new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+
+      //  var builder = new SqlStatementBuilder (expression.SqlStatement) { SelectProjection = newSelectProjection };
+      //  builder.Orderings.Clear ();
+      //  builder.RecalculateDataInfo (expression.SqlStatement.SelectProjection);
+      //  var newSqlStatement = builder.GetSqlStatement ();
+
+      //  var sqlTable = new SqlTable (new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), newSqlStatement));
+      //  ItemSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression(sqlTable), newSelectProjection.Type.GetProperty ("Key"));
+        
+      //  var currentOrderingTuple = Expression.MakeMemberAccess (new SqlTableReferenceExpression(sqlTable), newSelectProjection.Type.GetProperty ("Value"));
+      //  for (int i = 0; i < sqlStatement.Orderings.Count; ++i)
+      //  {
+      //    ExtractedOrderings.AddOrdering (Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Key")));
+      //    currentOrderingTuple = Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Value"));
+      //  }
+      //  return new SqlTableReferenceExpression (sqlTable);
+      //}
+      //else
+      //{
+        var tableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), sqlStatement);
+        var sqlTable = new SqlTable (tableInfo);
+        return new SqlTableReferenceExpression (sqlTable);
+      //}
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
