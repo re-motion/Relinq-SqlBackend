@@ -30,15 +30,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class SqlEntityRefMemberExpression : ExtensionExpression
   {
-    private readonly SqlEntityExpression _entityExpression;
+    private readonly SqlEntityExpression _entityExpression; // TODO Review 2778: Rename to _originatingEntity (+ property + ctor arg)
     private readonly MemberInfo _memberInfo;
     
     public SqlEntityRefMemberExpression (SqlEntityExpression entityExpression, MemberInfo memberInfo)
       : base (ReflectionUtility.GetFieldOrPropertyType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
       ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      
 
       _entityExpression = entityExpression;
       _memberInfo = memberInfo;

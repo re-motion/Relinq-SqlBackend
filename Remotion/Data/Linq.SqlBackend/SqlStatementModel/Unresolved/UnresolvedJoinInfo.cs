@@ -26,10 +26,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class UnresolvedJoinInfo : IJoinInfo
   {
+    private readonly SqlEntityExpression _originatingEntity;
     private readonly MemberInfo _memberInfo;
     private readonly JoinCardinality _cardinality;
     private readonly Type _itemType;
-    private readonly SqlEntityExpression _originatingEntity;
 
     public UnresolvedJoinInfo (SqlEntityExpression originatingEntity, MemberInfo memberInfo, JoinCardinality cardinality)
     {
