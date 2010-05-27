@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var result = visitor.VisitExpression (fromExpression);
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
-        return new FromExpressionInfo (resultAsTableReferenceExpression.SqlTable, visitor._extractedOrderings.ToArray(), visitor._itemSelector);
+        return new FromExpressionInfo (resultAsTableReferenceExpression.SqlTable, visitor._extractedOrderings.ToArray(), visitor._itemSelector, visitor._whereCondition);
 
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
       throw new NotSupportedException (message);
@@ -59,9 +59,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private readonly IQuerySource _querySource;
     private readonly UniqueIdentifierGenerator _generator;
-    
     private Expression _itemSelector;
     private List<Ordering> _extractedOrderings;
+    private Expression _whereCondition;
 
     protected SqlPreparationFromExpressionVisitor (
         IQuerySource querySource,
@@ -80,8 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _itemSelector = new QuerySourceReferenceExpression (querySource);
       _extractedOrderings = new List<Ordering>();
     }
-
-
+    
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -96,11 +95,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var joinedTable = new SqlJoinedTable (new UnresolvedCollectionJoinInfo (expression.Expression, expression.Member), JoinSemantics.Inner);
 
-      //_oldStyleJoinCondition = new JoinConditionExpression (joinedTable);
-      //var oldStyleJoinedTable = new SqlTable (joinedTable);
-      //return new SqlTableReferenceExpression (oldStyleJoinedTable);
-
-      return new SqlTableReferenceExpression (joinedTable);
+      _whereCondition = new JoinConditionExpression (joinedTable);
+      var oldStyleJoinedTable = new SqlTable (joinedTable);
+      return new SqlTableReferenceExpression (oldStyleJoinedTable);
     }
 
     public new Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)

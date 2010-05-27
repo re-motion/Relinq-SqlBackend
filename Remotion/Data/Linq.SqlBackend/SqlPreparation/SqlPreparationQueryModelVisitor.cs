@@ -211,24 +211,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return new FromExpressionInfo (
             existingTableReference.SqlTable,
             new Ordering[0],
-            new SqlTableReferenceExpression (existingTableReference.SqlTable));
+            new SqlTableReferenceExpression (existingTableReference.SqlTable),
+            null);
       }
       else // no, a new table must be created
       {
         var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
-        var sqlTableOrJoin = fromExpressionInfo.SqlTable;
-
-        var sqlJoinedTable = sqlTableOrJoin as SqlJoinedTable;
-        if (sqlJoinedTable != null)
-        {
-          SqlStatementBuilder.AddWhereCondition (new JoinConditionExpression (sqlJoinedTable));
-          sqlTableOrJoin = new SqlTable (sqlJoinedTable);
-        }
-
-        // if (FromExpressionInfo.OldStyleJoinCondition != null) SqlStatementBuilder.AddWhereCondition (FEI.OldStyleJoinCondition);
+        
+        if (fromExpressionInfo.WhereCondition != null)
+          SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
 
         var adjustesItemSelector = ReplacingExpressionTreeVisitor.Replace (
-              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (sqlTableOrJoin), fromExpressionInfo.ItemSelector);
+              new QuerySourceReferenceExpression (querySource), new SqlTableReferenceExpression (fromExpressionInfo.SqlTable), fromExpressionInfo.ItemSelector);
 
         foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
         {
@@ -237,8 +231,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           SqlStatementBuilder.Orderings.Add (new Ordering (adjustedOrdering, ordering.OrderingDirection));
         }
 
-        SqlStatementBuilder.SqlTables.Add (sqlTableOrJoin);
-        return new FromExpressionInfo(sqlTableOrJoin, new Ordering[0], adjustesItemSelector); // TODO: When Replace calls above are removed, just return fromExpressionInfo
+        SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
+        return new FromExpressionInfo (fromExpressionInfo.SqlTable, new Ordering[0], adjustesItemSelector, null); // TODO: When Replace calls above are removed, just return fromExpressionInfo
       }
     }
 

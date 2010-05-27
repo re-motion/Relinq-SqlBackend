@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -65,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void GetTableForFromExpression_SqlMemberExpression_ReturnsJoinedTable ()
+    public void GetTableForFromExpression_SqlMemberExpression_ReturnsSqlTableWithJoinedTable ()
     {
       // from r in Restaurant => sqlTable 
       // from c in r.Cooks => MemberExpression (QSRExpression (r), "Cooks") => Join: sqlTable.Cooks
@@ -77,11 +78,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           memberExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
 
-      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
       Assert.That (sqlTable.JoinedTables.ToArray().Contains (result.SqlTable), Is.False);
-      Assert.That (((SqlJoinedTable) result.SqlTable).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
 
-      var joinInfo = ((SqlJoinedTable) result.SqlTable).JoinInfo;
+      var joinInfo = ((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinInfo;
 
       Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
 
@@ -145,10 +147,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           memberExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _stageMock, _generator, _registry, _context);
 
-      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (((SqlJoinedTable) result.SqlTable).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
-      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result.SqlTable).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
-      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result.SqlTable).JoinInfo).MemberInfo, Is.EqualTo (memberExpression.Member));
+      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
+      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinInfo).SourceExpression, Is.EqualTo (memberExpression.Expression));
+      Assert.That (((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinInfo).MemberInfo, Is.EqualTo (memberExpression.Member));
+      var expectedWherecondition = new JoinConditionExpression (((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedWherecondition, result.WhereCondition);
     }
 
     [Test]
