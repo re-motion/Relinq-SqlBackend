@@ -19,6 +19,7 @@ using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -142,7 +143,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return VisitExpression (referenceExpression);
       }
 
-      throw new NotSupportedException (string.Format ("Resolved inner expression of type {0} is not supported.", newExpression.Type.Name));
+      throw new NotSupportedException (string.Format ("Resolved inner expression '{0}' of type '{1}' is not supported.", FormattingExpressionTreeVisitor.Format (newExpression), newExpression.GetType().Name));
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)

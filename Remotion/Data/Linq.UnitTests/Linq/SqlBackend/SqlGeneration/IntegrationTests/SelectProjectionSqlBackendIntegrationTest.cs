@@ -123,6 +123,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "WHERE ([q0].[get_C_get_D] IS NOT NULL)",
           new CommandParameter("@1", 10));
     }
+
+    [Test]
+    [Ignore ("TODO Review 2788 - correct SQL should look very similar to the SQL below")]
+    public void NestedSelectProjection_WithJoinOnCompoundReferenceMember ()
+    {
+      CheckQuery (
+          from x in (from c in Cooks select new { A = c, B = c.ID }).Distinct () select x.A.Substitution.FirstName,
+          "SELECT [t2].[FirstName] "
+          + "FROM (SELECT DISTINCT [t0].[ID] AS [get_A_ID],... FROM [CookTable] AS [t0]) AS [q1] "
+          + "LEFT OUTER JOIN [CookTable] AS [t2] ON [q1].[get_A_ID] = [t2].[SubstitutedID]");
+    }
    
   }
 }

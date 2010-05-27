@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var innerUnaryExpression = referencedExpression as UnaryExpression;
 
       if (innerSqlEntityExpression != null)
-        return innerSqlEntityExpression.CreateReference (containingSqlTable.GetResolvedTableInfo ().TableAlias);
+        return innerSqlEntityExpression.CreateReference (containingSqlTable.GetResolvedTableInfo ().TableAlias); // TODO Review 2788: Use containingSubStatementTableInfo.TableAlias
       else if (innerNamedExpression != null)
         return new SqlValueReferenceExpression (referencedExpression.Type, innerNamedExpression.Name, containingSubStatementTableInfo.TableAlias);
       else if (innerNewExpression != null)
@@ -95,8 +95,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      _result = _resolver.ResolveTableReferenceExpression(_expression, _generator);
-      _context.AddSqlEntityMapping ((SqlEntityExpression)_result, _expression.SqlTable);
+      var entity = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression(_expression, _generator);
+      _context.AddSqlEntityMapping (entity, _expression.SqlTable);
+      _result = entity;
       return tableInfo;
     }
 
@@ -108,6 +109,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var sqlTable = _expression.SqlTable;
 
       _result = CreateReferenceExpression (selectProjection, subStatementTableInfo, sqlTable);
+
+      // TODO Review 2788: Move this to CreateReferenceExpression (to the innerSqlEntityExpression case, cast is not required there); the mapping must be added whenever a new entity is created, not just in this one case (otherwise code that accesses a member of a compound reference won't work correctly -  see NestedSelectProjection_WithJoinOnCompoundReferenceMember integration test); add a test for CreateReference showing that the mapping is added for entities
       if(_result is SqlEntityExpression)
         _context.AddSqlEntityMapping ((SqlEntityExpression) _result, sqlTable);
 

@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="MappingResolutionContext"/> is a helper class which maps <see cref="SqlEntityExpression"/> to <see cref="SqlTableBase"/>.
+  /// <see cref="MappingResolutionContext"/> holds context information required during mapping resolution stage.
   /// </summary>
   public class MappingResolutionContext : IMappingResolutionContext
   {
@@ -45,6 +45,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression)
     {
       ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
+
+      // TODO Review 2788: throw an InvalidOperationException if entityExpression doesn't have an associated table
 
       SqlTableBase result;
       if (_mapping.TryGetValue (entityExpression, out result))

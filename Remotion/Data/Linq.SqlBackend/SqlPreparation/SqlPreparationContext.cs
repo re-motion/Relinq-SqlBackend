@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -27,7 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   
   /// <summary>
-  /// <see cref="SqlPreparationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTable"/>.
+  /// <see cref="SqlPreparationContext"/> holds context information required during SQL preparation stage.
   /// </summary>
   public class SqlPreparationContext : ISqlPreparationContext
   {
@@ -37,7 +36,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public SqlPreparationContext () : this(null, null)
     {
-      
     }
 
     public SqlPreparationContext (ISqlPreparationContext parentContext, SqlPreparationQueryModelVisitor visitor)
@@ -55,6 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping[original] = replacement;
     }
 
+    // TODO Review 2788: Rename to TryGetExpressionMapping
     public Expression GetExpressionMapping (Expression original)
     {
       ArgumentUtility.CheckNotNull ("original", original);
