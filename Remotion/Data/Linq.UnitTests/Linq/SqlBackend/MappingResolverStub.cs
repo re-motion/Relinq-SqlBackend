@@ -192,14 +192,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         return constantExpression;
     }
 
-    public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
+    public Expression ResolveTypeCheck (Expression checkedExpression, Type desiredType)
     {
-       if (desiredType.IsAssignableFrom (innerExpression.Type))
+       if (desiredType.IsAssignableFrom (checkedExpression.Type))
          return Expression.Constant (true);
-       else if (desiredType == typeof (Chef) && innerExpression.Type == typeof (Cook))
-         return Expression.MakeMemberAccess (innerExpression, typeof (Cook).GetProperty ("IsStarredCook"));
+       else if (desiredType == typeof (Chef) && checkedExpression.Type == typeof (Cook))
+         return Expression.MakeMemberAccess (checkedExpression, typeof (Cook).GetProperty ("IsStarredCook"));
        else
-         throw new UnmappedItemException ("Cannot resolve type for innerExpression: " + innerExpression.Type.Name);
+         throw new UnmappedItemException ("Cannot resolve type for checkedExpression: " + checkedExpression.Type.Name);
     }
 
     private SqlColumnExpression CreateColumn (Type columnType, string tableAlias, string columnName, bool isPriamryKey)
