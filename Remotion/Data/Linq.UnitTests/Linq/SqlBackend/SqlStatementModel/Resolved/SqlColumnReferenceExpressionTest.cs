@@ -63,6 +63,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
           mock => mock.VisitSqlColumnReferenceExpression (_columnExpression));
     }
 
+    // TODO Review 2780: Add Accept test with visitor implementing IResolvedSqlExpressionVisitor
+    // TODO Review 2780: Add Accept test with incompatible visitor
+
     [Test]
     public void ToString_NoEntityName ()
     {

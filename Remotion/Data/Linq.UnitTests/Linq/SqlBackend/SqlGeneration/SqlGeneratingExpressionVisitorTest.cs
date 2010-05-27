@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_VisitSqlColumnExpressionWithStart ()
+    public void GenerateSql_VisitSqlColumnExpressionWithStar ()
     {
       var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (Cook), "c", "*", false);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
@@ -81,7 +81,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_VisitSqlColumnReferenceExpression ()
+    // TODO Review 2780: Add test with unnamed referenced entity
+    public void GenerateSql_VisitSqlColumnReferenceExpression_WithNamedEntity ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Cook), "c", "Test", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));

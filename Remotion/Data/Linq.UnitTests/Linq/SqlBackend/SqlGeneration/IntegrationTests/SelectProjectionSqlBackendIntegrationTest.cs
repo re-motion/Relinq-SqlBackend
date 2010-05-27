@@ -170,6 +170,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from x in (from c in (from y in Cooks select new { A = y, B = y.ID }).Distinct () select c.A).Distinct () select x.FirstName,
           "SELECT [q1].[FirstName] FROM (SELECT [q0].[get_A_ID] AS [ID],[q0].[get_A_FirstName] AS [FirstName],... FROM (SELECT [t2].[ID] AS [get_A_ID],[t2].[FirstName] AS [get_A_FirstName],... FROM [CookTable] [t2]) AS [q0]) AS [q1]");
     }
+
+    [Test]
+    [Ignore ("TODO 2821")]
+    public void NestedSelectProjection_CompoundWithoutMemberAccess ()
+    {
+      CheckQuery (
+          from x in (from y in (from c in Cooks select new { A = c.FirstName, B = c.ID }).Distinct() select y).Distinct() select x.A,
+          "SELECT [q1].[get_A] FROM (SELECT [q0].[get_A],[q0].[get_B] FROM (SELECT [t2].[FirstName] AS [get_A],[t2].[ID] AS [get_B] FROM [CookTable] [t2]) AS [q0]) AS [q1]");
+
+      CheckQuery (
+          from x in (from y in (from c in Cooks select new { A = c.FirstName, B = c.ID }).Distinct () select y).Distinct () select x,
+          "SELECT [q1].[get_A],[q1].[get_B] FROM (SELECT [q0].[get_A],[q0].[get_B] FROM (SELECT [t2].[FirstName] AS [get_A],[t2].[ID] AS [get_B] FROM [CookTable] [t2]) AS [q0]) AS [q1]");
+
+      CheckQuery (
+          from x in (from y in (from c in Cooks select new { A = c }).Distinct () select y).Distinct () select x,
+          "SELECT [q1].[get_A_ID],[q1].[get_A_FirstName],... FROM (SELECT [q0].[get_A_ID],[q0].[get_A_FirstName],... FROM (SELECT [t2].[ID] AS [get_A_ID],[t2].[FirstName] AS [get_A_FirstName],... FROM [CookTable] [t2]) AS [q0]) AS [q1]");
+
+      CheckQuery (
+          from x in (from y in (from c in Cooks select new { A = c.ID }).Distinct () select new { B = y }).Distinct () select x,
+          "SELECT [q1].[get_B_get_A_ID] FROM (SELECT [q0].[get_A_ID] AS [get_B_get_A_ID] FROM (SELECT [t2].[ID] AS [get_A_ID] FROM [CookTable] [t2]) AS [q0]) AS [q1]");
+    }
    
   }
 }
