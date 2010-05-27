@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -44,23 +43,31 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return visitor.ResolveSqlTableReferenceExpression (expression);
     }
 
-    public static Expression CreateReferenceExpression (Expression referencedExpression, ResolvedSubStatementTableInfo subStatementTableInfo, SqlTableBase sqlTable)
+    // TODO Review 2716: Move this method to another class: SubStatementReferenceResolver; refactor to work as an ExpressionVisitor instead of casting; move the tests from SqlTableReferenceResolverTest to SubStatementReferenceResolverTest; only leave two tests for VisitSubStatementTableInfo: one where an entity is returned (check that the mapping is added to the context), one where another expression is returned
+    public static Expression CreateReferenceExpression (
+        Expression referencedExpression, 
+        ResolvedSubStatementTableInfo containingSubStatementTableInfo, 
+        SqlTableBase containingSqlTable)
     {
+      ArgumentUtility.CheckNotNull ("referencedExpression", referencedExpression);
+      ArgumentUtility.CheckNotNull ("containingSubStatementTableInfo", containingSubStatementTableInfo);
+      ArgumentUtility.CheckNotNull ("sqlTable", containingSqlTable);
+
       var innerSqlEntityExpression = referencedExpression as SqlEntityExpression;
       var innerNamedExpression = referencedExpression as NamedExpression;
       var innerNewExpression = referencedExpression as NewExpression;
       var innerUnaryExpression = referencedExpression as UnaryExpression;
 
       if (innerSqlEntityExpression != null)
-        return innerSqlEntityExpression.CreateReference (sqlTable.GetResolvedTableInfo ().TableAlias);
+        return innerSqlEntityExpression.CreateReference (containingSqlTable.GetResolvedTableInfo ().TableAlias);
       else if (innerNamedExpression != null)
-        return new SqlValueReferenceExpression (referencedExpression.Type, innerNamedExpression.Name, subStatementTableInfo.TableAlias);
+        return new SqlValueReferenceExpression (referencedExpression.Type, innerNamedExpression.Name, containingSubStatementTableInfo.TableAlias);
       else if (innerNewExpression != null)
-        return new SqlCompoundReferenceExpression (referencedExpression.Type, null, sqlTable, subStatementTableInfo, innerNewExpression);
+        return new SqlCompoundReferenceExpression (referencedExpression.Type, null, containingSqlTable, containingSubStatementTableInfo, innerNewExpression);
       else if (innerUnaryExpression != null)
-        return CreateReferenceExpression (innerUnaryExpression.Operand, subStatementTableInfo, sqlTable);
+        return CreateReferenceExpression (innerUnaryExpression.Operand, containingSubStatementTableInfo, containingSqlTable);
       else
-        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be a new-expression, named or an entity.");
+        throw new InvalidOperationException ("The table projection for a referenced sub-statement must be a NewExpression, named or an entity.");
     }
 
     protected SqlTableReferenceResolver (SqlTableReferenceExpression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionContext context)
@@ -70,8 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // TODO 2719: don't store the expression, only store the SqlTable
-      // TODO 2719: As soon as SqlEntity is decoupled from SqlTable, don't store the SqlTable(Expression) any longer
+      // TODO Review 2716: don't store the expression, only store the SqlTable
       _expression = expression;
       _generator = generator;
       _resolver = resolver;
@@ -89,7 +95,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      // TODO 2719: Refactor ResolveTableReferenceExpression to take SimpleTableInfo instead of a SqlTableReferenceExpression, rename it to ResolveTableReference, don't forget to update the docs on IMappingResolver
       _result = _resolver.ResolveTableReferenceExpression(_expression, _generator);
       _context.AddSqlEntityMapping ((SqlEntityExpression)_result, _expression.SqlTable);
       return tableInfo;
