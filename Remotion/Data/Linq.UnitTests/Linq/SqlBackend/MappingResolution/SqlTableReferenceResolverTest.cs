@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _generator))
+          .Expect (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _generator))
           .Return (fakeResult);
       _resolverMock.Replay();
 

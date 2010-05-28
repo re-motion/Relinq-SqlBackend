@@ -102,11 +102,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       throw new UnmappedItemException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
     }
 
-    public virtual Expression ResolveTableReferenceExpression (
-        SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
+    public virtual SqlEntityDefinitionExpression ResolveSimpleTableInfo (
+        IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      var resolvedTableInfo = tableReferenceExpression.SqlTable.GetResolvedTableInfo();
-      return CreateEntityExpression (tableReferenceExpression.SqlTable, resolvedTableInfo);
+      return CreateEntityExpression (tableInfo);
     }
 
     public virtual Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
@@ -207,14 +206,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return new SqlColumnDefinitionExpression (columnType, tableAlias, columnName, isPriamryKey);
     }
 
-    private SqlEntityExpression CreateEntityExpression (SqlTableBase sqlTable, IResolvedTableInfo tableInfo)
+    private SqlEntityDefinitionExpression CreateEntityExpression (IResolvedTableInfo tableInfo)
     {
       Type type = tableInfo.ItemType;
       if (type == typeof (Cook))
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
-            sqlTable.ItemType,
+            tableInfo.ItemType,
             tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
@@ -232,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
-            sqlTable.ItemType,
+            tableInfo.ItemType,
             tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
@@ -248,7 +247,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
-            sqlTable.ItemType,
+            tableInfo.ItemType,
             tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]
@@ -262,7 +261,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       {
         var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         return new SqlEntityDefinitionExpression (
-             sqlTable.ItemType,
+             tableInfo.ItemType,
             tableInfo.TableAlias, null,
             primaryKeyColumn,
             new[]

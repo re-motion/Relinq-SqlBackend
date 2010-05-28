@@ -180,8 +180,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSqlStatement ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo(typeof (Cook));
+      var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable(_fakeResolvedSimpleTableInfo));
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)), tableReferenceExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false);
       var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
@@ -190,7 +190,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
           .Return (_fakeResolvedSimpleTableInfo);
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _uniqueIdentifierGenerator))
+          .Expect (mock => mock.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
           .Return (fakeEntityExpression);
       _resolverMock.Replay();
 
@@ -209,7 +209,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (expression, _uniqueIdentifierGenerator))
+          .Expect (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
           .Return (fakeResult);
 
       var result = _stage.ResolveTableReferenceExpression (expression, _mappingResolutionContext);
@@ -265,8 +265,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (
               mock =>
-              mock.ResolveTableReferenceExpression (
-                  Arg<SqlTableReferenceExpression>.Matches (expr => ((SqlJoinedTable) expr.SqlTable).JoinInfo == fakeJoinInfo),
+              mock.ResolveSimpleTableInfo (
+                  Arg<IResolvedTableInfo>.Is.Anything,
                   Arg<UniqueIdentifierGenerator>.Is.Anything))
           .Return (fakeEntityExpression);
 

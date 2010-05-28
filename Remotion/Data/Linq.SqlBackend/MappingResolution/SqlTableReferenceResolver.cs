@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public class SqlTableReferenceResolver : ITableInfoVisitor
   {
     private Expression _result;
-    private readonly SqlTableReferenceExpression _expression;
+    private readonly SqlTableBase _sqlTable;
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionContext _context;
@@ -78,8 +78,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // TODO Review 2716: don't store the expression, only store the SqlTable
-      _expression = expression;
+      _sqlTable = expression.SqlTable;
       _generator = generator;
       _resolver = resolver;
       _context = context;
@@ -96,8 +95,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      var entity = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression(_expression, _generator);
-      _context.AddSqlEntityMapping (entity, _expression.SqlTable);
+      var entity = (SqlEntityExpression) _resolver.ResolveSimpleTableInfo(_sqlTable.GetResolvedTableInfo(), _generator);
+      _context.AddSqlEntityMapping (entity, _sqlTable);
       _result = entity;
       return tableInfo;
     }
@@ -107,13 +106,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("subStatementTableInfo", subStatementTableInfo);
 
       var selectProjection = subStatementTableInfo.SqlStatement.SelectProjection;
-      var sqlTable = _expression.SqlTable;
-
-      _result = CreateReferenceExpression (selectProjection, subStatementTableInfo, sqlTable, selectProjection.Type);
+      
+      _result = CreateReferenceExpression (selectProjection, subStatementTableInfo, _sqlTable, selectProjection.Type);
 
       // TODO Review 2788: Move this to CreateReferenceExpression (to the innerSqlEntityExpression case, cast is not required there); the mapping must be added whenever a new entity is created, not just in this one case (otherwise code that accesses a member of a compound reference won't work correctly -  see NestedSelectProjection_WithJoinOnCompoundReferenceMember integration test); add a test for CreateReference showing that the mapping is added for entities
       if(_result is SqlEntityExpression)
-        _context.AddSqlEntityMapping ((SqlEntityExpression) _result, sqlTable);
+        _context.AddSqlEntityMapping ((SqlEntityExpression) _result, _sqlTable);
 
       return subStatementTableInfo;
     }

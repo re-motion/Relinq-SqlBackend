@@ -50,18 +50,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
-    /// Analyzes the <see cref="SqlTableReferenceExpression"/> and returns a resolved version of the expression. The resolved version will usually
-    /// be a <see cref="SqlEntityExpression"/> representing the entity described by the <paramref name="tableReferenceExpression"/> in the database. 
-    /// If the item type of the table is not a queryable entity, the resolver should throw an <see cref="UnmappedItemException"/>.
+    /// Analyzes the given <see cref="IResolvedTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/> , which represents the entity 
+    /// described by the <paramref name="tableInfo"/> in the database. If the item type of the <paramref name="tableInfo"/> is not a 
+    /// queryable entity, the resolver should throw an <see cref="UnmappedItemException"/>.
     /// </summary>
-    /// <param name="tableReferenceExpression">The <see cref="SqlTableReferenceExpression"/> to be resolved. 
-    /// The expression represents a reference to an entity retrieved from a <see cref="SqlTableBase"/>.</param>
+    /// <param name="tableInfo">The <see cref="IResolvedTableInfo"/> to be resolved.</param>
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as column aliases.</param>
-    /// <returns>A resolved version of <paramref name="tableReferenceExpression"/>, usually a <see cref="SqlEntityExpression"/> containing all the 
-    /// columns of the referenced <see cref="SqlTableBase"/>.
-    /// This method can return a partial result that itself again needs to be resolved, but it must not return the unresolved 
-    /// <paramref name="tableReferenceExpression"/>.</returns>
-    Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator);
+    /// <returns>A <see cref="SqlEntityDefinitionExpression"/> which contains all the columns of the referenced <paramref name="tableInfo"/> item type.
+    ///</returns>
+    SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
     /// Analyzes the given <see cref="MemberInfo"/> and returns an expression representing that member in the database. The resolved version will 
