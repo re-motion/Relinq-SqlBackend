@@ -136,11 +136,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
             .Select ((m, i) => new { Member = m, Argument = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Arguments[i] });
         var expressionOfMatchingMember = membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
 
-        var referenceExpression = SqlTableReferenceResolver.CreateReferenceExpression (
+        var referenceExpression = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression(
             expressionOfMatchingMember,
             newExpressionAsCompoundReferenceExpression.SubStatementTableInfo,
             newExpressionAsCompoundReferenceExpression.ReferencedTable,
-            expressionOfMatchingMember.Type);
+            expressionOfMatchingMember.Type,
+            _context);
         return VisitExpression (referenceExpression);
       }
 

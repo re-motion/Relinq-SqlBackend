@@ -107,22 +107,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
     
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The table projection for a referenced sub-statement must be a NewExpression, named or an entity.")]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_NotSupportedExpression ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = Expression.Constant(0),
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-
-      SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
-    }
-
-    [Test]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_SqlEntityExpression ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
@@ -162,66 +146,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void CreateReferenceExpression_CreatesSqlCompoundReferenceExpression ()
-    {
-      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = newExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      
-      var expectedResult = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
-
-      var result = SqlTableReferenceResolver.CreateReferenceExpression (newExpression, tableInfo, sqlTable, newExpression.Type);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void CreateReferenceExpression_CreatesSqlEntityExpression ()
-    {
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection =
-            entityDefinitionExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
-
-      var result = SqlTableReferenceResolver.CreateReferenceExpression (entityDefinitionExpression, tableInfo, sqlTable, entityDefinitionExpression.Type);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void CreateReferenceExpression_CreatesSqlValueReferenceExpression ()
-    {
-      var namedExpression = new NamedExpression ("test", Expression.Constant (5));
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = namedExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      
-      var result = SqlTableReferenceResolver.CreateReferenceExpression(namedExpression, tableInfo, sqlTable, namedExpression.Type);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
-      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
-      Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
 
     [Test]
