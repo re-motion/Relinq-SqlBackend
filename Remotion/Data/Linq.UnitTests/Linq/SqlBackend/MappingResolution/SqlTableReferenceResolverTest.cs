@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
       Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
       Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.EqualTo (typeof (int))); // TODO Review 2766: should be typeof (object); implementing this will require you to pass type information to CreateReferenceExpression; this will require a refactoring of SqlEntityExpression.CreateReference to allow creating entities with a different type
+      Assert.That (result.Type, Is.EqualTo (typeof (object))); 
     }
     
     [Test]
@@ -134,7 +134,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference("q0");
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
@@ -179,7 +179,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       
       var expectedResult = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
 
-      var result = SqlTableReferenceResolver.CreateReferenceExpression (newExpression, tableInfo, sqlTable);
+      var result = SqlTableReferenceResolver.CreateReferenceExpression (newExpression, tableInfo, sqlTable, newExpression.Type);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -196,9 +196,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       }.GetSqlStatement ();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference ("q0");
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
 
-      var result = SqlTableReferenceResolver.CreateReferenceExpression (entityDefinitionExpression, tableInfo, sqlTable);
+      var result = SqlTableReferenceResolver.CreateReferenceExpression (entityDefinitionExpression, tableInfo, sqlTable, entityDefinitionExpression.Type);
 
       Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       
-      var result = SqlTableReferenceResolver.CreateReferenceExpression(namedExpression, tableInfo, sqlTable);
+      var result = SqlTableReferenceResolver.CreateReferenceExpression(namedExpression, tableInfo, sqlTable, namedExpression.Type);
 
       Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
       Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));

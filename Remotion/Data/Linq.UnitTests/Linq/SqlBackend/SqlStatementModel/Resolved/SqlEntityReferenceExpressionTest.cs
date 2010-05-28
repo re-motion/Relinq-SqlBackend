@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       
       var exptectedResult = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression); // TODO Review 2779: should be entityReferenceExpression
 
-      var result = entityReferenceExpression.CreateReference ("t");
+      var result = entityReferenceExpression.CreateReference ("t", entityDefinitionExpression.Type);
 
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
     }

@@ -75,9 +75,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, PrimaryKeyColumn, Columns.ToArray ());
     }
 
-    public override SqlEntityExpression CreateReference (string newTableAlias)
+    public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)
     {
-      return new SqlEntityReferenceExpression (Type, newTableAlias, this);
+      return new SqlEntityReferenceExpression (newType, newTableAlias, this);
     }
 
     public override string ToString ()

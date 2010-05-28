@@ -71,9 +71,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       return new SqlEntityReferenceExpression (itemType, tableAlias, _referencedEntity);
     }
 
-    public override SqlEntityExpression CreateReference (string newTableAlias)
+    public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)
     {
-      return new SqlEntityReferenceExpression (Type, newTableAlias, _referencedEntity); // TODO Review 2779: should be _this_, not _referencedEntity; see NestedSelectProjection_TwoSubStatements_ReferencedEntity_NamedAgain integration test
+      return new SqlEntityReferenceExpression (newType, newTableAlias, _referencedEntity); // TODO Review 2779: should be _this_, not _referencedEntity; see NestedSelectProjection_TwoSubStatements_ReferencedEntity_NamedAgain integration test
     }
 
     public override string ToString ()

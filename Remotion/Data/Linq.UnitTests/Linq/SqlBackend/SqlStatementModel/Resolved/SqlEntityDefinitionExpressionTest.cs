@@ -120,7 +120,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
           "c1",
           entityExpression);
 
-      var result = entityExpression.CreateReference("c1");
+      var result = entityExpression.CreateReference("c1", typeof(Cook));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

@@ -139,7 +139,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var referenceExpression = SqlTableReferenceResolver.CreateReferenceExpression (
             expressionOfMatchingMember,
             newExpressionAsCompoundReferenceExpression.SubStatementTableInfo,
-            newExpressionAsCompoundReferenceExpression.ReferencedTable);
+            newExpressionAsCompoundReferenceExpression.ReferencedTable,
+            expressionOfMatchingMember.Type);
         return VisitExpression (referenceExpression);
       }
 
