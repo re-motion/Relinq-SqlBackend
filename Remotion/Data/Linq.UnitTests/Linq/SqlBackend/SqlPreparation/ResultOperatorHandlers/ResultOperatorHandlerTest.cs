@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -57,9 +59,51 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var originalStatement = _statementBuilder.GetSqlStatement ();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info));
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info), _stageMock);
 
       CheckStatementMovedToSqlTable (originalStatement);
+    }
+
+    [Test]
+    public void MoveCurrentStatementToSqlTable_StatementWithOrderingsAndNoTopExpression ()
+    {
+      _statementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order1"),OrderingDirection.Desc));
+      _statementBuilder.SelectProjection = Expression.Constant (new Cook());
+      _statementBuilder.TopExpression = null;
+      
+      Type tupleType;
+      var startSelectProjection = Expression.Constant (null);
+      Expression newSelectProjection = startSelectProjection;
+      
+      for (var i = _statementBuilder.Orderings.Count - 1; i >= 0; --i)
+      {
+        tupleType = typeof (KeyValuePair<,>).MakeGenericType (_statementBuilder.Orderings[i].Expression.Type, newSelectProjection.Type);
+        newSelectProjection =
+            Expression.New (
+                tupleType.GetConstructors ()[0],
+                new[] { _statementBuilder.Orderings[i].Expression, newSelectProjection },
+                new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      }
+
+      tupleType = typeof (KeyValuePair<,>).MakeGenericType (_statementBuilder.SelectProjection.Type, newSelectProjection.Type);
+      var fakeSelectProjection = Expression.New (
+          tupleType.GetConstructors ()[0],
+          new[] { _statementBuilder.SelectProjection, newSelectProjection },
+          new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+
+      _stageMock
+         .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches (c => c == _context)))
+         .Return (fakeSelectProjection);
+
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info), _stageMock);
+
+      Assert.That (_statementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (_statementBuilder.Orderings.Count, Is.EqualTo(1));
+      var sqlTable =
+          (SqlTable)((SqlTableReferenceExpression) ((MemberExpression) ((NamedExpression) _statementBuilder.SelectProjection).Expression).Expression).SqlTable;
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo(0));
     }
 
     [Test]

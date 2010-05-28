@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void TransformQueryModel_QueryModel_WithAdditionalClauses ()
     {
-      var constantExpression = Expression.Constant (0);
+      var constantExpression = Expression.Constant (new Cook[0]);
       var additionalFromClause = new AdditionalFromClause ("additional", typeof (int), constantExpression);
 
       _queryModel.BodyClauses.Add (additionalFromClause);

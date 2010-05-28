@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
           sqlStatementBuilder,
           generator,
           context,
-          info => new SqlJoinedTable (new ResolvedJoinInfo (info, new SqlLiteralExpression (1), new SqlLiteralExpression (1)), JoinSemantics.Left));
+          info => new SqlJoinedTable (new ResolvedJoinInfo (info, new SqlLiteralExpression (1), new SqlLiteralExpression (1)), JoinSemantics.Left), stage);
     }
   }
 }

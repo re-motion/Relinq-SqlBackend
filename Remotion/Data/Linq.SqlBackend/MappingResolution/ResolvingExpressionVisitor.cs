@@ -168,7 +168,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpression = VisitExpression (expression.Expression);
 
       if (newExpression is SqlEntityExpression)
+      {
+        var newExpressionAsSqlEntityDefinitionExpression = newExpression as SqlEntityDefinitionExpression;
+        if (newExpressionAsSqlEntityDefinitionExpression != null && newExpressionAsSqlEntityDefinitionExpression.Columns[0].ColumnName == "*")
+          return ((SqlEntityExpression) newExpression).Update (newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, null);
+        else
         return ((SqlEntityExpression) newExpression).Update (newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, expression.Name);
+      }
 
       if (newExpression != expression.Expression)
         return new NamedExpression (expression.Name, newExpression);

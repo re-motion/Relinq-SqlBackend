@@ -153,29 +153,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       builder.Orderings.Add (new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc));
       var statement = builder.GetSqlStatement();
       var sqlSubStatementExpression = new SqlSubStatementExpression (statement);
-      
-      Expression newSelectProjection = Expression.Constant (null);
-      Type tupleType;
-
-      for (var i = statement.Orderings.Count - 1; i >= 0; --i)
-      {
-        tupleType = typeof (KeyValuePair<,>).MakeGenericType (statement.Orderings[i].Expression.Type, newSelectProjection.Type);
-        newSelectProjection =
-            Expression.New (
-                tupleType.GetConstructors ()[0],
-                new[] { statement.Orderings[i].Expression, newSelectProjection },
-                new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-      }
-
-      tupleType = typeof (KeyValuePair<,>).MakeGenericType (statement.SelectProjection.Type, newSelectProjection.Type);
-      var fakeSelectProjection = Expression.New (
-          tupleType.GetConstructors ()[0],
-          new[] { statement.SelectProjection, newSelectProjection },
-          new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      var fakeSelectProjection = GetFakeSekectProjectionFromSqlStatement (statement);
       
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches(c=>c==_context)))
           .Return (fakeSelectProjection);
+      _stageMock.Replay();
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
@@ -185,7 +168,106 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           _registry,
           _context);
 
+      _stageMock.VerifyAllExpectations();
       Assert.That (result.ItemSelector, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) result.ItemSelector).Expression, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      var sqlTable = (SqlTable)((SqlTableReferenceExpression) ((MemberExpression) result.ItemSelector).Expression).SqlTable;
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo(0));
+      Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void VisitSqlSubStatementExpression_WithOrderingsAndTopExpression ()
+    {
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        SelectProjection = Expression.Constant (new Cook ()),
+        TopExpression = Expression.Constant("top"),
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      };
+      builder.Orderings.Add (new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc));
+      var statement = builder.GetSqlStatement ();
+      var sqlSubStatementExpression = new SqlSubStatementExpression (statement);
+      var fakeSelectProjection = GetFakeSekectProjectionFromSqlStatement (statement);
+      
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches (c => c == _context)))
+          .Return (fakeSelectProjection);
+      _stageMock.Replay ();
+
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
+          sqlSubStatementExpression,
+          new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())),
+          _stageMock,
+          _generator,
+          _registry,
+          _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result.ItemSelector, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) result.ItemSelector).Expression, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      var sqlTable = (SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) result.ItemSelector).Expression).SqlTable;
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
+      Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void CreateSqlTableForSubStatement_NoTopExpression ()
+    {
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        SelectProjection = Expression.Constant (new Cook ()),
+        TopExpression = null,
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      };
+      builder.Orderings.Add (new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc));
+      var statement = builder.GetSqlStatement ();
+      var fakeSelectProjection = GetFakeSekectProjectionFromSqlStatement (statement);
+
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches (c => c == _context)))
+          .Return (fakeSelectProjection);
+      _stageMock.Replay ();
+
+      var result = SqlPreparationFromExpressionVisitor.CreateSqlTableForSubStatement (statement, _stageMock, _context, _generator, info => new SqlTable (info));
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result.ItemSelector, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) result.ItemSelector).Expression, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      var sqlTable = (SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) result.ItemSelector).Expression).SqlTable;
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (0));
+      Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void CreateSqlTableForSubStatement_WithTopExpression ()
+    {
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        SelectProjection = Expression.Constant (new Cook ()),
+        TopExpression = Expression.Constant("top"),
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      };
+      builder.Orderings.Add (new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc));
+      var statement = builder.GetSqlStatement ();
+      var fakeSelectProjection = GetFakeSekectProjectionFromSqlStatement (statement);
+
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches (c => c == _context)))
+          .Return (fakeSelectProjection);
+      _stageMock.Replay ();
+
+      var result = SqlPreparationFromExpressionVisitor.CreateSqlTableForSubStatement (statement, _stageMock, _context, _generator, info => new SqlTable (info));
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result.ItemSelector, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) result.ItemSelector).Expression, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      var sqlTable = (SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) result.ItemSelector).Expression).SqlTable;
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
     }
 
@@ -243,6 +325,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+    }
+
+    private Expression GetFakeSekectProjectionFromSqlStatement(SqlStatement sqlStatement)
+    {
+      Expression newSelectProjection = Expression.Constant (null);
+      Type tupleType;
+
+      for (var i = sqlStatement.Orderings.Count - 1; i >= 0; --i)
+      {
+        tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.Orderings[i].Expression.Type, newSelectProjection.Type);
+        newSelectProjection =
+            Expression.New (
+                tupleType.GetConstructors ()[0],
+                new[] { sqlStatement.Orderings[i].Expression, newSelectProjection },
+                new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      }
+
+      tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, newSelectProjection.Type);
+      return Expression.New (
+          tupleType.GetConstructors ()[0],
+          new[] { sqlStatement.SelectProjection, newSelectProjection },
+          new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
     }
   }
 }

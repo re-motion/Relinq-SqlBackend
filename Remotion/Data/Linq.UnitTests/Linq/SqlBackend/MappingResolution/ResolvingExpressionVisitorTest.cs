@@ -283,7 +283,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var constantExpression = Expression.Constant (5);
       var namedExpression = new NamedExpression ("test", constantExpression);
-      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false), new SqlColumnDefinitionExpression(typeof(string), "c", "column", false));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
@@ -296,6 +296,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.Not.SameAs(fakeResult));
       Assert.That (result, Is.TypeOf(typeof(SqlEntityDefinitionExpression)));
       Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void VisitNamedExpression_SqlEntityExression_StartColumn ()
+    {
+      var constantExpression = Expression.Constant (5);
+      var namedExpression = new NamedExpression ("test", constantExpression);
+      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false), new SqlColumnDefinitionExpression (typeof (string), "c", "*", false));
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (namedExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Not.SameAs (fakeResult));
+      Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
+      Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.Null);
     }
 
     [Test]

@@ -205,5 +205,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         );
     }
 
+    [Test]
+    public void DistinctAndSum_WithOrderBy ()
+    {
+      CheckQuery (
+          () => (from s in Cooks orderby s.FirstName select s.ID).Distinct ().Sum (),
+        "SELECT SUM([q0].[get_Key]) "
+        + "FROM (SELECT DISTINCT [t0].[ID] AS [get_Key],[t0].[FirstName] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] "
+        + "FROM [CookTable] AS [t0]) AS [q0] " // TODO: wrong, ORDER BY [t0].[FirstName] missing in the subquery
+        + "ORDER BY [q0].[get_Value_get_Key] ASC"
+        );
+    }
+
   }
 }

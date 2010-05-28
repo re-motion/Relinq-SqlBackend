@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -57,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.TopExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info));
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
     }
 
     protected void EnsureNoDistinctQuery (
@@ -73,31 +75,33 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.IsDistinctQuery)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info));
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
     }
 
     protected void MoveCurrentStatementToSqlTable (
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationContext context,
-        Func<ResolvedSubStatementTableInfo, SqlTableBase> tableGenerator)
+        Func<ResolvedSubStatementTableInfo, SqlTableBase> tableGenerator,
+        ISqlPreparationStage stage)
     {
-      var sqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
+      var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
+      var fromExpressionInfo = SqlPreparationFromExpressionVisitor.CreateSqlTableForSubStatement (
+          oldStatement, 
+          stage, 
+          context, 
+          generator, 
+          tableGenerator);
 
-      var subStatementTableInfo = new ResolvedSubStatementTableInfo (
-          generator.GetUniqueIdentifier ("q"),
-          sqlStatement);
-      var sqlTable = tableGenerator (subStatementTableInfo);
-
-      var newSqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-
-      sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.SelectProjection = new NamedExpression (null, newSqlTableReferenceExpression);
+      sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
+      sqlStatementBuilder.SelectProjection = new NamedExpression (null, fromExpressionInfo.ItemSelector);
+      sqlStatementBuilder.Orderings.AddRange (fromExpressionInfo.ExtractedOrderings);
+      Debug.Assert (fromExpressionInfo.WhereCondition == null);
 
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
-      sqlStatementBuilder.DataInfo = sqlStatement.DataInfo;
+      sqlStatementBuilder.DataInfo = oldStatement.DataInfo;
 
-      Debug.Assert (sqlStatement.DataInfo is StreamedSequenceInfo);
+      Debug.Assert (oldStatement.DataInfo is StreamedSequenceInfo);
 
       // Later ResultOperatorHandlers might have expressions that access the value streaming out from this result operator. These expressions must 
       // be updated to get their input expression (the ItemExpression of sqlStatement.DataInfo) from the sub-statement table we just created.
@@ -107,8 +111,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // ItemExpression, on the other hand, should compare fine because it is inserted by reference into the result operators' expressions during 
       // the front-end's lambda resolution process.)
 
-      var itemExpressionNowInSqlTable = ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression;
-      context.AddExpressionMapping (itemExpressionNowInSqlTable, newSqlTableReferenceExpression);
+      var itemExpressionNowInSqlTable = ((StreamedSequenceInfo) oldStatement.DataInfo).ItemExpression;
+      context.AddExpressionMapping (itemExpressionNowInSqlTable, fromExpressionInfo.ItemSelector);
     }
 
     protected void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
