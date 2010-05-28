@@ -131,7 +131,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (expression.Type != typeof (bool))
         return base.VisitBinaryExpression (expression);
 
-      var childContext = GetChildSemanticsForBoolExpression (expression.NodeType);
+      var childContext = GetChildSemanticsForBinaryBoolExpression (expression.NodeType);
       var left = ApplySqlExpressionContext (expression.Left, childContext, _stage, _context);
       var right = ApplySqlExpressionContext (expression.Right, childContext, _stage, _context);
 
@@ -328,7 +328,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       }
     }
 
-    private SqlExpressionContext GetChildSemanticsForBoolExpression (ExpressionType expressionType) // TODO Review 2766: rename to GetChildSemanticsForBinaryBoolExpression
+    private SqlExpressionContext GetChildSemanticsForBinaryBoolExpression (ExpressionType expressionType)
     {
       switch (expressionType)
       {
@@ -342,14 +342,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         case ExpressionType.Or:
         case ExpressionType.ExclusiveOr:
           return SqlExpressionContext.PredicateRequired;
-
-        case ExpressionType.Not: // TODO Review 2766: Should not be required any more
-          return SqlExpressionContext.PredicateRequired;
-
-        case ExpressionType.Convert: // TODO Review 2766: Should not be required any more
-          var message = string.Format ("'{0}' expressions are not supported with boolean type.", expressionType);
-          throw new NotSupportedException (message);
-
         default:
           return SqlExpressionContext.SingleValueRequired;
       }
