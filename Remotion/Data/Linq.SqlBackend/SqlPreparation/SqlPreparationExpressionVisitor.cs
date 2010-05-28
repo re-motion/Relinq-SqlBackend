@@ -107,17 +107,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return VisitExpression (newExpression);
     }
 
-    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-
-      //TODO: 2772
-      //if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression == null)
-      //{
-      //  var builder = new SqlStatementBuilder (expression.SqlStatement);
-      //  builder.Orderings.Clear ();
-      //  return new SqlSubStatementExpression (builder.GetSqlStatement ());
-      //}
+      
+      if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression == null)
+      {
+        var builder = new SqlStatementBuilder (expression.SqlStatement);
+        builder.Orderings.Clear ();
+        return new SqlSubStatementExpression (builder.GetSqlStatement ());
+      }
       return expression;
     }
 

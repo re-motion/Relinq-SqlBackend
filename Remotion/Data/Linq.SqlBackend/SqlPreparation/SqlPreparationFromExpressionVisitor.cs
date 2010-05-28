@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -168,10 +169,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return new SqlTableReferenceExpression (oldStyleJoinedTable);
     }
 
-    public new Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       var sqlStatement = expression.SqlStatement;
-      
+
       var fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, info => new SqlTable (info));
       _itemSelector = fromExpressionInfo.ItemSelector;
       _extractedOrderings.AddRange (fromExpressionInfo.ExtractedOrderings);

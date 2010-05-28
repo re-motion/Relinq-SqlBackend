@@ -202,20 +202,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         // => from s in (from s2 in Cooks select new { Key = s2.ID, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
-        from s in (from s2 in Cooks orderby s2.Name select s2.ID).Distinct() select s, 
-          "SELECT [q0].[get_Key] AS [value] FROM ("
-          + "SELECT DISTINCT [t1].[ID] AS [get_Key],[t1].[Name] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] FROM [CookTable] AS [t1]) AS [q0] "
-          + "ORDER BY [q0].[get_Value_get_Key] ASC");
+        from s in (from s2 in Cooks orderby s2.Name select s2.ID).Distinct() select s,
+          "SELECT [q0].[value] AS [value] FROM (SELECT DISTINCT [t1].[ID] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
 
       CheckQuery (
         // => from s in (from s2 in Cooks select new { Key = s2, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in (from s2 in Cooks orderby s2.Name select s2).Distinct () select s.FirstName,
-          "SELECT [q0].[get_Key_FirstName] AS [value] FROM ("
-          + "SELECT DISTINCT [t1].[ID] AS [get_Key_ID],[t1].[FirstName] AS [get_Key_FirstName],[t1].[Name] AS [get_Key_Name],"
-          + "[t1].[IsStarredCook] AS [get_Key_IsStarredCook],[t1].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],"
-          + "[t1].[SubstitutedID] AS [get_Key_SubstitutedID],[t1].[KitchenID] AS [get_Key_KitchenID],[t1].[Name] AS [get_Value_get_Key],"
-          + "NULL AS [get_Value_get_Value] FROM [CookTable] AS [t1]) AS [q0] "
-          + "ORDER BY [q0].[get_Value_get_Key] ASC");
+          "SELECT [q0].[FirstName] AS [value] FROM (SELECT DISTINCT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],"+
+          "[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q0]");
     }
     
   }
