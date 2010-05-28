@@ -30,21 +30,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class SqlEntityRefMemberExpression : ExtensionExpression
   {
-    private readonly SqlEntityExpression _entityExpression; // TODO Review 2778: Rename to _originatingEntity (+ property + ctor arg)
+    private readonly SqlEntityExpression _originatingEntity;
     private readonly MemberInfo _memberInfo;
     
-    public SqlEntityRefMemberExpression (SqlEntityExpression entityExpression, MemberInfo memberInfo)
+    public SqlEntityRefMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
       : base (ReflectionUtility.GetFieldOrPropertyType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
-      ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
+      ArgumentUtility.CheckNotNull ("entityExpression", originatingEntity);
 
-      _entityExpression = entityExpression;
+      _originatingEntity = originatingEntity;
       _memberInfo = memberInfo;
     }
 
-    public SqlEntityExpression EntityExpression
+    public SqlEntityExpression OriginatingEntity
     {
-      get { return _entityExpression; }
+      get { return _originatingEntity; }
     }
 
     public MemberInfo MemberInfo
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      return string.Format ("{0}.[{1}]", FormattingExpressionTreeVisitor.Format (_entityExpression), _memberInfo.Name);
+      return string.Format ("{0}.[{1}]", FormattingExpressionTreeVisitor.Format (_originatingEntity), _memberInfo.Name);
     }
   }
 }

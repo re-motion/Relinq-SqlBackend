@@ -78,7 +78,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (joinInfo.RightKey, Is.TypeOf(typeof (SqlLiteralExpression)));
       Assert.That (((SqlLiteralExpression) joinInfo.RightKey).Value, Is.EqualTo (1));
       Assert.That (((ResolvedSubStatementTableInfo) joinInfo.ForeignTableInfo).SqlStatement, Is.EqualTo(sqlStatement));
-      Assert.That (_context.GetExpressionMapping (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
+      Assert.That (_context.TryGetExpressionMapping (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
     }
   }
 }

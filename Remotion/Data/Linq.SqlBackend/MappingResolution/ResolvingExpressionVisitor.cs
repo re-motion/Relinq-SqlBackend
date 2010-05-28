@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpressionAsSqlEntityRefMemberExpression != null)
       {
         var unresolvedJoinInfo = new UnresolvedJoinInfo (
-            newExpressionAsSqlEntityRefMemberExpression.EntityExpression, newExpressionAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
+            newExpressionAsSqlEntityRefMemberExpression.OriginatingEntity, newExpressionAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
         newExpression = _stage.ResolveEntityRefMemberExpression (newExpressionAsSqlEntityRefMemberExpression, unresolvedJoinInfo, _context);
       }
 

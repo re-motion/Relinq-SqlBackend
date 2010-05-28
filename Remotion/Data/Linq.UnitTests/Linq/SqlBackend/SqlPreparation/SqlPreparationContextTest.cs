@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void AddExpressionMapping ()
     {
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (_source), new SqlTableReferenceExpression (_sqlTable));
-      Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
+      Assert.That (_context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
       _context.AddExpressionMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
       Assert.That (
-          ((SqlTableReferenceExpression) _context.GetExpressionMapping (querySourceReferenceExpression)).SqlTable,
+          ((SqlTableReferenceExpression) _context.TryGetExpressionMapping (querySourceReferenceExpression)).SqlTable,
           Is.SameAs (_sqlTable));
     }
 
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_parentSource);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
       _parentContext.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
-      Assert.That (_contextWithParent.GetExpressionMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
+      Assert.That (_contextWithParent.TryGetExpressionMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
@@ -143,7 +143,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (preparedExpression);
       _stageMock.Replay();
 
-      var result = _contextWithParent.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause));
+      var result = _contextWithParent.TryGetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause));
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.Null);

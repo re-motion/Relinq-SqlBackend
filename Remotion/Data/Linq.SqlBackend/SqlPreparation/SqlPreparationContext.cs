@@ -53,8 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping[original] = replacement;
     }
 
-    // TODO Review 2788: Rename to TryGetExpressionMapping
-    public Expression GetExpressionMapping (Expression original)
+    public Expression TryGetExpressionMapping (Expression original)
     {
       ArgumentUtility.CheckNotNull ("original", original);
 

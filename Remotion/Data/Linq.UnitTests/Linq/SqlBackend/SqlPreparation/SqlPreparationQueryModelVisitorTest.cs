@@ -217,7 +217,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause))).SqlTable,
+          ((SqlTableReferenceExpression) _visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause))).SqlTable,
           Is.SameAs (preparedSqlTable));
     }
 
@@ -256,7 +256,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (additionalFromClause))).SqlTable,
+          ((SqlTableReferenceExpression) _visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (additionalFromClause))).SqlTable,
           Is.SameAs (preparedSqlTable));
     }
 
@@ -293,7 +293,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs(preparedJoinedTable));
       Assert.That (((JoinConditionExpression) _visitor.SqlStatementBuilder.WhereCondition).JoinedTable, Is.SameAs (preparedJoinedTable));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
+          ((SqlTableReferenceExpression) _visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
           Is.SameAs (_visitor.SqlStatementBuilder.SqlTables[0]));
     }
 
@@ -613,7 +613,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (sqlTable));
-      Assert.That (_visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
+      Assert.That (_visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
     }
 
     [Test]

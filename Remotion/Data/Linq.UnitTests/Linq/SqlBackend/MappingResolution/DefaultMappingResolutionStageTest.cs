@@ -275,7 +275,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
-      var sqlTable = _mappingResolutionContext.GetSqlTableForEntityExpression (entityRefMemberExpression.EntityExpression);
+      var sqlTable = _mappingResolutionContext.GetSqlTableForEntityExpression (entityRefMemberExpression.OriginatingEntity);
       Assert.That (sqlTable.GetJoin (kitchenCookMember), Is.Not.Null);
       Assert.That (sqlTable.GetJoin (kitchenCookMember).JoinInfo, Is.SameAs (fakeJoinInfo));
     }
