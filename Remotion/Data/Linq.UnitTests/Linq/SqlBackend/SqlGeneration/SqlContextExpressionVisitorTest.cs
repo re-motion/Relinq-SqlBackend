@@ -790,30 +790,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
     }
-
-    [Test]
-    public void VisitNamedExpression_SqlCompoundReferenceExpression ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-        SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = newExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      var compoundExpression = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), "test2", sqlTable, tableInfo, newExpression);
-      var namedExpression = new NamedExpression ("test", compoundExpression);
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlCompoundReferenceExpression)));
-      Assert.That (((SqlCompoundReferenceExpression) result).Name, Is.EqualTo("test_test2"));
-    }
-
+    
     [Test]
     public void VisitNewExpression ()
     {

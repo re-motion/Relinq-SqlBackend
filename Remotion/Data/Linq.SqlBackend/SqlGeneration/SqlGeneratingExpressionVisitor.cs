@@ -41,8 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
-        ISqlColumnExpressionVisitor,
-        ISqlCompoundReferenceExpressionVisitor
+        ISqlColumnExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -334,15 +333,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
       VisitExpression (((NamedExpression) expression.Expression).Expression);
       _commandBuilder.Append (")");
-
-      return expression;
-    }
-
-    public Expression VisitSqlCompoundReferenceExpression (SqlCompoundReferenceExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      _commandBuilder.AppendSeparated (", ", expression.ReferencedNewExpression.Members, (c, m) => AppendReferencedMember (expression.SubStatementTableInfo, m));
 
       return expression;
     }

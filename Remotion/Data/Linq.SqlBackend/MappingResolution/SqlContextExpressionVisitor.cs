@@ -226,18 +226,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
             );
         return ApplySqlExpressionContext (newNewExpression, _currentContext, _stage, _context);
       }
-      if (newExpression is SqlCompoundReferenceExpression)
-      {
-        var sqlCompoundExpression = (SqlCompoundReferenceExpression) newExpression;
-        string newName = CombineNames (expression.Name, sqlCompoundExpression.Name);
-        var newCompoundExpression = new SqlCompoundReferenceExpression (
-            sqlCompoundExpression.Type,
-            newName,
-            sqlCompoundExpression.ReferencedTable,
-            sqlCompoundExpression.SubStatementTableInfo,
-            sqlCompoundExpression.ReferencedNewExpression);
-        return ApplySqlExpressionContext (newCompoundExpression, _currentContext, _stage, _context);
-      }
       else if (newExpression is SqlEntityExpression)
       {
         var entityExpression = (SqlEntityExpression) newExpression;
