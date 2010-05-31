@@ -48,9 +48,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No associated table found for entity 'Cook'.")]
     public void GetSqlTableForEntityExpression_EntityDoesNotExist ()
     {
-      Assert.That (_context.GetSqlTableForEntityExpression (_entityExpression), Is.Null);
+      _context.GetSqlTableForEntityExpression (_entityExpression);
     }
   }
 }

@@ -46,12 +46,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
 
-      // TODO Review 2788: throw an InvalidOperationException if entityExpression doesn't have an associated table
-
       SqlTableBase result;
       if (_mapping.TryGetValue (entityExpression, out result))
         return result;
-      return null;
+
+      throw new InvalidOperationException (string.Format ("No associated table found for entity '{0}'.", entityExpression.Type.Name));
     }
   }
 }
