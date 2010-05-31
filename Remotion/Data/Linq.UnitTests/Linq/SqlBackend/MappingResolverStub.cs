@@ -50,13 +50,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Substitution":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity.TableAlias,
+                joinInfo.OriginatingEntity,
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "SubstitutedID");
           case "Assistants":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity.TableAlias,
+                joinInfo.OriginatingEntity,
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "AssistedID");
@@ -68,13 +68,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "Cook":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity.TableAlias,
+                joinInfo.OriginatingEntity,
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "KitchenID");
           case "Restaurant":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity.TableAlias,
+                joinInfo.OriginatingEntity,
                 "RestaurantID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "ID");
@@ -86,13 +86,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         {
           case "SubKitchen":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity.TableAlias,
+                joinInfo.OriginatingEntity,
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
           case "Cooks":
             return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity.TableAlias,
+                joinInfo.OriginatingEntity,
                 "ID",
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
                 "RestaurantID");
@@ -285,12 +285,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (
-        string originatingTableAlias, string primaryKeyName, ResolvedSimpleTableInfo foreignTableInfo, string foreignKeyName)
+        SqlEntityExpression originatingEntity, string leftColumnName, ResolvedSimpleTableInfo joinedTableInfo, string rightColumnName)
     {
-      var primaryColumn = CreateColumn (typeof (int), originatingTableAlias, primaryKeyName, true);
-      var foreignColumn = CreateColumn (typeof (int), foreignTableInfo.TableAlias, foreignKeyName, false);
+      var primaryColumn = originatingEntity.GetColumn (typeof (int), leftColumnName, true);
+      var foreignColumn = CreateColumn (typeof (int), joinedTableInfo.TableAlias, rightColumnName, false);
 
-      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (joinedTableInfo, primaryColumn, foreignColumn);
     }
   }
 }

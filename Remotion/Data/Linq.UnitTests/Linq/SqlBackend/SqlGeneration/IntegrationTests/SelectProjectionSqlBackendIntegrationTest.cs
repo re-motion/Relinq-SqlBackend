@@ -143,14 +143,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 2788 - correct SQL should look very similar to the SQL below")]
     public void NestedSelectProjection_WithJoinOnCompoundReferenceMember ()
     {
       CheckQuery (
           from x in (from c in Cooks select new { A = c, B = c.ID }).Distinct () select x.A.Substitution.FirstName,
-          "SELECT [t2].[FirstName] "
-          + "FROM (SELECT DISTINCT [t0].[ID] AS [get_A_ID],... FROM [CookTable] AS [t0]) AS [q1] "
-          + "LEFT OUTER JOIN [CookTable] AS [t2] ON [q1].[get_A_ID] = [t2].[SubstitutedID]");
+          "SELECT [t2].[FirstName] AS [value] "
+          + "FROM (SELECT DISTINCT [t1].[ID] AS [get_A_ID],[t1].[FirstName] AS [get_A_FirstName],[t1].[Name] AS [get_A_Name],"
+          + "[t1].[IsStarredCook] AS [get_A_IsStarredCook],[t1].[IsFullTimeCook] AS [get_A_IsFullTimeCook],"
+          + "[t1].[SubstitutedID] AS [get_A_SubstitutedID],[t1].[KitchenID] AS [get_A_KitchenID],[t1].[ID] AS [get_B] "
+          + "FROM [CookTable] AS [t1]) AS [q0] "
+          + "LEFT OUTER JOIN [CookTable] AS [t2] ON [q0].[get_A_ID] = [t2].[SubstitutedID]");
     }
 
     [Test]

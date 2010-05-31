@@ -66,9 +66,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return expression.CreateReference (_tableInfo.TableAlias, _type);
-
     }
-
+    
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
