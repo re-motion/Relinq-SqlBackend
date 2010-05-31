@@ -76,13 +76,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    // TODO Review 2779: This method is probably never used because the more specific visit methods are implemented; call VisitUnknownExpression and make it an explicit interface implementation
-    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      AppendColumn (expression.ColumnName, expression.OwningTableAlias, null);
-      return expression;
+      return VisitUnknownExpression (expression);
     }
 
     public Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression)

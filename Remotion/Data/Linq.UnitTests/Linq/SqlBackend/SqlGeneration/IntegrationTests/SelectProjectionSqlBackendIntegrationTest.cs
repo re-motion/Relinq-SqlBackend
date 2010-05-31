@@ -156,7 +156,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 2779 - correct SQL should look very similar to the SQL below")]
+    [Ignore ("TODO Review 2820 - correct SQL should look very similar to the SQL below")]
     public void NestedSelectProjection_TwoSubStatements_ReferencedEntity_NamedAgain ()
     {
       CheckQuery (
