@@ -235,47 +235,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitMemberExpression_SqlCompoundReferenceExpression ()
     {
-      // from x in (from c in Cooks
-      //            select new { A = 1 })
-      // select x.A <-- resolve this
-
-      // construct substatement
       var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) });
       var subStatementSelectProjection = Expression.New (
           constructorInfo, 
           new[] { new NamedExpression ("value", Expression.Constant (1)) }, 
           typeof (TypeForNewExpression).GetMethod ("get_A"));
-      var cookTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "t0"));
-      var subStatement = new SqlStatement (
-          new StreamedSequenceInfo (typeof (TypeForNewExpression[]), Expression.Constant (null, typeof (TypeForNewExpression))),
-          subStatementSelectProjection,
-          new[] { cookTable },
-          new Ordering[0],
-          null,
-          null,
-          false);
+      var constantExpression = Expression.Constant (new TypeForNewExpression (1));
+      var memberExpression = Expression.MakeMemberAccess (constantExpression, typeof (TypeForNewExpression).GetProperty ("A"));
 
-      // construct outer statement
-      var outerTableInfo = new ResolvedSubStatementTableInfo ("q0", subStatement);
-      var outerTable = new SqlTable (outerTableInfo);
-
-      // x.A
-      var sqlTableReference = new SqlTableReferenceExpression (outerTable);
-      var memberExpression = Expression.MakeMemberAccess (sqlTableReference, typeof (TypeForNewExpression).GetProperty ("A"));
-
-      // x is first resolved into a SqlCompoundReferenceExpression before the member A is resolved
-      var compoundExpression = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), null, outerTable, outerTableInfo, subStatementSelectProjection);
-      _stageMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (sqlTableReference, _mappingResolutionContext))
-          .Return (compoundExpression);
-      _stageMock.Replay ();
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (subStatementSelectProjection);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (Arg<ConstantExpression>.Matches(e=>(int)e.Value==1)))
+          .Return (constantExpression);
+      _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
-      _stageMock.VerifyAllExpectations ();
-
-      var expectedResult = new SqlValueReferenceExpression (typeof (int), "value", outerTableInfo.TableAlias);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      _resolverMock.VerifyAllExpectations();
+      Assert.That (((NamedExpression) result).Expression, Is.SameAs (constantExpression));
     }
 
     [Test]

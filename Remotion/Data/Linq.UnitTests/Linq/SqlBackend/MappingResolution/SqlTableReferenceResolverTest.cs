@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_SqlCompoundReferenceExpression ()
+    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_ReturnsNewExpression ()
     {
       var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant(1) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       
@@ -141,11 +141,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
 
-      var expectedResult = new SqlCompoundReferenceExpression (typeof(TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
-      
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
     }
 
     [Test]

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -36,7 +37,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("containingSubStatementTableInfo", containingSubStatementTableInfo);
       ArgumentUtility.CheckNotNull ("sqlTable", containingSqlTable);
       
-      var visitor = new SubStatementReferenceResolver (containingSubStatementTableInfo, containingSqlTable, type);
+      var visitor = new SubStatementReferenceResolver (containingSubStatementTableInfo, containingSqlTable, type, context);
       var result = visitor.VisitExpression (referencedExpression);
 
       if (result is SqlEntityExpression)
@@ -47,20 +48,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private readonly ResolvedSubStatementTableInfo _tableInfo;
     private readonly SqlTableBase _sqlTable;
+    private readonly IMappingResolutionContext _context;
     private Type _type;
-
-    protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTableBase sqlTable, Type type)
+    
+    protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTableBase sqlTable, Type type, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _tableInfo = tableInfo;
       _sqlTable = sqlTable;
       _type = type;
+      _context = context;
     }
-
-
+    
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -79,7 +82,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlCompoundReferenceExpression (_type, null, _sqlTable, _tableInfo, expression);
+      var innerReferenceExpressions = expression.Arguments.Select (arg => ResolveSubStatementReferenceExpression (arg, _tableInfo, _sqlTable, arg.Type, _context));
+      return Expression.New (expression.Constructor, innerReferenceExpressions, expression.Members);
+
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)

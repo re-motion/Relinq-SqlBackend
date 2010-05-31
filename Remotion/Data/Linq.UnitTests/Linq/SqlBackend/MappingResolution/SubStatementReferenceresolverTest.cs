@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -44,19 +45,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void CreateReferenceExpression_CreatesSqlCompoundReferenceExpression ()
     {
-      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      var newExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructors()[0],
+          new[] { Expression.Constant (0) },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = newExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+                         {
+                             SelectProjection = newExpression,
+                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                         }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
 
-      var expectedResult = new SqlCompoundReferenceExpression (typeof (TypeForNewExpression), null, sqlTable, tableInfo, newExpression);
+      var expectedResult = Expression.New (
+          typeof (TypeForNewExpression).GetConstructors()[0],
+          newExpression.Arguments.Select (
+              arg => SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (arg, tableInfo, sqlTable, arg.Type, _context)),
+              newExpression.Members);
 
-      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (newExpression, tableInfo, sqlTable, newExpression.Type, _context);
+      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
+          newExpression, tableInfo, sqlTable, newExpression.Type, _context);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -64,21 +73,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void CreateReferenceExpression_CreatesSqlEntityExpression ()
     {
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection =
-            entityDefinitionExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+                         {
+                             SelectProjection =
+                                 entityDefinitionExpression,
+                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                         }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
+          "q0", tableInfo.SqlStatement.SelectProjection.Type);
 
-      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression(entityDefinitionExpression, tableInfo, sqlTable, entityDefinitionExpression.Type, _context);
+      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
+          entityDefinitionExpression, tableInfo, sqlTable, entityDefinitionExpression.Type, _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
-      Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs(sqlTable));
+      Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -87,14 +99,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var namedExpression = new NamedExpression ("test", Expression.Constant (5));
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = namedExpression,
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+                         {
+                             SelectProjection = namedExpression,
+                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                         }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
 
-      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (namedExpression, tableInfo, sqlTable, namedExpression.Type, _context);
+      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
+          namedExpression, tableInfo, sqlTable, namedExpression.Type, _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
       Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));

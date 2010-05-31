@@ -126,23 +126,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       }
 
       // member applied to a compound expression?
-      var newExpressionAsCompoundReferenceExpression = newExpression as SqlCompoundReferenceExpression;
-      if (newExpressionAsCompoundReferenceExpression != null)
+      var newExpressionAsNewExpression = newExpression as NewExpression;
+      if (newExpressionAsNewExpression != null)
       {
         var property = (PropertyInfo) expression.Member;
         var getterMethod = property.GetGetMethod (true);
 
-        var membersAndAssignedExpressions = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Members
-            .Select ((m, i) => new { Member = m, Argument = newExpressionAsCompoundReferenceExpression.ReferencedNewExpression.Arguments[i] });
+        var membersAndAssignedExpressions = newExpressionAsNewExpression.Members
+            .Select ((m, i) => new { Member = m, Argument = newExpressionAsNewExpression.Arguments[i] });
         var expressionOfMatchingMember = membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
-
-        var referenceExpression = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression(
-            expressionOfMatchingMember,
-            newExpressionAsCompoundReferenceExpression.SubStatementTableInfo,
-            newExpressionAsCompoundReferenceExpression.ReferencedTable,
-            expressionOfMatchingMember.Type,
-            _context);
-        return VisitExpression (referenceExpression);
+        
+        return VisitExpression (expressionOfMatchingMember);
       }
 
       throw new NotSupportedException (string.Format ("Resolved inner expression '{0}' of type '{1}' is not supported.", FormattingExpressionTreeVisitor.Format (newExpression), newExpression.GetType().Name));
