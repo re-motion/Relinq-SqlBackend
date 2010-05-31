@@ -43,8 +43,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var outerQuery = new QueryModel (outerMainFromClause, outerSelectClause);
       outerQuery.BodyClauses.Add (outerWhereClause);
 
-      CheckQuery (outerQuery, "SELECT [q0].[inner_ID],[q0].[inner_FirstName],[q0].[inner_Name],[q0].[inner_IsStarredCook],[q0].[inner_IsFullTimeCook],"+
-                              "[q0].[inner_SubstitutedID],[q0].[inner_KitchenID] FROM (SELECT [t1].[ID] AS [inner_ID],"+
+      CheckQuery (outerQuery, "SELECT [q0].[inner_ID] AS [ID],[q0].[inner_FirstName] AS [FirstName],[q0].[inner_Name] AS [Name],"+
+                              "[q0].[inner_IsStarredCook] AS [IsStarredCook],[q0].[inner_IsFullTimeCook] AS [IsFullTimeCook],"+
+                              "[q0].[inner_SubstitutedID] AS [SubstitutedID],[q0].[inner_KitchenID] AS [KitchenID] "+
+                              "FROM (SELECT [t1].[ID] AS [inner_ID],"+
                               "[t1].[FirstName] AS [inner_FirstName],[t1].[Name] AS [inner_Name],[t1].[IsStarredCook] AS [inner_IsStarredCook],"+
                               "[t1].[IsFullTimeCook] AS [inner_IsFullTimeCook],[t1].[SubstitutedID] AS [inner_SubstitutedID],"+
                               "[t1].[KitchenID] AS [inner_KitchenID] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[inner_ID] = @1)",

@@ -370,6 +370,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _commandBuilder.Append (" AS ");
         _commandBuilder.AppendIdentifier (entity.Name + "_" + column.ColumnName);
       }
+      else if ((entity is SqlEntityReferenceExpression) && ((SqlEntityReferenceExpression) entity).ReferencedEntity.Name != null)
+      {
+        // entity references without a name that point to an entity with a name must assign aliases to their columns;
+        // otherwise, their columns would include the referenced entity's name
+        _commandBuilder.Append (" AS ");
+        _commandBuilder.AppendIdentifier (column.ColumnName);
+      }
     }
 
     private void AppendColumn (string columnName, string prefix, string referencedEntityName)

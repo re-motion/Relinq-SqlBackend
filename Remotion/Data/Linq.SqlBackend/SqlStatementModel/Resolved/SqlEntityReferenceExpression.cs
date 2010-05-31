@@ -59,6 +59,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _columns;  }
     }
 
+    public SqlEntityExpression ReferencedEntity
+    {
+      get { return _referencedEntity; }
+    }
+
     // Returns a column from this entity. The column will be represented as: TableAlias.ReferencedEntityName_ColumnBaseName.
     // For example, for an entity referencing another entity "e0" from a substatement "q0", the column "ID" will be represented as: q0.e0_ID
     public override sealed SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn)

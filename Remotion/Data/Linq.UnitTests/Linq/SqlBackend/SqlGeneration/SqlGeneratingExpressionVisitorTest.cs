@@ -123,6 +123,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_VisitSqlEntityExpression_SqlColumnReferenceExpression ()
+    {
+      var referencedEntity = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", "Cook", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          new[]
+          {
+             new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+             new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+          });
+      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", referencedEntity);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Cook_Name] AS [Name],[c].[Cook_City] AS [City]"));
+    }
+
+    [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity ()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
