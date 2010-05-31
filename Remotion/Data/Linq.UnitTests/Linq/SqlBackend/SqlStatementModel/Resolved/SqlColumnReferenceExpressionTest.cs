@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -63,8 +64,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
           mock => mock.VisitSqlColumnReferenceExpression (_columnExpression));
     }
 
-    // TODO Review 2780: Add Accept test with visitor implementing IResolvedSqlExpressionVisitor
-    // TODO Review 2780: Add Accept test with incompatible visitor
+
+    [Test]
+    public void Accept_VisitorSupportingExpressionType_IResolvedSqlExpressionVisitor ()
+    {
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnReferenceExpression, IResolvedSqlExpressionVisitor> (
+          _columnExpression,
+          mock => mock.VisitSqlColumnExpression(_columnExpression));
+    }
 
     [Test]
     public void ToString_NoEntityName ()

@@ -81,7 +81,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    // TODO Review 2780: Add test with unnamed referenced entity
     public void GenerateSql_VisitSqlColumnReferenceExpression_WithNamedEntity ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
@@ -90,6 +89,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[Test_ID]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlColumnReferenceExpression_WithUnnamedEntity ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
     }
 
     [Test]
