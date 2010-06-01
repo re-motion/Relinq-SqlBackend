@@ -48,7 +48,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var topExpression = Expression.Constant ("top");
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
-
+      var rowNumberSelector = Expression.Constant("selector");
+      var currentRowNumberOffset = Expression.Constant(1);
+      
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           selectProjection,
@@ -56,7 +58,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           new [] { ordering },
           whereCondition,
           topExpression,
-          false);
+          false, 
+          rowNumberSelector, 
+          currentRowNumberOffset);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
@@ -67,6 +71,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.False);
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
+      Assert.That (testedBuilder.RowNumberSelector, Is.SameAs (sqlStatement.RowNumberSelector));
+      Assert.That (testedBuilder.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
     }
 
     [Test]
@@ -129,6 +135,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var whereCondition = Expression.Constant (true);
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
+      var rowNumberSelector = Expression.Constant ("selector");
+      var currentRowNumberOffset = Expression.Constant (1);
 
       var statementBuilder = new SqlStatementBuilder
                              {
@@ -136,7 +144,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                                  SelectProjection = selectProjection,
                                  WhereCondition = whereCondition,
                                  TopExpression = null,
-                                 IsDistinctQuery = false
+                                 IsDistinctQuery = false,
+                                 RowNumberSelector = rowNumberSelector,
+                                 CurrentRowNumberOffset = currentRowNumberOffset
                              };
       statementBuilder.SqlTables.Add (sqlTable);
       statementBuilder.Orderings.Add (ordering);
@@ -147,11 +157,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.TopExpression, Is.Null);
       Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
-      Assert.That (sqlStatement.WhereCondition, Is.EqualTo (whereCondition));
+      Assert.That (sqlStatement.WhereCondition, Is.SameAs(whereCondition));
       Assert.That (sqlStatement.IsDistinctQuery, Is.False);
       Assert.That (((AggregationExpression) sqlStatement.SelectProjection).AggregationModifier, Is.EqualTo(AggregationModifier.Min));
       Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo(typeof(int)));
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
+      Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
+      Assert.That (sqlStatement.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
     }
 
     [Test]

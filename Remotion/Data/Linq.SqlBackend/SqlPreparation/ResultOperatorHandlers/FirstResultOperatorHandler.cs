@@ -32,7 +32,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (1), context);
+      if (sqlStatementBuilder.RowNumberSelector != null)
+          sqlStatementBuilder.AddWhereCondition (
+            Expression.LessThanOrEqual (
+                sqlStatementBuilder.RowNumberSelector, Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, Expression.Constant(1))));
+      else
+          sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (1), context);
     }
   }
 }

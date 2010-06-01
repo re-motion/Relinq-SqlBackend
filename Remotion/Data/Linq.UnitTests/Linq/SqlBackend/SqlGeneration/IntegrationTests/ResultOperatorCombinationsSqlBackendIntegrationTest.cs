@@ -217,5 +217,43 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         );
     }
 
+    [Test]
+    public void TakeAfterSkip ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Take(5),
+          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] "+
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[get_Value] > @1) AND ([q0].[get_Value] <= (@2 + @3))) ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter("@1", 100),
+          new CommandParameter("@2", 100),
+          new CommandParameter("@3", 5));
+    }
+
+    [Test]
+    public void SingleAfterSkip ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Single(),
+          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] " +
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[get_Value] > @1) AND ([q0].[get_Value] <= (@2 + @3))) ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter ("@1", 100),
+          new CommandParameter ("@2", 100),
+          new CommandParameter ("@3", 1));
+    }
+
+    [Test]
+    public void FirstAfterSkip ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).First(),
+          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] " +
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[get_Value] > @1) AND ([q0].[get_Value] <= (@2 + @3))) ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter ("@1", 100),
+          new CommandParameter ("@2", 100),
+          new CommandParameter ("@3", 1));
+    }
+
+
+
   }
 }

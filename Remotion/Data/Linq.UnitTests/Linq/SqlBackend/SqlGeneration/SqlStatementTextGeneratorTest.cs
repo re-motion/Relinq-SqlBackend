@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           null,
-          false);
+          false, null, null);
       _commandBuilder = new SqlCommandBuilder();
     }
 
@@ -333,7 +333,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause },
           null,
           null,
-          false);
+          false, null, null);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name]"));
@@ -362,7 +362,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause1, orderByClause2, orderByClause3 },
           null,
           null,
-          false);
+          false, null, null);
 
       _stageMock.Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, _sqlStatement.Orderings[0].Expression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID]"));
@@ -388,7 +388,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           null,
-          true);
+          true, null, null);
 
       _generator.BuildDistinctPart (_sqlStatement, _commandBuilder);
 
@@ -407,7 +407,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           topExpression,
-          false);
+          false, null, null);
 
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, topExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("top"));
@@ -463,7 +463,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           Expression.Constant (true),
           null,
-          false);
+          false, null, null);
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -494,7 +494,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new[] { orderByClause },
           null,
           null,
-          false);
+          false, null, null);
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection))

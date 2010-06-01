@@ -85,12 +85,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _valueHolder.Orderings; }
     }
 
+    public Expression RowNumberSelector
+    {
+      get { return _valueHolder.RowNumberSelector; }
+      set { _valueHolder.RowNumberSelector = value; }
+    }
+
+    public Expression CurrentRowNumberOffset
+    {
+      get { return _valueHolder.CurrentRowNumberOffset; }
+      set { _valueHolder.CurrentRowNumberOffset = value; }
+    }
+
     public SqlStatement GetSqlStatement ()
     {
       if (DataInfo == null)
         throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
       return new SqlStatement (
-          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsDistinctQuery);
+          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsDistinctQuery, RowNumberSelector, CurrentRowNumberOffset);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -170,6 +182,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         WhereCondition = sqlStatement.WhereCondition;
         IsDistinctQuery = sqlStatement.IsDistinctQuery;
         TopExpression = sqlStatement.TopExpression;
+        RowNumberSelector = sqlStatement.RowNumberSelector;
+        CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
         
         SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
         Orderings = new List<Ordering> (sqlStatement.Orderings);
@@ -186,6 +200,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       public List<SqlTableBase> SqlTables { get; private set; }
       public List<Ordering> Orderings { get; private set; }
+
+      public Expression RowNumberSelector { get; set; }
+      public Expression CurrentRowNumberOffset { get; set; }
     }
 
   }

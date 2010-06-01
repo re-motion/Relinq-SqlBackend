@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -26,12 +27,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class TakeResultOperatorHandler : ResultOperatorHandler<TakeResultOperator>
   {
-    public override void HandleResultOperator (TakeResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    public override void HandleResultOperator (
+        TakeResultOperator resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-      
-      sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
+
+      if (sqlStatementBuilder.RowNumberSelector != null)
+        sqlStatementBuilder.AddWhereCondition (
+            Expression.LessThanOrEqual (
+                sqlStatementBuilder.RowNumberSelector, Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count)));
+      else
+        sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
     }
   }
 }

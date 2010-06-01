@@ -71,20 +71,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       
       sqlStatementBuilder.SelectProjection = originalProjectionSelector;
       sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.WhereCondition = Expression.GreaterThan (rowNumberSelector, resultOperator.Count);
+      sqlStatementBuilder.AddWhereCondition(Expression.GreaterThan (rowNumberSelector, resultOperator.Count));
       sqlStatementBuilder.Orderings.Add (new Ordering (rowNumberSelector, OrderingDirection.Asc));
       sqlStatementBuilder.DataInfo = oldSqlStatement.DataInfo;
-
-      //var currentOrderingTuple = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), valueSelector);
-      //for (var i = 0; i < sqlStatement.Orderings.Count; ++i)
-      //{
-      //  extractedOrderings.Add (
-      //      new Ordering (
-      //          Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Key")),
-      //          sqlStatement.Orderings[i].OrderingDirection));
-      //  currentOrderingTuple = Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Value"));
-      //}
-
+      sqlStatementBuilder.RowNumberSelector = rowNumberSelector;
+      sqlStatementBuilder.CurrentRowNumberOffset = resultOperator.Count;
+      
       context.AddExpressionMapping (resultOperator.Count, originalProjectionSelector);
     }
 
@@ -102,7 +94,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
             new Ordering[0],
             null,
             null,
-            false);
+            false, null, null);
         orderings = new[] { new Ordering (new SqlSubStatementExpression (trivialSubStatement), OrderingDirection.Asc) };
       }
 

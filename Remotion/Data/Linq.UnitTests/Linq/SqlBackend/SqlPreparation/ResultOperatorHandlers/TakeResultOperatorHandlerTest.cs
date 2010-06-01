@@ -26,6 +26,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -86,6 +87,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+    }
+
+    [Test]
+    public void HandleResultOperator_TakeAfterSkipExpression ()
+    {
+      _sqlStatementBuilder.WhereCondition = null;
+      _sqlStatementBuilder.RowNumberSelector = Expression.Constant (5);
+      _sqlStatementBuilder.CurrentRowNumberOffset = Expression.Constant (3);
+
+      var takeExpression = Expression.Constant (2);
+      var resultOperator = new TakeResultOperator (takeExpression);
+
+      var expectedWhereCondition = Expression.LessThanOrEqual (
+                _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
     }
 
   }

@@ -89,6 +89,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       ExpressionTreeComparer.CheckAreEqualTrees (expectedValueSelector, ((BinaryExpression) _sqlStatementBuilder.WhereCondition).Left);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedValueSelector, _sqlStatementBuilder.Orderings[0].Expression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedKeySelector, _context.TryGetExpressionMapping (resultOperator.Count));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedValueSelector, _sqlStatementBuilder.RowNumberSelector);
+      ExpressionTreeComparer.CheckAreEqualTrees (resultOperator.Count, _sqlStatementBuilder.CurrentRowNumberOffset);
+
     }
 
     private Expression GetFakeSekectProjectionFromSqlStatement (SqlStatement sqlStatement)
@@ -104,7 +107,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
                     new Ordering (
                     new SqlSubStatementExpression (
                         new SqlStatement (
-                            new StreamedScalarValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[0], new Ordering[0], null, null, false)),
+                            new StreamedScalarValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[0], new Ordering[0], null, null, false, null, null)),
                     OrderingDirection.Asc)});
 
       var tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, rowNumberExpression.Type);
