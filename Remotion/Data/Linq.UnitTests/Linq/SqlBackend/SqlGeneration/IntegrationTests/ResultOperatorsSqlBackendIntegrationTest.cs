@@ -381,5 +381,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 5));
     }
 
+    //[Test]
+    //public void Skip ()
+    //{
+    //  CheckQuery (
+    //      () => (from k in Kitchens select k).Skip (5),
+    //      "SELECT SUM([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]");
+    //}
+
   }
 }

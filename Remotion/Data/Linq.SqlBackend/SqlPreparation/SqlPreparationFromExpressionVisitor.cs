@@ -109,8 +109,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         sqlTable = tableCreator (tableInfo);
         itemSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Key"));
 
-        var currentOrderingTuple = Expression.MakeMemberAccess (
-            new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
+        var currentOrderingTuple = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
         for (var i = 0; i < sqlStatement.Orderings.Count; ++i)
         {
           extractedOrderings.Add (
