@@ -181,6 +181,7 @@
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNotNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLiteralExpression.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlRowNumberExpression.cs" />
     <Compile Include="SqlStatementModel\SqlStatement.cs" />
     <Compile Include="SqlStatementModel\SqlStatementBuilder.cs" />
     <Compile Include="SqlStatementModel\SqlSubStatementExpression.cs" />
