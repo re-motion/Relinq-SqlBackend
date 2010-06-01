@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -496,6 +497,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (sqlConvertExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(NVARCHAR, @1)"));
+    }
+
+    [Test]
+    public void VisitSqlRowNumberExpression ()
+    {
+      var ordering1 = new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc);
+      var ordering2 = new Ordering (Expression.Constant ("order2"), OrderingDirection.Desc);
+      var sqlRowNumberRÉxpression =
+          new SqlRowNumberExpression (
+              new[]
+              {
+                  ordering1,
+                  ordering2
+              });
+
+      _stageMock
+          .Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, ordering1.Expression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order1"));
+      _stageMock
+         .Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, ordering2.Expression))
+         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order2"));
+      _stageMock.Replay();
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberRÉxpression, _commandBuilder, _stageMock);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("ROW_NUMBER() OVER (ORDER BY order1 ASC, order2 DESC)"));
     }
 
     [Test]
