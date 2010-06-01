@@ -381,13 +381,52 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 5));
     }
 
-    //[Test]
-    //public void Skip ()
-    //{
-    //  CheckQuery (
-    //      () => (from k in Kitchens select k).Skip (5),
-    //      "SELECT SUM([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]");
-    //}
+    [Test]
+    public void Skip_WithEntity ()
+    {
+      CheckQuery (
+          () => (from r in Restaurants orderby r.ID select r).Skip (5),
+          "SELECT [q0].[get_Key_ID] AS [ID],[q0].[get_Key_CookID] AS [CookID],[q0].[get_Key_Name] AS [Name] " +
+          "FROM (SELECT [t0].[ID] AS [get_Key_ID],[t0].[CookID] AS [get_Key_CookID],[t0].[Name] AS [get_Key_Name]," +
+          "ROW_NUMBER() OVER (ORDER BY [t0].[ID] ASC) AS [get_Value] FROM [RestaurantTable] AS [t0] ORDER BY [t0].[ID] ASC) AS [q0] "+
+          "WHERE ([q0].[get_Value] > @1) " +
+          "ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter ("@1", 5));
+    }
+
+    [Test]
+    public void Skip_WithEntity_WithoutExplicitOrdering ()
+    {
+      CheckQuery (
+          () => (from r in Restaurants select r).Skip (5),
+          "SELECT [q0].[get_Key_ID] AS [ID],[q0].[get_Key_CookID] AS [CookID],[q0].[get_Key_Name] AS [Name] "+
+          "FROM (SELECT [t0].[ID] AS [get_Key_ID],[t0].[CookID] AS [get_Key_CookID],[t0].[Name] AS [get_Key_Name],"+
+          "ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [get_Value] FROM [RestaurantTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @2) "+
+          "ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter("@1", 1),
+          new CommandParameter("@2", 5));
+    }
+
+    [Test]
+    public void Skip_WithColumn ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100),
+          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] "+
+          "FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC) AS [q0] WHERE ([q0].[get_Value] > @1) ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter ("@1", 100));
+    }
+
+    [Test]
+    public void Skip_WithColumn_WithoutExplicitOrdering ()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Skip (100),
+          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [get_Value] "+
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @2) ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter ("@1", 1),
+          new CommandParameter("@2", 100));
+    }
 
   }
 }
