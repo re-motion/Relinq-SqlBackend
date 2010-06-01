@@ -43,11 +43,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void CreateReferenceExpression_CreatesSqlCompoundReferenceExpression ()
+    public void CreateReferenceExpression_CreatesCompoundExpression_ForNewExpressions ()
     {
       var newExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructors()[0],
-          new[] { Expression.Constant (0) },
+          new[] { Expression.Constant (0) }, // TODO Review 2821: Use an expression that makes a difference; e.g., a NamedExpression or an entity expression
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
@@ -58,14 +58,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
 
-      var expectedResult = Expression.New (
-          typeof (TypeForNewExpression).GetConstructors()[0],
-          newExpression.Arguments.Select (
-              arg => SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (arg, tableInfo, sqlTable, arg.Type, _context)),
-              newExpression.Members);
-
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           newExpression, tableInfo, sqlTable, newExpression.Type, _context);
+
+      var expectedResult = Expression.New (
+          typeof (TypeForNewExpression).GetConstructors ()[0],
+          // TODO Review 2821: Don't copy the implementation to the test; write out what you expect
+          newExpression.Arguments.Select (
+              arg => SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (arg, tableInfo, sqlTable, arg.Type, _context)),
+          newExpression.Members);
+
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

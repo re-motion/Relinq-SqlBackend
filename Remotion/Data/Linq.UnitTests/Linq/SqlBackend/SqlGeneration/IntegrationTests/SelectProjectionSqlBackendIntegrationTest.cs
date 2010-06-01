@@ -196,7 +196,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    //[Ignore ("TODO 2821")]
     public void NestedSelectProjection_CompoundWithoutMemberAccess ()
     {
       CheckQuery (
