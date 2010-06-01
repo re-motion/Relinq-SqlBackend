@@ -85,14 +85,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
-          "q0", tableInfo.SqlStatement.SelectProjection.Type);
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           entityDefinitionExpression, tableInfo, sqlTable, entityDefinitionExpression.Type, _context);
 
       Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
       Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
+
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
+        "q0", tableInfo.SqlStatement.SelectProjection.Type);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

@@ -233,28 +233,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_SqlCompoundReferenceExpression ()
+    public void VisitMemberExpression_OnNewExpression ()
     {
-      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) });
+      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
       var subStatementSelectProjection = Expression.New (
-          constructorInfo, 
-          new[] { new NamedExpression ("value", Expression.Constant (1)) }, 
-          typeof (TypeForNewExpression).GetMethod ("get_A"));
+          constructorInfo,
+          new[] { new NamedExpression ("value", Expression.Constant (1)), new NamedExpression ("value", Expression.Constant (2)) },
+          typeof (TypeForNewExpression).GetMethod ("get_A"), typeof (TypeForNewExpression).GetMethod ("get_B"));
       var constantExpression = Expression.Constant (new TypeForNewExpression (1));
-      var memberExpression = Expression.MakeMemberAccess (constantExpression, typeof (TypeForNewExpression).GetProperty ("A"));
+      var memberExpression = Expression.MakeMemberAccess (constantExpression, typeof (TypeForNewExpression).GetProperty ("B"));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
           .Return (subStatementSelectProjection);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (Arg<ConstantExpression>.Matches(e=>(int)e.Value==1)))
-          .Return (constantExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (((NamedExpression) result).Expression, Is.SameAs (constantExpression));
+      Assert.That (result, Is.SameAs (subStatementSelectProjection.Arguments[1]));
     }
 
     [Test]

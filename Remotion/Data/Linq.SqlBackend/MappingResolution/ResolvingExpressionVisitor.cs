@@ -132,11 +132,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var property = (PropertyInfo) expression.Member;
         var getterMethod = property.GetGetMethod (true);
 
-        var membersAndAssignedExpressions = resolvedInnerAsNewExpression.Members
-            .Select ((m, i) => new { Member = m, Argument = resolvedInnerAsNewExpression.Arguments[i] });
-        var expressionOfMatchingMember = membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
-        
-        return VisitExpression (expressionOfMatchingMember);
+        var membersAndAssignedExpressions = 
+            resolvedInnerAsNewExpression.Members.Select ((m, i) => new { Member = m, Argument = resolvedInnerAsNewExpression.Arguments[i] });
+        return membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
       }
 
       throw new NotSupportedException (string.Format ("Resolved inner expression '{0}' of type '{1}' is not supported.", FormattingExpressionTreeVisitor.Format (resolvedInnerExpression), resolvedInnerExpression.GetType().Name));
