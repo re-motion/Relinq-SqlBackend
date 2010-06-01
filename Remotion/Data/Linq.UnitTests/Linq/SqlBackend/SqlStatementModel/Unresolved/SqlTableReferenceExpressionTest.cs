@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     {
       var result = _tableReferenceExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("REF(TABLE-REF(Cook...))"));
+      Assert.That (result, Is.EqualTo ("TABLE-REF(TABLE(Cook))"));
     }
   }
 }

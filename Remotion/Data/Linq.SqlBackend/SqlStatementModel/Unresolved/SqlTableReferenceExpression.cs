@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      return "TABLE-REF(" + _sqlTable.ToString().Substring (0, 10) + "...)";
+      return "TABLE-REF(" + _sqlTable + ")";
     }
   }
 }
