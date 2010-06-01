@@ -165,6 +165,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       if (newExpression is SqlEntityExpression)
       {
+        // TODO Review 2820: What is this special casing for? Star columns should _only_ be handled in the SQL generation stage. Remove the special case and handle the issue in the generation stage. We can discuss this if necessary.
         var newExpressionAsSqlEntityDefinitionExpression = newExpression as SqlEntityDefinitionExpression;
         if (newExpressionAsSqlEntityDefinitionExpression != null && newExpressionAsSqlEntityDefinitionExpression.Columns[0].ColumnName == "*")
           return ((SqlEntityExpression) newExpression).Update (newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, null);

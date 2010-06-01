@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
-      return new SqlEntityReferenceExpression (itemType, tableAlias, _referencedEntity);
+      return new SqlEntityReferenceExpression (itemType, tableAlias, _referencedEntity); // TODO Review 2820: entity name is lost here! Create a unit test showing that the reference's name is entityName after a call to Update, then fix this bug
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)
