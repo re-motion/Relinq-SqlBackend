@@ -45,19 +45,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       var oldSqlStatement = sqlStatementBuilder.GetSqlStatement();
 
-      Expression rowNumberExpression;
-      if(sqlStatementBuilder.Orderings.Count>0)
-         rowNumberExpression =  new SqlRowNumberExpression (sqlStatementBuilder.Orderings.ToArray ());
-      else
-         rowNumberExpression =
-            new SqlRowNumberExpression (
-                new[]
-                {
-                    new Ordering (
-                    new SqlSubStatementExpression (
-                        new SqlStatement (
-                            new StreamedScalarValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[0], new Ordering[0], null, null, false)),
-                    OrderingDirection.Asc)});
+      var orderings = GetOrderingsForRowNumber(sqlStatementBuilder);
+      Expression rowNumberExpression = new SqlRowNumberExpression (orderings);
 
       var tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatementBuilder.SelectProjection.Type, rowNumberExpression.Type);
       Expression newSelectProjection = Expression.New (
@@ -68,22 +57,56 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       newSelectProjection = stage.PrepareSelectExpression (newSelectProjection, context);
 
       sqlStatementBuilder.SelectProjection = newSelectProjection;
+      if (sqlStatementBuilder.TopExpression == null) 
+        sqlStatementBuilder.Orderings.Clear();
 
       sqlStatementBuilder.RecalculateDataInfo (oldSqlStatement.SelectProjection);
       var newSqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
       
       var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
       var sqlTable = new SqlTable (tableInfo);
-      var keySelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Key"));
-      var valueSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
       
-      sqlStatementBuilder.SelectProjection = keySelector;
+      var originalProjectionSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Key"));
+      var rowNumberSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
+      
+      sqlStatementBuilder.SelectProjection = originalProjectionSelector;
       sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.WhereCondition = Expression.GreaterThan (valueSelector, resultOperator.Count);
-      sqlStatementBuilder.Orderings.Add (new Ordering(valueSelector, OrderingDirection.Asc));
+      sqlStatementBuilder.WhereCondition = Expression.GreaterThan (rowNumberSelector, resultOperator.Count);
+      sqlStatementBuilder.Orderings.Add (new Ordering (rowNumberSelector, OrderingDirection.Asc));
       sqlStatementBuilder.DataInfo = oldSqlStatement.DataInfo;
 
-      context.AddExpressionMapping (resultOperator.Count, keySelector);
+      //var currentOrderingTuple = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), valueSelector);
+      //for (var i = 0; i < sqlStatement.Orderings.Count; ++i)
+      //{
+      //  extractedOrderings.Add (
+      //      new Ordering (
+      //          Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Key")),
+      //          sqlStatement.Orderings[i].OrderingDirection));
+      //  currentOrderingTuple = Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Value"));
+      //}
+
+      context.AddExpressionMapping (resultOperator.Count, originalProjectionSelector);
+    }
+
+    private Ordering[] GetOrderingsForRowNumber (SqlStatementBuilder sqlStatementBuilder)
+    {
+      var orderings = sqlStatementBuilder.Orderings.ToArray();
+      if (orderings.Length == 0)
+      {
+        // Create a trivial substatement selecting an integer as the ordering expression if the statement doesn't contain one.
+        // This will cause SQL Server to assign the row number according to its internal row order.
+        var trivialSubStatement = new SqlStatement (
+            new StreamedScalarValueInfo (typeof (int)),
+            Expression.Constant (1),
+            new SqlTable[0],
+            new Ordering[0],
+            null,
+            null,
+            false);
+        orderings = new[] { new Ordering (new SqlSubStatementExpression (trivialSubStatement), OrderingDirection.Asc) };
+      }
+
+      return orderings;
     }
   }
 }

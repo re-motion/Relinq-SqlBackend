@@ -388,7 +388,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           () => (from r in Restaurants orderby r.ID select r).Skip (5),
           "SELECT [q0].[get_Key_ID] AS [ID],[q0].[get_Key_CookID] AS [CookID],[q0].[get_Key_Name] AS [Name] " +
           "FROM (SELECT [t0].[ID] AS [get_Key_ID],[t0].[CookID] AS [get_Key_CookID],[t0].[Name] AS [get_Key_Name]," +
-          "ROW_NUMBER() OVER (ORDER BY [t0].[ID] ASC) AS [get_Value] FROM [RestaurantTable] AS [t0] ORDER BY [t0].[ID] ASC) AS [q0] "+
+          "ROW_NUMBER() OVER (ORDER BY [t0].[ID] ASC) AS [get_Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
           "WHERE ([q0].[get_Value] > @1) " +
           "ORDER BY [q0].[get_Value] ASC",
           new CommandParameter ("@1", 5));
@@ -413,7 +413,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100),
           "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] "+
-          "FROM [CookTable] AS [t0] ORDER BY [t0].[Name] ASC) AS [q0] WHERE ([q0].[get_Value] > @1) ORDER BY [q0].[get_Value] ASC",
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @1) ORDER BY [q0].[get_Value] ASC",
           new CommandParameter ("@1", 100));
     }
 
