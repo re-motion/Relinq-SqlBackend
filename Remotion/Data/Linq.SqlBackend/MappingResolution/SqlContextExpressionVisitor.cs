@@ -229,12 +229,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       {
         var entityExpression = (SqlEntityExpression) newExpression;
         string newName = CombineNames (expression.Name, entityExpression.Name);
-        return ((SqlEntityExpression) newExpression).Update (newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, newName);
-      }
-      else if(newExpression is SqlValueReferenceExpression)
-      {
-        var sqlValueReferenceExpression = (SqlValueReferenceExpression) newExpression;
-        return new NamedExpression (sqlValueReferenceExpression.Name, newExpression);
+
+        return _context.UpdateEntityAndAddMapping (entityExpression, newExpression.Type, entityExpression.TableAlias, newName);
       }
       else if (newExpression is NamedExpression)
       {

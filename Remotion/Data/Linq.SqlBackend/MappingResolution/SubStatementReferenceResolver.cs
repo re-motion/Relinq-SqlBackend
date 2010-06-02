@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -75,14 +76,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlValueReferenceExpression (_type, expression.Name, _tableInfo.TableAlias);
+      return new SqlColumnDefinitionExpression (_type, _tableInfo.TableAlias, expression.Name, false);
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var innerReferenceExpressions = expression.Arguments.Select (arg => ResolveSubStatementReferenceExpression (arg, _tableInfo, _sqlTable, arg.Type, _context));
+      var innerReferenceExpressions = expression.Arguments.Select ((arg, i) => ResolveNewExpressionArgument(arg, expression.Members[i]));
       return Expression.New (expression.Constructor, innerReferenceExpressions, expression.Members);
 
     }
@@ -93,6 +94,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       _type = expression.Type;
       return VisitExpression (expression.Operand);
+    }
+
+    private Expression ResolveNewExpressionArgument (Expression argument, MemberInfo correspondingMember)
+    {
+      var referenceToArgument = ResolveSubStatementReferenceExpression (argument, _tableInfo, _sqlTable, argument.Type, _context);
+      return new NamedExpression (correspondingMember.Name, referenceToArgument);
     }
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlValueReferenceExpression (SqlValueReferenceExpression expression)

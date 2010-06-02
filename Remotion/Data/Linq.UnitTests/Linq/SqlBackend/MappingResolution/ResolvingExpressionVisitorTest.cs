@@ -19,8 +19,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -255,11 +253,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_SqlEntityExression ()
+    public void VisitNamedExpression_SqlEntityExpression ()
     {
       var constantExpression = Expression.Constant (5);
       var namedExpression = new NamedExpression ("test", constantExpression);
       var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false), new SqlColumnDefinitionExpression(typeof(string), "c", "column", false));
+      _mappingResolutionContext.AddSqlEntityMapping (fakeResult, SqlStatementModelObjectMother.CreateSqlTable());
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
@@ -275,11 +274,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_SqlEntityExression_StartColumn ()
+    public void VisitNamedExpression_SqlEntityExpression_StartColumn ()
     {
       var constantExpression = Expression.Constant (5);
       var namedExpression = new NamedExpression ("test", constantExpression);
       var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false), new SqlColumnDefinitionExpression (typeof (string), "c", "*", false));
+      _mappingResolutionContext.AddSqlEntityMapping (fakeResult, SqlStatementModelObjectMother.CreateSqlTable ());
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))

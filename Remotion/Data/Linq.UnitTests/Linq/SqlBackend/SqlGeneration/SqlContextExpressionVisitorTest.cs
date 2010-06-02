@@ -748,7 +748,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitNamedExpression_SqlEntityExression ()
+    public void VisitNamedExpression_SqlEntityExpression ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
@@ -758,7 +758,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               typeof (Cook).GetProperty ("Substitution"));
       var namedExpression = new NamedExpression ("test", refMemberExpression);
       var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression(1), new SqlLiteralExpression(1));
+      
       var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", "test2", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var fakeTable = SqlStatementModelObjectMother.CreateSqlTable();
+      _mappingResolutionContext.AddSqlEntityMapping (fakeResult, fakeTable);
 
       _stageMock
           .Expect (mock => mock.ResolveJoinInfo (Arg<IJoinInfo>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything))
@@ -772,6 +775,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (result, Is.Not.SameAs (fakeResult));
       Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
       Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test_test2"));
+      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (fakeTable));
     }
 
     [Test]

@@ -27,5 +27,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   {
     void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable);
     SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression);
+    SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName);
   }
 }

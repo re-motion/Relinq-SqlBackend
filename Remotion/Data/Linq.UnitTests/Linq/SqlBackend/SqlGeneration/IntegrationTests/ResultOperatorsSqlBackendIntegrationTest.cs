@@ -412,7 +412,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100),
-          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] "+
+          "SELECT [q0].[get_Key] AS [get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] " +
           "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @1) ORDER BY [q0].[get_Value] ASC",
           new CommandParameter ("@1", 100));
     }
@@ -422,7 +422,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Skip (100),
-          "SELECT [q0].[get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [get_Value] "+
+          "SELECT [q0].[get_Key] AS [get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [get_Value] " +
           "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @2) ORDER BY [q0].[get_Value] ASC",
           new CommandParameter ("@1", 1),
           new CommandParameter("@2", 100));

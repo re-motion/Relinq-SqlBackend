@@ -21,6 +21,7 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
@@ -52,6 +53,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void GetSqlTableForEntityExpression_EntityDoesNotExist ()
     {
       _context.GetSqlTableForEntityExpression (_entityExpression);
+    }
+
+    [Test]
+    public void UpdateEntityAndAddMapping ()
+    {
+      var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _context.AddSqlEntityMapping (entity, sqlTable);
+
+      var result = (SqlEntityDefinitionExpression) _context.UpdateEntityAndAddMapping (entity, entity.Type, "newAlias", "newName");
+
+      Assert.That (result.TableAlias, Is.EqualTo ("newAlias"));
+      Assert.That (result.Name, Is.EqualTo ("newName"));
+      Assert.That (_context.GetSqlTableForEntityExpression (result), Is.SameAs (sqlTable));
     }
   }
 }

@@ -52,5 +52,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       throw new InvalidOperationException (string.Format ("No associated table found for entity '{0}'.", entityExpression.Type.Name));
     }
+
+    // TODO: Test this method
+    public SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName)
+    {
+      ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
+      ArgumentUtility.CheckNotNull ("itemType", itemType);
+      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+
+      var newEntityExpression = entityExpression.Update (itemType, tableAlias, newName);
+      var tableForEntityExpression = GetSqlTableForEntityExpression (entityExpression);
+      AddSqlEntityMapping (newEntityExpression, tableForEntityExpression);
+      return newEntityExpression;
+    }
   }
 }

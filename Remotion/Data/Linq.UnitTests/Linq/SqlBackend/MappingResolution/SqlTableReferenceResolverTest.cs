@@ -80,9 +80,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
-      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
-      Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
+      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
 
@@ -100,9 +100,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
-      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
-      Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
+      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (typeof (object))); 
     }
     

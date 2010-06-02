@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
         : base(type)
     {
       ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
+      //ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
       ArgumentUtility.CheckNotNull ("isPrimaryKey", isPrimaryKey);
 
       _owningTableAlias = owningTableAlias;

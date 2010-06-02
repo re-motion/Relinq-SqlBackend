@@ -19,7 +19,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -43,21 +42,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor
   {
-    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SqlGenerationMode mode)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
+      var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage, mode);
       visitor.VisitExpression (expression);
     }
 
     private readonly ISqlCommandBuilder _commandBuilder;
     private readonly BinaryExpressionTextGenerator _binaryExpressionTextGenerator;
     private readonly ISqlGenerationStage _stage;
+    private readonly SqlGenerationMode _mode;
 
-    protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SqlGenerationMode mode)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -65,6 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _commandBuilder = commandBuilder;
       _binaryExpressionTextGenerator = new BinaryExpressionTextGenerator (commandBuilder, this);
       _stage = stage;
+      _mode = mode;
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -323,8 +324,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (expression.Name ?? "value");
+      if (_mode == SqlGenerationMode.SelectExpression)
+      {
+        _commandBuilder.Append (" AS ");
+        _commandBuilder.AppendIdentifier (expression.Name ?? "value");
+      }
 
       return expression;
     }
@@ -374,17 +378,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     private void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       column.Accept (this);
-      if (entity.Name != null)
+      if (_mode == SqlGenerationMode.SelectExpression)
       {
-        _commandBuilder.Append (" AS ");
-        _commandBuilder.AppendIdentifier (entity.Name + "_" + column.ColumnName);
-      }
-      else if ((entity is SqlEntityReferenceExpression) && ((SqlEntityReferenceExpression) entity).ReferencedEntity.Name != null)
-      {
-        // entity references without a name that point to an entity with a name must assign aliases to their columns;
-        // otherwise, their columns would include the referenced entity's name
-        _commandBuilder.Append (" AS ");
-        _commandBuilder.AppendIdentifier (column.ColumnName);
+        if (entity.Name != null)
+        {
+          _commandBuilder.Append (" AS ");
+          _commandBuilder.AppendIdentifier (entity.Name + "_" + column.ColumnName);
+        }
+        else if ((entity is SqlEntityReferenceExpression) && ((SqlEntityReferenceExpression) entity).ReferencedEntity.Name != null)
+        {
+          // entity references without a name that point to an entity with a name must assign aliases to their columns;
+          // otherwise, their columns would include the referenced entity's name
+          _commandBuilder.Append (" AS ");
+          _commandBuilder.AppendIdentifier (column.ColumnName);
+        }
       }
     }
 
@@ -400,17 +407,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _commandBuilder.AppendIdentifier (prefix);
         _commandBuilder.Append (".");
         if (referencedEntityName != null)
-          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + columnName);
+          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? "value"));
         else
-          _commandBuilder.AppendIdentifier (columnName);
+          _commandBuilder.AppendIdentifier (columnName ?? "value");
       }
     }
 
-    private void AppendReferencedMember (ResolvedSubStatementTableInfo subStatementTableInfo, MemberInfo memberInfo)
-    {
-      var column = new SqlColumnDefinitionExpression (typeof (int), subStatementTableInfo.TableAlias, memberInfo.Name, false);
-      VisitExpression (column);
-    }
+    //private void AppendReferencedMember (ResolvedSubStatementTableInfo subStatementTableInfo, MemberInfo memberInfo)
+    //{
+    //  var column = new SqlColumnDefinitionExpression (typeof (int), subStatementTableInfo.TableAlias, memberInfo.Name, false);
+    //  VisitExpression (column);
+    //}
     
   }
 }

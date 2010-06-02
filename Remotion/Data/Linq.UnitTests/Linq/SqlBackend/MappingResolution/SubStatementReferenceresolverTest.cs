@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var newExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructors()[0],
-          new[] { Expression.Constant (0) }, // TODO Review 2821: Use an expression that makes a difference; e.g., a NamedExpression or an entity expression
+          new[] { new NamedExpression ("const", Expression.Constant (0)) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
@@ -63,9 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var expectedResult = Expression.New (
           typeof (TypeForNewExpression).GetConstructors ()[0],
-          // TODO Review 2821: Don't copy the implementation to the test; write out what you expect
-          newExpression.Arguments.Select (
-              arg => SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (arg, tableInfo, sqlTable, arg.Type, _context)),
+          new Expression[] { new NamedExpression ("A", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false) ) },
           newExpression.Members);
 
 
@@ -112,9 +110,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           namedExpression, tableInfo, sqlTable, namedExpression.Type, _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlValueReferenceExpression)));
-      Assert.That (((SqlValueReferenceExpression) result).Name, Is.EqualTo ("test"));
-      Assert.That (((SqlValueReferenceExpression) result).TableAlias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
+      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
   }

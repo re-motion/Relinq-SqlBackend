@@ -220,7 +220,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from x in (from y in (from c in Cooks select new { A = c.ID }).Distinct () select new { B = y }).Distinct () select x,
-          "SELECT [q1].[get_A] AS [get_A] FROM (SELECT DISTINCT [q0].[get_A] AS [get_A] FROM (SELECT DISTINCT [t2].[ID] AS [get_A] "+
+          "SELECT [q1].[get_B_get_A] AS [get_B_get_A] FROM (SELECT DISTINCT [q0].[get_A] AS [get_B_get_A] FROM (SELECT DISTINCT [t2].[ID] AS [get_A] " +
           "FROM [CookTable] AS [t2]) AS [q0]) AS [q1]");
     }
    
