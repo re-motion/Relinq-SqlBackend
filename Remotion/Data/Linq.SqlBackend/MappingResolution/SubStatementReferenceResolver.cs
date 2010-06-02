@@ -102,11 +102,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return new NamedExpression (correspondingMember.Name, referenceToArgument);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlValueReferenceExpression (SqlValueReferenceExpression expression)
-    {
-      throw new InvalidOperationException ("SqlValueReferenceExpression is not valid at this point.");
-    }
-
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
       throw new InvalidOperationException ("SqlColumnExpression is not valid at this point.");

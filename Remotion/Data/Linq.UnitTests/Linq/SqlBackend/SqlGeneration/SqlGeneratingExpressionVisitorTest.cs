@@ -582,26 +582,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlValueTableReferenceExpression_NameIsNotNull ()
-    {
-      var expression = new SqlValueReferenceExpression (typeof(string), "test", "t");
-
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[test]"));
-    }
-
-    [Test]
-    public void VisitSqlValueTableReferenceExpression_NameIsNull ()
-    {
-      var expression = new SqlValueReferenceExpression (typeof (string), null, "t");
-
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[value]"));
-    }
-
-    [Test]
     public void VisitSqlCustomTextGeneratorExpression ()
     {
       var expression = new TestableSqlCustomTextGeneratorExpression (typeof (string));

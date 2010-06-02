@@ -99,15 +99,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlValueReferenceExpression (SqlValueReferenceExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      // becomes SqlColumnDefinitionExpression _or_ directly emit corresponding SQL
-      var columnExpression = new SqlColumnDefinitionExpression (expression.Type, expression.TableAlias, expression.Name ?? "value", false);
-      return VisitExpression (columnExpression);
-    }
-
     public Expression VisitJoinConditionExpression (JoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
