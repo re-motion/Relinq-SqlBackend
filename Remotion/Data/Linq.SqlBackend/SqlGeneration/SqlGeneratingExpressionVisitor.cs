@@ -378,7 +378,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     private void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       column.Accept (this);
-      if (_mode == SqlGenerationMode.SelectExpression)
+      if (_mode == SqlGenerationMode.SelectExpression && column.ColumnName != "*")
       {
         if (entity.Name != null)
         {

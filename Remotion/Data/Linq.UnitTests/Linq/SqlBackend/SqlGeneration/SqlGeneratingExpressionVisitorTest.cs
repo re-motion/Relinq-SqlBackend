@@ -20,7 +20,6 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -176,6 +175,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           sqlColumnListExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID] AS [Test_ID],[t].[Name] AS [Test_Name],[t].[City] AS [Test_City]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_NamedEntity_SelectExpressionMode_StarColumn ()
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
+      var sqlColumnListExpression = new SqlEntityDefinitionExpression (
+          typeof (string),
+          "t",
+          "Test",
+          primaryKeyColumn,
+          new[]
+          {
+              new SqlColumnDefinitionExpression (typeof (string), "t", "*", false)
+          });
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].*"));
     }
 
     [Test]
