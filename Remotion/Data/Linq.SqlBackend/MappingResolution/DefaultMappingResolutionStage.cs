@@ -130,8 +130,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedTableReference = SqlTableReferenceResolver.ResolveTableReference (expression, _resolver, _uniqueIdentifierGenerator, context);
-      return ApplyContext (resolvedTableReference, SqlExpressionContext.ValueRequired, context); // TODO 2844: Should be removed (currently no unit tests for this line)
+      return SqlTableReferenceResolver.ResolveTableReference (expression, _resolver, _uniqueIdentifierGenerator, context);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)

@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// <see cref="ResolvingExpressionVisitor"/> implements <see cref="IUnresolvedSqlExpressionVisitor"/> and <see cref="ThrowingExpressionTreeVisitor"/>.
   /// </summary>
-  public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor, INamedExpressionVisitor
+  public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
   {
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _generator;
@@ -89,9 +89,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // then newExpression2.FirstName => result (SqlColumn)
       var resolvedInnerExpression = VisitExpression (expression.Expression);
 
-      //member withe a cast?
-      var resolvedInnerAsUnaryExpression = resolvedInnerExpression as UnaryExpression;
-      if (resolvedInnerAsUnaryExpression != null && resolvedInnerAsUnaryExpression.NodeType == ExpressionType.Convert)
+      //member with a cast?
+      UnaryExpression resolvedInnerAsUnaryExpression;
+      while ((resolvedInnerAsUnaryExpression = resolvedInnerExpression as UnaryExpression) != null 
+          && resolvedInnerAsUnaryExpression.NodeType == ExpressionType.Convert)
       {
         resolvedInnerExpression = resolvedInnerAsUnaryExpression.Operand;
       }
@@ -102,6 +103,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var unresolvedJoinInfo = new UnresolvedJoinInfo (
             resolvedInnerAsSqlEntityRefMemberExpression.OriginatingEntity, resolvedInnerAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
         resolvedInnerExpression = _stage.ResolveEntityRefMemberExpression (resolvedInnerAsSqlEntityRefMemberExpression, unresolvedJoinInfo, _context);
+      }
+
+      // named expressions are ignored for member access
+      while (resolvedInnerExpression is NamedExpression)
+      {
+        resolvedInnerExpression = ((NamedExpression) resolvedInnerExpression).Expression;
       }
 
       // member applied to an entity?
@@ -155,19 +162,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var newSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
       return new SqlSubStatementExpression (newSqlStatement);
-    }
-
-    // TODO: Remove (or add tests for mapping)
-    public Expression VisitNamedExpression (NamedExpression expression)
-    {
-      var newExpression = VisitExpression (expression.Expression);
-
-      if (newExpression is SqlEntityExpression)
-        return _context.UpdateEntityAndAddMapping ((SqlEntityExpression) newExpression, newExpression.Type, ((SqlEntityExpression) newExpression).TableAlias, expression.Name);
-
-      if (newExpression != expression.Expression)
-        return new NamedExpression (expression.Name, newExpression);
-      return expression;
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
