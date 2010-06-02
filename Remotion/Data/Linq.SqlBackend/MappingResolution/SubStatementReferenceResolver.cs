@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlColumnDefinitionExpression (_type, _tableInfo.TableAlias, expression.Name, false);
+      return new SqlColumnDefinitionExpression (_type, _tableInfo.TableAlias, expression.Name ?? "value", false);
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
