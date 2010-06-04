@@ -108,12 +108,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         commandBuilder.Append (" ORDER BY ");
 
+        // TODO Review 2831: Move to separate _stage.GenerateTextForOrderings method, then reuse in SqlGeneratingExpressionVisitor.VisitSqlRowNumberExpression
+        // TODO Review 2831: Use commandBuilder.AppendSeparated
         bool first = true;
         foreach (var orderByClause in sqlStatement.Orderings)
         {
           if (!first)
             commandBuilder.Append (", ");
 
+          // TODO Review 2832: Because of this, you can change SkipResultOperatorHandler.GetOrderingsForRowNumber not to create trivial subselect - it will be created here
           if (orderByClause.Expression.NodeType == ExpressionType.Constant)
           {
             commandBuilder.Append ("(SELECT ");
@@ -123,6 +126,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           else
             _stage.GenerateTextForOrderByExpression (commandBuilder, orderByClause.Expression);
 
+          // TODO Review 2831: Use AppendFormat
           commandBuilder.Append (string.Format (" {0}", orderByClause.OrderingDirection.ToString().ToUpper()));
           first = false;
         }
