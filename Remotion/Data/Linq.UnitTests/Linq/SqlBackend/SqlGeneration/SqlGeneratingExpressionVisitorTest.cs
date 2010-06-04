@@ -555,7 +555,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlRowNumberExpression ()
+    public void   NumberExpression ()
     {
       var ordering1 = new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc);
       var ordering2 = new Ordering (Expression.Constant ("order2"), OrderingDirection.Desc);

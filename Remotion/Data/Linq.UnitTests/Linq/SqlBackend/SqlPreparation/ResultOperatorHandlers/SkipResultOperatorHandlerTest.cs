@@ -63,6 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _context = new SqlPreparationContext ();
     }
 
+    // TODO Review 2832: This test does not cover all of SkipResultOperatorHandler's functionality. Refactoring and addition of new tests should be done in a pair session.
     [Test]
     public void HandleResultOperator ()
     {

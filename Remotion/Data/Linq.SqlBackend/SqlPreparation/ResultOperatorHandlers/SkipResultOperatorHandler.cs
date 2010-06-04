@@ -30,6 +30,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class SkipResultOperatorHandler : ResultOperatorHandler<SkipResultOperator>
   {
+    struct SubStatementWithRowNumber
+    {
+      public readonly SqlTable SubStatementTable;
+      public readonly Expression OriginalProjectionSelector;
+      public readonly Expression RowNumberSelector;
+
+      public SubStatementWithRowNumber (SqlTable subStatement, Expression originalProjectionSelector, Expression rowNumberSelector)
+      {
+        SubStatementTable = subStatement;
+        OriginalProjectionSelector = originalProjectionSelector;
+        RowNumberSelector = rowNumberSelector;
+      }
+    }
+
     public override void HandleResultOperator (
         SkipResultOperator resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
@@ -43,10 +57,65 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var oldSqlStatement = sqlStatementBuilder.GetSqlStatement();
+      // We move the statement into a subquery and change it to return the row number in addition to the original projection. Then, we use that
+      // row number from the outer statement to skip the desired amount of rows. We also add an order by clause to the outer statement to ensure
+      // that the rows come in the correct order.
+      // E.g., (from c in Cooks orderby c.FirstName select c.LastName).Skip (20)
+      // becomes
+      // from x in 
+      //   (from c in Cooks select new { Key = c.LastName, Value = ROW_NUMBER() OVER (c.FirstName) })
+      // where x.Value > 20
+      // orderby x.Value
+      // select x.Key
 
-      var orderings = GetOrderingsForRowNumber(sqlStatementBuilder);
-      Expression rowNumberExpression = new SqlRowNumberExpression (orderings);
+      var originalDataInfo = sqlStatementBuilder.DataInfo;
+
+      var subStatementWithRowNumber = CreateSubStatementWithRowNumber (sqlStatementBuilder, generator, stage, context);
+
+      sqlStatementBuilder.SelectProjection = subStatementWithRowNumber.OriginalProjectionSelector;
+      sqlStatementBuilder.SqlTables.Add (subStatementWithRowNumber.SubStatementTable);
+      sqlStatementBuilder.AddWhereCondition (Expression.GreaterThan (subStatementWithRowNumber.RowNumberSelector, resultOperator.Count));
+      sqlStatementBuilder.Orderings.Add (new Ordering (subStatementWithRowNumber.RowNumberSelector, OrderingDirection.Asc));
+      sqlStatementBuilder.DataInfo = originalDataInfo;
+      sqlStatementBuilder.RowNumberSelector = subStatementWithRowNumber.RowNumberSelector;
+      sqlStatementBuilder.CurrentRowNumberOffset = resultOperator.Count;
+
+      context.AddExpressionMapping (resultOperator.Count, subStatementWithRowNumber.OriginalProjectionSelector); // TODO Review 2832: This mapping is not correct, All after Skip will not work correctly; the ItemExpression must be mapped to originalProjectionSelector
+    }
+
+    private SubStatementWithRowNumber CreateSubStatementWithRowNumber (
+        SqlStatementBuilder sqlStatementBuilder, 
+        UniqueIdentifierGenerator generator, 
+        ISqlPreparationStage stage, 
+        ISqlPreparationContext context)
+    {
+      var originalSelectProjection = sqlStatementBuilder.SelectProjection;
+
+      IncludeRowNumberInSelectProjection (sqlStatementBuilder, stage, context);
+
+      // Orderings are not allowed in SQL substatements unless a TOP expression is present
+      if (sqlStatementBuilder.TopExpression == null) 
+        sqlStatementBuilder.Orderings.Clear();
+
+      sqlStatementBuilder.RecalculateDataInfo (originalSelectProjection);
+      var newSqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
+
+      var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
+
+      var originalProjectionSelector = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (sqlTable), 
+          newSqlStatement.SelectProjection.Type.GetProperty ("Key"));
+      var rowNumberSelector = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (sqlTable), 
+          newSqlStatement.SelectProjection.Type.GetProperty ("Value"));
+
+      return new SubStatementWithRowNumber (sqlTable, originalProjectionSelector, rowNumberSelector);
+    }
+
+    private void IncludeRowNumberInSelectProjection (SqlStatementBuilder sqlStatementBuilder, ISqlPreparationStage stage, ISqlPreparationContext context)
+    {
+      var rowNumberExpression = CreateRowNumberExpression(sqlStatementBuilder);
 
       var tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatementBuilder.SelectProjection.Type, rowNumberExpression.Type);
       Expression newSelectProjection = Expression.New (
@@ -55,36 +124,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
           new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
 
       newSelectProjection = stage.PrepareSelectExpression (newSelectProjection, context);
-
       sqlStatementBuilder.SelectProjection = newSelectProjection;
-      if (sqlStatementBuilder.TopExpression == null) 
-        sqlStatementBuilder.Orderings.Clear();
-
-      sqlStatementBuilder.RecalculateDataInfo (oldSqlStatement.SelectProjection);
-      var newSqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
-      
-      var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      
-      var originalProjectionSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Key"));
-      var rowNumberSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
-      
-      sqlStatementBuilder.SelectProjection = originalProjectionSelector;
-      sqlStatementBuilder.SqlTables.Add (sqlTable);
-      sqlStatementBuilder.AddWhereCondition(Expression.GreaterThan (rowNumberSelector, resultOperator.Count));
-      sqlStatementBuilder.Orderings.Add (new Ordering (rowNumberSelector, OrderingDirection.Asc));
-      sqlStatementBuilder.DataInfo = oldSqlStatement.DataInfo;
-      sqlStatementBuilder.RowNumberSelector = rowNumberSelector;
-      sqlStatementBuilder.CurrentRowNumberOffset = resultOperator.Count;
-      
-      context.AddExpressionMapping (resultOperator.Count, originalProjectionSelector);
     }
 
-    private Ordering[] GetOrderingsForRowNumber (SqlStatementBuilder sqlStatementBuilder)
+    private Expression CreateRowNumberExpression (SqlStatementBuilder sqlStatementBuilder)
     {
       var orderings = sqlStatementBuilder.Orderings.ToArray();
       if (orderings.Length == 0)
       {
+        // TODO Review 2832: Simply use Expression.Constant (1) when refactorings for 2831 have been done
         // Create a trivial substatement selecting an integer as the ordering expression if the statement doesn't contain one.
         // This will cause SQL Server to assign the row number according to its internal row order.
         var trivialSubStatement = new SqlStatement (
@@ -98,7 +146,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         orderings = new[] { new Ordering (new SqlSubStatementExpression (trivialSubStatement), OrderingDirection.Asc) };
       }
 
-      return orderings;
+      return new SqlRowNumberExpression (orderings);
     }
   }
 }

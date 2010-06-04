@@ -77,8 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT COUNT(*) FROM (SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]) AS [q0]",
           new CommandParameter ("@1", 5));
     }
-
-    [Test]
+[Test]
     public void TakeAndTake ()
     {
       CheckQuery (
