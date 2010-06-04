@@ -284,7 +284,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitUnknownExpression (expression);
     }
 
-    public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
+    Expression ISqlSpecificExpressionVisitor.VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
