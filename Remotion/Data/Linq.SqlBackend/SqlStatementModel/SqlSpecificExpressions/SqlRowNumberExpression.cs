@@ -26,7 +26,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
-  /// <see cref="SqlRowNumberExpression"/> represents a Sql ROW_NUMBER() Function
+  /// <see cref="SqlRowNumberExpression"/> represents the Sql ROW_NUMBER() function.
   /// </summary>
   public class SqlRowNumberExpression : ExtensionExpression
   {
@@ -50,6 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
+      // TODO Review 2831: This LINQ query will be evaluated twice (below); call ToArray here instead of below to avoid this
       var newOrderings = Orderings.Select (
           o =>
           {
@@ -76,7 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return string.Format ("ROW_NUMBER() OVER (ORDER BY {0})", String.Join(",", Orderings.Select(o=>o.ToString()).ToArray()));
+      return string.Format ("ROW_NUMBER() OVER (ORDER BY {0})", String.Join(",", Orderings.Select (o => o.ToString()).ToArray()));
     }
   }
 }

@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void VisitChildren_SameSource ()
+    public void VisitChildren_SameOrderingExpressions ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
 
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void VisitChildren_NewSource ()
+    public void VisitChildren_NewOrderingExpressions ()
     {
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
       var fakeResult = Expression.Constant (3);
@@ -86,6 +86,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.Not.SameAs (_sqlRowNumberExpression));
+      // TODO Review 2831: Also check that the expressions and ordering directions match
     }
 
     [Test]
