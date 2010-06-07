@@ -132,7 +132,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
-      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", referencedEntity);
+      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", null, referencedEntity);
 
       SqlGeneratingExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
@@ -149,7 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
-      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", referencedEntity);
+      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", null, referencedEntity);
 
       SqlGeneratingExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 

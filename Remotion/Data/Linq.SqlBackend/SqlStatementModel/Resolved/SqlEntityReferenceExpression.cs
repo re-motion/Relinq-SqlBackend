@@ -34,8 +34,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
     private readonly SqlEntityExpression _referencedEntity;
 
-    public SqlEntityReferenceExpression (Type itemType, string tableAlias, SqlEntityExpression referencedEntity)
-        : base(itemType, tableAlias, null)
+    public SqlEntityReferenceExpression (Type itemType, string tableAlias, string entityName, SqlEntityExpression referencedEntity)
+        : base(itemType, tableAlias, entityName)
     {
       ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
 
@@ -73,12 +73,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
-      return new SqlEntityReferenceExpression (itemType, tableAlias, _referencedEntity); // TODO Review 2820: entity name is lost here! Create a unit test showing that the reference's name is entityName after a call to Update, then fix this bug
+      return new SqlEntityReferenceExpression (itemType, tableAlias, entityName, _referencedEntity);
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)
     {
-      return new SqlEntityReferenceExpression (newType, newTableAlias, this);
+      return new SqlEntityReferenceExpression (newType, newTableAlias, null, this);
     }
 
     public override string ToString ()

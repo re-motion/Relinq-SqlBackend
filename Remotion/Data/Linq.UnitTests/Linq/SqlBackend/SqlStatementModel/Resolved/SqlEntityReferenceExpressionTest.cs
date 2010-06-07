@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
 
       var exptecedPrimaryColumn = new SqlColumnReferenceExpression (typeof (int), "t", "ID", true, entityDefinitionExpression);
       var exppectedColumn = new SqlColumnReferenceExpression (typeof (string), "t", "Name", false, entityDefinitionExpression);
@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
 
       var result = entityReferenceExpression.GetColumn (typeof (string), "Test", false);
 
@@ -65,9 +65,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
       
-      var exptectedResult = new SqlEntityReferenceExpression (typeof (Cook), "t", entityReferenceExpression);
+      var exptectedResult = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityReferenceExpression);
 
       var result = entityReferenceExpression.CreateReference ("t", entityDefinitionExpression.Type);
 
@@ -81,12 +81,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
 
-      var result = entityReferenceExpression.Update (typeof (Kitchen), "f", null);
+      var result = entityReferenceExpression.Update (typeof (Kitchen), "f", "testName");
 
-      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", entityDefinitionExpression);
+      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", "testName", entityDefinitionExpression);
 
+      Assert.That (result.Name, Is.EqualTo ("testName"));
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
     }
 
@@ -95,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null); 
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "q0", referencedEntity);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "q0", null, referencedEntity);
 
       var result = entityReferenceExpression.ToString();
 
@@ -107,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "e1");
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "q0", referencedEntity);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "q0", null, referencedEntity);
 
       var result = entityReferenceExpression.ToString ();
 

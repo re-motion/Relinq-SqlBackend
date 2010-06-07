@@ -103,14 +103,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in
             (from sc in Cooks orderby sc.Name select sc).Take(10)
           select c,
-          "SELECT [q0].[get_Key_ID] AS [ID],[q0].[get_Key_FirstName] AS [FirstName],[q0].[get_Key_Name] AS [Name],"+
-          "[q0].[get_Key_IsStarredCook] AS [IsStarredCook],[q0].[get_Key_IsFullTimeCook] AS [IsFullTimeCook],"+
-          "[q0].[get_Key_SubstitutedID] AS [SubstitutedID],[q0].[get_Key_KitchenID] AS [KitchenID] "+
-          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT TOP (@1) [t2].[ID] AS [get_Key_ID],"+
-          "[t2].[FirstName] AS [get_Key_FirstName],[t2].[Name] AS [get_Key_Name],[t2].[IsStarredCook] AS [get_Key_IsStarredCook],"+
-          "[t2].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],[t2].[SubstitutedID] AS [get_Key_SubstitutedID],[t2].[KitchenID] AS [get_Key_KitchenID],"+
-          "[t2].[Name] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] FROM [CookTable] AS [t2] ORDER BY [t2].[Name] ASC) AS [q0] "+
-          "ORDER BY [q0].[get_Value_get_Key] ASC",
+          "SELECT [q0].[get_Key_ID] AS [get_Key_ID],[q0].[get_Key_FirstName] AS [get_Key_FirstName],[q0].[get_Key_Name] AS [get_Key_Name],"+
+          "[q0].[get_Key_IsStarredCook] AS [get_Key_IsStarredCook],[q0].[get_Key_IsFullTimeCook] AS [get_Key_IsFullTimeCook],"+
+          "[q0].[get_Key_SubstitutedID] AS [get_Key_SubstitutedID],[q0].[get_Key_KitchenID] AS [get_Key_KitchenID] "+
+          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT TOP (@1) [t2].[ID] AS [get_Key_ID],[t2].[FirstName] AS [get_Key_FirstName],"+
+          "[t2].[Name] AS [get_Key_Name],[t2].[IsStarredCook] AS [get_Key_IsStarredCook],[t2].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],"+
+          "[t2].[SubstitutedID] AS [get_Key_SubstitutedID],[t2].[KitchenID] AS [get_Key_KitchenID],[t2].[Name] AS [get_Value_get_Key],"+
+          "NULL AS [get_Value_get_Value] FROM [CookTable] AS [t2] ORDER BY [t2].[Name] ASC) AS [q0] ORDER BY [q0].[get_Value_get_Key] ASC",
           new CommandParameter("@1", 10));
     }
 

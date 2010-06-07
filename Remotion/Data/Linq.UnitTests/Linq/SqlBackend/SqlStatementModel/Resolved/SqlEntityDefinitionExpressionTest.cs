@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       var expectedResult = new SqlEntityReferenceExpression (
           typeof (Cook),
-          "c1",
+          "c1", null,
           entityExpression);
 
       var result = entityExpression.CreateReference("c1", typeof(Cook));

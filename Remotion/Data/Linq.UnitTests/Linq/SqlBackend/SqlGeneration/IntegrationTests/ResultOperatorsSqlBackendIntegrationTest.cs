@@ -386,11 +386,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from r in Restaurants orderby r.ID select r).Skip (5),
-          "SELECT [q0].[get_Key_ID] AS [ID],[q0].[get_Key_CookID] AS [CookID],[q0].[get_Key_Name] AS [Name] " +
-          "FROM (SELECT [t0].[ID] AS [get_Key_ID],[t0].[CookID] AS [get_Key_CookID],[t0].[Name] AS [get_Key_Name]," +
+          "SELECT [q0].[get_Key_ID] AS [get_Key_ID],[q0].[get_Key_CookID] AS [get_Key_CookID],[q0].[get_Key_Name] AS [get_Key_Name] "+
+          "FROM (SELECT [t0].[ID] AS [get_Key_ID],[t0].[CookID] AS [get_Key_CookID],[t0].[Name] AS [get_Key_Name],"+
           "ROW_NUMBER() OVER (ORDER BY [t0].[ID] ASC) AS [get_Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
-          "WHERE ([q0].[get_Value] > @1) " +
-          "ORDER BY [q0].[get_Value] ASC",
+          "WHERE ([q0].[get_Value] > @1) ORDER BY [q0].[get_Value] ASC",
           new CommandParameter ("@1", 5));
     }
 
@@ -399,10 +398,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from r in Restaurants select r).Skip (5),
-          "SELECT [q0].[get_Key_ID] AS [ID],[q0].[get_Key_CookID] AS [CookID],[q0].[get_Key_Name] AS [Name] "+
+          "SELECT [q0].[get_Key_ID] AS [get_Key_ID],[q0].[get_Key_CookID] AS [get_Key_CookID],[q0].[get_Key_Name] AS [get_Key_Name] "+
           "FROM (SELECT [t0].[ID] AS [get_Key_ID],[t0].[CookID] AS [get_Key_CookID],[t0].[Name] AS [get_Key_Name],"+
-          "ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [get_Value] FROM [RestaurantTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @2) "+
-          "ORDER BY [q0].[get_Value] ASC",
+          "ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [get_Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
+          "WHERE ([q0].[get_Value] > @2) ORDER BY [q0].[get_Value] ASC",
           new CommandParameter("@1", 1),
           new CommandParameter("@2", 5));
     }
