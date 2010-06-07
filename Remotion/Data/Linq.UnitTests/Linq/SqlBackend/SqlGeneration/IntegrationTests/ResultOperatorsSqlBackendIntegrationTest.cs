@@ -432,9 +432,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           () => (from c in Cooks orderby 20 select 10).Skip (100),
           "SELECT [q0].[get_Key] AS [get_Key] FROM (SELECT @1 AS [get_Key],ROW_NUMBER() OVER (ORDER BY @2 ASC) AS [get_Value] " +
           "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @3) ORDER BY [q0].[get_Value] ASC",
-          new CommandParameter ("@1", 20),
-          new CommandParameter ("@2", 10),
-          new CommandParameter ("@1", 100));
+          new CommandParameter ("@1", 10),
+          new CommandParameter ("@2", 20),
+          new CommandParameter ("@3", 100));
     }
   }
 }
