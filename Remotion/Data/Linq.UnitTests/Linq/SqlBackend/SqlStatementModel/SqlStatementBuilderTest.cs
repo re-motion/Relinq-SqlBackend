@@ -36,8 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [SetUp]
     public void SetUp ()
     {
-      _statementBuilder = new SqlStatementBuilder();
-      _statementBuilder.DataInfo = new TestStreamedValueInfo (typeof (int));
+      _statementBuilder = new SqlStatementBuilder { DataInfo = new TestStreamedValueInfo (typeof (int)) };
     }
 
     [Test]

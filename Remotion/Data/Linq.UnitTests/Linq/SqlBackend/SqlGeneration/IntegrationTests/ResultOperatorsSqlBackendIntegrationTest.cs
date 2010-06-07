@@ -67,17 +67,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2408")]
     public void TakeWithMemberExpression ()
     {
       CheckQuery (
           () => (from k in Kitchens from c in k.Restaurant.Cooks.Take (k.RoomNumber) select k.Name),
-          "SELECT [t1].[Name] FROM [KitchenTable] AS [t1] "
+          "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1] "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON [t1].[RestaurantID] = [t2].[ID] "
           + "CROSS APPLY (SELECT TOP ([t1].[RoomNumber]) "
           + "[t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
-          + "FROM [CookTable] AS [t3] WHERE ([t2].[ID] = [t3].[RestaurantID])) AS [q0]",
-          new CommandParameter ("@1", 5));
+          + "FROM [CookTable] AS [t3] WHERE ([t2].[ID] = [t3].[RestaurantID])) AS [q0]");
     }
 
     [Test]
@@ -427,5 +425,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter("@2", 100));
     }
 
+    [Test]
+    public void Skip_WithConstant ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby 20 select 10).Skip (100),
+          "SELECT [q0].[get_Key] AS [get_Key] FROM (SELECT @1 AS [get_Key],ROW_NUMBER() OVER (ORDER BY @2 ASC) AS [get_Value] " +
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @3) ORDER BY [q0].[get_Value] ASC",
+          new CommandParameter ("@1", 20),
+          new CommandParameter ("@2", 10),
+          new CommandParameter ("@1", 100));
+    }
   }
 }

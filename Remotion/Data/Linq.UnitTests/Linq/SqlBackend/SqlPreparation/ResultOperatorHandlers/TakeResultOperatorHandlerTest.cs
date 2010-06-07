@@ -99,10 +99,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var takeExpression = Expression.Constant (2);
       var resultOperator = new TakeResultOperator (takeExpression);
 
-      var expectedWhereCondition = Expression.LessThanOrEqual (
-                _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));
-
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var expectedWhereCondition = Expression.LessThanOrEqual (
+          _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);

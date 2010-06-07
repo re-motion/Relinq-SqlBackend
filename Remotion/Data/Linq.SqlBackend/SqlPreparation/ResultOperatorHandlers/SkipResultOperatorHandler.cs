@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         // This will cause SQL Server to assign the row number according to its internal row order.
         var trivialSubStatement = new SqlStatement (
             new StreamedScalarValueInfo (typeof (int)),
-            Expression.Constant (1),
+            Expression.Constant (1), // TODO Review 2833: Use SqlLiteralExpression
             new SqlTable[0],
             new Ordering[0],
             null,

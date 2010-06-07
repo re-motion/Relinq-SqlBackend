@@ -38,11 +38,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       if (sqlStatementBuilder.RowNumberSelector != null)
-        sqlStatementBuilder.AddWhereCondition (
-            Expression.LessThanOrEqual (
-                sqlStatementBuilder.RowNumberSelector, Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count)));
+      {
+        var whereCondition = Expression.LessThanOrEqual (
+            sqlStatementBuilder.RowNumberSelector, 
+            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));
+        sqlStatementBuilder.AddWhereCondition (whereCondition);
+      }
       else
+      {
         sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
+      }
     }
   }
 }

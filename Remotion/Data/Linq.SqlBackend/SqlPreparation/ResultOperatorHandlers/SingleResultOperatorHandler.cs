@@ -33,11 +33,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       if (sqlStatementBuilder.RowNumberSelector != null)
-        sqlStatementBuilder.AddWhereCondition (
-          Expression.LessThanOrEqual (
-              sqlStatementBuilder.RowNumberSelector, Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, Expression.Constant (1))));
+      {
+        // TODO Review 2804: Use SqlLiteralExpression
+        var whereCondition = Expression.LessThanOrEqual (
+            sqlStatementBuilder.RowNumberSelector, 
+            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, Expression.Constant (1)));
+        sqlStatementBuilder.AddWhereCondition (whereCondition);
+      }
       else
-       sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (2), context);
+      {
+        sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (2), context);
+      }
     }
   }
 }

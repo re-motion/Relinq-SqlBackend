@@ -332,10 +332,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
 
-      var sqlStatement1 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, null, null);
-      var sqlStatement2 = new SqlStatement (
-          dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, null, null);
+      var sqlStatement1 = new SqlStatement (dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, null, null);
+      var sqlStatement2 = new SqlStatement (dataInfo, selectProjection, new SqlTable[] { }, new Ordering[] { }, null, null, false, null, null);
 
       Assert.That (sqlStatement1.Equals (sqlStatement2), Is.True);
     }
