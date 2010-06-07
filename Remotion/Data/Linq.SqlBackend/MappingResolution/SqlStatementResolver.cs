@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -115,15 +116,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       if (sqlStatementBuilder.Orderings.Count > 0)
       {
-        // TODO Review 2821: Refactor this to avoid modifying the original orderings; write a test showing that the original SqlStatement contains the original expression even if the resolved statement contains a new expression
-        // implement as follows:
-        // for (int i = 0; i < sqlStatementBuilder.Orderings.Count; ++i)
-        // {
-        //   var newOrderingExpression = _stage.ResolveOrderingExpression (sqlStatementBuilder.Orderings[i].Expression, _context);
-        //   if (newOrderingExpression != sqlStatementBuilder.Orderings[i].Expression)
-        //     sqlStatementBuilder.Orderings[i] = new Ordering (sqlStatementBuilder.Orderings[i].Direction, newOrderingExpression);
-        foreach (var orderByClause in sqlStatementBuilder.Orderings)
-          orderByClause.Expression = _stage.ResolveOrderingExpression (orderByClause.Expression, _context);
+        for (int i = 0; i < sqlStatementBuilder.Orderings.Count; ++i)
+        {
+          var newOrderingExpression = _stage.ResolveOrderingExpression (sqlStatementBuilder.Orderings[i].Expression, _context);
+          if (newOrderingExpression != sqlStatementBuilder.Orderings[i].Expression)
+            sqlStatementBuilder.Orderings[i] = new Ordering (newOrderingExpression, sqlStatementBuilder.Orderings[i].OrderingDirection);
+        }
       }
       
       return sqlStatementBuilder.GetSqlStatement();

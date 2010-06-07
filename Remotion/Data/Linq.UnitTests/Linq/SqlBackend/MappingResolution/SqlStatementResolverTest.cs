@@ -297,7 +297,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (topExpression);
       _stageMock
           .Expect (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
-          .Return (ordering.Expression);
+          .Return (fakeExpression);
       _stageMock
           .Expect (mock => mock.ResolveTableInfo(((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _mappingResolutionContext))
           .Return (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"));
@@ -311,7 +311,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (resolveSqlStatement.SelectProjection, Is.SameAs(fakeExpression));
       Assert.That (resolveSqlStatement.WhereCondition, Is.SameAs (whereCondition));
       Assert.That (resolveSqlStatement.TopExpression, Is.SameAs (topExpression));
-      Assert.That (resolveSqlStatement.Orderings[0].Expression, Is.SameAs (ordering.Expression));
+      Assert.That (resolveSqlStatement.Orderings[0].Expression, Is.SameAs (fakeExpression));
+      Assert.That (sqlStatement.Orderings[0].Expression, Is.SameAs (ordering.Expression));
    }
   
 
