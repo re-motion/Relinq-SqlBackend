@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -39,7 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
       var sqlExistsExpression = new SqlExistsExpression (subStatementExpression);
 
-      sqlStatementBuilder.SelectProjection = Expression.Not (sqlExistsExpression);
+      sqlStatementBuilder.SelectProjection = stage.PrepareSelectExpression (Expression.Not (sqlExistsExpression), context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlSubStatement.DataInfo);
     }
   }

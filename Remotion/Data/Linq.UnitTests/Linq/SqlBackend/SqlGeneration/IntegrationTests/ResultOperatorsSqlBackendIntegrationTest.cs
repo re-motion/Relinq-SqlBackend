@@ -232,6 +232,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void Any_OrderingsRemoved ()
+    {
+      CheckQuery (
+        () => Cooks.OrderBy (c => c.FirstName).Any (),
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END"
+        );
+    }
+
+    [Test]
     public void All_OnTopLevel ()
     {
       CheckQuery(
@@ -248,6 +257,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from s in Cooks where (from s2 in Cooks select s2).All(c=>c.FirstName=="Hugo") select s.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE NOT EXISTS((SELECT [t1].[ID] FROM [CookTable] AS [t1] " +
         "WHERE NOT ([t1].[FirstName] = @1)))",
+        new CommandParameter ("@1", "Hugo")
+        );
+    }
+
+    [Test]
+    public void All_OrderingsRemoved ()
+    {
+      CheckQuery (
+       () => Cooks.OrderBy (c => c.FirstName).All (c => c.Name == "Hugo"),
+        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END",
         new CommandParameter ("@1", "Hugo")
         );
     }

@@ -62,16 +62,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new AnyResultOperator ();
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
+      var fakePreparedSelectProjection = Expression.Constant (false);
+
+      _stageMock
+         .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches (e => e is SqlExistsExpression), Arg.Is (_context)))
+         .WhenCalled (
+             mi =>
+             {
+               var selectProjection = (Expression) mi.Arguments[0];
+               Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
+
+               var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
+               ExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
+             })
+         .Return (fakePreparedSelectProjection);
+
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
       _stageMock.VerifyAllExpectations ();
 
-      var existsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
-      ExpressionTreeComparer.CheckAreEqualTrees (existsExpression, _sqlStatementBuilder.SelectProjection);
+      Assert.That (_sqlStatementBuilder.SelectProjection, Is.SameAs (fakePreparedSelectProjection));
     }
   }
 }

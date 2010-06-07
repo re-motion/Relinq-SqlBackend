@@ -64,11 +64,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new AllResultOperator(predicate);
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
+      var fakePreparedSelectProjection = Expression.Constant (false);
+
       _stageMock
           .Expect (mock => mock.PrepareWhereExpression (
               Arg<Expression>.Matches(e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
               Arg<ISqlPreparationContext>.Matches(c=>c==_context)))
           .Return (preparedPredicate);
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches (e => e.NodeType == ExpressionType.Not), Arg.Is (_context)))
+          .WhenCalled (
+              mi =>
+              {
+                var selectProjection = (Expression) mi.Arguments[0];
+                var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement();
+                var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
+                var expectedExpression = Expression.Not (expectedExistsExpression);
+
+                ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
+              })
+          .Return (fakePreparedSelectProjection);
       _stageMock.Replay();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
@@ -78,11 +93,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
-      var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement ();
-      var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
-      var expectedExpression = Expression.Not (expectedExistsExpression);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, _sqlStatementBuilder.SelectProjection);
+      Assert.That (_sqlStatementBuilder.SelectProjection, Is.SameAs (fakePreparedSelectProjection));
     }
   }
 }

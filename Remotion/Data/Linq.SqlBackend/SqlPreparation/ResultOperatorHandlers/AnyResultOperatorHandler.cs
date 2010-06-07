@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       var sqlExistsExpression = new SqlExistsExpression (subStatementExpression);
 
-      sqlStatementBuilder.SelectProjection = sqlExistsExpression;
+      sqlStatementBuilder.SelectProjection = stage.PrepareSelectExpression (sqlExistsExpression, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlSubStatement.DataInfo);
     }
   }
