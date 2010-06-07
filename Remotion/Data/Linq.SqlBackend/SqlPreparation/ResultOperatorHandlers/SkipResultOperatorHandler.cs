@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       sqlStatementBuilder.RowNumberSelector = subStatementWithRowNumber.RowNumberSelector;
       sqlStatementBuilder.CurrentRowNumberOffset = resultOperator.Count;
 
-      context.AddExpressionMapping (resultOperator.Count, subStatementWithRowNumber.OriginalProjectionSelector); // TODO Review 2832: This mapping is not correct, All after Skip will not work correctly; the ItemExpression must be mapped to originalProjectionSelector
+      AddMappingForItemExpression (context, originalDataInfo, subStatementWithRowNumber.OriginalProjectionSelector);
     }
 
     private SubStatementWithRowNumber CreateSubStatementWithRowNumber (
@@ -123,8 +123,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
           new[] { sqlStatementBuilder.SelectProjection, rowNumberExpression },
           new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
 
-      newSelectProjection = stage.PrepareSelectExpression (newSelectProjection, context);
-      sqlStatementBuilder.SelectProjection = newSelectProjection;
+      sqlStatementBuilder.SelectProjection = stage.PrepareSelectExpression (newSelectProjection, context);
     }
 
     private Expression CreateRowNumberExpression (SqlStatementBuilder sqlStatementBuilder)

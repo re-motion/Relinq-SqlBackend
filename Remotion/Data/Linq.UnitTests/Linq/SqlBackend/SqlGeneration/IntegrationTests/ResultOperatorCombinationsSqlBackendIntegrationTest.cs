@@ -252,6 +252,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@3", 1));
     }
 
+    [Test]
+    public void AllAfterSkip ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).All (name => name != null),
+          "SELECT CASE WHEN NOT EXISTS(("
+          + "SELECT [q0].[get_Key] AS [get_Key] FROM ("
+          + "SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] FROM [CookTable] AS [t0]"
+          + ") AS [q0] WHERE (([q0].[get_Value] > @1) AND NOT ([q0].[get_Key] IS NOT NULL)))) THEN 1 ELSE 0 END",
+          new CommandParameter ("@1", 100));
+    }
 
 
   }

@@ -101,7 +101,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = oldStatement.DataInfo;
 
-      Debug.Assert (oldStatement.DataInfo is StreamedSequenceInfo);
+      AddMappingForItemExpression(context, oldStatement.DataInfo, fromExpressionInfo.ItemSelector);
+    }
+
+    protected void AddMappingForItemExpression (ISqlPreparationContext context, IStreamedDataInfo dataInfo, Expression replacement)
+    {
+      Debug.Assert (dataInfo is StreamedSequenceInfo);
 
       // Later ResultOperatorHandlers might have expressions that access the value streaming out from this result operator. These expressions must 
       // be updated to get their input expression (the ItemExpression of sqlStatement.DataInfo) from the sub-statement table we just created.
@@ -111,8 +116,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // ItemExpression, on the other hand, should compare fine because it is inserted by reference into the result operators' expressions during 
       // the front-end's lambda resolution process.)
 
-      var itemExpressionNowInSqlTable = ((StreamedSequenceInfo) oldStatement.DataInfo).ItemExpression;
-      context.AddExpressionMapping (itemExpressionNowInSqlTable, fromExpressionInfo.ItemSelector);
+      var itemExpressionNowInSqlTable = ((StreamedSequenceInfo) dataInfo).ItemExpression;
+      context.AddExpressionMapping (itemExpressionNowInSqlTable, replacement);
     }
 
     protected void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)

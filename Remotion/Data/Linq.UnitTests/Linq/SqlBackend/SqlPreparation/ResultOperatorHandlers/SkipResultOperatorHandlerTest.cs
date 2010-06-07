@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -29,10 +30,8 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -42,82 +41,265 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   {
     private ISqlPreparationStage _stageMock;
     private UniqueIdentifierGenerator _generator;
-    private SkipResultOperatorHandler _handler;
-    private SqlStatementBuilder _sqlStatementBuilder;
-    private QueryModel _queryModel;
     private SqlPreparationContext _context;
+    private SkipResultOperatorHandler _handler;
+
+    private SqlTable _sqlTable;
+    private SqlTableReferenceExpression _selectProjection;
+    private Ordering _ordering;
+    
+    private SqlStatementBuilder _sqlStatementBuilder;
+    private ConstructorInfo _tupleCtor;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
-      _handler = new SkipResultOperatorHandler ();
-      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      };
-      _sqlStatementBuilder.Orderings.Add (
-         new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
       _context = new SqlPreparationContext ();
+
+      _handler = new SkipResultOperatorHandler ();
+      
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
+      _selectProjection = new SqlTableReferenceExpression (_sqlTable);
+
+      _ordering = new Ordering (Expression.Constant (7), OrderingDirection.Asc);
+      _sqlStatementBuilder = new SqlStatementBuilder
+      {
+        SelectProjection = _selectProjection,
+        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ())),
+        SqlTables = { _sqlTable },
+      };
+
+      _tupleCtor = _tupleCtor = typeof (KeyValuePair<Cook, int>).GetConstructor (new[] { typeof (Cook), typeof (int) });
     }
 
-    // TODO Review 2832: This test does not cover all of SkipResultOperatorHandler's functionality. Refactoring and addition of new tests should be done in a pair session.
     [Test]
-    public void HandleResultOperator ()
+    public void HandleResultOperator_CreatesAndPreparesSubStatementWithNewProjection ()
     {
-      var takeExpression = Expression.Constant (2);
-      var resultOperator = new SkipResultOperator (takeExpression);
-      var statement = _sqlStatementBuilder.GetSqlStatement();
-      var fakeSelectProjection = GetFakeSekectProjectionFromSqlStatement (statement);
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
+
+      _sqlStatementBuilder.Orderings.Add (_ordering);
+
+      var expectedNewProjection = Expression.New (
+          _tupleCtor, 
+          new Expression[] { _selectProjection, new SqlRowNumberExpression (new[] { _ordering }) }, 
+          new MemberInfo[] { _tupleCtor.DeclaringType.GetMethod ("get_Key"), _tupleCtor.DeclaringType.GetMethod ("get_Value") });
+
+      var fakePreparedProjection = GetFakePreparedProjection();
 
       _stageMock
-          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches(e=>e is NewExpression), Arg<ISqlPreparationContext>.Matches(c=>c==_context)))
-          .Return (fakeSelectProjection);
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
+          .WhenCalled (mi => ExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, (Expression) mi.Arguments[0]))
+          .Return (fakePreparedProjection);
+      _stageMock.Replay();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.SameAs (statement.DataInfo));
-      Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (MemberExpression)));
+      _stageMock.VerifyAllExpectations();
+
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement.SelectProjection, Is.SameAs(fakeSelectProjection));
-      Assert.That (_sqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (BinaryExpression)));
 
-      var expectedKeySelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), fakeSelectProjection.Type.GetProperty ("Key"));
-      var expectedValueSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), fakeSelectProjection.Type.GetProperty ("Value"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedKeySelector, _sqlStatementBuilder.SelectProjection);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedValueSelector, ((BinaryExpression) _sqlStatementBuilder.WhereCondition).Left);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedValueSelector, _sqlStatementBuilder.Orderings[0].Expression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedKeySelector, _context.TryGetExpressionMapping (resultOperator.Count));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedValueSelector, _sqlStatementBuilder.RowNumberSelector);
-      ExpressionTreeComparer.CheckAreEqualTrees (resultOperator.Count, _sqlStatementBuilder.CurrentRowNumberOffset);
-
+      var subStatementTableInfo = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo);
+      Assert.That (subStatementTableInfo.SqlStatement.SelectProjection, Is.SameAs (fakePreparedProjection));
+      Assert.That (subStatementTableInfo.TableAlias, Is.EqualTo ("q0"));
     }
 
-    private Expression GetFakeSekectProjectionFromSqlStatement (SqlStatement sqlStatement)
+    [Test]
+    public void HandleResultOperator_CreatesAndPreparesSubStatementWithNewProjection_WithoutOrderings ()
     {
-      Expression rowNumberExpression;
-      if (sqlStatement.Orderings.Count > 0)
-        rowNumberExpression = new SqlRowNumberExpression (sqlStatement.Orderings.ToArray ());
-      else
-        rowNumberExpression =
-           new SqlRowNumberExpression (
-               new[]
-                {
-                    new Ordering (
-                    new SqlSubStatementExpression (
-                        new SqlStatement (
-                            new StreamedScalarValueInfo (typeof (int)), Expression.Constant (1), new SqlTable[0], new Ordering[0], null, null, false, null, null)),
-                    OrderingDirection.Asc)});
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
 
-      var tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, rowNumberExpression.Type);
-      Expression newSelectProjection = Expression.New (
-          tupleType.GetConstructors ()[0],
-          new[] { sqlStatement.SelectProjection, rowNumberExpression },
-          new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      Assert.That (_sqlStatementBuilder.Orderings, Is.Empty);
 
-      return newSelectProjection;
+      var fakePreparedProjection = GetFakePreparedProjection();
+
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
+          .WhenCalled (mi =>
+          {
+            var selectProjection = (NewExpression) mi.Arguments[0];
+            var rowNumberExpression = (SqlRowNumberExpression) selectProjection.Arguments[1];
+            var ordering = rowNumberExpression.Orderings[0];
+            Assert.That (ordering.Expression, Is.InstanceOfType (typeof (SqlSubStatementExpression)));
+
+            var actualStatement = ((SqlSubStatementExpression) ordering.Expression).SqlStatement;
+
+            Assert.That (actualStatement.DataInfo, Is.InstanceOfType (typeof (StreamedScalarValueInfo)));
+            Assert.That (actualStatement.DataInfo.DataType, Is.SameAs (typeof (int)));
+            ExpressionTreeComparer.CheckAreEqualTrees (actualStatement.SelectProjection, Expression.Constant (1));
+            Assert.That (actualStatement.SqlTables, Is.Empty);
+          })
+          .Return (fakePreparedProjection);
+      _stageMock.Replay ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void HandleResultOperator_RemovesOrderingsFromSubStatement_IfNoTopExpression ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
+
+      _sqlStatementBuilder.Orderings.Add (_ordering);
+      Assert.That (_sqlStatementBuilder.TopExpression, Is.Null);
+      StubStageMock_PrepareSelectExpression();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var subStatement = GetSubStatement(_sqlStatementBuilder.SqlTables[0]);
+      Assert.That (subStatement.Orderings, Is.Empty);
+    }
+
+    [Test]
+    public void HandleResultOperator_LeavesOrderingsInSubStatement_IfTopExpression ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
+
+      _sqlStatementBuilder.Orderings.Add (_ordering);
+      _sqlStatementBuilder.TopExpression = Expression.Constant (20);
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
+      Assert.That (subStatement.Orderings, Is.Not.Empty);
+      Assert.That (subStatement.Orderings, Is.EqualTo (new[] { _ordering }));
+    }
+
+    [Test]
+    public void HandleResultOperator_CalculatesDataInfo ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
+      Assert.That (subStatement.DataInfo, Is.InstanceOfType (typeof (StreamedSequenceInfo)));
+      Assert.That (subStatement.DataInfo.DataType, Is.EqualTo(typeof (IQueryable<KeyValuePair<Cook, int>>)));
+    }
+
+    [Test]
+    public void HandleResultOperator_SetsOuterSelect_ToOriginalProjectionSelector ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var expectedSelectProjection = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), _tupleCtor.DeclaringType.GetProperty ("Key"));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
+    }
+
+    [Test]
+    public void HandleResultOperator_SetsOuterWhereCondition ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (10));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var expectedRowNumberSelector = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), 
+          _tupleCtor.DeclaringType.GetProperty ("Value"));
+      var expectedWhereCondition = Expression.GreaterThan (expectedRowNumberSelector, resultOperator.Count);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
+    }
+
+    [Test]
+    public void HandleResultOperator_SetsOuterOrdering ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (10));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var expectedRowNumberSelector = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
+          _tupleCtor.DeclaringType.GetProperty ("Value"));
+
+      Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_sqlStatementBuilder.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.Orderings[0].Expression);
+    }
+
+    [Test]
+    public void HandleResultOperator_SetsOuterDataInfo ()
+    {
+      var originalDataInfo = _sqlStatementBuilder.DataInfo;
+
+      var resultOperator = new SkipResultOperator (Expression.Constant (10));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.SameAs (originalDataInfo));
+    }
+
+    [Test]
+    public void HandleResultOperator_SetsRowNumberSelector ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (10));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      var expectedRowNumberSelector = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
+          _tupleCtor.DeclaringType.GetProperty ("Value"));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.RowNumberSelector);
+    }
+
+    [Test]
+    public void HandleResultOperator_SetsCurrentRowNumberOffset ()
+    {
+      var resultOperator = new SkipResultOperator (Expression.Constant (10));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.CurrentRowNumberOffset, Is.SameAs (resultOperator.Count));
+    }
+
+    [Test]
+    public void HandleResultOperator_AddsMappingForItemExpression ()
+    {
+      var originalItemExpression = ((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression;
+
+      var resultOperator = new SkipResultOperator (Expression.Constant (10));
+      StubStageMock_PrepareSelectExpression ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_context.TryGetExpressionMapping (originalItemExpression), Is.EqualTo (_sqlStatementBuilder.SelectProjection));
+    }
+
+    private void StubStageMock_PrepareSelectExpression ()
+    {
+      var fakePreparedProjection = GetFakePreparedProjection ();
+      _stageMock
+          .Stub (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
+          .Return (fakePreparedProjection);
+      _stageMock.Replay ();
+    }
+
+    private NewExpression GetFakePreparedProjection ()
+    {
+      return Expression.New (
+          _tupleCtor,
+          new Expression[] { _selectProjection, new SqlRowNumberExpression (new[] { _ordering }) },
+          new MemberInfo[] { _tupleCtor.DeclaringType.GetMethod ("get_Key"), _tupleCtor.DeclaringType.GetMethod ("get_Value") });
+    }
+
+    private SqlStatement GetSubStatement (SqlTableBase sqlTableBase)
+    {
+      return ((ResolvedSubStatementTableInfo) ((SqlTable) sqlTableBase).TableInfo).SqlStatement;
     }
   }
 }
