@@ -87,11 +87,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // E.g, for (kitchen.Cook).FirstName, first process kitchen => newExpression1 (SqlEntity)
       // then newExpression1.Cook => newExpression2 (SqlEntityRef/SqlEntity)
       // then newExpression2.FirstName => result (SqlColumn)
+
+     
       var sourceExpression = VisitExpression (expression.Expression);
+      return _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
 
-      var resolvedMemberExpression = MemberAccessResolver.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context, _stage);
-
-      return VisitExpression (resolvedMemberExpression);
+      //return VisitExpression (resolvedMemberExpression);
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)

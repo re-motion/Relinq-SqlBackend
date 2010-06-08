@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -37,6 +38,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     SqlEntityExpression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context);
     SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context);
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression, IMappingResolutionContext context);
+    Expression ResolveMemberAccess (
+        Expression resolvedSourceExpression,
+        MemberInfo memberInfo,
+        IMappingResolver mappingResolver,
+        IMappingResolutionContext context);
 
     Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
     ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);

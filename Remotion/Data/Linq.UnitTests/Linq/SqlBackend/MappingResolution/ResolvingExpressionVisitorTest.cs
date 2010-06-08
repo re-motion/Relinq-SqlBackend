@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -24,8 +23,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -97,181 +94,47 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnEntity ()
+    public void VisitMemberExpression ()
     {
-      var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var expression = Expression.Constant (new Cook());
+      var memberInfo = typeof (Cook).GetProperty ("ID");
+      var expression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
-
-      var fakeResult = Expression.Constant (0);
-
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (sqlEntityExpression);
-      _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
-
-      Assert.That (result, Is.SameAs (fakeResult));
-      _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void VisitMemberExpression_OnEntityRefMemberExpression ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
-      var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
-      var fakeResult = Expression.Constant (0);
-
+      
+      var fakeResolvedExpression = new SqlLiteralExpression(1);
       _stageMock
-          .Expect (
-              mock =>
-              mock.ResolveEntityRefMemberExpression (
-                  Arg<SqlEntityRefMemberExpression>.Matches (e => e == expression),
-                  Arg<UnresolvedJoinInfo>.Matches (j => j.OriginatingEntity.Type == typeof(Cook)), Arg<IMappingResolutionContext>.Matches(c=>c==_mappingResolutionContext)))
-          .Return (fakeEntityExpression);
+          .Expect (mock => mock.ResolveMemberAccess (expression, memberInfo, _resolverMock, _mappingResolutionContext))
+          .Return (fakeResolvedExpression);
       _stageMock.Replay();
 
-      _resolverMock
-          .Expect (
-              mock =>
-              mock.ResolveMemberExpression (
-                  Arg<SqlEntityExpression>.Matches (e => e.Type == typeof(Cook)),
-                  Arg<MemberInfo>.Matches (mi => mi == memberInfo)))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
-
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
-      Assert.That (result, Is.SameAs (fakeResult));
       _stageMock.VerifyAllExpectations();
-      _resolverMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
 
     [Test]
-    public void VisitMemberExpression_OnConvertExpression ()
+    public void VisitMemberExpression_ResolvesSourceExpression ()
     {
-      var operand = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
-      var convertExpression = Expression.Convert (Expression.Convert (operand, typeof (Chef)), typeof (Chef));
-      var memberExpression = Expression.MakeMemberAccess (convertExpression, typeof (Chef).GetProperty ("LetterOfRecommendation"));
-
-      var fakeResult = Expression.Constant (0);
-
-      _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (operand, memberExpression.Member))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
-
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
-
-      Assert.That (result, Is.SameAs (fakeResult));
-      _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void VisitMemberExpression_OnNamedExpression ()
-    {
-      var operand = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
-      var convertExpression = new NamedExpression ("two", new NamedExpression ("one", operand));
-      var memberExpression = Expression.MakeMemberAccess (convertExpression, typeof (Cook).GetProperty ("FirstName"));
-
-      var fakeResult = Expression.Constant (0);
-
-      _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (operand, memberExpression.Member))
-          .Return (fakeResult);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay ();
-      
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
-
-      Assert.That (result, Is.SameAs (fakeResult));
-      _resolverMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void VisitMemberExpression_MemberAppliedToConstant ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var expression = Expression.Constant (new Cook());
+      var memberInfo = typeof (Cook).GetProperty ("ID");
+      var expression = Expression.Constant(null, typeof(Cook));
       var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
 
-      var fakeResult = Expression.Constant (0);
-
+      var fakeResolvedSourceExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Return (fakeResolvedSourceExpression);
       _resolverMock.Replay();
+
+      var fakeResolvedExpression = new SqlLiteralExpression (1);
+      _stageMock
+          .Expect (mock => mock.ResolveMemberAccess (fakeResolvedSourceExpression, memberInfo, _resolverMock, _mappingResolutionContext))
+          .Return (fakeResolvedExpression);
+      _stageMock.Replay ();
 
       ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
-    }
-
-    [Test]
-    public void VisitMemberExpression_OnColumnExpression ()
-    {
-      var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var expression = Expression.Constant (new Cook());
-      var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
-      var constantExpression = Expression.Constant ("test");
-      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
-
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (columnExpression);
-      _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
-          .Return (constantExpression);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
-          .Return (constantExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
-
-      Assert.That (result, Is.SameAs (constantExpression));
-      _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void VisitMemberExpression_OnNewExpression ()
-    {
-      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
-      var subStatementSelectProjection = Expression.New (
-          constructorInfo,
-          new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) },
-          typeof (TypeForNewExpression).GetMethod ("get_A"), typeof (TypeForNewExpression).GetMethod ("get_B"));
-      var constantExpression = Expression.Constant (new TypeForNewExpression (1));
-      var memberExpression = Expression.MakeMemberAccess (constantExpression, typeof (TypeForNewExpression).GetProperty ("B"));
-
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
-          .Return (subStatementSelectProjection);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (subStatementSelectProjection.Arguments[1]));
+      _stageMock.VerifyAllExpectations ();
     }
 
     [Test]

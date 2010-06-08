@@ -23,21 +23,25 @@ using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="MemberAccessResolver"/> is used by <see cref="ResolvingExpressionVisitor"/> to resolve <see cref="MemberExpression"/>s.
+  /// <see cref="MemberAccessResolver"/> is used by <see cref="DefaultMappingResolutionStage"/> to resolve <see cref="MemberInfo"/>s applied to
+  /// expressions. The <see cref="MemberAccessResolver"/> class assumes that its input expression has already been resolved, and it may return a
+  /// result that itself needs to be resolved again.
   /// </summary>
   public class MemberAccessResolver
   {
-    public static Expression ResolveMemberAccess (
-        Expression resolvedSourceExpression,
-        MemberInfo memberInfo,
-        IMappingResolver mappingResolver,
-        IMappingResolutionContext mappingResolutionContext,
-        IMappingResolutionStage mappingResolutionStage)
+    public static Expression ResolveMemberAccess (Expression resolvedSourceExpression, MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage mappingResolutionStage, IMappingResolutionContext mappingResolutionContext)
     {
+      ArgumentUtility.CheckNotNull ("resolvedSourceExpression", resolvedSourceExpression);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
+      ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+
       var resolvedInnerExpression = resolvedSourceExpression;
 
       //member with a cast?

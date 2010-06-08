@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -281,6 +282,47 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = _mappingResolutionContext.GetSqlTableForEntityExpression (entityRefMemberExpression.OriginatingEntity);
       Assert.That (sqlTable.GetJoin (kitchenCookMember), Is.Not.Null);
       Assert.That (sqlTable.GetJoin (kitchenCookMember).JoinInfo, Is.SameAs (fakeJoinInfo));
+    }
+
+    [Test]
+    public void ResolveMemberAccess ()
+    {
+      var sourceExpression = new SqlColumnDefinitionExpression (typeof (Cook), "c", "Substitution", false);
+      var memberInfo = typeof(Cook).GetProperty("Name");
+      var fakeResolvedExpression = new SqlLiteralExpression ("Hugo");
+      
+      _resolverMock
+          .Expect (mock => mock.ResolveMemberExpression (sourceExpression, memberInfo))
+          .Return (fakeResolvedExpression);
+      _resolverMock.Replay();
+      
+      var result =  _stage.ResolveMemberAccess (sourceExpression, memberInfo, _resolverMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResolvedExpression));
+    }
+
+    [Test]
+    public void ResolveMemberAccess_ResolvedResult ()
+    {
+      var sourceExpression = new SqlColumnDefinitionExpression (typeof (Cook), "c", "Substitution", false);
+      var memberInfo = typeof (Cook).GetProperty ("Name");
+
+      var fakeResolvedExpression = Expression.Constant ("Hugo", typeof (string));
+      _resolverMock
+          .Expect (mock => mock.ResolveMemberExpression (sourceExpression, memberInfo))
+          .Return (fakeResolvedExpression);
+
+      var fakeResolvedExpressionAgain = Expression.Constant ("Hugo2", typeof (string));
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResolvedExpression))
+          .Return (fakeResolvedExpressionAgain);
+      _resolverMock.Replay ();
+
+      var result = _stage.ResolveMemberAccess (sourceExpression, memberInfo, _resolverMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResolvedExpressionAgain));
     }
 
     [Test]
