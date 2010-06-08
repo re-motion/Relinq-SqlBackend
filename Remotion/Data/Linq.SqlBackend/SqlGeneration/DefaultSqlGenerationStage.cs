@@ -85,7 +85,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("ordering", ordering);
       
-      // TODO Review 2832: Because of this, you can change SkipResultOperatorHandler.GetOrderingsForRowNumber not to create trivial subselect - it will be created here
       if (ordering.Expression.NodeType == ExpressionType.Constant || ordering.Expression is SqlLiteralExpression)
       {
         commandBuilder.Append ("(SELECT ");
