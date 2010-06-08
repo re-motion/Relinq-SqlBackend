@@ -264,6 +264,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 100));
     }
 
+    [Test]
+    public void SkipTakeSkip ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Take (10).Skip(100),
+          "SELECT [q1].[get_Key_get_Key] AS [get_Key] FROM (SELECT [q0].[get_Key] AS [get_Key_get_Key],"+
+          "ROW_NUMBER() OVER (ORDER BY [q0].[get_Value] ASC) AS [get_Value] FROM (SELECT [t0].[FirstName] AS [get_Key],"+
+          "ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] FROM [CookTable] AS [t0]) AS [q0] "+
+          "WHERE (([q0].[get_Value] > @1) AND ([q0].[get_Value] <= (@2 + @3)))) AS [q1] WHERE ([q1].[get_Value] > @4) ORDER BY [q1].[get_Value] ASC",
+          new CommandParameter ("@1", 100),
+          new CommandParameter ("@2", 100),
+          new CommandParameter ("@3", 10),
+          new CommandParameter ("@4", 100));
+    }
+
+    [Test]
+    public void SkipAfterSkip ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Skip (10),
+          "SELECT [q1].[get_Key_get_Key] AS [get_Key] FROM (SELECT [q0].[get_Key] AS [get_Key_get_Key],"+
+          "ROW_NUMBER() OVER (ORDER BY [q0].[get_Value] ASC) AS [get_Value] FROM (SELECT [t0].[FirstName] AS [get_Key],"+
+          "ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[get_Value] > @1)) AS [q1] "+
+          "WHERE ([q1].[get_Value] > @2) ORDER BY [q1].[get_Value] ASC",
+          new CommandParameter ("@1", 100),
+          new CommandParameter ("@2", 10));
+    }
+
 
   }
 }
