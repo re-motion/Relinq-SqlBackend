@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (sqlEntityExpression);
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo, _generator))
+          .Expect (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
           .Return (fakeResult);
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (fakeResult))
@@ -147,8 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
               mock =>
               mock.ResolveMemberExpression (
                   Arg<SqlEntityExpression>.Matches (e => e.Type == typeof(Cook)),
-                  Arg<MemberInfo>.Matches (mi => mi == memberInfo),
-                  Arg<UniqueIdentifierGenerator>.Matches (g => g == _generator)))
+                  Arg<MemberInfo>.Matches (mi => mi == memberInfo)))
           .Return (fakeResult);
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (fakeResult))
@@ -259,7 +258,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
       var subStatementSelectProjection = Expression.New (
           constructorInfo,
-          new[] { new NamedExpression ("value", Expression.Constant (1)), new NamedExpression ("value", Expression.Constant (2)) },
+          new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) },
           typeof (TypeForNewExpression).GetMethod ("get_A"), typeof (TypeForNewExpression).GetMethod ("get_B"));
       var constantExpression = Expression.Constant (new TypeForNewExpression (1));
       var memberExpression = Expression.MakeMemberAccess (constantExpression, typeof (TypeForNewExpression).GetProperty ("B"));

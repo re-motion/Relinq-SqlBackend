@@ -73,6 +73,7 @@
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
     <Compile Include="MappingResolution\MappingResolutionContext.cs" />
+    <Compile Include="MappingResolution\MemberAccessResolver.cs" />
     <Compile Include="MappingResolution\SqlContextJoinInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextSelectionAdjuster.cs" />
     <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />

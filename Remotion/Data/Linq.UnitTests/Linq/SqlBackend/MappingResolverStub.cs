@@ -108,7 +108,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return CreateEntityExpression (tableInfo);
     }
 
-    public virtual Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
+    public virtual Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
       var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
       if (memberInfo.DeclaringType == typeof (Cook))

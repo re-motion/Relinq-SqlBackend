@@ -87,71 +87,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // E.g, for (kitchen.Cook).FirstName, first process kitchen => newExpression1 (SqlEntity)
       // then newExpression1.Cook => newExpression2 (SqlEntityRef/SqlEntity)
       // then newExpression2.FirstName => result (SqlColumn)
-      var resolvedInnerExpression = VisitExpression (expression.Expression);
+      var sourceExpression = VisitExpression (expression.Expression);
 
-      //member with a cast?
-      UnaryExpression resolvedInnerAsUnaryExpression;
-      while ((resolvedInnerAsUnaryExpression = resolvedInnerExpression as UnaryExpression) != null 
-          && resolvedInnerAsUnaryExpression.NodeType == ExpressionType.Convert)
-      {
-        resolvedInnerExpression = resolvedInnerAsUnaryExpression.Operand;
-      }
+      var resolvedMemberExpression = MemberAccessResolver.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context, _stage);
 
-      var resolvedInnerAsSqlEntityRefMemberExpression = resolvedInnerExpression as SqlEntityRefMemberExpression;
-      if (resolvedInnerAsSqlEntityRefMemberExpression != null)
-      {
-        var unresolvedJoinInfo = new UnresolvedJoinInfo (
-            resolvedInnerAsSqlEntityRefMemberExpression.OriginatingEntity, resolvedInnerAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
-        resolvedInnerExpression = _stage.ResolveEntityRefMemberExpression (resolvedInnerAsSqlEntityRefMemberExpression, unresolvedJoinInfo, _context);
-      }
-
-      // named expressions are ignored for member access
-      while (resolvedInnerExpression is NamedExpression)
-      {
-        resolvedInnerExpression = ((NamedExpression) resolvedInnerExpression).Expression;
-      }
-
-      // member applied to an entity?
-      var resolvedInnerAsEntityExpression = resolvedInnerExpression as SqlEntityExpression;
-      if (resolvedInnerAsEntityExpression != null)
-      {
-        var propertyInfoType = ((PropertyInfo) expression.Member).PropertyType;
-        if (typeof (IEnumerable).IsAssignableFrom (propertyInfoType) && propertyInfoType!=typeof(string))
-          throw new NotSupportedException (
-              "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.");
-        
-        var resolvedMemberExpression = _resolver.ResolveMemberExpression (resolvedInnerAsEntityExpression, expression.Member, _generator);
-        return VisitExpression (resolvedMemberExpression);
-      }
-
-      // member applied to a column?
-      var resolvedInnerAsColumnExpression = resolvedInnerExpression as SqlColumnExpression;
-      if (resolvedInnerAsColumnExpression != null)
-      {
-        var resolvedMemberExpression = _resolver.ResolveMemberExpression (resolvedInnerAsColumnExpression, expression.Member);
-        return VisitExpression (resolvedMemberExpression);
-      }
-
-      // member applied to a compound expression?
-      var resolvedInnerAsNewExpression = resolvedInnerExpression as NewExpression;
-      if (resolvedInnerAsNewExpression != null)
-      {
-        var property = (PropertyInfo) expression.Member;
-        var getterMethod = property.GetGetMethod (true);
-
-        var membersAndAssignedExpressions = 
-            resolvedInnerAsNewExpression.Members.Select ((m, i) => new { Member = m, Argument = resolvedInnerAsNewExpression.Arguments[i] });
-        return membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
-      }
-
-      throw new NotSupportedException (string.Format ("Resolved inner expression '{0}' of type '{1}' is not supported.", FormattingExpressionTreeVisitor.Format (resolvedInnerExpression), resolvedInnerExpression.GetType().Name));
+      return VisitExpression (resolvedMemberExpression);
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = VisitExpression(expression.Expression);
+      var newExpression = VisitExpression (expression.Expression);
       var resolvedTypeExpression = _resolver.ResolveTypeCheck (newExpression, expression.TypeOperand);
       return VisitExpression (resolvedTypeExpression);
     }
