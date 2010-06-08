@@ -20,6 +20,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -32,8 +33,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// expressions. The <see cref="MemberAccessResolver"/> class assumes that its input expression has already been resolved, and it may return a
   /// result that itself needs to be resolved again.
   /// </summary>
-  public class MemberAccessResolver
+  public class MemberAccessResolver : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, INamedExpressionVisitor, IResolvedSqlExpressionVisitor
   {
+    private readonly MemberInfo _memberInfo;
+    private readonly IMappingResolver _mappingResolver;
+    private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
+
     public static Expression ResolveMemberAccess (Expression resolvedSourceExpression, MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage mappingResolutionStage, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("resolvedSourceExpression", resolvedSourceExpression);
@@ -42,63 +48,95 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
       ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
-      var resolvedInnerExpression = resolvedSourceExpression;
+      var resolver = new MemberAccessResolver (memberInfo, mappingResolver, mappingResolutionStage, mappingResolutionContext);
+      return resolver.VisitExpression (resolvedSourceExpression);
+    }
 
-      //member with a cast?
-      UnaryExpression resolvedInnerAsUnaryExpression;
-      while ((resolvedInnerAsUnaryExpression = resolvedInnerExpression as UnaryExpression) != null
-             && resolvedInnerAsUnaryExpression.NodeType == ExpressionType.Convert)
-        resolvedInnerExpression = resolvedInnerAsUnaryExpression.Operand;
+    protected MemberAccessResolver (MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedInnerAsSqlEntityRefMemberExpression = resolvedInnerExpression as SqlEntityRefMemberExpression;
-      if (resolvedInnerAsSqlEntityRefMemberExpression != null)
-      {
-        var unresolvedJoinInfo = new UnresolvedJoinInfo (
-            resolvedInnerAsSqlEntityRefMemberExpression.OriginatingEntity, resolvedInnerAsSqlEntityRefMemberExpression.MemberInfo, JoinCardinality.One);
-        resolvedInnerExpression = mappingResolutionStage.ResolveEntityRefMemberExpression (
-            resolvedInnerAsSqlEntityRefMemberExpression, unresolvedJoinInfo, mappingResolutionContext);
-      }
+      _memberInfo = memberInfo;
+      _mappingResolver = mappingResolver;
+      _stage = stage;
+      _context = context;
+    }
 
-      // named expressions are ignored for member access
-      while (resolvedInnerExpression is NamedExpression)
-        resolvedInnerExpression = ((NamedExpression) resolvedInnerExpression).Expression;
-
-      // member applied to an entity?
-      var resolvedInnerAsEntityExpression = resolvedInnerExpression as SqlEntityExpression;
-      if (resolvedInnerAsEntityExpression != null)
-      {
-        var propertyInfoType = ((PropertyInfo) memberInfo).PropertyType;
-        if (typeof (IEnumerable).IsAssignableFrom (propertyInfoType) && propertyInfoType != typeof (string))
-        {
-          throw new NotSupportedException (
-              "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.");
-        }
-
-        return mappingResolver.ResolveMemberExpression (resolvedInnerAsEntityExpression, memberInfo);
-      }
-
-      // member applied to a column?
-      var resolvedInnerAsColumnExpression = resolvedInnerExpression as SqlColumnExpression;
-      if (resolvedInnerAsColumnExpression != null)
-        return mappingResolver.ResolveMemberExpression (resolvedInnerAsColumnExpression, memberInfo);
-
-      // member applied to a compound expression?
-      var resolvedInnerAsNewExpression = resolvedInnerExpression as NewExpression;
-      if (resolvedInnerAsNewExpression != null)
-      {
-        var property = (PropertyInfo) memberInfo;
-        var getterMethod = property.GetGetMethod (true);
-
-        var membersAndAssignedExpressions =
-            resolvedInnerAsNewExpression.Members.Select ((m, i) => new { Member = m, Argument = resolvedInnerAsNewExpression.Arguments[i] });
-        return membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
-      }
-
+    protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
+    {
       throw new NotSupportedException (
           String.Format (
-              "Resolved inner expression '{0}' of type '{1}' is not supported.",
-              FormattingExpressionTreeVisitor.Format (resolvedInnerExpression),
-              resolvedInnerExpression.GetType().Name));
+              "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
+              _memberInfo.Name,
+              FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
+              unhandledItem.GetType ().Name));
     }
+
+    protected override Expression VisitUnaryExpression (UnaryExpression expression)
+    {
+      if (expression.NodeType == ExpressionType.Convert)
+        return VisitExpression (expression.Operand);
+      else
+        return base.VisitUnaryExpression (expression);
+    }
+
+    public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    {
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
+      var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
+      return VisitExpression (entityExpression);
+    }
+
+    public Expression VisitNamedExpression (NamedExpression expression)
+    {
+      return VisitExpression (expression.Expression);
+    }
+
+    protected override Expression VisitNewExpression (NewExpression expression)
+    {
+      var property = (PropertyInfo) _memberInfo;
+      var getterMethod = property.GetGetMethod (true);
+
+      var membersAndAssignedExpressions =
+          expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
+      return membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
+    }
+
+    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    {
+      // TODO: Check whether this can be removed
+      var propertyInfoType = ((PropertyInfo) _memberInfo).PropertyType;
+      if (typeof (IEnumerable).IsAssignableFrom (propertyInfoType) && propertyInfoType != typeof (string))
+      {
+        var message = string.Format (
+            "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed.", 
+            _memberInfo.DeclaringType.Name, 
+            _memberInfo.Name);
+        throw new NotSupportedException (message);
+      }
+
+      return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
+    }
+
+    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    {
+      return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
+    }
+    
+    Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
+    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    {
+      return VisitUnknownExpression (expression);
+    }
+
+
+   
   }
 }
