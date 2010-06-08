@@ -224,17 +224,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _commandBuilder.Append ("ROW_NUMBER() OVER (ORDER BY ");
-
-      // TODO Review 2831: See SqlStatementTextGenerator
-      bool first = true;
-      foreach (var ordering in expression.Orderings)
-      {
-        if (!first)
-          _commandBuilder.Append (", ");
-        _stage.GenerateTextForOrderByExpression (_commandBuilder, ordering.Expression);
-        _commandBuilder.Append (string.Format (" {0}", ordering.OrderingDirection.ToString ().ToUpper ()));
-        first = false;
-      }
+      _commandBuilder.AppendSeparated (", ", expression.Orderings, _stage.GenerateTextForOrdering);
       _commandBuilder.Append (")");
 
       return expression;

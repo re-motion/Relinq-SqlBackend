@@ -122,14 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
             var selectProjection = (NewExpression) mi.Arguments[0];
             var rowNumberExpression = (SqlRowNumberExpression) selectProjection.Arguments[1];
             var ordering = rowNumberExpression.Orderings[0];
-            Assert.That (ordering.Expression, Is.InstanceOfType (typeof (SqlSubStatementExpression)));
-
-            var actualStatement = ((SqlSubStatementExpression) ordering.Expression).SqlStatement;
-
-            Assert.That (actualStatement.DataInfo, Is.InstanceOfType (typeof (StreamedScalarValueInfo)));
-            Assert.That (actualStatement.DataInfo.DataType, Is.SameAs (typeof (int)));
-            ExpressionTreeComparer.CheckAreEqualTrees (actualStatement.SelectProjection, Expression.Constant (1));
-            Assert.That (actualStatement.SqlTables, Is.Empty);
+            ExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));
           })
           .Return (fakePreparedProjection);
       _stageMock.Replay ();

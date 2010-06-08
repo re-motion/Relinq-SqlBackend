@@ -50,16 +50,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      // TODO Review 2831: This LINQ query will be evaluated twice (below); call ToArray here instead of below to avoid this
       var newOrderings = Orderings.Select (
           o =>
           {
             var newExpression = visitor.VisitExpression (o.Expression);
             return newExpression != o.Expression ? new Ordering (newExpression, o.OrderingDirection) : o;
-          });
+          }).ToArray();
 
       if (!newOrderings.SequenceEqual (Orderings))
-        return new SqlRowNumberExpression (newOrderings.ToArray());
+        return new SqlRowNumberExpression (newOrderings);
       else
         return this;
     }

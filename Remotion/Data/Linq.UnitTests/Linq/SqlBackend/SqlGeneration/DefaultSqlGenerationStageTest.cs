@@ -171,6 +171,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateTextForOrdering ()
+    {
+      var ordering = new Ordering(Expression.Constant (1),OrderingDirection.Asc);
+
+      _stageMock.GenerateTextForOrdering(_commandBuilder, ordering);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT @1) ASC"));
+    }
+
+    [Test]
     public void GenerateTextForSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (

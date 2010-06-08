@@ -17,7 +17,9 @@
 using System;
 using System.Collections;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -76,6 +78,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+    }
+
+    public void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering)
+    {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("ordering", ordering);
+      
+      // TODO Review 2832: Because of this, you can change SkipResultOperatorHandler.GetOrderingsForRowNumber not to create trivial subselect - it will be created here
+      if (ordering.Expression.NodeType == ExpressionType.Constant || ordering.Expression is SqlLiteralExpression)
+      {
+        commandBuilder.Append ("(SELECT ");
+        GenerateTextForOrderByExpression (commandBuilder, ordering.Expression);
+        commandBuilder.Append (")");
+      }
+      else
+        GenerateTextForOrderByExpression (commandBuilder, ordering.Expression);
+
+      commandBuilder.AppendFormat (string.Format (" {0}", ordering.OrderingDirection.ToString ().ToUpper ()));
     }
 
     public virtual void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -32,5 +33,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement);
     void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression);
+    void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering);
   }
 }

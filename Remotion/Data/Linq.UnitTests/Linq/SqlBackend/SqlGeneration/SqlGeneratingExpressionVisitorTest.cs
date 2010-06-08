@@ -568,11 +568,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               });
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, ordering1.Expression))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order1"));
+          .Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering1))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order1 ASC"));
       _stageMock
-         .Expect (mock => mock.GenerateTextForOrderByExpression (_commandBuilder, ordering2.Expression))
-         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order2"));
+         .Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering2))
+         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order2 DESC"));
       _stageMock.Replay();
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberRÉxpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);

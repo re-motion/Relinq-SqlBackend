@@ -86,7 +86,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.Not.SameAs (_sqlRowNumberExpression));
-      // TODO Review 2831: Also check that the expressions and ordering directions match
+      Assert.That (((SqlRowNumberExpression) result).Orderings[0].Expression, Is.SameAs (fakeResult));
+      Assert.That (((SqlRowNumberExpression) result).Orderings[0].OrderingDirection, Is.EqualTo(OrderingDirection.Asc));
+      Assert.That (((SqlRowNumberExpression) result).Orderings[1].Expression, Is.SameAs (_orderingExpression2));
+      Assert.That (((SqlRowNumberExpression) result).Orderings[1].OrderingDirection, Is.EqualTo (OrderingDirection.Desc));
     }
 
     [Test]

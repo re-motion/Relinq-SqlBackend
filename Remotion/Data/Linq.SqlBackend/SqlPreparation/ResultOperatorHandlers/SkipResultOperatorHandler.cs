@@ -130,21 +130,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     {
       var orderings = sqlStatementBuilder.Orderings.ToArray();
       if (orderings.Length == 0)
-      {
-        // TODO Review 2832: Simply use Expression.Constant (1) when refactorings for 2831 have been done
-        // Create a trivial substatement selecting an integer as the ordering expression if the statement doesn't contain one.
-        // This will cause SQL Server to assign the row number according to its internal row order.
-        var trivialSubStatement = new SqlStatement (
-            new StreamedScalarValueInfo (typeof (int)),
-            Expression.Constant (1), // TODO Review 2833: Use SqlLiteralExpression
-            new SqlTable[0],
-            new Ordering[0],
-            null,
-            null,
-            false, null, null);
-        orderings = new[] { new Ordering (new SqlSubStatementExpression (trivialSubStatement), OrderingDirection.Asc) };
-      }
-
+        orderings = new[] { new Ordering (Expression.Constant (1), OrderingDirection.Asc) };
+      
       return new SqlRowNumberExpression (orderings);
     }
   }
