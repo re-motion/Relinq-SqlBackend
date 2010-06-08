@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -37,7 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         // TODO Review 2804: Use SqlLiteralExpression
         var whereCondition = Expression.LessThanOrEqual (
             sqlStatementBuilder.RowNumberSelector, 
-            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, Expression.Constant (1)));
+            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, new SqlLiteralExpression(1)));
         sqlStatementBuilder.AddWhereCondition (whereCondition);
       }
       else
