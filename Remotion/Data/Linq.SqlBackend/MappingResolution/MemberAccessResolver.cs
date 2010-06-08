@@ -107,13 +107,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
-      // TODO: Check whether this can be removed
-      var propertyInfoType = ((PropertyInfo) _memberInfo).PropertyType;
-      if (typeof (IEnumerable).IsAssignableFrom (propertyInfoType) && propertyInfoType != typeof (string))
+      var type = ReflectionUtility.GetFieldOrPropertyType (_memberInfo);
+      if (typeof (IEnumerable).IsAssignableFrom (type) && type != typeof (string))
       {
         var message = string.Format (
-            "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed.", 
-            _memberInfo.DeclaringType.Name, 
+            "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed.",
+            _memberInfo.DeclaringType.Name,
             _memberInfo.Name);
         throw new NotSupportedException (message);
       }
