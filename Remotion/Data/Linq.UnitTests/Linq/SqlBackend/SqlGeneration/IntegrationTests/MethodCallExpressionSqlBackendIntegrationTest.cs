@@ -38,6 +38,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]%")
           );
+      CheckQuery (
+          from c in Cooks where c.FirstName.Contains (null) select c.ID,
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter ("@1", 0));
     }
 
     [Test]
@@ -64,6 +68,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "a[%]b[_]c[[]a] [[]^]%")
           );
+      CheckQuery (
+          from c in Cooks where c.FirstName.StartsWith (null) select c.ID,
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter ("@1", 0)
+          );
     }
 
     [Test]
@@ -89,6 +98,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks where c.FirstName.EndsWith ("a%b_c[a] [^]") select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
           new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]")
+          );
+      CheckQuery (
+          from c in Cooks where c.FirstName.EndsWith(null) select c.ID,
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter ("@1", 0)
           );
     }
 

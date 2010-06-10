@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     }
 
     [Test]
-    public void Transform ()
+    public void Transform_ArgumentNotNull ()
     {
       var method = typeof (string).GetMethod ("EndsWith", new[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");
@@ -50,6 +50,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var expectedResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void Transform_ArgumentIsNull ()
+    {
+      var method = typeof (string).GetMethod ("EndsWith", new[] { typeof (string) });
+      var objectExpression = Expression.Constant ("Test");
+      var argument1 = Expression.Constant (null, typeof(string));
+      var expression = Expression.Call (objectExpression, method, argument1);
+      var transformer = new EndsWithMethodCallTransformer ();
+      
+      var result = transformer.Transform (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
   }
 }

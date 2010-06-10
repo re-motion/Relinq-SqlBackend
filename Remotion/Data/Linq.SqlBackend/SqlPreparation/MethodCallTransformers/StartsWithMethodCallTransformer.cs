@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -31,7 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "StartsWith", typeof(string))
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "StartsWith", typeof (string))
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
@@ -40,11 +39,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
-      MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[0], "search condition");
+      var argumentExpression = MethodCallTransformerUtility.CheckConstantExpression (
+          methodCallExpression.Method.Name, methodCallExpression.Arguments[0], "search condition");
+
+      if (argumentExpression.Value == null)
+        return Expression.Constant (false);
       
-      var rightExpression =
-          Expression.Constant (
-              string.Format ("{0}%", LikeEscapeUtility.Escape (((ConstantExpression) methodCallExpression.Arguments[0]).Value.ToString())));
+      var rightExpression = Expression.Constant (string.Format ("{0}%", LikeEscapeUtility.Escape ((string)argumentExpression.Value)));
 
       return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
     }

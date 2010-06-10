@@ -27,13 +27,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class MethodCallTransformerUtility
   {
-    public static void CheckConstantExpression (string methodName, Expression argument, string parameterName)
+    public static ConstantExpression CheckConstantExpression (string methodName, Expression argument, string parameterName)
     {
-      if (!(argument is ConstantExpression))
+      var argumentAsConstantExpression = argument as ConstantExpression;
+      if (argumentAsConstantExpression == null)
       {
         throw new NotSupportedException (
             string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0} ('{1}').", methodName, parameterName));
       }
+      return argumentAsConstantExpression;
     }
 
     public static MethodInfo GetStaticMethod (Type type, string methodName, params Type[] argumentTypes)
