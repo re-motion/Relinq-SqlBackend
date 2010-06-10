@@ -15,11 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -34,32 +30,28 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
   {
     private readonly IMappingResolver _resolver;
-    private readonly UniqueIdentifierGenerator _generator;
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
 
-    public static Expression ResolveExpression (Expression expression, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
+    public static Expression ResolveExpression (Expression expression, IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new ResolvingExpressionVisitor (resolver, generator, stage, context);
+      var visitor = new ResolvingExpressionVisitor (resolver, stage, context);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
-    protected ResolvingExpressionVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
+    protected ResolvingExpressionVisitor (IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
       _resolver = resolver;
-      _generator = generator;
       _stage = stage;
       _context = context;
     }
@@ -88,11 +80,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // then newExpression1.Cook => newExpression2 (SqlEntityRef/SqlEntity)
       // then newExpression2.FirstName => result (SqlColumn)
 
-     
       var sourceExpression = VisitExpression (expression.Expression);
       return _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
-
-      //return VisitExpression (resolvedMemberExpression);
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)

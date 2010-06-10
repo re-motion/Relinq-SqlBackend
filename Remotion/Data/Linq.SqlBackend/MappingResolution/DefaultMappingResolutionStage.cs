@@ -182,7 +182,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, _uniqueIdentifierGenerator, this, context);
+      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context);
     }
   }
 }
