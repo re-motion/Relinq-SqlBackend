@@ -198,19 +198,35 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void OrderingsInSubQuery ()
+    public void OrderingsInSubQuery_WithDistinct ()
     {
       CheckQuery (
-        // => from s in (from s2 in Cooks select new { Key = s2.ID, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in (from s2 in Cooks orderby s2.Name select s2.ID).Distinct() select s,
           "SELECT [q0].[value] AS [value] FROM (SELECT DISTINCT [t1].[ID] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
+    }
+
+    [Test]
+    [Ignore ("TODO Review 2771: Missing (and bug in implementation)")]
+    public void OrderingsInSubQuery_WithoutDistinct ()
+    {
+      CheckQuery (
+        // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2.ID, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
+        from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID) select s2,
+          "ORDER BY must be moved to outer query");
 
       CheckQuery (
-        // => from s in (from s2 in Cooks select new { Key = s2, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
-        from s in (from s2 in Cooks orderby s2.Name select s2).Distinct () select s.FirstName,
-          "SELECT [q0].[FirstName] AS [value] FROM (SELECT DISTINCT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],"+
-          "[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q0]");
+        // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
+        from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2) select s.FirstName,
+          "ORDER BY must be moved to outer query");
     }
-    
+
+    [Test]
+    [Ignore ("TODO Review 2771: Missing")]
+    public void OrderingsInSubQuery_WithTopExpression ()
+    {
+      CheckQuery (
+        from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID).Take (10) select s2,
+          "ORDER BY must be copied (not moved) to outer query");
+    }
   }
 }
