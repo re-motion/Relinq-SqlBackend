@@ -15,14 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -86,6 +84,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationStage stage)
     {
       var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
+      // TODO Review 2777: use stage.PrepareSqlTable instead; refactor that method to take a tableGenerator delegate (the reason for this is that when a LINQ provider reimplements PrepareSqlTable, all result operator handlers should automatically use the new implementation)
       var fromExpressionInfo = SqlPreparationFromExpressionVisitor.CreateSqlTableForSubStatement (
           oldStatement, 
           stage, 

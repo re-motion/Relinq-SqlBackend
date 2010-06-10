@@ -65,6 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
+    // TODO Review 2777: This is much too complicated; refactor this. When MoveCurrentStatementToSqlTable uses stage, the test can be rewritten using _stageMock
     public void MoveCurrentStatementToSqlTable_StatementWithOrderingsAndNoTopExpression ()
     {
       _statementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order1"),OrderingDirection.Desc));
