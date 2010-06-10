@@ -84,6 +84,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", " "));
     }
 
+    // TODO Review 2772: This test should use the substatement in the select clause, e.g. select (from ...).Count()
     [Test]
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithoutTopExpression ()
     {
@@ -96,6 +97,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    // TODO Review 2772: This test should use the substatement in the select clause, e.g. select (from ...).Single()
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithTopExpression ()
     {
       CheckQuery (
@@ -114,6 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Single() != null
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression ()
     {
       CheckQuery (
@@ -127,6 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Count() > 0
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
       CheckQuery (
