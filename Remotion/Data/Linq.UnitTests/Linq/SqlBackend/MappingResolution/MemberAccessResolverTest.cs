@@ -219,7 +219,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnNewExpression ()
+    public void VisitMemberExpression_OnNewExpression_PropertyInfo ()
     {
       var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
       var newExpression = Expression.New (
@@ -235,6 +235,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (newExpression.Arguments[1]));
+    }
+
+    [Test]
+    public void VisitMemberExpression_OnNewExpression_FieldInfo ()
+    {
+      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      var newExpression = Expression.New (
+          constructorInfo,
+          new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) },
+          typeof (TypeForNewExpression).GetField("C"), typeof (TypeForNewExpression).GetMethod ("get_B"));
+
+      var result = MemberAccessResolver.ResolveMemberAccess (
+          newExpression,
+          typeof (TypeForNewExpression).GetField ("C"),
+          _resolverMock,
+          _stageMock,
+          _mappingResolutionContext);
+
+      Assert.That (result, Is.SameAs (newExpression.Arguments[0]));
     }
 
     [Test]
