@@ -50,6 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, registry, context);
       var result = visitor.VisitExpression (fromExpression);
+      // TODO Review 2773: Refactor to use visitor._fromExpressionInfo instead of the returned expression; throw the exception if _fromExpressionInfo is null
       var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
       if (resultAsTableReferenceExpression != null)
       {
@@ -60,6 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             visitor._whereCondition);
       }
 
+      // TODO Review 2773: Change to use fromExpression instead of result; use FormattingExpressionTreeVisitor and include the expression string in the excepotion message ("Error parsing expression '{0}'. Expressions of type '{0}' cannot be used ...")
       var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
       throw new NotSupportedException (message);
     }
@@ -129,6 +131,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     }
 
     private readonly UniqueIdentifierGenerator _generator;
+
+    // TODO Review 2773: Refactor to hold _fromExpressionInfo instead of the following
     private Expression _itemSelector;
     private readonly List<Ordering> _extractedOrderings;
     private Expression _whereCondition;
