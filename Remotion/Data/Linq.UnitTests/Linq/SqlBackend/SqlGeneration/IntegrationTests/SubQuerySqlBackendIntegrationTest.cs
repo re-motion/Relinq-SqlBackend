@@ -206,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 2771: Missing (and bug in implementation)")]
+    [Ignore ("TODO Review 2771: Missing (and bug in implementation - COMMONS-2773)")]
     public void OrderingsInSubQuery_WithoutDistinct ()
     {
       CheckQuery (

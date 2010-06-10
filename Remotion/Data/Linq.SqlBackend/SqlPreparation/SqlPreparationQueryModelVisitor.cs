@@ -194,7 +194,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
-      // TODO Review 2771: This is a bug: PrepareFromExpression will remove the orderings, and they will not be appened to the outer statement. Write an 
+      // TODO Review 2771: This is a bug: PrepareFromExpression will remove the orderings, and they will not be appened to the outer statement. Remove the call to PrepareFromExpression (and remove ISqlPreparationStage.PrepareFromExpression), PrepareSqlTable should to the same things anyway
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
       var fromExpressionInfo = GetFromExpressionInfo (preparedFromExpression, source);
 
@@ -217,6 +217,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       else // no, a new table must be created
       {
+        // TODO Review 2773: Rename to PrepareFromExpression
         var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, querySource, _context);
         
         if (fromExpressionInfo.WhereCondition != null)

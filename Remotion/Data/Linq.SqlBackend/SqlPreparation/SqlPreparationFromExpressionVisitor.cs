@@ -32,11 +32,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// Analyzes the <see cref="FromClauseBase.FromExpression"/> of a <see cref="FromClauseBase"/> and returns a <see cref="SqlTableBase"/> that 
   /// represents the data source of the <see cref="FromClauseBase"/>.
   /// </summary>
-  public class SqlPreparationFromExpressionVisitor : SqlPreparationExpressionVisitor, ISqlSubStatementVisitor, IUnresolvedSqlExpressionVisitor
+  public class SqlPreparationFromExpressionVisitor : SqlPreparationExpressionVisitor, IUnresolvedSqlExpressionVisitor
   {
     public static FromExpressionInfo AnalyzeFromExpression (
         Expression fromExpression,
-        IQuerySource querySource, // TODO: Remove
+        IQuerySource querySource, // TODO Review 2773: Remove
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
         MethodCallTransformerRegistry registry,
@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       throw new NotSupportedException (message);
     }
 
-    // TODO: Refactor - move to separate class, split into smaller methods
+    // TODO 2880: Refactor - move to separate class, split into smaller methods
     public static FromExpressionInfo CreateSqlTableForSubStatement (
         SqlStatement sqlStatement,
         ISqlPreparationStage sqlPreparationStage,
