@@ -21,27 +21,27 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.UnitTests.Sandboxing;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
+namespace Remotion.Data.Linq.UnitTests.Linq.Core.IntegrationTests
 {
   [TestFixture]
-  public class MediumTrustSqlBackendIntegrationTest
+  public class MediumTrustCoreIntegrationTest
   {
     [Test]
     public void MediumTrust ()
     {
       var mediumTrust = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
-      var permissions = mediumTrust.Concat (new[] { new ReflectionPermission (ReflectionPermissionFlag.MemberAccess) }).ToArray();
+      var permissions = mediumTrust.Concat (new[] { new ReflectionPermission (ReflectionPermissionFlag.MemberAccess) }).ToArray ();
 
-      var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
-                   where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
-                       && t != typeof (MediumTrustSqlBackendIntegrationTest)
-                       && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
-                   select t).ToArray();
+      var types = (from t in typeof (MediumTrustCoreIntegrationTest).Assembly.GetTypes ()
+                   where (t.Namespace ?? string.Empty).StartsWith(typeof (MediumTrustCoreIntegrationTest).Namespace)
+                       && t != typeof (MediumTrustCoreIntegrationTest)
+                       && !t.IsAbstract && t.IsDefined (typeof (TestFixtureAttribute), false)
+                   select t).ToArray ();
 
       var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (
-          types, 
-          permissions, 
-          null); 
+          types,
+          permissions,
+          null);
       var testResults = testFixtureResults.SelectMany (r => r.TestResults);
 
       foreach (var testResult in testResults)
