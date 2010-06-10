@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
                    where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
                        && t != typeof (MediumTrustSqlBackendIntegrationTest)
-                       && !t.IsAbstract && !t.IsNested
+                       && !t.IsAbstract && !t.IsNested // TODO Review 2813: instead of !IsNested, check that TestFixtureAttribute is defined
                    select t).ToArray();
 
       var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (
@@ -45,6 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       foreach (var testResult in testResults)
         testResult.EnsureNotFailed ();
+      // TODO Review 2813: Assert that number of succeeded tests > 0 (to ensure that we actually run anything)
     }
   }
 }
