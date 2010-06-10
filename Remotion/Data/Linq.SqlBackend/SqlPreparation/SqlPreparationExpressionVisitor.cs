@@ -166,6 +166,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO Review 2744: Refactor this to make the operation idempotent (ie, calling the visitor on an expression that has already been prepared should not perform useless changes)
+      // TODO Review 2744: In this case, we'll keep adding unnecessary NamedExpressions. Add a unit test showing that this is not the case (should fail), then change by checking whether the result of VisitExpression(e) is already a NamedExpression with the right name before wrapping it. Should probably be extracted into a separate method.
       var sqlSelectNewExpression = Expression.New (
           expression.Constructor,
           expression.Arguments.Select ((e, i) => new NamedExpression (expression.Members[i].Name, VisitExpression (e))).ToArray(),
