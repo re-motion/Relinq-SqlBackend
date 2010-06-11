@@ -84,61 +84,48 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", " "));
     }
 
-    // TODO Review 2772: This test should use the substatement in the select clause, e.g. select (from ...).Count()
     [Test]
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithoutTopExpression ()
     {
       CheckQuery (
-          from k in Kitchens 
-          from c in (from sc in Cooks orderby sc.Name select sc) select c,
-          "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "+
-          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],"+
-          "[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0]");
+          from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook==c select k).Count(),
+          "SELECT (SELECT COUNT(*) FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] "+
+          "WHERE ([t2].[ID] = [t0].[ID])) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
-    // TODO Review 2772: This test should use the substatement in the select clause, e.g. select (from ...).Single()
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithTopExpression ()
     {
       CheckQuery (
-          from k in Kitchens
-          from c in
-            (from sc in Cooks orderby sc.Name select sc).Take(10)
-          select c,
-          "SELECT [q0].[get_Key_ID] AS [get_Key_ID],[q0].[get_Key_FirstName] AS [get_Key_FirstName],[q0].[get_Key_Name] AS [get_Key_Name],"+
-          "[q0].[get_Key_IsStarredCook] AS [get_Key_IsStarredCook],[q0].[get_Key_IsFullTimeCook] AS [get_Key_IsFullTimeCook],"+
-          "[q0].[get_Key_SubstitutedID] AS [get_Key_SubstitutedID],[q0].[get_Key_KitchenID] AS [get_Key_KitchenID] "+
-          "FROM [KitchenTable] AS [t1] CROSS APPLY (SELECT TOP (@1) [t2].[ID] AS [get_Key_ID],[t2].[FirstName] AS [get_Key_FirstName],"+
-          "[t2].[Name] AS [get_Key_Name],[t2].[IsStarredCook] AS [get_Key_IsStarredCook],[t2].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],"+
-          "[t2].[SubstitutedID] AS [get_Key_SubstitutedID],[t2].[KitchenID] AS [get_Key_KitchenID],[t2].[Name] AS [get_Value_get_Key],"+
-          "NULL AS [get_Value_get_Value] FROM [CookTable] AS [t2] ORDER BY [t2].[Name] ASC) AS [q0] ORDER BY [q0].[get_Value_get_Key] ASC",
-          new CommandParameter("@1", 10));
+         from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook == c select k).Single(),
+         "SELECT (SELECT TOP (@1) [t1].[ID],[t1].[CookID],[t1].[Name],[t1].[RestaurantID],[t1].[SubKitchenID] FROM [KitchenTable] AS [t1] "+
+         "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [value] "+
+         "FROM [CookTable] AS [t0]",
+         new CommandParameter("@1", 2));
     }
 
     [Test]
-    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Single() != null
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression ()
     {
       CheckQuery (
           from c in Cooks
-          where c.Name== (from sc in Cooks orderby sc.Name select sc.Name).Single()
+          where (from sc in Cooks orderby sc.Name select sc.Name).Single() != null
           select c,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
-          "FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (@1) [t1].[Name] AS [value] FROM [CookTable] AS [t1] " +
-          "ORDER BY [t1].[Name] ASC))",
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
+          "FROM [CookTable] AS [t0] WHERE ((SELECT TOP (@1) [t1].[Name] AS [value] FROM [CookTable] AS [t1] ORDER BY [t1].[Name] ASC) IS NOT NULL)",
           new CommandParameter("@1", 2));
     }
 
     [Test]
-    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Count() > 0
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
       CheckQuery (
           (from c in Cooks
-          where (from sc in Cooks orderby sc.Name select sc).Contains(c)
+          where (from sc in Cooks orderby sc.Name select sc).Count()>0
           select c),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
-          "FROM [CookTable] AS [t0] WHERE [t0].[ID] IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
+          "FROM [CookTable] AS [t0] WHERE ((SELECT COUNT(*) FROM [CookTable] AS [t1]) > @1)",
+          new CommandParameter("@1", 0));
     }
   }
 }
