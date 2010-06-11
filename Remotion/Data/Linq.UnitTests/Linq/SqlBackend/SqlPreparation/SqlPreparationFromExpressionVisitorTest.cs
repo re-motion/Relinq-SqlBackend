@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = Expression.Constant (new Cook[0]);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          expression, _stageMock, _generator, _registry, _context);
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
 
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Restaurant()), memberInfo);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          memberExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          memberExpression, _stageMock, _generator, _registry, _context);
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var customExpression = new CustomExpression (typeof (Cook[]));
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          customExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          customExpression, _stageMock, _generator, _registry, _context);
     }
 
     [ExpectedException (typeof (NotSupportedException))]
@@ -113,7 +113,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          expression, _stageMock, _generator, _registry, _context);
     }
 
     [Test]
@@ -128,7 +128,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = (SqlTable) SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
-          new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())),
           _stageMock,
           _generator,
           _registry,
@@ -162,7 +161,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
-          new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())),
           _stageMock,
           _generator,
           _registry,
@@ -198,7 +196,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
-          new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())),
           _stageMock,
           _generator,
           _registry,
@@ -276,7 +273,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("IllnessDays"));
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          memberExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          memberExpression, _stageMock, _generator, _registry, _context);
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
@@ -299,7 +296,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SqlTableReferenceExpression (sqlTable);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          expression, _stageMock, _generator, _registry, _context);
 
       Assert.That (result.SqlTable, Is.SameAs (sqlTable));
     }
@@ -314,7 +311,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          expression, _stageMock, _generator, _registry, _context);
     }
 
     [Test]
@@ -324,7 +321,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SqlEntityConstantExpression (typeof (Cook), "test", "test");
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook())), _stageMock, _generator, _registry, _context);
+          expression, _stageMock, _generator, _registry, _context);
     }
 
     private Expression GetFakeSekectProjectionFromSqlStatement(SqlStatement sqlStatement)

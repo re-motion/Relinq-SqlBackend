@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -36,7 +34,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     public static FromExpressionInfo AnalyzeFromExpression (
         Expression fromExpression,
-        IQuerySource querySource, // TODO Review 2773: Remove
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
         MethodCallTransformerRegistry registry,
@@ -76,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       SqlTableBase sqlTable;
       Expression itemSelector;
-      var extractedOrderings = new List<Ordering> ();
+      var extractedOrderings = new List<Ordering>();
 
       if (sqlStatement.Orderings.Count > 0)
       {
@@ -88,30 +85,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.Orderings[i].Expression.Type, newSelectProjection.Type);
           newSelectProjection =
               Expression.New (
-                  tupleType.GetConstructors ()[0],
+                  tupleType.GetConstructors()[0],
                   new[] { sqlStatement.Orderings[i].Expression, newSelectProjection },
                   new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
         }
 
         tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, newSelectProjection.Type);
         newSelectProjection = Expression.New (
-            tupleType.GetConstructors ()[0],
+            tupleType.GetConstructors()[0],
             new[] { sqlStatement.SelectProjection, newSelectProjection },
             new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
 
         newSelectProjection = sqlPreparationStage.PrepareSelectExpression (newSelectProjection, context);
 
         var builder = new SqlStatementBuilder (sqlStatement) { SelectProjection = newSelectProjection };
-        if(sqlStatement.TopExpression==null) 
-          builder.Orderings.Clear ();
+        if (sqlStatement.TopExpression == null)
+          builder.Orderings.Clear();
         builder.RecalculateDataInfo (sqlStatement.SelectProjection);
-        var newSqlStatement = builder.GetSqlStatement ();
+        var newSqlStatement = builder.GetSqlStatement();
 
         var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
         sqlTable = tableCreator (tableInfo);
         itemSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Key"));
 
-        var currentOrderingTuple = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
+        var currentOrderingTuple = Expression.MakeMemberAccess (
+            new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
         for (var i = 0; i < sqlStatement.Orderings.Count; ++i)
         {
           extractedOrderings.Add (
@@ -127,7 +125,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         sqlTable = tableCreator (tableInfo);
         itemSelector = new SqlTableReferenceExpression (sqlTable);
       }
-      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray (), itemSelector, null);
+      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null);
     }
 
     private readonly UniqueIdentifierGenerator _generator;
