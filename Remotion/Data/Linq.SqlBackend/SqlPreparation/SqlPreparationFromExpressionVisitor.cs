@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -47,21 +47,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("context", context);
 
       var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, registry, context);
-      var result = visitor.VisitExpression (fromExpression);
-      // TODO Review 2773: Refactor to use visitor._fromExpressionInfo instead of the returned expression; throw the exception if _fromExpressionInfo is null
-      var resultAsTableReferenceExpression = result as SqlTableReferenceExpression;
-      if (resultAsTableReferenceExpression != null)
-      {
-        return new FromExpressionInfo (
-            resultAsTableReferenceExpression.SqlTable,
-            visitor._fromExpressionInfo.ExtractedOrderings.ToArray(),
-            visitor._fromExpressionInfo.ItemSelector,
-            visitor._fromExpressionInfo.WhereCondition,
-            visitor._fromExpressionInfo.IsNewTable);
-      }
+      visitor.VisitExpression (fromExpression);
+      if (visitor._fromExpressionInfo != null)
+        return visitor._fromExpressionInfo.Value;
 
-      // TODO Review 2773: Change to use fromExpression instead of result; use FormattingExpressionTreeVisitor and include the expression string in the excepotion message ("Error parsing expression '{0}'. Expressions of type '{0}' cannot be used ...")
-      var message = string.Format ("Expressions of type '{0}' cannot be used as the SqlTables of a from clause.", result.GetType().Name);
+      var message = string.Format (
+          "Error parsing expression '{0}'. Expressions of type '{1}' cannot be used as the SqlTables of a from clause.",
+          FormattingExpressionTreeVisitor.Format (fromExpression),
+          fromExpression.Type.Name);
       throw new NotSupportedException (message);
     }
 
@@ -135,8 +128,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly MethodCallTransformerRegistry _registry;
     private readonly ISqlPreparationContext _context;
 
-    private FromExpressionInfo _fromExpressionInfo;
-    
+    private FromExpressionInfo? _fromExpressionInfo;
+
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
@@ -150,6 +143,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _stage = stage;
       _registry = registry;
       _context = context;
+      _fromExpressionInfo = null;
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
@@ -168,7 +162,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var preparedMemberExpression = (MemberExpression) SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stage, _registry);
+      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, _stage, _registry);
 
       var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
@@ -186,16 +180,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var sqlStatement = expression.SqlStatement;
       _fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, info => new SqlTable (info));
-      Debug.Assert (_fromExpressionInfo.WhereCondition == null);
+      Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
 
-      return new SqlTableReferenceExpression (_fromExpressionInfo.SqlTable);
+      return new SqlTableReferenceExpression (_fromExpressionInfo.Value.SqlTable);
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _fromExpressionInfo = new FromExpressionInfo(expression.SqlTable, new Ordering[0], expression, null, false);
+      _fromExpressionInfo = new FromExpressionInfo (expression.SqlTable, new Ordering[0], expression, null, false);
 
       return expression;
     }

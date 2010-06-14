@@ -95,7 +95,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Expressions of type 'CustomExpression' cannot be used as the SqlTables of a from clause.")]
+        "Error parsing expression 'CustomExpression'. Expressions of type 'Cook[]' cannot be used as the SqlTables of a from clause.")]
     public void GetTableForFromExpression_UnsupportedExpression_Throws ()
     {
       var customExpression = new CustomExpression (typeof (Cook[]));
