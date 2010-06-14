@@ -113,22 +113,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetExpressionMapping_GroupJoinClause ()
     {
       var groupJoinClause = ExpressionHelper.CreateGroupJoinClause();
-
       var preparedExpression = Expression.Constant (0);
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
           preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, false);
 
-      _stageMock
-          .Expect (
-              mock =>
-              mock.PrepareFromExpression (
-                  Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
-                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
-          .Return (preparedExpression);
       _stageMock.Expect (
-          mock => mock.PrepareSqlTable (
-              Arg<Expression>.Matches (e => e == preparedExpression),
+          mock => mock.PrepareFromExpression (
+              Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
               Arg<IQuerySource>.Is.Anything,
               Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
       _stageMock

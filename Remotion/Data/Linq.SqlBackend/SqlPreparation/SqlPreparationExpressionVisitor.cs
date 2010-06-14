@@ -37,15 +37,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly MethodCallTransformerRegistry _registry;
 
     public static Expression TranslateExpression (
-        Expression projection, ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+        Expression expression, ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
     {
-      ArgumentUtility.CheckNotNull ("projection", projection);
+      ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
       var visitor = new SqlPreparationExpressionVisitor (context, stage, registry);
-      var result = visitor.VisitExpression (projection);
+      var result = visitor.VisitExpression (expression);
       return result;
     }
 

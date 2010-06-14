@@ -81,28 +81,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void PrepareFromExpression ()
-    {
-      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression, _context);
-
-      var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-
-    [Test]
-    public void PrepareItemExpression ()
-    {
-      var result = _stage.PrepareFromExpression (_querySourceReferenceExpression, _context);
-
-      var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-
-    [Test]
     public void GetTableForFromExpression ()
     {
       var fromExpression = Expression.Constant (new Cook[0]);
-      var result = _stage.PrepareSqlTable (fromExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _context);
+      var result = _stage.PrepareFromExpression (fromExpression, new MainFromClause ("c", typeof (Cook), Expression.Constant (new Cook ())), _context);
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
     }

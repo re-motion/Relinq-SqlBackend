@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -286,6 +287,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           Is.EqualTo (memberExpression.Member));
       var expectedWherecondition = new JoinConditionExpression (((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedWherecondition, result.WhereCondition);
+    }
+
+    [Test]
+    public void VisitMemberExpression_InnerExpressionIsPrepared ()
+    {
+      var fakeQuerySource = MockRepository.GenerateStub<IQuerySource>();
+      fakeQuerySource.Stub (stub => stub.ItemType).Return (typeof (Cook));
+      
+      var replacement = Expression.Constant (null, typeof (Cook));
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (fakeQuerySource), replacement);
+
+      var memberExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (fakeQuerySource), typeof (Cook).GetProperty ("IllnessDays"));
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (memberExpression, _stageMock, _generator, _registry, _context);
+
+      var sqlTable = (SqlTable) result.SqlTable;
+      var joinedTable = (SqlJoinedTable) sqlTable.TableInfo;
+      Assert.That (((UnresolvedCollectionJoinInfo) joinedTable.JoinInfo).SourceExpression, Is.SameAs (replacement));
     }
 
     [Test]

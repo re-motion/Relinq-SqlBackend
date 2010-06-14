@@ -29,10 +29,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareWhereExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareTopExpression (Expression expression, ISqlPreparationContext context);
-    Expression PrepareFromExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareItemExpression (Expression expression, ISqlPreparationContext context);
-    FromExpressionInfo PrepareSqlTable (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context);
+    FromExpressionInfo PrepareFromExpression (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context);
     SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext);
   }
 }

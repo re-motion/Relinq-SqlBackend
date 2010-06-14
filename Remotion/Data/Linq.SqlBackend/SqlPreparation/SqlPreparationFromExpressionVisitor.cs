@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -54,9 +54,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         return new FromExpressionInfo (
             resultAsTableReferenceExpression.SqlTable,
-            visitor._extractedOrderings.ToArray(),
-            visitor._itemSelector ?? resultAsTableReferenceExpression,
-            visitor._whereCondition, visitor._isNewTable);
+            visitor._fromExpressionInfo.ExtractedOrderings.ToArray(),
+            visitor._fromExpressionInfo.ItemSelector,
+            visitor._fromExpressionInfo.WhereCondition,
+            visitor._fromExpressionInfo.IsNewTable);
       }
 
       // TODO Review 2773: Change to use fromExpression instead of result; use FormattingExpressionTreeVisitor and include the expression string in the excepotion message ("Error parsing expression '{0}'. Expressions of type '{0}' cannot be used ...")
@@ -126,17 +127,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         sqlTable = tableCreator (tableInfo);
         itemSelector = new SqlTableReferenceExpression (sqlTable);
       }
-      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null, false);
+      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null, true);
     }
 
     private readonly UniqueIdentifierGenerator _generator;
+    private readonly ISqlPreparationStage _stage;
+    private readonly MethodCallTransformerRegistry _registry;
+    private readonly ISqlPreparationContext _context;
 
-    // TODO Review 2773: Refactor to hold _fromExpressionInfo instead of the following
-    private Expression _itemSelector;
-    private readonly List<Ordering> _extractedOrderings;
-    private Expression _whereCondition;
-    private bool _isNewTable;
-
+    private FromExpressionInfo _fromExpressionInfo;
+    
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
@@ -147,10 +147,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       _generator = generator;
-
-      _itemSelector = null;
-      _extractedOrderings = new List<Ordering>();
-      _isNewTable = false;
+      _stage = stage;
+      _registry = registry;
+      _context = context;
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
@@ -159,21 +158,26 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var itemType = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "from expression");
       var sqlTable = new SqlTable (new UnresolvedTableInfo (itemType));
-      _isNewTable = true;
-      return new SqlTableReferenceExpression (sqlTable);
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null, true);
+
+      return sqlTableReferenceExpression;
     }
 
     protected override Expression VisitMemberExpression (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var joinedTable = new SqlJoinedTable (new UnresolvedCollectionJoinInfo (expression.Expression, expression.Member), JoinSemantics.Inner);
+      var preparedMemberExpression = (MemberExpression) SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stage, _registry);
 
-      _whereCondition = new JoinConditionExpression (joinedTable);
+      var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
+      var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
       var oldStyleJoinedTable = new SqlTable (joinedTable);
-      _isNewTable = true;
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
+      _fromExpressionInfo = new FromExpressionInfo (
+          oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new JoinConditionExpression (joinedTable), true);
 
-      return new SqlTableReferenceExpression (oldStyleJoinedTable);
+      return sqlTableReferenceExpression;
     }
 
     public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
@@ -181,20 +185,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
+      _fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, info => new SqlTable (info));
+      Debug.Assert (_fromExpressionInfo.WhereCondition == null);
 
-      var fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, info => new SqlTable (info));
-      _itemSelector = fromExpressionInfo.ItemSelector;
-      _extractedOrderings.AddRange (fromExpressionInfo.ExtractedOrderings);
-      _isNewTable = true;
-      
-      Debug.Assert (fromExpressionInfo.WhereCondition == null);
-
-      return new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
+      return new SqlTableReferenceExpression (_fromExpressionInfo.SqlTable);
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _fromExpressionInfo = new FromExpressionInfo(expression.SqlTable, new Ordering[0], expression, null, false);
 
       return expression;
     }

@@ -20,10 +20,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -194,11 +191,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
-      // TODO Review 2773: This is a bug: PrepareFromExpression will remove the orderings, and they will not be appened to the outer statement. Remove the call to PrepareFromExpression (and remove ISqlPreparationStage.PrepareFromExpression), PrepareSqlTable should to the same things anyway
-      var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
-      
-      // TODO Review 2773: Rename to PrepareFromExpression
-      var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, source, _context);
+      var fromExpressionInfo = _stage.PrepareFromExpression (fromExpression, source, _context);
         
       if (fromExpressionInfo.WhereCondition != null)
         SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
