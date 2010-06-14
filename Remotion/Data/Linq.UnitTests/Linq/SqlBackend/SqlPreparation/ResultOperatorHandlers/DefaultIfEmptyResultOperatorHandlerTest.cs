@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   [TestFixture]
   public class DefaultIfEmptyResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
     private DefaultIfEmptyResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -45,8 +45,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
-      _generator = new UniqueIdentifierGenerator();
+      _generator = new UniqueIdentifierGenerator ();
+      _stage = new DefaultSqlPreparationStage (
+          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new DefaultIfEmptyResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
                              {
@@ -62,9 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new DefaultIfEmptyResultOperator (Expression.Constant (null));
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      _stageMock.VerifyAllExpectations();
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.SqlTables[0], Is.TypeOf (typeof (SqlJoinedTable)));

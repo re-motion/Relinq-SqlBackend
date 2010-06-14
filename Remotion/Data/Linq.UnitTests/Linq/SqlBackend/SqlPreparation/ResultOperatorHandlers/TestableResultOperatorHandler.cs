@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
        SqlStatementBuilder sqlStatementBuilder,
        UniqueIdentifierGenerator generator,
        ISqlPreparationContext context,
-       Func<ResolvedSubStatementTableInfo, SqlTableBase> tableGenerator, ISqlPreparationStage stage)
+       Func<ITableInfo, SqlTableBase> tableGenerator, ISqlPreparationStage stage)
     {
       base.MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, tableGenerator, stage);
     }

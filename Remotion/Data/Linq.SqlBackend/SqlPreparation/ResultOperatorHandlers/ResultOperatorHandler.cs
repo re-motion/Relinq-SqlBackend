@@ -80,17 +80,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationContext context,
-        Func<ResolvedSubStatementTableInfo, SqlTableBase> tableGenerator,
+        Func<ITableInfo, SqlTableBase> tableGenerator,
         ISqlPreparationStage stage)
     {
       var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
-      // TODO Review 2777: use stage.PrepareSqlTable instead; refactor that method to take a tableGenerator delegate (the reason for this is that when a LINQ provider reimplements PrepareSqlTable, all result operator handlers should automatically use the new implementation)
-      var fromExpressionInfo = SqlPreparationFromExpressionVisitor.CreateSqlTableForSubStatement (
-          oldStatement, 
-          stage, 
-          context, 
-          generator, 
-          tableGenerator);
+      var fromExpressionInfo = stage.PrepareFromExpression (new SqlSubStatementExpression(oldStatement), context, tableGenerator);
 
       sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
       sqlStatementBuilder.SelectProjection = new NamedExpression (null, fromExpressionInfo.ItemSelector);

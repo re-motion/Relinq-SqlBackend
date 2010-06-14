@@ -118,11 +118,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var preparedFromExpressionInfo = new FromExpressionInfo (
           preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, false);
 
-      _stageMock.Expect (
+      _stageMock
+        .Expect (
           mock => mock.PrepareFromExpression (
               Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
-              Arg<IQuerySource>.Is.Anything,
-              Arg<ISqlPreparationContext>.Matches (c => c != _context))).Return (preparedFromExpressionInfo);
+              Arg<ISqlPreparationContext>.Matches (c => c != _context), Arg < Func<ITableInfo, SqlTableBase>>.Is.Anything))
+         .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
               mock =>

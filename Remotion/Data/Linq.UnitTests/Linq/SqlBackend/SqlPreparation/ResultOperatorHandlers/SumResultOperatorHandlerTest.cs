@@ -34,24 +34,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   [TestFixture]
   public class SumResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
     private SumResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private QueryModel _queryModel;
     private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
+      _stage = new DefaultSqlPreparationStage (new MethodCallTransformerRegistry (), new ResultOperatorHandlerRegistry (), _generator);
       _handler = new SumResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
         DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5))
       };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
       _context = new SqlPreparationContext ();
     }
 
@@ -61,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _sqlStatementBuilder.SelectProjection = new NamedExpression (null, _sqlStatementBuilder.SelectProjection);
       var averageResultOperator = new SumResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Sum));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
@@ -69,13 +67,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
-    public void HandleResultOperator_SumAfterTopExpression ()
+    public void HandleResultOperator_SumAfterTopExpression2 ()
     {
       _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
 
       var resultOperator = new SumResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));

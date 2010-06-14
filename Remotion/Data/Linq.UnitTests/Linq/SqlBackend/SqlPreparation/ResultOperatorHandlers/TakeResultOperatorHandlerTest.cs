@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   [TestFixture]
   public class TakeResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
     private TakeResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -46,8 +46,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
+      _stage = new DefaultSqlPreparationStage (
+          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new TakeResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -63,16 +64,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var takeExpression = Expression.Constant (2);
       var resultOperator = new TakeResultOperator (takeExpression);
 
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _stageMock.Expect (mock => mock.PrepareTopExpression (takeExpression, _context)).Return (preparedExpression);
-      _stageMock.Replay ();
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+      Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (takeExpression));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
-      _stageMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -83,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var takeExpression = Expression.Constant (2);
       var resultOperator = new TakeResultOperator (takeExpression);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -99,7 +95,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var takeExpression = Expression.Constant (2);
       var resultOperator = new TakeResultOperator (takeExpression);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       var expectedWhereCondition = Expression.LessThanOrEqual (
           _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));

@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   [TestFixture]
   public class FirstResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
     private FirstResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -46,8 +46,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
+      _stage = new DefaultSqlPreparationStage (
+          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new FirstResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -62,21 +63,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var resultOperator = new FirstResultOperator (false);
 
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _stageMock
-         .Expect (
-         mock => mock.PrepareTopExpression (
-                     Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (1)),
-                     Arg<ISqlPreparationContext>.Matches (c => c == _context)))
-         .Return (preparedExpression);
-      _stageMock.Replay ();
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+      Assert.That (((ConstantExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo(1));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
       Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Cook)));
-      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -86,19 +77,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       var resultOperator = new FirstResultOperator (false);
 
-      var preparedExpression = Expression.Constant (null, typeof (Cook));
-      _stageMock
-         .Expect (
-         mock => mock.PrepareTopExpression (
-                     Arg<Expression>.Matches (expr => expr is ConstantExpression && ((ConstantExpression) expr).Value.Equals (1)),
-                     Arg<ISqlPreparationContext>.Matches (c => c == _context)))
-         .Return (preparedExpression);
-      _stageMock.Replay ();
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (preparedExpression));
+      Assert.That (((ConstantExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo(1));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
@@ -115,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var expectedWhereCondition = Expression.LessThanOrEqual (
                 _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, new SqlLiteralExpression(1)));
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);

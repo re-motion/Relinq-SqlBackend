@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -31,7 +31,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly UniqueIdentifierGenerator _generator;
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
-    public DefaultSqlPreparationStage (MethodCallTransformerRegistry methodCallTransformerRegistry, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, UniqueIdentifierGenerator generator)
+    public DefaultSqlPreparationStage (
+        MethodCallTransformerRegistry methodCallTransformerRegistry,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
+        UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("registry", methodCallTransformerRegistry);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
@@ -67,9 +70,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return PrepareExpression (expression, context);
     }
 
-    public virtual FromExpressionInfo PrepareFromExpression (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context)
+    public virtual FromExpressionInfo PrepareFromExpression (
+        Expression fromExpression,
+        ISqlPreparationContext context,
+        Func<ITableInfo, SqlTableBase> tableGenerator)
     {
-      return SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (fromExpression, this, _generator, _methodCallTransformerRegistry, context);
+      return SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
+          fromExpression, this, _generator, _methodCallTransformerRegistry, context, tableGenerator);
     }
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext)

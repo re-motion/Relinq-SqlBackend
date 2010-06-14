@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
@@ -31,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     Expression PrepareTopExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareItemExpression (Expression expression, ISqlPreparationContext context);
-    FromExpressionInfo PrepareFromExpression (Expression fromExpression, IQuerySource querySource, ISqlPreparationContext context);
+    FromExpressionInfo PrepareFromExpression (Expression fromExpression, ISqlPreparationContext context, Func<ITableInfo, SqlTableBase> tableGenerator);
     SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext);
   }
 }

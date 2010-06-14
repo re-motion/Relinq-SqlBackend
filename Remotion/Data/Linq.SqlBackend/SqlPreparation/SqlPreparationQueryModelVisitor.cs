@@ -191,7 +191,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
-      var fromExpressionInfo = _stage.PrepareFromExpression (fromExpression, source, _context);
+      var fromExpressionInfo = _stage.PrepareFromExpression (fromExpression, _context, info => new SqlTable (info));
         
       if (fromExpressionInfo.WhereCondition != null)
         SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);

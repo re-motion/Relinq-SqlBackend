@@ -38,7 +38,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
         MethodCallTransformerRegistry registry,
-        ISqlPreparationContext context)
+        ISqlPreparationContext context,
+        Func<ITableInfo, SqlTableBase> tableGenerator)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -46,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("registry", registry);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, registry, context);
+      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, registry, context, tableGenerator);
       visitor.VisitExpression (fromExpression);
       if (visitor._fromExpressionInfo != null)
         return visitor._fromExpressionInfo.Value;
@@ -64,7 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         ISqlPreparationStage sqlPreparationStage,
         ISqlPreparationContext context,
         UniqueIdentifierGenerator generator,
-        Func<ResolvedSubStatementTableInfo, SqlTableBase> tableCreator)
+        Func<ITableInfo, SqlTableBase> tableCreator)
     {
       SqlTableBase sqlTable;
       Expression itemSelector;
@@ -129,12 +130,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly ISqlPreparationContext _context;
 
     private FromExpressionInfo? _fromExpressionInfo;
+    private readonly Func<ITableInfo, SqlTableBase> _tableGenerator;
 
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         MethodCallTransformerRegistry registry,
-        ISqlPreparationContext context)
+        ISqlPreparationContext context,
+        Func<ITableInfo, SqlTableBase> tableGenerator)
         : base (context, stage, registry)
     {
       ArgumentUtility.CheckNotNull ("generator", generator);
@@ -144,6 +147,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _registry = registry;
       _context = context;
       _fromExpressionInfo = null;
+      _tableGenerator = tableGenerator;
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
@@ -151,7 +155,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var itemType = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "from expression");
-      var sqlTable = new SqlTable (new UnresolvedTableInfo (itemType));
+      var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null, true);
 
@@ -166,7 +170,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
-      var oldStyleJoinedTable = new SqlTable (joinedTable);
+      var oldStyleJoinedTable = _tableGenerator (joinedTable);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
       _fromExpressionInfo = new FromExpressionInfo (
           oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new JoinConditionExpression (joinedTable), true);
@@ -179,7 +183,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
-      _fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, info => new SqlTable (info));
+      _fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (_fromExpressionInfo.Value.SqlTable);

@@ -59,52 +59,47 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var originalStatement = _statementBuilder.GetSqlStatement ();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info), _stageMock);
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
+      Func<ITableInfo, SqlTableBase> tableGenerator = info => new SqlTable (info);
 
-      CheckStatementMovedToSqlTable (originalStatement);
+      _stageMock
+          .Expect (mock => mock.PrepareFromExpression (
+              Arg<Expression>.Matches (expr => IsSubStatementExpression(expr, originalStatement)),
+              Arg.Is (_context),
+              Arg.Is (tableGenerator)))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, tableGenerator, _stageMock);
+
+      _stageMock.VerifyAllExpectations();
+
+      Assert.That (_statementBuilder.DataInfo, Is.SameAs (originalStatement.DataInfo));
+      Assert.That (_statementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
+      Assert.That (_statementBuilder.SelectProjection, Is.TypeOf(typeof(NamedExpression)));
+      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.SameAs(fakeFromExpressionInfo.ItemSelector));
+
+      var mappedItemExpression = _context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
+      Assert.That (mappedItemExpression, Is.Not.Null);
+      Assert.That (mappedItemExpression, Is.SameAs (fakeFromExpressionInfo.ItemSelector));
     }
 
     [Test]
-    // TODO Review 2777: This is much too complicated; refactor this. When MoveCurrentStatementToSqlTable uses stage, the test can be rewritten using _stageMock
-    public void MoveCurrentStatementToSqlTable_StatementWithOrderingsAndNoTopExpression ()
+    public void MoveCurrentStatementToSqlTable_WithOrderings ()
     {
-      _statementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order1"),OrderingDirection.Desc));
-      _statementBuilder.SelectProjection = Expression.Constant (new Cook());
-      _statementBuilder.TopExpression = null;
-      
-      Type tupleType;
-      var startSelectProjection = Expression.Constant (null);
-      Expression newSelectProjection = startSelectProjection;
-      
-      for (var i = _statementBuilder.Orderings.Count - 1; i >= 0; --i)
-      {
-        tupleType = typeof (KeyValuePair<,>).MakeGenericType (_statementBuilder.Orderings[i].Expression.Type, newSelectProjection.Type);
-        newSelectProjection =
-            Expression.New (
-                tupleType.GetConstructors ()[0],
-                new[] { _statementBuilder.Orderings[i].Expression, newSelectProjection },
-                new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-      }
+      var ordering = new Ordering (Expression.Constant ("order1"), OrderingDirection.Desc);
 
-      tupleType = typeof (KeyValuePair<,>).MakeGenericType (_statementBuilder.SelectProjection.Type, newSelectProjection.Type);
-      var fakeSelectProjection = Expression.New (
-          tupleType.GetConstructors ()[0],
-          new[] { _statementBuilder.SelectProjection, newSelectProjection },
-          new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new[] { ordering });
 
       _stageMock
-         .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches (c => c == _context)))
-         .Return (fakeSelectProjection);
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
 
       _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info), _stageMock);
 
-      Assert.That (_statementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.TypeOf (typeof (MemberExpression)));
-      Assert.That (_statementBuilder.Orderings.Count, Is.EqualTo(1));
-      var sqlTable =
-          (SqlTable)((SqlTableReferenceExpression) ((MemberExpression) ((NamedExpression) _statementBuilder.SelectProjection).Expression).Expression).SqlTable;
-      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo(0));
+      Assert.That (_statementBuilder.Orderings[0], Is.SameAs (ordering));
     }
 
     [Test]
@@ -112,12 +107,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _statementBuilder.TopExpression = Expression.Constant ("top");
       var originalStatement = _statementBuilder.GetSqlStatement();
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
+
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
 
       _handler.EnsureNoTopExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
+      _stageMock.VerifyAllExpectations();
       Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
-
-      CheckStatementMovedToSqlTable (originalStatement);
     }
 
     [Test]
@@ -137,16 +138,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _statementBuilder.IsDistinctQuery = true;
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
+
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
       _handler.EnsureNoDistinctQuery(resultOperator, _statementBuilder, _generator, _stageMock, _context);
 
+      _stageMock.VerifyAllExpectations();
       Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
-      Assert.That (_context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression), Is.Not.Null);
-      Assert.That (
-          ((ResolvedSubStatementTableInfo) ((SqlTable)
-                                            ((SqlTableReferenceExpression)
-                                             _context.TryGetExpressionMappingFromHierarchy (
-                                                 ((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression)).SqlTable).TableInfo).SqlStatement,
-          Is.EqualTo (sqlStatement));
     }
 
     [Test]
@@ -171,20 +174,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
     }
 
-    private void CheckStatementMovedToSqlTable (SqlStatement originalStatement)
+    private bool IsSubStatementExpression (Expression expr, SqlStatement originalStatement)
     {
-      Assert.That (((SqlTable) _statementBuilder.SqlTables[0]).TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
-      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement;
-
-      Assert.That (subStatement, Is.EqualTo (originalStatement));
-      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Name, Is.Null);
-      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) ((NamedExpression) _statementBuilder.SelectProjection).Expression).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
-
-      var mappedItemExpression = _context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
-      Assert.That (mappedItemExpression, Is.Not.Null);
-      Assert.That (mappedItemExpression, Is.InstanceOfType (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) mappedItemExpression).SqlTable, Is.SameAs (_statementBuilder.SqlTables[0]));
+      return expr is SqlSubStatementExpression
+             && ((SqlSubStatementExpression) expr).SqlStatement.Equals (originalStatement);
     }
+
+    private FromExpressionInfo CreateFakeFromExpressionInfo (Ordering[] extractedOrderings)
+    {
+      return new FromExpressionInfo (
+          new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")),
+          extractedOrderings,
+          Expression.Constant (0),
+          null,
+          false);
+    }
+
   }
 }
