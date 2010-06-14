@@ -197,35 +197,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // TODO Review 2773: This is a bug: PrepareFromExpression will remove the orderings, and they will not be appened to the outer statement. Remove the call to PrepareFromExpression (and remove ISqlPreparationStage.PrepareFromExpression), PrepareSqlTable should to the same things anyway
       var preparedFromExpression = _stage.PrepareFromExpression (fromExpression, _context);
       
-      // is from expression already a reference to an existing table?
-      var existingTableReference = preparedFromExpression as SqlTableReferenceExpression;
-      if (existingTableReference != null) // yes, table already exists
-      {
-        // TODO Review 2773: This must be moved to SqlPreparationFromExpressionVisitor.VisitSqlTableReferenceExpression; i.e., create the same FromExpressionInfo from VisitSqlTableReferenceExpression; also add a flag to FromExpressionInfo to indicate whether the SqlTable is a new table. Check the flag below (see below). The if statement can then be removed, and only the then part stays. Don't forget the unit tests for SqlPreparationFromExpressionVisitor.VisitSqlTableReferenceExpression
-        var ret = new FromExpressionInfo (
-            existingTableReference.SqlTable,
-            new Ordering[0],
-            new SqlTableReferenceExpression (existingTableReference.SqlTable),
-            null);
-        _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), ret.ItemSelector);
-        return ret.SqlTable;
-      }
-      else // no, a new table must be created
-      {
-        // TODO Review 2773: Rename to PrepareFromExpression
-        var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, source, _context);
+      // TODO Review 2773: Rename to PrepareFromExpression
+      var fromExpressionInfo = _stage.PrepareSqlTable (preparedFromExpression, source, _context);
         
-        if (fromExpressionInfo.WhereCondition != null)
-          SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
+      if (fromExpressionInfo.WhereCondition != null)
+        SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
 
-        foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
-          SqlStatementBuilder.Orderings.Add (ordering);
+      foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
+        SqlStatementBuilder.Orderings.Add (ordering);
 
-        // TODO Review 2773: Check the flag here (i.e., if (fromExpressionInfo.IsNewTable) SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
+      if(fromExpressionInfo.IsNewTable)
         SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
-        _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
-        return fromExpressionInfo.SqlTable;
-      }
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
+      return fromExpressionInfo.SqlTable;
     }
 
     private ICollection GetConstantCollectionValue (QueryModel queryModel)

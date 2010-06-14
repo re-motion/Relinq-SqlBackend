@@ -28,21 +28,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public struct FromExpressionInfo
   {
-    public FromExpressionInfo (SqlTableBase sqlTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
+    public FromExpressionInfo (SqlTableBase sqlTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition, bool isNewTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("extractedOrderings", extractedOrderings);
       ArgumentUtility.CheckNotNull ("itemSelector", itemSelector);
+      ArgumentUtility.CheckNotNull ("isNewTable", isNewTable);
       
       SqlTable = sqlTable;
       ExtractedOrderings = Array.AsReadOnly(extractedOrderings);
       ItemSelector = itemSelector;
       WhereCondition = whereCondition;
+      IsNewTable = isNewTable;
     }
 
     public readonly SqlTableBase SqlTable;
     public readonly ReadOnlyCollection<Ordering> ExtractedOrderings;
     public readonly Expression ItemSelector;
     public readonly Expression WhereCondition;
+    public readonly bool IsNewTable;
   }
 }

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -55,7 +56,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             resultAsTableReferenceExpression.SqlTable,
             visitor._extractedOrderings.ToArray(),
             visitor._itemSelector ?? resultAsTableReferenceExpression,
-            visitor._whereCondition);
+            visitor._whereCondition, visitor._isNewTable);
       }
 
       // TODO Review 2773: Change to use fromExpression instead of result; use FormattingExpressionTreeVisitor and include the expression string in the excepotion message ("Error parsing expression '{0}'. Expressions of type '{0}' cannot be used ...")
@@ -125,7 +126,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         sqlTable = tableCreator (tableInfo);
         itemSelector = new SqlTableReferenceExpression (sqlTable);
       }
-      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null);
+      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null, false);
     }
 
     private readonly UniqueIdentifierGenerator _generator;
@@ -134,6 +135,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private Expression _itemSelector;
     private readonly List<Ordering> _extractedOrderings;
     private Expression _whereCondition;
+    private bool _isNewTable;
 
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
@@ -148,6 +150,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       _itemSelector = null;
       _extractedOrderings = new List<Ordering>();
+      _isNewTable = false;
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
@@ -156,6 +159,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var itemType = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "from expression");
       var sqlTable = new SqlTable (new UnresolvedTableInfo (itemType));
+      _isNewTable = true;
       return new SqlTableReferenceExpression (sqlTable);
     }
 
@@ -167,6 +171,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       _whereCondition = new JoinConditionExpression (joinedTable);
       var oldStyleJoinedTable = new SqlTable (joinedTable);
+      _isNewTable = true;
+
       return new SqlTableReferenceExpression (oldStyleJoinedTable);
     }
 
@@ -179,6 +185,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, info => new SqlTable (info));
       _itemSelector = fromExpressionInfo.ItemSelector;
       _extractedOrderings.AddRange (fromExpressionInfo.ExtractedOrderings);
+      _isNewTable = true;
+      
       Debug.Assert (fromExpressionInfo.WhereCondition == null);
 
       return new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
