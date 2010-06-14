@@ -16,13 +16,11 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -99,19 +97,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitNewExpression (NewExpression expression)
     {
-      if(_memberInfo is PropertyInfo)
-      {
-        var property = (PropertyInfo) _memberInfo;
-        var getterMethod = property.GetGetMethod (true);
-        var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
-        return membersAndAssignedExpressions.Single (c => c.Member == getterMethod).Argument;
-      } 
-      else
-      {
-        var binding = Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding.Bind (_memberInfo, expression);
-        var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
-        return membersAndAssignedExpressions.Single (c => binding.MatchesReadAccess(c.Member)).Argument;
-      }
+      var binding = Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding.Bind (_memberInfo, expression);
+      var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
+      return membersAndAssignedExpressions.Single (c => binding.MatchesReadAccess(c.Member)).Argument;
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
