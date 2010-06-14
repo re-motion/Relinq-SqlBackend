@@ -208,18 +208,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 2771: Missing (and bug in implementation - COMMONS-2773)")]
     public void OrderingsInSubQuery_WithoutDistinct ()
     {
       CheckQuery (
         // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2.ID, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID) select s2,
-          "ORDER BY must be moved to outer query");
+          "SELECT [q0].[get_Key] AS [get_Key] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [get_Key],[t2].[Name] AS [get_Value_get_Key],"+
+          "NULL AS [get_Value_get_Value] FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[get_Value_get_Key] ASC");
 
       CheckQuery (
         // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2) select s.FirstName,
-          "ORDER BY must be moved to outer query");
+          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [get_Key_ID],"+
+          "[t2].[FirstName] AS [get_Key_FirstName],[t2].[Name] AS [get_Key_Name],[t2].[IsStarredCook] AS [get_Key_IsStarredCook],"+
+          "[t2].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],[t2].[SubstitutedID] AS [get_Key_SubstitutedID],"+
+          "[t2].[KitchenID] AS [get_Key_KitchenID],[t2].[Name] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] "+
+          "FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[get_Value_get_Key] ASC");
     }
 
     [Test]
