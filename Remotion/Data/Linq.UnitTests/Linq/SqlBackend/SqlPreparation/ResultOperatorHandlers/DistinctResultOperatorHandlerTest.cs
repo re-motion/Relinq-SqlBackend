@@ -19,6 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -67,6 +68,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.IsDistinctQuery, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof(IQueryable<>).MakeGenericType(typeof(Cook))));
+    }
+
+    [Test]
+    public void HandleResultOperator_WithOrderings_OrderingsAreRemoved ()
+    {
+      var resultOperator = new DistinctResultOperator();
+      _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc));
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+
+      Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
     }
 
     [Test]

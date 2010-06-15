@@ -208,9 +208,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from s in Cooks orderby s.FirstName select s.ID).Distinct ().Sum (),
-        "SELECT SUM([q0].[get_Key]) FROM (SELECT DISTINCT [t1].[ID] AS [get_Key],[t1].[FirstName] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] "+
-        "FROM [CookTable] AS [t1]) AS [q0] "+ // TODO: wrong, ORDER BY [t0].[FirstName] missing in the subquery
-        "ORDER BY [q0].[get_Value_get_Key] ASC"
+        "SELECT SUM([q0].[value]) FROM (SELECT DISTINCT [t1].[ID] AS [value] FROM [CookTable] AS [t1]) AS [q0]"
         );
     }
 

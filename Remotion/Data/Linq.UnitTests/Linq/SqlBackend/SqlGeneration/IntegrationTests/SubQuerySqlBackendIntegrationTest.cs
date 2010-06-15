@@ -202,9 +202,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         from s in (from s2 in Cooks orderby s2.Name select s2.ID).Distinct() select s,
-          "SELECT [q0].[get_Key] AS [get_Key] FROM ("
-          + "SELECT DISTINCT [t1].[ID] AS [get_Key],[t1].[Name] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] FROM [CookTable] AS [t1]) AS [q0] "
-          + "ORDER BY [q0].[get_Value_get_Key] ASC");
+          "SELECT [q0].[value] AS [value] FROM (SELECT DISTINCT [t1].[ID] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
     }
 
     [Test]

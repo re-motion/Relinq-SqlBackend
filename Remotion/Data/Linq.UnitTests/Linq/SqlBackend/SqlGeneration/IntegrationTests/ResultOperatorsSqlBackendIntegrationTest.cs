@@ -454,5 +454,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@2", 20),
           new CommandParameter ("@3", 100));
     }
+
+    [Test]
+    public void QueryWithOrderBy_BeforeIncompatibleResultOperators ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c).Distinct(),
+          "SELECT DISTINCT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
+          "FROM [CookTable] AS [t0]");
+    }
   }
 }

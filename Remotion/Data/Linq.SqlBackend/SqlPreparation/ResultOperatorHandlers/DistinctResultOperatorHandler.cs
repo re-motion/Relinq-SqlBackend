@@ -32,6 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsDistinctQuery = true;
+      sqlStatementBuilder.Orderings.Clear (); //Distinct queries do not require ORDER BY clauses because LINQ's Distinct operator allows to reorder the result
     }
   }
 }
