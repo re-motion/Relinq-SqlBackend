@@ -42,6 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly bool _isDistinctQuery;
     private readonly Expression _rowNumberSelector;
     private readonly Expression _currentRowNumberOffset;
+    private readonly Expression _groupByExpression;
 
     public SqlStatement (
         IStreamedDataInfo dataInfo,
@@ -52,7 +53,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         Expression topExpression,
         bool isDistinctQuery,
         Expression rowNumberSelector,
-        Expression currentRowNumberOffset)
+        Expression currentRowNumberOffset,
+        Expression groupByExpression)
     {
       ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
@@ -71,6 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       _isDistinctQuery = isDistinctQuery;
       _rowNumberSelector = rowNumberSelector;
       _currentRowNumberOffset = currentRowNumberOffset;
+      _groupByExpression = groupByExpression;
     }
 
     public IStreamedDataInfo DataInfo
@@ -118,6 +121,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _currentRowNumberOffset; }
     }
 
+    public Expression GroupByExpression
+    {
+      get { return _groupByExpression; }
+    }
+
     public Expression CreateExpression ()
     {
       return SqlTables.Count == 0 && !IsDistinctQuery ? SelectProjection : new SqlSubStatementExpression (this);
@@ -137,7 +145,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              (_topExpression == statement._topExpression) &&
              (_isDistinctQuery == statement._isDistinctQuery) &&
              (_rowNumberSelector == statement._rowNumberSelector) &&
-             (_currentRowNumberOffset == statement._currentRowNumberOffset);
+             (_currentRowNumberOffset == statement._currentRowNumberOffset) &&
+             (_groupByExpression == statement._groupByExpression);
     }
 
     public override int GetHashCode ()
@@ -148,9 +157,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
              HashCodeUtility.GetHashCodeForSequence (_orderings) ^
              HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
              HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
-             HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery) ^ 
+             HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery) ^
              HashCodeUtility.GetHashCodeOrZero (_rowNumberSelector) ^
-             HashCodeUtility.GetHashCodeOrZero(_currentRowNumberOffset);
+             HashCodeUtility.GetHashCodeOrZero (_currentRowNumberOffset) ^
+             HashCodeUtility.GetHashCodeOrZero (_groupByExpression);
     }
 
     public override string ToString ()
@@ -168,6 +178,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       }
       if (WhereCondition != null)
         sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
+      if (GroupByExpression != null)
+        sb.Append (" GROUP BY ").Append(FormattingExpressionTreeVisitor.Format(GroupByExpression));
       if (Orderings.Count > 0)
       {
         sb.Append (" ORDER BY ");

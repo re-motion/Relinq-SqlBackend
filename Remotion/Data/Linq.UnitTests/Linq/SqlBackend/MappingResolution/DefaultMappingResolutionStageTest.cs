@@ -187,7 +187,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo(typeof (Cook));
       var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable(_fakeResolvedSimpleTableInfo));
       var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)), tableReferenceExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, null, null);
+          new TestStreamedValueInfo (typeof (int)), tableReferenceExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, null, null, null);
       var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
 
       _resolverMock

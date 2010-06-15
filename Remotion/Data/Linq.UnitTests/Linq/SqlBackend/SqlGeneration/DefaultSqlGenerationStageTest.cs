@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
 
-      _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, null, null);
+      _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, null, null, null);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           null,
-          false, null, null);
+          false, null, null, null);
 
       _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
     }
@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           null,
           null,
-          false, null, null);
+          false, null, null, null);
 
       _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Ordering[] { },
           Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)),
           null,
-          false, null, null);
+          false, null, null, null);
 
       _stageMock
           .Expect (mock => CallGenerateTextForExpression (mock, sqlStatement.WhereCondition, SqlGenerationMode.NonSelectExpression))

@@ -59,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           topExpression,
           false, 
           rowNumberSelector, 
-          currentRowNumberOffset);
+          currentRowNumberOffset, null);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
