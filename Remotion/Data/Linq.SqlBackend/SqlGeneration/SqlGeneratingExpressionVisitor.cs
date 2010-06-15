@@ -94,7 +94,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      AppendColumn (expression.ColumnName, expression.OwningTableAlias, expression.ReferencedEntity.Name);
+      SqlColumnExpression firstColumn = expression.ReferencedEntity.Columns.FirstOrDefault();
+      string referencedEntityName = firstColumn != null && firstColumn.ColumnName == "*" ? null : expression.ReferencedEntity.Name;
+      AppendColumn (expression.ColumnName, expression.OwningTableAlias, referencedEntityName);
 
       return expression;
     }

@@ -92,6 +92,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_VisitSqlColumnReferenceExpression_WithNamedEntity_WithStarColumn ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), 
+          "c", 
+          "Test", 
+          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), 
+          new SqlColumnDefinitionExpression (typeof (Cook), "c", "*", false));
+      var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
+      
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
+    }
+
+    [Test]
     public void GenerateSql_VisitSqlColumnReferenceExpression_WithUnnamedEntity ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
