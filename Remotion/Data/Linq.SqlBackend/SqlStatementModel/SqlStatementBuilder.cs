@@ -97,12 +97,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.CurrentRowNumberOffset = value; }
     }
 
+    public Expression GroupByExpression
+    {
+      get { return _valueHolder.GroupByExpression; }
+      set { _valueHolder.GroupByExpression = value; }
+    }
+
     public SqlStatement GetSqlStatement ()
     {
       if (DataInfo == null)
         throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
       return new SqlStatement (
-          DataInfo, SelectProjection, SqlTables, Orderings, WhereCondition, TopExpression, IsDistinctQuery, RowNumberSelector, CurrentRowNumberOffset, null);
+          DataInfo,
+          SelectProjection,
+          SqlTables,
+          Orderings,
+          WhereCondition,
+          TopExpression,
+          IsDistinctQuery,
+          RowNumberSelector,
+          CurrentRowNumberOffset,
+          GroupByExpression);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -123,7 +138,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo (Expression previousSelectProjection)
     {
       if (SelectProjection.Type != previousSelectProjection.Type)
-        DataInfo = GetNewDataInfo ();
+        DataInfo = GetNewDataInfo();
     }
 
     public override string ToString ()
@@ -142,16 +157,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       }
       if (WhereCondition != null)
         sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
+      if (GroupByExpression != null)
+        sb.Append (" GROUP BY ").Append (FormattingExpressionTreeVisitor.Format (GroupByExpression));
       if (Orderings.Count > 0)
       {
         sb.Append (" ORDER BY ");
-        Orderings.Aggregate (sb, (builder, ordering) => builder
-            .Append (FormattingExpressionTreeVisitor.Format (ordering.Expression))
-            .Append (" ")
-            .Append (ordering.OrderingDirection.ToString ().ToUpper ()));
+        Orderings.Aggregate (
+            sb,
+            (builder, ordering) => builder
+                                       .Append (FormattingExpressionTreeVisitor.Format (ordering.Expression))
+                                       .Append (" ")
+                                       .Append (ordering.OrderingDirection.ToString().ToUpper()));
       }
 
-      return sb.ToString ();
+      return sb.ToString();
     }
 
     private IStreamedDataInfo GetNewDataInfo ()
@@ -184,7 +203,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         TopExpression = sqlStatement.TopExpression;
         RowNumberSelector = sqlStatement.RowNumberSelector;
         CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
-        
+        GroupByExpression = sqlStatement.GroupByExpression;
+
         SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
         Orderings = new List<Ordering> (sqlStatement.Orderings);
       }
@@ -192,7 +212,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       public IStreamedDataInfo DataInfo { get; set; }
 
       public bool IsDistinctQuery { get; set; }
-      
+
       public Expression TopExpression { get; set; }
 
       public Expression SelectProjection { get; set; }
@@ -203,7 +223,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       public Expression RowNumberSelector { get; set; }
       public Expression CurrentRowNumberOffset { get; set; }
-    }
 
+      public Expression GroupByExpression { get; set; }
+    }
   }
 }

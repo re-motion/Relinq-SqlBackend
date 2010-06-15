@@ -49,6 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant("selector");
       var currentRowNumberOffset = Expression.Constant(1);
+      var groupExpression = Expression.Constant ("group");
       
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
@@ -59,7 +60,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           topExpression,
           false, 
           rowNumberSelector, 
-          currentRowNumberOffset, null);
+          currentRowNumberOffset, 
+          groupExpression);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
@@ -72,6 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
       Assert.That (testedBuilder.RowNumberSelector, Is.SameAs (sqlStatement.RowNumberSelector));
       Assert.That (testedBuilder.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
+      Assert.That (testedBuilder.GroupByExpression, Is.SameAs (groupExpression));
     }
 
     [Test]
@@ -136,6 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant ("selector");
       var currentRowNumberOffset = Expression.Constant (1);
+      var groupExpression = Expression.Constant ("group");
 
       var statementBuilder = new SqlStatementBuilder
                              {
@@ -145,7 +149,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
                                  TopExpression = null,
                                  IsDistinctQuery = false,
                                  RowNumberSelector = rowNumberSelector,
-                                 CurrentRowNumberOffset = currentRowNumberOffset
+                                 CurrentRowNumberOffset = currentRowNumberOffset,
+                                 GroupByExpression = groupExpression
                              };
       statementBuilder.SqlTables.Add (sqlTable);
       statementBuilder.Orderings.Add (ordering);
@@ -163,6 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
       Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
       Assert.That (sqlStatement.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
+      Assert.That (sqlStatement.GroupByExpression, Is.SameAs (groupExpression));
     }
 
     [Test]
@@ -254,6 +260,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant (10);
+      var groupExpression = Expression.Constant ("group");
 
       var builder = new SqlStatementBuilder
       {
@@ -263,12 +270,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
         Orderings = { ordering },
         WhereCondition = whereCondition,
         TopExpression = topExpression,
-        IsDistinctQuery = true
+        IsDistinctQuery = true,
+        GroupByExpression = groupExpression
       };
 
       var result = builder.ToString ();
 
-      Assert.That (result, Is.EqualTo ("SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c] WHERE True ORDER BY \"ordering\" ASC"));
+      Assert.That (result, Is.EqualTo ("SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
     }
 
     [Test]
