@@ -129,6 +129,7 @@
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\INamedExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\ISqlGroupingSelectExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />
     <Compile Include="MappingResolution\ResolvingExpressionVisitor.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlConvertExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlFunctionExpression.cs" />
+    <Compile Include="SqlStatementModel\SqlGroupingSelectExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNotNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLiteralExpression.cs" />
