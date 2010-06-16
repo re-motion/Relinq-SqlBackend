@@ -29,10 +29,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   [TestFixture]
   public class SqlGroupingSelectExpressionTest
   {
-    private SqlGroupingSelectExpression _sqlGroupingExpression;
+    private SqlGroupingSelectExpression _sqlGroupingSelectExpression;
     private ConstantExpression _aggregateExpression1;
     private ConstantExpression _aggregateExpression2;
-    private ReadOnlyCollection<Expression> _originalAggregationExpressions;
     private ConstantExpression _keyExpression;
     private ConstantExpression _elementExpression;
 
@@ -41,22 +40,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       _keyExpression = Expression.Constant ("key");
       _elementExpression = Expression.Constant ("element");
-      _sqlGroupingExpression = new SqlGroupingSelectExpression (_keyExpression, _elementExpression);
+      _sqlGroupingSelectExpression = new SqlGroupingSelectExpression (_keyExpression, _elementExpression);
+
       _aggregateExpression1 = Expression.Constant ("agg1");
       _aggregateExpression2 = Expression.Constant ("agg2");
-      _sqlGroupingExpression.AddAggregationExpression (_aggregateExpression1);
-      _sqlGroupingExpression.AddAggregationExpression (_aggregateExpression2);
-      _originalAggregationExpressions = _sqlGroupingExpression.AggregationExpressions;
+      _sqlGroupingSelectExpression.AddAggregationExpression (_aggregateExpression1);
+      _sqlGroupingSelectExpression.AddAggregationExpression (_aggregateExpression2);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_sqlGroupingExpression.KeyExpression, Is.SameAs (_keyExpression));
-      Assert.That (_sqlGroupingExpression.ElementExpression, Is.SameAs (_elementExpression));
-      Assert.That (_sqlGroupingExpression.AggregationExpressions.Count, Is.EqualTo (2));
-      Assert.That (_sqlGroupingExpression.AggregationExpressions[0], Is.SameAs (_aggregateExpression1));
-      Assert.That (_sqlGroupingExpression.AggregationExpressions[1], Is.SameAs (_aggregateExpression2));
+      Assert.That (_sqlGroupingSelectExpression.KeyExpression, Is.SameAs (_keyExpression));
+      Assert.That (_sqlGroupingSelectExpression.ElementExpression, Is.SameAs (_elementExpression));
+      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (2));
+      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions[0], Is.SameAs (_aggregateExpression1));
+      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions[1], Is.SameAs (_aggregateExpression2));
     }
 
     [Test]
@@ -65,14 +64,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (_keyExpression);
       visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (_elementExpression);
-      visitorMock.Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren"))).Return (null).
-          WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
+      visitorMock
+          .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
+          .Return (null)
+          .WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
       visitorMock.Replay();
 
-      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingExpression, visitorMock);
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingSelectExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations();
-      Assert.That (expression, Is.SameAs (_sqlGroupingExpression));
+      Assert.That (expression, Is.SameAs (_sqlGroupingSelectExpression));
     }
 
     [Test]
@@ -84,15 +85,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (_keyExpression);
       visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (_elementExpression);
-      visitorMock.Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren"))).Return (
-          Array.AsReadOnly (expectedAggregationExpressions));
+      visitorMock
+          .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
+          .Return (Array.AsReadOnly (expectedAggregationExpressions));
       visitorMock.Replay();
 
-      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingExpression, visitorMock);
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingSelectExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations();
-      Assert.That (expression, Is.Not.SameAs(_sqlGroupingExpression));
-      Assert.That (expression, Is.TypeOf(typeof(SqlGroupingSelectExpression)));
+      Assert.That (expression, Is.Not.SameAs(_sqlGroupingSelectExpression));
+      Assert.That (expression, Is.TypeOf (typeof(SqlGroupingSelectExpression)));
       Assert.That (((SqlGroupingSelectExpression) expression).AggregationExpressions[0], Is.SameAs(_aggregateExpression1));
       Assert.That (((SqlGroupingSelectExpression) expression).AggregationExpressions[1], Is.SameAs (newAggregationExpression));
     }
@@ -104,14 +106,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
       visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (newKeyExpression);
       visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (_elementExpression);
-      visitorMock.Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren"))).Return (null).
-          WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
+      visitorMock
+          .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
+          .Return (null).WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
       visitorMock.Replay ();
 
-      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingExpression, visitorMock);
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingSelectExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
-      Assert.That (expression, Is.Not.SameAs(_sqlGroupingExpression));
+      Assert.That (expression, Is.Not.SameAs(_sqlGroupingSelectExpression));
       Assert.That (((SqlGroupingSelectExpression) expression).KeyExpression, Is.SameAs (newKeyExpression));
       Assert.That (((SqlGroupingSelectExpression) expression).ElementExpression, Is.SameAs (_elementExpression));
     }
@@ -123,14 +126,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
       visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (_keyExpression);
       visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (newElementExpression);
-      visitorMock.Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren"))).Return (null).
-          WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
+      visitorMock
+          .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
+          .Return (null)
+          .WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
       visitorMock.Replay ();
 
-      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingExpression, visitorMock);
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingSelectExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
-      Assert.That (expression, Is.Not.SameAs (_sqlGroupingExpression));
+      Assert.That (expression, Is.Not.SameAs (_sqlGroupingSelectExpression));
       Assert.That (((SqlGroupingSelectExpression) expression).KeyExpression, Is.SameAs (_keyExpression));
       Assert.That (((SqlGroupingSelectExpression) expression).ElementExpression, Is.SameAs (newElementExpression));
     }
@@ -139,22 +144,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void Accept_VisitorSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlGroupingSelectExpression, ISqlGroupingSelectExpressionVisitor> (
-          _sqlGroupingExpression,
-          mock => mock.VisitSqlGroupingSelectExpression (_sqlGroupingExpression));
+          _sqlGroupingSelectExpression,
+          mock => mock.VisitSqlGroupingSelectExpression (_sqlGroupingSelectExpression));
     }
 
     [Test]
     public void Accept_VisitorNotSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlGroupingExpression);
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlGroupingSelectExpression);
     }
 
     [Test]
     public void To_String ()
     {
-      var result = _sqlGroupingExpression.ToString();
+      var result = _sqlGroupingSelectExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("GROUP BY \"key\".\"element\""));
+      Assert.That (result, Is.EqualTo ("GROUPING (KEY: \"key\", ELEMENT: \"element\", AGGREGATIONS: (\"agg1\", \"agg2\")"));
     }
   }
 }

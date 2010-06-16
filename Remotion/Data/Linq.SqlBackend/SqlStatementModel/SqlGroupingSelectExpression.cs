@@ -22,13 +22,12 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="SqlGroupingSelectExpression"/> represents a group-by expression.
+  /// <see cref="SqlGroupingSelectExpression"/> represents the data returned by a Group-By query.
   /// </summary>
   public class SqlGroupingSelectExpression : ExtensionExpression
   {
@@ -37,11 +36,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly List<Expression> _aggregationExpressions;
 
     public SqlGroupingSelectExpression (Expression keyExpression, Expression elementExpression)
-      : base (typeof (IGrouping<,>).MakeGenericType (keyExpression.Type, elementExpression.Type))
+      : base (
+          typeof (IGrouping<,>).MakeGenericType (
+              ArgumentUtility.CheckNotNull ("keyExpression", keyExpression).Type, 
+              ArgumentUtility.CheckNotNull ("elementExpression", elementExpression).Type))
     {
-      ArgumentUtility.CheckNotNull ("keyExpression", keyExpression);
-      ArgumentUtility.CheckNotNull ("elementExpression", elementExpression);
-
       _keyExpression = keyExpression;
       _elementExpression = elementExpression;
       _aggregationExpressions = new List<Expression>();
@@ -73,11 +72,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var originalAggregationExpressions = AggregationExpressions;
       var newKeyExpression = visitor.VisitExpression (KeyExpression);
       var newElementExpression = visitor.VisitExpression (ElementExpression);
+
+      var originalAggregationExpressions = AggregationExpressions;
       var newAggregationExpressions = visitor.VisitAndConvert (originalAggregationExpressions, "VisitChildren");
-      if (newKeyExpression != KeyExpression || newElementExpression != ElementExpression || newAggregationExpressions != originalAggregationExpressions)
+
+      if (newKeyExpression != KeyExpression 
+          || newElementExpression != ElementExpression 
+          || newAggregationExpressions != originalAggregationExpressions)
       {
         var newSqlGroupingSelectExpression = new SqlGroupingSelectExpression (newKeyExpression, newElementExpression);
         foreach (var newAggregationExpression in newAggregationExpressions)
@@ -99,7 +102,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public override string ToString ()
     {
       return string.Format (
-          "GROUP BY {0}.{1}", FormattingExpressionTreeVisitor.Format (KeyExpression), FormattingExpressionTreeVisitor.Format (ElementExpression));
+          "GROUPING (KEY: {0}, ELEMENT: {1}, AGGREGATIONS: ({2})", 
+          FormattingExpressionTreeVisitor.Format (KeyExpression), 
+          FormattingExpressionTreeVisitor.Format (ElementExpression),
+          SeparatedStringBuilder.Build (", ", AggregationExpressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr))));
     }
   }
 }
