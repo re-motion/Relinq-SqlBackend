@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// <see cref="SqlStatement"/> represents a SQL database query. The <see cref="QueryModel"/> is translated to this model, and the 
   /// <see cref="SqlStatement"/> is transformed several times until it can easily be translated to SQL text.
   /// </summary>
+  // TODO Review 2902: Reorder items so that groupByExpression comes directly before orderings in ctor, properties, fields; whereCondition should go before groupByExpression
   public class SqlStatement
   {
     private readonly IStreamedDataInfo _dataInfo;

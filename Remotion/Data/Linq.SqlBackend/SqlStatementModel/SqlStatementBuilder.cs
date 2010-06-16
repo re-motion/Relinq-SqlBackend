@@ -97,6 +97,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.CurrentRowNumberOffset = value; }
     }
 
+    // TODO Review 2902: Reorder items so that groupByExpression comes directly before orderings in ctor, properties, fields; whereCondition should go before groupByExpression
     public Expression GroupByExpression
     {
       get { return _valueHolder.GroupByExpression; }
@@ -194,6 +195,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         Orderings = new List<Ordering>();
       }
 
+      // TODO Review 2902: Reorder items so that groupByExpression comes directly before orderings in ctor, properties, fields; whereCondition should go before groupByExpression
       public ValueHolder (SqlStatement sqlStatement)
       {
         DataInfo = sqlStatement.DataInfo;
