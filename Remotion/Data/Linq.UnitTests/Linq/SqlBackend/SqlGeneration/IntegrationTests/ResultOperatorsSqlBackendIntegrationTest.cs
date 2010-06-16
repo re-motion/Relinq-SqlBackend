@@ -456,7 +456,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void QueryWithOrderBy_BeforeIncompatibleResultOperators ()
+    public void OrderBy_BeforeDistinct ()
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c).Distinct(),
