@@ -225,12 +225,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 2771: Missing")]
     public void OrderingsInSubQuery_WithTopExpression ()
     {
       CheckQuery (
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID).Take (10) select s2,
-          "ORDER BY must be copied (not moved) to outer query");
+          "SELECT [q0].[get_Key] AS [get_Key] FROM [CookTable] AS [t1] CROSS APPLY ("
+          + "SELECT TOP (@1) [t2].[ID] AS [get_Key],[t2].[Name] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] FROM [CookTable] AS [t2] "
+          + "ORDER BY [t2].[Name] ASC) AS [q0] "
+          + "ORDER BY [q0].[get_Value_get_Key] ASC",
+          new CommandParameter("@1", 10));
     }
   }
 }
