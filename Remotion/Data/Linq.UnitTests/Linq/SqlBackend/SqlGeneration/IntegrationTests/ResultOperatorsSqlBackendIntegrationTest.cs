@@ -79,13 +79,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2422")]
     public void TakeWithSubQuery ()
     {
       CheckQuery (
-          () => ((from c in Cooks select c).Take ((from k in Kitchens select k).Count ())),
-          "",
-          new CommandParameter ("@1", 5));
+          () => ((from c in Cooks select c.FirstName).Take ((from k in Kitchens select k).Count ())),
+          "SELECT TOP ((SELECT COUNT(*) FROM [KitchenTable] AS [t1])) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
