@@ -215,6 +215,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolveGroupByExpression_ResolvesExpression ()
+    {
+      var expression = new SqlTableReferenceExpression (_sqlTable);
+      var fakeResult = Expression.Constant (0);
+
+      _stageMock
+          .Expect (mock => mock.ResolveGroupByExpression (expression, _mappingResolutionContext))
+          .Return (fakeResult);
+      _stageMock.Replay ();
+
+      var result = _visitor.ResolveGroupByExpression (expression);
+
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
     public void ResolveWhereCondition_ResolvesExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
@@ -274,12 +292,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var constantExpression = Expression.Constant(new Restaurant());
       var whereCondition = Expression.Constant(true);
       var topExpression = Expression.Constant("top");
+      var groupExpression = Expression.Constant ("group");
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Desc);
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                                 {
                                     SelectProjection = constantExpression,
                                     DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
                                     WhereCondition = whereCondition,
+                                    GroupByExpression =  groupExpression,
                                     TopExpression = topExpression,
                                 };
       builder.Orderings.Add (ordering);
@@ -292,6 +312,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock
           .Expect (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
           .Return (whereCondition);
+      _stageMock
+          .Expect (mock => mock.ResolveGroupByExpression (groupExpression, _mappingResolutionContext))
+          .Return (groupExpression);
       _stageMock
           .Expect (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
           .Return (topExpression);
@@ -311,6 +334,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (resolveSqlStatement.SelectProjection, Is.SameAs(fakeExpression));
       Assert.That (resolveSqlStatement.WhereCondition, Is.SameAs (whereCondition));
       Assert.That (resolveSqlStatement.TopExpression, Is.SameAs (topExpression));
+      Assert.That (resolveSqlStatement.GroupByExpression, Is.SameAs (groupExpression));
       Assert.That (resolveSqlStatement.Orderings[0].Expression, Is.SameAs (fakeExpression));
       Assert.That (sqlStatement.Orderings[0].Expression, Is.SameAs (ordering.Expression));
    }

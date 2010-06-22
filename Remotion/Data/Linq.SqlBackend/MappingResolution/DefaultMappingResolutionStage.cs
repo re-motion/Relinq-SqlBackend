@@ -59,6 +59,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return ApplyContext (resolvedExpression, SqlExpressionContext.PredicateRequired, context);
     }
 
+    public Expression ResolveGroupByExpression (Expression expression, IMappingResolutionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      var resolvedExpression = ResolveExpression (expression, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired, context);
+    }
+
     public virtual Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

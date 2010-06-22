@@ -81,6 +81,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return _stage.ResolveWhereExpression (whereCondition, _context);
     }
 
+    protected Expression ResolveGroupByExpression (Expression groupByExpression)
+    {
+      ArgumentUtility.CheckNotNull ("whereCondition", groupByExpression);
+
+      return _stage.ResolveGroupByExpression (groupByExpression, _context);
+    }
+    
     protected Expression ResolveOrderingExpression (Expression orderByExpression)
     {
       ArgumentUtility.CheckNotNull ("orderByExpression", orderByExpression);
@@ -107,6 +114,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var previousSelectProjection = sqlStatementBuilder.SelectProjection;
       sqlStatementBuilder.SelectProjection = _stage.ResolveSelectExpression (sqlStatementBuilder.SelectProjection, _context);
       sqlStatementBuilder.RecalculateDataInfo (previousSelectProjection);
+
+      if (sqlStatementBuilder.GroupByExpression != null)
+        sqlStatementBuilder.GroupByExpression = _stage.ResolveGroupByExpression (sqlStatementBuilder.GroupByExpression, _context);
 
       if (sqlStatementBuilder.WhereCondition != null)
         sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context);

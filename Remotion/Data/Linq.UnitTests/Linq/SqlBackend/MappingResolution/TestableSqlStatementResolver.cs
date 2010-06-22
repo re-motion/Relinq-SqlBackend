@@ -48,6 +48,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       return base.ResolveWhereCondition (whereCondition);
     }
 
+    public new Expression ResolveGroupByExpression (Expression expression)
+    {
+      return base.ResolveGroupByExpression (expression);
+    }
+
     public new Expression ResolveOrderingExpression (Expression orderByExpression)
     {
       return base.ResolveOrderingExpression (orderByExpression);

@@ -30,6 +30,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   {
     Expression ResolveSelectExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveWhereExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveGroupByExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveTopExpression (Expression expression, IMappingResolutionContext context);
     IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context);

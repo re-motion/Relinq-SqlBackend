@@ -101,6 +101,43 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolveGroupByExpression ()
+    {
+      var expression = Expression.Constant (true);
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _stage.ResolveGroupByExpression (expression, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void ResolveGroupByExpression_SingleValueRequired ()
+    {
+      var expression = Expression.Constant (true);
+      var sqlColumnDefinitionExpression = new SqlColumnDefinitionExpression(typeof(int), "c", "ID", true);
+      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", sqlColumnDefinitionExpression);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _stage.ResolveGroupByExpression (expression, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (sqlColumnDefinitionExpression));
+    }
+
+    [Test]
     public void ResolveOrderingExpression ()
     {
       var expression = Expression.Constant (true);
