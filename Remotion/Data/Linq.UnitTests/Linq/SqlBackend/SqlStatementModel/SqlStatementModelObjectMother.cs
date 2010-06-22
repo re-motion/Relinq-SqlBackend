@@ -43,11 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (
           new TestStreamedValueInfo (typeof (string)),
           selectProjection,
-          sqlTables,
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          sqlTables, null, null, new Ordering[] { }, null, false, null, null);
     }
 
     public static SqlStatement CreateSqlStatementWithCook ()
@@ -56,11 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (
           new TestStreamedValueInfo (typeof (Cook)),
           new SqlTableReferenceExpression (sqlTable),
-          new[] { sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
     }
 
     public static SqlStatement CreateSqlStatement ()
@@ -69,11 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (
           new TestStreamedValueInfo (typeof (string)),
           new SqlTableReferenceExpression (sqlTable),
-          new[] { sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
@@ -82,11 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (
           new TestStreamedValueInfo (type),
           CreateSqlEntityDefinitionExpression (type),
-          new[] { sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
     }
 
     public static SqlTable CreateSqlTable ()

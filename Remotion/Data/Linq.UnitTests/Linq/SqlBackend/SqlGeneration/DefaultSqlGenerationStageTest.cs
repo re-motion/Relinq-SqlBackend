@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
 
-      _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, new Ordering[] { }, null, null, false, null, null, null);
+      _sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -90,11 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           Expression.Constant (new Cook[] { }),
-          new SqlTable[] { },
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          new SqlTable[] { }, null, null, new Ordering[] { }, null, false, null, null);
 
       _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
     }
@@ -105,11 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (string)),
           Expression.Constant ("test"),
-          new SqlTable[] { },
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          new SqlTable[] { }, null, null, new Ordering[] { }, null, false, null, null);
 
       _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
 
@@ -137,11 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForWhereExpression ()
     {
       var sqlStatement = new SqlStatement (new TestStreamedValueInfo (typeof (int)), _columnListExpression,
-          new SqlTable[] { },
-          new Ordering[] { },
-          Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)),
-          null,
-          false, null, null, null);
+          new SqlTable[] { }, Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)), null, new Ordering[] { }, null, false, null, null);
 
       _stageMock
           .Expect (mock => CallGenerateTextForExpression (mock, sqlStatement.WhereCondition, SqlGenerationMode.NonSelectExpression))

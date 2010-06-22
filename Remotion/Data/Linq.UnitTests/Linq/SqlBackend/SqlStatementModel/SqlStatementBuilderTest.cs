@@ -54,14 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           selectProjection,
-          new [] { sqlTable },
-          new [] { ordering },
-          whereCondition,
-          topExpression,
-          false, 
-          rowNumberSelector, 
-          currentRowNumberOffset, 
-          groupExpression);
+          new [] { sqlTable }, whereCondition, groupExpression, new [] { ordering }, topExpression, false, rowNumberSelector, currentRowNumberOffset);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 

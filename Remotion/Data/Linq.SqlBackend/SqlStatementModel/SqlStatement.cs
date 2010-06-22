@@ -31,31 +31,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// <see cref="SqlStatement"/> represents a SQL database query. The <see cref="QueryModel"/> is translated to this model, and the 
   /// <see cref="SqlStatement"/> is transformed several times until it can easily be translated to SQL text.
   /// </summary>
-  // TODO Review 2902: Reorder items so that groupByExpression comes directly before orderings in ctor, properties, fields; whereCondition should go before groupByExpression
   public class SqlStatement
   {
     private readonly IStreamedDataInfo _dataInfo;
-    private readonly SqlTableBase[] _sqlTables;
-    private readonly Ordering[] _orderings;
     private readonly Expression _selectProjection;
+    private readonly SqlTableBase[] _sqlTables;
+    private readonly Expression _groupByExpression;
+    private readonly Ordering[] _orderings;
     private readonly Expression _whereCondition;
     private readonly Expression _topExpression;
     private readonly bool _isDistinctQuery;
     private readonly Expression _rowNumberSelector;
     private readonly Expression _currentRowNumberOffset;
-    private readonly Expression _groupByExpression;
 
     public SqlStatement (
         IStreamedDataInfo dataInfo,
         Expression selectProjection,
         IEnumerable<SqlTableBase> sqlTables,
-        IEnumerable<Ordering> orderings,
         Expression whereCondition,
+        Expression groupByExpression,
+        IEnumerable<Ordering> orderings,
         Expression topExpression,
         bool isDistinctQuery,
         Expression rowNumberSelector,
-        Expression currentRowNumberOffset,
-        Expression groupByExpression)
+        Expression currentRowNumberOffset)
     {
       ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
@@ -107,6 +106,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _whereCondition; }
     }
 
+    public Expression GroupByExpression
+    {
+      get { return _groupByExpression; }
+    }
+
     public ReadOnlyCollection<Ordering> Orderings
     {
       get { return Array.AsReadOnly (_orderings); }
@@ -120,11 +124,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public Expression CurrentRowNumberOffset
     {
       get { return _currentRowNumberOffset; }
-    }
-
-    public Expression GroupByExpression
-    {
-      get { return _groupByExpression; }
     }
 
     public Expression CreateExpression ()
@@ -180,7 +179,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (WhereCondition != null)
         sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
       if (GroupByExpression != null)
-        sb.Append (" GROUP BY ").Append(FormattingExpressionTreeVisitor.Format(GroupByExpression));
+        sb.Append (" GROUP BY ").Append (FormattingExpressionTreeVisitor.Format (GroupByExpression));
       if (Orderings.Count > 0)
       {
         sb.Append (" ORDER BY ");

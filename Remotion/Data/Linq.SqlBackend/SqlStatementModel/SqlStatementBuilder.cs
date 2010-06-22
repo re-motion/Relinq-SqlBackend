@@ -69,15 +69,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.SelectProjection = value; }
     }
 
+    public List<SqlTableBase> SqlTables
+    {
+      get { return _valueHolder.SqlTables; }
+    }
+
     public Expression WhereCondition
     {
       get { return _valueHolder.WhereCondition; }
       set { _valueHolder.WhereCondition = value; }
     }
 
-    public List<SqlTableBase> SqlTables
+    public Expression GroupByExpression
     {
-      get { return _valueHolder.SqlTables; }
+      get { return _valueHolder.GroupByExpression; }
+      set { _valueHolder.GroupByExpression = value; }
     }
 
     public List<Ordering> Orderings
@@ -97,13 +103,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.CurrentRowNumberOffset = value; }
     }
 
-    // TODO Review 2902: Reorder items so that groupByExpression comes directly before orderings in ctor, properties, fields; whereCondition should go before groupByExpression
-    public Expression GroupByExpression
-    {
-      get { return _valueHolder.GroupByExpression; }
-      set { _valueHolder.GroupByExpression = value; }
-    }
-
     public SqlStatement GetSqlStatement ()
     {
       if (DataInfo == null)
@@ -111,14 +110,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (
           DataInfo,
           SelectProjection,
-          SqlTables,
-          Orderings,
-          WhereCondition,
-          TopExpression,
-          IsDistinctQuery,
-          RowNumberSelector,
-          CurrentRowNumberOffset,
-          GroupByExpression);
+          SqlTables, WhereCondition, GroupByExpression, Orderings, TopExpression, IsDistinctQuery, RowNumberSelector, CurrentRowNumberOffset);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -195,7 +187,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         Orderings = new List<Ordering>();
       }
 
-      // TODO Review 2902: Reorder items so that groupByExpression comes directly before orderings in ctor, properties, fields; whereCondition should go before groupByExpression
       public ValueHolder (SqlStatement sqlStatement)
       {
         DataInfo = sqlStatement.DataInfo;
@@ -203,30 +194,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         WhereCondition = sqlStatement.WhereCondition;
         IsDistinctQuery = sqlStatement.IsDistinctQuery;
         TopExpression = sqlStatement.TopExpression;
+        GroupByExpression = sqlStatement.GroupByExpression;
         RowNumberSelector = sqlStatement.RowNumberSelector;
         CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
-        GroupByExpression = sqlStatement.GroupByExpression;
 
         SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
         Orderings = new List<Ordering> (sqlStatement.Orderings);
       }
 
       public IStreamedDataInfo DataInfo { get; set; }
-
       public bool IsDistinctQuery { get; set; }
-
       public Expression TopExpression { get; set; }
-
       public Expression SelectProjection { get; set; }
-      public Expression WhereCondition { get; set; }
-
       public List<SqlTableBase> SqlTables { get; private set; }
+      public Expression WhereCondition { get; set; }
+      public Expression GroupByExpression { get; set; }
       public List<Ordering> Orderings { get; private set; }
-
       public Expression RowNumberSelector { get; set; }
       public Expression CurrentRowNumberOffset { get; set; }
-
-      public Expression GroupByExpression { get; set; }
     }
   }
 }
