@@ -34,6 +34,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void CountWithOrderings ()
+    {
+      CheckQuery (
+          () => (from c in Cooks orderby c.Name select c).Count(),
+          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
     public void CountWithProperty ()
     {
       CheckQuery (
@@ -384,6 +392,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => Kitchens.Sum (k => k.RoomNumber),
           "SELECT SUM([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]");
+    }
+
+    [Test]
+    public void Sum_WithOrderings ()
+    {
+      CheckQuery (
+          () => Kitchens.OrderBy (k => k.Name).Sum (k => k.RoomNumber),
+          "SELECT SUM([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]"
+          );
     }
 
     [Test]

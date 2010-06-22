@@ -41,6 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      sqlStatementBuilder.Orderings.Clear ();
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
