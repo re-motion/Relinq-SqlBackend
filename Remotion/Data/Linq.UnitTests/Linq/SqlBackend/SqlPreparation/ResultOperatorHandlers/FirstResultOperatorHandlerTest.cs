@@ -85,6 +85,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
+    public void HandleResultOperator_FirstAfterGroupExpression ()
+    {
+      _sqlStatementBuilder.TopExpression = Expression.Constant ("group");
+
+      var resultOperator = new FirstResultOperator (false);
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+
+      Assert.That (((ConstantExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo (1));
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+    }
+
+    [Test]
     public void HandleResultOperator_FirstAfterSkipExpression ()
     {
       _sqlStatementBuilder.WhereCondition = null;

@@ -461,5 +461,78 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT DISTINCT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
           "FROM [CookTable] AS [t0]");
     }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Cannot translate queries that select collections to SQL.")]
+    [Ignore("TODO: 2905")]
+    public void GroupBy_TopLevel ()
+    {
+      CheckQuery (
+          () => Cooks.GroupBy (c => c.Name),
+          "");
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Using groupings in a from expression is not currently supported.")]
+    [Ignore("TODO: 2905")]
+    public void GroupByInFromExpression ()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into x from y in x select y,
+          "");
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException), 
+          ExpectedMessage = "When a grouping is used in an aggregation expression, no other query operators can be used.")]
+    [Ignore("TODO: 2905")]
+    public void InvalidAggregatesOnGroupings ()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into x select x.Where(c=>c.Name=="Hugo").Count(),
+          "");
+    }
+
+    [Ignore ("TODO: 2905")]
+    public void GroupBy1()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, ""
+          );
+    }
+
+    [Ignore ("TODO: 2905")]
+    public void GoupBy2()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Count()>0 select cooksByName.Key, ""
+          );
+    }
+
+    [Ignore ("TODO: 2905")]
+    public void GroupBy3 ()
+    {
+      CheckQuery (
+          from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, ""
+          );
+    }
+
+    [Ignore ("TODO: 2905")]
+    public void GroupBy4 ()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key, ""
+          );
+    }
+
+    [Ignore ("TODO: 2905")]
+    public void GroupBy5 ()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c => c.Weight) > 18 select cooksByName.Key, ""
+          );
+    }
+
+
   }
 }

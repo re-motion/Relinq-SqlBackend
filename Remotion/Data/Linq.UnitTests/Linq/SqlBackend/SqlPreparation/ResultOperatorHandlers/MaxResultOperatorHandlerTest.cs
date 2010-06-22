@@ -85,6 +85,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
+    public void HandleResultOperator_MaxAfterGroupExpression ()
+    {
+      _sqlStatementBuilder.GroupByExpression = Expression.Constant ("group");
+
+      var resultOperator = new MaxResultOperator ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+    }
+
+    [Test]
     public void HandleResultOperator_MaxAfterDistinctExpression ()
     {
       _sqlStatementBuilder.IsDistinctQuery = true;
