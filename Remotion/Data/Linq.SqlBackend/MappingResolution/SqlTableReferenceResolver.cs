@@ -99,5 +99,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       throw new InvalidOperationException ("SqlJoinedTable is not valid at this point.");
     }
+
+    public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+    {
+      //method should never be called because 'expression.SqlTable.GetResolvedTableInfo' throws an exception before 
+
+      throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
+    }
   }
 }

@@ -81,5 +81,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return tableInfo;
     }
+
+    public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
+    }
   }
 }

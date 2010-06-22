@@ -91,6 +91,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       joinedTable.JoinInfo.Accept (this);
     }
 
+    public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
+    }
+
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);

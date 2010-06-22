@@ -86,5 +86,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return joinedTable.GetResolvedTableInfo ();
     }
+
+    public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
