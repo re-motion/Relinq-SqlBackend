@@ -80,6 +80,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
     }
 
+    public void GenerateTextForGroupByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+    }
+
     public void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);

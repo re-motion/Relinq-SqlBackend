@@ -434,6 +434,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void Build_WithGroupByExpression ()
+    {
+      var sqlGroupExpression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
+      sqlGroupExpression.AddAggregationExpression (Expression.Constant ("aggregation1"));
+      sqlGroupExpression.AddAggregationExpression (Expression.Constant ("aggregation2"));
+      var sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          _entityExpression,
+          new[] { _sqlTable }, null, sqlGroupExpression, new Ordering[] { }, null, false, null, null);
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
+      _stageMock.Expect (
+          mock => mock.GenerateTextForGroupByExpression (_commandBuilder, sqlStatement.GroupByExpression))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append("keyExpression"));
+      _stageMock.Replay ();
+
+      _generator.Build (sqlStatement, _commandBuilder);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] GROUP BY keyExpression"));
+    }
+
+    [Test]
     public void Build_WithWhereCondition ()
     {
       var sqlStatement = new SqlStatement (

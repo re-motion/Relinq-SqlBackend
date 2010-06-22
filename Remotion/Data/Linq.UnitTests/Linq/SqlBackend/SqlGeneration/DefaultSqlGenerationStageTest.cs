@@ -188,12 +188,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock
           .Expect (mock => CallGenerateTextForExpression (mock, expression, SqlGenerationMode.NonSelectExpression))
           .WhenCalled (c => _commandBuilder.Append ("test"));
-      _stageMock.Replay();
+      _stageMock.Replay ();
 
       _stageMock.GenerateTextForJoinKeyExpression (_commandBuilder, expression);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void GenerateTextForGroupByExpression ()
+    {
+      var expression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
+
+      _stageMock
+          .Expect (mock => CallGenerateTextForExpression (mock, expression, SqlGenerationMode.NonSelectExpression))
+          .WhenCalled (c => _commandBuilder.Append ("GROUP BY keyExpression"));
+      _stageMock.Replay ();
+
+      _stageMock.GenerateTextForGroupByExpression (_commandBuilder, expression);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("GROUP BY keyExpression"));
     }
 
     private void CallGenerateTextForExpression (DefaultSqlGenerationStage mock, Expression expression, SqlGenerationMode sqlGenerationMode)

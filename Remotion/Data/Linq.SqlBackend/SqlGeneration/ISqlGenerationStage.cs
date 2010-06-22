@@ -33,6 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement);
     void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression);
+    void GenerateTextForGroupByExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering);
   }
 }

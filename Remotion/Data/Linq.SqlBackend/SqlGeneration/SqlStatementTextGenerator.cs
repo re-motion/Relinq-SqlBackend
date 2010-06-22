@@ -50,6 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       BuildSelectPart (sqlStatement, commandBuilder);
       BuildFromPart (sqlStatement, commandBuilder);
       BuildWherePart (sqlStatement, commandBuilder);
+      BuildGroupByPart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder);
     }
 
@@ -97,6 +98,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         commandBuilder.Append (" WHERE ");
 
         _stage.GenerateTextForWhereExpression (commandBuilder, sqlStatement.WhereCondition);
+      }
+    }
+
+    protected virtual void BuildGroupByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+
+      if (sqlStatement.GroupByExpression != null)
+      {
+        commandBuilder.Append (" GROUP BY ");
+
+        _stage.GenerateTextForGroupByExpression (commandBuilder, sqlStatement.GroupByExpression);
       }
     }
 

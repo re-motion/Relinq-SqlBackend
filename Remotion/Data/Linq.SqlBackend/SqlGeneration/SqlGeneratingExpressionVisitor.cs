@@ -40,7 +40,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
-        ISqlColumnExpressionVisitor
+        ISqlColumnExpressionVisitor,
+        ISqlGroupingSelectExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SqlGenerationMode mode)
     {
@@ -341,6 +342,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
       VisitExpression (((NamedExpression) expression.Expression).Expression);
       _commandBuilder.Append (")");
+
+      return expression;
+    }
+
+    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var groupExpressions = Enumerable.Concat (new[] { expression.KeyExpression }, expression.AggregationExpressions);
+
+      _commandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
 
       return expression;
     }
