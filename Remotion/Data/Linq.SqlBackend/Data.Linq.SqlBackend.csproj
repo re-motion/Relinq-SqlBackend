@@ -116,6 +116,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\DistinctResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\FirstResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\IResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\GroupResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\MaxResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\MinResultoperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\OfTypeResultOperatorHandler.cs" />

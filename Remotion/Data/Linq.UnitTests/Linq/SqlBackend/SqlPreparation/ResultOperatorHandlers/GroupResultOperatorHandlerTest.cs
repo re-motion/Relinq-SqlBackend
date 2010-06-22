@@ -18,28 +18,25 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class SingleResultOperatorHandlerTest
+  public class GroupResultOperatorHandlerTest
   {
     private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
-    private SingleResultOperatorHandler _handler;
+    private GroupResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private QueryModel _queryModel;
     private SqlPreparationContext _context;
@@ -49,58 +46,68 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _generator = new UniqueIdentifierGenerator ();
       _stage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
-      _handler = new SingleResultOperatorHandler();
-      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
-                             {
-                                 DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                             };
-     _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause());
-      _context = new SqlPreparationContext();
+          MethodCallTransformerRegistry.CreateDefault (), ResultOperatorHandlerRegistry.CreateDefault (), _generator);
+      _handler = new GroupResultOperatorHandler ();
+      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
+      };
+      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
+      _context = new SqlPreparationContext ();
     }
+
 
     [Test]
     public void HandleResultOperator ()
     {
-      var resultOperator = new SingleResultOperator (false);
+      var keySelector = Expression.Constant("keySelector");
+      var elementSelector = Expression.Constant("elementSelector");
+      var resultOperator = new GroupResultOperator("itemName", keySelector, elementSelector);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (((ConstantExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo(2));
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
-      Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Cook)));
+      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs(keySelector));
+      var expectedSelectProjection = new SqlGroupingSelectExpression (keySelector, elementSelector);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
+
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
     }
 
     [Test]
-    public void HandleResultOperator_SingleAfterTopExpression ()
+    public void HandleResultOperator_GroupByAfterTopExpression ()
     {
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
+      var topExpression = Expression.Constant ("top");
+      _sqlStatementBuilder.TopExpression = topExpression;
 
-      var resultOperator = new SingleResultOperator (false);
+      var keySelector = Expression.Constant ("keySelector");
+      var elementSelector = Expression.Constant ("elementSelector");
+      var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (((ConstantExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo (2));
+      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs(keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
+      Assert.That (subStatement.TopExpression, Is.SameAs (topExpression));
     }
 
     [Test]
-    public void HandleResultOperator_SingleAfterSkipExpression ()
+    public void HandleResultOperator_GroupByAfterDistinct ()
     {
-      _sqlStatementBuilder.WhereCondition = null;
-      _sqlStatementBuilder.RowNumberSelector = Expression.Constant (5);
-      _sqlStatementBuilder.CurrentRowNumberOffset = Expression.Constant (3);
+      _sqlStatementBuilder.IsDistinctQuery = true;
 
-      var resultOperator = new SingleResultOperator(false);
-
-      var expectedWhereCondition = Expression.LessThanOrEqual (
-                _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, new SqlLiteralExpression(1)));
+      var keySelector = Expression.Constant ("keySelector");
+      var elementSelector = Expression.Constant ("elementSelector");
+      var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
+      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
+      Assert.That (subStatement.IsDistinctQuery, Is.True);
     }
   }
 }

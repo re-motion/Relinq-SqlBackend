@@ -76,6 +76,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
     }
 
+    protected void EnsureNoGroupExpression (
+        ResultOperatorBase resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
+    {
+      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      if(sqlStatementBuilder.GroupByExpression!=null)
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
+    }
+
     protected void MoveCurrentStatementToSqlTable (
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,

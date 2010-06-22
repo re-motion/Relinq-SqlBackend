@@ -132,6 +132,35 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
+    public void EnsureNoTopExpressionAndSetDataInfo_WithGroupByExpression ()
+    {
+      _statementBuilder.GroupByExpression = Expression.Constant ("top");
+      var originalStatement = _statementBuilder.GetSqlStatement ();
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new Ordering[0]);
+
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.EnsureNoGroupExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
+    }
+
+    [Test]
+    public void EnsureNoGroupExpressionAndSetDataInfo_WithoutGroupExpression ()
+    {
+      var sqlStatement = _statementBuilder.GetSqlStatement ();
+
+      _handler.EnsureNoGroupExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
+    }
+
+    [Test]
     public void EnsureNoDistinctQuery_DistinctQuery ()
     {
       var resultOperator = new TestChoiceResultOperator (false);
