@@ -463,6 +463,43 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo("A"));
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
     }
+
+
+    [Test]
+    public void VisitNewExpression_PreventNestedNamedExpressions_DifferentName ()
+    {
+      var namedExpression = new NamedExpression("test", Expression.Constant (0));
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { namedExpression}, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (result, Is.Not.SameAs (expression));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Expression, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo("A"));
+      Assert.That (((NewExpression) result).Arguments[0], Is.Not.SameAs(namedExpression));
+    }
+
+    [Test]
+    public void VisitNewExpression_PreventNestedNamedExpressions_SameName ()
+    {
+      var namedExpression = new NamedExpression ("A", Expression.Constant (0));
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { namedExpression }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (result, Is.Not.SameAs (expression));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Expression, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("A"));
+      Assert.That (((NewExpression) result).Arguments[0], Is.SameAs (namedExpression));
+    }
   }
   
 }
