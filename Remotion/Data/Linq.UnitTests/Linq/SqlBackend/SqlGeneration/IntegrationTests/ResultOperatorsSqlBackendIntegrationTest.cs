@@ -403,6 +403,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           );
     }
 
+    // TODO Review 2917: Add test: Kitchens.OrderBy (k => k.Name).Take (5).Sum(k => k.RoomNumber) - this should retain the order in the substatement
+
     [Test]
     public void Sum_InSubquery ()
     {

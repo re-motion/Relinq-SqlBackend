@@ -42,6 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      // TODO Review 2917: Same problem as with AggregationResultOperatorHandler
       sqlStatementBuilder.Orderings.Clear ();
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);

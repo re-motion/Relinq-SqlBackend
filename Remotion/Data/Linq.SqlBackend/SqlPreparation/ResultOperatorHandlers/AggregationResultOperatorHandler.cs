@@ -43,8 +43,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      // TODO Review 2917: This must be done below the Ensure methods because otherwise, TOP queries might not be correct any longer!
       // With aggregations, the order is not relevant; SQL also imposes restrictions on ORDER BY with aggregates, so we'll just remove them
       sqlStatementBuilder.Orderings.Clear ();
+
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);

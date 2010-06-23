@@ -54,6 +54,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void HandleResultOperator ()
     {
+      // TODO Review 2917: Write a dedicated unit test for orderings (like with CountResultOperatorHandlerTest)
+      // TODO Review 2917: Write a unit test with TopExpression and orderings - the inner statement should keep the orderings, the outer statement should not
       _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
       var averageResultOperator = new MaxResultOperator ();
 
