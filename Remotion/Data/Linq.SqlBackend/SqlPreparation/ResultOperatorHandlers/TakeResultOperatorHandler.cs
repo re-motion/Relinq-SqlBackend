@@ -38,13 +38,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      // TODO Review 2904: Count must be prepared
-      
+      var countExpression = stage.PrepareResultOperatorItemExpression (resultOperator.Count, context);
       if (sqlStatementBuilder.RowNumberSelector != null)
       {
         var whereCondition = Expression.LessThanOrEqual (
             sqlStatementBuilder.RowNumberSelector, 
-            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));
+            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, countExpression));
         sqlStatementBuilder.AddWhereCondition (whereCondition);
       }
       else
