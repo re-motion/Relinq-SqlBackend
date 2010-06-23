@@ -163,6 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         "This table has not yet been resolved; call the resolution step first.")]
     public void ResolveSqlTableReferenceExpression_VisitUnresolvedGroupReferenceTableInfo ()
     {
+      // TODO 2907: Add SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo and use instead
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
       {
         DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))

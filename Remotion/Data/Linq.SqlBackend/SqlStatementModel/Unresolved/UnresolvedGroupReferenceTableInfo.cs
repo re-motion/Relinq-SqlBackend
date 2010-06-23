@@ -21,7 +21,8 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="UnresolvedGroupReferenceTableInfo"/> holds a referenced <see cref="ResolvedSubStatementTableInfo"/>.
+  /// <see cref="UnresolvedGroupReferenceTableInfo"/> constitutes an implementation of <see cref="ITableInfo"/> for <see cref="SqlTable"/>s that
+  /// return groups of items. TODO 2909: Document referenced table info when implementation has finished.
   /// </summary>
   public class UnresolvedGroupReferenceTableInfo : ITableInfo
   {
@@ -55,5 +56,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       return visitor.VisitUnresolvedGroupReferenceTableInfo (this);
     }
+
+    // TODO Review 2907: Implement and test ToString, something like GROUP-TABLE(ItemType.Name)
   }
 }

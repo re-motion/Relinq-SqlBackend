@@ -91,6 +91,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       joinedTable.JoinInfo.Accept (this);
     }
 
+    // TODO Review 2907: Should be explicit implementation and go to the bottom
     public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");

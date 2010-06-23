@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException("TODO 2907");
     }
   }
 }

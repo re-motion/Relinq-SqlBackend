@@ -62,5 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       Assert.That (_tableInfo.ReferencedTableInfo, Is.SameAs (_resolvedSubStatmentTableInfo));
       Assert.That (_tableInfo.ItemType, Is.SameAs (_resolvedSubStatmentTableInfo.ItemType));
     }
+
+    // TODO Review 2907: Add test for GetResolvedTableInfo
   }
 }
