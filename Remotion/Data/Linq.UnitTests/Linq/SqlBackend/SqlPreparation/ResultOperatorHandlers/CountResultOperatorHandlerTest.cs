@@ -18,18 +18,13 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -40,7 +35,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private CountResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private QueryModel _queryModel;
     private SqlPreparationContext _context;
 
     [SetUp]
@@ -54,13 +48,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       {
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
       };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause());
       _context = new SqlPreparationContext();
     }
 
     [Test]
     public void HandleResultOperator ()
     {
+      _sqlStatementBuilder.SelectProjection = new NamedExpression (null, _sqlStatementBuilder.SelectProjection);
       var countResultOperator = new CountResultOperator ();
 
       _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
@@ -68,63 +62,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Count));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
-    }
-
-    [Test]
-    public void HandleResultOperator_OrderingsAreRemoved ()
-    {
-      _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
-      var countResultOperator = new CountResultOperator ();
-
-      _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Count));
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
-      Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
-      Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void HandleResultOperator_CountAfterTopExpression ()
-    {
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
-
-      var resultOperator = new CountResultOperator ();
-      
-      _handler.HandleResultOperator (resultOperator,  _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-    }
-
-    [Test]
-    public void HandleResultOperator_CountAfterGroupExpression ()
-    {
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("group");
-
-      var resultOperator = new CountResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-    }
-
-    [Test]
-    public void HandleResultOperator_CountAfterDistinctExpression ()
-    {
-      _sqlStatementBuilder.IsDistinctQuery = true;
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
-
-      var resultOperator = new CountResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) ((NamedExpression) ((AggregationExpression) _sqlStatementBuilder.SelectProjection).Expression).Expression).SqlTable).TableInfo,
-          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
    
   }

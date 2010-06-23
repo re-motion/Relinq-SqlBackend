@@ -26,31 +26,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
   /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
   /// </summary>
-  // TODO Review 2904: Should CountResultOperatorHandler be derived from AggregationResultOperatorHandler?
-  public class CountResultOperatorHandler : ResultOperatorHandler<CountResultOperator>
+  public class CountResultOperatorHandler : AggregationResultOperatorHandler<CountResultOperator>
   {
-    public override void HandleResultOperator (
-        CountResultOperator resultOperator,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage,
-        ISqlPreparationContext context)
+    public override AggregationModifier AggregationModifier
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      // TODO Review 2917: Same problem as with AggregationResultOperatorHandler
-      sqlStatementBuilder.Orderings.Clear ();
-      EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
-      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
-      EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
-      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-
-      sqlStatementBuilder.SelectProjection = new AggregationExpression (
-          sqlStatementBuilder.DataInfo.DataType, sqlStatementBuilder.SelectProjection, AggregationModifier.Count);
+      get { return SqlStatementModel.AggregationModifier.Count; }
     }
   }
 }
