@@ -55,8 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Distinct ().Single(),
-          "SELECT DISTINCT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", 2));
+          "SELECT DISTINCT TOP (2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -102,9 +101,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Single(),
-          "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]",
-          new CommandParameter ("@1", 2),
-          new CommandParameter ("@2", 5));
+          "SELECT TOP (2) [q0].[value] AS [value] FROM (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]",
+          new CommandParameter ("@1", 5));
     }
 
     [Test]
@@ -117,9 +115,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5).Single (fn => fn != null),
-          "SELECT TOP (@1) [q0].[value] AS [value] FROM (SELECT TOP (@2) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[value] IS NOT NULL)",
-          new CommandParameter ("@1", 2),
-          new CommandParameter ("@2", 5));
+          "SELECT TOP (2) [q0].[value] AS [value] FROM (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[value] IS NOT NULL)",
+          new CommandParameter ("@1", 5));
     }
 
     [Test]
@@ -227,7 +224,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Single(),
           "SELECT [q0].[get_Key] AS [get_Key] FROM (SELECT [t0].[FirstName] AS [get_Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [get_Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[get_Value] > @1) AND ([q0].[get_Value] <= (@2 + 1))) ORDER BY [q0].[get_Value] ASC",
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[get_Value] > @1) AND ([q0].[get_Value] <= (@2 + 2))) ORDER BY [q0].[get_Value] ASC",
           new CommandParameter ("@1", 100),
           new CommandParameter ("@2", 100));
     }

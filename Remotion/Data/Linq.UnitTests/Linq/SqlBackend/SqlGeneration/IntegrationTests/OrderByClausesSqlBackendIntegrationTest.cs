@@ -98,10 +98,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
          from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook == c select k).Single(),
-         "SELECT (SELECT TOP (@1) [t1].[ID],[t1].[CookID],[t1].[Name],[t1].[RestaurantID],[t1].[SubKitchenID] FROM [KitchenTable] AS [t1] "+
+         "SELECT (SELECT TOP (2) [t1].[ID],[t1].[CookID],[t1].[Name],[t1].[RestaurantID],[t1].[SubKitchenID] FROM [KitchenTable] AS [t1] "+
          "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [value] "+
-         "FROM [CookTable] AS [t0]",
-         new CommandParameter("@1", 2));
+         "FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -112,8 +111,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           where (from sc in Cooks orderby sc.Name select sc.Name).Single() != null
           select c,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
-          "FROM [CookTable] AS [t0] WHERE ((SELECT TOP (@1) [t1].[Name] AS [value] FROM [CookTable] AS [t1] ORDER BY [t1].[Name] ASC) IS NOT NULL)",
-          new CommandParameter("@1", 2));
+          "FROM [CookTable] AS [t0] WHERE ((SELECT TOP (2) [t1].[Name] AS [value] FROM [CookTable] AS [t1] ORDER BY [t1].[Name] ASC) IS NOT NULL)");
     }
 
     [Test]
