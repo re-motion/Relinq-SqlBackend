@@ -15,67 +15,71 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class GroupResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stage;
+    private ISqlPreparationStage _stageMock;
     private UniqueIdentifierGenerator _generator;
     private GroupResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    // TODO Review 2904: Unused member. Please always check ReSharper warnings before committing files
-    private QueryModel _queryModel;
     private SqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
     {
-      _generator = new UniqueIdentifierGenerator ();
-      _stage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault (), ResultOperatorHandlerRegistry.CreateDefault (), _generator);
-      _handler = new GroupResultOperatorHandler ();
-      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
-      _context = new SqlPreparationContext ();
+      _generator = new UniqueIdentifierGenerator();
+      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _handler = new GroupResultOperatorHandler();
+      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
+                             {
+                                 DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                             };
+      _context = new SqlPreparationContext();
     }
 
 
     [Test]
     public void HandleResultOperator ()
     {
-      var keySelector = Expression.Constant("keySelector");
-      var elementSelector = Expression.Constant("elementSelector");
-      var resultOperator = new GroupResultOperator("itemName", keySelector, elementSelector);
+      var keySelector = Expression.Constant ("keySelector");
+      var elementSelector = Expression.Constant ("elementSelector");
+      var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
 
-      // TODO Review 2904: Use a mock for the stage to ensure the expressions are prepared
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Return (keySelector);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Return (elementSelector);
+      _stageMock.Replay();
 
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
-      
       var expectedSelectProjection = new SqlGroupingSelectExpression (keySelector, elementSelector);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
-
-      // TODO Review 2904: This is not enough to check that UpdateDataInfo is called. For every line you add to a method, there should be an Assert in the test that fails.
-      // TODO Review 2904: Comment the call to UpdateDataInfo in the implementation, the test will still work. Then, make the test fail (e.g., by checking the DataInfo.DataType for IGrouping<...,...>). Then, enable the call to UpdateDataInfo - the test should now work again.
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (
+          _sqlStatementBuilder.DataInfo.DataType,
+          Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (IGrouping<,>).MakeGenericType (typeof (string), typeof (string)))));
     }
 
     [Test]
@@ -87,10 +91,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var keySelector = Expression.Constant ("keySelector");
       var elementSelector = Expression.Constant ("elementSelector");
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
+      var fakeFromExpressionInfo = new FromExpressionInfo (
+          new SqlTable (new ResolvedSubStatementTableInfo("sc", _sqlStatementBuilder.GetSqlStatement())), new Ordering[0], elementSelector, null, false);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Return (keySelector);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Return (elementSelector);
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
 
-      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs(keySelector));
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
@@ -105,9 +124,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var keySelector = Expression.Constant ("keySelector");
       var elementSelector = Expression.Constant ("elementSelector");
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
+      var fakeFromExpressionInfo = new FromExpressionInfo (
+          new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ())), new Ordering[0], elementSelector, null, false);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Return (keySelector);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Return (elementSelector);
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
 
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -115,6 +149,38 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (subStatement.IsDistinctQuery, Is.True);
     }
 
-    // TODO Review 2904: Add a test for GroupAfterGroup - ie., a GroupResultOperatorHandler applied to a QueryModel with the GroupByExpression already set. The original statement should be moved to a substatement
-  }
+    [Test]
+    public void HandleResultOperator_GroupByAfterGroupBy ()
+    {
+      var groupByExpression = Expression.Constant("group");
+      _sqlStatementBuilder.GroupByExpression = groupByExpression;
+
+      var keySelector = Expression.Constant ("keySelector");
+      var elementSelector = Expression.Constant ("elementSelector");
+      var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
+      var fakeFromExpressionInfo = new FromExpressionInfo (
+          new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ())), new Ordering[0], elementSelector, null, false);
+
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Return (keySelector);
+      _stageMock
+          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Return (elementSelector);
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
+      Assert.That (subStatement.GroupByExpression, Is.SameAs(groupByExpression));
+    }
+ }
 }

@@ -36,9 +36,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
+      EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
-      // TODO Review 2904: EnsureNoGroupQuery missing
-
+      
       var preparedKeySelector = stage.PrepareItemExpression (resultOperator.KeySelector, context);
       var preparedElementSelector = stage.PrepareItemExpression (resultOperator.ElementSelector, context);
 
