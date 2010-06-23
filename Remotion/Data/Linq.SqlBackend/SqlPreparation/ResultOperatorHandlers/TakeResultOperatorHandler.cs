@@ -38,6 +38,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
+      // TODO Review 2904: Count must be prepared
+
       if (sqlStatementBuilder.RowNumberSelector != null)
       {
         var whereCondition = Expression.LessThanOrEqual (

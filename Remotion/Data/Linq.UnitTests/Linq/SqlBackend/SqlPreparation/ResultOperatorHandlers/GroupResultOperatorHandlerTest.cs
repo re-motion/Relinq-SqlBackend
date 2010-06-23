@@ -38,6 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private GroupResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
+    // TODO Review 2904: Unused member. Please always check ReSharper warnings before committing files
     private QueryModel _queryModel;
     private SqlPreparationContext _context;
 
@@ -64,12 +65,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var elementSelector = Expression.Constant("elementSelector");
       var resultOperator = new GroupResultOperator("itemName", keySelector, elementSelector);
 
+      // TODO Review 2904: Use a mock for the stage to ensure the expressions are prepared
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs(keySelector));
+      Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
+      
       var expectedSelectProjection = new SqlGroupingSelectExpression (keySelector, elementSelector);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
 
+      // TODO Review 2904: This is not enough to check that UpdateDataInfo is called. For every line you add to a method, there should be an Assert in the test that fails.
+      // TODO Review 2904: Comment the call to UpdateDataInfo in the implementation, the test will still work. Then, make the test fail (e.g., by checking the DataInfo.DataType for IGrouping<...,...>). Then, enable the call to UpdateDataInfo - the test should now work again.
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
     }
 
@@ -109,5 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
       Assert.That (subStatement.IsDistinctQuery, Is.True);
     }
+
+    // TODO Review 2904: Add a test for GroupAfterGroup - ie., a GroupResultOperatorHandler applied to a QueryModel with the GroupByExpression already set. The original statement should be moved to a substatement
   }
 }

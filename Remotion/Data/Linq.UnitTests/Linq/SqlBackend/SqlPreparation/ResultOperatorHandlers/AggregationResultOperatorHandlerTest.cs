@@ -22,9 +22,7 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
@@ -47,7 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _handler = new TestableAggregationResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
-        DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5))
+        DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5)),
+        SelectProjection = new NamedExpression (null, Expression.Constant (0))
       };
       _context = new SqlPreparationContext ();
     }
@@ -56,7 +55,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void HandleResultOperator ()
     {
       _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
-      _sqlStatementBuilder.SelectProjection = new NamedExpression (null, _sqlStatementBuilder.SelectProjection);
       var averageResultOperator = new MaxResultOperator ();
 
       _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
@@ -65,6 +63,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
       Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo(0));
-    }
+  }
+
+    // TODO Review 2904: Tests missing to show that EnsureNoTop/Group/Distinct is called (can be moved from eg., SumResultOperatorHandlerTest; the derived handlers don't need that test since the logic is performed by the base class if the base class is separately tested)
+    // TODO Review 2904: Test missing showing the exception when SelectExpression is no NamedExpression 
   }
 }

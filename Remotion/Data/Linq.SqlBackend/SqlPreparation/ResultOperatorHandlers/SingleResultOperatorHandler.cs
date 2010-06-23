@@ -30,21 +30,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   {
     public override void HandleResultOperator (SingleResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
+      // TODO Review 2904: Consider using a TakeResultOperatorHandler to implement this method; e.g, var equivalentTakeOperator = new TakeResultOperator (new SqlLiteralExpression (2)); var takeHandler = new ...; takeHandler.HandleResultOperator (equivalentTakeOperator)
+      // TODO Review 2904: (UpdateDataInfo must remain in this method, however)
+
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-
+      
       if (sqlStatementBuilder.RowNumberSelector != null)
       {
-        // TODO Review 2804: Use SqlLiteralExpression
         var whereCondition = Expression.LessThanOrEqual (
-            sqlStatementBuilder.RowNumberSelector, 
-            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, new SqlLiteralExpression(1)));
+            sqlStatementBuilder.RowNumberSelector,
+            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, new SqlLiteralExpression (1))); // TODO Review 2904: should be 2
         sqlStatementBuilder.AddWhereCondition (whereCondition);
       }
       else
       {
-        sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (2), context);
+        sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (Expression.Constant (2), context); // TODO Review 2904: should be literal expression
       }
     }
   }

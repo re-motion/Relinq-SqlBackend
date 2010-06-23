@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -24,7 +23,6 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
@@ -102,6 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_statementBuilder.Orderings[0], Is.SameAs (ordering));
     }
 
+    // TODO Review 2904: The method has been renamed to EnsureNoTopExpression; rename the tests as well
     [Test]
     public void EnsureNoTopExpressionAndSetDataInfo_WithTopExpression ()
     {
@@ -119,6 +118,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _stageMock.VerifyAllExpectations();
       Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
+      // TODO Review 2904: Also check that the original statement was moved to a substatement (compare originalStatement to the statement in the SubStatementTableInfo)
     }
 
     [Test]
@@ -131,6 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement()));
     }
 
+    // TODO Review 2904: Rename test, it's for EnsureNoGroupExpression
     [Test]
     public void EnsureNoTopExpressionAndSetDataInfo_WithGroupByExpression ()
     {
@@ -148,8 +149,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
+      // TODO Review 2904: Also check that the original statement was moved to a substatement
     }
 
+    // TODO Review 2904: Rename test (no SetDataInfo)
     [Test]
     public void EnsureNoGroupExpressionAndSetDataInfo_WithoutGroupExpression ()
     {

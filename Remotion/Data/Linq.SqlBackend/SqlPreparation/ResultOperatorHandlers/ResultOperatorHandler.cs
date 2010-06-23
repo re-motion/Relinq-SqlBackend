@@ -20,7 +20,6 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -45,6 +44,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationContext context);
 
     protected void EnsureNoTopExpression (
+        // TODO Review 2904: resultOperator is not used  
         ResultOperatorBase resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
@@ -61,6 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     }
 
     protected void EnsureNoDistinctQuery (
+        // TODO Review 2904: resultOperator is not used  
         ResultOperatorBase resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
@@ -77,6 +78,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     }
 
     protected void EnsureNoGroupExpression (
+      // TODO Review 2904: resultOperator is not used
         ResultOperatorBase resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
@@ -89,7 +91,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if(sqlStatementBuilder.GroupByExpression!=null)
+      if (sqlStatementBuilder.GroupByExpression != null)
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
     }
 

@@ -26,6 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// <see cref="SqlStatementBuilder.TopExpression"/> has been set, a sub-statement is created for 
   /// everything up to the <see cref="SqlStatementBuilder.TopExpression"/>.
   /// </summary>
+  // TODO Review 2904: Should CountResultOperatorHandler be derived from AggregationResultOperatorHandler?
   public class CountResultOperatorHandler : ResultOperatorHandler<CountResultOperator>
   {
     public override void HandleResultOperator (

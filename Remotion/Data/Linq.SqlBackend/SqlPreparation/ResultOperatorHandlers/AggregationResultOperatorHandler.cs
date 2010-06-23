@@ -43,6 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      // With aggregations, the order is not relevant; SQL also imposes restrictions on ORDER BY with aggregates, so we'll just remove them
       sqlStatementBuilder.Orderings.Clear ();
       EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
