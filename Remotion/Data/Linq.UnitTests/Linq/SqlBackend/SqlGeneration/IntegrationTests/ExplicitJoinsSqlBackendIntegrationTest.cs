@@ -99,9 +99,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
              from skc in gkc select skc.Name).First ()
       select kc.Name, 
       "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t4] ON [t0].[ID] = [t4].[KitchenID] "+
-      "CROSS JOIN [CookTable] AS [t1] WHERE (([t4].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (@1) [t3].[Name] AS [value] "+
-      "FROM [KitchenTable] AS [t2] CROSS JOIN [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID]))))",
-      new CommandParameter("@1", 1));
+      "CROSS JOIN [CookTable] AS [t1] WHERE (([t4].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (1) [t3].[Name] AS [value] "+
+      "FROM [KitchenTable] AS [t2] CROSS JOIN [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID]))))");
     }
 
     [Test]
@@ -121,11 +120,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         select skc.Name).First ()
       select kc.Name,
       "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t6] ON [t0].[ID] = [t6].[KitchenID] "+
-      "CROSS JOIN [CookTable] AS [t1] WHERE (([t6].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (@1) [t3].[Name] AS [value] "+
+      "CROSS JOIN [CookTable] AS [t1] WHERE (([t6].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (1) [t3].[Name] AS [value] "+
       "FROM [KitchenTable] AS [t2] CROSS JOIN [CookTable] AS [t3] WHERE (([t6].[ID] = [t3].[ID]) AND ([t2].[Name] = "+
-      "(SELECT TOP (@2) [t3].[Name] AS [value] FROM [KitchenTable] AS [t4] CROSS JOIN [CookTable] AS [t5] WHERE ([t6].[ID] = [t5].[ID])))))))",
-      new CommandParameter("@1", 1),
-      new CommandParameter("@2", 1));
+      "(SELECT TOP (1) [t3].[Name] AS [value] FROM [KitchenTable] AS [t4] CROSS JOIN [CookTable] AS [t5] WHERE ([t6].[ID] = [t5].[ID])))))))");
     }
 
 
@@ -138,10 +135,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
              join a in Cooks on k.Cook equals a into gak 
              from ak in gak select ak.FirstName).First () 
             select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (@1) [t2].[FirstName] AS [value] "+
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (1) [t2].[FirstName] AS [value] "+
           "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t3] ON [t1].[ID] = [t3].[KitchenID] CROSS JOIN [CookTable] AS [t2] "+
-          "WHERE ([t3].[ID] = [t2].[ID])))",
-          new CommandParameter ("@1", 1));
+          "WHERE ([t3].[ID] = [t2].[ID])))");
     }
 
     [Test]
@@ -155,11 +151,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
              from ak in gak
              from kr in gkr 
              select ak.FirstName).First () select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (@1) [t2].[FirstName] AS [value] "+
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (1) [t2].[FirstName] AS [value] "+
           "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t4] ON [t1].[ID] = [t4].[KitchenID] "+
           "LEFT OUTER JOIN [RestaurantTable] AS [t5] ON [t1].[RestaurantID] = [t5].[ID] CROSS JOIN [CookTable] AS [t2] "+
-          "CROSS JOIN [RestaurantTable] AS [t3] WHERE (([t4].[ID] = [t2].[ID]) AND ([t5].[ID] = [t3].[ID]))))",
-          new CommandParameter ("@1", 1));
+          "CROSS JOIN [RestaurantTable] AS [t3] WHERE (([t4].[ID] = [t2].[ID]) AND ([t5].[ID] = [t3].[ID]))))");
     }
 
     [Test]
@@ -178,12 +173,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               from ak in gak
              select ak.Name).First ()
           select c.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = (SELECT TOP (@1) [t2].[FirstName] AS [value] "+
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = (SELECT TOP (1) [t2].[FirstName] AS [value] "+
           "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t3] ON [t1].[ID] = [t3].[KitchenID] CROSS JOIN [CookTable] AS [t2] "+
-          "WHERE ([t3].[ID] = [t2].[ID]))) AND ([t0].[FirstName] = (SELECT TOP (@2) [t5].[Name] AS [value] FROM [KitchenTable] AS [t4] "+
-          "LEFT OUTER JOIN [CookTable] AS [t6] ON [t4].[ID] = [t6].[KitchenID] CROSS JOIN [CookTable] AS [t5] WHERE ([t6].[ID] = [t5].[ID]))))",
-          new CommandParameter ("@1", 1),
-          new CommandParameter ("@2", 1));
+          "WHERE ([t3].[ID] = [t2].[ID]))) AND ([t0].[FirstName] = (SELECT TOP (1) [t5].[Name] AS [value] FROM [KitchenTable] AS [t4] "+
+          "LEFT OUTER JOIN [CookTable] AS [t6] ON [t4].[ID] = [t6].[KitchenID] CROSS JOIN [CookTable] AS [t5] WHERE ([t6].[ID] = [t5].[ID]))))");
     }
 
     [Test]
@@ -200,11 +193,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
              select ia.FirstName).First ()
           select kc.Name,
           "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t5] ON [t0].[ID] = [t5].[KitchenID] CROSS JOIN "+
-          "[CookTable] AS [t1] WHERE (([t5].[ID] = [t1].[ID]) AND ([t1].[Name] = (SELECT TOP (@1) [t3].[FirstName] AS [value] FROM "+
+          "[CookTable] AS [t1] WHERE (([t5].[ID] = [t1].[ID]) AND ([t1].[Name] = (SELECT TOP (1) [t3].[FirstName] AS [value] FROM "+
           "[KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] CROSS JOIN [CookTable] AS [t3] "+
-          "WHERE ([t4].[ID] = [t3].[ID]))))",
-          new CommandParameter("@1", 1)
-          );
+          "WHERE ([t4].[ID] = [t3].[ID]))))");
      }
 
     [Test]

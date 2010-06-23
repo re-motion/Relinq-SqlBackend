@@ -99,12 +99,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).First(),
-          "SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", 1));
+          "SELECT TOP (1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
       CheckQuery (
           () => (from c in Cooks select c.FirstName).FirstOrDefault(),
-          "SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", 1));
+          "SELECT TOP (1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -112,12 +110,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).First (fn => fn != null),
-          "SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
-          new CommandParameter ("@1", 1));
+          "SELECT TOP (1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
       CheckQuery (
           () => (from c in Cooks select c.FirstName).FirstOrDefault (fn => fn != null),
-          "SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
-          new CommandParameter ("@1", 1));
+          "SELECT TOP (1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
     }
 
     [Test]

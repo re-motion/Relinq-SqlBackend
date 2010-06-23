@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       // TODO Review 2904: Count must be prepared
-
+      
       if (sqlStatementBuilder.RowNumberSelector != null)
       {
         var whereCondition = Expression.LessThanOrEqual (

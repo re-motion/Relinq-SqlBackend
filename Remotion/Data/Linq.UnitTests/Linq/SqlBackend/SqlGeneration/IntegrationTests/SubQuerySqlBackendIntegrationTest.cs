@@ -29,8 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.Name == (from a in Cooks select a.FirstName).First() select c.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]))",
-          new CommandParameter ("@1", 1));
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = (SELECT TOP (1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]))");
     }
 
     [Test]
