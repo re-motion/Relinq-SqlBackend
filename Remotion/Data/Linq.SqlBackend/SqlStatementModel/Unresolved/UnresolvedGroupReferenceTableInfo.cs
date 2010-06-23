@@ -57,6 +57,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       return visitor.VisitUnresolvedGroupReferenceTableInfo (this);
     }
 
-    // TODO Review 2907: Implement and test ToString, something like GROUP-TABLE(ItemType.Name)
+    public override string ToString ()
+    {
+      return string.Format ("GROUP-TABLE({0})", ItemType.Name);
+    }
+
   }
 }

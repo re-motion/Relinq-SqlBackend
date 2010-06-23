@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
@@ -197,5 +198,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
               new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
     }
+
+    public static UnresolvedGroupReferenceTableInfo CreateUnresolvedGroupReferenceTableInfo ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var resolvedSubStatmentTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
+      return new UnresolvedGroupReferenceTableInfo (resolvedSubStatmentTableInfo);
+    }
+
   }
 }

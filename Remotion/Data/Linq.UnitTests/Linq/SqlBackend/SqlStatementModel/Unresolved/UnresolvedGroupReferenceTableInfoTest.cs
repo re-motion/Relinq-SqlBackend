@@ -63,6 +63,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
       Assert.That (_tableInfo.ItemType, Is.SameAs (_resolvedSubStatmentTableInfo.ItemType));
     }
 
-    // TODO Review 2907: Add test for GetResolvedTableInfo
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")]
+    public void GetResolvedTableInfo ()
+    {
+      _tableInfo.GetResolvedTableInfo();
+    }
+
+    [Test]
+    public void To_String ()
+    {
+      var result = _tableInfo.ToString();
+
+      Assert.That (result, Is.EqualTo ("GROUP-TABLE(Cook)"));
+    }
   }
 }

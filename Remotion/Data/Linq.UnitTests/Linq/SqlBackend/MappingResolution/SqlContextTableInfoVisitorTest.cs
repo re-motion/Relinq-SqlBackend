@@ -149,13 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedGroupReferenceTableInfo is not valid at this point.")]
     public void ApplyContext_UnresolvedGroupReferenceTableInfo ()
     {
-      // TODO Review 2907: Add SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo and use instead
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var resolvedSubStatmentTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
-      var tableInfo = new UnresolvedGroupReferenceTableInfo (resolvedSubStatmentTableInfo);
+      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo();
 
       SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
     }
