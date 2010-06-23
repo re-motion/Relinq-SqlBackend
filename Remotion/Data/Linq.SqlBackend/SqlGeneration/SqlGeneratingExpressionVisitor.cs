@@ -350,7 +350,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var groupExpressions = Enumerable.Concat (new[] { expression.KeyExpression }, expression.AggregationExpressions);
+      var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
 
       _commandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
 
