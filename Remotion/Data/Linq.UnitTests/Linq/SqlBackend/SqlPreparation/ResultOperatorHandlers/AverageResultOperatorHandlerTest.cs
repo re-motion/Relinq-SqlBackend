@@ -69,48 +69,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (double )));
     }
-
-    [Test]
-    public void HandleResultOperator_AverageAfterTopExpression ()
-    {
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
-
-      var resultOperator = new AverageResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-    }
-
-    [Test]
-    public void HandleResultOperator_AverageAfterGroupExpression ()
-    {
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("group");
-
-      var resultOperator = new AverageResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-    }
-
-    [Test]
-    public void HandleResultOperator_AverageAfterDistinctExpression ()
-    {
-      _sqlStatementBuilder.IsDistinctQuery = true;
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
-
-      var resultOperator = new AverageResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) ((NamedExpression) ((AggregationExpression) _sqlStatementBuilder.SelectProjection).Expression).Expression).SqlTable).TableInfo,
-          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-    }
+    
   }
 }
