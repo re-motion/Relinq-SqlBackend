@@ -30,8 +30,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   {
     public override void HandleResultOperator (FirstResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      // TODO Review 2904: Consider using a TakeResultOperatorHandler to implement this method; e.g, var equivalentTakeOperator = new TakeResultOperator (new SqlLiteralExpression (1)); var takeHandler = new ...; takeHandler.HandleResultOperator (equivalentTakeOperator)
-      // TODO Review 2904: (UpdateDataInfo must remain in this method, however)
       var equivalentTakeOperator = new TakeResultOperator (new SqlLiteralExpression (1)); 
       var takeHandler = new TakeResultOperatorHandler();
       takeHandler.HandleResultOperator (equivalentTakeOperator, sqlStatementBuilder, generator, stage, context);

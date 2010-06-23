@@ -28,8 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   {
     public override void HandleResultOperator (OfTypeResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      // TODO Review 2904: We'll probably need an EnsureNoGroupExpression here because we can't use SqlGroupingSelectExpressions in a TypeIs expression
-
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       var typeCheckExpression = Expression.TypeIs (sqlStatementBuilder.SelectProjection, resultOperator.SearchedItemType);
       sqlStatementBuilder.AddWhereCondition (typeCheckExpression);
