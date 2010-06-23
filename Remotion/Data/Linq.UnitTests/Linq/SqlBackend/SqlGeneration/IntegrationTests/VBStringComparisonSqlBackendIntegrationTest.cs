@@ -15,7 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
+using System.Linq.Expressions;
+using Microsoft.VisualBasic;
 using NUnit.Framework;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -24,10 +31,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   {
 
     [Test]
-    [Ignore("TODO 2943")]
+    [Ignore("TODO: 2938")]
     public void VBCompareStringExpression ()
     {
-      
+      var query = from c in Cooks select c;
+      var queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      var vbCompareStringExpression = new VBStringComparisonExpression (Expression.Equal (Expression.Constant ("string1"), Expression.Constant ("string2")), true);
+      queryModel.BodyClauses.Add (new WhereClause(vbCompareStringExpression));
+
+      CheckQuery (queryModel, "");
     }
 
   }
