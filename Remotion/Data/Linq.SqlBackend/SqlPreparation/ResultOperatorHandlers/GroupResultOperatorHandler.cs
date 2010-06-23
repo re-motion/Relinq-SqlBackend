@@ -35,12 +35,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
+      EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
       
-      var preparedKeySelector = stage.PrepareItemExpression (resultOperator.KeySelector, context);
-      var preparedElementSelector = stage.PrepareItemExpression (resultOperator.ElementSelector, context);
+      var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);
+      var preparedElementSelector = stage.PrepareResultOperatorItemExpression (resultOperator.ElementSelector, context);
 
       sqlStatementBuilder.GroupByExpression = preparedKeySelector;
       sqlStatementBuilder.SelectProjection = new SqlGroupingSelectExpression (preparedKeySelector, preparedElementSelector);

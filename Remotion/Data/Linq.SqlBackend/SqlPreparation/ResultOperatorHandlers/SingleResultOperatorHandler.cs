@@ -33,8 +33,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // TODO Review 2904: Consider using a TakeResultOperatorHandler to implement this method; e.g, var equivalentTakeOperator = new TakeResultOperator (new SqlLiteralExpression (2)); var takeHandler = new ...; takeHandler.HandleResultOperator (equivalentTakeOperator)
       // TODO Review 2904: (UpdateDataInfo must remain in this method, however)
 
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
+      EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       
       if (sqlStatementBuilder.RowNumberSelector != null)

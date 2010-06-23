@@ -64,10 +64,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
           .Return (elementSelector);
       _stageMock.Replay();
 
@@ -95,10 +95,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           new SqlTable (new ResolvedSubStatementTableInfo("sc", _sqlStatementBuilder.GetSqlStatement())), new Ordering[0], elementSelector, null, false);
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
           .Return (elementSelector);
       _stageMock
           .Expect (
@@ -128,10 +128,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ())), new Ordering[0], elementSelector, null, false);
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
           .Return (elementSelector);
       _stageMock
           .Expect (
@@ -162,10 +162,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ())), new Ordering[0], elementSelector, null, false);
 
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (keySelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
       _stageMock
-          .Expect (mock => mock.PrepareItemExpression (elementSelector, _context))
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
           .Return (elementSelector);
       _stageMock
           .Expect (

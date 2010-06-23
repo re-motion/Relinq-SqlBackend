@@ -44,9 +44,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // TODO Review 2917: Same problem as with AggregationResultOperatorHandler
       sqlStatementBuilder.Orderings.Clear ();
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
+      EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.SelectProjection = new AggregationExpression (

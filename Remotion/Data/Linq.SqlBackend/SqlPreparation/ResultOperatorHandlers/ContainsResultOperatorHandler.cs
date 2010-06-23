@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       var dataInfo = sqlStatementBuilder.DataInfo;
-      var preparedItemExpression = stage.PrepareItemExpression (resultOperator.Item, context);
+      var preparedItemExpression = stage.PrepareResultOperatorItemExpression (resultOperator.Item, context);
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
       var subStatementExpression = sqlSubStatement.CreateExpression();
       

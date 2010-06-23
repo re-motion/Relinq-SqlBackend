@@ -33,34 +33,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     public new void EnsureNoTopExpression (
-        ResultOperatorBase resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         ISqlPreparationContext context)
         
     {
-      base.EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
+      base.EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
     }
 
     public new void EnsureNoGroupExpression (
-        ResultOperatorBase resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         ISqlPreparationContext context)
     {
-      base.EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
+      base.EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
     }
 
     public new void EnsureNoDistinctQuery (
-        ResultOperatorBase resultOperator,
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         ISqlPreparationContext context)
     {
-      base.EnsureNoDistinctQuery(resultOperator, sqlStatementBuilder, generator, stage, context);
+      base.EnsureNoDistinctQuery(sqlStatementBuilder, generator, stage, context);
     }
 
     public new void MoveCurrentStatementToSqlTable (

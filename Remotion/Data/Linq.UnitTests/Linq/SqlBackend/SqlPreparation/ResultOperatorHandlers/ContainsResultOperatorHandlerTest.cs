@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement ();
 
       var preparedExpression = Expression.Constant (new Cook (), typeof (Cook));
-      _stageMock.Expect (mock => mock.PrepareItemExpression (itemExpression, _context)).Return (preparedExpression);
+      _stageMock.Expect (mock => mock.PrepareResultOperatorItemExpression (itemExpression, _context)).Return (preparedExpression);
       _stageMock.Replay ();
       
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);

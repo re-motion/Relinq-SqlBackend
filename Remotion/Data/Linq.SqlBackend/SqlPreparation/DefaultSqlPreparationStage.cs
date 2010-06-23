@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return PrepareExpression (expression, context);
     }
 
-    public virtual Expression PrepareItemExpression (Expression expression, ISqlPreparationContext context)
+    public virtual Expression PrepareResultOperatorItemExpression (Expression expression, ISqlPreparationContext context)
     {
       return PrepareExpression (expression, context);
     }

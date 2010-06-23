@@ -100,9 +100,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_statementBuilder.Orderings[0], Is.SameAs (ordering));
     }
 
-    // TODO Review 2904: The method has been renamed to EnsureNoTopExpression; rename the tests as well
     [Test]
-    public void EnsureNoTopExpressionAndSetDataInfo_WithTopExpression ()
+    public void EnsureNoTopExpression_WithTopExpression ()
     {
       _statementBuilder.TopExpression = Expression.Constant ("top");
       var originalStatement = _statementBuilder.GetSqlStatement();
@@ -114,11 +113,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
-      _handler.EnsureNoTopExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoTopExpression (_statementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
-      // TODO Review 2904: Also check that the original statement was moved to a substatement (compare originalStatement to the statement in the SubStatementTableInfo)
+      Assert.That (
+          originalStatement, Is.EqualTo (((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement));
     }
 
     [Test]
@@ -126,14 +126,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       var sqlStatement = _statementBuilder.GetSqlStatement();
 
-      _handler.EnsureNoTopExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoTopExpression (_statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement()));
     }
 
-    // TODO Review 2904: Rename test, it's for EnsureNoGroupExpression
     [Test]
-    public void EnsureNoTopExpressionAndSetDataInfo_WithGroupByExpression ()
+    public void EnsureNoTopExpression ()
     {
       _statementBuilder.GroupByExpression = Expression.Constant ("top");
       var originalStatement = _statementBuilder.GetSqlStatement ();
@@ -145,20 +144,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
-      _handler.EnsureNoGroupExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoGroupExpression (_statementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
-      // TODO Review 2904: Also check that the original statement was moved to a substatement
     }
 
-    // TODO Review 2904: Rename test (no SetDataInfo)
     [Test]
-    public void EnsureNoGroupExpressionAndSetDataInfo_WithoutGroupExpression ()
+    public void SetDataInfo_WithoutGroupExpression ()
     {
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
-      _handler.EnsureNoGroupExpression (_resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoGroupExpression (_statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
     }
@@ -166,7 +163,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void EnsureNoDistinctQuery_DistinctQuery ()
     {
-      var resultOperator = new TestChoiceResultOperator (false);
       _statementBuilder.IsDistinctQuery = true;
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
@@ -178,7 +174,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
-      _handler.EnsureNoDistinctQuery(resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoDistinctQuery(_statementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
@@ -187,11 +183,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void EnsureDistinctQuery_NoDistinctQuery ()
     {
-      var resultOperator = new TestChoiceResultOperator (false);
       _statementBuilder.IsDistinctQuery = false;
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
-      _handler.EnsureNoDistinctQuery(resultOperator, _statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoDistinctQuery(_statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
     }
@@ -215,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private FromExpressionInfo CreateFakeFromExpressionInfo (Ordering[] extractedOrderings)
     {
       return new FromExpressionInfo (
-          new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")),
+          new SqlTable (new ResolvedSubStatementTableInfo("sc", _statementBuilder.GetSqlStatement())),
           extractedOrderings,
           Expression.Constant (0),
           null,

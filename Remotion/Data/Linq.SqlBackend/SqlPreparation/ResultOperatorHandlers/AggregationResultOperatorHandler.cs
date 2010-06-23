@@ -47,9 +47,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // With aggregations, the order is not relevant; SQL also imposes restrictions on ORDER BY with aggregates, so we'll just remove them
       sqlStatementBuilder.Orderings.Clear ();
 
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoDistinctQuery (resultOperator, sqlStatementBuilder, generator, stage, context);
+      EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       var namedExpression = sqlStatementBuilder.SelectProjection as NamedExpression;

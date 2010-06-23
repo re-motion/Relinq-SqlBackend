@@ -28,8 +28,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   {
     public override void HandleResultOperator (DistinctResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      EnsureNoTopExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
-      EnsureNoGroupExpression (resultOperator, sqlStatementBuilder, generator, stage, context);
+      EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       sqlStatementBuilder.IsDistinctQuery = true;

@@ -44,14 +44,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationContext context);
 
     protected void EnsureNoTopExpression (
-        // TODO Review 2904: resultOperator is not used  
-        ResultOperatorBase resultOperator,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage,
-        ISqlPreparationContext context)
+        SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -61,14 +55,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     }
 
     protected void EnsureNoDistinctQuery (
-        // TODO Review 2904: resultOperator is not used  
-        ResultOperatorBase resultOperator,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage,
-        ISqlPreparationContext context)
+        SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -78,14 +66,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     }
 
     protected void EnsureNoGroupExpression (
-      // TODO Review 2904: resultOperator is not used
-        ResultOperatorBase resultOperator,
-        SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
-        ISqlPreparationStage stage,
-        ISqlPreparationContext context)
+      SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
