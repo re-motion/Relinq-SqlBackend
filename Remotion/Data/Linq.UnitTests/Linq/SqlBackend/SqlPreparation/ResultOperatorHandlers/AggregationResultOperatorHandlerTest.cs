@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void SetUp ()
     {
       _generator = new UniqueIdentifierGenerator ();
-      _stageMock = new DefaultSqlPreparationStage(MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator); // MockRepository.GenerateMock<ISqlPreparationStage> ();
+      _stageMock = new DefaultSqlPreparationStage(MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new TestableAggregationResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -56,9 +56,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     [Test]
     public void HandleResultOperator ()
     {
-      // TODO Review 2917: Write a dedicated unit test for orderings (like with CountResultOperatorHandlerTest)
-      // TODO Review 2917: Write a unit test with TopExpression and orderings - the inner statement should keep the orderings, the outer statement should not
-      _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
       var averageResultOperator = new MaxResultOperator ();
 
       _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
@@ -66,7 +63,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Max));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
       Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
-      Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void HandleResultOperator_WithOrderingsWithoutTopExpression ()
+    {
+      _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
+      var averageResultOperator = new MaxResultOperator ();
+
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void HandleResultOperator_WithOrderingsAndTopExpression ()
+    {
+      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
+      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Asc);
+      _sqlStatementBuilder.Orderings.Add (ordering);
+      var averageResultOperator = new MaxResultOperator ();
+
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
+      Assert.That (
+          ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement.Orderings[0], Is.SameAs(ordering));
     }
 
     [Test]
