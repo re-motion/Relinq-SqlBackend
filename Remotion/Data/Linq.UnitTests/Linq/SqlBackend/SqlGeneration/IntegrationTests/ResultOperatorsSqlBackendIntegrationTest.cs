@@ -504,47 +504,58 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "");
     }
 
-    // TODO Review 2905: For the following tests, try to anticipate what the "logical" SQL will be and provide it in the tests; this will allow us to double-check when implementing GroupBy
-
     [Ignore ("TODO 2909")]
     public void GroupBy_SelectKeyAndAggregate()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, ""
-          );
+          from c in Cooks group c by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
+          "SELECT [q0].[get_Name], [q0].[get_Count] FROM ("+
+            "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "+
+            "GROUP BY [c1.Name]) AS [q0]");
     }
 
     [Ignore ("TODO 2909")]
     public void GoupBy_CountInWhereCondition()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName where cooksByName.Count()>0 select cooksByName.Key, ""
-          );
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Count()>0 select cooksByName.Key,
+          "SELECT [q0].[get_Name] FROM (" +
+            "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "+
+            "GROUP BY [c1].[Name]) AS [q0] "+
+            "WHERE [q0].[get_Count]>0");
     }
 
     [Ignore ("TODO 2909")]
     public void GroupBy_MinInWhereCondition ()
     {
       CheckQuery (
-          from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, ""
-          );
+          from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, 
+          "SELECT [q0].[get_Name] FROM (" +
+            "SELECT [c1].[Name] AS [get_Name], MIN([c1].[Weight]) as [get_Min] FROM [CookTable] AS [c1] "+
+            "GROUP BY [c1].[Name]) AS [q0] "+
+            "WHERE [q0].[get_Min]>18");
     }
 
     [Ignore ("TODO 2909")]
     public void GroupBy_MinWithProjection_InWhereCondition ()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key, ""
-          );
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key,
+          "SELECT [q0].[get_Name] FROM (" +
+            "SELECT [c1].[Name] AS [get_Name], MIN([c1].[Weight]) as [get_Min] FROM [CookTable] AS [c1] " +
+            "GROUP BY [c1].[Name]) AS [q0] " +
+            "WHERE [q0].[get_Min]>18");
     }
 
-    // TODO Review 2905: This test is identical with the previous one; add the test grouping by entity instead (see Task 2905)
     [Ignore ("TODO 2909")]
     public void GroupBy5 ()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c => c.Weight) > 18 select cooksByName.Key, ""
-          );
+          from c in Cooks group c by c.Substitution into cooksBySubstitution select cooksBySubstitution.Key.FirstName,
+          "SELECT [q0].[get_FirstName] FROM (" +
+            "SELECT [c1].[FirstName] AS [getFirstName_Name], FROM [CookTable] AS [c1] CROSS JOIN [CookTable] AS [c2] " +
+            "WHERE [c1].[ID] = [c2].[ID] " +
+            "GROUP BY [c2].[ID], [c2].[Name], .....) AS [q0]");
     }
 
 
