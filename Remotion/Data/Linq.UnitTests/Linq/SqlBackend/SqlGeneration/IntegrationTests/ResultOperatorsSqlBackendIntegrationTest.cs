@@ -481,7 +481,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Cannot translate queries that select collections to SQL.")]
-    [Ignore("TODO: 2905")]
+    [Ignore ("TODO 2909")]
     public void GroupBy_TopLevel ()
     {
       CheckQuery (
@@ -491,7 +491,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Using groupings in a from expression is not currently supported.")]
-    [Ignore("TODO: 2905")]
+    [Ignore ("TODO 2909")]
     public void GroupByInFromExpression ()
     {
       CheckQuery (
@@ -502,7 +502,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     [ExpectedException(typeof(NotSupportedException), 
           ExpectedMessage = "When a grouping is used in an aggregation expression, no other query operators can be used.")]
-    [Ignore("TODO: 2905")]
+    [Ignore ("TODO 2909")]
     public void InvalidAggregatesOnGroupings ()
     {
       CheckQuery (
@@ -510,39 +510,42 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "");
     }
 
-    [Ignore ("TODO: 2905")]
-    public void GroupBy1()
+    // TODO Review 2905: For the following tests, try to anticipate what the "logical" SQL will be and provide it in the tests; this will allow us to double-check when implementing GroupBy
+
+    [Ignore ("TODO 2909")]
+    public void GroupBy_SelectKeyAndAggregate()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, ""
           );
     }
 
-    [Ignore ("TODO: 2905")]
-    public void GoupBy2()
+    [Ignore ("TODO 2909")]
+    public void GoupBy_CountInWhereCondition()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Count()>0 select cooksByName.Key, ""
           );
     }
 
-    [Ignore ("TODO: 2905")]
-    public void GroupBy3 ()
+    [Ignore ("TODO 2909")]
+    public void GroupBy_MinInWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, ""
           );
     }
 
-    [Ignore ("TODO: 2905")]
-    public void GroupBy4 ()
+    [Ignore ("TODO 2909")]
+    public void GroupBy_MinWithProjection_InWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key, ""
           );
     }
 
-    [Ignore ("TODO: 2905")]
+    // TODO Review 2905: This test is identical with the previous one; add the test grouping by entity instead (see Task 2905)
+    [Ignore ("TODO 2909")]
     public void GroupBy5 ()
     {
       CheckQuery (
