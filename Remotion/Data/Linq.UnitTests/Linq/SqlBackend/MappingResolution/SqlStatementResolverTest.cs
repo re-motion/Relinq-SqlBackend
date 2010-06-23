@@ -306,6 +306,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = builder.GetSqlStatement();
       var fakeExpression = Expression.Constant (new Cook());
 
+      // TODO Review 2908: Refactor this test to return (different) fake expressions for all Resolve... methods, then assert that the fake expressions were used
+
       _stageMock
           .Expect (mock => mock.ResolveSelectExpression (constantExpression, _mappingResolutionContext))
           .Return (fakeExpression);
