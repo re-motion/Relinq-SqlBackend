@@ -15,10 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestUtilities;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -221,6 +224,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from x in (from y in (from c in Cooks select new { A = c.ID }).Distinct () select new { B = y }).Distinct () select x,
           "SELECT [q1].[get_B_get_A] AS [get_B_get_A] FROM (SELECT DISTINCT [q0].[get_A] AS [get_B_get_A] FROM (SELECT DISTINCT [t2].[ID] AS [get_A] " +
           "FROM [CookTable] AS [t2]) AS [q0]) AS [q1]");
+    }
+
+    [Test]
+    public void NestedSelectProjection_NoMembersNames ()
+    {
+      CheckQuery (from k in Kitchens select new TypeForNewExpression(k.ID, k.RoomNumber),
+        "SELECT [t0].[ID] AS [m0],[t0].[RoomNumber] AS [m1] FROM [KitchenTable] AS [t0]");
     }
    
   }

@@ -464,6 +464,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
     }
 
+    [Test]
+    public void VisitNewExpression_NoMembers ()
+    {
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (result, Is.Not.SameAs (expression));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NewExpression) result).Members, Is.Null);
+    }
+
 
     [Test]
     public void VisitNewExpression_PreventNestedNamedExpressions_DifferentName ()

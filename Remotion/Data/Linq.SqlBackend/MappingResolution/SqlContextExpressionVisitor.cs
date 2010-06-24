@@ -219,11 +219,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpression is NewExpression)
       {
         var sqlSelectNewExpression = (NewExpression) newExpression;
-        var newNewExpression = Expression.New (
-            sqlSelectNewExpression.Constructor,
-            sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr)),
-            sqlSelectNewExpression.Members
-            );
+        NewExpression newNewExpression; 
+        if(sqlSelectNewExpression.Members!=null)
+          newNewExpression = Expression.New (
+              sqlSelectNewExpression.Constructor,
+              sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr)),
+              sqlSelectNewExpression.Members
+              );
+        else
+          newNewExpression = Expression.New (
+              sqlSelectNewExpression.Constructor,
+              sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr)));
         return ApplySqlExpressionContext (newNewExpression, _currentContext, _stage, _context);
       }
       else if (newExpression is SqlEntityExpression)
@@ -262,7 +268,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var expressions = expression.Arguments.Select (expr => ApplySqlExpressionContext (expr, SqlExpressionContext.ValueRequired, _stage, _context));
-      return Expression.New (expression.Constructor, expressions, expression.Members);
+      if(expression.Members!=null)
+        return Expression.New (expression.Constructor, expressions, expression.Members);
+      else
+        return Expression.New (expression.Constructor, expressions);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)

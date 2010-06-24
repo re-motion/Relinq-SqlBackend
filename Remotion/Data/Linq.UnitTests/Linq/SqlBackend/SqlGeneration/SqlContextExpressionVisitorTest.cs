@@ -794,6 +794,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
     }
+
+    [Test]
+    public void VisitNamedExpression_NewExpression_NoMembers ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
+      var namedExpression = new NamedExpression ("test", expression);
+
+      var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
+
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NewExpression) result).Members, Is.Null);
+    }
     
     [Test]
     public void VisitNewExpression ()
@@ -811,6 +827,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void VisitNewExpression_NoMembers ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
+      var result = nonTopLevelVisitor.VisitNewExpression (expression);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
+      Assert.That (result, Is.Not.SameAs (expression));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((NewExpression) result).Members, Is.Null);
     }
 
     public static bool FakeAndOperator (bool operand1, bool operand2)

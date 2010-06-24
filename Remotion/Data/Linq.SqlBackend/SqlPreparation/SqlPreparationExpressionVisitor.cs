@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -166,21 +168,36 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var sqlSelectNewExpression = Expression.New (
+      NewExpression sqlSelectNewExpression;
+      if (expression.Members != null)
+        sqlSelectNewExpression = Expression.New (
           expression.Constructor,
-          expression.Arguments.Select ((e, i) => WrapIntoNamedExpression(expression, i, e)).ToArray(),
+          expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray (),
           expression.Members);
+      else
+        sqlSelectNewExpression = Expression.New (
+          expression.Constructor,
+          expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray ());
+      
       return sqlSelectNewExpression;
     }
 
     private Expression WrapIntoNamedExpression (NewExpression newExpression, int index, Expression expression)
     {
       var expressionAsNamedExpression = expression as NamedExpression;
+      var memberName = GetMemberName (newExpression.Members, index);
       if (expressionAsNamedExpression==null)
-       return new NamedExpression (newExpression.Members[index].Name, VisitExpression (expression));
-      if(expressionAsNamedExpression.Name==newExpression.Members[index].Name)
+       return new NamedExpression (memberName, VisitExpression (expression));
+      if(expressionAsNamedExpression.Name==memberName)
         return expression;
-      return new NamedExpression (newExpression.Members[index].Name, expressionAsNamedExpression.Expression);
+      return new NamedExpression (memberName, VisitExpression(expressionAsNamedExpression.Expression));
+    }
+
+    private string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
+    {
+      if (members==null || members.Count <= index)
+        return "m" + index;
+      return members[index].Name;
     }
 
     private bool IsNullConstant (Expression expression)
