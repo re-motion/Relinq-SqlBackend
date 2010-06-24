@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
+using MemberBinding = Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
@@ -33,14 +34,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// expressions. The <see cref="MemberAccessResolver"/> class assumes that its input expression has already been resolved, and it may return a
   /// result that itself needs to be resolved again.
   /// </summary>
-  public class MemberAccessResolver : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, INamedExpressionVisitor, IResolvedSqlExpressionVisitor
+  public class MemberAccessResolver
+      : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, INamedExpressionVisitor, IResolvedSqlExpressionVisitor
   {
     private readonly MemberInfo _memberInfo;
     private readonly IMappingResolver _mappingResolver;
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
 
-    public static Expression ResolveMemberAccess (Expression resolvedSourceExpression, MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage mappingResolutionStage, IMappingResolutionContext mappingResolutionContext)
+    public static Expression ResolveMemberAccess (
+        Expression resolvedSourceExpression,
+        MemberInfo memberInfo,
+        IMappingResolver mappingResolver,
+        IMappingResolutionStage mappingResolutionStage,
+        IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("resolvedSourceExpression", resolvedSourceExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
@@ -52,7 +59,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return resolver.VisitExpression (resolvedSourceExpression);
     }
 
-    protected MemberAccessResolver (MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+    protected MemberAccessResolver (
+        MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
@@ -72,7 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
               "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
               _memberInfo.Name,
               FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
-              unhandledItem.GetType ().Name));
+              unhandledItem.GetType().Name));
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)
@@ -97,9 +105,19 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitNewExpression (NewExpression expression)
     {
-      var binding = Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding.Bind (_memberInfo, expression);
+      if (expression.Members == null || expression.Members.Count == 0)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The member '{0}.{1}' cannot be translated to SQL. Expression: '{2}'",
+                expression.Type.Name,
+                _memberInfo.Name,
+                FormattingExpressionTreeVisitor.Format (expression)));
+      }
+
+      var binding = MemberBinding.Bind (_memberInfo, expression);
       var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
-      return membersAndAssignedExpressions.Single (c => binding.MatchesReadAccess(c.Member)).Argument;
+      return membersAndAssignedExpressions.Single (c => binding.MatchesReadAccess (c.Member)).Argument;
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -121,7 +139,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
-    
+
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       return VisitUnknownExpression (expression);
@@ -131,8 +149,5 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       return VisitUnknownExpression (expression);
     }
-
-
-   
   }
 }

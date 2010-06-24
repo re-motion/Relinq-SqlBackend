@@ -257,6 +257,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
+      "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'")]
+    public void VisitMemberExpression_OnNewExpression_NoMembers ()
+    {
+      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      var newExpression = Expression.New (
+          constructorInfo,
+          new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) });
+
+      MemberAccessResolver.ResolveMemberAccess (
+          newExpression,
+          typeof (TypeForNewExpression).GetField ("C"),
+          _resolverMock,
+          _stageMock,
+          _mappingResolutionContext);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'BinaryExpression' is not "
         + "supported in member expressions.")]

@@ -232,6 +232,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (from k in Kitchens select new TypeForNewExpression(k.ID, k.RoomNumber),
         "SELECT [t0].[ID] AS [m0],[t0].[RoomNumber] AS [m1] FROM [KitchenTable] AS [t0]");
     }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.A' cannot be translated to SQL. "+
+      "Expression: 'new TypeForNewExpression([t0].[ID] AS m0, [t0].[RoomNumber] AS m1)'")]
+    public void NestedSelectProjection_MemberAccessToANewExpressionWithoutMembers ()
+    {
+      CheckQuery (from k in Kitchens select new TypeForNewExpression (k.ID, k.RoomNumber).A, "");
+    }
    
   }
 }
