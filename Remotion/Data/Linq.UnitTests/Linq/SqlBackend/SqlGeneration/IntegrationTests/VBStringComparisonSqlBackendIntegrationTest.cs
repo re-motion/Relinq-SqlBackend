@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           queryModel,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE CASE WHEN (@1 = @2) THEN 1 ELSE 0 END",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (CASE WHEN (@1 = @2) THEN 1 ELSE 0 END = 1)",
           new CommandParameter ("@1", "string1"),
           new CommandParameter ("@2", "string2"));
     }
