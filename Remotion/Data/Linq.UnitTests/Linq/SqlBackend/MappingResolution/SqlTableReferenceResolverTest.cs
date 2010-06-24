@@ -131,7 +131,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_ReturnsNewExpression ()
     {
-      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant(1) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
+      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (1) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {

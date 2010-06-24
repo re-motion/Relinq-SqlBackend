@@ -255,6 +255,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VistNewExpression ()
     {
+      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);

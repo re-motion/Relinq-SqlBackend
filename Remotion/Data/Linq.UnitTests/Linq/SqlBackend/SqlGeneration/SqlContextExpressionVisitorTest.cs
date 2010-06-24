@@ -783,6 +783,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       var namedExpression = new NamedExpression ("test", expression);
       
@@ -800,6 +801,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
       var namedExpression = new NamedExpression ("test", expression);
 
@@ -816,6 +818,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var result = nonTopLevelVisitor.VisitNewExpression(expression);
@@ -834,6 +837,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
       var result = nonTopLevelVisitor.VisitNewExpression (expression);
 

@@ -168,34 +168,41 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      NewExpression sqlSelectNewExpression;
       if (expression.Members != null)
-        sqlSelectNewExpression = Expression.New (
-          expression.Constructor,
-          expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray (),
-          expression.Members);
+      {
+        return Expression.New (
+            expression.Constructor,
+            expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray (),
+            expression.Members);
+      }
       else
-        sqlSelectNewExpression = Expression.New (
-          expression.Constructor,
-          expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray ());
-      
-      return sqlSelectNewExpression;
+      {
+        return Expression.New (
+            expression.Constructor,
+            expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray());
+      }
     }
 
     private Expression WrapIntoNamedExpression (NewExpression newExpression, int index, Expression expression)
     {
       var expressionAsNamedExpression = expression as NamedExpression;
       var memberName = GetMemberName (newExpression.Members, index);
-      if (expressionAsNamedExpression==null)
-       return new NamedExpression (memberName, VisitExpression (expression));
-      if(expressionAsNamedExpression.Name==memberName)
-        return expression;
-      return new NamedExpression (memberName, VisitExpression(expressionAsNamedExpression.Expression));
+
+      if (expressionAsNamedExpression != null)
+      {
+        if (expressionAsNamedExpression.Name == memberName)
+          return expression;
+
+        // TODO Review 2885: We probably shouldn't swallow NamedExpressions here - I'd remove this case; check back if you have another opinion
+        return new NamedExpression (memberName, VisitExpression (expressionAsNamedExpression.Expression));
+      }
+
+      return new NamedExpression (memberName, VisitExpression (expression));
     }
 
     private string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
     {
-      if (members==null || members.Count <= index)
+      if (members == null || members.Count <= index)
         return "m" + index;
       return members[index].Name;
     }

@@ -15,13 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestUtilities;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -236,10 +234,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.A' cannot be translated to SQL. "+
       "Expression: 'new TypeForNewExpression([t0].[ID] AS m0, [t0].[RoomNumber] AS m1)'")]
-    public void NestedSelectProjection_MemberAccessToANewExpressionWithoutMembers ()
+    public void NestedSelectProjection_MemberAccess_ToANewExpression_WithoutMembers ()
     {
       CheckQuery (from k in Kitchens select new TypeForNewExpression (k.ID, k.RoomNumber).A, "");
     }
-   
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. " +
+      "Expression: 'new TypeForNewExpression([t0].[ID] AS A, [t0].[RoomNumber] AS B)'")]
+    [Ignore ("TODO Review 2885")]
+    public void NestedSelectProjection_MemberAccess_ToANewExpression_WithMemberNotInitialized ()
+    {
+      // TODO Review 2885: The C# compiler will not allow you to write such code, but you can construct it using Expression.New (...)
+      // CheckQuery (from k in Kitchens select new TypeForNewExpression (A = k.ID, B = k.RoomNumber).C, "");
+    }
   }
 }

@@ -219,7 +219,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpression is NewExpression)
       {
         var sqlSelectNewExpression = (NewExpression) newExpression;
-        NewExpression newNewExpression; 
+        NewExpression newNewExpression;
+        // TODO Review 2885: prepare the arguments outside of the if statement to avoid code duplication
         if(sqlSelectNewExpression.Members!=null)
           newNewExpression = Expression.New (
               sqlSelectNewExpression.Constructor,
