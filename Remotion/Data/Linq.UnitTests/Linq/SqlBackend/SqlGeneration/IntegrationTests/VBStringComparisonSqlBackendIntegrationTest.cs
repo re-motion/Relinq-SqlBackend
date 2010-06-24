@@ -34,12 +34,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var query = from c in Cooks select c.Name;
       var queryModel = ExpressionHelper.ParseQuery (query.Expression);
       var vbCompareStringExpression =
-          new VBStringComparisonExpression (Expression.Equal (Expression.Constant ("string1"), Expression.Constant ("string2")), true);
+          new VBStringComparisonExpression (typeof (bool), Expression.Equal (Expression.Constant ("string1"), Expression.Constant ("string2")), true);
       queryModel.BodyClauses.Add (new WhereClause (vbCompareStringExpression));
 
       CheckQuery (
           queryModel,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (CASE WHEN (@1 = @2) THEN 1 ELSE 0 END = 1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE CASE WHEN (@1 = @2) THEN 1 ELSE 0 END",
           new CommandParameter ("@1", "string1"),
           new CommandParameter ("@2", "string2"));
     }
