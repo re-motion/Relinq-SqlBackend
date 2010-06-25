@@ -308,7 +308,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitConstantExpression_Collection ()
     {
       var collectionExpression = Expression.Constant (new[] { "Hugo", "Maier", "Markart" });
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant ("Hubert"), collectionExpression);
+      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant ("Hubert"), collectionExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
@@ -327,7 +327,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitConstantExpression_EmptyCollection ()
     {
       var collectionExpression = Expression.Constant (new string[] { });
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant ("Hubert"), collectionExpression);
+      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant ("Hubert"), collectionExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
@@ -488,7 +488,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var sqlInExpression = new SqlBinaryOperatorExpression ("IN", Expression.Constant (1), sqlSubStatementExpression);
+      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock
           .Expect (

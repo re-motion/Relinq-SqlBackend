@@ -33,8 +33,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
-    public SqlBinaryOperatorExpression (string binaryOperator, Expression leftExpression, Expression rightExpression)
-        : base(typeof(bool)) // TODO: Change to pass type via ctor
+    public SqlBinaryOperatorExpression (Type type, string binaryOperator, Expression leftExpression, Expression rightExpression)
+        : base(ArgumentUtility.CheckNotNull ("type", type))
     {
       ArgumentUtility.CheckNotNull ("binaryOperator", binaryOperator);
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       var newRightExpression = visitor.VisitExpression (_rightExpression);
 
       if(newLeftExpression!=_leftExpression || newRightExpression!=_rightExpression)
-        return new SqlBinaryOperatorExpression (_binaryOperator, newLeftExpression, newRightExpression);
+        return new SqlBinaryOperatorExpression (typeof(bool), _binaryOperator, newLeftExpression, newRightExpression);
       else
         return this;
     }

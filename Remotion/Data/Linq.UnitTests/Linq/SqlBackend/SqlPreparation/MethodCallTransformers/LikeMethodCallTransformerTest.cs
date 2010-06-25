@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new LikeMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var expectedResult = new SqlBinaryOperatorExpression ("LIKE", expression.Arguments[0], expression.Arguments[1]);
+      var expectedResult = new SqlBinaryOperatorExpression (typeof(bool), "LIKE", expression.Arguments[0], expression.Arguments[1]);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }

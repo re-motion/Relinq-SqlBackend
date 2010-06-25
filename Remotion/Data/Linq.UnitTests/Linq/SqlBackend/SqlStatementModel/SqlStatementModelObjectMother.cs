@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
              {
                  DataInfo = new TestStreamedValueInfo (typeof (Cook)),
                  SelectProjection =
-                     new SqlBinaryOperatorExpression ("IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+                     new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
              }.GetSqlStatement();
     }
 

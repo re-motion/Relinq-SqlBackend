@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 2);
       MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
 
-      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
+      return new SqlBinaryOperatorExpression (typeof(bool), "LIKE", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
     }
   }
 }
