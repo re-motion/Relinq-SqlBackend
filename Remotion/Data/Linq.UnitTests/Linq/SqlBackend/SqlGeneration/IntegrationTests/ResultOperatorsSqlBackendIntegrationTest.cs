@@ -402,7 +402,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           () => Kitchens.OrderBy (k => k.Name).Take (5).Sum (k => k.RoomNumber),
           "SELECT SUM([q0].[get_Key_RoomNumber]) FROM (SELECT TOP (@1) [t1].[ID] AS [get_Key_ID],[t1].[CookID] AS [get_Key_CookID],"+
           "[t1].[Name] AS [get_Key_Name],[t1].[RestaurantID] AS [get_Key_RestaurantID],[t1].[SubKitchenID] AS [get_Key_SubKitchenID],"+
-          "[t1].[Name] AS [get_Value_get_Key],NULL AS [get_Value_get_Value] FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]",
+          "[t1].[Name] AS [get_Value] FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]",
           new CommandParameter("@1", 5)
           );
     }

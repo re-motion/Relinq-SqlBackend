@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -69,8 +68,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // wrap original select projection and all orderings into a large tuple expression (new { proj, new { o1, new { o2, ... }}})
       var expressionsToBeTupelized = new[] { sqlStatement.SelectProjection }.Concat (sqlStatement.Orderings.Select (o => o.Expression));
       var tupleExpression = AggregateExpressionsIntoTuple (expressionsToBeTupelized);
+      
       var preparedTupleExpression = _stage.PrepareSelectExpression (tupleExpression, _context);
-      Debug.Assert (preparedTupleExpression.Type == tupleExpression.Type);
+      if (preparedTupleExpression.Type != tupleExpression.Type)
+        throw new InvalidOperationException ("SQL Preparation stage must not change the type of the select projection.");
+      
       return preparedTupleExpression;
     }
 
@@ -111,7 +113,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return expressions
           .Reverse()
           .Aggregate (
-              (Expression) Expression.Constant (null), 
               (current, expression) => CreateTupleExpression (expression, current));
     }
 
@@ -133,6 +134,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         yield return Expression.MakeMemberAccess (tupleExpression, tupleExpression.Type.GetProperty ("Key"));
         tupleExpression = Expression.MakeMemberAccess (tupleExpression, tupleExpression.Type.GetProperty ("Value"));
       }
+
+      yield return tupleExpression;
     }
   }
 }

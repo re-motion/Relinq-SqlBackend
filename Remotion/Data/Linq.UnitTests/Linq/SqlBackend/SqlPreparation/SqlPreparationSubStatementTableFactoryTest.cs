@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -42,15 +41,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private UniqueIdentifierGenerator _generator;
     private SqlPreparationSubStatementTableFactory _factory;
     private SqlStatement _statementWithOrderings;
-    private ConstructorInfo _outerTupleCtor;
-    private ConstructorInfo _middleTupleCtor;
-    private ConstructorInfo _innerTupleCtor;
-    private MethodInfo _innerTupleKeyGetter;
-    private MethodInfo _innerTupleValueGetter;
-    private MethodInfo _middleTupleKeyGetter;
-    private MethodInfo _middleTupleValueGetter;
-    private MethodInfo _outerTupleKeyGetter;
-    private MethodInfo _outerTupleValueGetter;
 
     [SetUp]
     public void SetUp ()
@@ -68,17 +58,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
         }
       };
       _statementWithOrderings = builderForStatementWithOrderings.GetSqlStatement ();
-
-      _outerTupleCtor = typeof (KeyValuePair<Cook, KeyValuePair<string, KeyValuePair<string, object>>>).GetConstructor (new[] { typeof (Cook), typeof (KeyValuePair<string, KeyValuePair<string, object>>) });
-      _middleTupleCtor = typeof (KeyValuePair<string, KeyValuePair<string, object>>).GetConstructor (new[] { typeof (string), typeof (KeyValuePair<string, object>) });
-      _innerTupleCtor = typeof (KeyValuePair<string, object>).GetConstructor (new[] { typeof (string), typeof (object) });
-
-      _innerTupleKeyGetter = _innerTupleCtor.DeclaringType.GetMethod ("get_Key");
-      _innerTupleValueGetter = _innerTupleCtor.DeclaringType.GetMethod ("get_Value");
-      _middleTupleKeyGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Key");
-      _middleTupleValueGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Value");
-      _outerTupleKeyGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Key");
-      _outerTupleValueGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Value");
     }
 
     [Test]
@@ -107,7 +86,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void CreateSqlTableForSubStatement_WithOrderings_ReturnsTableWithoutOrderings_WithNewProjection ()
     {
-      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, KeyValuePair<string, object>>> ());
+      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
           .Return (fakeSelectProjection);
@@ -124,7 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (subStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) subStatement.DataInfo).ItemExpression, Is.SameAs (subStatement.SelectProjection));
       Assert.That (((StreamedSequenceInfo) subStatement.DataInfo).DataType, 
-          Is.SameAs (typeof (IQueryable<KeyValuePair<Cook, KeyValuePair<string, KeyValuePair<string, object>>>>)));
+          Is.SameAs (typeof (IQueryable<KeyValuePair<Cook, KeyValuePair<string, string>>>)));
 
       var expectedSubStatementBuilder = new SqlStatementBuilder (_statementWithOrderings) 
           { 
@@ -141,7 +120,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void CreateSqlTableForSubStatement_WithOrderings_ItemSelector ()
     {
-      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, KeyValuePair<string, object>>> ());
+      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
           .Return (fakeSelectProjection);
@@ -160,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void CreateSqlTableForSubStatement_WithOrderings_ExtractedOrderings ()
     {
-      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, KeyValuePair<string, object>>> ());
+      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
           .Return (fakeSelectProjection);
@@ -179,10 +158,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       ExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering1, result.ExtractedOrderings[0].Expression);
       Assert.That (result.ExtractedOrderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Desc));
 
-      var valueMemberAccess2 = Expression.MakeMemberAccess (
-          valueMemberAccess1,
-          valueMemberAccess1.Type.GetProperty ("Value"));
-      var expectedOrdering2 = Expression.MakeMemberAccess (valueMemberAccess2, valueMemberAccess2.Type.GetProperty ("Key"));
+      var expectedOrdering2 = Expression.MakeMemberAccess (valueMemberAccess1, valueMemberAccess1.Type.GetProperty ("Value"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering2, result.ExtractedOrderings[1].Expression);
       Assert.That (result.ExtractedOrderings[1].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
     }
@@ -190,6 +166,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void CreateSqlTableForSubStatement_WithOrderings_NewProjection_ContainsOrderings ()
     {
+      var _outerTupleCtor = typeof (KeyValuePair<Cook, KeyValuePair<string, string>>).GetConstructor (new[] { typeof (Cook), typeof (KeyValuePair<string, string>) });
+      var _middleTupleCtor = typeof (KeyValuePair<string, string>).GetConstructor (new[] { typeof (string), typeof (string) });
+
+      var _middleTupleKeyGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Key");
+      var _middleTupleValueGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Value");
+      var _outerTupleKeyGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Key");
+      var _outerTupleValueGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Value");
+
       var expectedSelectProjection = Expression.New (
           _outerTupleCtor,
           new[] {
@@ -198,18 +182,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   _middleTupleCtor,
                   new[] { 
                       _statementWithOrderings.Orderings[0].Expression,
-                      Expression.New (
-                          _innerTupleCtor,
-                          new[] { _statementWithOrderings.Orderings[1].Expression, Expression.Constant (null) },
-                          _innerTupleKeyGetter,
-                          _innerTupleValueGetter
-                      )},
+                      _statementWithOrderings.Orderings[1].Expression},
                   _middleTupleKeyGetter,
                   _middleTupleValueGetter)},
           _outerTupleKeyGetter,
           _outerTupleValueGetter);
 
-      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, KeyValuePair<string, object>>> ());
+      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (
               Arg<Expression>.Is.Anything, 
@@ -232,7 +211,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
         Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) }
       };
       var statement = builder.GetSqlStatement ();
-      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, object>> ());
+      var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, string> ());
 
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Matches (c => c == _context)))
@@ -247,6 +226,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "SQL Preparation stage must not change the type of the select projection.")]
+    public void CreateSqlTableForSubStatement_WithOrderings_InvalidPreparedExpression ()
+    {
+      var fakeSelectProjection = Expression.Constant (0);
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
+          .Return (fakeSelectProjection);
+      _stageMock.Replay ();
+
+      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info));
     }
   }
 }
