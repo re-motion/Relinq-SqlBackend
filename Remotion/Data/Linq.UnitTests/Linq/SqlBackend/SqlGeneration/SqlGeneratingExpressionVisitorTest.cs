@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
 
     [Test]
@@ -88,23 +88,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[Test_ID]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[Test_ID]"));
     }
 
     [Test]
     public void GenerateSql_VisitSqlColumnReferenceExpression_WithNamedEntity_WithStarColumn ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), 
-          "c", 
-          "Test", 
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), 
+          typeof (Cook),
+          "c",
+          "Test",
+          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
           new SqlColumnDefinitionExpression (typeof (Cook), "c", "*", false));
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
-      
+
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
 
     [Test]
@@ -115,7 +115,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[s].[ID]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
 
     [Test]
@@ -123,8 +123,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
-          typeof(string),
-          "t", null,
+          typeof (string),
+          "t",
+          null,
           primaryKeyColumn,
           new[]
           {
@@ -142,34 +143,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateSql_VisitSqlEntityExpression_EntityReference_SelectExpressionMode ()
     {
       var referencedEntity = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", "Cook", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          typeof (Cook),
+          "c",
+          "Cook",
+          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
           new[]
           {
-             new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
-             new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
       var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", null, referencedEntity);
 
       SqlGeneratingExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Cook_Name] AS [Name],[c].[Cook_City] AS [City]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[Cook_Name] AS [Name],[c].[Cook_City] AS [City]"));
     }
 
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_EntityReference_NonSelectExpressionMode ()
     {
       var referencedEntity = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", "Cook", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          typeof (Cook),
+          "c",
+          "Cook",
+          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
           new[]
           {
-             new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
-             new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
       var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", null, referencedEntity);
 
       SqlGeneratingExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Cook_Name],[c].[Cook_City]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[Cook_Name],[c].[Cook_City]"));
     }
 
     [Test]
@@ -178,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof (string),
-          "t", 
+          "t",
           "Test",
           primaryKeyColumn,
           new[]
@@ -190,7 +197,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnListExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID] AS [Test_ID],[t].[Name] AS [Test_Name],[t].[City] AS [Test_City]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID] AS [Test_ID],[t].[Name] AS [Test_Name],[t].[City] AS [Test_City]"));
     }
 
     [Test]
@@ -208,7 +215,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           });
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnListExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].*"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].*"));
     }
 
     [Test]
@@ -229,7 +236,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlColumnListExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
     }
 
     [Test]
@@ -255,8 +262,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VistNewExpression ()
     {
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { Expression.Constant (0) },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
@@ -276,7 +285,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConstantExpression()
+    public void VisitConstantExpression ()
     {
       var expression = Expression.Constant (1);
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
@@ -322,7 +331,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 IN (SELECT NULL WHERE 1 = 0)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (SELECT NULL WHERE 1 = 0)"));
     }
 
     [Test]
@@ -447,8 +456,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _stageMock
           .Expect (
-          mock =>
-          mock.GenerateTextForSqlStatement (_commandBuilder,sqlStatement))
+              mock =>
+              mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SELECT [t].[Name] FROM [Table] AS [t]"));
       _stageMock.Replay();
 
@@ -483,9 +492,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _stageMock
           .Expect (
-          mock =>
-          mock.GenerateTextForSqlStatement (
-              Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything))
+              mock =>
+              mock.GenerateTextForSqlStatement (
+                  Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
       _stageMock.Replay();
 
@@ -572,7 +581,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void   NumberExpression ()
+    public void NumberExpression ()
     {
       var ordering1 = new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc);
       var ordering2 = new Ordering (Expression.Constant ("order2"), OrderingDirection.Desc);
@@ -588,14 +597,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering1))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order1 ASC"));
       _stageMock
-         .Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering2))
-         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order2 DESC"));
+          .Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering2))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order2 DESC"));
       _stageMock.Replay();
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberRÉxpression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("ROW_NUMBER() OVER (ORDER BY order1 ASC, order2 DESC)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("ROW_NUMBER() OVER (ORDER BY order1 ASC, order2 DESC)"));
     }
 
     [Test]
@@ -616,7 +625,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [test]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[Name] AS [test]"));
     }
 
     [Test]
@@ -627,7 +636,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [value]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[Name] AS [value]"));
     }
 
     [Test]
@@ -638,62 +647,62 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name]"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[Name]"));
     }
 
     [Test]
     public void VisitAggregationExpression_Max ()
     {
       var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var expression = new AggregationExpression(typeof(int), columnExpression, AggregationModifier.Max);
+      var expression = new AggregationExpression (typeof (int), columnExpression, AggregationModifier.Max);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MAX([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("MAX([c].[Name])"));
     }
 
     [Test]
     public void VisitAggregationExpression_Min ()
     {
       var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Min);
+      var expression = new AggregationExpression (typeof (int), columnExpression, AggregationModifier.Min);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("MIN([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("MIN([c].[Name])"));
     }
 
     [Test]
     public void VisitAggregationExpression_Sum ()
     {
       var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Sum);
+      var expression = new AggregationExpression (typeof (int), columnExpression, AggregationModifier.Sum);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SUM([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SUM([c].[Name])"));
     }
 
     [Test]
     public void VisitAggregationExpression_Average ()
     {
       var columnExpression = new NamedExpression (null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var expression = new AggregationExpression (typeof(double), columnExpression, AggregationModifier.Average);
+      var expression = new AggregationExpression (typeof (double), columnExpression, AggregationModifier.Average);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("AVG([c].[Name])"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("AVG([c].[Name])"));
     }
 
     [Test]
     public void VisitAggregationExpression_Count ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
-      var expression = new AggregationExpression (typeof(int), columnExpression, AggregationModifier.Count);
+      var expression = new AggregationExpression (typeof (int), columnExpression, AggregationModifier.Count);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, SqlGenerationMode.NonSelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("COUNT(*)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("COUNT(*)"));
     }
 
     [Test]
@@ -716,11 +725,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (groupingExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1, @2, @3"));
-      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo ("keyExpression"));
-      Assert.That (_commandBuilder.GetCommandParameters ()[1].Value, Is.EqualTo ("aggregation1"));
-      Assert.That (_commandBuilder.GetCommandParameters ()[2].Value, Is.EqualTo ("aggregation2"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1, @2, @3"));
+      Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo ("keyExpression"));
+      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("aggregation1"));
+      Assert.That (_commandBuilder.GetCommandParameters()[2].Value, Is.EqualTo ("aggregation2"));
     }
-    
   }
 }

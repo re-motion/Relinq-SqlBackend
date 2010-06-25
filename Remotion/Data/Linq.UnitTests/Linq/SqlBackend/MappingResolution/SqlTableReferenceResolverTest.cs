@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -53,7 +52,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var fakeResult = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
       _resolverMock
           .Expect (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _generator))
@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResult));
-      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression)result), Is.SameAs (sqlTable));
+      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
-                             SelectProjection = new NamedExpression("test", Expression.Constant (5)),
+                             SelectProjection = new NamedExpression ("test", Expression.Constant (5)),
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
@@ -91,10 +91,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_UnaryExpression_RevisitsResult ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-      {
-        SelectProjection = Expression.Convert (new NamedExpression ("test", Expression.Constant (5)), typeof(object)),
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+                         {
+                             SelectProjection = Expression.Convert (new NamedExpression ("test", Expression.Constant (5)), typeof (object)),
+                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                         }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
@@ -104,22 +104,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
       Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
       Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.EqualTo (typeof (object))); 
+      Assert.That (result.Type, Is.EqualTo (typeof (object)));
     }
-    
+
     [Test]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_SqlEntityExpression ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
                              SelectProjection =
-                                 new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false)),
+                                 new SqlEntityDefinitionExpression (
+                                     typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false)),
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
+      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
+          "q0", tableInfo.SqlStatement.SelectProjection.Type);
 
       var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
 
@@ -131,14 +133,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_ReturnsNewExpression ()
     {
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var newExpression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (1) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-      
+      var newExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { Expression.Constant (1) },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
                              SelectProjection = newExpression,
-           DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
+                         }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var expression = new SqlTableReferenceExpression (sqlTable);
@@ -149,7 +153,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "This table has not yet been resolved; call the resolution step first.")]
     public void ResolveSqlTableReferenceExpression_VisitUnresolvedTableInfo ()
     {

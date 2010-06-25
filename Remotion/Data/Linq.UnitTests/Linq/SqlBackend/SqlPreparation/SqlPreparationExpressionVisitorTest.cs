@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -142,7 +141,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
       var fakeSqlStatementBuilder = new SqlStatementBuilder (sqlStatement)
                                     {
-                                        SelectProjection = new AggregationExpression (typeof(int), sqlStatement.SelectProjection, AggregationModifier.Count)
+                                        SelectProjection =
+                                            new AggregationExpression (typeof (int), sqlStatement.SelectProjection, AggregationModifier.Count)
                                     };
 
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
@@ -187,19 +187,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSubqueryExpressionTest_RevisitsResult ()
     {
-      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook ();
+      var mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
       var expression = new SubQueryExpression (querModel);
-      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        TopExpression = null
-      };
-      fakeSqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"),OrderingDirection.Asc));
+      var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
+                                    {
+                                        TopExpression = null
+                                    };
+      fakeSqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
       fakeSqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
-      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement ();
+      var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
       fakeSqlStatementBuilder.Orderings.Clear();
       var expectedStatement = fakeSqlStatementBuilder.GetSqlStatement();
-      
+
       _stageMock
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
@@ -207,13 +207,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo(expectedStatement));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo (expectedStatement));
     }
 
     [Test]
     public void VisitSqlSubStatmentExpression_NoTopExpression_ReturnsSame ()
     {
-      var builder = new SqlStatementBuilder(SqlStatementModelObjectMother.CreateSqlStatementWithCook());
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
       builder.Orderings.Clear();
       var sqlStatement = builder.GetSqlStatement();
 
@@ -227,9 +227,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSqlSubStatmentExpression_HasTopExpression_ReturnsNew ()
     {
-      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ());
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
       builder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
-      var sqlStatement = builder.GetSqlStatement ();
+      var sqlStatement = builder.GetSqlStatement();
       builder.Orderings.Clear();
       var expectedStatement = builder.GetSqlStatement();
 
@@ -239,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.Not.SameAs (subStatementExpression));
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
-      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo(expectedStatement));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo (expectedStatement));
     }
 
     [Test]
@@ -452,67 +452,46 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitNewExpression ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructors ()[0],  // TODO Review 2885: constructor order is not defined, specify the types of the constructor you need via GetConstructor (Type[])
-          new[] { Expression.Constant (0) }, 
+          typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
+          new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
-      // TODO Review 2885: consider using an expectedExpression
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
       Assert.That (result, Is.Not.SameAs (expression));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo(1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf(typeof(NamedExpression)));
-      // TODO Review 2885: check name of new NamedExpression, should be "A"
-      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo("A"));
+      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
       Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
+      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("A"));
     }
 
     [Test]
     public void VisitNewExpression_NoMembers ()
     {
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}), new[] { Expression.Constant (0) });
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
-      // TODO Review 2885: consider using an expectedExpression
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
       Assert.That (result, Is.Not.SameAs (expression));
       Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
-      // TODO Review 2885: check name of new NamedExpression, should be "m0"
       Assert.That (((NewExpression) result).Members, Is.Null);
-    }
-
-
-    [Test]
-    public void VisitNewExpression_PreventNestedNamedExpressions_DifferentName ()
-    {
-      var namedExpression = new NamedExpression("test", Expression.Constant (0));
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { namedExpression }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (result, Is.Not.SameAs (expression));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Expression, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo("A"));
-      Assert.That (((NewExpression) result).Arguments[0], Is.Not.SameAs(namedExpression));
+      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("m0"));
     }
 
     [Test]
     public void VisitNewExpression_PreventNestedNamedExpressions_SameName ()
     {
       var namedExpression = new NamedExpression ("A", Expression.Constant (0));
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { namedExpression }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { namedExpression },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 
@@ -526,5 +505,4 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Arguments[0], Is.SameAs (namedExpression));
     }
   }
-  
 }

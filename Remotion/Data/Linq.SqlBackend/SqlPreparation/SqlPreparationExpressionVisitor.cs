@@ -188,14 +188,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var expressionAsNamedExpression = expression as NamedExpression;
       var memberName = GetMemberName (newExpression.Members, index);
 
-      if (expressionAsNamedExpression != null)
-      {
-        if (expressionAsNamedExpression.Name == memberName)
-          return expression;
-
-        // TODO Review 2885: We probably shouldn't swallow NamedExpressions here - I'd remove this case; check back if you have another opinion
-        return new NamedExpression (memberName, VisitExpression (expressionAsNamedExpression.Expression));
-      }
+      if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
+        return expression; 
 
       return new NamedExpression (memberName, VisitExpression (expression));
     }

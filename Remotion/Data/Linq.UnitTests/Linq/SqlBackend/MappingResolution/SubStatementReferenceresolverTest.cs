@@ -45,9 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void CreateReferenceExpression_CreatesCompoundExpression_ForNewExpressions ()
     {
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
       var newExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructors()[0],
+          typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
           new[] { new NamedExpression ("const", Expression.Constant (0)) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 

@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -439,23 +438,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitUnaryExpression_ConvertExpression_OperandChanged ()
     {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var unaryExpression = Expression.Convert (new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)), typeof (object));
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var unaryExpression =
+          Expression.Convert (
+              new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)),
+              typeof (object));
 
       var result = nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
 
       Assert.That (result, Is.Not.SameAs (unaryExpression));
-      Assert.That (((UnaryExpression) result).Operand, Is.TypeOf(typeof(SqlColumnDefinitionExpression)));
+      Assert.That (((UnaryExpression) result).Operand, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
     }
 
     [Test]
     public void VisitUnaryExpression_ConvertExpression_SameOperand ()
     {
-      var unaryExpression = Expression.Convert (new SqlEntityDefinitionExpression(typeof(Cook), "c", "CookTable", new SqlColumnDefinitionExpression(typeof(int),"c", "ID", true)), typeof (object));
+      var unaryExpression =
+          Expression.Convert (
+              new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)),
+              typeof (object));
 
       var result = _nonTopLevelVisitor.VisitUnaryExpression (unaryExpression);
 
-      Assert.That (result, Is.SameAs(unaryExpression));
+      Assert.That (result, Is.SameAs (unaryExpression));
     }
 
     [Test]
@@ -704,8 +710,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var result = nonTopLevelVisitor.VisitNamedExpression (expression);
 
-      Assert.That (result, Is.TypeOf(typeof(NamedExpression)));
-      Assert.That (((NamedExpression) result).Name, Is.EqualTo("outer_inner"));
+      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("outer_inner"));
     }
 
     [Test]
@@ -751,15 +757,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitNamedExpression_SqlEntityExpression ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
       var refMemberExpression =
           new SqlEntityRefMemberExpression (
               new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)),
               typeof (Cook).GetProperty ("Substitution"));
       var namedExpression = new NamedExpression ("test", refMemberExpression);
-      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression(1), new SqlLiteralExpression(1));
-      
-      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", "test2", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var resolvedJoinInfo = new ResolvedJoinInfo (
+          new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+
+      var fakeResult = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", "test2", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
       var fakeTable = SqlStatementModelObjectMother.CreateSqlTable();
       _mappingResolutionContext.AddSqlEntityMapping (fakeResult, fakeTable);
 
@@ -782,11 +790,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitNamedExpression_NewExpression ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { Expression.Constant (0) },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       var namedExpression = new NamedExpression ("test", expression);
-      
+
       var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
@@ -800,9 +810,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitNamedExpression_NewExpression_NoMembers ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}), new[] { Expression.Constant (0) });
       var namedExpression = new NamedExpression ("test", expression);
 
       var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
@@ -812,16 +821,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NewExpression) result).Members, Is.Null);
     }
-    
+
     [Test]
     public void VisitNewExpression ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) }, (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
+          new[] { Expression.Constant (0) },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
-      var result = nonTopLevelVisitor.VisitNewExpression(expression);
+      var result = nonTopLevelVisitor.VisitNewExpression (expression);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
@@ -836,9 +847,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitNewExpression_NoMembers ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-         SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      // TODO Review 2885: Constructor order is not defined, use GetConstructor (Type[]) and specify signature
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructors ()[0], new[] { Expression.Constant (0) });
+          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}), new[] { Expression.Constant (0) });
       var result = nonTopLevelVisitor.VisitNewExpression (expression);
 
       Assert.That (result, Is.Not.Null);

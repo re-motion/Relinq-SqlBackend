@@ -220,17 +220,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       {
         var sqlSelectNewExpression = (NewExpression) newExpression;
         NewExpression newNewExpression;
-        // TODO Review 2885: prepare the arguments outside of the if statement to avoid code duplication
+        var preparedArguments = sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr));
+
         if(sqlSelectNewExpression.Members!=null)
-          newNewExpression = Expression.New (
-              sqlSelectNewExpression.Constructor,
-              sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr)),
-              sqlSelectNewExpression.Members
-              );
+          newNewExpression = Expression.New (sqlSelectNewExpression.Constructor, preparedArguments, sqlSelectNewExpression.Members);
         else
-          newNewExpression = Expression.New (
-              sqlSelectNewExpression.Constructor,
-              sqlSelectNewExpression.Arguments.Select (expr => (Expression) new NamedExpression (expression.Name, expr)));
+          newNewExpression = Expression.New (sqlSelectNewExpression.Constructor, preparedArguments);
         return ApplySqlExpressionContext (newNewExpression, _currentContext, _stage, _context);
       }
       else if (newExpression is SqlEntityExpression)
