@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly Expression _rightExpression;
 
     public SqlBinaryOperatorExpression (string binaryOperator, Expression leftExpression, Expression rightExpression)
-        : base(typeof(bool))
+        : base(typeof(bool)) // TODO: Change to pass type via ctor
     {
       ArgumentUtility.CheckNotNull ("binaryOperator", binaryOperator);
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);

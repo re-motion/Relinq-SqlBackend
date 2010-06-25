@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static SqlStatement CreateSqlStatement (Expression selectProjection, params SqlTable[] sqlTables)
     {
       return new SqlStatement (
-          new TestStreamedValueInfo (typeof (string)),
+          new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           selectProjection,
           sqlTables, null, null, new Ordering[] { }, null, false, null, null);
     }
@@ -51,16 +51,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
       return new SqlStatement (
-          new TestStreamedValueInfo (typeof (Cook)),
+          new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           new SqlTableReferenceExpression (sqlTable),
           new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
     }
 
     public static SqlStatement CreateSqlStatement ()
     {
-      var sqlTable = CreateSqlTable_WithUnresolvedTableInfo();
+      var sqlTable = CreateSqlTable_WithUnresolvedTableInfo(typeof (int));
       return new SqlStatement (
-          new TestStreamedValueInfo (typeof (string)),
+          new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0, typeof (int))),
           new SqlTableReferenceExpression (sqlTable),
           new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
     }
@@ -69,7 +69,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
       return new SqlStatement (
-          new TestStreamedValueInfo (type),
+          new StreamedSequenceInfo (
+              typeof (IQueryable<>).MakeGenericType (type), 
+              Expression.Constant (type.IsValueType ? Activator.CreateInstance (type) : null, type)),
           CreateSqlEntityDefinitionExpression (type),
           new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
     }
