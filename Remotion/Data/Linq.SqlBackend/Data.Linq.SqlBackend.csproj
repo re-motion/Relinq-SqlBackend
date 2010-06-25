@@ -125,6 +125,7 @@
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SkipResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\SumResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />

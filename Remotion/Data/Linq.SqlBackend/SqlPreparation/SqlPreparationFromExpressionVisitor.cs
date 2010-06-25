@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -57,71 +56,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           FormattingExpressionTreeVisitor.Format (fromExpression),
           fromExpression.Type.Name);
       throw new NotSupportedException (message);
-    }
-
-    // TODO 2880: Refactor - move to separate class, split into smaller methods
-    public static FromExpressionInfo CreateSqlTableForSubStatement (
-        SqlStatement sqlStatement,
-        ISqlPreparationStage sqlPreparationStage,
-        ISqlPreparationContext context,
-        UniqueIdentifierGenerator generator,
-        Func<ITableInfo, SqlTableBase> tableCreator)
-    {
-      SqlTableBase sqlTable;
-      Expression itemSelector;
-      var extractedOrderings = new List<Ordering>();
-
-      if (sqlStatement.Orderings.Count > 0)
-      {
-        Expression newSelectProjection = Expression.Constant (null);
-        Type tupleType;
-
-        for (var i = sqlStatement.Orderings.Count - 1; i >= 0; --i)
-        {
-          tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.Orderings[i].Expression.Type, newSelectProjection.Type);
-          newSelectProjection =
-              Expression.New (
-                  tupleType.GetConstructors()[0],
-                  new[] { sqlStatement.Orderings[i].Expression, newSelectProjection },
-                  new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-        }
-
-        tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, newSelectProjection.Type);
-        newSelectProjection = Expression.New (
-            tupleType.GetConstructors()[0],
-            new[] { sqlStatement.SelectProjection, newSelectProjection },
-            new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-
-        newSelectProjection = sqlPreparationStage.PrepareSelectExpression (newSelectProjection, context);
-
-        var builder = new SqlStatementBuilder (sqlStatement) { SelectProjection = newSelectProjection };
-        if (sqlStatement.TopExpression == null)
-          builder.Orderings.Clear();
-        builder.RecalculateDataInfo (sqlStatement.SelectProjection);
-        var newSqlStatement = builder.GetSqlStatement();
-
-        var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
-        sqlTable = tableCreator (tableInfo);
-        itemSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Key"));
-
-        var currentOrderingTuple = Expression.MakeMemberAccess (
-            new SqlTableReferenceExpression (sqlTable), newSelectProjection.Type.GetProperty ("Value"));
-        for (var i = 0; i < sqlStatement.Orderings.Count; ++i)
-        {
-          extractedOrderings.Add (
-              new Ordering (
-                  Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Key")),
-                  sqlStatement.Orderings[i].OrderingDirection));
-          currentOrderingTuple = Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Value"));
-        }
-      }
-      else
-      {
-        var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), sqlStatement);
-        sqlTable = tableCreator (tableInfo);
-        itemSelector = new SqlTableReferenceExpression (sqlTable);
-      }
-      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null, true);
     }
 
     private readonly UniqueIdentifierGenerator _generator;
@@ -183,7 +117,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
-      _fromExpressionInfo = CreateSqlTableForSubStatement (sqlStatement, Stage, Context, _generator, _tableGenerator);
+      _fromExpressionInfo = SqlPreparationSubStatementTableFactory.CreateSqlTableForSubStatement (
+          sqlStatement, 
+          Stage, 
+          Context, 
+          _generator, 
+          _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (_fromExpressionInfo.Value.SqlTable);
