@@ -117,12 +117,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
-      _fromExpressionInfo = SqlPreparationSubStatementTableFactory.CreateSqlTableForSubStatement (
-          sqlStatement, 
-          Stage, 
-          Context, 
-          _generator, 
-          _tableGenerator);
+      var factory = new SqlPreparationSubStatementTableFactory (_stage, _context, _generator);
+      _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (_fromExpressionInfo.Value.SqlTable);

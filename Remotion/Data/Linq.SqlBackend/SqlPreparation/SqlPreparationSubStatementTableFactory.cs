@@ -17,11 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
@@ -31,69 +33,106 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationSubStatementTableFactory
   {
-    public static FromExpressionInfo CreateSqlTableForSubStatement (
-        SqlStatement sqlStatement,
-        ISqlPreparationStage sqlPreparationStage,
-        ISqlPreparationContext context,
-        UniqueIdentifierGenerator generator,
+    private readonly ISqlPreparationStage _stage;
+    private readonly ISqlPreparationContext _context;
+    private readonly UniqueIdentifierGenerator _uniqueIdentifierGenerator;
+
+    public SqlPreparationSubStatementTableFactory (
+        ISqlPreparationStage stage, 
+        ISqlPreparationContext context, 
+        UniqueIdentifierGenerator uniqueIdentifierGenerator)
+    {
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      _stage = stage;
+      _uniqueIdentifierGenerator = uniqueIdentifierGenerator;
+      _context = context;
+    }
+
+    public FromExpressionInfo CreateSqlTableForStatement (SqlStatement sqlStatement, Func<ITableInfo, SqlTableBase> tableCreator)
+    {
+      if (sqlStatement.Orderings.Count == 0)
+      {
+        var tableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), sqlStatement);
+        var sqlTable = tableCreator (tableInfo);
+        return new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, true);
+      }
+
+      var selectExpressionWithOrderings = GetNewSelectExpressionWithOrderings (sqlStatement);
+      var tableWithSubStatement = CreateSqlCompatibleSubStatementTable (sqlStatement, selectExpressionWithOrderings, tableCreator);
+      return GetFromExpressionInfoForSubStatement (sqlStatement, tableWithSubStatement);
+    }
+
+    private Expression GetNewSelectExpressionWithOrderings (SqlStatement sqlStatement)
+    {
+      // wrap original select projection and all orderings into a large tuple expression (new { proj, new { o1, new { o2, ... }}})
+      var expressionsToBeTupelized = new[] { sqlStatement.SelectProjection }.Concat (sqlStatement.Orderings.Select (o => o.Expression));
+      var tupleExpression = AggregateExpressionsIntoTuple (expressionsToBeTupelized);
+      var preparedTupleExpression = _stage.PrepareSelectExpression (tupleExpression, _context);
+      Debug.Assert (preparedTupleExpression.Type == tupleExpression.Type);
+      return preparedTupleExpression;
+    }
+
+    private SqlTableBase CreateSqlCompatibleSubStatementTable (
+        SqlStatement originalStatement, 
+        Expression newSelectProjection, 
         Func<ITableInfo, SqlTableBase> tableCreator)
     {
-      SqlTableBase sqlTable;
-      Expression itemSelector;
-      var extractedOrderings = new List<Ordering>();
+      // create a new statement equal to the original one, but with the tuple as its select projection
+      var builder = new SqlStatementBuilder (originalStatement) { SelectProjection = newSelectProjection };
+      builder.RecalculateDataInfo (originalStatement.SelectProjection);
 
-      if (sqlStatement.Orderings.Count > 0)
+      // clear orderings unless required for TopExpression
+      if (originalStatement.TopExpression == null)
+        builder.Orderings.Clear();
+        
+      var newSqlStatement = builder.GetSqlStatement();
+
+      // put new statement into a sub-statement table
+      var subStatementTableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), newSqlStatement);
+      return tableCreator (subStatementTableInfo);
+    }
+
+    private FromExpressionInfo GetFromExpressionInfoForSubStatement (SqlStatement originalSqlStatement, SqlTableBase tableWithSubStatement)
+    {
+      var expressionsFromSubStatement = GetExpressionsFromTuple (new SqlTableReferenceExpression (tableWithSubStatement));
+
+      var projectionFromSubStatement = expressionsFromSubStatement.First (); // this was the original projection
+      var orderingsFromSubStatement = expressionsFromSubStatement
+          .Skip (1) // ignore original projection
+          .Select ((expr, i) => new Ordering (expr, originalSqlStatement.Orderings[i].OrderingDirection));
+
+      return new FromExpressionInfo (tableWithSubStatement, orderingsFromSubStatement.ToArray (), projectionFromSubStatement, null, true);
+    }
+
+    private Expression AggregateExpressionsIntoTuple (IEnumerable<Expression> expressions)
+    {
+      return expressions
+          .Reverse()
+          .Aggregate (
+              (Expression) Expression.Constant (null), 
+              (current, expression) => CreateTupleExpression (expression, current));
+    }
+
+    private Expression CreateTupleExpression (Expression left, Expression right)
+    {
+      var tupleType = typeof (KeyValuePair<,>).MakeGenericType (left.Type, right.Type);
+      var newTupleExpression =
+          Expression.New (
+              tupleType.GetConstructor (new[] { left.Type, right.Type }),
+              new[] { left, right },
+              new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
+      return newTupleExpression;
+    }
+
+    private IEnumerable<Expression> GetExpressionsFromTuple (Expression tupleExpression)
+    {
+      while (tupleExpression.Type.IsGenericType && tupleExpression.Type.GetGenericTypeDefinition() == typeof (KeyValuePair<,>))
       {
-        Expression newSelectProjection = Expression.Constant (null);
-        Type tupleType;
-
-        for (var i = sqlStatement.Orderings.Count - 1; i >= 0; --i)
-        {
-          tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.Orderings[i].Expression.Type, newSelectProjection.Type);
-          newSelectProjection =
-              Expression.New (
-                  tupleType.GetConstructors()[0],
-                  new[] { sqlStatement.Orderings[i].Expression, newSelectProjection },
-                  new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-        }
-
-        tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, newSelectProjection.Type);
-        newSelectProjection = Expression.New (
-            tupleType.GetConstructors()[0],
-            new[] { sqlStatement.SelectProjection, newSelectProjection },
-            new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-
-        var preparedNewSelectProjection = sqlPreparationStage.PrepareSelectExpression (newSelectProjection, context);
-        Debug.Assert (preparedNewSelectProjection.Type == newSelectProjection.Type);
-
-        var builder = new SqlStatementBuilder (sqlStatement) { SelectProjection = preparedNewSelectProjection };
-        if (sqlStatement.TopExpression == null)
-          builder.Orderings.Clear();
-        builder.RecalculateDataInfo (sqlStatement.SelectProjection);
-        var newSqlStatement = builder.GetSqlStatement();
-
-        var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
-        sqlTable = tableCreator (tableInfo);
-        itemSelector = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), preparedNewSelectProjection.Type.GetProperty ("Key"));
-
-        var currentOrderingTuple = Expression.MakeMemberAccess (
-            new SqlTableReferenceExpression (sqlTable), preparedNewSelectProjection.Type.GetProperty ("Value"));
-        for (var i = 0; i < sqlStatement.Orderings.Count; ++i)
-        {
-          extractedOrderings.Add (
-              new Ordering (
-                  Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Key")),
-                  sqlStatement.Orderings[i].OrderingDirection));
-          currentOrderingTuple = Expression.MakeMemberAccess (currentOrderingTuple, currentOrderingTuple.Type.GetProperty ("Value"));
-        }
+        yield return Expression.MakeMemberAccess (tupleExpression, tupleExpression.Type.GetProperty ("Key"));
+        tupleExpression = Expression.MakeMemberAccess (tupleExpression, tupleExpression.Type.GetProperty ("Value"));
       }
-      else
-      {
-        var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), sqlStatement);
-        sqlTable = tableCreator (tableInfo);
-        itemSelector = new SqlTableReferenceExpression (sqlTable);
-      }
-      return new FromExpressionInfo (sqlTable, extractedOrderings.ToArray(), itemSelector, null, true);
     }
   }
 }

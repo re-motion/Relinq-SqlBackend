@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public void RecalculateDataInfo (Expression previousSelectProjection)
     {
-      if (SelectProjection.Type != previousSelectProjection.Type)
+      if (SelectProjection.Type != previousSelectProjection.Type) // TODO: Consider removing this check and the parameter
         DataInfo = GetNewDataInfo();
     }
 
