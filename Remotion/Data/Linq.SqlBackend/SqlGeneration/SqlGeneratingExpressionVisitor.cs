@@ -51,12 +51,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage, mode);
       visitor.VisitExpression (expression);
+
+      //TODO-2977(in derived class): return Expression.Lambda (visitor._projectionExpression, visitor._rowParameter);
     }
 
     private readonly ISqlCommandBuilder _commandBuilder;
     private readonly BinaryExpressionTextGenerator _binaryExpressionTextGenerator;
     private readonly ISqlGenerationStage _stage;
     private readonly SqlGenerationMode _mode;
+
+    //TODO-2977: private readonly ParameterExpression _rowParameter = Expression.Parameter (typeof (IDatabaseResultRow)); // maybe pass via ctor?
+    //TODO-2977: private Expression _projectionExpression; // is built while the visitor generates SQL
 
     protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SqlGenerationMode mode)
     {
@@ -316,6 +321,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _commandBuilder.AppendIdentifier (expression.Name ?? "value");
       }
 
+      //TODO-2977: var getValueMethod = _queryResultParameter.Type.GetMethod ("GetValue");
+      //TODO-2977: _projectionExpression = Expression.Call (_rowParameter, getValueMethod.MakeGenericMethod (expression.Type), expression.ColumnName);
+
       return expression;
     }
 
@@ -361,14 +369,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      bool first = true;
-      foreach (var expr in expression.Arguments)
-      {
-        if (!first)
-          _commandBuilder.Append (",");
-        first = false;
-        VisitExpression (expr);
-      }
+      _commandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => VisitExpression (expr));
       return expression;
     }
 
