@@ -213,35 +213,45 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newInnerExpression = ApplySqlExpressionContext (expression.Expression, _currentContext, _stage, _context);
+      var expressionWithAppliedInnerContext = new NamedExpression (
+          expression.Name, 
+          ApplySqlExpressionContext (expression.Expression, _currentContext, _stage, _context));
 
-      if (newInnerExpression is NewExpression)
+      var result = ProcessNames (expressionWithAppliedInnerContext);
+
+      if (result != expressionWithAppliedInnerContext || expressionWithAppliedInnerContext.Expression != expression.Expression)
+        return result;
+      else
+        return expression;
+    }
+
+    private Expression ProcessNames (NamedExpression outerExpression)
+    {
+      if (outerExpression.Expression is NewExpression)
       {
-        var newExpression = (NewExpression) newInnerExpression;
-        var preparedArguments = newExpression.Arguments.Select (expr => VisitNamedExpression (new NamedExpression (expression.Name, expr)));
+        var newExpression = (NewExpression) outerExpression.Expression;
+        var preparedArguments = newExpression.Arguments.Select (expr => VisitNamedExpression (new NamedExpression (outerExpression.Name, expr)));
 
-        if (newExpression.Members!=null)
+        if (newExpression.Members != null)
           return Expression.New (newExpression.Constructor, preparedArguments, newExpression.Members);
         else
           return Expression.New (newExpression.Constructor, preparedArguments);
       }
-      else if (newInnerExpression is SqlEntityExpression)
+      else if (outerExpression.Expression is SqlEntityExpression)
       {
-        var entityExpression = (SqlEntityExpression) newInnerExpression;
-        string newName = CombineNames (expression.Name, entityExpression.Name);
+        var entityExpression = (SqlEntityExpression) outerExpression.Expression;
+        string newName = CombineNames (outerExpression.Name, entityExpression.Name);
 
-        return _context.UpdateEntityAndAddMapping (entityExpression, newInnerExpression.Type, entityExpression.TableAlias, newName);
+        return _context.UpdateEntityAndAddMapping (entityExpression, entityExpression.Type, entityExpression.TableAlias, newName);
       }
-      else if (newInnerExpression is NamedExpression)
+      else if (outerExpression.Expression is NamedExpression)
       {
-        var namedExpression = (NamedExpression) newInnerExpression;
-        var newName = CombineNames (expression.Name, namedExpression.Name);
+        var namedExpression = (NamedExpression) outerExpression.Expression;
+        var newName = CombineNames (outerExpression.Name, namedExpression.Name);
         return new NamedExpression (newName, namedExpression.Expression);
       }
-
-      if(newInnerExpression != expression.Expression)
-        return new NamedExpression (expression.Name, newInnerExpression);
-      return expression;
+      else
+        return outerExpression;
     }
 
     private string CombineNames (string name1, string name2)
