@@ -217,53 +217,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           expression.Name, 
           ApplySqlExpressionContext (expression.Expression, _currentContext, _stage, _context));
 
-      var result = ProcessNames (expressionWithAppliedInnerContext);
+      var result = NamedExpressionCombiner.ProcessNames (_context, expressionWithAppliedInnerContext);
 
       if (result != expressionWithAppliedInnerContext || expressionWithAppliedInnerContext.Expression != expression.Expression)
         return result;
       else
         return expression;
-    }
-
-    private Expression ProcessNames (NamedExpression outerExpression)
-    {
-      if (outerExpression.Expression is NewExpression)
-      {
-        var newExpression = (NewExpression) outerExpression.Expression;
-        var preparedArguments = newExpression.Arguments.Select (expr => VisitNamedExpression (new NamedExpression (outerExpression.Name, expr)));
-
-        if (newExpression.Members != null)
-          return Expression.New (newExpression.Constructor, preparedArguments, newExpression.Members);
-        else
-          return Expression.New (newExpression.Constructor, preparedArguments);
-      }
-      else if (outerExpression.Expression is SqlEntityExpression)
-      {
-        var entityExpression = (SqlEntityExpression) outerExpression.Expression;
-        string newName = CombineNames (outerExpression.Name, entityExpression.Name);
-
-        return _context.UpdateEntityAndAddMapping (entityExpression, entityExpression.Type, entityExpression.TableAlias, newName);
-      }
-      else if (outerExpression.Expression is NamedExpression)
-      {
-        var namedExpression = (NamedExpression) outerExpression.Expression;
-        var newName = CombineNames (outerExpression.Name, namedExpression.Name);
-        return new NamedExpression (newName, namedExpression.Expression);
-      }
-      else
-        return outerExpression;
-    }
-
-    private string CombineNames (string name1, string name2)
-    {
-      string newName;
-      if (name1 == null)
-        newName = name2;
-      else if (name2 == null)
-        newName = name1;
-      else
-        newName = name1 + "_" + name2;
-      return newName;
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)

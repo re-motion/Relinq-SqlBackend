@@ -27,10 +27,11 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   [TestFixture]
   public class SqlContextExpressionVisitorTest
@@ -688,134 +689,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitNamedExpression_NoSqlEntityExpression_SameExpression ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = new NamedExpression ("test", Expression.Constant ("test"));
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
-
-      Assert.That (result, Is.SameAs (expression));
-    }
-
-    [Test]
-    public void VisitNamedExpression_ReturnsNamedExpression ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = new NamedExpression ("outer", new NamedExpression ("inner", Expression.Constant ("test")));
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
-
-      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("outer_inner"));
-    }
-
-    [Test]
-    public void VisitNamedExpression_ReturnsNamedExpression_InnerNameIsNull ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = new NamedExpression ("outer", new NamedExpression (null, Expression.Constant ("test")));
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
-
-      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("outer"));
-    }
-
-    [Test]
-    public void VisitNamedExpression_ReturnsNamedExpression_OuterNameIsNull ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = new NamedExpression (null, new NamedExpression ("inner", Expression.Constant ("test")));
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
-
-      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("inner"));
-    }
-
-    [Test]
-    public void VisitNamedExpression_NoSqlEntityExpression_DifferentExpression ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = new NamedExpression ("test", Expression.Constant (true));
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (expression);
-
-      Assert.That (result, Is.Not.SameAs (expression));
-      Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
-    }
-
-    [Test]
-    public void VisitNamedExpression_SqlEntityExpression ()
-    {
-      var valueRequiredVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.ValueRequired,
-          false,
-          _stageMock,
-          _mappingResolutionContext);
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "test2");
-      var namedExpression = new NamedExpression ("test", entityExpression);
-
-      var tableRegisteredForEntity = SqlStatementModelObjectMother.CreateSqlTable();
-      _mappingResolutionContext.AddSqlEntityMapping (entityExpression, tableRegisteredForEntity);
-
-      var result = valueRequiredVisitor.VisitNamedExpression (namedExpression);
-
-      Assert.That (result, Is.Not.SameAs (namedExpression));
-      Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
-      Assert.That (((SqlEntityDefinitionExpression) result).Name, Is.EqualTo ("test_test2"));
-      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (tableRegisteredForEntity));
-    }
-
-    [Test]
-    public void VisitNamedExpression_NewExpression ()
-    {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { Expression.Constant (0) },
-          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-      var namedExpression = new NamedExpression ("test", expression);
-
-      var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
-
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
-      Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
-    }
-
-    [Test]
-    public void VisitNamedExpression_NewExpression_NamedExpressionsInsideConstructorArgumentsCombined ()
-    {
-      var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { new NamedExpression ("inner", Expression.Constant (0)) },
-          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-      var namedExpression = new NamedExpression ("outer", expression);
-
-      var result = _nonTopLevelVisitor.VisitNamedExpression (namedExpression);
-
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("outer_inner"));
-    }
-
-    [Test]
     public void VisitNamedExpression_AppliesContextToInnerExpression ()
     {
-      var innermostExpression = new TestExtensionExpressionWithoutChildren(typeof(bool));
-      var expression = new NamedExpression ("test", new NamedExpression ("test2",  innermostExpression));
+      var innerExpression = new TestExtensionExpressionWithoutChildren (typeof (bool));
+      var namedExpression = new NamedExpression ("test", innerExpression);
 
       var predicateRequiredVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+
+      var result = predicateRequiredVisitor.VisitNamedExpression (namedExpression);
+
+      Assert.That (result, Is.SameAs (namedExpression));
+    }
+
+    [Test]
+    public void VisitNamedExpression_ProcessesNamedExpressions ()
+    {
+      var innermostExpression = new TestExtensionExpressionWithoutChildren (typeof (int));
+      var expression = new NamedExpression ("test", new NamedExpression ("test2", innermostExpression));
+
+      var predicateRequiredVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
 
       var result = predicateRequiredVisitor.VisitNamedExpression (expression);
 
@@ -824,19 +716,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitNamedExpression_NewExpression_NoMembers ()
+    public void VisitNamedExpression_ProcessesNamedExpressions_AfterContextIsApplied ()
     {
-      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}), new[] { Expression.Constant (0) });
-      var namedExpression = new NamedExpression ("test", expression);
+      var innermostExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var expression = new NamedExpression ("test", new NamedExpression ("test2", innermostExpression));
 
-      var result = nonTopLevelVisitor.VisitNamedExpression (namedExpression);
+      var predicateRequiredVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, false, _stageMock, _mappingResolutionContext);
 
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NewExpression) result).Members, Is.Null);
+      var result = predicateRequiredVisitor.VisitNamedExpression (expression);
+
+      var expectedResult = new NamedExpression ("test_test2", innermostExpression.PrimaryKeyColumn);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
