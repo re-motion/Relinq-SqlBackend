@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -38,9 +40,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
-      
+
       var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);
       var preparedElementSelector = stage.PrepareResultOperatorItemExpression (resultOperator.ElementSelector, context);
+
+      AddMappingForItemExpression (context, sqlStatementBuilder.DataInfo, preparedKeySelector);
 
       sqlStatementBuilder.GroupByExpression = preparedKeySelector;
       sqlStatementBuilder.SelectProjection = new SqlGroupingSelectExpression (preparedKeySelector, preparedElementSelector);

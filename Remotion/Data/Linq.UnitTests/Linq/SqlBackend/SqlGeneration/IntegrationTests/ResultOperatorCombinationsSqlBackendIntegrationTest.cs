@@ -280,6 +280,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@2", 10));
     }
 
+    [Test]
+    [Ignore ("TODO: 2909 and 2978")]
+    public void AllAfterGroupBy ()
+    {
+      CheckQuery (()=>(from r in Restaurants group r.ID by r.SubKitchen).All (group => group.Key != null),
+        "SELECT CASE WHEN NOT EXISTS (SELECT [t0].[KitchenID] AS [Key] WHERE NOT ([t0].[KitchenID] IS NOT NULL)) THEN 1 ELSE 0 END");
+    }
+
 
   }
 }
