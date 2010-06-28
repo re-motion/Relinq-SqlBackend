@@ -26,6 +26,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// <see cref="NamedExpressionCombiner"/> analyzes the inner expression of a <see cref="NamedExpression"/> and returns a combined expression 
   /// if possible. A combined expression is an expression equivalent to the inner expression but with the name included.
+  /// The process of combining named expressions must be performed during the mapping resolution stage because the name of an entity or value in
+  /// a sub-statement must be defined before an outer statement's reference to that entity or value is resolved by 
+  /// <see cref="SubStatementReferenceResolver"/>.
   /// </summary>
   public class NamedExpressionCombiner
   {
@@ -33,6 +36,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
       ArgumentUtility.CheckNotNull ("outerExpression", outerExpression);
+
+      // We cannot implement this as an expression visitor because expression visitors have no fallback case, i.e., there is no good possibility
+      // to catch all cases not explicitly handled by a visitor. We need that catch-all case, however, and don't want to automatically visit the
+      // expressions' children.
 
       if (outerExpression.Expression is NewExpression)
       {

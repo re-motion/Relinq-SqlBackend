@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_NoSqlEntityExpression_SameExpression ()
+    public void ProcessNames_NoSqlEntityExpression_SameExpression ()
     {
       var expression = new NamedExpression ("test", Expression.Constant ("test"));
 
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_NamedExpression_ReturnsCombinedExpression ()
+    public void ProcessNames_NamedExpression_ReturnsCombinedExpression ()
     {
       var expression = new NamedExpression ("outer", new NamedExpression ("inner", new NamedExpression ("innermost", Expression.Constant ("test"))));
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_ReturnsNamedExpression_InnerNameIsNull ()
+    public void ProcessNames_ReturnsNamedExpression_InnerNameIsNull ()
     {
       var expression = new NamedExpression ("outer", new NamedExpression (null, Expression.Constant ("test")));
 
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_ReturnsNamedExpression_OuterNameIsNull ()
+    public void ProcessNames_ReturnsNamedExpression_OuterNameIsNull ()
     {
       var expression = new NamedExpression (null, new NamedExpression ("inner", Expression.Constant ("test")));
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_SqlEntityExpression ()
+    public void ProcessNames_SqlEntityExpression ()
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "test2");
       var namedExpression = new NamedExpression ("test", entityExpression);
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_NewExpression ()
+    public void ProcessNames_NewExpression ()
     {
       var expression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
@@ -118,7 +118,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_NewExpression_NamedExpressionsInsideConstructorArgumentsCombined ()
+    public void ProcessNames_NewExpression_NamedExpressionsInsideConstructorArgumentsCombined ()
     {
       var expression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
@@ -134,7 +134,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNamedExpression_NewExpression_NoMembers ()
+    public void ProcessNames_NewExpression_NoMembers ()
     {
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { Expression.Constant (0) });
       var namedExpression = new NamedExpression ("test", expression);
