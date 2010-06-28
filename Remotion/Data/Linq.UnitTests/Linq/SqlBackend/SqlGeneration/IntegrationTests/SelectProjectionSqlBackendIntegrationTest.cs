@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
@@ -245,7 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Ignore ("TODO Review 2885")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithMemberNotInitialized ()
     {
-      // TODO Review 2885: The C# compiler will not allow you to write such code, but you can construct it using Expression.New (...)
+      //TODO: The C# compiler will not allow you to write such code, but you can construct it using Expression.New (...)
       // CheckQuery (from k in Kitchens select new TypeForNewExpression (A = k.ID, B = k.RoomNumber).C, "");
     }
   }
