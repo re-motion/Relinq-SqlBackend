@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -801,7 +802,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [Ignore("TODO 2976")]
-    public void PredicateSemantics_BoolExpressionDoesNotSuddenlyContainAnIntExpression ()
+    public void PredicateSemantics_BooleanExpressionDoesNotSuddenlyContainAnIntExpression ()
     {
       var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
       var expression = new TestExtensionExpression (Expression.Constant (true));
@@ -809,6 +810,88 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = nonTopLevelVisitor.VisitExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")));
+
+      var result = nonTopLevelVisitor.VisitSqlTableReferenceExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void VisitSqlFunctionExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlFunctionExpression (typeof (int), "Test", Expression.Constant (true));
+      var expectedResult = new SqlFunctionExpression (typeof (int), "Test", Expression.Constant (1));
+
+      var result = nonTopLevelVisitor.VisitSqlFunctionExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitSqlConvertExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlConvertExpression(typeof(bool), Expression.Constant(true));
+      var expectedResult = new SqlConvertExpression (typeof (bool), Expression.Constant (1));
+
+      var result = nonTopLevelVisitor.VisitSqlConvertExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitSqlExistsExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlExistsExpression(Expression.Constant(true));
+      var expectedResult = new SqlExistsExpression (Expression.Constant (1));
+
+      var result = nonTopLevelVisitor.VisitSqlExistsExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitSqlRowNumberExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlRowNumberExpression (new[] { new Ordering (Expression.Constant (true), OrderingDirection.Asc) });
+      var expectedResult = new SqlRowNumberExpression (new[] { new Ordering (Expression.Constant (1), OrderingDirection.Asc) });
+
+      var result = nonTopLevelVisitor.VisitSqlRowNumberExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult.Orderings[0].Expression, ((SqlRowNumberExpression) result).Orderings[0].Expression);
+    }
+
+    [Test]
+    public void VisitSqlLiteralExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlLiteralExpression (1);
+      
+      var result = nonTopLevelVisitor.VisitSqlLiteralExpression(expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void SqlBinaryOperatorExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new SqlBinaryOperatorExpression(typeof(bool), "AND", Expression.Constant(true), Expression.Constant(true));
+      var expectedResult = new SqlBinaryOperatorExpression (typeof (bool), "AND", Expression.Constant (1), Expression.Constant (1));
+
+      var result = nonTopLevelVisitor.VisitSqlBinaryOperatorExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     public static bool FakeAndOperator (bool operand1, bool operand2)

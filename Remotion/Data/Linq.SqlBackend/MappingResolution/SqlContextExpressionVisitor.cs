@@ -261,37 +261,37 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSpecificExpressionVisitor.VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSpecificExpressionVisitor.VisitSqlConvertExpression (SqlConvertExpression expression)
+    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSpecificExpressionVisitor.VisitSqlExistsExpression (SqlExistsExpression expression)
+    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSpecificExpressionVisitor.VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
+    public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSpecificExpressionVisitor.VisitSqlLiteralExpression (SqlLiteralExpression expression)
+    public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
 
-    Expression ISqlSpecificExpressionVisitor.VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
+    public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
       return VisitUnknownExpression (expression);
     }
