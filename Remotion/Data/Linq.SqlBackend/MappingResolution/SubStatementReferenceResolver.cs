@@ -25,7 +25,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
-  public class SubStatementReferenceResolver : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor, INamedExpressionVisitor
+  public class SubStatementReferenceResolver : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor, INamedExpressionVisitor, ISqlGroupingSelectExpressionVisitor
   {
     public static Expression ResolveSubStatementReferenceExpression (
         Expression referencedExpression,
@@ -96,6 +96,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitExpression (expression.Operand);
     }
 
+    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return new SqlGroupingReferenceExpression (expression, _tableInfo.TableAlias);
+    }
+
     private Expression ResolveNewExpressionArgument (Expression argument, MemberInfo correspondingMember)
     {
       var referenceToArgument = ResolveSubStatementReferenceExpression (argument, _tableInfo, _sqlTable, argument.Type, _context);
@@ -106,6 +113,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       throw new InvalidOperationException ("SqlColumnExpression is not valid at this point.");
     }
+
     
   }
 }

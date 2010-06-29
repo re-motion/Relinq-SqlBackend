@@ -115,5 +115,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
+
+    [Test]
+    public void CreateReferenceExpression_CreatesSqlGroupingReferenceExpression ()
+    {
+      var groupingSelectExpression = new SqlGroupingSelectExpression (Expression.Constant (0), Expression.Constant (1));
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        SelectProjection = groupingSelectExpression,
+        DataInfo = new StreamedSequenceInfo (typeof (IGrouping<int, int>[]), Expression.Constant (null, typeof (IGrouping<int, int>)))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
+
+      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
+          groupingSelectExpression, tableInfo, sqlTable, groupingSelectExpression.Type, _context);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlGroupingReferenceExpression)));
+      Assert.That (((SqlGroupingReferenceExpression) result).ReferencedExpression, Is.SameAs (groupingSelectExpression));
+      Assert.That (((SqlGroupingReferenceExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (result.Type, Is.SameAs (typeof (IGrouping<int, int>)));
+    }
   }
 }
