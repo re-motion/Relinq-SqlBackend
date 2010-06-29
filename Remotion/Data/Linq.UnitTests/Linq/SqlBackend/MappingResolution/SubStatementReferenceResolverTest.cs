@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void CreateReferenceExpression_CreatesCompoundExpression_ForNewExpressions ()
+    public void ResolveSubStatementReferenceExpression_CreatesCompoundExpression_ForNewExpressions ()
     {
       var newExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void CreateReferenceExpression_CreatesSqlEntityExpression ()
+    public void ResolveSubStatementReferenceExpression_CreatesSqlEntityExpression ()
     {
       var entityDefinitionExpression = new SqlEntityDefinitionExpression (
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void CreateReferenceExpression_CreatesSqlValueReferenceExpression ()
+    public void ResolveSubStatementReferenceExpression_CreatesSqlValueReferenceExpression ()
     {
       var namedExpression = new NamedExpression ("test", Expression.Constant (5));
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void CreateReferenceExpression_CreatesSqlGroupingReferenceExpression ()
+    public void ResolveSubStatementReferenceExpression_CreatesSqlGroupingReferenceExpression ()
     {
       var groupingSelectExpression = new SqlGroupingSelectExpression (
           SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "key"),  
@@ -137,21 +137,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.TypeOf (typeof (SqlGroupingSelectExpression)));
 
       var referencedKeyExpression = ((SqlGroupingSelectExpression) result).KeyExpression;
-      var expectedReferencedKeyExpression = new SqlEntityReferenceExpression (
+      var expectedReferencedKeyExpression = new NamedExpression("key", new SqlEntityReferenceExpression (
           typeof (Cook), 
           "q0", 
           null, 
-          (SqlEntityExpression) groupingSelectExpression.KeyExpression);
+          (SqlEntityExpression) groupingSelectExpression.KeyExpression));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedKeyExpression, referencedKeyExpression);
 
       var referencedElementExpression = ((SqlGroupingSelectExpression) result).ElementExpression;
-      var expectedReferencedElementExpression = new SqlColumnDefinitionExpression (typeof (int), "q0", "element", false);
+      var expectedReferencedElementExpression = new NamedExpression("element", new SqlColumnDefinitionExpression (typeof (int), "q0", "element", false));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedElementExpression, referencedElementExpression);
 
       Assert.That (((SqlGroupingSelectExpression) result).AggregationExpressions.Count, Is.EqualTo (1));
       var referencedAggregationExpression = ((SqlGroupingSelectExpression) result).AggregationExpressions[0];
-      var expectedReferencedAggregationExpression = new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false);
+      var expectedReferencedAggregationExpression = new NamedExpression("a0", new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedAggregationExpression, referencedAggregationExpression);
+    }
+
+    [Test]
+    public void ResolveSubStatementReferenceExpression_CreatesSqlGroupingSelectExpressionWithNamedExpressions ()
+    {
+      var expression = new SqlGroupingSelectExpression (
+          Expression.Constant ("key"), Expression.Constant ("element"), new[] { Expression.Constant ("aggregation") });
+      var tableInfo = new ResolvedSubStatementTableInfo ("q0", SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)));
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof(Cook));
+
+      var exprectedResult = new SqlGroupingSelectExpression (
+          new NamedExpression ("key", Expression.Constant ("key")),
+          new NamedExpression ("element", Expression.Constant ("element")),
+          new[] { new NamedExpression ("a0", Expression.Constant ("aggregation")) });
+
+      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
+          expression, tableInfo, sqlTable, expression.Type, _context);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, exprectedResult);
     }
   }
 }

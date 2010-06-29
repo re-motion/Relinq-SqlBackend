@@ -519,7 +519,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName select cooksByName.Key,
-          "SELECT [q0].[key] AS [value] FROM (" +
+          "SELECT [q0].[key] AS [key] FROM (" +
             "SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] " +
             "GROUP BY [t1].[Name]) AS [q0]");
     }
