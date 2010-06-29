@@ -32,7 +32,7 @@ using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class SubStatementReferenceresolverTest
+  public class SubStatementReferenceResolverTest
   {
     private IMappingResolutionContext _context;
 
