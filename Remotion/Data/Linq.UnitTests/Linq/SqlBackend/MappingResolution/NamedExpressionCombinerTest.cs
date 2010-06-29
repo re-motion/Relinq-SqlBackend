@@ -29,7 +29,7 @@ using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   [TestFixture]
-  public class NameCombiningExpressionVisitorTest
+  public class NamedExpressionCombinerTest
   {
     private IMappingResolutionContext _context;
 
