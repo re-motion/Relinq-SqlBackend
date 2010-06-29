@@ -542,7 +542,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2909")]
     public void GroupBy_SelectKey_Nesting ()
     {
       CheckQuery (
@@ -552,9 +551,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             select new { RestaurantID = r.ID, Cooks = cooksByName }
           )
           select x.Cooks.Key,
-          "SELECT [q0].[get_Cooks_get_Key] AS [get_Key] FROM [RestaurantTable] AS [t1] "
-          + "CROSS APPLY (SELECT [t1].[ID] AS [get_RestaurantID],[t2].[Name] AS [get_Cooks_get_Key] FROM [CookTable] AS [t2] "
-          + "WHERE ([t1].[ID] = [t2].[RestaurantID])) AS [q0]");
+          "SELECT [q1].[get_Cooks_key] AS [key] FROM [RestaurantTable] AS [t2] CROSS APPLY (SELECT [t2].[ID] AS [get_RestaurantID],"
+            + "[q0].[key] AS [get_Cooks_key] FROM (SELECT [t3].[Name] AS [key] FROM [CookTable] AS [t3] WHERE ([t2].[ID] = [t3].[RestaurantID]) "
+            + "GROUP BY [t3].[Name]) AS [q0]) AS [q1]");
     }
 
     [Ignore ("TODO 2909")]
