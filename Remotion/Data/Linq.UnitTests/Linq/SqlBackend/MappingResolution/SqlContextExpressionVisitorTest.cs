@@ -766,6 +766,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((NewExpression) result).Members, Is.Null);
     }
 
+    [Test]
+    [Ignore("TODO 2976")]
+    public void PredicateSemantics_BoolExpressionDoesNotSuddenlyContainAnIntExpression ()
+    {
+      var nonTopLevelVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, false, _stageMock, _mappingResolutionContext);
+      var expression = new TestExtensionExpression (Expression.Constant (true));
+
+      var result = nonTopLevelVisitor.VisitExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
     public static bool FakeAndOperator (bool operand1, bool operand2)
     {
       throw new NotImplementedException();
