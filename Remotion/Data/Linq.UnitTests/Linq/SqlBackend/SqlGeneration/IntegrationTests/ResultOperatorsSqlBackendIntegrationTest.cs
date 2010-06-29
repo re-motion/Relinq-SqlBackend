@@ -515,18 +515,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2909")]
     public void GroupBy_SelectKey ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName select cooksByName.Key,
-          "SELECT [q0].[get_Name] FROM (" +
-            "SELECT [c1].[Name] AS [get_Name] FROM [CookTable] AS [c1] " +
-            "GROUP BY [c1.Name]) AS [q0]");
+          "SELECT [q0].[key] AS [value] FROM (" +
+            "SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] " +
+            "GROUP BY [t1].[Name]) AS [q0]");
     }
 
     [Test]
-    [Ignore ("TODO 2909")]
     public void GroupBy_SelectAndCheckEntityKey ()
     {
       CheckQuery (
@@ -534,14 +532,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           group c by c.Substitution into cooksBySubstitution
           where cooksBySubstitution.Key != null
           select cooksBySubstitution.Key.FirstName,
-          "SELECT [q0].[key_FirstName] FROM ("
-              + "SELECT [t1].[ID] AS [key_ID],[t1].[FirstName] AS [key_FirstName],... "
-              + "FROM [CookTable] AS [t1] CROSS JOIN [CookTable] AS [t2] "
-              + "WHERE [t1].[ID] = [t2].[ID] "
-              + "GROUP BY [t2].[ID]) AS [q0]"
-          + "WHERE [q0].[key_ID] IS NOT NULL");
+          "SELECT [q0].[key_FirstName] AS [value] FROM ("
+              + "SELECT [t2].[ID] AS [key_ID],[t2].[FirstName] AS [key_FirstName],[t2].[Name] AS [key_Name],"
+              + "[t2].[IsStarredCook] AS [key_IsStarredCook],[t2].[IsFullTimeCook] AS [key_IsFullTimeCook],"
+              + "[t2].[SubstitutedID] AS [key_SubstitutedID],[t2].[KitchenID] AS [key_KitchenID] "
+              + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
+              + "GROUP BY [t2].[ID]) AS [q0] "
+          + "WHERE ([q0].[key_ID] IS NOT NULL)");
     }
 
+    [Test]
+    [Ignore ("TODO 2909")]
+    public void GroupBy_SelectKey_Nesting ()
+    {
+      CheckQuery (
+          from r in Restaurants
+          from x in (
+            from c in r.Cooks group c by c.Name into cooksByName 
+            select new { RestaurantID = r.ID, Cooks = cooksByName }
+          )
+          select x.Cooks.Key,
+          "SELECT [q0].[get_Cooks_get_Key] AS [get_Key] FROM [RestaurantTable] AS [t1] "
+          + "CROSS APPLY (SELECT [t1].[ID] AS [get_RestaurantID],[t2].[Name] AS [get_Cooks_get_Key] FROM [CookTable] AS [t2] "
+          + "WHERE ([t1].[ID] = [t2].[RestaurantID])) AS [q0]");
+    }
 
     [Ignore ("TODO 2909")]
     [Test]
@@ -559,7 +573,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void GoupBy_CountInWhereCondition ()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName where cooksByName.Count()>0 select cooksByName.Key,
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Count() > 0 select cooksByName.Key,
           "SELECT [q0].[get_Name] FROM (" +
             "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "+
             "GROUP BY [c1].[Name]) AS [q0] "+

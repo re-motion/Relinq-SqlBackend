@@ -87,12 +87,32 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Subquery selects a collection where a single value is expected.")]
     public void GenerateTextForSelectExpression_CollectionInSelectProjection_ThrowsException ()
     {
-      _sqlStatement = new SqlStatement (
+      var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           Expression.Constant (new Cook[] { }),
           new SqlTable[] { }, null, null, new Ordering[] { }, null, false, null, null);
 
-      _stageMock.GenerateTextForSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
+      _stageMock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection);
+    }
+
+    [Test]
+    public void GenerateTextForSelectExpression_GroupingInSelectProjection_DoesNotThrow ()
+    {
+      var sqlStatement = new SqlStatement (
+          new TestStreamedValueInfo (typeof (int)),
+          new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element")),
+          new SqlTable[] { }, null, null, new Ordering[] { }, null, false, null, null);
+
+      _stageMock
+          .Expect (mock => CallGenerateTextForExpression (mock, sqlStatement.SelectProjection, SqlGenerationMode.SelectExpression))
+          .WhenCalled (c => _commandBuilder.Append ("KEY"));
+
+      _stageMock.Replay ();
+
+      _stageMock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("KEY"));
     }
 
     [Test]

@@ -104,6 +104,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var referenceToElementExpression = ResolveChildExpression (expression.ElementExpression);
       var referenceToAggregationExpressions = expression.AggregationExpressions.Select (expr => ResolveChildExpression (expr));
 
+      // TODO 2909: Use CreateWithNames and AddAggregationExpressionWithName (test first)
       return new SqlGroupingSelectExpression (referenceToKeyExpression, referenceToElementExpression, referenceToAggregationExpressions);
     }
 

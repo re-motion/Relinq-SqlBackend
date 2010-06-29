@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -42,7 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+      if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
         throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
       GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.SelectExpression);
