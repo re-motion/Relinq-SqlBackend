@@ -100,13 +100,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlGroupingReferenceExpression (expression, _tableInfo.TableAlias);
+      var referenceToKeyExpression = ResolveChildExpression (expression.KeyExpression);
+      var referenceToElementExpression = ResolveChildExpression (expression.ElementExpression);
+      var referenceToAggregationExpressions = expression.AggregationExpressions.Select (expr => ResolveChildExpression (expr));
+
+      return new SqlGroupingSelectExpression (referenceToKeyExpression, referenceToElementExpression, referenceToAggregationExpressions);
     }
 
     private Expression ResolveNewExpressionArgument (Expression argument, MemberInfo correspondingMember)
     {
-      var referenceToArgument = ResolveSubStatementReferenceExpression (argument, _tableInfo, _sqlTable, argument.Type, _context);
+      var referenceToArgument = ResolveChildExpression (argument);
       return new NamedExpression (correspondingMember.Name, referenceToArgument);
+    }
+
+    private Expression ResolveChildExpression (Expression childExpression)
+    {
+      return ResolveSubStatementReferenceExpression (childExpression, _tableInfo, _sqlTable, childExpression.Type, _context);
     }
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)

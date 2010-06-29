@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -45,7 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var preparedElementSelector = stage.PrepareResultOperatorItemExpression (resultOperator.ElementSelector, context);
       
       sqlStatementBuilder.GroupByExpression = preparedKeySelector;
-      sqlStatementBuilder.SelectProjection = new SqlGroupingSelectExpression (preparedKeySelector, preparedElementSelector);
+      sqlStatementBuilder.SelectProjection = SqlGroupingSelectExpression.CreateWithNames (preparedKeySelector, preparedElementSelector);
     }
   }
 }

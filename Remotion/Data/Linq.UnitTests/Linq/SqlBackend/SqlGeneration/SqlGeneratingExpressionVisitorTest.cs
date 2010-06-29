@@ -717,15 +717,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlGroupingSelectExpression_WithAggregationExpressions ()
+    public void VisitSqlGroupingSelectExpression_WithAggregationExpressions_AndNames ()
     {
-      var groupingExpression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
-      groupingExpression.AddAggregationExpression (Expression.Constant ("aggregation1"));
-      groupingExpression.AddAggregationExpression (Expression.Constant ("aggregation2"));
+      var groupingExpression = SqlGroupingSelectExpression.CreateWithNames (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
+      groupingExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation1"));
+      groupingExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation2"));
 
       SqlGeneratingExpressionVisitor.GenerateSql (groupingExpression, _commandBuilder, _stageMock, SqlGenerationMode.SelectExpression);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1, @2, @3"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 AS [key], @2 AS [a0], @3 AS [a1]"));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo ("keyExpression"));
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("aggregation1"));
       Assert.That (_commandBuilder.GetCommandParameters()[2].Value, Is.EqualTo ("aggregation2"));

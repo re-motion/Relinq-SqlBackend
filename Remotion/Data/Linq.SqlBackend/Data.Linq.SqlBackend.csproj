@@ -132,7 +132,6 @@
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\INamedExpressionVisitor.cs" />
-    <Compile Include="SqlStatementModel\ISqlGroupingReferenceExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlGroupingSelectExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlSubStatementVisitor.cs" />
     <Compile Include="MappingResolution\ISqlTableBaseVisitor.cs" />
@@ -179,7 +178,6 @@
     <Compile Include="SqlStatementModel\Resolved\SqlEntityDefinitionExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityReferenceExpression.cs" />
-    <Compile Include="SqlStatementModel\SqlGroupingReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />

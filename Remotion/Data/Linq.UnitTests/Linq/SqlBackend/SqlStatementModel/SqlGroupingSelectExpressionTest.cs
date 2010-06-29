@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -40,12 +41,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       _keyExpression = Expression.Constant ("key");
       _elementExpression = Expression.Constant ("element");
-      _sqlGroupingSelectExpression = new SqlGroupingSelectExpression (_keyExpression, _elementExpression);
 
       _aggregateExpression1 = Expression.Constant ("agg1");
       _aggregateExpression2 = Expression.Constant ("agg2");
-      _sqlGroupingSelectExpression.AddAggregationExpression (_aggregateExpression1);
-      _sqlGroupingSelectExpression.AddAggregationExpression (_aggregateExpression2);
+
+      _sqlGroupingSelectExpression = new SqlGroupingSelectExpression (
+          _keyExpression, 
+          _elementExpression, 
+          new [] { _aggregateExpression1 });
     }
 
     [Test]
@@ -53,9 +56,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       Assert.That (_sqlGroupingSelectExpression.KeyExpression, Is.SameAs (_keyExpression));
       Assert.That (_sqlGroupingSelectExpression.ElementExpression, Is.SameAs (_elementExpression));
-      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (2));
+      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (1));
       Assert.That (_sqlGroupingSelectExpression.AggregationExpressions[0], Is.SameAs (_aggregateExpression1));
-      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions[1], Is.SameAs (_aggregateExpression2));
+    }
+
+    [Test]
+    public void CreateWithNames ()
+    {
+      var result = SqlGroupingSelectExpression.CreateWithNames (_keyExpression, _elementExpression);
+
+      var expectedKeyExpression = new NamedExpression ("key", _keyExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedKeyExpression, result.KeyExpression);
+
+      var expectedElementExpression = new NamedExpression ("element", _elementExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedElementExpression, result.ElementExpression);
+    }
+
+    [Test]
+    public void AddAggregationExpressionWithName ()
+    {
+      _sqlGroupingSelectExpression.AddAggregationExpressionWithName (_aggregateExpression2);
+
+      Assert.That (_sqlGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (2));
+
+      var expectedNamedExpression = new NamedExpression ("a1", _aggregateExpression2);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedNamedExpression, _sqlGroupingSelectExpression.AggregationExpressions[1]);
     }
 
     [Test]
@@ -157,9 +182,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void To_String ()
     {
+      _sqlGroupingSelectExpression.AddAggregationExpressionWithName (_aggregateExpression2);
       var result = _sqlGroupingSelectExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("GROUPING (KEY: \"key\", ELEMENT: \"element\", AGGREGATIONS: (\"agg1\", \"agg2\")"));
+      Assert.That (result, Is.EqualTo ("GROUPING (KEY: \"key\", ELEMENT: \"element\", AGGREGATIONS: (\"agg1\", \"agg2\" AS a1)"));
     }
   }
 }

@@ -437,8 +437,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void Build_WithGroupByExpression ()
     {
       var sqlGroupExpression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
-      sqlGroupExpression.AddAggregationExpression (Expression.Constant ("aggregation1"));
-      sqlGroupExpression.AddAggregationExpression (Expression.Constant ("aggregation2"));
+      sqlGroupExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation1"));
+      sqlGroupExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation2"));
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           _entityExpression,

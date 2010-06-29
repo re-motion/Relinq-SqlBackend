@@ -219,6 +219,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    [Ignore ("TODO 2909")]
+    public void VisitMemberExpression_OnGroupingReferenceExpression ()
+    {
+
+    }
+
+    [Test]
     public void VisitMemberExpression_OnNewExpression_PropertyInfo ()
     {
       var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });

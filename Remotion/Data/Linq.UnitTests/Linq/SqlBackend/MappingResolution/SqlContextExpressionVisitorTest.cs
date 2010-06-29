@@ -773,8 +773,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var elementExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression(typeof(Cook));
       var aggregateExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
-      var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression);
-      expression.AddAggregationExpression (aggregateExpression);
+      var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression, new[] { aggregateExpression });
 
       var result = _nonTopLevelVisitor.VisitSqlGroupingSelectExpression (expression);
 
@@ -788,8 +787,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var elementExpression = new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0)));
       var aggregateExpression = new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0)));
 
-      var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression);
-      expression.AddAggregationExpression (aggregateExpression);
+      var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression, new[] { aggregateExpression });
 
       var result = (SqlGroupingSelectExpression) _nonTopLevelVisitor.VisitSqlGroupingSelectExpression (expression);
 

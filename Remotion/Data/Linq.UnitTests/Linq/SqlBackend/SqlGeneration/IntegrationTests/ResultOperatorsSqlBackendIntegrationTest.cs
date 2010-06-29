@@ -525,8 +525,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             "GROUP BY [c1.Name]) AS [q0]");
     }
 
+    [Test]
     [Ignore ("TODO 2909")]
-    public void GroupBy_SelectKeyAndAggregate()
+    public void GroupBy_SelectAndCheckEntityKey ()
+    {
+      CheckQuery (
+          from c in Cooks
+          group c by c.Substitution into cooksBySubstitution
+          where cooksBySubstitution.Key != null
+          select cooksBySubstitution.Key.FirstName,
+          "SELECT [q0].[key_FirstName] FROM ("
+              + "SELECT [t1].[ID] AS [key_ID],[t1].[FirstName] AS [key_FirstName],... "
+              + "FROM [CookTable] AS [t1] CROSS JOIN [CookTable] AS [t2] "
+              + "WHERE [t1].[ID] = [t2].[ID] "
+              + "GROUP BY [t2].[ID]) AS [q0]"
+          + "WHERE [q0].[key_ID] IS NOT NULL");
+    }
+
+
+    [Ignore ("TODO 2909")]
+    [Test]
+    public void GroupBy_SelectKeyAndAggregate ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
@@ -536,7 +555,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Ignore ("TODO 2909")]
-    public void GoupBy_CountInWhereCondition()
+    [Test]
+    public void GoupBy_CountInWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Count()>0 select cooksByName.Key,
@@ -547,6 +567,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Ignore ("TODO 2909")]
+    [Test]
     public void GroupBy_MinInWhereCondition ()
     {
       CheckQuery (
@@ -558,6 +579,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Ignore ("TODO 2909")]
+    [Test]
     public void GroupBy_MinWithProjection_InWhereCondition ()
     {
       CheckQuery (
@@ -567,18 +589,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             "GROUP BY [c1].[Name]) AS [q0] " +
             "WHERE [q0].[get_Min]>18");
     }
-
-    [Ignore ("TODO 2909")]
-    public void GroupBy5 ()
-    {
-      CheckQuery (
-          from c in Cooks group c by c.Substitution into cooksBySubstitution select cooksBySubstitution.Key.FirstName,
-          "SELECT [q0].[get_FirstName] FROM (" +
-            "SELECT [c1].[FirstName] AS [getFirstName_Name], FROM [CookTable] AS [c1] CROSS JOIN [CookTable] AS [c2] " +
-            "WHERE [c1].[ID] = [c2].[ID] " +
-            "GROUP BY [c2].[ID], [c2].[Name], .....) AS [q0]");
-    }
-
 
   }
 }

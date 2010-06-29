@@ -75,8 +75,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
-      var expectedSelectProjection = new SqlGroupingSelectExpression (keySelector, elementSelector);
+      
+      var expectedSelectProjection = new SqlGroupingSelectExpression (
+          new NamedExpression ("key", keySelector), 
+          new NamedExpression ("element", elementSelector));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
+
       Assert.That (
           _sqlStatementBuilder.DataInfo.DataType,
           Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (IGrouping<,>).MakeGenericType (typeof (string), typeof (string)))));

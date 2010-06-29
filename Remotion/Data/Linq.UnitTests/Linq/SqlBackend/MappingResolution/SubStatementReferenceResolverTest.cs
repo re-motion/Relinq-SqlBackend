@@ -119,7 +119,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void CreateReferenceExpression_CreatesSqlGroupingReferenceExpression ()
     {
-      var groupingSelectExpression = new SqlGroupingSelectExpression (Expression.Constant (0), Expression.Constant (1));
+      var groupingSelectExpression = new SqlGroupingSelectExpression (
+          SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "key"),  
+          new NamedExpression ("element", Expression.Constant (0)), 
+          new[] { new NamedExpression ("a0", Expression.Constant (1)) });
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
       {
         SelectProjection = groupingSelectExpression,
@@ -131,10 +134,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           groupingSelectExpression, tableInfo, sqlTable, groupingSelectExpression.Type, _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlGroupingReferenceExpression)));
-      Assert.That (((SqlGroupingReferenceExpression) result).ReferencedExpression, Is.SameAs (groupingSelectExpression));
-      Assert.That (((SqlGroupingReferenceExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.SameAs (typeof (IGrouping<int, int>)));
+      Assert.That (result, Is.TypeOf (typeof (SqlGroupingSelectExpression)));
+
+      var referencedKeyExpression = ((SqlGroupingSelectExpression) result).KeyExpression;
+      var expectedReferencedKeyExpression = new SqlEntityReferenceExpression (
+          typeof (Cook), 
+          "q0", 
+          null, 
+          (SqlEntityExpression) groupingSelectExpression.KeyExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedKeyExpression, referencedKeyExpression);
+
+      var referencedElementExpression = ((SqlGroupingSelectExpression) result).ElementExpression;
+      var expectedReferencedElementExpression = new SqlColumnDefinitionExpression (typeof (int), "q0", "element", false);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedElementExpression, referencedElementExpression);
+
+      Assert.That (((SqlGroupingSelectExpression) result).AggregationExpressions.Count, Is.EqualTo (1));
+      var referencedAggregationExpression = ((SqlGroupingSelectExpression) result).AggregationExpressions[0];
+      var expectedReferencedAggregationExpression = new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedAggregationExpression, referencedAggregationExpression);
     }
   }
 }

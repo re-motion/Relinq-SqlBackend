@@ -31,6 +31,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlGroupingSelectExpression : ExtensionExpression
   {
+    public static SqlGroupingSelectExpression CreateWithNames (Expression unnamedKeySelector, Expression unnamedElementSelector)
+    {
+      ArgumentUtility.CheckNotNull ("unnamedKeySelector", unnamedKeySelector);
+      ArgumentUtility.CheckNotNull ("unnamedElementSelector", unnamedElementSelector);
+
+      return new SqlGroupingSelectExpression (
+          new NamedExpression ("key", unnamedKeySelector),
+          new NamedExpression ("element", unnamedElementSelector));
+    }
+
     private readonly Expression _keyExpression;
     private readonly Expression _elementExpression;
     private readonly List<Expression> _aggregationExpressions;
@@ -66,11 +76,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _aggregationExpressions.AsReadOnly(); }
     }
 
-    public void AddAggregationExpression (Expression expression)
+    public void AddAggregationExpressionWithName (Expression unnamedExpression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("unnamedExpression", unnamedExpression);
 
-      _aggregationExpressions.Add (expression);
+      _aggregationExpressions.Add (new NamedExpression ("a" + _aggregationExpressions.Count, unnamedExpression));
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -87,9 +97,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
           || newElementExpression != ElementExpression 
           || newAggregationExpressions != originalAggregationExpressions)
       {
-        var newSqlGroupingSelectExpression = new SqlGroupingSelectExpression (newKeyExpression, newElementExpression);
-        foreach (var newAggregationExpression in newAggregationExpressions)
-          newSqlGroupingSelectExpression.AddAggregationExpression (newAggregationExpression);
+        var newSqlGroupingSelectExpression = new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
         return newSqlGroupingSelectExpression;
       }
       return this;
@@ -106,7 +114,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return string.Format (
+      return String.Format (
           "GROUPING (KEY: {0}, ELEMENT: {1}, AGGREGATIONS: ({2})", 
           FormattingExpressionTreeVisitor.Format (KeyExpression), 
           FormattingExpressionTreeVisitor.Format (ElementExpression),

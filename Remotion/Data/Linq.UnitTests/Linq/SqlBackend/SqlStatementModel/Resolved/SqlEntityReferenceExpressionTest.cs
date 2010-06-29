@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       var result = entityReferenceExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("[q0] (REF)"));
+      Assert.That (result, Is.EqualTo ("[q0] (ENTITY-REF)"));
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
 
       var result = entityReferenceExpression.ToString ();
 
-      Assert.That (result, Is.EqualTo ("[q0].[e1] (REF)"));
+      Assert.That (result, Is.EqualTo ("[q0].[e1] (ENTITY-REF)"));
     }
   }
 }
