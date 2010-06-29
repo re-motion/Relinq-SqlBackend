@@ -38,9 +38,16 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// comparing those integer values to 1 and 0 literals.
   /// </remarks>
   public class SqlContextExpressionVisitor
-      : ExpressionTreeVisitor, ISqlSpecificExpressionVisitor, IResolvedSqlExpressionVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor, INamedExpressionVisitor
+      : ExpressionTreeVisitor,
+        ISqlSpecificExpressionVisitor,
+        IResolvedSqlExpressionVisitor,
+        IUnresolvedSqlExpressionVisitor,
+        ISqlSubStatementVisitor,
+        INamedExpressionVisitor,
+        ISqlGroupingSelectExpressionVisitor
   {
-    public static Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
+    public static Expression ApplySqlExpressionContext (
+        Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -56,7 +63,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
 
-    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
+    protected SqlContextExpressionVisitor (
+        SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -145,7 +153,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newOperand = ApplySqlExpressionContext (expression.Operand, GetChildSemanticsForUnaryExpression (expression), _stage, _context);
-      
+
       if (newOperand != expression.Operand)
         expression = Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
       return expression;
@@ -194,7 +202,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One), _context);
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (
+          new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One), _context);
       switch (_currentContext)
       {
         case SqlExpressionContext.ValueRequired:
@@ -206,7 +215,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           else
             return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKeyColumn;
       }
-      throw new NotSupportedException (string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, FormattingExpressionTreeVisitor.Format(expression)));
+      throw new NotSupportedException (
+          string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, FormattingExpressionTreeVisitor.Format (expression)));
     }
 
     public Expression VisitNamedExpression (NamedExpression expression)
@@ -214,7 +224,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var expressionWithAppliedInnerContext = new NamedExpression (
-          expression.Name, 
+          expression.Name,
           ApplySqlExpressionContext (expression.Expression, _currentContext, _stage, _context));
 
       var result = NamedExpressionCombiner.ProcessNames (_context, expressionWithAppliedInnerContext);
@@ -230,10 +240,25 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var expressions = expression.Arguments.Select (expr => ApplySqlExpressionContext (expr, SqlExpressionContext.ValueRequired, _stage, _context));
-      if(expression.Members!=null)
+      if (expression.Members != null)
         return Expression.New (expression.Constructor, expressions, expression.Members);
       else
         return Expression.New (expression.Constructor, expressions);
+    }
+
+    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    {
+      var newKeyExpression = ApplySqlExpressionContext (expression.KeyExpression, SqlExpressionContext.ValueRequired, _stage, _context);
+      var newElementExpression = ApplySqlExpressionContext (expression.ElementExpression, SqlExpressionContext.ValueRequired, _stage, _context);
+      var newAggregationExpressions = expression.AggregationExpressions.Select (
+          e => ApplySqlExpressionContext (e, SqlExpressionContext.ValueRequired, _stage, _context));
+
+      if (newKeyExpression != expression.KeyExpression 
+          || newElementExpression != expression.ElementExpression
+          || !newAggregationExpressions.SequenceEqual (expression.AggregationExpressions))
+        return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
+
+      return expression;
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
@@ -346,6 +371,5 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       else
         throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", newExpression.Type));
     }
-    
   }
 }

@@ -767,6 +767,41 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitSqlGroupingSelectExpression_KeepsValueSemantics ()
+    {
+      var keyExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression(typeof(Cook));
+      var elementExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression(typeof(Cook));
+      var aggregateExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+
+      var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression);
+      expression.AddAggregationExpression (aggregateExpression);
+
+      var result = _nonTopLevelVisitor.VisitSqlGroupingSelectExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void VisitSqlGroupingSelectExpression_VisitsChildren ()
+    {
+      var keyExpression = new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0)));
+      var elementExpression = new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0)));
+      var aggregateExpression = new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0)));
+
+      var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression);
+      expression.AddAggregationExpression (aggregateExpression);
+
+      var result = (SqlGroupingSelectExpression) _nonTopLevelVisitor.VisitSqlGroupingSelectExpression (expression);
+
+      Assert.That (result, Is.Not.SameAs (expression));
+      
+      var expectedExpression = new NamedExpression ("test_test2", Expression.Constant (0));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.KeyExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.ElementExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.AggregationExpressions[0]);
+    }
+
+    [Test]
     [Ignore("TODO 2976")]
     public void PredicateSemantics_BoolExpressionDoesNotSuddenlyContainAnIntExpression ()
     {

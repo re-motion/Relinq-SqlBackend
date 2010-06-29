@@ -514,6 +514,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "");
     }
 
+    [Test]
+    [Ignore ("TODO 2909")]
+    public void GroupBy_SelectKey ()
+    {
+      CheckQuery (
+          from c in Cooks group c by c.Name into cooksByName select cooksByName.Key,
+          "SELECT [q0].[get_Name] FROM (" +
+            "SELECT [c1].[Name] AS [get_Name] FROM [CookTable] AS [c1] " +
+            "GROUP BY [c1.Name]) AS [q0]");
+    }
+
     [Ignore ("TODO 2909")]
     public void GroupBy_SelectKeyAndAggregate()
     {

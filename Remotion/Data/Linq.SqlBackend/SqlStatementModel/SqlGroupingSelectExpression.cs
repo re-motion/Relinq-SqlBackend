@@ -35,15 +35,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly Expression _elementExpression;
     private readonly List<Expression> _aggregationExpressions;
 
-    public SqlGroupingSelectExpression (Expression keyExpression, Expression elementExpression)
-      : base (
+    public SqlGroupingSelectExpression (Expression keyExpression, Expression elementExpression) 
+        : this (keyExpression, elementExpression, new List<Expression>())
+    {
+    }
+
+    public SqlGroupingSelectExpression (Expression keyExpression, Expression elementExpression, IEnumerable<Expression> aggregationExpressions)
+     : base (
           typeof (IGrouping<,>).MakeGenericType (
               ArgumentUtility.CheckNotNull ("keyExpression", keyExpression).Type, 
               ArgumentUtility.CheckNotNull ("elementExpression", elementExpression).Type))
     {
       _keyExpression = keyExpression;
       _elementExpression = elementExpression;
-      _aggregationExpressions = new List<Expression>();
+      _aggregationExpressions = aggregationExpressions.ToList();
     }
 
     public Expression KeyExpression
