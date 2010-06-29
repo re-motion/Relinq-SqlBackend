@@ -179,18 +179,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_NonTopLevel_AlwaysAppliesSingleValueSemantics ()
-    {
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
-
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, false, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (entityExpression);
-
-      Assert.That (result, Is.Not.SameAs (entityExpression));
-      Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
-    }
-
-    [Test]
     public void VisitExpression_TopLevel_AppliesSpecifiedSemantics ()
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
@@ -199,19 +187,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
-    }
-
-    [Test]
-    public void VisitExpression_ChildNode_GetsSingleValueSemantics ()
-    {
-      var childExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
-      var parentExpression = new CustomCompositeExpression (typeof (bool), childExpression);
-
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, true, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (parentExpression);
-
-      var expectedExpression = new CustomCompositeExpression (typeof (bool), childExpression.PrimaryKeyColumn);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]

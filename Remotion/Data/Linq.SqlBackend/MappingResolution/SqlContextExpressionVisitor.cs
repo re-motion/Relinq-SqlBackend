@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -53,24 +54,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlContextExpressionVisitor (initialSemantics, true, stage, context);
+      var visitor = new SqlContextExpressionVisitor (initialSemantics, stage, context);
       return visitor.VisitExpression (expression);
     }
 
     private readonly SqlExpressionContext _currentContext;
-
-    private bool _isTopLevelExpression;
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
 
-    protected SqlContextExpressionVisitor (
-        SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
+    protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
       _currentContext = currentContext;
-      _isTopLevelExpression = isTopLevelExpression;
       _stage = stage;
       _context = context;
     }
@@ -263,37 +260,43 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitChildrenWithSingleValueSemantics (expression);
+    }
+
+    private Expression VisitChildrenWithSingleValueSemantics (ExtensionExpression expression)
+    {
+      var visitor = new SqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stage, _context);
+      return visitor.VisitUnknownExpression (expression);
     }
 
     private SqlExpressionContext GetChildSemanticsForUnaryExpression (Expression expression)
@@ -333,8 +336,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private Expression HandleSingleValueSemantics (Expression expression)
     {
-      _isTopLevelExpression = false;
-
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool))
         return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -344,11 +345,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private Expression HandleValueSemantics (Expression expression)
     {
-      if (!_isTopLevelExpression)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
-
-      _isTopLevelExpression = false;
-
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool))
         return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
@@ -358,11 +354,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private Expression HandlePredicateSemantics (Expression expression)
     {
-      if (!_isTopLevelExpression)
-        return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
-
-      _isTopLevelExpression = false;
-
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool))
         return newExpression;

@@ -22,7 +22,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   public class TestableSqlContextExpressionVisitor : SqlContextExpressionVisitor
   {
     public TestableSqlContextExpressionVisitor (SqlExpressionContext currentContext, bool isTopLevelExpression, IMappingResolutionStage stage, IMappingResolutionContext context)
-        : base (currentContext, isTopLevelExpression, stage, context)
+        : base (currentContext, stage, context)
     {
     }
 
