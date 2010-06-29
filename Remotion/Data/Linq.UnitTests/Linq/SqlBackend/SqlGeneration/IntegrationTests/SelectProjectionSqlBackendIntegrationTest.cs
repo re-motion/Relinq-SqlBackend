@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
@@ -75,9 +74,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void BooleanConditions ()
     {
       CheckQuery (
-          from k in Kitchens select k.Name == "SpecialKitchen",
-          "SELECT CASE WHEN ([t0].[Name] = @1) THEN 1 ELSE 0 END AS [value] FROM [KitchenTable] AS [t0]",
-          new CommandParameter ("@1", "SpecialKitchen"));
+          from c in Cooks select c.IsStarredCook,
+          "SELECT [t0].[IsStarredCook] AS [value] FROM [CookTable] AS [t0]");
+
+      CheckQuery (
+          from c in Cooks select true,
+          "SELECT @1 AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+
+      CheckQuery (
+          from c in Cooks select c.FirstName != null,
+          "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -249,5 +256,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       //TODO: The C# compiler will not allow you to write such code, but you can construct it using Expression.New (...)
       // CheckQuery (from k in Kitchens select new TypeForNewExpression (A = k.ID, B = k.RoomNumber).C, "");
     }
+
+    [Test]
+    [Ignore ("TODO 2985/TODO 2986")]
+    public void NestedSelectProjection_WithBooleanConditions ()
+    {
+      CheckQuery (
+          from c in Cooks select new { c.IsStarredCook },
+          "SELECT [t0].[IsStarredCook] AS [get_IsStarredCook] FROM [CookTable] AS [t0]");
+
+      CheckQuery (
+          from c in Cooks select new { c.IsStarredCook, True = true },
+          "SELECT [t0].[IsStarredCook] AS [get_IsStarredCook],@1 AS [get_True] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+      
+      CheckQuery (
+          from c in Cooks select new { c.IsStarredCook, True = true, HasFirstName = c.FirstName != null },
+          "SELECT [t0].[IsStarredCook] AS [get_IsStarredCook]," 
+          + "@1 AS [get_True], CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [get_HasFirstName] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 1));
+    }
+
   }
 }
