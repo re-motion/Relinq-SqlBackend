@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -219,10 +220,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [Ignore ("TODO 2909")]
-    public void VisitMemberExpression_OnGroupingReferenceExpression ()
+    public void VisitMemberExpression_OnGroupingSelectExpression ()
     {
+      var expression = new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
+      var memberInfo = typeof (IGrouping<string, string>).GetProperty ("Key");
 
+      var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      Assert.That (result, Is.SameAs (expression.KeyExpression));
     }
 
     [Test]

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -35,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// result that itself needs to be resolved again.
   /// </summary>
   public class MemberAccessResolver
-      : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, INamedExpressionVisitor, IResolvedSqlExpressionVisitor
+      : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, INamedExpressionVisitor, IResolvedSqlExpressionVisitor, ISqlGroupingSelectExpressionVisitor
   {
     private readonly MemberInfo _memberInfo;
     private readonly IMappingResolver _mappingResolver;
@@ -140,6 +141,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
 
+    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      Debug.Assert (_memberInfo.Equals (expression.Type.GetProperty ("Key")));
+
+      return expression.KeyExpression;
+    }
+
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       return VisitUnknownExpression (expression);
@@ -149,5 +159,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       return VisitUnknownExpression (expression);
     }
+
+    
   }
 }
