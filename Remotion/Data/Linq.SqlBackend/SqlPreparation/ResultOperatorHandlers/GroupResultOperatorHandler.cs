@@ -43,9 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);
       var preparedElementSelector = stage.PrepareResultOperatorItemExpression (resultOperator.ElementSelector, context);
-
-      AddMappingForItemExpression (context, sqlStatementBuilder.DataInfo, preparedKeySelector);
-
+      
       sqlStatementBuilder.GroupByExpression = preparedKeySelector;
       sqlStatementBuilder.SelectProjection = new SqlGroupingSelectExpression (preparedKeySelector, preparedElementSelector);
     }
