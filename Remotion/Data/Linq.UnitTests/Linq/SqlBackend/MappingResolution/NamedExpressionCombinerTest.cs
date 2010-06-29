@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -145,6 +146,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NewExpression) result).Members, Is.Null);
+    }
+
+    [Test]
+    public void ProcessNames_SqlGroupingSelectExpression ()
+    {
+      var keyExpression = new NamedExpression ("key", Expression.Constant ("key"));
+      var elementExpression = new NamedExpression ("element", Expression.Constant ("element"));
+      var aggregationExpression = new NamedExpression ("a0", Expression.Constant ("aggregation"));
+      var groupingSelectExpression = new SqlGroupingSelectExpression (keyExpression, elementExpression, new[]{aggregationExpression});
+      var expression = new NamedExpression ("outer", groupingSelectExpression);
+
+      var expectedResult = new SqlGroupingSelectExpression (
+          new NamedExpression ("outer_key", Expression.Constant ("key")), 
+          new NamedExpression ("outer_element", Expression.Constant ("element")),
+          new[]{new NamedExpression("outer_a0", Expression.Constant("aggregation"))});
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
     }
   }
 }

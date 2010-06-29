@@ -64,19 +64,19 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var newName = CombineNames (outerExpression.Name, namedExpression.Name);
         return ProcessNames (mappingResolutionContext, new NamedExpression (newName, namedExpression.Expression));
       }
-      // TODO 2909
-      //else if (outerExpression.Expression is SqlGroupingSelectExpression)
-      //{
-      //  var groupingSelectExpression = (SqlGroupingSelectExpression) outerExpression.Expression;
-      //  var newKeyExpression = ProcessNames (
-      //      mappingResolutionContext, 
-      //      new NamedExpression (outerExpression.Name, groupingSelectExpression.KeyExpression));
-      //  var newElementExpression = ProcessNames (
-      //      mappingResolutionContext,
-      //      new NamedExpression (outerExpression.Name, groupingSelectExpression.ElementExpression));
-      //  TODO: Aggregations missing, test - NamedExpression ("outer", SqlGroupingSelect (Named ("key"), Named ("element"), Named ("a0"))) => SqlGroupingSelect (Named ("outer_key"), Named ("outer_element"), Named ("outer_a0"))
-      //  return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression);
-      //}
+      else if (outerExpression.Expression is SqlGroupingSelectExpression)
+      {
+        var groupingSelectExpression = (SqlGroupingSelectExpression) outerExpression.Expression;
+        var newKeyExpression = ProcessNames (
+            mappingResolutionContext, 
+            new NamedExpression (outerExpression.Name, groupingSelectExpression.KeyExpression));
+        var newElementExpression = ProcessNames (
+            mappingResolutionContext,
+            new NamedExpression (outerExpression.Name, groupingSelectExpression.ElementExpression));
+        var newAggregationExpressions = groupingSelectExpression.AggregationExpressions.Select (
+            e => ProcessNames (mappingResolutionContext, new NamedExpression (outerExpression.Name, e)));
+        return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
+      }
       else
         return outerExpression;
     }
