@@ -106,19 +106,21 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitNewExpression (NewExpression expression)
     {
-      if (expression.Members == null || expression.Members.Count == 0)
+      if (expression.Members != null && expression.Members.Count > 0)
       {
-        throw new InvalidOperationException (
+        var binding = MemberBinding.Bind (_memberInfo, expression);
+        var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
+        var result = membersAndAssignedExpressions.SingleOrDefault (c => binding.MatchesReadAccess (c.Member));
+        if (result != null)
+          return result.Argument;
+      }
+
+      throw new InvalidOperationException (
             string.Format (
                 "The member '{0}.{1}' cannot be translated to SQL. Expression: '{2}'",
                 expression.Type.Name,
                 _memberInfo.Name,
                 FormattingExpressionTreeVisitor.Format (expression)));
-      }
-
-      var binding = MemberBinding.Bind (_memberInfo, expression);
-      var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
-      return membersAndAssignedExpressions.Single (c => binding.MatchesReadAccess (c.Member)).Argument;
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)

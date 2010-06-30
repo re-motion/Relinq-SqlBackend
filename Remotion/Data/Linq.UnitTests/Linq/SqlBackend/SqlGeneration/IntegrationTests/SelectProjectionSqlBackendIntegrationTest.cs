@@ -16,7 +16,12 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -248,16 +253,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. " +
-      "Expression: 'new TypeForNewExpression([t0].[ID] AS A, [t0].[RoomNumber] AS B)'")]
-    [Ignore ("TODO Review 2885")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "
+      +"Expression: 'new TypeForNewExpression(A = [t0].[ID] AS A, B = [t0].[RoomNumber] AS B)'")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithMemberNotInitialized ()
     {
-      //TODO Review 2885: The C# compiler will not allow you to write such code, but you can construct it using Expression.New (...)
-      // CheckQuery (from k in Kitchens select new TypeForNewExpression (A = k.ID, B = k.RoomNumber).C, "");
+      var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (new Core.IntegrationTests.TestQueryable<Kitchen> ("Kitchen")));
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
+      var newExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }),
+          new[] { MemberExpression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetProperty ("ID")),
+                  MemberExpression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetProperty ("RoomNumber")) },
+          new MemberInfo[] { typeof (TypeForNewExpression).GetProperty ("A"), typeof (TypeForNewExpression).GetProperty ("B") });
+      var selectClause = new SelectClause (MemberExpression.MakeMemberAccess (newExpression, typeof (TypeForNewExpression).GetField ("C")));
+      var queryModel = new QueryModel (mainFromClause, selectClause);
+
+      CheckQuery (queryModel, "");
     }
 
     [Test]
+
     [Ignore ("TODO 2985/TODO 2986")]
     public void NestedSelectProjection_WithBooleanConditions ()
     {
