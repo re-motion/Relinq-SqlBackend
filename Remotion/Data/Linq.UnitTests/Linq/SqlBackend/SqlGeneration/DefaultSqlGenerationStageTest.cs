@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForSelectExpression ()
     {
       _stageMock
-          .Expect (mock => CallGenerateTextForExpression (mock, _sqlStatement.SelectProjection, SqlGenerationMode.SelectExpression))
+          .Expect (mock => CallGenerateTextForSelectionExpression (mock, _sqlStatement.SelectProjection))
           .WhenCalled (c => _commandBuilder.Append ("[t].[ID],[t].[Name],[t].[City]"));
 
       _stageMock.Replay();
@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new SqlTable[] { }, null, null, new Ordering[] { }, null, false, null, null);
 
       _stageMock
-          .Expect (mock => CallGenerateTextForExpression (mock, sqlStatement.SelectProjection, SqlGenerationMode.SelectExpression))
+          .Expect (mock => CallGenerateTextForSelectionExpression (mock, sqlStatement.SelectProjection))
           .WhenCalled (c => _commandBuilder.Append ("KEY"));
 
       _stageMock.Replay ();
@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new SqlStatementBuilder { DataInfo = new TestStreamedValueInfo(typeof(int)), SelectProjection = _columnListExpression, TopExpression = Expression.Constant (5) }.GetSqlStatement();
 
       _stageMock
-          .Expect ( mock => CallGenerateTextForExpression (mock, sqlStatement.TopExpression, SqlGenerationMode.NonSelectExpression))
+          .Expect ( mock => CallGenerateTextForNonSelectionExpression (mock, sqlStatement.TopExpression))
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
@@ -152,9 +152,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new SqlTable[] { }, Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)), null, new Ordering[] { }, null, false, null, null);
 
       _stageMock
-          .Expect (mock => CallGenerateTextForExpression (mock, sqlStatement.WhereCondition, SqlGenerationMode.NonSelectExpression))
+          .Expect (mock => CallGenerateTextForNonSelectionExpression (mock, sqlStatement.WhereCondition))
           .WhenCalled (c => _commandBuilder.Append ("test"));
-      _stageMock.Replay();
+      _stageMock.Replay ();
 
       _stageMock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition);
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expression = Expression.Constant (1);
 
       _stageMock
-          .Expect (mock => CallGenerateTextForExpression (mock, expression, SqlGenerationMode.NonSelectExpression))
+          .Expect (mock => CallGenerateTextForNonSelectionExpression (mock, expression))
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
@@ -206,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expression = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
 
       _stageMock
-          .Expect (mock => CallGenerateTextForExpression (mock, expression, SqlGenerationMode.NonSelectExpression))
+          .Expect (mock => CallGenerateTextForNonSelectionExpression (mock, expression))
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay ();
 
@@ -222,7 +222,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
 
       _stageMock
-          .Expect (mock => CallGenerateTextForExpression (mock, expression, SqlGenerationMode.NonSelectExpression))
+          .Expect (mock => CallGenerateTextForNonSelectionExpression (mock, expression))
           .WhenCalled (c => _commandBuilder.Append ("GROUP BY keyExpression"));
       _stageMock.Replay ();
 
@@ -232,9 +232,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("GROUP BY keyExpression"));
     }
 
-    private void CallGenerateTextForExpression (DefaultSqlGenerationStage mock, Expression expression, SqlGenerationMode sqlGenerationMode)
+    private void CallGenerateTextForNonSelectionExpression (DefaultSqlGenerationStage mock, Expression expression)
     {
-      PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTextForExpression", _commandBuilder, expression, sqlGenerationMode);
+      PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTextForNonSelectionExpression", _commandBuilder, expression);
+    }
+
+    private void CallGenerateTextForSelectionExpression (DefaultSqlGenerationStage mock, Expression expression)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTextForSelectionExpression", _commandBuilder, expression);
     }
   }
 }

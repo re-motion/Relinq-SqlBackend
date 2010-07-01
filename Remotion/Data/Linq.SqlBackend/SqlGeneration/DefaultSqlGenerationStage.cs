@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -46,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
         throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
-      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.SelectExpression);
+      GenerateTextForSelectionExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -54,7 +53,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+      GenerateTextForNonSelectionExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -62,7 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+      GenerateTextForNonSelectionExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -70,7 +69,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+      GenerateTextForNonSelectionExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -78,7 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+      GenerateTextForNonSelectionExpression (commandBuilder, expression);
     }
 
     public void GenerateTextForGroupByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -86,7 +85,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForExpression (commandBuilder, expression, SqlGenerationMode.NonSelectExpression);
+      GenerateTextForNonSelectionExpression (commandBuilder, expression);
     }
 
     public void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering)
@@ -115,12 +114,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       sqlStatementTextGenerator.Build (sqlStatement, commandBuilder);
     }
 
-    protected virtual void GenerateTextForExpression (ISqlCommandBuilder commandBuilder, Expression expression, SqlGenerationMode sqlGenerationMode)
+    protected virtual void GenerateTextForNonSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, this, sqlGenerationMode);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, this);
+    }
+
+    protected virtual void GenerateTextForSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
   }
 }

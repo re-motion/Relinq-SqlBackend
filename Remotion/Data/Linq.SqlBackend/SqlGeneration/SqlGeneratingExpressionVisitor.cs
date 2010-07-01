@@ -43,51 +43,44 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         ISqlColumnExpressionVisitor,
         ISqlGroupingSelectExpressionVisitor
   {
-    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SqlGenerationMode mode)
+    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage, mode);
+      var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
 
       //TODO-2977(in derived class): return Expression.Lambda (visitor._projectionExpression, visitor._rowParameter);
     }
 
-    private readonly ISqlCommandBuilder _commandBuilder;
-    private readonly BinaryExpressionTextGenerator _binaryExpressionTextGenerator;
-    private readonly ISqlGenerationStage _stage;
-    private readonly SqlGenerationMode _mode;
+    protected readonly ISqlCommandBuilder CommandBuilder;
+    protected readonly BinaryExpressionTextGenerator BinaryExpressionTextGenerator;
+    protected readonly ISqlGenerationStage Stage;
 
     //TODO-2977: private readonly ParameterExpression _rowParameter = Expression.Parameter (typeof (IDatabaseResultRow)); // maybe pass via ctor?
     //TODO-2977: private Expression _projectionExpression; // is built while the visitor generates SQL
 
-    protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SqlGenerationMode mode)
+    protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      _commandBuilder = commandBuilder;
-      _binaryExpressionTextGenerator = new BinaryExpressionTextGenerator (commandBuilder, this);
-      _stage = stage;
-      _mode = mode;
+      CommandBuilder = commandBuilder;
+      BinaryExpressionTextGenerator = new BinaryExpressionTextGenerator (commandBuilder, this);
+      Stage = stage;
     }
 
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public virtual Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.AppendSeparated (",", expression.Columns, (cb, column) => AppendColumnForEntity(expression, column));
+      CommandBuilder.AppendSeparated (",", expression.Columns, (cb, column) => AppendColumnForEntity(expression, column));
       return expression;
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
-    {
-      return VisitUnknownExpression (expression);
-    }
-
-    public Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression)
+    public virtual Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -96,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlColumnReferenceExpression (SqlColumnReferenceExpression expression)
+    public virtual Expression VisitSqlColumnReferenceExpression (SqlColumnReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -107,7 +100,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitJoinConditionExpression (JoinConditionExpression expression)
+    public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -122,127 +115,127 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       Debug.Assert (expression.Type != typeof (bool), "Boolean constants should have been removed by SqlContextExpressionVisitor.");
 
       if (expression.Value == null)
-        _commandBuilder.Append ("NULL");
+        CommandBuilder.Append ("NULL");
       else if (expression.Value is ICollection)
       {
-        _commandBuilder.Append ("(");
+        CommandBuilder.Append ("(");
 
         var collection = (ICollection) expression.Value;
         if (collection.Count == 0)
-          _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
+          CommandBuilder.Append ("SELECT NULL WHERE 1 = 0");
 
         var items = collection.Cast<object>();
-        _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
-        _commandBuilder.Append (")");
+        CommandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
+        CommandBuilder.Append (")");
       }
       else
       {
-        var parameter = _commandBuilder.CreateParameter (expression.Value);
-        _commandBuilder.Append (parameter.Name);
+        var parameter = CommandBuilder.CreateParameter (expression.Value);
+        CommandBuilder.Append (parameter.Name);
       }
 
       return expression;
     }
 
-    public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
+    public virtual Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (expression.Type == typeof (int))
-        _commandBuilder.Append (expression.Value.ToString());
+        CommandBuilder.Append (expression.Value.ToString());
       else
-        _commandBuilder.AppendStringLiteral ((string) expression.Value);
+        CommandBuilder.AppendStringLiteral ((string) expression.Value);
       return expression;
     }
 
-    public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
+    public virtual Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.LeftExpression);
-      _commandBuilder.Append (string.Format (" {0} ", expression.BinaryOperator));
+      CommandBuilder.Append (string.Format (" {0} ", expression.BinaryOperator));
       VisitExpression (expression.RightExpression);
 
       return expression;
     }
 
-    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    public virtual Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.Append ("(");
+      CommandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (" IS NULL");
-      _commandBuilder.Append (")");
+      CommandBuilder.Append (" IS NULL");
+      CommandBuilder.Append (")");
 
       return expression;
     }
 
-    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    public virtual Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.Append ("(");
+      CommandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (" IS NOT NULL");
-      _commandBuilder.Append (")");
+      CommandBuilder.Append (" IS NOT NULL");
+      CommandBuilder.Append (")");
 
       return expression;
     }
 
-    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    public virtual Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.Append (expression.SqlFunctioName);
-      _commandBuilder.Append ("(");
-      _commandBuilder.AppendSeparated (", ", expression.Args, (cb, exp) => VisitExpression (exp));
-      _commandBuilder.Append (")");
+      CommandBuilder.Append (expression.SqlFunctioName);
+      CommandBuilder.Append ("(");
+      CommandBuilder.AppendSeparated (", ", expression.Args, (cb, exp) => VisitExpression (exp));
+      CommandBuilder.Append (")");
       return expression;
     }
 
-    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    public virtual Expression VisitSqlConvertExpression (SqlConvertExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.Append ("CONVERT");
-      _commandBuilder.Append ("(");
-      _commandBuilder.Append (expression.GetSqlTypeName());
-      _commandBuilder.Append (", ");
+      CommandBuilder.Append ("CONVERT");
+      CommandBuilder.Append ("(");
+      CommandBuilder.Append (expression.GetSqlTypeName());
+      CommandBuilder.Append (", ");
       VisitExpression (expression.Source);
-      _commandBuilder.Append (")");
+      CommandBuilder.Append (")");
 
       return expression;
     }
 
-    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    public virtual Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.Append ("EXISTS");
-      _commandBuilder.Append ("(");
+      CommandBuilder.Append ("EXISTS");
+      CommandBuilder.Append ("(");
       VisitExpression (expression.Expression);
-      _commandBuilder.Append (")");
+      CommandBuilder.Append (")");
 
       return expression;
     }
 
-    public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
+    public virtual Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.Append ("ROW_NUMBER() OVER (ORDER BY ");
-      _commandBuilder.AppendSeparated (", ", expression.Orderings, _stage.GenerateTextForOrdering);
-      _commandBuilder.Append (")");
+      CommandBuilder.Append ("ROW_NUMBER() OVER (ORDER BY ");
+      CommandBuilder.AppendSeparated (", ", expression.Orderings, Stage.GenerateTextForOrdering);
+      CommandBuilder.Append (")");
 
       return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
-      _commandBuilder.Append ("(");
-      _binaryExpressionTextGenerator.GenerateSqlForBinaryExpression (expression);
-      _commandBuilder.Append (")");
+      CommandBuilder.Append ("(");
+      BinaryExpressionTextGenerator.GenerateSqlForBinaryExpression (expression);
+      CommandBuilder.Append (")");
       return expression;
     }
 
@@ -253,15 +246,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       {
         case ExpressionType.Not:
           if (expression.Operand.Type == typeof (bool))
-            _commandBuilder.Append ("NOT ");
+            CommandBuilder.Append ("NOT ");
           else
-            _commandBuilder.Append ("~");
+            CommandBuilder.Append ("~");
           break;
         case ExpressionType.Negate:
-          _commandBuilder.Append ("-");
+          CommandBuilder.Append ("-");
           break;
         case ExpressionType.UnaryPlus:
-          _commandBuilder.Append ("+");
+          CommandBuilder.Append ("+");
           break;
         case ExpressionType.Convert:
           break;
@@ -283,131 +276,113 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
               unhandledItem.GetType().Name));
     }
 
-    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    public virtual Expression VisitSqlCaseExpression (SqlCaseExpression expression)
     {
-      _commandBuilder.Append ("CASE WHEN ");
+      CommandBuilder.Append ("CASE WHEN ");
       VisitExpression (expression.TestPredicate);
-      _commandBuilder.Append (" THEN ");
+      CommandBuilder.Append (" THEN ");
       VisitExpression (expression.ThenValue);
-      _commandBuilder.Append (" ELSE ");
+      CommandBuilder.Append (" ELSE ");
       VisitExpression (expression.ElseValue);
-      _commandBuilder.Append (" END");
+      CommandBuilder.Append (" END");
       return expression;
     }
 
-    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
-      _commandBuilder.Append ("(");
-      _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement);
-      _commandBuilder.Append (")");
+      CommandBuilder.Append ("(");
+      Stage.GenerateTextForSqlStatement (CommandBuilder, expression.SqlStatement);
+      CommandBuilder.Append (")");
       return expression;
     }
 
-    public Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
+    public virtual Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      expression.Generate (_commandBuilder, this, _stage);
+      expression.Generate (CommandBuilder, this, Stage);
       return expression;
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public virtual Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.Expression);
-      if (_mode == SqlGenerationMode.SelectExpression)
-      {
-        _commandBuilder.Append (" AS ");
-        _commandBuilder.AppendIdentifier (expression.Name ?? "value");
-      }
-
-      //TODO-2977: var getValueMethod = _queryResultParameter.Type.GetMethod ("GetValue");
-      //TODO-2977: _projectionExpression = Expression.Call (_rowParameter, getValueMethod.MakeGenericMethod (expression.Type), expression.ColumnName);
-
+      
       return expression;
     }
 
-    public Expression VisitAggregationExpression (AggregationExpression expression)
+    public virtual Expression VisitAggregationExpression (AggregationExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (expression.AggregationModifier == AggregationModifier.Count) {
-        _commandBuilder.Append ("COUNT(*)");
+        CommandBuilder.Append ("COUNT(*)");
         return expression;
       }
 
       if (expression.AggregationModifier == AggregationModifier.Average)
-        _commandBuilder.Append("AVG");
+        CommandBuilder.Append("AVG");
       else if (expression.AggregationModifier == AggregationModifier.Max)
-        _commandBuilder.Append ("MAX");
+        CommandBuilder.Append ("MAX");
       else if (expression.AggregationModifier == AggregationModifier.Min)
-        _commandBuilder.Append ("MIN");
+        CommandBuilder.Append ("MIN");
       else if (expression.AggregationModifier == AggregationModifier.Sum)
-        _commandBuilder.Append ("SUM");
+        CommandBuilder.Append ("SUM");
       else
         throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", expression.AggregationModifier));
 
-      _commandBuilder.Append ("(");
+      CommandBuilder.Append ("(");
       VisitExpression (((NamedExpression) expression.Expression).Expression);
-      _commandBuilder.Append (")");
+      CommandBuilder.Append (")");
 
       return expression;
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public virtual Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
 
-      _commandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
+      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
 
       return expression;
     }
-
+    
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => VisitExpression (expr));
+      CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => VisitExpression (expr));
       return expression;
     }
 
-    private void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
-      column.Accept (this);
-      if (_mode == SqlGenerationMode.SelectExpression && column.ColumnName != "*")
-      {
-        if (entity.Name != null)
-        {
-          _commandBuilder.Append (" AS ");
-          _commandBuilder.AppendIdentifier (entity.Name + "_" + column.ColumnName);
-        }
-        else if ((entity is SqlEntityReferenceExpression) && ((SqlEntityReferenceExpression) entity).ReferencedEntity.Name != null)
-        {
-          // entity references without a name that point to an entity with a name must assign aliases to their columns;
-          // otherwise, their columns would include the referenced entity's name
-          _commandBuilder.Append (" AS ");
-          _commandBuilder.AppendIdentifier (column.ColumnName);
-        }
-      }
+      return VisitUnknownExpression (expression);
     }
 
-    private void AppendColumn (string columnName, string prefix, string referencedEntityName)
+    protected virtual void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
+    {
+      column.Accept (this);
+    }
+
+    protected virtual void AppendColumn (string columnName, string prefix, string referencedEntityName)
     {
       if (columnName == "*")
       {
-        _commandBuilder.AppendIdentifier (prefix);
-        _commandBuilder.Append (".*");
+        CommandBuilder.AppendIdentifier (prefix);
+        CommandBuilder.Append (".*");
       }
       else
       {
-        _commandBuilder.AppendIdentifier (prefix);
-        _commandBuilder.Append (".");
+        CommandBuilder.AppendIdentifier (prefix);
+        CommandBuilder.Append (".");
         if (referencedEntityName != null)
-          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? "value"));
+          CommandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? "value"));
         else
-          _commandBuilder.AppendIdentifier (columnName ?? "value");
+          CommandBuilder.AppendIdentifier (columnName ?? "value");
       }
     }
 

@@ -80,7 +80,7 @@
     <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlTableReferenceResolver.cs" />
     <Compile Include="MappingResolution\SubStatementReferenceResolver.cs" />
-    <Compile Include="SqlGeneration\SqlGenerationMode.cs" />
+    <Compile Include="SqlGeneration\SqlGeneratingSelectExpressionVisitor.cs" />
     <Compile Include="SqlPreparation\FromExpressionInfo.cs" />
     <Compile Include="SqlPreparation\IMethodCallTransformer.cs" />
     <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />
