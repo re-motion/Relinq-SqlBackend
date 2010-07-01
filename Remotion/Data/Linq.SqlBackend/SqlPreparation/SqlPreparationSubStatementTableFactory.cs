@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -67,7 +68,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       // wrap original select projection and all orderings into a large tuple expression (new { proj, new { o1, new { o2, ... }}})
       var expressionsToBeTupelized = new[] { sqlStatement.SelectProjection }.Concat (sqlStatement.Orderings.Select (o => o.Expression));
-      var tupleExpression = AggregateExpressionsIntoTuple (expressionsToBeTupelized);
+      var tupleExpression = TupleExpressionBuilder.AggregateExpressionsIntoTuple (expressionsToBeTupelized);
       
       var preparedTupleExpression = _stage.PrepareSelectExpression (tupleExpression, _context);
       if (preparedTupleExpression.Type != tupleExpression.Type)
@@ -98,7 +99,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     private FromExpressionInfo GetFromExpressionInfoForSubStatement (SqlStatement originalSqlStatement, SqlTableBase tableWithSubStatement)
     {
-      var expressionsFromSubStatement = GetExpressionsFromTuple (new SqlTableReferenceExpression (tableWithSubStatement));
+      var expressionsFromSubStatement = TupleExpressionBuilder.GetExpressionsFromTuple (new SqlTableReferenceExpression (tableWithSubStatement));
 
       var projectionFromSubStatement = expressionsFromSubStatement.First (); // this was the original projection
       var orderingsFromSubStatement = expressionsFromSubStatement
@@ -106,36 +107,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           .Select ((expr, i) => new Ordering (expr, originalSqlStatement.Orderings[i].OrderingDirection));
 
       return new FromExpressionInfo (tableWithSubStatement, orderingsFromSubStatement.ToArray (), projectionFromSubStatement, null, true);
-    }
-
-    private Expression AggregateExpressionsIntoTuple (IEnumerable<Expression> expressions)
-    {
-      return expressions
-          .Reverse()
-          .Aggregate (
-              (current, expression) => CreateTupleExpression (expression, current));
-    }
-
-    private Expression CreateTupleExpression (Expression left, Expression right)
-    {
-      var tupleType = typeof (KeyValuePair<,>).MakeGenericType (left.Type, right.Type);
-      var newTupleExpression =
-          Expression.New (
-              tupleType.GetConstructor (new[] { left.Type, right.Type }),
-              new[] { left, right },
-              new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-      return newTupleExpression;
-    }
-
-    private IEnumerable<Expression> GetExpressionsFromTuple (Expression tupleExpression)
-    {
-      while (tupleExpression.Type.IsGenericType && tupleExpression.Type.GetGenericTypeDefinition() == typeof (KeyValuePair<,>))
-      {
-        yield return Expression.MakeMemberAccess (tupleExpression, tupleExpression.Type.GetProperty ("Key"));
-        tupleExpression = Expression.MakeMemberAccess (tupleExpression, tupleExpression.Type.GetProperty ("Value"));
-      }
-
-      yield return tupleExpression;
     }
   }
 }
