@@ -18,12 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -32,17 +30,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlGeneratingOuterSelectExpressionVisitorTest
   {
-    private SqlCommandBuilder _commandBuilder;
-    private ISqlGenerationStage _stageMock;
     private NamedExpression _namedExpression;
     private SqlEntityDefinitionExpression _entityExpression;
     private ParameterExpression _expectedRowParameter;
+    private TestableSqlGeneratingOuterSelectExpressionVisitor _visitor;
+    private ISqlGenerationStage _stageMock;
+    private SqlCommandBuilder _commandBuilder;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
+      _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock);
+
       _namedExpression = new NamedExpression ("test", Expression.Constant (0));
       _entityExpression = new SqlEntityDefinitionExpression (
           typeof (Cook),
@@ -58,7 +59,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitNamedExpression ()
+    public void GenerateSql_VisitNamedExpression ()
     {
       var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
 
@@ -69,14 +70,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitNamedExpression ()
+    {
+      _visitor.VisitNamedExpression (_namedExpression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForNamedExpression (_expectedRowParameter), _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
+    }
+
+    [Test]
     public void VisitSqlEntityExpression ()
     {
-      var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_entityExpression, _commandBuilder, _stageMock);
+      _visitor.VisitSqlEntityExpression (_entityExpression);
 
-      var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (GetExpectedProjectionForEntityExpression (_expectedRowParameter), typeof (object)),
-          _expectedRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForEntityExpression (_expectedRowParameter), _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
     [Test]
@@ -86,16 +94,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof(int), typeof (Cook)}), 
           new Expression[] { _namedExpression, _entityExpression });
 
-      var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (newExpression, _commandBuilder, _stageMock);
+      _visitor.VisitNewExpression (newExpression);
 
       var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpression (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
-      var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (expectedProjectionForNewExpression, typeof (object)), 
-          _expectedRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
     [Test]
@@ -106,16 +112,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
           new Expression[] { _namedExpression, _entityExpression }, keyValueType.GetProperty("Key"), keyValueType.GetProperty("Value"));
 
-      var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (newExpression, _commandBuilder, _stageMock);
+      _visitor.VisitNewExpression (newExpression);
 
       var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpressionWithMembers (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
-      var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (expectedProjectionForNewExpression, typeof (object)),
-          _expectedRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
     private NewExpression GetExpectedProjectionForNewExpression (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)
