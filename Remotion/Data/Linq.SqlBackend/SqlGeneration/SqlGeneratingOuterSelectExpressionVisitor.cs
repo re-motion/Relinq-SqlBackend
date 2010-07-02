@@ -26,7 +26,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor
   {
-    public new static Expression<Func<IDatabaseResultRow, object>> GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    public new static Expression<Func<IDatabaseResultRow, object>> GenerateSql (
+        Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -35,13 +36,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
 
-      if(visitor.ProjectionExpression!=null)
-        return Expression.Lambda<Func<IDatabaseResultRow, object>> (Expression.Convert (visitor.ProjectionExpression, typeof (object)), visitor.RowParameter);
+      if (visitor.ProjectionExpression != null)
+        return Expression.Lambda<Func<IDatabaseResultRow, object>> (
+            Expression.Convert (visitor.ProjectionExpression, typeof (object)), visitor.RowParameter);
       return null;
     }
 
     protected readonly ParameterExpression RowParameter = Expression.Parameter (typeof (IDatabaseResultRow), "row");
     protected Expression ProjectionExpression;
+    protected int ColumnPosition;
 
     protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
         : base (commandBuilder, stage)
@@ -54,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var getValueMethod = RowParameter.Type.GetMethod ("GetValue");
       ProjectionExpression = Expression.Call (
-          RowParameter, getValueMethod.MakeGenericMethod (expression.Type), Expression.Constant (new ColumnID (expression.Name)));
+          RowParameter, getValueMethod.MakeGenericMethod (expression.Type), Expression.Constant (new ColumnID (expression.Name, ColumnPosition++)));
 
       return base.VisitNamedExpression (expression);
     }
@@ -67,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ProjectionExpression = Expression.Call (
           RowParameter,
           getEntityMethod.MakeGenericMethod (expression.Type),
-          Expression.Constant (expression.Columns.Select (e => new ColumnID (e.ColumnName)).ToArray()));
+          Expression.Constant (expression.Columns.Select (e => new ColumnID (e.ColumnName, ColumnPosition++)).ToArray()));
 
       return base.VisitSqlEntityExpression (expression);
     }
@@ -75,11 +78,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
-      var projectionExpressions = new List<Expression>();
-      CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add( VisitArgumentExpression(expr)));
 
-      if(expression.Members==null)
+      var projectionExpressions = new List<Expression>();
+      CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentExpression (expr)));
+
+      if (expression.Members == null)
         ProjectionExpression = Expression.New (expression.Constructor, projectionExpressions);
       else
         ProjectionExpression = Expression.New (expression.Constructor, projectionExpressions, expression.Members);

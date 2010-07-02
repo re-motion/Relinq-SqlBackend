@@ -39,13 +39,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
           + "FROM [CookTable] AS [t0]",
           row => (object) row.GetEntity<Cook> (
-              new ColumnID ("ID"),
-              new ColumnID ("FirstName"),
-              new ColumnID ("Name"),
-              new ColumnID ("IsStarredCook"),
-              new ColumnID ("IsFullTimeCook"),
-              new ColumnID ("SubstitutedID"),
-              new ColumnID ("KitchenID")));
+              new ColumnID ("ID", 0),
+              new ColumnID ("FirstName", 1),
+              new ColumnID ("Name", 2),
+              new ColumnID ("IsStarredCook", 3),
+              new ColumnID ("IsFullTimeCook", 4),
+              new ColumnID ("SubstitutedID", 5),
+              new ColumnID ("KitchenID", 6)));
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select new { A = c.Name, B = c.ID },
             "SELECT [t0].[Name] AS [get_A],[t0].[ID] AS [get_B] FROM [CookTable] AS [t0]",
-            row => (object) new { A = row.GetValue<string> (new ColumnID ("get_A")), B = row.GetValue<int> (new ColumnID ("get_B")) });
+            row => (object) new { A = row.GetValue<string> (new ColumnID ("get_A", 0)), B = row.GetValue<int> (new ColumnID ("get_B", 1)) });
       
     }
 

@@ -15,22 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   public struct ColumnID
   {
-    public ColumnID (string columnName)
+    public ColumnID (string columnName, int position)
     {
       ColumnName = columnName;
+      Position = position;
     }
 
     public readonly string ColumnName;
+    public readonly int Position;
 
     public override string ToString ()
     {
-      return "col: " + ColumnName;
+      return string.Format ("col: {0} ({1})", ColumnName, Position);
     }
   }
 }

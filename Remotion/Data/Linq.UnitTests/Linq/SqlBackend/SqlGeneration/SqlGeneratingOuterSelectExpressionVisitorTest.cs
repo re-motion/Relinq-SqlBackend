@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
 
       var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (GetExpectedProjectionForNamedExpression (_expectedRowParameter), typeof (object)),
+          Expression.Convert (GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0), typeof (object)),
           _expectedRowParameter);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, result);
     }
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _visitor.VisitNamedExpression (_namedExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForNamedExpression (_expectedRowParameter), _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0), _visitor.ProjectionExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _visitor.VisitSqlEntityExpression (_entityExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForEntityExpression (_expectedRowParameter), _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForEntityExpression (_expectedRowParameter, 0), _visitor.ProjectionExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
@@ -96,8 +96,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _visitor.VisitNewExpression (newExpression);
 
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter);
-      var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0);
+      var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpression (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
@@ -114,8 +114,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _visitor.VisitNewExpression (newExpression);
 
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter);
-      var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0);
+      var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpressionWithMembers (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
@@ -138,20 +138,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           keyValueType.GetProperty ("Key"), keyValueType.GetProperty ("Value"));
     }
 
-    private MethodCallExpression GetExpectedProjectionForEntityExpression (ParameterExpression expectedRowParameter)
+    private MethodCallExpression GetExpectedProjectionForEntityExpression (ParameterExpression expectedRowParameter, int columnPositionStart)
     {
       return Expression.Call (
           expectedRowParameter,
           typeof (IDatabaseResultRow).GetMethod ("GetEntity").MakeGenericMethod (typeof (Cook)),
-          Expression.Constant (new[] { new ColumnID ("ID"), new ColumnID ("Name"), new ColumnID ("FirstName")}));
+          Expression.Constant (new[] { new ColumnID ("ID", columnPositionStart++), new ColumnID ("Name", columnPositionStart++), new ColumnID ("FirstName", columnPositionStart++)}));
     }
 
-    private MethodCallExpression GetExpectedProjectionForNamedExpression (ParameterExpression expectedRowParameter)
+    private MethodCallExpression GetExpectedProjectionForNamedExpression (ParameterExpression expectedRowParameter, int columnPosoitionStart)
     {
       return Expression.Call (
           expectedRowParameter,
           typeof (IDatabaseResultRow).GetMethod ("GetValue").MakeGenericMethod (typeof (int)),
-          Expression.Constant (new ColumnID ("test")));
+          Expression.Constant (new ColumnID ("test", columnPosoitionStart)));
     }
   }
 }
