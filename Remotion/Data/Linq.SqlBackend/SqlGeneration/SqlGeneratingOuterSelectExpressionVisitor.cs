@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var getValueMethod = RowParameter.Type.GetMethod ("GetValue");
       ProjectionExpression = Expression.Call (
-          RowParameter, getValueMethod.MakeGenericMethod (expression.Type), Expression.Constant (new ColumnID (expression.Name, ColumnPosition++)));
+          RowParameter, getValueMethod.MakeGenericMethod (expression.Type), Expression.Constant (new ColumnID (expression.Name ?? "value", ColumnPosition++)));
 
       return base.VisitNamedExpression (expression);
     }
@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ProjectionExpression = Expression.Call (
           RowParameter,
           getEntityMethod.MakeGenericMethod (expression.Type),
-          Expression.Constant (expression.Columns.Select (e => new ColumnID (e.ColumnName, ColumnPosition++)).ToArray()));
+          Expression.Constant (expression.Columns.Select (e => new ColumnID (e.ColumnName ?? "value", ColumnPosition++)).ToArray()));
 
       return base.VisitSqlEntityExpression (expression);
     }

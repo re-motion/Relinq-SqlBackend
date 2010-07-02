@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
 
       var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0), typeof (object)),
+          Expression.Convert (GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0), typeof (object)),
           _expectedRowParameter);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, result);
     }
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _visitor.VisitNamedExpression (_namedExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0), _visitor.ProjectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0), _visitor.ProjectionExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _visitor.VisitNewExpression (newExpression);
 
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpression (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _visitor.VisitNewExpression (newExpression);
 
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, 0);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpressionWithMembers (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
@@ -146,12 +146,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           Expression.Constant (new[] { new ColumnID ("ID", columnPositionStart++), new ColumnID ("Name", columnPositionStart++), new ColumnID ("FirstName", columnPositionStart++)}));
     }
 
-    private MethodCallExpression GetExpectedProjectionForNamedExpression (ParameterExpression expectedRowParameter, int columnPosoitionStart)
+    private MethodCallExpression GetExpectedProjectionForNamedExpression (ParameterExpression expectedRowParameter, string name, int columnPosoitionStart)
     {
       return Expression.Call (
           expectedRowParameter,
           typeof (IDatabaseResultRow).GetMethod ("GetValue").MakeGenericMethod (typeof (int)),
-          Expression.Constant (new ColumnID ("test", columnPosoitionStart)));
+          Expression.Constant (new ColumnID (name ?? "value", columnPosoitionStart)));
     }
   }
 }
