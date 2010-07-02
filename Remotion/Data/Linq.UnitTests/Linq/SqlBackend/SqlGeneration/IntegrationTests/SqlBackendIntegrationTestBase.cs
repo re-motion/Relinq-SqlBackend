@@ -19,10 +19,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
@@ -88,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       var commandBuilder = new SqlCommandBuilder ();
       var sqlGenerationStage = new DefaultSqlGenerationStage ();
-      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, newSqlStatement);
+      commandBuilder.InMemoryProjection = sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, newSqlStatement);
 
       return commandBuilder.GetCommand ();
     }
@@ -99,6 +101,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
+    }
+
+    protected void CheckQuery<T> (
+        IQueryable<T> queryable, 
+        string expectedStatement, 
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        params CommandParameter[] expectedParameters)
+    {
+      var result = GenerateSql (queryable.Expression);
+
+      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
+      Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
+
+      var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
+      ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.InMemoryProjection);
     }
 
     protected void CheckQuery<T> (Expression<Func<T>> queryLambda, string expectedStatement, params CommandParameter[] expectedParameters)

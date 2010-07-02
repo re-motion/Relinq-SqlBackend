@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
       _stageMock.Replay();
 
-      _generator.BuildSelectPart (_sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (_sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[FirstName]"));
       _stageMock.Replay();
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT [t].[FirstName]"));
       _stageMock.VerifyAllExpectations();
@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("COUNT(*)"));
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT COUNT(*)"));
       _stageMock.VerifyAllExpectations();
@@ -144,7 +144,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("AVG([t].[ID])"));
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT AVG([t].[ID])"));
       _stageMock.VerifyAllExpectations ();
@@ -165,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("SUM([t].[ID])"));
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT SUM([t].[ID])"));
       _stageMock.VerifyAllExpectations ();
@@ -186,7 +186,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("MIN([t].[ID])"));
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT MIN([t].[ID])"));
       _stageMock.VerifyAllExpectations ();
@@ -207,7 +207,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("MAX([t].[ID])"));
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT MAX([t].[ID])"));
       _stageMock.VerifyAllExpectations ();
@@ -225,7 +225,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
       _stageMock.Replay();
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT DISTINCT [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
@@ -246,7 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
       _stageMock.Replay();
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
@@ -272,7 +272,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
       _stageMock.Replay();
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
@@ -288,7 +288,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
       _stageMock.Replay();
 
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder);
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
       _stageMock.VerifyAllExpectations();
@@ -410,7 +410,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Replay();
 
-      _generator.Build (_sqlStatement, _commandBuilder);
+      _generator.Build (_sqlStatement, _commandBuilder, false);
       var result = _commandBuilder.GetCommand();
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
@@ -427,7 +427,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
       _stageMock.Replay();
 
-      _generator.Build (sqlStatement, _commandBuilder);
+      _generator.Build (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City]"));
       _stageMock.VerifyAllExpectations();
@@ -454,7 +454,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append("keyExpression"));
       _stageMock.Replay ();
 
-      _generator.Build (sqlStatement, _commandBuilder);
+      _generator.Build (sqlStatement, _commandBuilder, false);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] GROUP BY keyExpression"));
@@ -477,7 +477,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("(@1 = 1)"));
       _stageMock.Replay();
 
-      _generator.Build (sqlStatement, _commandBuilder);
+      _generator.Build (sqlStatement, _commandBuilder, false);
       var result = _commandBuilder.GetCommand();
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] WHERE (@1 = 1)"));
@@ -504,7 +504,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name] ASC"));
       _stageMock.Replay();
 
-      _generator.Build (_sqlStatement, _commandBuilder);
+      _generator.Build (_sqlStatement, _commandBuilder, false);
       var result = _commandBuilder.GetCommand();
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t] ORDER BY [t].[Name] ASC"));

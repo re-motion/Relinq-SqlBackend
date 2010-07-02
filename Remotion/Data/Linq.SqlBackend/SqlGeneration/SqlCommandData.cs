@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
@@ -26,14 +27,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     private readonly string _commandText;
     private readonly CommandParameter[] _parameters;
+    private readonly Expression<Func<IDatabaseResultRow, object>> _inMemoryProjection;
 
-    public SqlCommandData (string commandText, CommandParameter[] parameters) : this ()
+    public SqlCommandData (string commandText, CommandParameter[] parameters) : this (commandText, parameters, null)
+    {
+    }
+
+    public SqlCommandData (string commandText, CommandParameter[] parameters, Expression<Func<IDatabaseResultRow, object>> inMemoryProjection)
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
-
+      
       _commandText = commandText;
       _parameters = parameters;
+      _inMemoryProjection = inMemoryProjection;
     }
 
     public string CommandText
@@ -44,6 +51,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public CommandParameter[] Parameters
     {
       get { return _parameters; }
+    }
+
+    public Expression<Func<IDatabaseResultRow, object>> InMemoryProjection
+    {
+      get { return _inMemoryProjection; }
     }
   }
 }

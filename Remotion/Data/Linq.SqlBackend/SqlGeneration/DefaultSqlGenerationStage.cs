@@ -48,6 +48,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       GenerateTextForSelectionExpression (commandBuilder, expression);
     }
 
+    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
+
+      return GenerateTextForOuterSelectionExpression (commandBuilder, expression);
+    }
+
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -111,7 +122,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
-      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder);
+      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, false);
+    }
+
+    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
+    {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+
+      var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
+      return sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, true);
     }
 
     protected virtual void GenerateTextForNonSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -128,6 +148,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
+    }
+
+    protected virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
   }
 }

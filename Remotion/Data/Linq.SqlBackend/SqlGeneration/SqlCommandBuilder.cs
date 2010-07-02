@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using Remotion.Data.Linq.Utilities;
 
@@ -25,12 +26,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     private readonly StringBuilder _stringBuilder;
     private readonly List<CommandParameter> _parameters;
-
+    
     public SqlCommandBuilder ()
     {
       _stringBuilder = new StringBuilder();
       _parameters = new List<CommandParameter>();
     }
+
+    public Expression<Func<IDatabaseResultRow, object>> InMemoryProjection { get; set; }
 
     public CommandParameter CreateParameter (object value)
     {
@@ -100,7 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public SqlCommandData GetCommand ()
     {
-      return new SqlCommandData (GetCommandText(), GetCommandParameters());
+      return new SqlCommandData (GetCommandText(), GetCommandParameters(), InMemoryProjection);
     }
   }
 }

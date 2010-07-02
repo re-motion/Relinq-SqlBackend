@@ -1,3 +1,4 @@
+
 // This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
@@ -28,12 +29,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   {
     void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTableBase table, bool isFirstTable);
     void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
-    //TODO RM-2977: Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
+    Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement);
-    //TODO RM-2977: Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement);
+    Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement);
     void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForGroupByExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering);

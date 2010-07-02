@@ -37,7 +37,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from s in Cooks select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          + "FROM [CookTable] AS [t0]");
+          + "FROM [CookTable] AS [t0]",
+          row => (object) row.GetEntity<Cook> (
+              new ColumnID ("ID"),
+              new ColumnID ("FirstName"),
+              new ColumnID ("Name"),
+              new ColumnID ("IsStarredCook"),
+              new ColumnID ("IsFullTimeCook"),
+              new ColumnID ("SubstitutedID"),
+              new ColumnID ("KitchenID")));
     }
 
     [Test]
@@ -104,6 +112,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     public void NestedSelectProjection ()
+    {
+      CheckQuery (
+          from c in Cooks select new { A = c.Name, B = c.ID },
+            "SELECT [t0].[Name] AS [get_A],[t0].[ID] AS [get_B] FROM [CookTable] AS [t0]",
+            row => (object) new { A = row.GetValue<string> (new ColumnID ("get_A")), B = row.GetValue<int> (new ColumnID ("get_B")) });
+      
+    }
+
+    [Test]
+    public void NestedSubSelectProjection_Member ()
     {
       CheckQuery (
           from c in (from sc in Cooks select new { A = sc.Name, B = sc.ID }).Distinct() where c.B != 0 select c.A,

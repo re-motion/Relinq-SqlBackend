@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -39,19 +40,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       get { return _stage; }
     }
 
-    public virtual void Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    public virtual Expression<Func<IDatabaseResultRow, object>> Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, bool outerStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      BuildSelectPart (sqlStatement, commandBuilder);
+      var lambdaExpression = BuildSelectPart (sqlStatement, commandBuilder, outerStatement);
       BuildFromPart (sqlStatement, commandBuilder);
       BuildWherePart (sqlStatement, commandBuilder);
       BuildGroupByPart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder);
+
+      return lambdaExpression;
     }
 
-    protected virtual void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    protected virtual Expression<Func<IDatabaseResultRow, object>> BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, bool outerStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -64,7 +67,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         BuildTopPart (sqlStatement, commandBuilder);
       }
 
+      if (outerStatement)
+        return _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      
       _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      return null;
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)

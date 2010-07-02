@@ -30,8 +30,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   public class SqlGeneratingSelectExpressionVisitorTest
   {
     private SqlCommandBuilder _commandBuilder;
-    private Expression _leftIntegerExpression;
-    private Expression _rightIntegerExpression;
     private ISqlGenerationStage _stageMock;
 
     [SetUp]
@@ -39,10 +37,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
-      _leftIntegerExpression = Expression.Constant (1);
-      Expression.Constant ("Left");
-      _rightIntegerExpression = Expression.Constant (2);
-      Expression.Constant ("Right");
     }
 
     [Test]

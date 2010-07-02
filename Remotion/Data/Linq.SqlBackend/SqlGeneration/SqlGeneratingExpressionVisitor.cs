@@ -51,16 +51,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
-
-      //TODO-2977(in derived class): return Expression.Lambda (visitor._projectionExpression, visitor._rowParameter);
     }
 
     protected readonly ISqlCommandBuilder CommandBuilder;
     protected readonly BinaryExpressionTextGenerator BinaryExpressionTextGenerator;
     protected readonly ISqlGenerationStage Stage;
-
-    //TODO-2977: private readonly ParameterExpression _rowParameter = Expression.Parameter (typeof (IDatabaseResultRow)); // maybe pass via ctor?
-    //TODO-2977: private Expression _projectionExpression; // is built while the visitor generates SQL
 
     protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {

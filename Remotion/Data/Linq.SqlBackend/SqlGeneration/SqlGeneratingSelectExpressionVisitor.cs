@@ -32,8 +32,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var visitor = new SqlGeneratingSelectExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
-
-      //TODO-2977(in derived class): return Expression.Lambda (visitor._projectionExpression, visitor._rowParameter);
     }
 
     protected SqlGeneratingSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
@@ -49,9 +47,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       CommandBuilder.Append (" AS ");
       CommandBuilder.AppendIdentifier (expression.Name ?? "value");
       
-      //TODO-2977: var getValueMethod = _queryResultParameter.Type.GetMethod ("GetValue");
-      //TODO-2977: _projectionExpression = Expression.Call (_rowParameter, getValueMethod.MakeGenericMethod (expression.Type), expression.ColumnName);
-
       return expression;
     }
 

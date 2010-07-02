@@ -27,9 +27,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
     }
 
-    public new void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    public new void BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, bool outerStatement)
     {
-      base.BuildSelectPart (sqlStatement, commandBuilder);
+      base.BuildSelectPart (sqlStatement, commandBuilder, outerStatement);
     }
 
     public new void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
