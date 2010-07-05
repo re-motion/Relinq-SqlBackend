@@ -243,6 +243,39 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitMemberExpression_WithNoPoperty ()
+    {
+      var memberExpression = MemberExpression.MakeMemberAccess (
+          Expression.Constant (new TypeForNewExpression (5)), typeof (TypeForNewExpression).GetField ("C"));
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.SameAs (memberExpression));
+    }
+
+    [Test]
+    public void VisitMemberExpression_WithProperty_NotRegistered ()
+    {
+      var memberExpression = MemberExpression.MakeMemberAccess (
+          Expression.Constant (new TypeForNewExpression (5)), typeof (TypeForNewExpression).GetProperty ("B"));
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      Assert.That (result, Is.SameAs (memberExpression));
+    }
+
+    [Test]
+    [Ignore("TODO 3005")]
+    public void VisitMemberExpression_WithProperty_Registered ()
+    {
+      var memberExpression = MemberExpression.MakeMemberAccess (Expression.Constant ("test"), typeof (String).GetProperty ("Length"));
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      //Assert.That (result, Is.SameAs (memberExpression));
+    }
+
+    [Test]
     public void VisitBinaryExpression ()
     {
       var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
@@ -415,7 +448,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var transformerMock = MockRepository.GenerateMock<IMethodCallTransformer>();
       transformerMock
-          .Expect (mock => mock.Transform (Arg<MethodCallExpression>.Matches (m => m.Object is SqlTableReferenceExpression)))
+          .Expect (mock => mock.Transform (Arg.Is(methodCallExpression)))
           .Return (methodCallExpression);
       transformerMock.Replay();
 
@@ -435,7 +468,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var transformerMock = MockRepository.GenerateMock<IMethodCallTransformer>();
       transformerMock
-          .Expect (mock => mock.Transform (Arg<MethodCallExpression>.Matches (m => m.Object is SqlTableReferenceExpression)))
+          .Expect (mock => mock.Transform (Arg.Is(methodCallExpression)))
           .Return (_cookQuerySourceReferenceExpression);
       transformerMock.Replay();
 
@@ -452,7 +485,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitNewExpression ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
           new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
@@ -471,7 +504,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitNewExpression_NoMembers ()
     {
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}), new[] { Expression.Constant (0) });
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { Expression.Constant (0) });
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
 

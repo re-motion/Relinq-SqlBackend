@@ -112,14 +112,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
+
       if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression == null)
       {
         var builder = new SqlStatementBuilder (expression.SqlStatement);
-        builder.Orderings.Clear ();
-        return new SqlSubStatementExpression (builder.GetSqlStatement ());
+        builder.Orderings.Clear();
+        return new SqlSubStatementExpression (builder.GetSqlStatement());
       }
       return expression;
+    }
+
+    protected override Expression VisitMemberExpression (MemberExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (expression.Member is PropertyInfo && expression.Member.DeclaringType.GetMethod ("get_Length") != null
+          && _registry.IsRegistered (expression.Member.DeclaringType.GetMethod ("get_Length")))
+      {
+        var tranformer = _registry.GetItem (expression.Member.DeclaringType.GetMethod ("get_Length"));
+        //TODO: transform expression (RM-3005)
+      }
+      return base.VisitMemberExpression (expression);
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
@@ -152,8 +165,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = base.VisitMethodCallExpression (expression);
-      var transformedExpression = _registry.GetItem (expression.Method).Transform ((MethodCallExpression) newExpression);
+      var transformedExpression = _registry.GetItem (expression.Method).Transform ((MethodCallExpression) expression);
       return VisitExpression (transformedExpression);
     }
 
@@ -172,7 +184,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         return Expression.New (
             expression.Constructor,
-            expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray (),
+            expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray(),
             expression.Members);
       }
       else
@@ -211,6 +223,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
       return false;
     }
-    
   }
 }
