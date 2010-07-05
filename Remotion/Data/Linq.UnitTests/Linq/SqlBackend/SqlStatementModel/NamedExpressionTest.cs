@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void CreateFromMemberInfo ()
+    public void CreateFromMemberName ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Name");
       var innerExpression = Expression.Constant ("inner");
@@ -48,6 +48,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
 
       Assert.That (result.Name, Is.SameAs (memberInfo.Name));
+      Assert.That (result.Expression, Is.SameAs (innerExpression));
+    }
+
+    [Test]
+    public void CreateFromMemberName_NameStartsWith_get_ ()
+    {
+      var memberInfo = typeof (MemberTest).GetProperty ("get_A");
+      var innerExpression = Expression.Constant ("inner");
+
+      var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
+
+      Assert.That (result.Name, Is.EqualTo("A"));
+      Assert.That (result.Expression, Is.SameAs (innerExpression));
+    }
+
+    [Test]
+    public void CreateFromMemberName_NameIs_get_ ()
+    {
+      var memberInfo = typeof (MemberTest).GetProperty ("get_");
+      var innerExpression = Expression.Constant ("inner");
+
+      var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
+
+      Assert.That (result.Name, Is.SameAs(memberInfo.Name));
       Assert.That (result.Expression, Is.SameAs (innerExpression));
     }
 
@@ -113,5 +137,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result, Is.EqualTo ("1 AS test"));
     }
+  }
+
+  class MemberTest
+  {
+    public string get_A { get; set; }
+    public string get_ { get; set; }
+
   }
 }

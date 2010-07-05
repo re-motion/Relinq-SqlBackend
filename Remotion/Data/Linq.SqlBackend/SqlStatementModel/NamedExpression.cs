@@ -42,6 +42,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("memberName", memberName);
       ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
 
+      if (memberName.StartsWith ("get_") && memberName.Length > 4)
+        memberName = memberName.Substring (4);
+
       return new NamedExpression (memberName, innerExpression);
     }
 

@@ -209,17 +209,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2.ID, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID) select s2,
-          "SELECT [q0].[get_Key] AS [get_Key] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [get_Key],[t2].[Name] AS [get_Value] "+
-          "FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[get_Value] ASC");
+          "SELECT [q0].[Key] AS [Key] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [Key],[t2].[Name] AS [Value] "+
+          "FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[Value] ASC");
 
       CheckQuery (
         // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2) select s.FirstName,
-          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [get_Key_ID],"+
-          "[t2].[FirstName] AS [get_Key_FirstName],[t2].[Name] AS [get_Key_Name],[t2].[IsStarredCook] AS [get_Key_IsStarredCook],"+
-          "[t2].[IsFullTimeCook] AS [get_Key_IsFullTimeCook],[t2].[SubstitutedID] AS [get_Key_SubstitutedID],"+
-          "[t2].[KitchenID] AS [get_Key_KitchenID],[t2].[Name] AS [get_Value] "+
-          "FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[get_Value] ASC");
+          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [Key_ID],"+
+          "[t2].[FirstName] AS [Key_FirstName],[t2].[Name] AS [Key_Name],[t2].[IsStarredCook] AS [Key_IsStarredCook],"+
+          "[t2].[IsFullTimeCook] AS [Key_IsFullTimeCook],[t2].[SubstitutedID] AS [Key_SubstitutedID],"+
+          "[t2].[KitchenID] AS [Key_KitchenID],[t2].[Name] AS [Value] "+
+          "FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[Value] ASC");
     }
 
     [Test]
@@ -227,10 +227,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID).Take (10) select s2,
-          "SELECT [q0].[get_Key] AS [get_Key] FROM [CookTable] AS [t1] CROSS APPLY ("
-          + "SELECT TOP (@1) [t2].[ID] AS [get_Key],[t2].[Name] AS [get_Value] FROM [CookTable] AS [t2] "
+          "SELECT [q0].[Key] AS [Key] FROM [CookTable] AS [t1] CROSS APPLY ("
+          + "SELECT TOP (@1) [t2].[ID] AS [Key],[t2].[Name] AS [Value] FROM [CookTable] AS [t2] "
           + "ORDER BY [t2].[Name] ASC) AS [q0] "
-          + "ORDER BY [q0].[get_Value] ASC",
+          + "ORDER BY [q0].[Value] ASC",
           new CommandParameter("@1", 10));
     }
   }
