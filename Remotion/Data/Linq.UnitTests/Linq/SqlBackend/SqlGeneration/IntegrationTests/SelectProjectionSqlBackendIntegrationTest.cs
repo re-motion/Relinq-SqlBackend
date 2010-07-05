@@ -323,17 +323,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook },
-          "SELECT [t0].[IsStarredCook] AS [get_IsStarredCook] FROM [CookTable] AS [t0]");
+          "SELECT [t0].[IsStarredCook] AS [IsStarredCook] FROM [CookTable] AS [t0]");
 
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true },
-          "SELECT [t0].[IsStarredCook] AS [get_IsStarredCook],@1 AS [get_True] FROM [CookTable] AS [t0]",
+          "SELECT [t0].[IsStarredCook] AS [IsStarredCook],@1 AS [True] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 1));
       
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true, HasFirstName = c.FirstName != null },
-          "SELECT [t0].[IsStarredCook] AS [get_IsStarredCook]," 
-          + "@1 AS [get_True], CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [get_HasFirstName] FROM [CookTable] AS [t0]",
+          "SELECT [t0].[IsStarredCook] AS [IsStarredCook]," 
+          + "@1 AS [True],CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [HasFirstName] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 1));
     }
 
