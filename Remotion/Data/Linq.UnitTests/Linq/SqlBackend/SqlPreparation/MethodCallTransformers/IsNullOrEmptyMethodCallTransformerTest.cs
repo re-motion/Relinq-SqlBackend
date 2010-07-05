@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var expectedIsNullExpression = new SqlIsNullExpression (objectExpression);
       var expectedLenExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
-      var expectedResult = Expression.Or (expectedIsNullExpression, Expression.Equal (expectedLenExpression, new SqlLiteralExpression(0)));
+      var expectedResult = Expression.OrElse (expectedIsNullExpression, Expression.Equal (expectedLenExpression, new SqlLiteralExpression(0)));
       
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

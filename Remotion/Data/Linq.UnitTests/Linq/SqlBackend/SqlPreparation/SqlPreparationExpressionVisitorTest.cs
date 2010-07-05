@@ -27,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -265,14 +266,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [Ignore("TODO 3005")]
     public void VisitMemberExpression_WithProperty_Registered ()
     {
-      var memberExpression = MemberExpression.MakeMemberAccess (Expression.Constant ("test"), typeof (String).GetProperty ("Length"));
+      var stringExpression = Expression.Constant ("test");
+      var memberExpression = MemberExpression.MakeMemberAccess (stringExpression, typeof (String).GetProperty ("Length"));
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
 
-      //Assert.That (result, Is.SameAs (memberExpression));
+      var expectedResult = new SqlFunctionExpression (typeof (int), "LEN", stringExpression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

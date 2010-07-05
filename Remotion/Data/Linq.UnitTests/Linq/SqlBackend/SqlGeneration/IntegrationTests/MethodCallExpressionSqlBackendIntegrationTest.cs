@@ -26,13 +26,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   public class MethodCallExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore("TODO: 3005")]
     public void String_Length_Property ()
     {
       CheckQuery (
           from c in Cooks where c.FirstName != null && c.FirstName.Length > 0 select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE NOT [t0].[FirstName] IS NULL AND LEN([t0].[FirstName])>0"
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NOT NULL) AND (LEN([t0].[FirstName]) > @1))",
+          new CommandParameter("@1", 0)
           );
+    }
+
+    [Test]
+    public void String_IsNullOrEmpty ()
+    {
+      CheckQuery (
+          from c in Cooks where string.IsNullOrEmpty(c.FirstName) select c.ID,
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NULL) OR (LEN([t0].[FirstName]) = 0))");
     }
 
     [Test]

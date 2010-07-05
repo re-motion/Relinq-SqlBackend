@@ -40,11 +40,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
       MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
 
-      var isNullExpression = new SqlIsNullExpression (methodCallExpression.Object);
-      var lenExpression = new SqlFunctionExpression (typeof(int), "LEN", methodCallExpression.Object);
+      var isNullExpression = new SqlIsNullExpression (methodCallExpression.Arguments[0]);
+      var lenExpression = new SqlFunctionExpression (typeof(int), "LEN", methodCallExpression.Arguments[0]);
       var lenIsZeroExpression = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
 
-      return Expression.Or (isNullExpression, lenIsZeroExpression);
+      return Expression.OrElse(isNullExpression, lenIsZeroExpression);
     }
   }
 }
