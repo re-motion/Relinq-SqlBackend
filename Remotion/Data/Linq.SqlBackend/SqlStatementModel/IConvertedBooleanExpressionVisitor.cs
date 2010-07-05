@@ -21,10 +21,10 @@ using Remotion.Data.Linq.Parsing;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Defines an interface for <see cref="ExpressionTreeVisitor"/> subclasses that can handle <see cref="AggregationExpression"/> instances.
+  /// Defines an interface for <see cref="ExpressionTreeVisitor"/> subclasses that can handle <see cref="ConvertedBooleanExpression"/> instances.
   /// </summary>
-  public interface IAggregationExpressionVisitor
+  public interface IConvertedBooleanExpressionVisitor
   {
-    Expression VisitAggregationExpression (AggregationExpression expression);
+    Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression);
   }
 }
