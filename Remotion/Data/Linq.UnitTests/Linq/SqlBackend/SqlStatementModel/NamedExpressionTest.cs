@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -36,6 +37,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       _wrappedExpression = Expression.Constant (1);
       _namedExpression = new NamedExpression ("test", _wrappedExpression);
+    }
+
+    [Test]
+    public void CreateFromMemberInfo ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("Name");
+      var innerExpression = Expression.Constant ("inner");
+
+      var result = NamedExpression.CreateFromMemberInfo (memberInfo, innerExpression);
+
+      Assert.That (result.Name, Is.SameAs (memberInfo.Name));
+      Assert.That (result.Expression, Is.SameAs (innerExpression));
     }
 
     [Test]

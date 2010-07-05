@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
@@ -35,6 +36,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   {
     private readonly string _name;
     private readonly Expression _expression;
+
+    public static NamedExpression CreateFromMemberInfo (MemberInfo memberInfo, Expression innerExpression)
+    {
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
+
+      return new NamedExpression (memberInfo.Name, innerExpression);
+    }
 
     public NamedExpression (string name, Expression expression)
         : base(expression.Type)
