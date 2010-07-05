@@ -131,6 +131,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var tranformer = _registry.GetItem (expression.Member.DeclaringType.GetMethod ("get_Length"));
         //TODO: transform expression (RM-3005)
+
+        throw new NotImplementedException();
       }
       return base.VisitMemberExpression (expression);
     }
