@@ -114,7 +114,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression ResolveNewExpressionArgument (Expression argument, MemberInfo correspondingMember)
     {
       var referenceToArgument = ResolveChildExpression (argument);
-      return new NamedExpression (correspondingMember.Name, referenceToArgument);
+      return NamedExpression.CreateFromMemberName (correspondingMember.Name, referenceToArgument);
     }
 
     private Expression ResolveChildExpression (Expression childExpression)

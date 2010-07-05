@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var memberInfo = typeof (Cook).GetProperty ("Name");
       var innerExpression = Expression.Constant ("inner");
 
-      var result = NamedExpression.CreateFromMemberInfo (memberInfo, innerExpression);
+      var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
 
       Assert.That (result.Name, Is.SameAs (memberInfo.Name));
       Assert.That (result.Expression, Is.SameAs (innerExpression));

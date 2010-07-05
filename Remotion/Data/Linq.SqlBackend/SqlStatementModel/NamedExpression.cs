@@ -37,12 +37,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly string _name;
     private readonly Expression _expression;
 
-    public static NamedExpression CreateFromMemberInfo (MemberInfo memberInfo, Expression innerExpression)
+    public static NamedExpression CreateFromMemberName (string memberName, Expression innerExpression)
     {
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull ("memberName", memberName);
       ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
 
-      return new NamedExpression (memberInfo.Name, innerExpression);
+      return new NamedExpression (memberName, innerExpression);
     }
 
     public NamedExpression (string name, Expression expression)

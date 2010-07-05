@@ -189,9 +189,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var memberName = GetMemberName (newExpression.Members, index);
 
       if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
-        return expression; 
+        return expression;
 
-      return new NamedExpression (memberName, VisitExpression (expression));
+      return NamedExpression.CreateFromMemberName (memberName, VisitExpression (expression));
     }
 
     private string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
