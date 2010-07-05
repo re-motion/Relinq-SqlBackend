@@ -562,7 +562,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void GroupBy_SelectKeyAndAggregate ()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
+          from c in Cooks group c.ID by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
           "SELECT [q0].[get_Name], [q0].[get_Count] FROM ("+
             "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "+
             "GROUP BY [c1.Name]) AS [q0]");
@@ -604,5 +604,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             "WHERE [q0].[get_Min]>18");
     }
 
+    [Ignore ("TODO 2909")]
+    [Test]
+    public void GroupBy_UseGroupInFromExpression ()
+    {
+      CheckQuery (
+          from c in Cooks
+          group c by c.Name into cooksByName
+          from c in cooksByName
+          select c,
+          "SELECT [t3].[value] FROM ("
+            + "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "
+            + "GROUP BY [c1.Name]) AS [q0] "
+            + " CROSS JOIN (SELECT [t2].[FirstName] AS [value] FROM [CookTable] [t2] WHERE [t2].[Name] = [q0].[get_Name]) AS [t3]");
+    }
   }
 }
