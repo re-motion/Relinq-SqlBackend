@@ -29,7 +29,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     public new ParameterExpression RowParameter { get { return base.RowParameter; } }
-    public new Expression ProjectionExpression { get { return base.ProjectionExpression; } }
+    public new Expression ProjectionExpression { 
+      get { return base.ProjectionExpression; }
+      set { base.ProjectionExpression = value; }
+    }
 
     public new Expression VisitNewExpression (NewExpression expression)
     {

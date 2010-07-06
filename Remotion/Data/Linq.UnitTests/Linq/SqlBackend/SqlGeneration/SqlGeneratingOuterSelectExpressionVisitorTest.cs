@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -120,6 +121,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
+    }
+
+    [Test]
+    public void VisitConvertedBooleanExpression_ProjectionExpressonIsNull ()
+    {
+      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
+      _visitor.ProjectionExpression = null;
+
+      _visitor.VisitConvertedBooleanExpression (expression);
+
+      Assert.That (_visitor.ProjectionExpression, Is.Null);
+    }
+
+    [Test]
+    public void VisitConvertedBooleanExpression_ProjectionExpressonIsNotNull ()
+    {
+      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
+      var projectionExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
+      _visitor.ProjectionExpression = projectionExpression;
+
+      _visitor.VisitConvertedBooleanExpression (expression);
+
+      var expectedProjection = Expression.Call(typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }), projectionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
     }
 
     private NewExpression GetExpectedProjectionForNewExpression (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)

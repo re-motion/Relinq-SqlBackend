@@ -90,6 +90,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public override Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
+    {
+      base.VisitConvertedBooleanExpression (expression);
+
+      if (ProjectionExpression != null)
+      {
+        var toBooleanMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
+        ProjectionExpression = Expression.Call (toBooleanMethod, ProjectionExpression);
+      }
+
+      return expression;
+    }
+
     private Expression VisitArgumentExpression (Expression argumentExpression)
     {
       VisitExpression (argumentExpression);
