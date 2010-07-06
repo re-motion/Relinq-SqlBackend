@@ -36,29 +36,37 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
+    private readonly UniqueIdentifierGenerator _generator;
     private readonly MethodCallTransformerRegistry _registry;
 
     public static Expression TranslateExpression (
-        Expression expression, ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+        Expression expression,
+        ISqlPreparationContext context,
+        ISqlPreparationStage stage,
+        UniqueIdentifierGenerator generator,
+        MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
-      var visitor = new SqlPreparationExpressionVisitor (context, stage, registry);
+      var visitor = new SqlPreparationExpressionVisitor (context, stage, generator, registry);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
-    protected SqlPreparationExpressionVisitor (ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+    protected SqlPreparationExpressionVisitor (
+        ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
       _context = context;
       _stage = stage;
+      _generator = generator;
       _registry = registry;
     }
 
@@ -70,6 +78,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected ISqlPreparationStage Stage
     {
       get { return _stage; }
+    }
+
+    protected UniqueIdentifierGenerator Generator
+    {
+      get { return _generator; }
     }
 
     protected MethodCallTransformerRegistry Registry
@@ -187,13 +200,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return CreateNewExpressionWithNamedArguments(expression, expression.Arguments.Select (e => VisitExpression (e)));
+      return CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (e => VisitExpression (e)));
     }
 
     // TODO Review 2991: I refactored this method so that SubStatementReferenceResolver could use the same logic. Please move this to the NamedExpression class, then add unit tests for: calling this method with/without members, calling this method with arguments already named in the correct way (the resulting expression must be the same as the original one), also test the case where the members are property getters with/without already named arguments
     public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression, IEnumerable<Expression> processedArguments)
     {
-      var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
+      var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray();
       if (!newArguments.SequenceEqual (expression.Arguments))
       {
         if (expression.Members != null)

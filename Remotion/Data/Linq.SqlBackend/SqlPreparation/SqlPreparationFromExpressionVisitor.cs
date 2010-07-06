@@ -58,7 +58,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       throw new NotSupportedException (message);
     }
 
-    private readonly UniqueIdentifierGenerator _generator;
     private readonly ISqlPreparationStage _stage;
     private readonly MethodCallTransformerRegistry _registry;
     private readonly ISqlPreparationContext _context;
@@ -72,11 +71,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         MethodCallTransformerRegistry registry,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
-        : base (context, stage, registry)
+        : base (context, stage, generator, registry)
     {
-      ArgumentUtility.CheckNotNull ("generator", generator);
-
-      _generator = generator;
       _stage = stage;
       _registry = registry;
       _context = context;
@@ -100,7 +96,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, _stage, _registry);
+      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, _stage, Generator, _registry);
 
       var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
@@ -117,7 +113,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
-      var factory = new SqlPreparationSubStatementTableFactory (_stage, _context, _generator);
+      var factory = new SqlPreparationSubStatementTableFactory (_stage, _context, Generator);
       _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
 

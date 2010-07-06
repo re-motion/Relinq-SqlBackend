@@ -88,14 +88,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerRegistry);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _generator, _methodCallTransformerRegistry);
     }
 
     protected virtual Expression PrepareExpressionForSelectProjection (Expression expression, ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return SqlPreparationSelectExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerRegistry);
+      return SqlPreparationSelectExpressionVisitor.TranslateExpression (expression, context, this, _generator, _methodCallTransformerRegistry);
     }
   }
 }
