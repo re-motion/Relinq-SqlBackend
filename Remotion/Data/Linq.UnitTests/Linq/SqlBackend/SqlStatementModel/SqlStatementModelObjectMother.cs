@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -22,7 +23,6 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -33,9 +33,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       return new SqlStatementBuilder
              {
-                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
-                 SelectProjection =
-                     new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant (0), Expression.Constant (new[] { 1, 2, 3 }))
+                 DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (selectProjection.Type), selectProjection),
+                 SelectProjection = selectProjection
              }.GetSqlStatement();
     }
 
@@ -142,7 +141,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedTableInfo CreateUnresolvedTableInfo (Type type)
     {
-      var array = Array.CreateInstance (type, 0);
       return new UnresolvedTableInfo (type);
     }
 
@@ -203,13 +201,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedGroupReferenceTableInfo CreateUnresolvedGroupReferenceTableInfo ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      var sqlStatement = new SqlStatementBuilder (CreateSqlStatement_Resolved (typeof (Cook[])))
       {
         DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
       }.GetSqlStatement ();
       var resolvedSubStatmentTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
       return new UnresolvedGroupReferenceTableInfo (resolvedSubStatmentTableInfo);
     }
-
   }
 }

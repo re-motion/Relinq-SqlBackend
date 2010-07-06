@@ -43,18 +43,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveSubStatementReferenceExpression_CreatesCompoundExpression_ForNewExpressions ()
+    public void ResolveSubStatementReferenceExpression_CreatesNewExpressionWithReferences_ForNewExpressions ()
     {
       var newExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
           new[] { new NamedExpression ("const", Expression.Constant (0)) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                         {
-                             SelectProjection = newExpression,
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (newExpression);
+
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
 
@@ -66,6 +63,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new Expression[] { new NamedExpression ("A", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false) ) },
           newExpression.Members);
 
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void ResolveSubStatementReferenceExpression_CreatesNewExpressionWithReferences_ForNewExpressions_WithoutMembers ()
+    {
+      var newExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { new NamedExpression ("const", Expression.Constant (0)) });
+
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (newExpression);
+
+      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
+
+      var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
+          newExpression, tableInfo, sqlTable, newExpression.Type, _context);
+
+      var expectedResult = Expression.New (
+          typeof (TypeForNewExpression).GetConstructors ()[0],
+          new Expression[] { new NamedExpression ("m0", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false)) });
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

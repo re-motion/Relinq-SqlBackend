@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -83,9 +82,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var innerReferenceExpressions = expression.Arguments.Select ((arg, i) => ResolveNewExpressionArgument(arg, expression.Members[i]));
-      return Expression.New (expression.Constructor, innerReferenceExpressions, expression.Members);
-
+      var resolvedArguments = expression.Arguments.Select (expr => ResolveChildExpression (expr));
+      return SqlPreparation.SqlPreparationExpressionVisitor.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)
@@ -109,12 +107,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         newGroupingExpression.AddAggregationExpressionWithName (aggregationExpression);
 
       return newGroupingExpression;
-    }
-
-    private Expression ResolveNewExpressionArgument (Expression argument, MemberInfo correspondingMember)
-    {
-      var referenceToArgument = ResolveChildExpression (argument);
-      return NamedExpression.CreateFromMemberName (correspondingMember.Name, referenceToArgument);
     }
 
     private Expression ResolveChildExpression (Expression childExpression)

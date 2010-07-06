@@ -167,7 +167,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var transformedExpression = _registry.GetItem (expression.Method).Transform ((MethodCallExpression) expression);
+      var transformedExpression = _registry.GetItem (expression.Method).Transform (expression);
       return VisitExpression (transformedExpression);
     }
 
@@ -182,33 +182,37 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Members != null)
-      {
-        return Expression.New (
-            expression.Constructor,
-            expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray(),
-            expression.Members);
-      }
-      else
-      {
-        return Expression.New (
-            expression.Constructor,
-            expression.Arguments.Select ((e, i) => WrapIntoNamedExpression (expression, i, e)).ToArray());
-      }
+      return CreateNewExpressionWithNamedArguments(expression, expression.Arguments.Select (e => VisitExpression (e)));
     }
 
-    private Expression WrapIntoNamedExpression (NewExpression newExpression, int index, Expression expression)
+    // TODO Review 2991: I refactored this method so that SubStatementReferenceResolver could use the same logic. Please move this to the NamedExpression class, then add unit tests for: calling this method with/without members, calling this method with arguments already named in the correct way (the resulting expression must be the same as the original one), also test the case where the members are property getters with/without already named arguments
+    public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression, IEnumerable<Expression> processedArguments)
     {
-      var expressionAsNamedExpression = expression as NamedExpression;
-      var memberName = GetMemberName (newExpression.Members, index);
+      var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
+      if (!newArguments.SequenceEqual (expression.Arguments))
+      {
+        if (expression.Members != null)
+          return Expression.New (expression.Constructor, newArguments, expression.Members);
+        else
+          return Expression.New (expression.Constructor, newArguments);
+      }
 
-      if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
-        return expression;
-
-      return NamedExpression.CreateFromMemberName (memberName, VisitExpression (expression));
+      return expression;
     }
 
-    private string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
+    private static Expression WrapIntoNamedExpression (string memberName, Expression argumentExpression)
+    {
+      // TODO Review 2991: This check doesn't work if memberName gets adjusted because its a property getter, see SqlPreparationExpressionVisitorTest.VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice_WithGetterMethods - move this test to NamedExpressionTest when the method is moved)
+      // TODO Review 2991: To fix this, change this as follows: First create the NamedExpression as below, then compare the name in the NamedExpression with the argument's name. If those are equal, return the original expression, otherwise the new one.
+      var expressionAsNamedExpression = argumentExpression as NamedExpression;
+      if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
+        return expressionAsNamedExpression;
+
+      // TODO Review 2991: Change back to CreateFromMemberInfo, this should work now after my refactoring
+      return NamedExpression.CreateFromMemberName (memberName, argumentExpression);
+    }
+
+    private static string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
     {
       if (members == null || members.Count <= index)
         return "m" + index;

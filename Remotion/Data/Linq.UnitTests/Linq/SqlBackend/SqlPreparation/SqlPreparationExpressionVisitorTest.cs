@@ -455,7 +455,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (methodCallExpression);
       transformerMock.Replay();
 
-      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry();
+      var registry = new MethodCallTransformerRegistry();
       registry.Register (method, transformerMock);
 
       SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
@@ -475,7 +475,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (_cookQuerySourceReferenceExpression);
       transformerMock.Replay();
 
-      MethodCallTransformerRegistry registry = new MethodCallTransformerRegistry();
+      var registry = new MethodCallTransformerRegistry();
       registry.Register (method, transformerMock);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
@@ -521,24 +521,36 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitNewExpression_PreventNestedNamedExpressions_SameName ()
+    // TODO Review 2991: Copy to NamedExpressionTest when method is moved
+    public void VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice ()
     {
-      var namedExpression = new NamedExpression ("A", Expression.Constant (0));
       var expression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { namedExpression },
+          new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result1 = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result2 = SqlPreparationExpressionVisitor.TranslateExpression (result1, _context, _stageMock, _registry);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (result, Is.Not.SameAs (expression));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Expression, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("A"));
-      Assert.That (((NewExpression) result).Arguments[0], Is.SameAs (namedExpression));
+      Assert.That (result2, Is.SameAs (result1));
+      Assert.That (((NamedExpression) ((NewExpression) result2).Arguments[0]).Name, Is.EqualTo ("A"));
+    }
+
+    [Test]
+    [Ignore ("TODO Review 2991: This does not work, see implementation")]
+    // TODO Review 2991: Move to NamedExpressionTest when method is moved
+    public void VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice_WithGetterMethods ()
+    {
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { Expression.Constant (0) },
+          (MemberInfo) typeof (TypeForNewExpression).GetMethod ("get_A"));
+
+      var result1 = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result2 = SqlPreparationExpressionVisitor.TranslateExpression (result1, _context, _stageMock, _registry);
+
+      Assert.That (result2, Is.SameAs (result1));
+      Assert.That (((NamedExpression) ((NewExpression) result2).Arguments[0]).Name, Is.EqualTo ("A"));
     }
   }
 }
