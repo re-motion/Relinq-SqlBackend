@@ -80,7 +80,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       switch (_currentContext)
       {
         case SqlExpressionContext.SingleValueRequired:
-          return HandleSingleValueSemantics (expression);
         case SqlExpressionContext.ValueRequired:
           return HandleValueSemantics (expression);
         case SqlExpressionContext.PredicateRequired:
@@ -332,15 +331,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         default:
           return SqlExpressionContext.SingleValueRequired;
       }
-    }
-
-    private Expression HandleSingleValueSemantics (Expression expression)
-    {
-      var newExpression = base.VisitExpression (expression);
-      if (newExpression.Type == typeof (bool))
-        return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-      else
-        return newExpression;
     }
 
     private Expression HandleValueSemantics (Expression expression)
