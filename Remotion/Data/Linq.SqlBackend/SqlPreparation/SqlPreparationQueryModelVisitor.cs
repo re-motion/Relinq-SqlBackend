@@ -191,18 +191,28 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
+      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
+
       var fromExpressionInfo = _stage.PrepareFromExpression (fromExpression, _context, info => new SqlTable (info));
-        
+      AddPreparedFromExpression (fromExpressionInfo);  
+      
+      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
+      return fromExpressionInfo.SqlTable;
+    }
+
+    public void AddPreparedFromExpression (FromExpressionInfo fromExpressionInfo)
+    {
+      ArgumentUtility.CheckNotNull ("fromExpressionInfo", fromExpressionInfo);
+
       if (fromExpressionInfo.WhereCondition != null)
         SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
 
       foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
         SqlStatementBuilder.Orderings.Add (ordering);
 
-      if(fromExpressionInfo.IsNewTable)
+      if (fromExpressionInfo.IsNewTable)
         SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
-      return fromExpressionInfo.SqlTable;
     }
 
     private ICollection GetConstantCollectionValue (QueryModel queryModel)

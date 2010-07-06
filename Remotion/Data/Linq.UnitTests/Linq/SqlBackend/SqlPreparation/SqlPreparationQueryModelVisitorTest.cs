@@ -589,6 +589,76 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void AddPreparedFromExpression_IsNewTable_AddSqlTable ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null, true);
+      _visitor.SqlStatementBuilder.WhereCondition = null;
+      _visitor.SqlStatementBuilder.Orderings.Clear();
+      _visitor.SqlStatementBuilder.SqlTables.Clear();
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
+    }
+
+    [Test]
+    public void AddPreparedFromExpression_OrderingIsAdded ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var ordering = new Ordering(Expression.Constant("order"), OrderingDirection.Asc);
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), null, false);
+      _visitor.SqlStatementBuilder.WhereCondition = null;
+      _visitor.SqlStatementBuilder.Orderings.Clear ();
+      _visitor.SqlStatementBuilder.SqlTables.Clear ();
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0], Is.SameAs (ordering));
+    }
+
+    [Test]
+    public void AddPreparedFromExpression_WhereConditionIsAdded ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var whereCondition = Expression.Constant(true);
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new Ordering[0] , new SqlTableReferenceExpression (sqlTable), whereCondition, false);
+      _visitor.SqlStatementBuilder.WhereCondition = null;
+      _visitor.SqlStatementBuilder.Orderings.Clear ();
+      _visitor.SqlStatementBuilder.SqlTables.Clear ();
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs(whereCondition));
+    }
+
+    [Test]
+    public void AddPreparedFromExpression_AllMembersAreSet ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var whereCondition = Expression.Constant (true);
+      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Asc);
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), whereCondition, true);
+      _visitor.SqlStatementBuilder.WhereCondition = null;
+      _visitor.SqlStatementBuilder.Orderings.Clear ();
+      _visitor.SqlStatementBuilder.SqlTables.Clear ();
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0], Is.SameAs (ordering));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (whereCondition));
+    }
+
+    [Test]
     public void AddJoinClause ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
