@@ -126,13 +126,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Member is PropertyInfo && expression.Member.DeclaringType.GetMethod ("get_Length") != null
-          && _registry.IsRegistered (expression.Member.DeclaringType.GetMethod ("get_Length")))
+      // TODO Review 3005: Use an "as" cast to cast to PropertyInfo, then check for null (instead of "is PropertyInfo"); then use propertyInfo.GetGetMethod() to access the property getter; use that instead of GetMethod ("get_Length")
+      if (expression.Member is PropertyInfo)
       {
-        var tranformer = _registry.GetItem (expression.Member.DeclaringType.GetMethod ("get_Length"));
-        var methodCallExpression = Expression.Call (expression.Expression,  typeof (string).GetMethod ("get_Length", new Type[] { }));
-        var tranformedExpression = tranformer.Transform (methodCallExpression);
-        return VisitExpression (tranformedExpression);
+        var methodInfo = expression.Member.DeclaringType.GetMethod ("get_Length");
+        // TORO Review 3005: After the refactoring, avoid calling _registry.GetItem twice
+        if (methodInfo != null && _registry.IsRegistered (methodInfo))
+        {
+          var tranformer = _registry.GetItem (methodInfo);
+          var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
+          var tranformedExpression = tranformer.Transform (methodCallExpression);
+          return VisitExpression (tranformedExpression);
+        }
       }
       return base.VisitMemberExpression (expression);
     }

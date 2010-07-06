@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using System.Linq;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -31,6 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
+      // TODO Review 3005: Use Assert.That
       Assert.IsTrue (
           IsNullOrEmptyMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetStaticMethod (typeof (string), "IsNullOrEmpty", new[]{typeof(string)})));
@@ -46,6 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var result = transformer.Transform (expression);
 
+      // TODO Review 3005: Use expected expression, that should perform a more comprehensive check
       var expectedIsNullExpression = new SqlIsNullExpression (objectExpression);
       var expectedLenExpression = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
       var expectedResult = Expression.OrElse (expectedIsNullExpression, Expression.Equal (expectedLenExpression, new SqlLiteralExpression(0)));
