@@ -166,5 +166,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
     }
+
+    [Test]
+    public void ProcessNames_ConvertedBooleanExpression ()
+    {
+      var namedExpression = new NamedExpression ("outer", new ConvertedBooleanExpression (new NamedExpression ("inner", Expression.Constant (1))));
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      var expectedResult = new ConvertedBooleanExpression (new NamedExpression ("outer_inner", Expression.Constant (1)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
   }
 }

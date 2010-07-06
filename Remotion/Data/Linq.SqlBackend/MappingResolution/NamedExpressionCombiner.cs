@@ -77,6 +77,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
             e => ProcessNames (mappingResolutionContext, new NamedExpression (outerExpression.Name, e)));
         return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
       }
+      else if (outerExpression.Expression is ConvertedBooleanExpression)
+      {
+        var convertedBooleanExpression = (ConvertedBooleanExpression) outerExpression.Expression;
+        var innerNamedExpression = new NamedExpression (outerExpression.Name, convertedBooleanExpression.Expression);
+        return new ConvertedBooleanExpression (ProcessNames (mappingResolutionContext, innerNamedExpression));
+      }
       else
         return outerExpression;
     }
