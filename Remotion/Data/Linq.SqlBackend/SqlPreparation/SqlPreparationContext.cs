@@ -53,6 +53,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping[original] = replacement;
     }
 
+    public void AddFromExpression (FromExpressionInfo fromExpressionInfo)
+    {
+      ArgumentUtility.CheckNotNull ("fromExpressionInfo", fromExpressionInfo);
+
+      _visitor.AddPreparedFromExpression (fromExpressionInfo);
+    }
+
     public Expression TryGetExpressionMapping (Expression original)
     {
       ArgumentUtility.CheckNotNull ("original", original);

@@ -161,5 +161,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.Null);
     }
+
+    [Test]
+    public void AddFromExpression ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var whereCondition = Expression.Constant (true);
+      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Asc);
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), whereCondition, true);
+      _visitor.SqlStatementBuilder.WhereCondition = null;
+      _visitor.SqlStatementBuilder.Orderings.Clear ();
+      _visitor.SqlStatementBuilder.SqlTables.Clear ();
+
+      _contextWithParent.AddFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
+      Assert.That (_visitor.SqlStatementBuilder.Orderings[0], Is.SameAs (ordering));
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (whereCondition));
+    }
   }
 }
