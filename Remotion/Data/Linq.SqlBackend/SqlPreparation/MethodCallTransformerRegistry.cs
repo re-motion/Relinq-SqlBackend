@@ -51,13 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (baseMethod != key)
         return GetItem (baseMethod);
 
-      // TODO Review 3005: Change this to return null if no transformer is registered, throw the exception in SqlPreparationExpressionVisitor.VisitMethodCallExpression (be sure to add a unit test for this)
-      // TODO Review 3005: Then, remove IsRegistered - it won't work for overridden or generic members
-      string message = string.Format (
-          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered.",
-          key.DeclaringType.FullName,
-          key.Name);
-      throw new NotSupportedException (message);
+      return null;
     }
 
     protected override void RegisterForTypes (IEnumerable<Type> itemTypes)

@@ -446,6 +446,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.String.Concat' is not supported by this code "
+                                                                          + "generator, and no custom transformer has been registered.")]
+    public void VisitMethodCallExpression_TransformerNotRegistered_ThrowsException ()
+    {
+      var method = typeof (string).GetMethod ("Concat", new Type[] {typeof(string)});
+      var constantExpression = Expression.Constant ("Test");
+      var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
+
+      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _generator, _registry);
+    }
+
+    [Test]
     public void VisitMethodCallExpression_ExpressionPropertiesVisitedBeforeTransformation ()
     {
       var method = MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString");

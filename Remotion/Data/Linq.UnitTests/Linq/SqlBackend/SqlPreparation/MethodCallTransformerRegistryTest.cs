@@ -96,12 +96,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.String.Concat' is not supported by this code "
-                                                                          + "generator, and no custom transformer has been registered.")]
-    public void GetTransformer_DontFindGenerator_Exception ()
+    public void GetTransformer_DontFindGenerator_ReturnsNull ()
     {
       var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry ();
-      methodCallSqlGeneratorRegistry.GetItem(_methodInfo);
+
+      var result = methodCallSqlGeneratorRegistry.GetItem(_methodInfo);
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]

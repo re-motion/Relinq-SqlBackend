@@ -139,17 +139,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 3005: Use an "as" cast to cast to PropertyInfo, then check for null (instead of "is PropertyInfo"); then use propertyInfo.GetGetMethod() to access the property getter; use that instead of GetMethod ("get_Length")
-      if (expression.Member is PropertyInfo)
+      var memberAsPropertyInfo = expression.Member as PropertyInfo;
+      if (memberAsPropertyInfo!=null)
       {
         var methodInfo = expression.Member.DeclaringType.GetMethod ("get_Length");
-        // TORO Review 3005: After the refactoring, avoid calling _registry.GetItem twice
-        if (methodInfo != null && _registry.IsRegistered (methodInfo))
+        if (methodInfo != null)
         {
           var tranformer = _registry.GetItem (methodInfo);
-          var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
-          var tranformedExpression = tranformer.Transform (methodCallExpression);
-          return VisitExpression (tranformedExpression);
+          if (tranformer != null)
+          {
+            var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
+            var tranformedExpression = tranformer.Transform (methodCallExpression);
+            return VisitExpression (tranformedExpression);
+          }
         }
       }
       return base.VisitMemberExpression (expression);
@@ -185,8 +187,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var transformedExpression = _registry.GetItem (expression.Method).Transform (expression);
-      return VisitExpression (transformedExpression);
+      var transformer = _registry.GetItem (expression.Method);
+      if (transformer != null)
+      {
+        var transformedExpression = transformer.Transform (expression);
+        return VisitExpression (transformedExpression);
+      }
+
+      string message = string.Format (
+          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered.",
+          expression.Method.DeclaringType.FullName,
+          expression.Method.Name);
+      throw new NotSupportedException (message);
     }
 
     protected override Expression VisitConditionalExpression (ConditionalExpression expression)

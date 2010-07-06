@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using System.Linq;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -30,8 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      // TODO Review 3005: Use Assert.That
-      Assert.IsTrue (
+      Assert.That(
           StringLengthMethodCallTransformer.SupportedMethods.Contains (
               MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "get_Length")));
     }
@@ -43,13 +43,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method);
       var transformer = new StringLengthMethodCallTransformer ();
+
       var result = transformer.Transform (expression);
 
-      Assert.That (result.Type, Is.EqualTo (typeof (int)));
-      // TODO Review 3005: Use expected expression, that should perform a more comprehensive check
-      Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
-      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("LEN"));
-      Assert.That (((SqlFunctionExpression) result).Args[0], Is.EqualTo (objectExpression));
+      var expectedResult = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }
