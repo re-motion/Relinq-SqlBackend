@@ -41,7 +41,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        ISqlGroupingSelectExpressionVisitor
+        ISqlGroupingSelectExpressionVisitor,
+        IConvertedBooleanExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -353,6 +354,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      VisitExpression (expression.Expression);
+      return expression;
+    }
+
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
       return VisitUnknownExpression (expression);
@@ -386,6 +395,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     //  var column = new SqlColumnDefinitionExpression (typeof (int), subStatementTableInfo.TableAlias, memberInfo.Name, false);
     //  VisitExpression (column);
     //}
+
     
   }
 }

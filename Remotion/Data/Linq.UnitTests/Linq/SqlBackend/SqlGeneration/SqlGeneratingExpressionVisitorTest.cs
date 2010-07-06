@@ -649,5 +649,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("aggregation1"));
       Assert.That (_commandBuilder.GetCommandParameters()[2].Value, Is.EqualTo ("aggregation2"));
     }
+
+    [Test]
+    public void VisitConvertedBooleanExpression ()
+    {
+      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
+    }
   }
 }
