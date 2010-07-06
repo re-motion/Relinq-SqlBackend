@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public virtual Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression, context);
+      return PrepareExpressionForSelectProjection (expression, context);
     }
 
     public virtual Expression PrepareWhereExpression (Expression expression, ISqlPreparationContext context)
@@ -89,6 +89,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerRegistry);
+    }
+
+    protected virtual Expression PrepareExpressionForSelectProjection (Expression expression, ISqlPreparationContext context)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      return SqlPreparationSelectExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerRegistry);
     }
   }
 }
