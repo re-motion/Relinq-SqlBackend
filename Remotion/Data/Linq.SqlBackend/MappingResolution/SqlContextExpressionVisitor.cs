@@ -93,7 +93,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       // Always convert boolean constants to int constants because in the database, there are no boolean constants
       if (expression.Type == typeof (bool))
-        return expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
+      {
+        Expression newExpression = expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
+        if (_currentContext == SqlExpressionContext.ValueRequired || _currentContext == SqlExpressionContext.SingleValueRequired)
+          newExpression = new ConvertedBooleanExpression (newExpression);
+        return newExpression;
+      }
       else
         return expression; // rely on VisitExpression to apply correct semantics
     }
@@ -102,7 +107,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (expression.Type == typeof (bool))
-        return expression.Update (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
+      {
+        Expression newExpression = expression.Update (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
+        if (_currentContext == SqlExpressionContext.ValueRequired || _currentContext == SqlExpressionContext.SingleValueRequired)
+          newExpression = new ConvertedBooleanExpression (newExpression);
+        return newExpression;
+      }
       else
         return expression; // rely on VisitExpression to apply correct semantics
     }
@@ -336,8 +346,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression HandleValueSemantics (Expression expression)
     {
       var newExpression = base.VisitExpression (expression);
-      if (newExpression.Type == typeof (bool))
-        return new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+      if (newExpression.Type == typeof (bool) && !(newExpression is ConvertedBooleanExpression))
+      {
+        newExpression = new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+        if (_currentContext == SqlExpressionContext.ValueRequired || _currentContext == SqlExpressionContext.SingleValueRequired)
+          newExpression = new ConvertedBooleanExpression (newExpression);
+        return newExpression;
+      } 
       else
         return newExpression;
     }

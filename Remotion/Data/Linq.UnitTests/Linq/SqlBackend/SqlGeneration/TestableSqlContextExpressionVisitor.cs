@@ -40,5 +40,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       return base.VisitNewExpression (expression);
     }
+
+    public new Expression VisitConstantExpression (ConstantExpression expression)
+    {
+      return base.VisitConstantExpression (expression);
+    }
   }
 }

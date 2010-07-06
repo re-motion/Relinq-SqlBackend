@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from k in Kitchens select true,
           "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object)row.GetValue<int> (new ColumnID ("value", 0)),
+          row => (object)Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
           new CommandParameter ("@1", 1));
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from k in Kitchens select false,
           "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          row => (object) Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
           new CommandParameter ("@1", 0));
     }
 
@@ -92,18 +92,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.IsStarredCook,
           "SELECT [t0].[IsStarredCook] AS [value] FROM [CookTable] AS [t0]",
-          row => (object)row.GetValue<int> (new ColumnID ("value", 0)));
+          row => (object)Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))));
 
       CheckQuery (
           from c in Cooks select true,
           "SELECT @1 AS [value] FROM [CookTable] AS [t0]",
-          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          row => (object) Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
           new CommandParameter ("@1", 1));
 
       CheckQuery (
           from c in Cooks select c.FirstName != null,
           "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
-          row => (object)row.GetValue<int> (new ColumnID ("value", 0)));
+          row => (object)Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))));
     }
 
     [Test]
@@ -318,7 +318,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2985/TODO 2986")]
     public void NestedSelectProjection_WithBooleanConditions ()
     {
       CheckQuery (
