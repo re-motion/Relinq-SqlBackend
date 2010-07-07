@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -27,11 +29,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   public class UnresolvedGroupReferenceTableInfoTest
   {
     private UnresolvedGroupReferenceTableInfo _tableInfo;
+    private SqlTable _referencedGroupSource;
 
     [SetUp]
     public void SetUp ()
     {
-      _tableInfo = new UnresolvedGroupReferenceTableInfo (typeof (int));
+      _referencedGroupSource = SqlStatementModelObjectMother.CreateSqlTable (typeof (IGrouping<int, string>));
+      _tableInfo = new UnresolvedGroupReferenceTableInfo (_referencedGroupSource);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_tableInfo.ItemType, Is.EqualTo (typeof (string)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
+        "Expected a type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource")]
+    public void Initialization_ThrowsWhenNoSequenceType ()
+    {
+      var invalidGroupSource = SqlStatementModelObjectMother.CreateSqlTable (typeof (int));
+      new UnresolvedGroupReferenceTableInfo (invalidGroupSource);
     }
 
     [Test]
@@ -48,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void Initialize ()
     {
-      Assert.That (_tableInfo.ItemType, Is.SameAs (typeof (int)));
+      Assert.That (_tableInfo.ItemType, Is.SameAs (typeof (string)));
     }
 
     [Test]
@@ -63,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     {
       var result = _tableInfo.ToString();
 
-      Assert.That (result, Is.EqualTo ("GROUP-REF-TABLE(Int32)"));
+      Assert.That (result, Is.EqualTo ("GROUP-REF-TABLE(String)"));
     }
   }
 }

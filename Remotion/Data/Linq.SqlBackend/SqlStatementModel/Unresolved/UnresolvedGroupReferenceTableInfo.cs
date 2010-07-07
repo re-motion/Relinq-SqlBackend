@@ -27,15 +27,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   public class UnresolvedGroupReferenceTableInfo : ITableInfo
   {
     private readonly Type _itemType;
+    private readonly SqlTableBase _referencedGroupSource;
 
-    public UnresolvedGroupReferenceTableInfo (Type itemType)
+    public UnresolvedGroupReferenceTableInfo (SqlTableBase referencedGroupSource)
     {
-      _itemType = itemType;
+      ArgumentUtility.CheckNotNull ("referencedGroupSource", referencedGroupSource);
+
+      _referencedGroupSource = referencedGroupSource;
+      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (referencedGroupSource.ItemType, "referencedGroupSource");
     }
 
     public Type ItemType
     {
       get { return _itemType; }
+    }
+
+    public SqlTableBase ReferencedGroupSource
+    {
+      get { return _referencedGroupSource; }
     }
 
     public IResolvedTableInfo GetResolvedTableInfo ()

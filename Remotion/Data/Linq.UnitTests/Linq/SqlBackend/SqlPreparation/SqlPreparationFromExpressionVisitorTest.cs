@@ -243,6 +243,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedGroupReferenceTableInfo)));
       var castTableInfo = (UnresolvedGroupReferenceTableInfo) tableInfo;
       Assert.That (castTableInfo.ItemType, Is.SameAs (typeof (int)));
+      Assert.That (castTableInfo.ReferencedGroupSource, Is.SameAs (sqlTable));
     }
 
     [Test]

@@ -201,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedGroupReferenceTableInfo CreateUnresolvedGroupReferenceTableInfo ()
     {
-      return new UnresolvedGroupReferenceTableInfo (typeof (int));
+      return new UnresolvedGroupReferenceTableInfo (CreateSqlTable (typeof (IGrouping<int, string>)));
     }
   }
 }

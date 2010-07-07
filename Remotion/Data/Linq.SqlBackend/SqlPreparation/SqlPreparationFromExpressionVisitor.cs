@@ -125,10 +125,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      Type itemType;
-      if (expression.Type != typeof (string) && (itemType = ReflectionUtility.TryGetItemTypeOfIEnumerable (expression.Type)) != null)
+      if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
       {
-        var tableInfo = new UnresolvedGroupReferenceTableInfo (itemType);
+        var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
         var sqlTable = new SqlTable (tableInfo);
         _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, true);
       }
