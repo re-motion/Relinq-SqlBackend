@@ -22,10 +22,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
 
-      Assert.That (result.Name, Is.EqualTo("A"));
+      Assert.That (result.Name, Is.EqualTo ("A"));
       Assert.That (result.Expression, Is.SameAs (innerExpression));
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
 
-      Assert.That (result.Name, Is.SameAs(memberInfo.Name));
+      Assert.That (result.Name, Is.SameAs (memberInfo.Name));
       Assert.That (result.Expression, Is.SameAs (innerExpression));
     }
 
@@ -87,16 +87,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
 
       visitorMock
           .Expect (mock => mock.VisitExpression (_wrappedExpression))
           .Return (_wrappedExpression);
-      visitorMock.Replay ();
+      visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_namedExpression, visitorMock);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_namedExpression));
     }
 
@@ -104,19 +104,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void VisitChildren_ReturnsNewSqlInExpression ()
     {
       var newExpression = Expression.Constant (5);
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+
       visitorMock
           .Expect (mock => mock.VisitExpression (_wrappedExpression))
           .Return (newExpression);
-      visitorMock.Replay ();
+      visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_namedExpression, visitorMock);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (_namedExpression));
       Assert.That (((NamedExpression) result).Expression, Is.SameAs (newExpression));
-      Assert.That (((NamedExpression) result).Name, Is.EqualTo("test"));
+      Assert.That (((NamedExpression) result).Name, Is.EqualTo ("test"));
     }
 
     [Test]
@@ -124,7 +124,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<NamedExpression, INamedExpressionVisitor> (
           _namedExpression,
-          mock => mock.VisitNamedExpression(_namedExpression));
+          mock => mock.VisitNamedExpression (_namedExpression));
     }
 
     [Test]
@@ -141,46 +141,67 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (result, Is.EqualTo ("1 AS test"));
     }
 
-    //TODO RM-2991: Unit Test!
+    [Test]
+    public void CreateNewExpressionWithNamedArguments_WithMembers ()
+    {
+      var innerExpression = Expression.Constant (0);
+      var memberInfo = (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A");
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { innerExpression },
+          memberInfo);
 
-    //[Test]
-    //// TODO Review 2991: Copy to NamedExpressionTest when method is moved
-    //public void CreateNewExpressionWithNamedArguments_ ()
-    //{
-    //  var expression = Expression.New (
-    //      typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-    //      new[] { Expression.Constant (0) },
-    //      (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
 
-    //  var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+      var expectedResult = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { new NamedExpression ("A", innerExpression) }, memberInfo);
 
-    //  var expectedResult = Expression.New(typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), )
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
 
-    //  Assert.That (result, Is.SameAs (expression));
-    //}
+    [Test]
+    public void CreateNewExpressionWithNamedArguments_ArgumentsAlreadyNamedCorrectly ()
+    {
+      var innerExpression = new NamedExpression("m0", Expression.Constant (0));
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { innerExpression });
 
-    //[Test]
-    //[Ignore ("TODO Review 2991: This does not work, see implementation")]
-    //// TODO Review 2991: Move to NamedExpressionTest when method is moved
-    //public void VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice_WithGetterMethods ()
-    //{
-    //  var expression = Expression.New (
-    //      typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-    //      new[] { Expression.Constant (0) },
-    //      (MemberInfo) typeof (TypeForNewExpression).GetMethod ("get_A"));
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
 
-    //  //var result1 = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _generator, _registry);
-    //  //var result2 = SqlPreparationExpressionVisitor.TranslateExpression (result1, _context, _stageMock, _generator, _registry);
+      Assert.That (result, Is.SameAs (expression));
+    }
 
-    //  //Assert.That (result2, Is.SameAs (result1));
-    //  //Assert.That (((NamedExpression) ((NewExpression) result2).Arguments[0]).Name, Is.EqualTo ("A"));
-    //}
+    [Test]
+    public void CreateNewExpressionWithNamedArguments_ArgumentsAlreadyNamedWithDifferentName ()
+    {
+      var innerExpression = new NamedExpression ("test", Expression.Constant (0));
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { innerExpression });
+
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+
+      var expectedResult = Expression.New (
+           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { new NamedExpression ("m0", innerExpression) });
+
+      Assert.That (result, Is.Not.SameAs (expression));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void CreateNewExpressionWithNamedArguments_ArgumentsAlreadyNamedCorrectly_WithMembers ()
+    {
+      var innerExpression = new NamedExpression ("A", Expression.Constant (0));
+      var memberInfo = (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A");
+      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { innerExpression }, memberInfo);
+
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+    
   }
 
-  class MemberTest
+  internal class MemberTest
   {
     public string get_A { get; set; }
     public string get_ { get; set; }
-
   }
 }

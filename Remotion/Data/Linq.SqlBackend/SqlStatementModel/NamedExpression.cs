@@ -51,8 +51,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return new NamedExpression (memberName, innerExpression);
     }
 
-    // TODO Review 2991: I refactored this method so that SubStatementReferenceResolver could use the same logic. 
-    //Please move this to the NamedExpression class, then add unit tests for: calling this method with/without members, calling this method with arguments already named in the correct way (the resulting expression must be the same as the original one), also test the case where the members are property getters with/without already named arguments
     public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression, IEnumerable<Expression> processedArguments)
     {
       var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
