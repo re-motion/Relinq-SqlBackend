@@ -16,13 +16,16 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -137,6 +140,41 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result, Is.EqualTo ("1 AS test"));
     }
+
+    //TODO RM-2991: Unit Test!
+
+    //[Test]
+    //// TODO Review 2991: Copy to NamedExpressionTest when method is moved
+    //public void CreateNewExpressionWithNamedArguments_ ()
+    //{
+    //  var expression = Expression.New (
+    //      typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+    //      new[] { Expression.Constant (0) },
+    //      (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
+
+    //  var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+
+    //  var expectedResult = Expression.New(typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), )
+
+    //  Assert.That (result, Is.SameAs (expression));
+    //}
+
+    //[Test]
+    //[Ignore ("TODO Review 2991: This does not work, see implementation")]
+    //// TODO Review 2991: Move to NamedExpressionTest when method is moved
+    //public void VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice_WithGetterMethods ()
+    //{
+    //  var expression = Expression.New (
+    //      typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+    //      new[] { Expression.Constant (0) },
+    //      (MemberInfo) typeof (TypeForNewExpression).GetMethod ("get_A"));
+
+    //  //var result1 = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _generator, _registry);
+    //  //var result2 = SqlPreparationExpressionVisitor.TranslateExpression (result1, _context, _stageMock, _generator, _registry);
+
+    //  //Assert.That (result2, Is.SameAs (result1));
+    //  //Assert.That (((NamedExpression) ((NewExpression) result2).Arguments[0]).Name, Is.EqualTo ("A"));
+    //}
   }
 
   class MemberTest

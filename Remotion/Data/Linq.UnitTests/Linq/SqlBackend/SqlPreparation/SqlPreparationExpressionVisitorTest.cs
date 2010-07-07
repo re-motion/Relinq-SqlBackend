@@ -533,38 +533,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Members, Is.Null);
       Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("m0"));
     }
-
-    [Test]
-    // TODO Review 2991: Copy to NamedExpressionTest when method is moved
-    public void VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice ()
-    {
-      var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { Expression.Constant (0) },
-          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-
-      var result1 = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _generator, _registry);
-      var result2 = SqlPreparationExpressionVisitor.TranslateExpression (result1, _context, _stageMock, _generator, _registry);
-
-      Assert.That (result2, Is.SameAs (result1));
-      Assert.That (((NamedExpression) ((NewExpression) result2).Arguments[0]).Name, Is.EqualTo ("A"));
-    }
-
-    [Test]
-    [Ignore ("TODO Review 2991: This does not work, see implementation")]
-    // TODO Review 2991: Move to NamedExpressionTest when method is moved
-    public void VisitNewExpression_PreventsNestedNamedExpressions_WhenAppliedTwice_WithGetterMethods ()
-    {
-      var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { Expression.Constant (0) },
-          (MemberInfo) typeof (TypeForNewExpression).GetMethod ("get_A"));
-
-      var result1 = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _generator, _registry);
-      var result2 = SqlPreparationExpressionVisitor.TranslateExpression (result1, _context, _stageMock, _generator, _registry);
-
-      Assert.That (result2, Is.SameAs (result1));
-      Assert.That (((NamedExpression) ((NewExpression) result2).Arguments[0]).Name, Is.EqualTo ("A"));
-    }
+    
   }
 }

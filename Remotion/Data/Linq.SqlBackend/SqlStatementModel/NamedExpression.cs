@@ -15,6 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -46,6 +49,38 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         memberName = memberName.Substring (4);
 
       return new NamedExpression (memberName, innerExpression);
+    }
+
+    // TODO Review 2991: I refactored this method so that SubStatementReferenceResolver could use the same logic. 
+    //Please move this to the NamedExpression class, then add unit tests for: calling this method with/without members, calling this method with arguments already named in the correct way (the resulting expression must be the same as the original one), also test the case where the members are property getters with/without already named arguments
+    public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression, IEnumerable<Expression> processedArguments)
+    {
+      var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
+      if (!newArguments.SequenceEqual (expression.Arguments))
+      {
+        if (expression.Members != null)
+          return Expression.New (expression.Constructor, newArguments, expression.Members);
+        else
+          return Expression.New (expression.Constructor, newArguments);
+      }
+
+      return expression;
+    }
+
+    private static Expression WrapIntoNamedExpression (string memberName, Expression argumentExpression)
+    {
+      var expressionAsNamedExpression = argumentExpression as NamedExpression;
+      if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
+        return expressionAsNamedExpression;
+
+      return NamedExpression.CreateFromMemberName (memberName, argumentExpression);
+    }
+
+    private static string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
+    {
+      if (members == null || members.Count <= index)
+        return "m" + index;
+      return members[index].Name;
     }
 
     public NamedExpression (string name, Expression expression)

@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedArguments = expression.Arguments.Select (expr => ResolveChildExpression (expr));
-      return SqlPreparation.SqlPreparationExpressionVisitor.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
+      return NamedExpression.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)
