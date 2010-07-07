@@ -76,5 +76,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "([t2].[ID] = [t3].[RestaurantID])) AND "
           + "([t1].[Name] IS NOT NULL))");
     }
+
+    [Test]
+    [Ignore ("TODO 3016")]
+    public void AdditionalFromClause_WithBooleanItems ()
+    {
+      CheckQuery (
+          from c in Cooks
+          group c.IsFullTimeCook by c.Name
+            into fullTimeCooksByName
+            from isFullTime in fullTimeCooksByName
+            select new { fullTimeCooksByName.Key, Value = isFullTime },
+          "?");
+    }
   }
 }
