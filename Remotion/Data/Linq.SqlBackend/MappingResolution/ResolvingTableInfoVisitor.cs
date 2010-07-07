@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -89,7 +90,36 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
     {
-      throw new NotImplementedException("TODO 2909");
+      var groupSourceSubStatementTableInfo = tableInfo.ReferencedGroupSource.GetResolvedTableInfo() as ResolvedSubStatementTableInfo;
+      if (groupSourceSubStatementTableInfo == null)
+      {
+        throw new NotSupportedException (
+            "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy "
+            + "operator.");
+      }
+
+      var groupingSelectExpression = groupSourceSubStatementTableInfo.SqlStatement.SelectProjection as SqlGroupingSelectExpression;
+      if (groupingSelectExpression == null)
+      {
+        throw new NotSupportedException (
+            "When a sequence retrieved by a subquery is used in a from expression, the subquery must end with a GroupBy operator.");
+      }
+
+      var elementSelectingStatementBuilder = new SqlStatementBuilder (groupSourceSubStatementTableInfo.SqlStatement) { GroupByExpression = null };
+
+      var currentKeyExpression = Expression.MakeMemberAccess (
+          new SqlTableReferenceExpression (tableInfo.ReferencedGroupSource), 
+          groupingSelectExpression.Type.GetProperty ("Key"));
+      
+      var groupKeyJoinCondition = _stage.ResolveWhereExpression (
+          Expression.Equal (groupingSelectExpression.KeyExpression, currentKeyExpression), 
+          _context);
+      elementSelectingStatementBuilder.AddWhereCondition (groupKeyJoinCondition);
+
+      elementSelectingStatementBuilder.SelectProjection = groupingSelectExpression.ElementExpression;
+      elementSelectingStatementBuilder.RecalculateDataInfo (groupingSelectExpression);
+
+      return new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier("q"), elementSelectingStatementBuilder.GetSqlStatement());
     }
   }
 }

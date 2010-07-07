@@ -605,7 +605,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2909")]
     public void GroupBy_UseGroupInFromExpression ()
     {
       CheckQuery (
@@ -613,10 +612,71 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           group c.ID by c.Name into cooksByName
           from id in cooksByName
           select new { cooksByName.Key, CookID = id },
-          "SELECT [q0].[key] AS [Key] [q2].[value] AS [CookID] "
+          "SELECT [q0].[key] AS [Key_key],[q2].[element] AS [CookID] "
               + "FROM "
               + "(SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
-              + " CROSS JOIN (SELECT [t1].[ID] AS [value] FROM [CookTable] [t1] WHERE [t1].[Name] = [q0].[key]) AS [q2]");
+              + "CROSS APPLY (SELECT [t1].[ID] AS [element] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = [q0].[key])) AS [q2]");
+
+      CheckQuery (
+          from c in Cooks
+          group c by c.Name into cooksByName
+          from cook in cooksByName
+          where cook != null
+          select new { cooksByName.Key, CookID = cook },
+          "SELECT [q0].[key] AS [Key_key],[q2].[element_ID] AS [CookID_ID],"
+              + "[q2].[element_FirstName] AS [CookID_FirstName],[q2].[element_Name] AS [CookID_Name],"
+              + "[q2].[element_IsStarredCook] AS [CookID_IsStarredCook],[q2].[element_IsFullTimeCook] AS [CookID_IsFullTimeCook],"
+              + "[q2].[element_SubstitutedID] AS [CookID_SubstitutedID],[q2].[element_KitchenID] AS [CookID_KitchenID] "
+              + "FROM ("
+                  + "SELECT [t1].[Name] AS [key] "
+                  + "FROM [CookTable] AS [t1] "
+                  + "GROUP BY [t1].[Name]) AS [q0] "
+              + "CROSS APPLY ("
+                  + "SELECT [t1].[ID] AS [element_ID],[t1].[FirstName] AS [element_FirstName],[t1].[Name] AS [element_Name],"
+                  + "[t1].[IsStarredCook] AS [element_IsStarredCook],[t1].[IsFullTimeCook] AS [element_IsFullTimeCook],"
+                  + "[t1].[SubstitutedID] AS [element_SubstitutedID],[t1].[KitchenID] AS [element_KitchenID] "
+                  + "FROM [CookTable] AS [t1] "
+                  + "WHERE ([t1].[Name] = [q0].[key])) AS [q2] "
+              + "WHERE ([q2].[element_ID] IS NOT NULL)");
+
+      CheckQuery (
+          from c in Cooks
+          group c.Weight by c.Name into weightsByName
+          from cook in (
+            from c in weightsByName
+            select c).Distinct()
+          select new { weightsByName.Key, CookID = cook },
+          "SELECT [q0].[key] AS [Key_key],[q1].[value] AS [CookID] "
+          + "FROM ("
+              + "SELECT [t2].[Name] AS [key] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0] "
+          + "CROSS APPLY ("
+              + "SELECT DISTINCT [q3].[element] AS [value] "
+              + "FROM ("
+                  + "SELECT [t2].[Weight] AS [element] "
+                  + "FROM [CookTable] AS [t2] "
+                  + "WHERE ([t2].[Name] = [q0].[key])) AS [q3]) AS [q1]");
+
+      CheckQuery (
+         from r in Restaurants
+         from c in r.Cooks
+         group c.ID by r into cooksByRestaurant
+         from cook in cooksByRestaurant
+         select new { cooksByRestaurant.Key.SubKitchen.ID, CookID = cook },
+         "SELECT [t4].[ID] AS [ID],[q3].[element] AS [CookID] "
+            + "FROM ("
+                + "SELECT [t1].[ID] AS [key_ID],[t1].[CookID] AS [key_CookID],[t1].[Name] AS [key_Name] "
+                + "FROM [RestaurantTable] AS [t1] "
+                + "CROSS JOIN [CookTable] AS [t2] "
+                + "WHERE ([t1].[ID] = [t2].[RestaurantID]) "
+                + "GROUP BY [t1].[ID],[t1].[CookID],[t1].[Name]) AS [q0] "
+           + "LEFT OUTER JOIN [KitchenTable] AS [t4] ON [q0].[key_ID] = [t4].[RestaurantID] "
+           + "CROSS APPLY ("
+             + "SELECT [t2].[ID] AS [element] "
+             + "FROM [RestaurantTable] AS [t1] "
+             + "CROSS JOIN [CookTable] AS [t2] "
+             + "WHERE (([t1].[ID] = [t2].[RestaurantID]) AND ([t1].[ID] = [q0].[key_ID]))) AS [q3]");
     }
+
+
   }
 }

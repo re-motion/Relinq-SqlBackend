@@ -105,7 +105,75 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     public virtual SqlEntityDefinitionExpression ResolveSimpleTableInfo (
         IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      return CreateEntityExpression (tableInfo);
+      Type type = tableInfo.ItemType;
+      if (type == typeof (Cook))
+      {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            primaryKeyColumn,
+            new[]
+            {
+                primaryKeyColumn,
+                CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
+                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false)
+            });
+      }
+      else if (type == typeof (Kitchen))
+      {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            primaryKeyColumn,
+            new[]
+            {
+                primaryKeyColumn,
+                CreateColumn (typeof (int), tableInfo.TableAlias, "CookID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "RestaurantID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "SubKitchenID", false),
+            });
+      }
+      else if (type == typeof (Restaurant))
+      {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            primaryKeyColumn,
+            new[]
+            {
+                primaryKeyColumn,
+                CreateColumn (typeof (int), tableInfo.TableAlias, "CookID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+            });
+      }
+      else if (type == typeof (Chef))
+      {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            primaryKeyColumn,
+            new[]
+            {
+                primaryKeyColumn,
+                CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
+                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
+            });
+      }
+      throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
     }
 
     public virtual Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
@@ -204,79 +272,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     private SqlColumnExpression CreateColumn (Type columnType, string tableAlias, string columnName, bool isPriamryKey)
     {
       return new SqlColumnDefinitionExpression (columnType, tableAlias, columnName, isPriamryKey);
-    }
-
-    private SqlEntityDefinitionExpression CreateEntityExpression (IResolvedTableInfo tableInfo)
-    {
-      Type type = tableInfo.ItemType;
-      if (type == typeof (Cook))
-      {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityDefinitionExpression (
-            tableInfo.ItemType,
-            tableInfo.TableAlias, null,
-            primaryKeyColumn,
-            new[]
-            {
-                primaryKeyColumn,
-                CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
-                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
-                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false)
-            });
-      }
-      else if (type == typeof (Kitchen))
-      {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityDefinitionExpression (
-            tableInfo.ItemType,
-            tableInfo.TableAlias, null,
-            primaryKeyColumn,
-            new[]
-            {
-                primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo.TableAlias, "CookID", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "RestaurantID", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "SubKitchenID", false),
-            });
-      }
-      else if (type == typeof (Restaurant))
-      {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityDefinitionExpression (
-            tableInfo.ItemType,
-            tableInfo.TableAlias, null,
-            primaryKeyColumn,
-            new[]
-            {
-                primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo.TableAlias, "CookID", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
-            });
-      }
-      else if (type == typeof (Chef))
-      {
-        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
-        return new SqlEntityDefinitionExpression (
-             tableInfo.ItemType,
-            tableInfo.TableAlias, null,
-            primaryKeyColumn,
-            new[]
-            {
-                primaryKeyColumn,
-                CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
-                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
-                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
-            });
-      }
-      throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
     }
 
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)

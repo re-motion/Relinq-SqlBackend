@@ -19,6 +19,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -268,7 +269,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       throw new NotSupportedException (
           string.Format (
               "The expression '{0}' cannot be translated to SQL text by this SQL generator. Expression type '{1}' is not supported.",
-              unhandledItem,
+              FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
               unhandledItem.GetType().Name));
     }
 
