@@ -15,10 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -58,14 +61,26 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      //TODO: RM-3007
-      //var subStatementTableInfo = new ResolvedSubStatementTableInfo (Generator.GetUniqueIdentifier ("q"), expression.SqlStatement);
-      //var sqlTable = new SqlTable (subStatementTableInfo);
-      //var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      //var fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null, true);
-      //Context.AddFromExpression (fromExpressionInfo);
-      //return sqlTableReferenceExpression;
-      
+      // Substatements returning a single value need to be moved to the FROM part of the SQL statement because they might select more than one value
+      if (expression.SqlStatement.DataInfo is StreamedSingleValueInfo)
+      {
+        // Transform this to a substatement returning a sequence of items; because we don't change the TopExpression/SelectProjection, 
+        // the sequence will still contain exactly one item.
+
+        var newDataInfo = new StreamedSequenceInfo (
+            typeof (IEnumerable<>).MakeGenericType (expression.Type),
+            expression.SqlStatement.SelectProjection);
+
+        var newStatement = new SqlStatementBuilder (expression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
+
+        var subStatementTableInfo = new ResolvedSubStatementTableInfo (Generator.GetUniqueIdentifier ("q"), newStatement);
+        var sqlTable = new SqlTable (subStatementTableInfo);
+        var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+        var fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null, true);
+        Context.AddFromExpression (fromExpressionInfo);
+        return sqlTableReferenceExpression;
+      }
+
       return base.VisitSqlSubStatementExpression (expression);
     }
   }
