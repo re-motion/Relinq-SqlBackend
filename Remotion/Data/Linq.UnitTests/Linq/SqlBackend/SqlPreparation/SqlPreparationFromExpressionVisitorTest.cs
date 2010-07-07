@@ -196,7 +196,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitSqlTableReferenceExpression ()
+    public void VisitSqlTableReferenceExpression_NoGrouping ()
     {
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
@@ -206,6 +206,43 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           expression, _stageMock, _generator, _registry, _context, null);
 
       Assert.That (result.SqlTable, Is.SameAs (sqlTable));
+      Assert.That (result.IsNewTable, Is.False);
+    }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression_NoGrouping_String ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (string));
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
+          expression, _stageMock, _generator, _registry, _context, null);
+
+      Assert.That (result.SqlTable, Is.SameAs (sqlTable));
+      Assert.That (result.IsNewTable, Is.False);
+    }
+
+    [Test]
+    public void VisitSqlTableReferenceExpression_Grouping ()
+    {
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (IGrouping<string, int>), "test", "t0"));
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
+          expression, _stageMock, _generator, _registry, _context, null);
+
+      Assert.That (result.SqlTable, Is.Not.SameAs (sqlTable));
+      Assert.That (result.IsNewTable, Is.True);
+      Assert.That (result.WhereCondition, Is.Null);
+      Assert.That (result.ExtractedOrderings, Is.Empty);
+
+      var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
+      
+      var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
+      Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedGroupReferenceTableInfo)));
+      var castTableInfo = (UnresolvedGroupReferenceTableInfo) tableInfo;
+      Assert.That (castTableInfo.ItemType, Is.SameAs (typeof (int)));
     }
 
     [Test]

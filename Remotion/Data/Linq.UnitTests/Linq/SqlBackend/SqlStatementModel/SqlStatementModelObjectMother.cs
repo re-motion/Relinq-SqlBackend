@@ -201,12 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedGroupReferenceTableInfo CreateUnresolvedGroupReferenceTableInfo ()
     {
-      var sqlStatement = new SqlStatementBuilder (CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var resolvedSubStatmentTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
-      return new UnresolvedGroupReferenceTableInfo (resolvedSubStatmentTableInfo);
+      return new UnresolvedGroupReferenceTableInfo (typeof (int));
     }
   }
 }

@@ -15,15 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -32,17 +27,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
   public class UnresolvedGroupReferenceTableInfoTest
   {
     private UnresolvedGroupReferenceTableInfo _tableInfo;
-    private ResolvedSubStatementTableInfo _resolvedSubStatmentTableInfo;
 
     [SetUp]
     public void SetUp ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      _resolvedSubStatmentTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
-      _tableInfo = new UnresolvedGroupReferenceTableInfo (_resolvedSubStatmentTableInfo);
+      _tableInfo = new UnresolvedGroupReferenceTableInfo (typeof (int));
     }
 
     [Test]
@@ -59,8 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     [Test]
     public void Initialize ()
     {
-      Assert.That (_tableInfo.ReferencedTableInfo, Is.SameAs (_resolvedSubStatmentTableInfo));
-      Assert.That (_tableInfo.ItemType, Is.SameAs (_resolvedSubStatmentTableInfo.ItemType));
+      Assert.That (_tableInfo.ItemType, Is.SameAs (typeof (int)));
     }
 
     [Test]
@@ -75,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     {
       var result = _tableInfo.ToString();
 
-      Assert.That (result, Is.EqualTo ("GROUP-TABLE(Cook)"));
+      Assert.That (result, Is.EqualTo ("GROUP-REF-TABLE(Int32)"));
     }
   }
 }

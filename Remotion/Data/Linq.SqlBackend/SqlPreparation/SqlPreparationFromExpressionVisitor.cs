@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
@@ -124,7 +125,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _fromExpressionInfo = new FromExpressionInfo (expression.SqlTable, new Ordering[0], expression, null, false);
+      Type itemType;
+      if (expression.Type != typeof (string) && (itemType = ReflectionUtility.TryGetItemTypeOfIEnumerable (expression.Type)) != null)
+      {
+        var tableInfo = new UnresolvedGroupReferenceTableInfo (itemType);
+        var sqlTable = new SqlTable (tableInfo);
+        _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, true);
+      }
+      else
+      {
+        _fromExpressionInfo = new FromExpressionInfo (expression.SqlTable, new Ordering[0], expression, null, false);
+      }
 
       return expression;
     }

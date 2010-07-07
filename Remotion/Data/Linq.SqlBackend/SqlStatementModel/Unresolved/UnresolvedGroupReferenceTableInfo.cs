@@ -26,23 +26,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class UnresolvedGroupReferenceTableInfo : ITableInfo
   {
-    private readonly ResolvedSubStatementTableInfo _referencedTableInfo;
+    private readonly Type _itemType;
 
-    public UnresolvedGroupReferenceTableInfo (ResolvedSubStatementTableInfo tableInfo)
+    public UnresolvedGroupReferenceTableInfo (Type itemType)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-
-      _referencedTableInfo = tableInfo;
+      _itemType = itemType;
     }
 
     public Type ItemType
     {
-      get { return _referencedTableInfo.ItemType; }
-    }
-
-    public ResolvedSubStatementTableInfo ReferencedTableInfo
-    {
-      get { return _referencedTableInfo; }
+      get { return _itemType; }
     }
 
     public IResolvedTableInfo GetResolvedTableInfo ()
@@ -59,7 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      return string.Format ("GROUP-TABLE({0})", ItemType.Name);
+      return string.Format ("GROUP-REF-TABLE({0})", ItemType.Name);
     }
 
   }
