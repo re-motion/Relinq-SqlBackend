@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -110,9 +111,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var currentKeyExpression = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (tableInfo.ReferencedGroupSource), 
           groupingSelectExpression.Type.GetProperty ("Key"));
-      
+
       var groupKeyJoinCondition = _stage.ResolveWhereExpression (
-          Expression.Equal (groupingSelectExpression.KeyExpression, currentKeyExpression), 
+          Expression.OrElse (
+              Expression.AndAlso (new SqlIsNullExpression (groupingSelectExpression.KeyExpression), new SqlIsNullExpression (currentKeyExpression)),
+              Expression.AndAlso (
+                  Expression.AndAlso (
+                      new SqlIsNotNullExpression (groupingSelectExpression.KeyExpression), 
+                      new SqlIsNotNullExpression (currentKeyExpression)),
+                  Expression.Equal (groupingSelectExpression.KeyExpression, currentKeyExpression))), 
           _context);
       elementSelectingStatementBuilder.AddWhereCondition (groupKeyJoinCondition);
 

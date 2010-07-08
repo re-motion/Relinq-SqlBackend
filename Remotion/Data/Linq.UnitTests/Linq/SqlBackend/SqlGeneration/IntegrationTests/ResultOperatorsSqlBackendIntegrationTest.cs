@@ -615,7 +615,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [q0].[key] AS [Key_key],[q2].[element] AS [CookID] "
               + "FROM "
               + "(SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
-              + "CROSS APPLY (SELECT [t1].[ID] AS [element] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = [q0].[key])) AS [q2]");
+              + "CROSS APPLY ("
+                  + "SELECT [t1].[ID] AS [element] FROM [CookTable] AS [t1] "
+                  + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+                      + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]");
 
       CheckQuery (
           from c in Cooks
@@ -636,7 +639,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
                   + "[t1].[IsStarredCook] AS [element_IsStarredCook],[t1].[IsFullTimeCook] AS [element_IsFullTimeCook],"
                   + "[t1].[SubstitutedID] AS [element_SubstitutedID],[t1].[KitchenID] AS [element_KitchenID] "
                   + "FROM [CookTable] AS [t1] "
-                  + "WHERE ([t1].[Name] = [q0].[key])) AS [q2] "
+                  + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+                      + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2] "
               + "WHERE ([q2].[element_ID] IS NOT NULL)");
 
       CheckQuery (
@@ -654,7 +658,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               + "FROM ("
                   + "SELECT [t2].[Weight] AS [element] "
                   + "FROM [CookTable] AS [t2] "
-                  + "WHERE ([t2].[Name] = [q0].[key])) AS [q3]) AS [q1]");
+                  + "WHERE ((([t2].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+                      + "OR ((([t2].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t2].[Name] = [q0].[key])))) AS [q3]) AS [q1]");
 
       CheckQuery (
          from r in Restaurants
@@ -674,7 +679,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
              + "SELECT [t2].[ID] AS [element] "
              + "FROM [RestaurantTable] AS [t1] "
              + "CROSS JOIN [CookTable] AS [t2] "
-             + "WHERE (([t1].[ID] = [t2].[RestaurantID]) AND ([t1].[ID] = [q0].[key_ID]))) AS [q3]");
+             + "WHERE (([t1].[ID] = [t2].[RestaurantID]) "
+                + "AND ((([t1].[ID] IS NULL) AND ([q0].[key_ID] IS NULL)) "
+                + "OR ((([t1].[ID] IS NOT NULL) AND ([q0].[key_ID] IS NOT NULL)) AND ([t1].[ID] = [q0].[key_ID]))))) AS [q3]");
     }
 
 

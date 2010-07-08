@@ -153,10 +153,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var groupSource = SqlStatementModelObjectMother.CreateSqlTable (new ResolvedSubStatementTableInfo ("q0", groupingSubStatement));
       var tableInfo = new UnresolvedGroupReferenceTableInfo (groupSource);
 
+      var expectedKeyViaElement = Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), typeof (Cook).GetProperty ("Name"));
+      var expectedKeyViaGroupSource = Expression.MakeMemberAccess (new SqlTableReferenceExpression (groupSource), groupSource.ItemType.GetProperty ("Key"));
+      
       var expectedResultWhereCondition =
-        Expression.Equal (
-            Expression.MakeMemberAccess (new SqlTableReferenceExpression (sqlTable), typeof (Cook).GetProperty ("Name")),
-            Expression.MakeMemberAccess (new SqlTableReferenceExpression (groupSource), groupSource.ItemType.GetProperty ("Key")));
+          Expression.OrElse (
+              Expression.AndAlso (new SqlIsNullExpression (expectedKeyViaElement), new SqlIsNullExpression (expectedKeyViaGroupSource)),
+              Expression.AndAlso (
+                  Expression.AndAlso (new SqlIsNotNullExpression (expectedKeyViaElement), new SqlIsNotNullExpression (expectedKeyViaGroupSource)),
+                  Expression.Equal (expectedKeyViaElement, expectedKeyViaGroupSource)));
       
       var fakeWhereCondition = Expression.Constant (false);
       _stageMock
