@@ -18,6 +18,8 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -163,6 +165,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitSqlSubStatementExpression_SimplifiesGroupAggregates ()
+    {
+      var simplifiableResolvedSqlStatement = CreateSimplifiableResolvedSqlStatement();
+
+      var unresolvedSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement ();
+      var expression = new SqlSubStatementExpression (unresolvedSqlStatement);
+
+      _stageMock
+          .Expect (mock => mock.ResolveSqlStatement (unresolvedSqlStatement, _mappingResolutionContext))
+          .Return (simplifiableResolvedSqlStatement);
+      _stageMock
+          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
+          .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
+      _stageMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+    }
+
+    [Test]
     public void VisitSqlFunctionExpression ()
     {
       var prefixExpression = Expression.Constant ("test");
@@ -248,6 +272,38 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.SameAs (sqlEntityConstantExpression));
     }
-    
+
+    private SqlStatement CreateSimplifiableResolvedSqlStatement ()
+    {
+      var dataInfo = new StreamedScalarValueInfo (typeof (int));
+
+      var resolvedElementExpressionReference = new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false);
+      var resolvedSelectProjection = new AggregationExpression (
+          typeof (int), resolvedElementExpressionReference, AggregationModifier.Min);
+
+      var associatedGroupingSelectExpression = new SqlGroupingSelectExpression (
+          new NamedExpression ("key", Expression.Constant ("k")),
+          new NamedExpression ("element", Expression.Constant ("e")));
+
+      var resolvedJoinedGroupingSubStatement = SqlStatementModelObjectMother.CreateSqlStatement (associatedGroupingSelectExpression);
+      var resolvedJoinedGroupingTable = new SqlTable (
+          new ResolvedJoinedGroupingTableInfo (
+              "q1",
+              resolvedJoinedGroupingSubStatement,
+              associatedGroupingSelectExpression,
+              "q0"));
+
+      return new SqlStatement (
+          dataInfo,
+          resolvedSelectProjection,
+          new[] { resolvedJoinedGroupingTable },
+          null,
+          null,
+          new Ordering[0],
+          null,
+          false,
+          Expression.Constant (0),
+          Expression.Constant (0));
+    }
   }
 }

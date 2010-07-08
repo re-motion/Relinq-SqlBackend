@@ -97,8 +97,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
-      return new SqlSubStatementExpression (newSqlStatement);
+      var resolvedSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
+
+      return GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, _stage, _context);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)

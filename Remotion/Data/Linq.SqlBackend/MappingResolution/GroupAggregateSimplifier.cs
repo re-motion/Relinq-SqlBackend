@@ -17,11 +17,9 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -47,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
              && !resolvedSqlStatement.IsDistinctQuery;
     }
 
-    public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement, IMappingResolutionStage stage, MappingResolutionContext context)
+    public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
 
