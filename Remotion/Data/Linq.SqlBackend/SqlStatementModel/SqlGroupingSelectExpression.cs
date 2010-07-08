@@ -76,11 +76,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       get { return _aggregationExpressions.AsReadOnly(); }
     }
 
-    public void AddAggregationExpressionWithName (Expression unnamedExpression)
+    public string AddAggregationExpressionWithName (Expression unnamedExpression)
     {
       ArgumentUtility.CheckNotNull ("unnamedExpression", unnamedExpression);
 
-      _aggregationExpressions.Add (new NamedExpression ("a" + _aggregationExpressions.Count, unnamedExpression));
+      var name = "a" + _aggregationExpressions.Count;
+      _aggregationExpressions.Add (new NamedExpression (name, unnamedExpression));
+      return name;
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)

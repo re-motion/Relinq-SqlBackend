@@ -75,10 +75,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void AddAggregationExpressionWithName ()
     {
-      _sqlGroupingSelectExpression.AddAggregationExpressionWithName (_aggregateExpression2);
+      var name = _sqlGroupingSelectExpression.AddAggregationExpressionWithName (_aggregateExpression2);
 
       Assert.That (_sqlGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (2));
 
+      Assert.That (name, Is.EqualTo ("a1"));
       var expectedNamedExpression = new NamedExpression ("a1", _aggregateExpression2);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNamedExpression, _sqlGroupingSelectExpression.AggregationExpressions[1]);
     }
