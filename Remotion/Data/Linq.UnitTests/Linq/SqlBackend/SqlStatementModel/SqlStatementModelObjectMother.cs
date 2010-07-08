@@ -185,17 +185,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name)
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
+      return CreateSqlEntityDefinitionExpression(type, name, "t");
+    }
+
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias)
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "ID", true);
       return new SqlEntityDefinitionExpression (
           type,
-          "t", 
+          owningTableAlias, 
           name,
           primaryKeyColumn,
           new[]
           {
               primaryKeyColumn,
-              new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false),
-              new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
+              new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "Name", false),
+              new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "City", false)
           });
     }
 

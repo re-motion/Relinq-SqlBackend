@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -30,7 +31,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// Provides utility methods to detect simplifiable sub-statements that contain an <see cref="AggregateExpressionNode"/> aggregating over the
   /// elements of a grouping. The sub-statements must be checked after they are resolved.
   /// </summary>
-  public static class GroupAggregateSimplifier
+  public class GroupAggregateSimplifier : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor
   {
     public static bool IsSimplifiableGroupAggregate (SqlStatement resolvedSqlStatement)
     {
@@ -46,22 +47,66 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
              && !resolvedSqlStatement.IsDistinctQuery;
     }
 
-    public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement)
+    public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement, IMappingResolutionStage stage, MappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
 
       if (IsSimplifiableGroupAggregate (resolvedSqlStatement))
       {
         var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo();
-        //var unresolvedAggregation = ReplacingExpressionTreeVisitor.Replace (
-        //    new SqlTableReferenceExpression (), 
-        //    joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression, 
-        //    resolvedSqlStatement.SelectProjection);
-        throw new NotImplementedException("TODO 2993");
-        // nedGroupingTableInfo.AssociatedGroupingSelectExpression.AddAggregationExpressionWithName (aggregation);
+        var elementReference = stage.ResolveTableReferenceExpression (new SqlTableReferenceExpression (resolvedSqlStatement.SqlTables[0]), context);
+
+        var visitor = new GroupAggregateSimplifier (elementReference, joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
+        var newAggregation = visitor.VisitExpression (resolvedSqlStatement.SelectProjection);
+
+        if (visitor.CanBeTransferredToGroupingSource)
+        {
+          var aggregationName = joinedGroupingTableInfo.AssociatedGroupingSelectExpression.AddAggregationExpressionWithName (newAggregation);
+
+          return new SqlColumnDefinitionExpression (
+              resolvedSqlStatement.SelectProjection.Type,
+              joinedGroupingTableInfo.GroupSourceTableAlias,
+              aggregationName,
+              false);
+        }
       }
 
       return new SqlSubStatementExpression (resolvedSqlStatement);
+    }
+
+    private readonly Expression _elementReference;
+    private readonly Expression _elementExpressionToBeUsed;
+
+    protected GroupAggregateSimplifier (Expression elementReference, Expression elementExpressionToBeUsed)
+    {
+      _elementReference = elementReference;
+      _elementExpressionToBeUsed = elementExpressionToBeUsed;
+
+      CanBeTransferredToGroupingSource = true;
+    }
+
+    public bool CanBeTransferredToGroupingSource { get; protected set; }
+    
+    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    {
+      var elementReferenceAsSqlEntityExpression = _elementReference as SqlEntityExpression;
+      if (elementReferenceAsSqlEntityExpression != null
+          && elementReferenceAsSqlEntityExpression.TableAlias == expression.TableAlias)
+        return _elementExpressionToBeUsed;
+
+      CanBeTransferredToGroupingSource = false;
+      return expression;
+    }
+
+    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    {
+      var elementReferenceAsSqlColumnExpression = _elementReference as SqlColumnExpression;
+      if (elementReferenceAsSqlColumnExpression != null
+          && elementReferenceAsSqlColumnExpression.OwningTableAlias == expression.OwningTableAlias)
+        return _elementExpressionToBeUsed;
+
+      CanBeTransferredToGroupingSource = false;
+      return expression;
     }
   }
 }

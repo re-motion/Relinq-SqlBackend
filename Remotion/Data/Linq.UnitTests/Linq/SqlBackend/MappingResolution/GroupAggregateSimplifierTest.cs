@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,7 +25,10 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
@@ -41,6 +43,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private SqlColumnDefinitionExpression _resolvedElementExpressionReference;
     private AggregationExpression _resolvedSelectProjection;
     private SqlStatement _simplifiableResolvedSqlStatement;
+    private IMappingResolutionStage _stageMock;
+    private MappingResolutionContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -52,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (int), _resolvedElementExpressionReference, AggregationModifier.Min);
 
       _associatedGroupingSelectExpression = new SqlGroupingSelectExpression (
-          new NamedExpression ("kec", Expression.Constant ("k")),
+          new NamedExpression ("key", Expression.Constant ("k")),
           new NamedExpression ("element", Expression.Constant ("e")));
 
       _resolvedJoinedGroupingSubStatement = SqlStatementModelObjectMother.CreateSqlStatement (_associatedGroupingSelectExpression);
@@ -74,6 +78,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           false,
           Expression.Constant (0),
           Expression.Constant (0));
+
+      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage> ();
+      _context = new MappingResolutionContext();
     }
     
     [Test]
@@ -103,21 +110,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       }.GetSqlStatement ();
 
       Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
-    }
-
-    [Test]
-    [Ignore ("TODO 2993")]
-    public void IsSimplifiableGroupAggregate_False_WithInvalidReferenceExpressionInAggregationExpression ()
-    {
-      var sqlStatement = new SqlStatementBuilder (_simplifiableResolvedSqlStatement)
-      {
-        SelectProjection = new AggregationExpression (
-            typeof (int), 
-            new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable()), 
-            AggregationModifier.Min)
-      }.GetSqlStatement ();
-
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -214,27 +206,180 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       {
         IsDistinctQuery = true
       }.GetSqlStatement ();
+      
+      _stageMock.Replay();
 
-      var result = GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement);
+      var result = GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations();
 
       var expected = new SqlSubStatementExpression (resolvedSqlStatement);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
-    [Ignore ("TODO 2993")]
     public void SimplifyIfPossible_SimplifiableStatement_AddsAggregationAndReturnsReference ()
     {
       Assert.That (_associatedGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (0));
+
+      _stageMock
+          .Expect (
+              mock => mock.ResolveTableReferenceExpression (
+                  Arg<SqlTableReferenceExpression>.Matches (e => e.SqlTable == _resolvedJoinedGroupingTable),
+                  Arg.Is (_context)))
+          .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
+      _stageMock.Replay();
       
-      var result = GroupAggregateSimplifier.SimplifyIfPossible (_simplifiableResolvedSqlStatement);
+      var result = GroupAggregateSimplifier.SimplifyIfPossible (_simplifiableResolvedSqlStatement, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations();
 
       Assert.That (_associatedGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (1));
-      var expectedAggregate = new AggregationExpression (typeof (int), Expression.Constant ("element"), AggregationModifier.Min);
+      var expectedAggregate = new NamedExpression ("a0", new AggregationExpression (
+          typeof (int), 
+          new NamedExpression ("element", Expression.Constant ("e")), 
+          AggregationModifier.Min));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedAggregate, _associatedGroupingSelectExpression.AggregationExpressions[0]);
 
       var expected = new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void SimplifyIfPossible_WithInvalidReferenceInAggregationExpression_ReturnsOriginalStatement ()
+    {
+      Assert.That (_associatedGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (0));
+
+      var sqlStatement = new SqlStatementBuilder (_simplifiableResolvedSqlStatement)
+      {
+        SelectProjection = new AggregationExpression (
+            typeof (int),
+            new SqlColumnDefinitionExpression (typeof (int), "q3", "test", false),
+            AggregationModifier.Min)
+      }.GetSqlStatement ();
+
+      _stageMock
+          .Expect (
+              mock => mock.ResolveTableReferenceExpression (
+                  Arg<SqlTableReferenceExpression>.Matches (e => e.SqlTable == _resolvedJoinedGroupingTable),
+                  Arg.Is (_context)))
+          .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
+      _stageMock.Replay ();
+
+      var result = GroupAggregateSimplifier.SimplifyIfPossible (sqlStatement, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+
+      var expected = new SqlSubStatementExpression (sqlStatement);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void VisitExpression_TransformsAggregationContainingColumn ()
+    {
+      var elementReference = new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false);
+      var elementExpressionToBeUsed = Expression.Constant ("definition");
+      var visitor = new TestableGroupAggregateSimplifier (elementReference, elementExpressionToBeUsed);
+
+      var aggregationExpression = new AggregationExpression (
+          typeof (int), 
+          new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false), 
+          AggregationModifier.Count);
+
+      var result = visitor.VisitExpression (aggregationExpression);
+
+      Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
+
+      var expectedResult = new AggregationExpression (typeof (int), elementExpressionToBeUsed, AggregationModifier.Count);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitExpression_TransformsAggregationContainingDifferentColumn_TableAlias ()
+    {
+      var elementReference = new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false);
+      var elementExpressionToBeUsed = Expression.Constant ("definition");
+      var visitor = new TestableGroupAggregateSimplifier (elementReference, elementExpressionToBeUsed);
+
+      var aggregationExpression = new AggregationExpression (
+          typeof (int), 
+          new SqlColumnDefinitionExpression (typeof (string), "q1", "element", false), 
+          AggregationModifier.Count);
+
+      visitor.VisitExpression (aggregationExpression);
+
+      Assert.That (visitor.CanBeTransferredToGroupingSource, Is.False);
+    }
+
+    [Test]
+    public void VisitExpression_TransformsAggregationContainingColumn_ButElementReferenceIsNoColumn ()
+    {
+      var elementReference = Expression.Constant ("test");
+      var elementExpressionToBeUsed = Expression.Constant ("definition");
+      var visitor = new TestableGroupAggregateSimplifier (elementReference, elementExpressionToBeUsed);
+
+      var aggregationExpression = new AggregationExpression (
+          typeof (int),
+          new SqlColumnDefinitionExpression (typeof (string), "q0", "element2", false),
+          AggregationModifier.Count);
+
+      visitor.VisitExpression (aggregationExpression);
+
+      Assert.That (visitor.CanBeTransferredToGroupingSource, Is.False);
+    }
+
+    [Test]
+    public void VisitExpression_TransformsAggregationContainingEntity ()
+    {
+      var elementReference = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "q0");
+      var elementExpressionToBeUsed = Expression.Constant ("definition");
+      var visitor = new TestableGroupAggregateSimplifier (elementReference, elementExpressionToBeUsed);
+
+      var aggregationExpression = new AggregationExpression (
+          typeof (int),
+          SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "q0"),
+          AggregationModifier.Count);
+
+      var result = visitor.VisitExpression (aggregationExpression);
+
+      Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
+
+      var expectedResult = new AggregationExpression (typeof (int), elementExpressionToBeUsed, AggregationModifier.Count);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitExpression_TransformsAggregationContainingDifferentEntity_TableAlias ()
+    {
+      var elementReference = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "q0");
+      var elementExpressionToBeUsed = Expression.Constant ("definition");
+      var visitor = new TestableGroupAggregateSimplifier (elementReference, elementExpressionToBeUsed);
+
+      var aggregationExpression = new AggregationExpression (
+          typeof (int),
+          SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "q1"),
+          AggregationModifier.Count);
+
+      visitor.VisitExpression (aggregationExpression);
+
+      Assert.That (visitor.CanBeTransferredToGroupingSource, Is.False);
+    }
+
+    [Test]
+    public void VisitExpression_TransformsAggregationContainingEntity_ButElementReferenceIsNoColumn ()
+    {
+      var elementReference = Expression.Constant ("test");
+      var elementExpressionToBeUsed = Expression.Constant ("definition");
+      var visitor = new TestableGroupAggregateSimplifier (elementReference, elementExpressionToBeUsed);
+
+      var aggregationExpression = new AggregationExpression (
+          typeof (int),
+          SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "q0"),
+          AggregationModifier.Count);
+
+      visitor.VisitExpression (aggregationExpression);
+
+      Assert.That (visitor.CanBeTransferredToGroupingSource, Is.False);
     }
   }
 }

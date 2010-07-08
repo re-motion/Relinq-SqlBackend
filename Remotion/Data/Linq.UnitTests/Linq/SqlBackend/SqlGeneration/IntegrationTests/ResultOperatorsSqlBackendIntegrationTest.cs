@@ -494,27 +494,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Using groupings in a from expression is not currently supported.")]
-    [Ignore ("TODO 2909")]
-    public void GroupByInFromExpression ()
-    {
-      CheckQuery (
-          from c in Cooks group c by c.Name into x from y in x select y,
-          "");
-    }
-
-    [Test]
-    [ExpectedException(typeof(NotSupportedException), 
-          ExpectedMessage = "When a grouping is used in an aggregation expression, no other query operators can be used.")]
-    [Ignore ("TODO 2909")]
-    public void InvalidAggregatesOnGroupings ()
-    {
-      CheckQuery (
-          from c in Cooks group c by c.Name into x select x.Where(c=>c.Name=="Hugo").Count(),
-          "");
-    }
-
-    [Test]
     public void GroupBy_SelectKey ()
     {
       CheckQuery (
@@ -602,6 +581,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             "SELECT [c1].[Name] AS [get_Name], MIN([c1].[Weight]) as [get_Min] FROM [CookTable] AS [c1] " +
             "GROUP BY [c1].[Name]) AS [q0] " +
             "WHERE [q0].[get_Min]>18");
+    }
+
+    [Test]
+    [Ignore ("TODO 2909")]
+    public void GroupBy_MinWithProjection_AndNestedElements ()
+    {
+      CheckQuery (
+          from c in Cooks group new { c.ID, c.FirstName } by c.Name into cooksByName 
+          where cooksByName.Min (c => c.ID) > 18 select cooksByName.Key,
+          "SELECT [q0].[get_Name] FROM (" +
+            "SELECT [c1].[Name] AS [get_Name], MIN([c1].[ID]) as [a0] FROM [CookTable] AS [c1] " +
+            "GROUP BY [c1].[Name]) AS [q0] " +
+            "WHERE [q0].[a0] > @1",
+            new CommandParameter ("@1", 18));
     }
 
     [Test]
