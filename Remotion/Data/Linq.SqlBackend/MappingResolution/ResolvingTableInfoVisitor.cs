@@ -129,7 +129,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return new ResolvedJoinedGroupingTableInfo (
           _generator.GetUniqueIdentifier("q"), 
           elementSelectingStatementBuilder.GetSqlStatement(), 
-          groupingSelectExpression);
+          groupingSelectExpression,
+          groupSourceSubStatementTableInfo.TableAlias);
     }
   }
 }

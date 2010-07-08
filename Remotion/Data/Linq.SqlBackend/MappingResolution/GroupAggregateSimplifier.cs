@@ -15,9 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
@@ -40,6 +44,24 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
              && resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo() is ResolvedJoinedGroupingTableInfo 
              && resolvedSqlStatement.TopExpression == null
              && !resolvedSqlStatement.IsDistinctQuery;
+    }
+
+    public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement)
+    {
+      ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
+
+      if (IsSimplifiableGroupAggregate (resolvedSqlStatement))
+      {
+        var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo();
+        //var unresolvedAggregation = ReplacingExpressionTreeVisitor.Replace (
+        //    new SqlTableReferenceExpression (), 
+        //    joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression, 
+        //    resolvedSqlStatement.SelectProjection);
+        throw new NotImplementedException("TODO 2993");
+        // nedGroupingTableInfo.AssociatedGroupingSelectExpression.AddAggregationExpressionWithName (aggregation);
+      }
+
+      return new SqlSubStatementExpression (resolvedSqlStatement);
     }
   }
 }

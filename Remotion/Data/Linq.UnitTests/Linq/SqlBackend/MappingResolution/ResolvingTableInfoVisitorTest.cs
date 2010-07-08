@@ -176,10 +176,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       Assert.That (result, Is.TypeOf (typeof (ResolvedJoinedGroupingTableInfo)));
 
-      var resultGroupingSelector = ((ResolvedJoinedGroupingTableInfo) result).AssociatedGroupingSelectExpression;
-      Assert.That (resultGroupingSelector, Is.SameAs (groupingSelect));
+      var castResult = ((ResolvedJoinedGroupingTableInfo) result);
       
-      var resultSqlStatement = ((ResolvedJoinedGroupingTableInfo) result).SqlStatement;
+      var resultGroupingSelector = castResult.AssociatedGroupingSelectExpression;
+      Assert.That (resultGroupingSelector, Is.SameAs (groupingSelect));
+
+      Assert.That (castResult.GroupSourceTableAlias, Is.EqualTo ("q0"));
+      
+      var resultSqlStatement = castResult.SqlStatement;
 
       Assert.That (resultSqlStatement.SqlTables, Is.EqualTo (groupingSubStatement.SqlTables));
       Assert.That (resultSqlStatement.Orderings, Is.Empty);

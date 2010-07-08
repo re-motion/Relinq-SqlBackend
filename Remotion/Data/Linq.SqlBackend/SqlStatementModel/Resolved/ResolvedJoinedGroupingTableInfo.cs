@@ -30,16 +30,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
   public class ResolvedJoinedGroupingTableInfo : ResolvedSubStatementTableInfo
   {
     private readonly SqlGroupingSelectExpression _associatedGroupingSelectExpression;
+    private readonly string _groupSourceTableAlias;
 
     public ResolvedJoinedGroupingTableInfo (
         string tableAlias, 
         SqlStatement sqlStatement, 
-        SqlGroupingSelectExpression associatedGroupingSelectExpression)
+        SqlGroupingSelectExpression associatedGroupingSelectExpression,
+        string groupSourceTableAlias)
       : base (tableAlias, sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("associatedGroupingSelectExpression", associatedGroupingSelectExpression);
+      ArgumentUtility.CheckNotNull ("groupSourceTableAlias", groupSourceTableAlias);
 
       _associatedGroupingSelectExpression = associatedGroupingSelectExpression;
+      _groupSourceTableAlias = groupSourceTableAlias;
     }
 
     public SqlGroupingSelectExpression AssociatedGroupingSelectExpression
@@ -47,9 +51,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _associatedGroupingSelectExpression; }
     }
 
+    public string GroupSourceTableAlias
+    {
+      get { return _groupSourceTableAlias; }
+    }
+
     public override string ToString ()
     {
-      return "JOINED-GROUPING " + base.ToString();
+      return string.Format ("JOINED-GROUPING([{0}], {1})", GroupSourceTableAlias, base.ToString());
     }
 
   }

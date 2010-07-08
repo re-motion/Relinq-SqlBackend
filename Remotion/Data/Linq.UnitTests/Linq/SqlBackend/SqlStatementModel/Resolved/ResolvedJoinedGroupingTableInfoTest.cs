@@ -31,9 +31,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolve
     {
       var testStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var groupingSelectExpression = new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
-      var tableInfo = new ResolvedJoinedGroupingTableInfo ("q0", testStatement, groupingSelectExpression);
+      var tableInfo = new ResolvedJoinedGroupingTableInfo ("q0", testStatement, groupingSelectExpression, "q1");
 
-      Assert.That (tableInfo.ToString(), Is.EqualTo ("JOINED-GROUPING (" + testStatement + ") [q0]"));
+      Assert.That (tableInfo.ToString(), Is.EqualTo ("JOINED-GROUPING([q1], (" + testStatement + ") [q0])"));
     }
   }
 }
