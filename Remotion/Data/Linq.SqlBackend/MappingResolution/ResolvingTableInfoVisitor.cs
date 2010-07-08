@@ -126,7 +126,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       elementSelectingStatementBuilder.SelectProjection = groupingSelectExpression.ElementExpression;
       elementSelectingStatementBuilder.RecalculateDataInfo (groupingSelectExpression);
 
-      return new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier("q"), elementSelectingStatementBuilder.GetSqlStatement());
+      return new ResolvedJoinedGroupingTableInfo (
+          _generator.GetUniqueIdentifier("q"), 
+          elementSelectingStatementBuilder.GetSqlStatement(), 
+          groupingSelectExpression);
     }
   }
 }

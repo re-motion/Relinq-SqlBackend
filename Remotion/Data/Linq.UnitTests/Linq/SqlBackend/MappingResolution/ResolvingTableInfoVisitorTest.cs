@@ -174,8 +174,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock.VerifyAllExpectations();
 
-      Assert.That (result, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      var resultSqlStatement = ((ResolvedSubStatementTableInfo) result).SqlStatement;
+      Assert.That (result, Is.TypeOf (typeof (ResolvedJoinedGroupingTableInfo)));
+
+      var resultGroupingSelector = ((ResolvedJoinedGroupingTableInfo) result).AssociatedGroupingSelectExpression;
+      Assert.That (resultGroupingSelector, Is.SameAs (groupingSelect));
+      
+      var resultSqlStatement = ((ResolvedJoinedGroupingTableInfo) result).SqlStatement;
 
       Assert.That (resultSqlStatement.SqlTables, Is.EqualTo (groupingSubStatement.SqlTables));
       Assert.That (resultSqlStatement.Orderings, Is.Empty);
