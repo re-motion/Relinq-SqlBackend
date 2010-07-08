@@ -21,8 +21,8 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="UnresolvedGroupReferenceTableInfo"/> constitutes an implementation of <see cref="ITableInfo"/> for <see cref="SqlTable"/>s that
-  /// return groups of items. TODO 2909: Document referenced table info when implementation has finished.
+  /// <see cref="UnresolvedGroupReferenceTableInfo"/> constitutes an implementation of <see cref="ITableInfo"/> for data sources returning
+  /// items from a sequence produced by another <see cref="SqlTable"/> called the <see cref="ReferencedGroupSource"/>.
   /// </summary>
   public class UnresolvedGroupReferenceTableInfo : ITableInfo
   {

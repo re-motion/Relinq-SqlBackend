@@ -186,6 +186,7 @@
     <Compile Include="SqlStatementModel\Resolved\SqlEntityDefinitionExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlEntityReferenceExpression.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ResolvedJoinedGroupingTableInfo.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />
