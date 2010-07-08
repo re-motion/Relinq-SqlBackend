@@ -536,55 +536,56 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             + "GROUP BY [t3].[Name]) AS [q0]) AS [q1]");
     }
 
-    [Ignore ("TODO 2909")]
     [Test]
     public void GroupBy_SelectKeyAndAggregate ()
     {
       CheckQuery (
           from c in Cooks group c.ID by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
-          "SELECT [q0].[get_Name], [q0].[get_Count] FROM ("+
-            "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "+
-            "GROUP BY [c1.Name]) AS [q0]");
+          "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] FROM ("+
+            "SELECT [t1].[Name] AS [key], COUNT(*) AS [a0] FROM [CookTable] AS [t1] "+
+            "GROUP BY [t1].[Name]) AS [q0]");
     }
 
-    [Ignore ("TODO 2909")]
     [Test]
     public void GoupBy_CountInWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Count() > 0 select cooksByName.Key,
-          "SELECT [q0].[get_Name] FROM (" +
-            "SELECT [c1].[Name] AS [get_Name], COUNT(*) as [get_Count] FROM [CookTable] AS [c1] "+
-            "GROUP BY [c1].[Name]) AS [q0] "+
-            "WHERE [q0].[get_Count]>0");
+          "SELECT [q0].[key] AS [key] FROM (" +
+            "SELECT [t1].[Name] AS [key], COUNT(*) AS [a0] FROM [CookTable] AS [t1] "+
+            "GROUP BY [t1].[Name]) AS [q0] "+
+            "WHERE ([q0].[a0] > @1)",
+            new CommandParameter ("@1", 0));
     }
 
-    [Ignore ("TODO 2909")]
     [Test]
+    [Ignore ("TODO 3020: Invalid name")]
     public void GroupBy_MinInWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, 
-          "SELECT [q0].[get_Name] FROM (" +
-            "SELECT [c1].[Name] AS [get_Name], MIN([c1].[Weight]) as [get_Min] FROM [CookTable] AS [c1] "+
-            "GROUP BY [c1].[Name]) AS [q0] "+
-            "WHERE [q0].[get_Min]>18");
+          "SELECT [q0].[key] AS [key] FROM (" +
+            "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) as [a0] FROM [CookTable] AS [t1] "+
+            "GROUP BY [t1].[Name]) AS [q0] "+
+            "WHERE ([q0].[a0] > @1)",
+            new CommandParameter ("@1", 18));
     }
 
-    [Ignore ("TODO 2909")]
     [Test]
+    [Ignore ("TODO 2993")]
     public void GroupBy_MinWithProjection_InWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key,
-          "SELECT [q0].[get_Name] FROM (" +
-            "SELECT [c1].[Name] AS [get_Name], MIN([c1].[Weight]) as [get_Min] FROM [CookTable] AS [c1] " +
-            "GROUP BY [c1].[Name]) AS [q0] " +
-            "WHERE [q0].[get_Min]>18");
+          "SELECT [q0].[key] AS [key] FROM (" +
+            "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) as [a0] FROM [CookTable] AS [t1] " +
+            "GROUP BY [t1].[Name]) AS [q0] " +
+            "WHERE ([q0].[a0] > @1)",
+            new CommandParameter("@1", 18));
     }
 
     [Test]
-    [Ignore ("TODO 2909")]
+    [Ignore ("TODO 2993")]
     public void GroupBy_MinWithProjection_AndNestedElements ()
     {
       CheckQuery (
