@@ -605,6 +605,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void GroupBy_MinWithProjection_SelectingAnotherTable_InWhereCondition ()
+    {
+      CheckQuery (
+          from c in Cooks group c.Weight by c.Name into cooksByName 
+          from k in Kitchens
+          where cooksByName.Min (c => k.ID) > 18 select cooksByName.Key,
+          "SELECT [q0].[key] AS [key] "
+          + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
+          + "CROSS JOIN [KitchenTable] AS [t2] "
+          + "WHERE (("
+              + "SELECT MIN([t2].[ID]) "
+              + "FROM ("
+                  + "SELECT [t1].[Weight] AS [element] FROM [CookTable] AS [t1] "
+                  + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+                  + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q3]"
+              + ") > @1)",
+          new CommandParameter ("@1", 18));
+    }
+
+    [Test]
     public void GroupBy_UseGroupInFromExpression ()
     {
       CheckQuery (
