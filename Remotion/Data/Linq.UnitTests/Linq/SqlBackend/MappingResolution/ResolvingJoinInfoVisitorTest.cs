@@ -140,6 +140,86 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolveJoinInfo_ResolvesCollectionJoinInfo_UnaryExpression ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
+      var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook ()), memberInfo);
+
+      var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var fakeUnaryExpression = Expression.Not(Expression.Constant(1));
+
+      var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
+      var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+
+      _stageMock
+          .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
+          .Return (fakeUnaryExpression);
+      _stageMock
+          .Expect (mock => mock.ResolveCollectionSourceExpression (fakeUnaryExpression.Operand, _mappingResolutionContext))
+          .Return (sqlEntityExpression);
+      _stageMock.Replay ();
+
+      _resolverMock
+          .Expect (
+              mock =>
+              mock.ResolveJoinInfo (
+                  Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof (Cook)),
+                  Arg.Is (_generator)))
+          .Return (expectedResolvedJoinInfo);
+      _resolverMock.Replay ();
+
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
+          .Return (foreignTableInfo);
+      _stageMock.Replay ();
+
+      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+
+      Assert.That (resolvedJoinInfo, Is.SameAs (expectedResolvedJoinInfo));
+
+      _stageMock.VerifyAllExpectations ();
+      _resolverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only entities can be used as the collection source in from expressions, 'Int32' cannot.)")]
+    public void ResolveJoinInfo_ResolvesCollectionJoinInfo_NoEntity ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
+      var unresolvedCollectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook ()), memberInfo);
+      var fakeExpression = Expression.Constant (1);
+
+      var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (string), "Cook", "c");
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
+      var expectedResolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+
+      _stageMock
+          .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
+          .Return (fakeExpression);
+      _stageMock.Replay ();
+
+      _resolverMock
+          .Expect (
+              mock =>
+              mock.ResolveJoinInfo (
+                  Arg<UnresolvedJoinInfo>.Matches (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof (Cook)),
+                  Arg.Is (_generator)))
+          .Return (expectedResolvedJoinInfo);
+      _resolverMock.Replay ();
+
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
+          .Return (foreignTableInfo);
+      _stageMock.Replay ();
+
+      ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+    }
+
+
+    [Test]
     public void ResolveJoinInfo_ResolvedLeftJoinInfo ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");

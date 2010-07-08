@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -32,7 +33,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
 
-    public static ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
+    public static ResolvedJoinInfo ResolveJoinInfo (
+        IJoinInfo joinInfo,
+        IMappingResolver resolver,
+        UniqueIdentifierGenerator generator,
+        IMappingResolutionStage stage,
+        IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -44,7 +50,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return (ResolvedJoinInfo) joinInfo.Accept (visitor);
     }
 
-    protected ResolvingJoinInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
+    protected ResolvingJoinInfoVisitor (
+        IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("generator", generator);
@@ -68,9 +75,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      var sourceEntityExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression, _context);
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (sourceEntityExpression, joinInfo.MemberInfo, JoinCardinality.Many);
-      return unresolvedJoinInfo.Accept (this);
+      var resolvedExpression = _stage.ResolveCollectionSourceExpression (joinInfo.SourceExpression, _context);
+      while (resolvedExpression is UnaryExpression)
+        resolvedExpression = _stage.ResolveCollectionSourceExpression (((UnaryExpression)resolvedExpression).Operand, _context);
+
+      var resolvedExpressionAsEntity = resolvedExpression as SqlEntityExpression;
+
+      if (resolvedExpressionAsEntity != null)
+      {
+        var unresolvedJoinInfo = new UnresolvedJoinInfo (resolvedExpressionAsEntity, joinInfo.MemberInfo, JoinCardinality.Many);
+        return unresolvedJoinInfo.Accept (this);
+      }
+
+      throw new InvalidOperationException (
+          string.Format ("Only entities can be used as the collection source in from expressions, '{0}' cannot.)", resolvedExpression.Type.Name));
     }
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)

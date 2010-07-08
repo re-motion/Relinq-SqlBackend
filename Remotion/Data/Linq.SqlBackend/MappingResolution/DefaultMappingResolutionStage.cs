@@ -112,13 +112,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return SqlStatementResolver.ResolveExpressions (this, sqlStatement, context);
     }
 
-    public virtual SqlEntityExpression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context)
+    public virtual Expression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
 
       var resolvedExpression = ResolveExpression (expression, context);
-      return (SqlEntityExpression) ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
     }
 
     public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context)

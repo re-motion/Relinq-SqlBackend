@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context);
     ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolutionContext context);
     SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context);
-    SqlEntityExpression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context);
     SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context);
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression, IMappingResolutionContext context);
     Expression ResolveMemberAccess (
