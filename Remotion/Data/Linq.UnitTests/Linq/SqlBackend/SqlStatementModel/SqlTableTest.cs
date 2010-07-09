@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       _oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
       _newTableInfo = new ResolvedSimpleTableInfo (typeof (string), "table2", "s");
-      _sqlTable = new SqlTable (_oldTableInfo);
+      _sqlTable = new SqlTable (_oldTableInfo, JoinSemantics.Inner);
     }
 
     [Test]
@@ -57,6 +57,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void DifferentType ()
     {
       _sqlTable.TableInfo = _newTableInfo;
+    }
+
+    [Test]
+    public void JoinSemantic ()
+    {
+      var sqlTableWithInnerJoinSemantic = new SqlTable (_oldTableInfo, JoinSemantics.Inner);
+      var sqlTableWithLeftJoinSemantic = new SqlTable (_oldTableInfo, JoinSemantics.Left);
+
+      Assert.That (sqlTableWithInnerJoinSemantic.JoinSemantic, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (sqlTableWithLeftJoinSemantic.JoinSemantic, Is.EqualTo (JoinSemantics.Left));
     }
 
     [Test]

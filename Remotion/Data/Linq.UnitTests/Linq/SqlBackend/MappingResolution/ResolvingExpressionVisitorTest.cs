@@ -291,7 +291,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
               "q1",
               resolvedJoinedGroupingSubStatement,
               associatedGroupingSelectExpression,
-              "q0"));
+              "q0"), JoinSemantics.Inner);
 
       return new SqlStatement (
           dataInfo,

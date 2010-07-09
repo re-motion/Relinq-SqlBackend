@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _context = new SqlPreparationContext();
 
       var querySource = ExpressionHelper.CreateMainFromClause_Cook();
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)), JoinSemantics.Inner);
 
       _context.AddExpressionMapping (new QuerySourceReferenceExpression(querySource), new SqlTableReferenceExpression(_sqlTable));
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTableForFromExpression ()
     {
       var fromExpression = Expression.Constant (new Cook[0]);
-      var result = _stage.PrepareFromExpression (fromExpression, _context, info=>new SqlTable(info));
+      var result = _stage.PrepareFromExpression (fromExpression, _context, info=>new SqlTable(info, JoinSemantics.Inner));
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
     }

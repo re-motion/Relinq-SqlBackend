@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var elementSelector = Expression.Constant ("elementSelector");
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
       var fakeFromExpressionInfo = new FromExpressionInfo (
-          new SqlTable (new ResolvedSubStatementTableInfo("sc", _sqlStatementBuilder.GetSqlStatement())), new Ordering[0], elementSelector, null, false);
+          new SqlTable (new ResolvedSubStatementTableInfo("sc", _sqlStatementBuilder.GetSqlStatement()), JoinSemantics.Inner), new Ordering[0], elementSelector, null, false);
 
       _stageMock
           .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var elementSelector = Expression.Constant ("elementSelector");
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
       var fakeFromExpressionInfo = new FromExpressionInfo (
-          new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ())), new Ordering[0], elementSelector, null, false);
+          new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ()), JoinSemantics.Inner), new Ordering[0], elementSelector, null, false);
 
       _stageMock
           .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
@@ -163,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var elementSelector = Expression.Constant ("elementSelector");
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
       var fakeFromExpressionInfo = new FromExpressionInfo (
-          new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ())), new Ordering[0], elementSelector, null, false);
+          new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ()), JoinSemantics.Inner), new Ordering[0], elementSelector, null, false);
 
       _stageMock
           .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))

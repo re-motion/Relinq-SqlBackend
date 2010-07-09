@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
               "q1",
               _resolvedJoinedGroupingSubStatement,
               _associatedGroupingSelectExpression,
-              "q0"));
+              "q0"), JoinSemantics.Inner);
 
       _simplifiableResolvedSqlStatement = new SqlStatement (
           _dataInfo,

@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _handler = new SkipResultOperatorHandler ();
       
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)), JoinSemantics.Inner);
       _selectProjection = new SqlTableReferenceExpression (_sqlTable);
 
       _ordering = new Ordering (Expression.Constant (7), OrderingDirection.Asc);

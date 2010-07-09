@@ -849,7 +849,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlTableReferenceExpression ()
     {
-      var expression = new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")));
+      var expression = new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner));
 
       var result = _predicateRequiredVisitor.VisitSqlTableReferenceExpression (expression);
 

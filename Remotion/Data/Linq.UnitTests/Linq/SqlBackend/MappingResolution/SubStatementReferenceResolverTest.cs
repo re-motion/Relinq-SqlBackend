@@ -53,7 +53,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (newExpression);
 
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           newExpression, tableInfo, sqlTable, newExpression.Type, _context);
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (newExpression);
 
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           newExpression, tableInfo, sqlTable, newExpression.Type, _context);
@@ -100,7 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           entityDefinitionExpression, tableInfo, sqlTable, entityDefinitionExpression.Type, _context);
@@ -123,7 +123,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           namedExpression, tableInfo, sqlTable, namedExpression.Type, _context);
@@ -147,7 +147,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         DataInfo = new StreamedSequenceInfo (typeof (IGrouping<int, int>[]), Expression.Constant (null, typeof (IGrouping<int, int>)))
       }.GetSqlStatement ();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           groupingSelectExpression, tableInfo, sqlTable, groupingSelectExpression.Type, _context);

@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
       {
         var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
-        var sqlTable = new SqlTable (tableInfo);
+        var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
         _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, true);
       }
       else

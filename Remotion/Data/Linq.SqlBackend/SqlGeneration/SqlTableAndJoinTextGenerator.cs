@@ -68,6 +68,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
+      if (sqlTable.JoinSemantic == JoinSemantics.Inner)
+      {
+        if (_context == Context.NonFirstTable)
+        {
+          _commandBuilder.Append (" CROSS ");
+          if (sqlTable.TableInfo is ResolvedSimpleTableInfo)
+            _commandBuilder.Append ("JOIN ");
+          else
+            _commandBuilder.Append ("APPLY ");
+        }
+      }
+      else if (sqlTable.JoinSemantic == JoinSemantics.Left)
+      {
+        if (_context == Context.FirstTable)
+          _commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
+        _commandBuilder.Append (" OUTER APPLY ");
+      }
+
       sqlTable.TableInfo.Accept (this);
     }
 
@@ -100,9 +118,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       
-      if (_context == Context.NonFirstTable)
-        _commandBuilder.Append (" CROSS JOIN "); //TODO: move to VisitSqlTable
-
       _commandBuilder.AppendIdentifier (tableInfo.TableName);
       _commandBuilder.Append (" AS ");
       _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
@@ -113,9 +128,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-
-      if (_context == Context.NonFirstTable)
-        _commandBuilder.Append (" CROSS APPLY "); //TODO: emit "CROSS JOIN" here and move to VisitSqlTable
 
       _commandBuilder.Append ("(");
       _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);

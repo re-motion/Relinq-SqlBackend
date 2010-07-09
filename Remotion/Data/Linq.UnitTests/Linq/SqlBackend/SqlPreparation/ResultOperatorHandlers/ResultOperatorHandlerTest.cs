@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var originalStatement = _statementBuilder.GetSqlStatement ();
 
       var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
-      Func<ITableInfo, SqlTableBase> tableGenerator = info => new SqlTable (info);
+      Func<ITableInfo, SqlTableBase> tableGenerator = info => new SqlTable (info, JoinSemantics.Inner);
 
       _stageMock
           .Expect (mock => mock.PrepareFromExpression (
@@ -95,7 +95,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info), _stageMock);
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info, JoinSemantics.Inner), _stageMock);
 
       Assert.That (_statementBuilder.Orderings[0], Is.SameAs (ordering));
     }
@@ -210,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private FromExpressionInfo CreateFakeFromExpressionInfo (Ordering[] extractedOrderings)
     {
       return new FromExpressionInfo (
-          new SqlTable (new ResolvedSubStatementTableInfo("sc", _statementBuilder.GetSqlStatement())),
+          new SqlTable (new ResolvedSubStatementTableInfo("sc", _statementBuilder.GetSqlStatement()), JoinSemantics.Inner),
           extractedOrderings,
           Expression.Constant (0),
           null,

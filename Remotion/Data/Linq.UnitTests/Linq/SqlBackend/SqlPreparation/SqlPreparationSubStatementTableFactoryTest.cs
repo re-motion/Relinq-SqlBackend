@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var statementWithoutOrderings = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
-      var result = _factory.CreateSqlTableForStatement (statementWithoutOrderings, info => new SqlTable (info));
+      var result = _factory.CreateSqlTableForStatement (statementWithoutOrderings, info => new SqlTable (info, JoinSemantics.Inner));
 
       _stageMock.VerifyAllExpectations ();
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info));
+      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
 
       _stageMock.VerifyAllExpectations ();
 
@@ -126,7 +126,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info));
+      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
 
       _stageMock.VerifyAllExpectations ();
 
@@ -145,7 +145,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info));
+      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
 
       _stageMock.VerifyAllExpectations ();
 
@@ -197,7 +197,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info));
+      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
 
       _stageMock.VerifyAllExpectations ();
     }
@@ -218,7 +218,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (statement, info => new SqlTable (info));
+      var result = _factory.CreateSqlTableForStatement (statement, info => new SqlTable (info, JoinSemantics.Inner));
 
       _stageMock.VerifyAllExpectations ();
 
@@ -239,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info));
+      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
     }
   }
 }

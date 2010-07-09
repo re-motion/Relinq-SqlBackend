@@ -28,13 +28,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public class SqlTable : SqlTableBase
   {
     private ITableInfo _tableInfo;
+    private readonly JoinSemantics _joinSemantic;
 
-    public SqlTable (ITableInfo tableInfo) 
+    public SqlTable (ITableInfo tableInfo, JoinSemantics joinSemantic)
         : base (tableInfo.ItemType)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-
+      
       _tableInfo = tableInfo;
+      _joinSemantic = joinSemantic;
     }
 
     public ITableInfo TableInfo
@@ -50,6 +52,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         }
         _tableInfo = value;
       }
+    }
+
+    public JoinSemantics JoinSemantic
+    {
+      get { return _joinSemantic; }
     }
 
     public override void Accept (ISqlTableBaseVisitor visitor)

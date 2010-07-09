@@ -250,7 +250,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t")) });
+          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
 
       _stageMock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement);
 
@@ -261,7 +261,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForOuterSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t")) });
+          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
 
       var result = _stageMock.GenerateTextForOuterSqlStatement (_commandBuilder, sqlStatement);
 

@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForJoinedTable ()
     {
-      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var entityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "t", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_ForJoinedTable_Recursive ()
     {
-      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"));
+      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
       var entityExpression1 = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
@@ -137,14 +137,70 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlTable ()
+    public void VisitSqlTable_InnerJoinSemantic_FirstTable ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
-      sqlTable.TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.FirstTable);
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      
       _generator.VisitSqlTable (sqlTable);
       
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table] AS [t]"));
+    }
+
+    [Test]
+    public void VisitSqlTable_InnerJoinSemantic_NonFirstTable_SimpleTableInfo ()
+    {
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+
+      _generator.VisitSqlTable (sqlTable);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS JOIN [Table] AS [t]"));
+    }
+
+    [Test]
+    public void VisitSqlTable_InnerJoinSemantic_NonFirstTable_SubstatementTableInfo ()
+    {
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var tableInfo = new ResolvedSubStatementTableInfo("q0", sqlStatement);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+
+      _stageMock
+        .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+        .WhenCalled(mi=> ((ISqlCommandBuilder) mi.Arguments[0]).Append("[Table] AS [t]"));
+      _stageMock.Replay();
+
+      _generator.VisitSqlTable (sqlTable);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY ([Table] AS [t]) AS [q0]"));
+    }
+
+    [Test]
+    public void VisitSqlTable_LeftJoinSemantic_FirstTable ()
+    {
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.FirstTable);
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
+
+      _generator.VisitSqlTable (sqlTable);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [Table] AS [t]"));
+    }
+
+    [Test]
+    public void VisitSqlTable_LeftJoinSemantic_NonFirstTable ()
+    {
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
+
+      _generator.VisitSqlTable (sqlTable);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" OUTER APPLY [Table] AS [t]"));
     }
 
     [Test]
@@ -192,7 +248,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSimpleTableInfo_FirstTable ()
+    public void VisitSimpleTableInfo ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 
@@ -202,18 +258,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSimpleTableInfo_NonFirstTable ()
-    {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
-      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-
-      _generator.VisitSimpleTableInfo (simpleTableInfo);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS JOIN [CookTable] AS [c]"));
-    }
-
-    [Test]
-    public void VisitSubStatementTableInfo_FirstTable ()
+    public void VisitSubStatementTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
       {
@@ -230,27 +275,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
-    }
-
-    [Test]
-    public void VisitSubStatementTableInfo_NonFirstTable ()
-    {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
-      var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
-
-      _stageMock
-          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
-      _stageMock.Replay();
-
-      _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY (XXX) AS [cook]"));
     }
 
     [Test]
@@ -287,7 +311,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedJoinInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedJoinInfo ()
     {
-      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
@@ -301,7 +325,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedCollectionJoinInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedCollectionJoinInfo ()
     {
-      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var collectionJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook[] { }), memberInfo);
 
@@ -316,7 +340,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo();
 
-      SqlTableAndJoinTextGenerator.GenerateSql (new SqlTable(tableInfo), _commandBuilder, _stageMock, false);
+      SqlTableAndJoinTextGenerator.GenerateSql (new SqlTable(tableInfo, JoinSemantics.Inner), _commandBuilder, _stageMock, false);
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (

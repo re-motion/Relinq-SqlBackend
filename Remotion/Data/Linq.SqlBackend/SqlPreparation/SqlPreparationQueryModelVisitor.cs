@@ -194,7 +194,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("source", source);
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
 
-      var fromExpressionInfo = _stage.PrepareFromExpression (fromExpression, _context, info => new SqlTable (info));
+      var fromExpressionInfo = _stage.PrepareFromExpression (fromExpression, _context, info => new SqlTable (info, JoinSemantics.Inner));
       AddPreparedFromExpression (fromExpressionInfo);  
       
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);

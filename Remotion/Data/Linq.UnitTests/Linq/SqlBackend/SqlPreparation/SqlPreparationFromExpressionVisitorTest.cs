@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = Expression.Constant (new Cook[0]);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info));
+          expression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info, JoinSemantics.Inner));
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
 
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Restaurant()), memberInfo);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          memberExpression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info));
+          memberExpression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info, JoinSemantics.Inner));
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           _generator,
           _registry,
           _context, 
-          info => new SqlTable(info));
+          info => new SqlTable(info, JoinSemantics.Inner));
 
       Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
     }
@@ -151,7 +151,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           _generator,
           _registry,
           _context, 
-          info => new SqlTable(info));
+          info => new SqlTable(info, JoinSemantics.Inner));
 
       var sqlTable = (SqlTable) result.SqlTable;
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -163,7 +163,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("IllnessDays"));
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          memberExpression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info));
+          memberExpression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info, JoinSemantics.Inner));
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
@@ -188,7 +188,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (fakeQuerySource), replacement);
 
       var memberExpression = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (fakeQuerySource), typeof (Cook).GetProperty ("IllnessDays"));
-      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (memberExpression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info));
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (memberExpression, _stageMock, _generator, _registry, _context, info=>new SqlTable(info, JoinSemantics.Inner));
 
       var sqlTable = (SqlTable) result.SqlTable;
       var joinedTable = (SqlJoinedTable) sqlTable.TableInfo;
@@ -225,7 +225,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSqlTableReferenceExpression_Grouping ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (IGrouping<string, int>), "test", "t0"));
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (IGrouping<string, int>), "test", "t0"), JoinSemantics.Inner);
       var expression = new SqlTableReferenceExpression (sqlTable);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (

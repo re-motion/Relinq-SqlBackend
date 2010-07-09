@@ -48,11 +48,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _context = new SqlPreparationContext();
       _source = ExpressionHelper.CreateMainFromClause_Cook();
       var source = new UnresolvedTableInfo (typeof (int));
-      _sqlTable = new SqlTable (source);
+      _sqlTable = new SqlTable (source, JoinSemantics.Inner);
 
       _parentContext = new SqlPreparationContext();
       _parentSource = ExpressionHelper.CreateMainFromClause_Cook();
-      _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
+      _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)), JoinSemantics.Inner);
       _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
       _visitor = new TestableSqlPreparationQueryModelVisitor (
           _parentContext, _stageMock, new UniqueIdentifierGenerator(), ResultOperatorHandlerRegistry.CreateDefault());

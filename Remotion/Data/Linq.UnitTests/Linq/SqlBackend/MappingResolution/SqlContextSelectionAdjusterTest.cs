@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         IsDistinctQuery = true,
         DataInfo = dataInfo
       };
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       builder.SqlTables.Add (sqlTable);
       var ordering = new Ordering (Expression.Constant ("order"),OrderingDirection.Asc);
       builder.Orderings.Add (ordering);

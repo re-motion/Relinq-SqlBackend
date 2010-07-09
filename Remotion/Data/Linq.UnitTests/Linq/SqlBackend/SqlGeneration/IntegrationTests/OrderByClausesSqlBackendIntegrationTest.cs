@@ -98,7 +98,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
          from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook == c select k).Single(),
-         "SELECT [q0].[ID],[q0].[CookID],[q0].[Name],[q0].[RestaurantID],[q0].[SubKitchenID] FROM [CookTable] AS [t1] CROSS APPLY "
+         "SELECT [q0].[ID],[q0].[CookID],[q0].[Name],[q0].[RestaurantID],[q0].[SubKitchenID] FROM [CookTable] AS [t1] OUTER APPLY "
           +"(SELECT TOP (2) [t2].[ID],[t2].[CookID],[t2].[Name],[t2].[RestaurantID],[t2].[SubKitchenID] FROM [KitchenTable] AS [t2] LEFT OUTER JOIN "
           +"[CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] WHERE ([t3].[ID] = [t1].[ID]) ORDER BY [t2].[Name] ASC) AS [q0]");
     }

@@ -218,7 +218,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSqlStatement ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (_fakeResolvedSimpleTableInfo));
+      var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (_fakeResolvedSimpleTableInfo, JoinSemantics.Inner));
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           tableReferenceExpression,
@@ -299,7 +299,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
           new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true),
           new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false));
-      _mappingResolutionContext.AddSqlEntityMapping (entityExpression, new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")));
+      _mappingResolutionContext.AddSqlEntityMapping (entityExpression, new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner));
 
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 

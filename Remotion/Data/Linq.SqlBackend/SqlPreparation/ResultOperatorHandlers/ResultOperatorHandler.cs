@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.TopExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 
     protected void EnsureNoDistinctQuery (
@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.IsDistinctQuery)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 
     protected void EnsureNoGroupExpression (
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       if (sqlStatementBuilder.GroupByExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 
     protected void MoveCurrentStatementToSqlTable (
