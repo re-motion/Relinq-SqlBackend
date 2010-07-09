@@ -65,6 +65,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return tableInfo;
     }
 
+    public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
+    {
+      var newStatement = _stage.ApplySelectionContext (tableInfo.SqlStatement, _expressionContext, _mappingResolutionContext);
+      if (newStatement != tableInfo.SqlStatement)
+        return new ResolvedJoinedGroupingTableInfo (
+            tableInfo.TableAlias, 
+            newStatement, 
+            tableInfo.AssociatedGroupingSelectExpression, 
+            tableInfo.GroupSourceTableAlias);
+      return tableInfo;
+    }
+
     public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);

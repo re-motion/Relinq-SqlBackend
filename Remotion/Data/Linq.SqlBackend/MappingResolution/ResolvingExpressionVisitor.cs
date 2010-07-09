@@ -99,7 +99,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var resolvedSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
 
-      return GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, _stage, _context);
+      return GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, expression.SqlStatement.SelectProjection, _stage, _context);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)

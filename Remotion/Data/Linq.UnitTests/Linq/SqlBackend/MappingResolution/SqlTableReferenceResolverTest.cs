@@ -153,6 +153,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolveSqlTableReferenceExpression_WithResolvedJoinedGroupingTableInfo_LikeSubStatement ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        SelectProjection = new NamedExpression ("test", Expression.Constant (5)),
+      }.GetSqlStatement ();
+
+      var tableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (sqlStatement);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var expression = new SqlTableReferenceExpression (sqlTable);
+
+      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
+      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "This table has not yet been resolved; call the resolution step first.")]
     public void ResolveSqlTableReferenceExpression_VisitUnresolvedTableInfo ()

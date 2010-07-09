@@ -278,6 +278,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitResolvedJoinedGroupingTableInfo ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
+      var resolvedSubTableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (sqlStatement);
+
+      _stageMock
+          .Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("XXX"));
+      _stageMock.Replay ();
+
+      _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
+    }
+
+    [Test]
     public void VisitResolvedJoinInfo ()
     {
       var leftKey = new SqlLiteralExpression (1);

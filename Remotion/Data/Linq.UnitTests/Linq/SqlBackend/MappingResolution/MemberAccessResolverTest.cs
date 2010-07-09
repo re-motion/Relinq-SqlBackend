@@ -222,7 +222,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitMemberExpression_OnGroupingSelectExpression ()
     {
-      var expression = new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
+      var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression();
       var memberInfo = typeof (IGrouping<string, string>).GetProperty ("Key");
 
       var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);

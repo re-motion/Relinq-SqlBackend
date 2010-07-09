@@ -174,10 +174,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                         {
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var fakeResolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
 
       _resolverMock
@@ -188,7 +185,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _stage.ResolveTableInfo (_sqlTable.TableInfo, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.Not.SameAs (fakeResolvedSubStatementTableInfo));
+      Assert.That (result, Is.SameAs (fakeResolvedSubStatementTableInfo));
     }
 
     [Test]

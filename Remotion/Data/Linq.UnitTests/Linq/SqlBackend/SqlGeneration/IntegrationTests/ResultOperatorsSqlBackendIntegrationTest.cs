@@ -572,29 +572,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2993")]
     public void GroupBy_Min_WithProjection ()
     {
       CheckQuery (
-          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key,
+          from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c => c.Weight) > 18 select cooksByName.Key,
           "SELECT [q0].[key] AS [key] FROM (" +
-            "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) as [a0] FROM [CookTable] AS [t1] " +
+            "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) AS [a0] FROM [CookTable] AS [t1] " +
             "GROUP BY [t1].[Name]) AS [q0] " +
             "WHERE ([q0].[a0] > @1)",
-            new CommandParameter("@1", 18));
+            new CommandParameter("@1", 18.0));
     }
 
     [Test]
-    [Ignore ("TODO 2993")]
     public void GroupBy_Min_WithProjection_AndNestedElements ()
     {
       CheckQuery (
           from c in Cooks group new { c.ID, c.FirstName } by c.Name into cooksByName 
           where cooksByName.Min (c => c.ID) > 18 select cooksByName.Key,
-          "SELECT [q0].[get_Name] FROM (" +
-            "SELECT [c1].[Name] AS [get_Name], MIN([c1].[ID]) as [a0] FROM [CookTable] AS [c1] " +
-            "GROUP BY [c1].[Name]) AS [q0] " +
-            "WHERE [q0].[a0] > @1",
+          "SELECT [q0].[key] AS [key] FROM (" +
+            "SELECT [t1].[Name] AS [key], MIN([t1].[ID]) AS [a0] FROM [CookTable] AS [t1] " +
+            "GROUP BY [t1].[Name]) AS [q0] " +
+            "WHERE ([q0].[a0] > @1)",
             new CommandParameter ("@1", 18));
     }
 

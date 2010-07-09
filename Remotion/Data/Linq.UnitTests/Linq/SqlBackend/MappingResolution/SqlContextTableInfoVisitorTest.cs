@@ -67,10 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_ResolvedSubStatementTableInfo_SameTableInfo ()
     {
-      var subStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
      
       _stageMock
@@ -87,25 +84,65 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_ResolvedSubStatementTableInfo_NewTableInfo ()
     {
-      var subStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var subStatementTableInfo = new ResolvedSubStatementTableInfo ("c", subStatement);
-      var returnedStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-      }.GetSqlStatement ();
+      var returnedStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
 
       _stageMock
           .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
           .Return (returnedStatement);
       _stageMock.Replay ();
 
-      var result = SqlContextTableInfoVisitor.ApplyContext (subStatementTableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
+      var result = (ResolvedSubStatementTableInfo) SqlContextTableInfoVisitor.ApplyContext (
+          subStatementTableInfo,
+          SqlExpressionContext.ValueRequired,
+          _stageMock,
+          _mappingresolutionContext);
 
       _stageMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.SameAs (subStatementTableInfo));
+      Assert.That (result.SqlStatement, Is.SameAs (returnedStatement));
+      Assert.That (result.TableAlias, Is.EqualTo (subStatementTableInfo.TableAlias));
+    }
+
+    [Test]
+    public void ApplyContext_ResolvedJoinedGroupingTableInfo_SameTableInfo ()
+    {
+      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+      var joinedGroupingTableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (subStatement);
+
+      _stageMock
+          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
+          .Return (subStatement);
+      _stageMock.Replay ();
+
+      var result = SqlContextTableInfoVisitor.ApplyContext (joinedGroupingTableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
+
+      Assert.That (result, Is.SameAs (joinedGroupingTableInfo));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ApplyContext_ResolvedJoinedGroupingTableInfo_NewTableInfo ()
+    {
+      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+
+      var joinedGroupingTableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (subStatement);
+      var returnedStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
+
+      _stageMock
+          .Expect (mock => mock.ApplySelectionContext (subStatement, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
+          .Return (returnedStatement);
+      _stageMock.Replay ();
+
+      var result = (ResolvedJoinedGroupingTableInfo) SqlContextTableInfoVisitor.ApplyContext (joinedGroupingTableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Not.SameAs (joinedGroupingTableInfo));
+      Assert.That (result.GroupSourceTableAlias, Is.EqualTo (joinedGroupingTableInfo.GroupSourceTableAlias));
+      Assert.That (result.AssociatedGroupingSelectExpression, Is.SameAs (joinedGroupingTableInfo.AssociatedGroupingSelectExpression));
+      Assert.That (result.SqlStatement, Is.SameAs (returnedStatement));
+      Assert.That (result.TableAlias, Is.EqualTo (joinedGroupingTableInfo.TableAlias));
     }
 
     [Test]

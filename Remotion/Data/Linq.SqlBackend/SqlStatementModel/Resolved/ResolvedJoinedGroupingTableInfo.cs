@@ -56,6 +56,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _groupSourceTableAlias; }
     }
 
+    public override ITableInfo Accept (ITableInfoVisitor visitor)
+    {
+      return visitor.VisitJoinedGroupingTableInfo (this);
+    }
+
     public override string ToString ()
     {
       return string.Format ("JOINED-GROUPING([{0}], {1})", GroupSourceTableAlias, base.ToString());

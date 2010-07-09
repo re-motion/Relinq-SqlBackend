@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
-          new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element")),
+          SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression (),
           new SqlTable[] { },
           null,
           null,
@@ -297,7 +297,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateTextForGroupByExpression ()
     {
-      var expression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
+      var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
 
       _stageMock
           .Expect (mock => CallGenerateTextForNonSelectionExpression (mock, expression))

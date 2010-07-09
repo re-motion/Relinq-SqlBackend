@@ -17,13 +17,14 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   public class TestableGroupAggregateSimplifier : GroupAggregateSimplifier
   {
-    public TestableGroupAggregateSimplifier (Expression elementReference, Expression elementExpressionToBeUsed)
-        : base(elementReference, elementExpressionToBeUsed)
+    public TestableGroupAggregateSimplifier (SqlTableBase oldElementSource, Expression elementExpressionToBeUsed)
+        : base (oldElementSource, elementExpressionToBeUsed)
     {
     }
   }

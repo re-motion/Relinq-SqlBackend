@@ -25,9 +25,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public interface ITableInfoVisitor
   {
     ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo);
+    ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo);
+    ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable);
+
     ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo);
     ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo);
-    ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable);
-    ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo);
+    ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo);
   }
 }

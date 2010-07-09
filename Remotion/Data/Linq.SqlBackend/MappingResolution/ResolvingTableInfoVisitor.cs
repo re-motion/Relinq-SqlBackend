@@ -76,7 +76,29 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
       var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement, _context);
-      return new ResolvedSubStatementTableInfo (tableInfo.TableAlias, newSqlStatement);
+      if (newSqlStatement.Equals (tableInfo.SqlStatement))
+        return tableInfo;
+      else
+        return new ResolvedSubStatementTableInfo (tableInfo.TableAlias, newSqlStatement);
+    }
+
+    public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
+      var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement, _context);
+      if (newSqlStatement.Equals (tableInfo.SqlStatement))
+      {
+        return tableInfo;
+      }
+      else
+      {
+        return new ResolvedJoinedGroupingTableInfo (
+            tableInfo.TableAlias,
+            newSqlStatement,
+            tableInfo.AssociatedGroupingSelectExpression,
+            tableInfo.GroupSourceTableAlias);
+      }
     }
 
     public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)

@@ -169,14 +169,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var simplifiableResolvedSqlStatement = CreateSimplifiableResolvedSqlStatement();
 
-      var unresolvedSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement ();
+      var unresolvedSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (new AggregationExpression (
+          typeof (int), 
+          new SqlTableReferenceExpression (simplifiableResolvedSqlStatement.SqlTables[0]), 
+          AggregationModifier.Count));
       var expression = new SqlSubStatementExpression (unresolvedSqlStatement);
 
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (unresolvedSqlStatement, _mappingResolutionContext))
           .Return (simplifiableResolvedSqlStatement);
       _stageMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
+          .Expect (mock => mock.ResolveSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
           .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
       _stageMock.Replay ();
 
@@ -281,17 +284,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var resolvedSelectProjection = new AggregationExpression (
           typeof (int), resolvedElementExpressionReference, AggregationModifier.Min);
 
-      var associatedGroupingSelectExpression = new SqlGroupingSelectExpression (
-          new NamedExpression ("key", Expression.Constant ("k")),
-          new NamedExpression ("element", Expression.Constant ("e")));
+      var associatedGroupingSelectExpression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
 
       var resolvedJoinedGroupingSubStatement = SqlStatementModelObjectMother.CreateSqlStatement (associatedGroupingSelectExpression);
       var resolvedJoinedGroupingTable = new SqlTable (
-          new ResolvedJoinedGroupingTableInfo (
-              "q1",
-              resolvedJoinedGroupingSubStatement,
-              associatedGroupingSelectExpression,
-              "q0"), JoinSemantics.Inner);
+          SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (resolvedJoinedGroupingSubStatement), 
+          JoinSemantics.Inner);
 
       return new SqlStatement (
           dataInfo,

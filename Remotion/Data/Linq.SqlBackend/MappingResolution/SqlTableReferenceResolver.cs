@@ -86,6 +86,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return subStatementTableInfo;
     }
 
+    public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
+      // references to a resolved grouping are handled just like references to any other substatement
+      return VisitSubStatementTableInfo (tableInfo);
+    }
+
     ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
       //method should never be called because 'expression.SqlTable.GetResolvedTableInfo' throws an exception before 

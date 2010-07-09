@@ -15,25 +15,53 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
   public class ResolvedJoinedGroupingTableInfoTest
   {
+    private ResolvedJoinedGroupingTableInfo _tableInfo;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _tableInfo = new ResolvedJoinedGroupingTableInfo (
+          "q0",
+          SqlStatementModelObjectMother.CreateSqlStatement(),
+          SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression(),
+          "q1");
+    }
+
     [Test]
     public void To_String ()
     {
-      var testStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
-      var groupingSelectExpression = new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
-      var tableInfo = new ResolvedJoinedGroupingTableInfo ("q0", testStatement, groupingSelectExpression, "q1");
+      Assert.That (_tableInfo.ToString(), Is.EqualTo ("JOINED-GROUPING([q1], (" + _tableInfo.SqlStatement + ") [q0])"));
+    }
 
-      Assert.That (tableInfo.ToString(), Is.EqualTo ("JOINED-GROUPING([q1], (" + testStatement + ") [q0])"));
+    [Test]
+    public void Accept ()
+    {
+      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
+      tableInfoVisitorMock.Expect (mock => mock.VisitJoinedGroupingTableInfo (_tableInfo));
+
+      tableInfoVisitorMock.Replay();
+      _tableInfo.Accept (tableInfoVisitorMock);
+
+      tableInfoVisitorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void GetResolvedTableInfo ()
+    {
+      var result = _tableInfo.GetResolvedTableInfo();
+
+      Assert.That (result, Is.SameAs (_tableInfo));
     }
   }
 }

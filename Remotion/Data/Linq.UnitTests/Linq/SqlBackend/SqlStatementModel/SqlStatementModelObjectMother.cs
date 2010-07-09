@@ -208,5 +208,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       return new UnresolvedGroupReferenceTableInfo (CreateSqlTable (typeof (IGrouping<int, string>)));
     }
+
+    public static SqlGroupingSelectExpression CreateSqlGroupingSelectExpression ()
+    {
+      return new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
+    }
+
+    public static ResolvedJoinedGroupingTableInfo CreateResolvedJoinedGroupingTableInfo (SqlStatement sqlStatement)
+    {
+      return new ResolvedJoinedGroupingTableInfo (
+          "cook", 
+          sqlStatement, 
+          CreateSqlGroupingSelectExpression(), 
+          "q1");
+    }
   }
 }
