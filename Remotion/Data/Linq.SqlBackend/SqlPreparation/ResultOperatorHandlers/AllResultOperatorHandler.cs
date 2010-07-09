@@ -33,6 +33,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
+
       sqlStatementBuilder.AddWhereCondition (stage.PrepareWhereExpression (Expression.Not (resultOperator.Predicate), context));
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);

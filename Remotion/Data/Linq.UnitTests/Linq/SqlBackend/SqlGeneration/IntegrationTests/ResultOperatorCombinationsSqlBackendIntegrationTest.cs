@@ -281,11 +281,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO: 2909 and 2978")]
+    public void AnyAfterGroupBy ()
+    {
+      CheckQuery (() => (from c in Cooks group c.Name by c.FirstName).Any (group => group.Key != null),
+        "SELECT CASE WHEN EXISTS(("
+            + "SELECT [q0].[key] AS [key] FROM (SELECT [t1].[FirstName] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[FirstName]) AS [q0] "
+            + "WHERE ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END");
+    }
+
+    [Test]
     public void AllAfterGroupBy ()
     {
-      CheckQuery (()=>(from r in Restaurants group r.ID by r.SubKitchen).All (group => group.Key != null),
-        "SELECT CASE WHEN NOT EXISTS (SELECT [t0].[KitchenID] AS [Key] WHERE NOT ([t0].[KitchenID] IS NOT NULL)) THEN 1 ELSE 0 END");
+      CheckQuery (() => (from c in Cooks group c.Name by c.FirstName).All (group => group.Key != null),
+       "SELECT CASE WHEN NOT EXISTS(("
+           + "SELECT [q0].[key] AS [key] FROM (SELECT [t1].[FirstName] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[FirstName]) AS [q0] "
+           + "WHERE NOT ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END");
     }
 
 
