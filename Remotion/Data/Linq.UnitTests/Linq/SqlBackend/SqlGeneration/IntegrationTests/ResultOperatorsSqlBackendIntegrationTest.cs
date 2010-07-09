@@ -560,7 +560,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [Ignore ("TODO 3020: Invalid name")]
-    public void GroupBy_MinInWhereCondition ()
+    public void GroupBy_Min_WithNonTrivialElementExpression ()
     {
       CheckQuery (
           from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, 
@@ -573,7 +573,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [Ignore ("TODO 2993")]
-    public void GroupBy_MinWithProjection_InWhereCondition ()
+    public void GroupBy_Min_WithProjection ()
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c=>c.Weight) > 18 select cooksByName.Key,
@@ -586,7 +586,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [Ignore ("TODO 2993")]
-    public void GroupBy_MinWithProjection_AndNestedElements ()
+    public void GroupBy_Min_WithProjection_AndNestedElements ()
     {
       CheckQuery (
           from c in Cooks group new { c.ID, c.FirstName } by c.Name into cooksByName 
@@ -596,6 +596,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             "GROUP BY [c1].[Name]) AS [q0] " +
             "WHERE [q0].[a0] > @1",
             new CommandParameter ("@1", 18));
+    }
+
+    [Test]
+    [Ignore ("TODO 3018")]
+    public void GroupBy_Aggregation_FromNestedSubQuery ()
+    {
+      CheckQuery (
+        from x in
+          (
+            from c in Cooks
+            group c.ID by c.Name into cooksByName
+            select cooksByName
+          ).Take (3)
+        where x.Min (c => c) > 18
+        select x.Key,
+        "SELECT [q1].[key] AS [key] "
+            + "FROM (SELECT TOP (@1) [q0].[key] AS [key],[q0].[a0] AS [a0] FROM ("
+                + "SELECT [t2].[Name] AS [key],MIN([t2].[ID]) AS [a0] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0]"
+            + ") AS [q1] "
+            + "WHERE ([q1].[a0] > @3)",
+        new CommandParameter ("@1", 18));
     }
 
     [Test]
@@ -619,47 +640,58 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void GroupBy_UseGroupInFromExpression ()
+    public void GroupBy_UseGroupInFromExpression_SimpleElement ()
     {
       CheckQuery (
           from c in Cooks
-          group c.ID by c.Name into cooksByName
+          group c.ID by c.Name
+          into cooksByName
           from id in cooksByName
           select new { cooksByName.Key, CookID = id },
           "SELECT [q0].[key] AS [Key_key],[q2].[element] AS [CookID] "
-              + "FROM "
-              + "(SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
-              + "CROSS APPLY ("
-                  + "SELECT [t1].[ID] AS [element] FROM [CookTable] AS [t1] "
-                  + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
-                      + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]");
-
+          + "FROM "
+          + "(SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
+          + "CROSS APPLY ("
+          + "SELECT [t1].[ID] AS [element] FROM [CookTable] AS [t1] "
+          + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+          + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]");
+    }
+    
+    [Test]
+    public void GroupBy_UseGroupInFromExpression_EntityElement ()
+    {
       CheckQuery (
           from c in Cooks
-          group c by c.Name into cooksByName
+          group c by c.Name
+          into cooksByName
           from cook in cooksByName
           where cook != null
           select new { cooksByName.Key, CookID = cook },
           "SELECT [q0].[key] AS [Key_key],[q2].[element_ID] AS [CookID_ID],"
-              + "[q2].[element_FirstName] AS [CookID_FirstName],[q2].[element_Name] AS [CookID_Name],"
-              + "[q2].[element_IsStarredCook] AS [CookID_IsStarredCook],[q2].[element_IsFullTimeCook] AS [CookID_IsFullTimeCook],"
-              + "[q2].[element_SubstitutedID] AS [CookID_SubstitutedID],[q2].[element_KitchenID] AS [CookID_KitchenID] "
-              + "FROM ("
-                  + "SELECT [t1].[Name] AS [key] "
-                  + "FROM [CookTable] AS [t1] "
-                  + "GROUP BY [t1].[Name]) AS [q0] "
-              + "CROSS APPLY ("
-                  + "SELECT [t1].[ID] AS [element_ID],[t1].[FirstName] AS [element_FirstName],[t1].[Name] AS [element_Name],"
-                  + "[t1].[IsStarredCook] AS [element_IsStarredCook],[t1].[IsFullTimeCook] AS [element_IsFullTimeCook],"
-                  + "[t1].[SubstitutedID] AS [element_SubstitutedID],[t1].[KitchenID] AS [element_KitchenID] "
-                  + "FROM [CookTable] AS [t1] "
-                  + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
-                      + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2] "
-              + "WHERE ([q2].[element_ID] IS NOT NULL)");
+          + "[q2].[element_FirstName] AS [CookID_FirstName],[q2].[element_Name] AS [CookID_Name],"
+          + "[q2].[element_IsStarredCook] AS [CookID_IsStarredCook],[q2].[element_IsFullTimeCook] AS [CookID_IsFullTimeCook],"
+          + "[q2].[element_SubstitutedID] AS [CookID_SubstitutedID],[q2].[element_KitchenID] AS [CookID_KitchenID] "
+          + "FROM ("
+          + "SELECT [t1].[Name] AS [key] "
+          + "FROM [CookTable] AS [t1] "
+          + "GROUP BY [t1].[Name]) AS [q0] "
+          + "CROSS APPLY ("
+          + "SELECT [t1].[ID] AS [element_ID],[t1].[FirstName] AS [element_FirstName],[t1].[Name] AS [element_Name],"
+          + "[t1].[IsStarredCook] AS [element_IsStarredCook],[t1].[IsFullTimeCook] AS [element_IsFullTimeCook],"
+          + "[t1].[SubstitutedID] AS [element_SubstitutedID],[t1].[KitchenID] AS [element_KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+          + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2] "
+          + "WHERE ([q2].[element_ID] IS NOT NULL)");
+    }
 
+    [Test]
+    public void GroupBy_UseGroupInFromExpression_UseGroupFromSubQuery ()
+    {
       CheckQuery (
           from c in Cooks
-          group c.Weight by c.Name into weightsByName
+          group c.Weight by c.Name 
+          into weightsByName
           from cook in (
             from c in weightsByName
             select c).Distinct()
@@ -674,7 +706,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
                   + "FROM [CookTable] AS [t2] "
                   + "WHERE ((([t2].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
                       + "OR ((([t2].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t2].[Name] = [q0].[key])))) AS [q3]) AS [q1]");
+      }
 
+    [Test]
+    public void GroupBy_UseGroupInFromExpression_GroupByEntity ()
+    {
       CheckQuery (
          from r in Restaurants
          from c in r.Cooks
@@ -698,6 +734,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
                 + "OR ((([t1].[ID] IS NOT NULL) AND ([q0].[key_ID] IS NOT NULL)) AND ([t1].[ID] = [q0].[key_ID]))))) AS [q3]");
     }
 
-
+    [Test]
+    [Ignore ("TODO 3018")]
+    public void GroupBy_GroupInFromExpression_FromNestedSubQuery ()
+    {
+      CheckQuery (
+        from x in
+          (
+            from c in Cooks
+            group c.ID by c.Name into cooksByName
+            select cooksByName
+          ).Take (3)
+        from y in x
+        select new { x.Key, y },
+        "SELECT [q1].[key] AS [Key_key],[q3].[element] AS [y] "
+            + "FROM ("
+                + "SELECT TOP (@1) [q0].[key] AS [key] "
+                + "FROM (SELECT [t2].[Name] AS [key] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0]) AS [q1] "
+                + "CROSS APPLY ("
+                    + "SELECT [t2].[ID] AS [element] FROM [CookTable] AS [t2] "
+                    + "WHERE ((([t2].[Name] IS NULL) AND ([q1].[key] IS NULL)) "
+                        + "OR ((([t2].[Name] IS NOT NULL) AND ([q1].[key] IS NOT NULL)) AND ([t2].[Name] = [q1].[key])))) AS [q3]",
+        new CommandParameter ("@1", 18));
+    }
   }
 }

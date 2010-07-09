@@ -89,5 +89,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             select new { fullTimeCooksByName.Key, Value = isFullTime },
           "?");
     }
+
+    [Test]
+    [Ignore ("TODO 3021")]
+    public void AdditionalFromClause_WithNestedItemsFrom ()
+    {
+      CheckQuery (
+        from c in Cooks
+        let nested = new { Source = Cooks }
+        from y in nested.Source
+        select y.ID,
+        "?");
+    }
   }
 }
