@@ -103,6 +103,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public override Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    {
+      throw new NotSupportedException (
+          "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
+          + "efficiently return "
+          + "LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional from clause, or perform "
+          + "an aggregation on the groupings. "
+          + Environment.NewLine
+          + Environment.NewLine
+          + "Eg., instead of: "
+          + Environment.NewLine + "'from c in Cooks group c.ID by c.Name', "
+          + Environment.NewLine + "write: "
+          + Environment.NewLine + "'from c in Cooks group c.ID by c.Name into groupedCooks "
+          + Environment.NewLine + " from c in groupedCooks select new { Key = groupedCooks.Key, Item = c }', "
+          + Environment.NewLine + "or: "
+          + Environment.NewLine + "'from c in Cooks group c.ID by c.Name into groupedCooks "
+          + Environment.NewLine + " select new { Key = groupedCooks.Key, Count = groupedCooks.Count() }'.");
+    }
+
     private Expression VisitArgumentExpression (Expression argumentExpression)
     {
       VisitExpression (argumentExpression);

@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
@@ -145,6 +146,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var expectedProjection = Expression.Call(typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }), projectionExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
+         + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
+         + "from clause, or perform an aggregation on the groupings.", MatchType = MessageMatch.Contains)]
+    public void VisitSqlGroupingSelectExpression ()
+    {
+      var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
+      _visitor.VisitSqlGroupingSelectExpression (expression);
     }
 
     private NewExpression GetExpectedProjectionForNewExpression (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)

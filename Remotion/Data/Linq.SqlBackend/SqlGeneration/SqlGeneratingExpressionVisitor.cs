@@ -390,13 +390,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           CommandBuilder.AppendIdentifier (columnName ?? "value");
       }
     }
-
-    //private void AppendReferencedMember (ResolvedSubStatementTableInfo subStatementTableInfo, MemberInfo memberInfo)
-    //{
-    //  var column = new SqlColumnDefinitionExpression (typeof (int), subStatementTableInfo.TableAlias, memberInfo.Name, false);
-    //  VisitExpression (column);
-    //}
-
-    
+   
   }
 }
