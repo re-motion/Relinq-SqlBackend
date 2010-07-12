@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var predicateExpression = Expression.Constant (true);
 
       var convertedValue = SqlContextExpressionVisitor.ApplySqlExpressionContext (
-          valueExpression, SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+          new ConvertedBooleanExpression (valueExpression), SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
       var convertedPredicate = SqlContextExpressionVisitor.ApplySqlExpressionContext (
           predicateExpression, SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
 
@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ApplyContext_SemanticsPropagatedToChildExpressionsByDefault ()
     {
       var expressionOfCorrectType = new TestExtensionExpression (new TestExtensionExpressionWithoutChildren (typeof (bool)));
-      var expressionOfIncorrectType = new TestExtensionExpression (new TestExtensionExpressionWithoutChildren (typeof (int)));
+      var expressionOfIncorrectType = new TestExtensionExpression (new ConvertedBooleanExpression (new TestExtensionExpressionWithoutChildren (typeof (int))));
 
       var result1 = _predicateRequiredVisitor.VisitExpression (expressionOfCorrectType);
       var result2 = _predicateRequiredVisitor.VisitExpression (expressionOfIncorrectType);
@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result1, Is.SameAs (expressionOfCorrectType));
 
       var expectedResult2 = new TestExtensionExpression (
-          Expression.Equal (expressionOfIncorrectType.ConstantExpression, new SqlLiteralExpression (1)));
+          Expression.Equal (((ConvertedBooleanExpression) expressionOfIncorrectType.ConstantExpression).Expression, new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult2, result2);
     }
 
@@ -169,14 +169,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ConvertsInt_ToPredicate ()
+    public void VisitExpression_ConvertedInt_ToPredicate ()
     {
-      var expression = new CustomExpression (typeof (int));
+      var expression = new ConvertedBooleanExpression (new CustomExpression (typeof (int)));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
-      var expected = Expression.Equal (expression, new SqlLiteralExpression (1));
+      var expected = Expression.Equal (expression.Expression, new SqlLiteralExpression (1));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
@@ -211,6 +211,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = visitor.VisitExpression (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
+    }
+
+    [Test]
+    public void VisitConvertedBooleanExpression_InnerUnchanged ()
+    {
+      var converted = new ConvertedBooleanExpression (Expression.Constant (0));
+
+      var result = _valueRequiredVisitor.VisitConvertedBooleanExpression (converted);
+
+      Assert.That (result, Is.SameAs (converted));
     }
 
     [Test]
@@ -254,10 +264,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var resultTrue = _predicateRequiredVisitor.VisitConstantExpression (constantTrue);
       var resultFalse = _predicateRequiredVisitor.VisitConstantExpression (constantFalse);
 
-      var expectedExpressionTrue = Expression.Constant (1);
+      var expectedExpressionTrue = new ConvertedBooleanExpression (Expression.Constant (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionTrue, resultTrue);
 
-      var expectedExpressionFalse = Expression.Constant (0);
+      var expectedExpressionFalse = new ConvertedBooleanExpression (Expression.Constant (0));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionFalse, resultFalse);
     }
 
@@ -311,7 +321,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _predicateRequiredVisitor.VisitSqlColumnExpression (column);
 
-      var expectedExpression = new SqlColumnDefinitionExpression (typeof (int), "x", "y", false);
+      var expectedExpression = new ConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "x", "y", false));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 

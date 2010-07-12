@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
@@ -45,7 +46,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         IUnresolvedSqlExpressionVisitor,
         ISqlSubStatementVisitor,
         INamedExpressionVisitor,
-        ISqlGroupingSelectExpressionVisitor
+        ISqlGroupingSelectExpressionVisitor,
+        IConvertedBooleanExpressionVisitor
   {
     public static Expression ApplySqlExpressionContext (
         Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
@@ -89,15 +91,28 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
     }
 
+    public Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
+    {
+      var newInner = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
+
+      Debug.Assert (
+          newInner == expression.Expression, 
+          "There is currently no visit method that would change an int-typed expression with ValueRequired.");
+
+      // This condition cannot be true at the moment because there currently is no int-typed expression that would be changed by ValueRequired.
+      //if (newInner != expression.Expression)
+      //  return new ConvertedBooleanExpression (newInner);
+
+      return expression;
+    }
+
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       // Always convert boolean constants to int constants because in the database, there are no boolean constants
       if (expression.Type == typeof (bool))
       {
-        Expression newExpression = expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
-        if (_currentContext == SqlExpressionContext.ValueRequired || _currentContext == SqlExpressionContext.SingleValueRequired)
-          newExpression = new ConvertedBooleanExpression (newExpression);
-        return newExpression;
+        Expression convertedExpression = expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
+        return new ConvertedBooleanExpression (convertedExpression);
       }
       else
         return expression; // rely on VisitExpression to apply correct semantics
@@ -108,10 +123,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (expression.Type == typeof (bool))
       {
-        Expression newExpression = expression.Update (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
-        if (_currentContext == SqlExpressionContext.ValueRequired || _currentContext == SqlExpressionContext.SingleValueRequired)
-          newExpression = new ConvertedBooleanExpression (newExpression);
-        return newExpression;
+        Expression convertedExpression = expression.Update (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
+        return new ConvertedBooleanExpression (convertedExpression);
       }
       else
         return expression; // rely on VisitExpression to apply correct semantics
@@ -348,10 +361,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool) && !(newExpression is ConvertedBooleanExpression))
       {
-        newExpression = new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-        if (_currentContext == SqlExpressionContext.ValueRequired || _currentContext == SqlExpressionContext.SingleValueRequired)
-          newExpression = new ConvertedBooleanExpression (newExpression);
-        return newExpression;
+        var convertedExpression = new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+        return new ConvertedBooleanExpression (convertedExpression);
       } 
       else
         return newExpression;
@@ -360,12 +371,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression HandlePredicateSemantics (Expression expression)
     {
       var newExpression = base.VisitExpression (expression);
-      if (newExpression.Type == typeof (bool))
-        return newExpression;
-      else if (newExpression.Type == typeof (int))
-        return Expression.Equal (newExpression, new SqlLiteralExpression (1));
-      else
+      
+      var convertedBooleanExpression = newExpression as ConvertedBooleanExpression;
+      if (convertedBooleanExpression != null)
+        return Expression.Equal (convertedBooleanExpression.Expression, new SqlLiteralExpression (1));
+
+      if (newExpression.Type != typeof (bool))
         throw new NotSupportedException (string.Format ("Cannot convert an expression of type '{0}' to a boolean expression.", newExpression.Type));
+      
+      return newExpression;
     }
   }
 }

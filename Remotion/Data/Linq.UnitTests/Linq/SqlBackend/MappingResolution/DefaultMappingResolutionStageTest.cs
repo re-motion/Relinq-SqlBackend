@@ -81,7 +81,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveWhereExpression ()
     {
       var expression = Expression.Constant (true);
-      var fakeResult = Expression.Constant (0);
+      var fakeResult = new ConvertedBooleanExpression (Expression.Constant (0));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations();
 
-      Assert.That (((BinaryExpression) result).Left, Is.SameAs (fakeResult));
+      Assert.That (((BinaryExpression) result).Left, Is.SameAs (fakeResult.Expression));
       Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo (1));
     }
 
