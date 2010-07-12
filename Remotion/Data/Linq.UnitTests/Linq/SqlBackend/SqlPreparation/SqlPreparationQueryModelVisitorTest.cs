@@ -588,6 +588,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
     }
 
+    // TODO Review 3014: Add test for AddQuerySource with new table; check that creator makes table with correct join semantics
+
     [Test]
     public void AddPreparedFromExpression_IsNewTable_AddSqlTable ()
     {

@@ -244,6 +244,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var castTableInfo = (UnresolvedGroupReferenceTableInfo) tableInfo;
       Assert.That (castTableInfo.ItemType, Is.SameAs (typeof (int)));
       Assert.That (castTableInfo.ReferencedGroupSource, Is.SameAs (sqlTable));
+      // TODO Review 3014: Check JoinSemantics
     }
 
     [Test]

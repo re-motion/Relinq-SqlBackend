@@ -100,6 +100,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      // TODO Review 3014: Check JoinSemantics
 
       var subStatementTableInfo = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo);
       Assert.That (subStatementTableInfo.SqlStatement.SelectProjection, Is.SameAs (fakePreparedProjection));

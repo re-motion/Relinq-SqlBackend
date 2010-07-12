@@ -119,6 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
       Assert.That (
           originalStatement, Is.EqualTo (((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement));
+      // TODO Review 3014: Check JoinSemantics
     }
 
     [Test]
@@ -132,26 +133,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
-    public void EnsureNoTopExpression ()
-    {
-      _statementBuilder.GroupByExpression = Expression.Constant ("top");
-      var originalStatement = _statementBuilder.GetSqlStatement ();
-      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new Ordering[0]);
-
-      _stageMock
-          .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
-          .Return (fakeFromExpressionInfo);
-      _stageMock.Replay ();
-
-      _handler.EnsureNoGroupExpression (_statementBuilder, _generator, _stageMock, _context);
-
-      _stageMock.VerifyAllExpectations ();
-      Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
-    }
-
-    [Test]
-    public void SetDataInfo_WithoutGroupExpression ()
+    public void EnsureNoGroupExpression_WithoutGroupExpression ()
     {
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
@@ -159,6 +141,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
     }
+
+    // TODO Review 3014: Test missing for EnsureNoGroupExpression_WithGroupExpression
 
     [Test]
     public void EnsureNoDistinctQuery_DistinctQuery ()
@@ -178,6 +162,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _stageMock.VerifyAllExpectations();
       Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
+      // TODO Review 3014: Check JoinSemantics
+      // TODO Review 3014: Check moved to substatement
     }
 
     [Test]
