@@ -40,21 +40,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       get { return _stage; }
     }
 
-    public virtual Expression<Func<IDatabaseResultRow, object>> Build (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, bool outerStatement)
+    public virtual Expression<Func<IDatabaseResultRow, object>> Build (
+        SqlStatement sqlStatement, 
+        ISqlCommandBuilder commandBuilder, 
+        bool isOutermostStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      var lambdaExpression = BuildSelectPart (sqlStatement, commandBuilder, outerStatement);
+      var inMemoryProjection = BuildSelectPart (sqlStatement, commandBuilder, isOutermostStatement);
       BuildFromPart (sqlStatement, commandBuilder);
       BuildWherePart (sqlStatement, commandBuilder);
       BuildGroupByPart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder);
 
-      return lambdaExpression;
+      return inMemoryProjection;
     }
 
-    protected virtual Expression<Func<IDatabaseResultRow, object>> BuildSelectPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder, bool outerStatement)
+    protected virtual Expression<Func<IDatabaseResultRow, object>> BuildSelectPart (
+        SqlStatement sqlStatement,
+        ISqlCommandBuilder commandBuilder,
+        bool isOutermostStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -67,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         BuildTopPart (sqlStatement, commandBuilder);
       }
 
-      if (outerStatement)
+      if (isOutermostStatement)
         return _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection);
       
       _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);

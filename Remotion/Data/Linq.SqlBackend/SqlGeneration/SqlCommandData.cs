@@ -43,16 +43,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _inMemoryProjection = inMemoryProjection;
     }
 
+    // TODO Review 2977: Document this
     public string CommandText
     {
       get { return _commandText; }
     }
 
+    // TODO Review 2977: Document this
     public CommandParameter[] Parameters
     {
       get { return _parameters; }
     }
 
+    // TODO Review 2977: Document this
     public Expression<Func<IDatabaseResultRow, object>> InMemoryProjection
     {
       get { return _inMemoryProjection; }

@@ -61,6 +61,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [test]"));
     }
 
+    // TODO Review 2977: Test with unnamed entity
+
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity ()
     {
@@ -101,7 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_VisitSqlEntityExpression_EntityReference ()
+    public void GenerateSql_VisitSqlEntityExpression_EntityReference_Unnamed_ToNamed ()
     {
       var referencedEntity = new SqlEntityDefinitionExpression (
           typeof (Cook),
@@ -120,6 +122,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Cook_Name] AS [Name],[c].[Cook_City] AS [City]"));
     }
 
+    // TODO Review 2977: Test with unnamed entity reference to unnamed and named entity reference
+
+    // TODO Review 2977: Move implementation of VisitSqlGroupingSelectExpression to this visitor
     [Test]
     public void VisitSqlGroupingSelectExpression_WithAggregationExpressions_AndNames ()
     {

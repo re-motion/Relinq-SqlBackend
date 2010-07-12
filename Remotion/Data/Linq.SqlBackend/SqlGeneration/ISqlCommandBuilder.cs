@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
+  // TODO Review 2977: Missing docs
   public interface ISqlCommandBuilder
   {
     CommandParameter CreateParameter (object value);

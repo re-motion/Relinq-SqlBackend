@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
+  // TODO Review 2977: Missing docs
   public class SqlCommandBuilder : ISqlCommandBuilder
   {
     private readonly StringBuilder _stringBuilder;
@@ -33,6 +34,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _parameters = new List<CommandParameter>();
     }
 
+    // TODO Review 2977: Refactor: Not caller should set this property, expression visitor should; refactor visitor not to return the projection but to set it into the command builder
+    // TODO Review 2977: Convert to method: GetInMemoryProjection (generic - only add Convert if required); add an InMemoryProjectionBody read-only property and a SetInMemoryProjectionBody method
     public Expression<Func<IDatabaseResultRow, object>> InMemoryProjection { get; set; }
 
     public CommandParameter CreateParameter (object value)
@@ -101,6 +104,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return _parameters.ToArray();
     }
 
+    // TODO Review 2977: Consider making this method and SqlCommandData generic
     public SqlCommandData GetCommand ()
     {
       return new SqlCommandData (GetCommandText(), GetCommandParameters(), InMemoryProjection);

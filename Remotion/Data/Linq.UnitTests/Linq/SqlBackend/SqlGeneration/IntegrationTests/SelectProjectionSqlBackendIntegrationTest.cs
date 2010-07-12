@@ -30,6 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   [TestFixture]
   public class SelectProjectionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
+    // TODO Review 2977: Add more integration tests for the projection
     [Test]
     public void Entity ()
     {

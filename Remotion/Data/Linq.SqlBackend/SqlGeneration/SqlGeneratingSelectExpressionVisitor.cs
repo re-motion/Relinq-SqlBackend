@@ -22,6 +22,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
+  // TODO Review 2977: Missing docs
   public class SqlGeneratingSelectExpressionVisitor : SqlGeneratingExpressionVisitor
   {
     public static new void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)

@@ -24,9 +24,10 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
+  // TODO Review 2977: Missing docs
   public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor
   {
-    public new static Expression<Func<IDatabaseResultRow, object>> GenerateSql (
+    public static new Expression<Func<IDatabaseResultRow, object>> GenerateSql (
         Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -36,14 +37,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
 
+      // TODO Review 2977: Move this to SqlCommandBuilder.GetInMemoryProjection()
       if (visitor.ProjectionExpression != null)
         return Expression.Lambda<Func<IDatabaseResultRow, object>> (
             Expression.Convert (visitor.ProjectionExpression, typeof (object)), visitor.RowParameter);
       return null;
     }
 
+    // TODO Review 2977: Move this to SqlCommandBuilder
     protected readonly ParameterExpression RowParameter = Expression.Parameter (typeof (IDatabaseResultRow), "row");
+    // TODO Review 2977: Use commandBuilder.InMemoryProjectionBody instead
     protected Expression ProjectionExpression;
+    // TODO Review 2977: Make private
     protected int ColumnPosition;
 
     protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
@@ -55,9 +60,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO Review 2977: Cache this
       var getValueMethod = RowParameter.Type.GetMethod ("GetValue");
       ProjectionExpression = Expression.Call (
-          RowParameter, getValueMethod.MakeGenericMethod (expression.Type), Expression.Constant (new ColumnID (expression.Name ?? "value", ColumnPosition++)));
+          RowParameter, 
+          getValueMethod.MakeGenericMethod (expression.Type), 
+          Expression.Constant (new ColumnID (expression.Name ?? "value", ColumnPosition++)));
+      // TODO Review 2977: Extract and reuse ColumnID construction
 
       return base.VisitNamedExpression (expression);
     }
@@ -82,6 +91,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var projectionExpressions = new List<Expression>();
       CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentExpression (expr)));
 
+      // TODO Review 2977: Check this warning
       if (expression.Members == null)
         ProjectionExpression = Expression.New (expression.Constructor, projectionExpressions);
       else
@@ -96,6 +106,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       if (ProjectionExpression != null)
       {
+        // TODO Review 2977: Cache this method; add assertion that the ProjectionExpression is of type int
         var toBooleanMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
         ProjectionExpression = Expression.Call (toBooleanMethod, ProjectionExpression);
       }

@@ -55,6 +55,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       visitor.VisitExpression (expression);
     }
 
+    // TODO Review 2977: Use properties, not fields
+
     protected readonly ISqlCommandBuilder CommandBuilder;
     protected readonly BinaryExpressionTextGenerator BinaryExpressionTextGenerator;
     protected readonly ISqlGenerationStage Stage;

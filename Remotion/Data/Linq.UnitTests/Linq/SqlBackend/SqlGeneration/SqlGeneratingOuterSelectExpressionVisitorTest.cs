@@ -57,11 +57,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
           );
       _expectedRowParameter = Expression.Parameter (typeof (IDatabaseResultRow), "row");
-
     }
 
     [Test]
-    public void GenerateSql_VisitNamedExpression ()
+    public void GenerateSql_CreatesFullInMemoryProjectionLambda ()
     {
       var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
 
@@ -76,7 +75,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _visitor.VisitNamedExpression (_namedExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0), _visitor.ProjectionExpression);
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
+      // TODO Review 2977: Ensure that position has been incremented
+      // TODO Review 2977: probably not required
+      // TODO Review 2977: Also check command text
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
@@ -85,12 +88,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _visitor.VisitSqlEntityExpression (_entityExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (GetExpectedProjectionForEntityExpression (_expectedRowParameter, 0), _visitor.ProjectionExpression);
+      var expectedProjection = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 0);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
+      // TODO Review 2977: Ensure that position has been incremented
+      // TODO Review 2977: Probably not required
+      // TODO Review 2977: Also check command text
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
     [Test]
-    public void VisitNewExpression_WithoutMemberNames ()
+    public void VisitNewExpression_WithoutMembers ()
     {
       var newExpression = Expression.New (
           typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof(int), typeof (Cook)}), 
@@ -102,17 +109,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
       var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpression (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
 
+      // TODO Review 2977: Also check command text
+      // TODO Review 2977: Also check position
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
+      // TODO Review 2977: Probably not needed
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
     [Test]
-    public void VisitNewExpression_WithMemberNames ()
+    public void VisitNewExpression_WithMembers ()
     {
       var keyValueType = typeof (KeyValuePair<int, Cook>);
       var newExpression = Expression.New (
           keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
-          new Expression[] { _namedExpression, _entityExpression }, keyValueType.GetProperty("Key"), keyValueType.GetProperty("Value"));
+          new Expression[] { _namedExpression, _entityExpression },
+          keyValueType.GetProperty("Key"),
+          keyValueType.GetProperty("Value"));
 
       _visitor.VisitNewExpression (newExpression);
 
@@ -159,6 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _visitor.VisitSqlGroupingSelectExpression (expression);
     }
 
+    // TODO Review 2977: Inline
     private NewExpression GetExpectedProjectionForNewExpression (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)
     {
       return Expression.New (
@@ -166,6 +179,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression });
     }
 
+    // TODO Review 2977: Inline
     private NewExpression GetExpectedProjectionForNewExpressionWithMembers (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)
     {
       var keyValueType = typeof (KeyValuePair<int, Cook>);

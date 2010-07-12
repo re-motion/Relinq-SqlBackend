@@ -140,7 +140,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_VisitSqlEntityExpression_EntityReference_NonSelectExpressionMode ()
+    public void GenerateSql_VisitSqlEntityExpression_EntityReference ()
     {
       var referencedEntity = new SqlEntityDefinitionExpression (
           typeof (Cook),
@@ -562,6 +562,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitNamedExpression ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
+      // TODO Review 2977: Test with a non-null name
       var expression = new NamedExpression (null, columnExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);

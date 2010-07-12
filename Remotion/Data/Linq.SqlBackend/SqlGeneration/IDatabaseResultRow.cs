@@ -18,6 +18,7 @@ using System;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
+  // TODO Review 2977: Missing docs; also document the methods
   public interface IDatabaseResultRow
   {
     T GetValue<T> (ColumnID columnID);

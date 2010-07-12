@@ -19,6 +19,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
+  // TODO Review 2977: Missing docs
   public struct ColumnID
   {
     public ColumnID (string columnName, int position)
