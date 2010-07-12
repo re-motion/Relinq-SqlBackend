@@ -80,6 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       get { return _stage; }
     }
 
+    // TODO Review 3007: Remove this, this class doesn't require the generator
     protected UniqueIdentifierGenerator Generator
     {
       get { return _generator; }

@@ -22,6 +22,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="ISqlPreparationContext"/> provides methods to handle a concrete preparation context.
   /// </summary>
+  // TODO Review: Consider removing this interface
   public interface ISqlPreparationContext
   {
     void AddExpressionMapping (Expression original, Expression replacement);

@@ -76,6 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var subStatementTableInfo = new ResolvedSubStatementTableInfo (Generator.GetUniqueIdentifier ("q"), newStatement);
         var sqlTable = new SqlTable (subStatementTableInfo, JoinSemantics.Left);
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+        
         var fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null, true);
         Context.AddFromExpression (fromExpressionInfo);
         return sqlTableReferenceExpression;

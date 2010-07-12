@@ -23,6 +23,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// <see cref="IMappingResolutionContext"/> provides methods to handle a concrete mapping resolution context.
   /// </summary>
+  // TODO Review: Consider removing this interface
   public interface IMappingResolutionContext
   {
     void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable);

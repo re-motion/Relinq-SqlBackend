@@ -55,6 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void PrepareSelectExpression ()
     {
+      // TODO Review 3007: change to ensure the select visitor is used
       var result = _stage.PrepareSelectExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);

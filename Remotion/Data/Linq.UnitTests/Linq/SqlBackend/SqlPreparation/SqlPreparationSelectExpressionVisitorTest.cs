@@ -116,10 +116,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = _visitor.VisitSqlSubStatementExpression (expression);
 
+      // TODO Review 3007: Rewrite this test
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      
       var statement = ((ResolvedSubStatementTableInfo) ((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo).SqlStatement;
+      
       Assert.That (statement.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (statement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) statement.DataInfo).DataType, Is.EqualTo(typeof (IEnumerable<>).MakeGenericType(typeof(int))));
