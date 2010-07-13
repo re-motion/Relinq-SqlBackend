@@ -300,13 +300,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3027")]
     public void GroupBy_WithResultSelector ()
     {
       CheckQuery (
-        Cooks.GroupBy  (c => c.Name, (key, group) => new { Name = key, Count = group.Count() }),
-        "SELECT [q0].[key] AS [Name],[q0].[a0] AS [Count] "
-        + "FROM (SELECT [t1].[Name] AS [key],COUNT(*) AS [a0] FROM [CookTable] [t1] GROUP BY [t1].[Name]) AS [q0]");
+        Cooks.GroupBy  (c => c.Name, (key, group) => new { Name = key }),
+        "SELECT [q0].[key] AS [Name_key] "
+        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
     }
 
     [Test]
@@ -316,6 +315,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key }),
         "SELECT [q0].[key] AS [Name_key] "
         + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
+    }
+
+    [Test]
+    [Ignore ("TODO 3018")]
+    public void GroupBy_WithResultSelector_AndAggregate ()
+    {
+      CheckQuery (
+        Cooks.GroupBy (c => c.Name, (key, group) => new { Name = key, Count = group.Count() }),
+        "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] "
+        + "FROM (SELECT [t1].[Name] AS [key],COUNT(*) AS [Count] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
     }
 
     [Test]
