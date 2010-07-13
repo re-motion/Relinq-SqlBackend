@@ -310,12 +310,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3027")]
     public void GroupBy_WithResultSelector_AndElementSelector ()
     {
       CheckQuery (
+        Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key }),
+        "SELECT [q0].[key] AS [Name_key] "
+        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
+    }
+
+    [Test]
+    [Ignore ("TODO 3018")]
+    public void GroupBy_WithResultSelector_AndElementSelector_AndAggregate ()
+    {
+      CheckQuery (
         Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key, Count = group.Min () }),
-        "SELECT [q0].[key] AS [Name],[q0].[a0] AS [Count] "
+        "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] "
         + "FROM (SELECT [t1].[Name] AS [key],MIN([t1].[ID]) AS [a0] FROM [CookTable] [t1] GROUP BY [t1].[Name]) AS [q0]");
     }
   }

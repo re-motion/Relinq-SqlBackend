@@ -298,6 +298,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
            + "WHERE NOT ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END");
     }
 
-
+    [Test]
+    public void AllAfterGroupBy_WithResultSelector ()
+    {
+      CheckQuery (
+        () => Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key }).All (x => x.Name != null),
+        "SELECT CASE WHEN NOT EXISTS(("
+        + "SELECT [q0].[key] AS [Name_key] "
+        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
+        + "WHERE NOT ([q0].[key] IS NOT NULL))) "
+        + "THEN 1 ELSE 0 END");
+    }
   }
 }

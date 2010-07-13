@@ -332,7 +332,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", expression.AggregationModifier));
 
       CommandBuilder.Append ("(");
-      VisitExpression (((NamedExpression) expression.Expression).Expression);
+
+      // TODO 3032: Fix this check
+      var nextExpression = expression.Expression is NamedExpression ? ((NamedExpression) expression.Expression).Expression : expression.Expression;
+      VisitExpression (nextExpression);
       CommandBuilder.Append (")");
 
       return expression;
