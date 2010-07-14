@@ -153,7 +153,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       Debug.Assert (_memberInfo.Equals (expression.Type.GetProperty ("Key")));
 
-      return expression.KeyExpression;
+      return NamedExpression.StripSurroundingNames (expression.KeyExpression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)

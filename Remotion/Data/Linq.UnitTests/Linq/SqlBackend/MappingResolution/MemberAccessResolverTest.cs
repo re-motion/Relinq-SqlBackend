@@ -231,6 +231,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitMemberExpression_OnGroupingSelectExpression_StripsNames ()
+    {
+      var expression = new SqlGroupingSelectExpression (
+          new NamedExpression ("k", Expression.Constant ("key")), 
+          new NamedExpression ("e", Expression.Constant ("element")));
+      var memberInfo = typeof (IGrouping<string, string>).GetProperty ("Key");
+
+      var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      Assert.That (result, Is.SameAs (((NamedExpression) expression.KeyExpression).Expression));
+    }
+
+    [Test]
     public void VisitMemberExpression_OnNewExpression_PropertyInfo ()
     {
       var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });

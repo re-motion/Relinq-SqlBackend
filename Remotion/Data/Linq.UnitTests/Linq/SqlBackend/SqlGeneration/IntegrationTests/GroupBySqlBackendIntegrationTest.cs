@@ -42,10 +42,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName select cooksByName.Key,
-          "SELECT [q0].[key] AS [key] FROM (" +
+          "SELECT [q0].[key] AS [value] FROM (" +
             "SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] " +
             "GROUP BY [t1].[Name]) AS [q0]",
-          row => (object) row.GetValue<string> (new ColumnID ("key", 0)));
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -77,10 +77,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             select new { RestaurantID = r.ID, Cooks = cooksByName }
           )
           select x.Cooks.Key,
-          "SELECT [q1].[Cooks_key] AS [key] FROM [RestaurantTable] AS [t2] CROSS APPLY (SELECT [t2].[ID] AS [RestaurantID],"
+          "SELECT [q1].[Cooks_key] AS [value] FROM [RestaurantTable] AS [t2] CROSS APPLY (SELECT [t2].[ID] AS [RestaurantID],"
             + "[q0].[key] AS [Cooks_key] FROM (SELECT [t3].[Name] AS [key] FROM [CookTable] AS [t3] WHERE ([t2].[ID] = [t3].[RestaurantID]) "
             + "GROUP BY [t3].[Name]) AS [q0]) AS [q1]",
-          row => (object) row.GetValue<string> (new ColumnID ("key", 0)));
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -88,11 +88,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks group c.ID by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
-          "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] FROM ("+
+          "SELECT [q0].[key] AS [Name],[q0].[a0] AS [Count] FROM ("+
             "SELECT [t1].[Name] AS [key], COUNT(*) AS [a0] FROM [CookTable] AS [t1] "+
             "GROUP BY [t1].[Name]) AS [q0]",
             row => (object) new { 
-                Name = row.GetValue<string> (new ColumnID ("Name_key", 0)), 
+                Name = row.GetValue<string> (new ColumnID ("Name", 0)), 
                 Count = row.GetValue<int> (new ColumnID ("Count", 1)) });
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Count() > 0 select cooksByName.Key,
-          "SELECT [q0].[key] AS [key] FROM (" +
+          "SELECT [q0].[key] AS [value] FROM (" +
             "SELECT [t1].[Name] AS [key], COUNT(*) AS [a0] FROM [CookTable] AS [t1] "+
             "GROUP BY [t1].[Name]) AS [q0] "+
             "WHERE ([q0].[a0] > @1)",
@@ -113,7 +113,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, 
-          "SELECT [q0].[key] AS [key] FROM (" +
+          "SELECT [q0].[key] AS [value] FROM (" +
             "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) AS [a0] FROM [CookTable] AS [t1] "+
             "GROUP BY [t1].[Name]) AS [q0] "+
             "WHERE ([q0].[a0] > @1)",
@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks group c by c.Name into cooksByName where cooksByName.Min (c => c.Weight) > 18 select cooksByName.Key,
-          "SELECT [q0].[key] AS [key] FROM (" +
+          "SELECT [q0].[key] AS [value] FROM (" +
             "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) AS [a0] FROM [CookTable] AS [t1] " +
             "GROUP BY [t1].[Name]) AS [q0] " +
             "WHERE ([q0].[a0] > @1)",
@@ -138,7 +138,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks group new { c.ID, c.FirstName } by c.Name into cooksByName 
           where cooksByName.Min (c => c.ID) > 18 select cooksByName.Key,
-          "SELECT [q0].[key] AS [key] FROM (" +
+          "SELECT [q0].[key] AS [value] FROM (" +
             "SELECT [t1].[Name] AS [key], MIN([t1].[ID]) AS [a0] FROM [CookTable] AS [t1] " +
             "GROUP BY [t1].[Name]) AS [q0] " +
             "WHERE ([q0].[a0] > @1)",
@@ -196,7 +196,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           into cooksByName
           from id in cooksByName
           select new { cooksByName.Key, CookID = id },
-          "SELECT [q0].[key] AS [Key_key],[q2].[element] AS [CookID] "
+          "SELECT [q0].[key] AS [Key],[q2].[element] AS [CookID] "
           + "FROM "
           + "(SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
           + "CROSS APPLY ("
@@ -205,7 +205,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]",
           row => (object) new 
           { 
-              Key = row.GetValue<string> (new ColumnID ("Key_key", 0)), 
+              Key = row.GetValue<string> (new ColumnID ("Key", 0)), 
               CookID = row.GetValue<int> (new ColumnID ("CookID", 1))
           });
     }
@@ -220,7 +220,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from cook in cooksByName
           where cook != null
           select new { cooksByName.Key, CookID = cook },
-          "SELECT [q0].[key] AS [Key_key],[q2].[element_ID] AS [CookID_ID],"
+          "SELECT [q0].[key] AS [Key],[q2].[element_ID] AS [CookID_ID],"
           + "[q2].[element_FirstName] AS [CookID_FirstName],[q2].[element_Name] AS [CookID_Name],"
           + "[q2].[element_IsStarredCook] AS [CookID_IsStarredCook],[q2].[element_IsFullTimeCook] AS [CookID_IsFullTimeCook],"
           + "[q2].[element_SubstitutedID] AS [CookID_SubstitutedID],[q2].[element_KitchenID] AS [CookID_KitchenID] "
@@ -238,7 +238,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "WHERE ([q2].[element_ID] IS NOT NULL)",
           row => (object) new 
           {
-            Key = row.GetValue<string> (new ColumnID ("Key_key", 0)),
+            Key = row.GetValue<string> (new ColumnID ("Key", 0)),
             CookID = row.GetEntity<Cook> (
               new ColumnID ("CookID_ID", 1),
               new ColumnID ("CookID_FirstName", 2),
@@ -261,7 +261,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             from c in weightsByName
             select c).Distinct()
           select new { weightsByName.Key, CookID = cook },
-          "SELECT [q0].[key] AS [Key_key],[q1].[value] AS [CookID] "
+          "SELECT [q0].[key] AS [Key],[q1].[value] AS [CookID] "
           + "FROM ("
               + "SELECT [t2].[Name] AS [key] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0] "
           + "CROSS APPLY ("
@@ -328,9 +328,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         Cooks.GroupBy  (c => c.Name, (key, group) => new { Name = key }),
-        "SELECT [q0].[key] AS [Name_key] "
+        "SELECT [q0].[key] AS [Name] "
         + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
-          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name_key", 0)) });
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
     }
 
     [Test]
@@ -338,9 +338,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key }),
-        "SELECT [q0].[key] AS [Name_key] "
+        "SELECT [q0].[key] AS [Name] "
         + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
-          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name_key", 0)) });
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
     }
 
     [Test]
