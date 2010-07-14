@@ -117,6 +117,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    protected override Expression VisitUnaryExpression (UnaryExpression expression)
+    {
+      var result = base.VisitUnaryExpression (expression);
+
+      if (ProjectionExpression != null && (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked))
+        ProjectionExpression = Expression.MakeUnary (expression.NodeType, ProjectionExpression, expression.Type, expression.Method);
+
+      return result;
+    }
+
     public override Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
     {
       throw new NotSupportedException (

@@ -292,7 +292,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
     
     [Test]
-    [Ignore ("TODO 2977")]
     public void Cast_TopLevel_OnValue ()
     {
       CheckQuery (
@@ -302,7 +301,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2977")]
     public void Cast_TopLevel_OnEntity ()
     {
       CheckQuery (

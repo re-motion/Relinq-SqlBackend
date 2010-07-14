@@ -139,9 +139,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitConvertedBooleanExpression_ProjectionExpressonIsNull ()
     {
-      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
       _visitor.ProjectionExpression = null;
 
+      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
       _visitor.VisitConvertedBooleanExpression (expression);
 
       Assert.That (_visitor.ProjectionExpression, Is.Null);
@@ -150,13 +150,69 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitConvertedBooleanExpression_ProjectionExpressonIsNotNull ()
     {
-      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
-      var projectionExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
-      _visitor.ProjectionExpression = projectionExpression;
+      _visitor.ProjectionExpression = null;
+
+      var expression = new ConvertedBooleanExpression (_namedExpression);
 
       _visitor.VisitConvertedBooleanExpression (expression);
 
-      var expectedProjection = Expression.Call(typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }), projectionExpression);
+      var expectedProjection = Expression.Call (typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }), GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
+    }
+
+    [Test]
+    public void VisitConvertExpression_ProjectionExpressonIsNull ()
+    {
+      var expression = Expression.Convert (Expression.Constant (1), typeof (double));
+      _visitor.ProjectionExpression = null;
+
+      _visitor.VisitUnaryExpression (expression);
+
+      Assert.That (_visitor.ProjectionExpression, Is.Null);
+    }
+
+    [Test]
+    public void VisitConvertExpression_ProjectionExpressonIsNotNull ()
+    {
+      _visitor.ProjectionExpression = null;
+
+      var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
+      var expression = Expression.Convert (_namedExpression, typeof (double), methodInfo);
+
+      _visitor.VisitUnaryExpression (expression);
+
+      var expectedProjection = Expression.Convert (
+          GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0),
+          typeof (double),
+          methodInfo);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
+    }
+
+    [Test]
+    public void VisitConvertCheckedExpression_ProjectionExpressonIsNull ()
+    {
+      var expression = Expression.ConvertChecked (Expression.Constant (1), typeof (double));
+      _visitor.ProjectionExpression = null;
+
+      _visitor.VisitUnaryExpression (expression);
+
+      Assert.That (_visitor.ProjectionExpression, Is.Null);
+    }
+
+    [Test]
+    public void VisitConvertCheckedExpression_ProjectionExpressonIsNotNull ()
+    {
+      _visitor.ProjectionExpression = null;
+
+      var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
+      var expression = Expression.ConvertChecked (_namedExpression, typeof (double), methodInfo);
+
+      _visitor.VisitUnaryExpression (expression);
+
+      var expectedProjection = Expression.ConvertChecked (
+          GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0),
+          typeof (double),
+          methodInfo);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
     }
 

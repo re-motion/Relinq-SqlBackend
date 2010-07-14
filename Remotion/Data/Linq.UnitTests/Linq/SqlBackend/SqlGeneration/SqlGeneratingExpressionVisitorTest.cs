@@ -367,6 +367,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitUnaryExpression_Convert ()
+    {
+      var unaryNotExpression = Expression.Convert (Expression.Constant (1), typeof (double));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          unaryNotExpression, _commandBuilder, _stageMock);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("@1"));
+    }
+
+    [Test]
+    public void VisitUnaryExpression_ConvertChecked ()
+    {
+      var unaryNotExpression = Expression.ConvertChecked (Expression.Constant (1), typeof (double));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          unaryNotExpression, _commandBuilder, _stageMock);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("@1"));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void VisitUnaryExpression_NotSupported ()
     {

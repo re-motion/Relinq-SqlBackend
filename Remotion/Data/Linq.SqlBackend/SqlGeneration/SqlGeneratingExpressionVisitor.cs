@@ -256,6 +256,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           CommandBuilder.Append ("+");
           break;
         case ExpressionType.Convert:
+        case ExpressionType.ConvertChecked:
           break;
         default:
           throw new NotSupportedException();
