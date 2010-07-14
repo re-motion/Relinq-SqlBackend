@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
 
-      return resolvedSqlStatement.SelectProjection is AggregationExpression
+      return FindAggregationExpression (resolvedSqlStatement.SelectProjection) != null
              && resolvedSqlStatement.WhereCondition == null
              && resolvedSqlStatement.Orderings.Count == 0
              && resolvedSqlStatement.GroupByExpression == null
@@ -43,6 +43,13 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
              && resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo() is ResolvedJoinedGroupingTableInfo 
              && resolvedSqlStatement.TopExpression == null
              && !resolvedSqlStatement.IsDistinctQuery;
+    }
+
+    private static AggregationExpression FindAggregationExpression (Expression expression)
+    {
+      while (expression is NamedExpression)
+        expression = ((NamedExpression) expression).Expression;
+      return expression as AggregationExpression;
     }
 
     public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement, Expression unresolvedSelectProjection, IMappingResolutionStage stage, IMappingResolutionContext context)
@@ -59,7 +66,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var visitor = new GroupAggregateSimplifier (
             resolvedSqlStatement.SqlTables[0], 
             joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
-        var newAggregation = visitor.VisitExpression (unresolvedSelectProjection);
+        
+        var aggregationExpression = FindAggregationExpression (unresolvedSelectProjection);
+        if (aggregationExpression == null)
+        {
+          throw new ArgumentException (
+              "The unresolved projection doesn't match the resolved statement: it has no aggregation.",
+              "unresolvedSelectProjection");
+        }
+        var newAggregation = visitor.VisitExpression (aggregationExpression);
 
         if (visitor.CanBeTransferredToGroupingSource)
         {

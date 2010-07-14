@@ -177,5 +177,49 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedResult = new ConvertedBooleanExpression (new NamedExpression ("outer_inner", Expression.Constant (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
+
+    [Test]
+    public void ProcessNames_Convert ()
+    {
+      var namedExpression = new NamedExpression ("outer", Expression.Convert (new NamedExpression ("inner", Expression.Constant (1)), typeof (double)));
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      var expectedResult = Expression.Convert (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void ProcessNames_Convert_WithMethod ()
+    {
+      var convertMethod = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
+      var namedExpression = new NamedExpression (
+          "outer", 
+          Expression.Convert (
+              new NamedExpression (
+                  "inner", 
+                  Expression.Constant (1)), 
+              typeof (double), 
+              convertMethod));
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      var expectedResult = Expression.Convert (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double), convertMethod);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void ProcessNames_ConvertChecked ()
+    {
+      var namedExpression = new NamedExpression (
+          "outer", 
+          Expression.ConvertChecked (new NamedExpression ("inner", Expression.Constant (1)), 
+          typeof (double)));
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      var expectedResult = Expression.ConvertChecked (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
   }
 }

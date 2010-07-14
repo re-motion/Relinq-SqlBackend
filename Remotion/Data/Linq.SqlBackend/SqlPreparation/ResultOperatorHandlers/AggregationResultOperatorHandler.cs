@@ -50,12 +50,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       sqlStatementBuilder.Orderings.Clear ();
 
-      var namedExpression = sqlStatementBuilder.SelectProjection as NamedExpression;
-      if (namedExpression == null)
-        throw new InvalidOperationException ("Named expression expected at this point");
-
       sqlStatementBuilder.SelectProjection = new AggregationExpression (
-          sqlStatementBuilder.DataInfo.DataType, new NamedExpression(namedExpression.Name, namedExpression.Expression), AggregationModifier);
+          sqlStatementBuilder.DataInfo.DataType, 
+          sqlStatementBuilder.SelectProjection, 
+          AggregationModifier);
     }
   }
 }

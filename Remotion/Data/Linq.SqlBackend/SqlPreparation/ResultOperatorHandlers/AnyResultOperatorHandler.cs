@@ -34,7 +34,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
-      
+
+      // No name required for the select projection inside of an EXISTS expression
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
 

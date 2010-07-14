@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c).Count(),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c).Count(),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Count(),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0]");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Count (name => name != null),
-          "SELECT COUNT(*) FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
+          "SELECT COUNT(*) AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)");
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => ((from c in Cooks select c.FirstName).Take ((from k in Kitchens select k).Count ())),
-          "SELECT TOP ((SELECT COUNT(*) FROM [KitchenTable] AS [t1])) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
+          "SELECT TOP ((SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1])) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -177,7 +177,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           ( () => (from s in Cooks select s).Contains(cook)),
-          "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END",
+          "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END AS [value]",
           new CommandParameter("@1", 23) );
     }
 
@@ -207,7 +207,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery(
         () => Cooks.Any(),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END"
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]"
         );
     }
 
@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         () => Cooks.Any (c=>c.FirstName=="Hugo"),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END",
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END AS [value]",
         new CommandParameter("@1", "Hugo")
         );
     }
@@ -234,7 +234,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         () => Cooks.OrderBy (c => c.FirstName).Any (),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END"
+        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]"
         );
     }
 
@@ -243,7 +243,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery(
        () => Cooks.All(c => c.Name=="Hugo"),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END",
+        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
         new CommandParameter("@1", "Hugo")
         );
     }
@@ -264,7 +264,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
        () => Cooks.OrderBy (c => c.FirstName).All (c => c.Name == "Hugo"),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END",
+        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
         new CommandParameter ("@1", "Hugo")
         );
     }
@@ -322,7 +322,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2.ID).DefaultIfEmpty().Max() > 5 select s.Name,
-          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t1] WHERE ((SELECT MAX([q0].[value]) FROM "+
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t1] WHERE ((SELECT MAX([q0].[value]) AS [value] FROM " +
           "(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2]) AS [q0] ON 1 = 1) > @1)",
           new CommandParameter ("@1", 5));
     }
@@ -332,7 +332,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.ID).Max(),
-          "SELECT MAX([t0].[ID]) FROM [CookTable] AS [t0]");
+          "SELECT MAX([t0].[ID]) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -340,7 +340,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2.ID).Max()>5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MAX([t1].[ID]) FROM [CookTable] AS [t1]) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MAX([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter("@1", 5));
     }
 
@@ -349,7 +349,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.ID).Min (),
-          "SELECT MIN([t0].[ID]) FROM [CookTable] AS [t0]");
+          "SELECT MIN([t0].[ID]) AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -357,7 +357,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2.ID).Min () > 5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MIN([t1].[ID]) FROM [CookTable] AS [t1]) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MIN([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter ("@1", 5));
     }
 
@@ -366,7 +366,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => Kitchens.Average(k=>k.RoomNumber),
-          "SELECT AVG([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]");
+          "SELECT AVG([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]");
     }
 
     [Test]
@@ -374,7 +374,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2).Average(c=>c.ID) > 5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVG([t1].[ID]) FROM [CookTable] AS [t1]) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVG([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter("@1", 5.0));
     }
 
@@ -383,7 +383,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => Kitchens.Sum (k => k.RoomNumber),
-          "SELECT SUM([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]");
+          "SELECT SUM([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]");
     }
 
     [Test]
@@ -391,7 +391,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => Kitchens.OrderBy (k => k.Name).Sum (k => k.RoomNumber),
-          "SELECT SUM([t0].[RoomNumber]) FROM [KitchenTable] AS [t0]"
+          "SELECT SUM([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]"
           );
     }
 
@@ -400,7 +400,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => Kitchens.OrderBy (k => k.Name).Take (5).Sum (k => k.RoomNumber),
-          "SELECT SUM([q0].[Key_RoomNumber]) FROM (SELECT TOP (@1) [t1].[ID] AS [Key_ID],[t1].[CookID] AS [Key_CookID],"+
+          "SELECT SUM([q0].[Key_RoomNumber]) AS [value] FROM (SELECT TOP (@1) [t1].[ID] AS [Key_ID],[t1].[CookID] AS [Key_CookID]," +
           "[t1].[Name] AS [Key_Name],[t1].[RestaurantID] AS [Key_RestaurantID],[t1].[SubKitchenID] AS [Key_SubKitchenID],"+
           "[t1].[Name] AS [Value] FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]",
           new CommandParameter("@1", 5)
@@ -412,7 +412,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2).Sum (c => c.ID) > 5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT SUM([t1].[ID]) FROM [CookTable] AS [t1]) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT SUM([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter ("@1", 5));
     }
 

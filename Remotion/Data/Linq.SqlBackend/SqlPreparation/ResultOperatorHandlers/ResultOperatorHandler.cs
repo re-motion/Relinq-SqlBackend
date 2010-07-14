@@ -84,11 +84,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         Func<ITableInfo, SqlTableBase> tableGenerator,
         ISqlPreparationStage stage)
     {
+      // Ensure that select clause is named - usually SqlPreparationQueryModelVisitor would do this, but it hasn't done it yet
+      sqlStatementBuilder.SelectProjection = new NamedExpression (null, sqlStatementBuilder.SelectProjection);
+
       var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var fromExpressionInfo = stage.PrepareFromExpression (new SqlSubStatementExpression(oldStatement), context, tableGenerator);
 
       sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
-      sqlStatementBuilder.SelectProjection = new NamedExpression (null, fromExpressionInfo.ItemSelector);
+      sqlStatementBuilder.SelectProjection = fromExpressionInfo.ItemSelector;
       sqlStatementBuilder.Orderings.AddRange (fromExpressionInfo.ExtractedOrderings);
       Debug.Assert (fromExpressionInfo.WhereCondition == null);
 

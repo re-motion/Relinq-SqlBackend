@@ -98,6 +98,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         sqlStatementBuilder.Orderings.Clear();
 
       sqlStatementBuilder.RecalculateDataInfo (originalSelectProjection);
+      // No NamedExpression required here because the row number tuple's items already have named members
       var newSqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
 
       var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);

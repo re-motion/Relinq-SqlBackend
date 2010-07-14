@@ -83,6 +83,16 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var innerNamedExpression = new NamedExpression (outerExpression.Name, convertedBooleanExpression.Expression);
         return new ConvertedBooleanExpression (ProcessNames (mappingResolutionContext, innerNamedExpression));
       }
+      else if (outerExpression.Expression.NodeType == ExpressionType.Convert || outerExpression.Expression.NodeType == ExpressionType.ConvertChecked)
+      {
+        var unaryExpression = (UnaryExpression) outerExpression.Expression;
+        var innerNamedExpression = new NamedExpression (outerExpression.Name, unaryExpression.Operand);
+        return Expression.MakeUnary (
+            unaryExpression.NodeType, 
+            ProcessNames (mappingResolutionContext, innerNamedExpression), 
+            unaryExpression.Type, 
+            unaryExpression.Method);
+      }
       else
         return outerExpression;
     }

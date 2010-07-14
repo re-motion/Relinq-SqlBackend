@@ -39,6 +39,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       var dataInfo = sqlStatementBuilder.DataInfo;
       var preparedItemExpression = stage.PrepareResultOperatorItemExpression (resultOperator.Item, context);
+      // No name required for the select projection inside of an IN expression
+      // (If the expression is a constant collection, a name would even be fatal.)
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
       var subStatementExpression = sqlSubStatement.CreateExpression();
       

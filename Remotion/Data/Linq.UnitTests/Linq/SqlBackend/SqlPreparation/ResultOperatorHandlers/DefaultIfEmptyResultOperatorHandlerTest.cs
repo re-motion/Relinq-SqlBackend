@@ -25,10 +25,8 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -39,7 +37,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private DefaultIfEmptyResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private QueryModel _queryModel;
     private SqlPreparationContext _context;
 
     [SetUp]
@@ -53,7 +50,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
                              {
                                  DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                              };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook(), ExpressionHelper.CreateSelectClause());
       _context = new SqlPreparationContext ();
     }
 
@@ -61,7 +57,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void HandleResultOperator ()
     {
       var resultOperator = new DefaultIfEmptyResultOperator (Expression.Constant (null));
-      var sqlStatement = _sqlStatementBuilder.GetSqlStatement();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
@@ -69,14 +64,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.SqlTables[0], Is.TypeOf (typeof (SqlJoinedTable)));
       Assert.That (((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       
-      ResolvedJoinInfo joinInfo = (ResolvedJoinInfo)((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo;
+      var joinInfo = (ResolvedJoinInfo)((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo;
       Assert.That (joinInfo, Is.TypeOf (typeof (ResolvedJoinInfo)));
       Assert.That (joinInfo.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (joinInfo.LeftKey, Is.TypeOf (typeof (SqlLiteralExpression)));
       Assert.That (((SqlLiteralExpression) joinInfo.LeftKey).Value, Is.EqualTo(1));
       Assert.That (joinInfo.RightKey, Is.TypeOf(typeof (SqlLiteralExpression)));
       Assert.That (((SqlLiteralExpression) joinInfo.RightKey).Value, Is.EqualTo (1));
-      Assert.That (((ResolvedSubStatementTableInfo) joinInfo.ForeignTableInfo).SqlStatement, Is.EqualTo(sqlStatement));
+      Assert.That (joinInfo.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo))); // moved to sub-statement
       Assert.That (_context.TryGetExpressionMapping (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
     }
   }

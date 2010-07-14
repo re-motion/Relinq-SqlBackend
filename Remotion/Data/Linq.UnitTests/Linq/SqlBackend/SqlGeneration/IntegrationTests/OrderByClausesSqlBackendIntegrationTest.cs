@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook==c select k).Count(),
-          "SELECT (SELECT COUNT(*) FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] "+
+          "SELECT (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] "+
           "WHERE ([t2].[ID] = [t0].[ID])) AS [value] FROM [CookTable] AS [t0]");
     }
 
@@ -122,7 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           where (from sc in Cooks orderby sc.Name select sc).Count()>0
           select c),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
-          "FROM [CookTable] AS [t0] WHERE ((SELECT COUNT(*) FROM [CookTable] AS [t1]) > @1)",
+          "FROM [CookTable] AS [t0] WHERE ((SELECT COUNT(*) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter("@1", 0));
     }
   }

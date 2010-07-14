@@ -132,20 +132,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) ((NamedExpression) ((AggregationExpression) _sqlStatementBuilder.SelectProjection).Expression).Expression).SqlTable).TableInfo,
+          ((SqlTable) ((SqlTableReferenceExpression) ((AggregationExpression) _sqlStatementBuilder.SelectProjection).Expression).SqlTable).TableInfo,
           Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Named expression expected at this point")]
-    public void HandleResultOperator_SelectProjectionNoNamedExpression_ThrowsException ()
-    {
-      _sqlStatementBuilder.SelectProjection = Expression.Constant ("select");
-     
-      var resultOperator = new MaxResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-    }
-    
   }
 }

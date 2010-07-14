@@ -98,12 +98,22 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var constantCollection = GetConstantCollectionValue (queryModel);
       if (constantCollection != null)
       {
+        // If the query is a constant collection, transform it to a trivial SqlStatement with only a select projection. In the SQL generation, this
+        // will become something like (1, 2, 3, 4) - used primarily for IN expressions.
+        // In this specific case, the select projection is not named because such a list of values cannot be named in SQL.
         SqlStatementBuilder.SelectProjection = Expression.Constant (constantCollection);
-        SqlStatementBuilder.DataInfo = queryModel.SelectClause.GetOutputDataInfo();
+        SqlStatementBuilder.DataInfo = queryModel.SelectClause.GetOutputDataInfo ();
         VisitResultOperators (queryModel.ResultOperators, queryModel);
       }
       else
+      {
         base.VisitQueryModel (queryModel);
+      }
+
+      // Always name the select projection - null indicates the default name that will later be removed if the inner expression already has a name.
+      // The name is required to be able to access the result from the executed SQL afterwards. The resolution stage will consolidate names around
+      // NewExpressions, entities, etc.
+      SqlStatementBuilder.SelectProjection = new NamedExpression (null, SqlStatementBuilder.SelectProjection);
     }
 
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
@@ -137,8 +147,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var preparedExpression = _stage.PrepareSelectExpression (selectClause.Selector, _context);
-      if (!(preparedExpression is NamedExpression))
-        preparedExpression = new NamedExpression (null, preparedExpression);
 
       SqlStatementBuilder.SelectProjection = preparedExpression;
       SqlStatementBuilder.DataInfo = selectClause.GetOutputDataInfo();

@@ -36,6 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
 
       sqlStatementBuilder.AddWhereCondition (stage.PrepareWhereExpression (Expression.Not (resultOperator.Predicate), context));
+      // No name required for the select projection inside of an EXISTS expression
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
       var subStatementExpression = new SqlSubStatementExpression (sqlSubStatement);
       var sqlExistsExpression = new SqlExistsExpression (subStatementExpression);

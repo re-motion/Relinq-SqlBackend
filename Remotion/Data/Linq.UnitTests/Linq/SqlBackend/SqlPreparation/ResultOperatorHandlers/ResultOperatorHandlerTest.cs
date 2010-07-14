@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -62,10 +63,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       _stageMock
           .Expect (mock => mock.PrepareFromExpression (
-              Arg<Expression>.Matches (expr => IsSubStatementExpression(expr, originalStatement)),
+              Arg<SqlSubStatementExpression>.Is.TypeOf,
               Arg.Is (_context),
               Arg.Is (tableGenerator)))
-          .Return (fakeFromExpressionInfo);
+          .Return (fakeFromExpressionInfo)
+          .WhenCalled (mi => 
+          {
+            var sqlStatement = ((SqlSubStatementExpression) mi.Arguments[0]).SqlStatement;
+            ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression (null, originalStatement.SelectProjection), sqlStatement.SelectProjection);
+
+            Assert.That (sqlStatement.DataInfo, Is.SameAs (originalStatement.DataInfo));
+            Assert.That (sqlStatement.WhereCondition, Is.SameAs (originalStatement.WhereCondition));
+          });
       _stageMock.Replay ();
 
       _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, tableGenerator, _stageMock);
@@ -74,8 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
 
       Assert.That (_statementBuilder.DataInfo, Is.SameAs (originalStatement.DataInfo));
       Assert.That (_statementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
-      Assert.That (_statementBuilder.SelectProjection, Is.TypeOf(typeof(NamedExpression)));
-      Assert.That (((NamedExpression) _statementBuilder.SelectProjection).Expression, Is.SameAs(fakeFromExpressionInfo.ItemSelector));
+      Assert.That (_statementBuilder.SelectProjection, Is.SameAs (fakeFromExpressionInfo.ItemSelector));
 
       var mappedItemExpression = _context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
       Assert.That (mappedItemExpression, Is.Not.Null);
