@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
@@ -40,7 +39,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       get { return _stage; }
     }
 
-    public virtual Expression<Func<IDatabaseResultRow, object>> Build (
+    public virtual void Build (
         SqlStatement sqlStatement, 
         ISqlCommandBuilder commandBuilder, 
         bool isOutermostStatement)
@@ -48,16 +47,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      var inMemoryProjection = BuildSelectPart (sqlStatement, commandBuilder, isOutermostStatement);
+      BuildSelectPart (sqlStatement, commandBuilder, isOutermostStatement);
       BuildFromPart (sqlStatement, commandBuilder);
       BuildWherePart (sqlStatement, commandBuilder);
       BuildGroupByPart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder);
-
-      return inMemoryProjection;
     }
 
-    protected virtual Expression<Func<IDatabaseResultRow, object>> BuildSelectPart (
+    protected virtual void BuildSelectPart (
         SqlStatement sqlStatement,
         ISqlCommandBuilder commandBuilder,
         bool isOutermostStatement)
@@ -74,10 +71,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       }
 
       if (isOutermostStatement)
-        return _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection);
-      
-      _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
-      return null;
+        _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      else
+        _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)

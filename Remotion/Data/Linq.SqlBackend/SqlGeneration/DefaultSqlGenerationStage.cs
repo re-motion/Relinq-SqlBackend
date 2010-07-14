@@ -44,12 +44,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
 
-    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    public virtual void GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
+      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
 
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -118,13 +118,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, false);
     }
 
-    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
+    public virtual void GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
-      return sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, true);
+      sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, true);
     }
 
     protected virtual void GenerateTextForNonSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)

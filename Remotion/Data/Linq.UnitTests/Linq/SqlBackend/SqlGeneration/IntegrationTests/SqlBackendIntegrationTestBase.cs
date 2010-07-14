@@ -87,7 +87,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       var commandBuilder = new SqlCommandBuilder();
       var sqlGenerationStage = new DefaultSqlGenerationStage();
-      commandBuilder.InMemoryProjection = sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, newSqlStatement);
+      sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, newSqlStatement);
 
       return commandBuilder.GetCommand();
     }

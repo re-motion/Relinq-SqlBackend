@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
@@ -27,8 +29,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
   // TODO Review 2977: Missing docs
   public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor
   {
-    public static new Expression<Func<IDatabaseResultRow, object>> GenerateSql (
-        Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
+    private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
+    private static readonly MethodInfo s_toBooleanMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
+
+    public new static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -38,18 +43,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
-
-      // TODO Review 2977: Move this to SqlCommandBuilder.GetInMemoryProjection()
-      if (visitor.ProjectionExpression != null)
-        return Expression.Lambda<Func<IDatabaseResultRow, object>> (
-            Expression.Convert (visitor.ProjectionExpression, typeof (object)), visitor.RowParameter);
-      return null;
     }
 
-    // TODO Review 2977: Move this to SqlCommandBuilder
-    protected readonly ParameterExpression RowParameter = Expression.Parameter (typeof (IDatabaseResultRow), "row");
-    // TODO Review 2977: Use commandBuilder.InMemoryProjectionBody instead
-    protected Expression ProjectionExpression;
     // TODO Review 2977: Make private
     protected int ColumnPosition;
 
@@ -62,13 +57,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2977: Cache this
-      var getValueMethod = RowParameter.Type.GetMethod ("GetValue");
-      ProjectionExpression = Expression.Call (
-          RowParameter, 
-          getValueMethod.MakeGenericMethod (expression.Type), 
+      var newInMemoryProjectionBody = Expression.Call (
+          CommandBuilder.InMemoryProjectionRowParameter, 
+          s_getValueMethod.MakeGenericMethod (expression.Type), 
           Expression.Constant (new ColumnID (expression.Name ?? "value", ColumnPosition++)));
       // TODO Review 2977: Extract and reuse ColumnID construction
+
+      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
 
       return base.VisitNamedExpression (expression);
     }
@@ -77,14 +72,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var getEntityMethod = RowParameter.Type.GetMethod ("GetEntity");
       var columnIds = expression.Columns
           .Select (e => new ColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName, ColumnPosition++))
           .ToArray();
-      ProjectionExpression = Expression.Call (
-          RowParameter,
-          getEntityMethod.MakeGenericMethod (expression.Type),
+      
+      var newInMemoryProjectionBody = Expression.Call (
+          CommandBuilder.InMemoryProjectionRowParameter,
+          s_getEntityMethod.MakeGenericMethod (expression.Type),
           Expression.Constant (columnIds));
+      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
 
       return base.VisitSqlEntityExpression (expression);
     }
@@ -96,11 +92,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var projectionExpressions = new List<Expression>();
       CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentExpression (expr)));
 
-      // TODO Review 2977: Check this warning
       if (expression.Members == null)
-        ProjectionExpression = Expression.New (expression.Constructor, projectionExpressions);
+        CommandBuilder.SetInMemoryProjectionBody (Expression.New (expression.Constructor, projectionExpressions));
       else
-        ProjectionExpression = Expression.New (expression.Constructor, projectionExpressions, expression.Members);
+        CommandBuilder.SetInMemoryProjectionBody (Expression.New (expression.Constructor, projectionExpressions, expression.Members));
 
       return expression;
     }
@@ -109,11 +104,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       base.VisitConvertedBooleanExpression (expression);
 
-      if (ProjectionExpression != null)
+      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody ();
+      if (oldInMemoryProjectionBody != null)
       {
-        // TODO Review 2977: Cache this method; add assertion that the ProjectionExpression is of type int
-        var toBooleanMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
-        ProjectionExpression = Expression.Call (toBooleanMethod, ProjectionExpression);
+        Debug.Assert (oldInMemoryProjectionBody.Type == typeof (int));
+        
+        var newInMemoryProjectionBody = Expression.Call (s_toBooleanMethod, oldInMemoryProjectionBody);
+        CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
       }
 
       return expression;
@@ -123,8 +120,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       var result = base.VisitUnaryExpression (expression);
 
-      if (ProjectionExpression != null && (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked))
-        ProjectionExpression = Expression.MakeUnary (expression.NodeType, ProjectionExpression, expression.Type, expression.Method);
+      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody ();
+      if (oldInMemoryProjectionBody != null && (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked))
+      {
+        var newInMemoryProjectionBody = Expression.MakeUnary (expression.NodeType, oldInMemoryProjectionBody, expression.Type, expression.Method);
+        CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
+      }
 
       return result;
     }
@@ -151,7 +152,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     private Expression VisitArgumentExpression (Expression argumentExpression)
     {
       VisitExpression (argumentExpression);
-      return ProjectionExpression;
+      
+      var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
+      Debug.Assert (argumentInMemoryProjectionBody != null);
+      CommandBuilder.SetInMemoryProjectionBody (null);
+
+      return argumentInMemoryProjectionBody;
     }
   }
 }

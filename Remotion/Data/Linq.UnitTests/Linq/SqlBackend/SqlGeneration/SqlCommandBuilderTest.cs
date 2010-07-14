@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
@@ -83,6 +85,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _sqlCommandBuilder.AppendSeparated (",", new List<string> { "Hugo", "Sepp" },(cb, value) => cb.Append(value));
       Assert.That (_sqlCommandBuilder.GetCommandText (), Is.EqualTo ("Hugo,Sepp"));
+    }
+
+    [Test]
+    public void GetInMemoryProjection_NoProjectionSet ()
+    {
+      var result = _sqlCommandBuilder.GetInMemoryProjection ();
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetInMemoryProjection_ProjectionSet ()
+    {
+      var body = Expression.Constant (0);
+      _sqlCommandBuilder.SetInMemoryProjectionBody (body);
+      
+      var result = _sqlCommandBuilder.GetInMemoryProjection ();
+
+      var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, object>> (
+          Expression.Convert (body, typeof (object)), 
+          _sqlCommandBuilder.InMemoryProjectionRowParameter);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
   }
 }
