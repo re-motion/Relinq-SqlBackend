@@ -43,19 +43,32 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       _inMemoryProjection = inMemoryProjection;
     }
 
-    // TODO Review 2977: Document this
+    /// <summary>
+    /// Gets the SQL command text. This is the command to be executed against the database. For each result row, <see cref="InMemoryProjection"/>
+    /// should be executed in order to retrieve the constructed projection.
+    /// </summary>
+    /// <value>The SQL command text.</value>
     public string CommandText
     {
       get { return _commandText; }
     }
 
-    // TODO Review 2977: Document this
+    /// <summary>
+    /// Gets the parameters to be used when executing <see cref="CommandText"/> as a SQL command.
+    /// </summary>
+    /// <value>The parameters of the query.</value>
     public CommandParameter[] Parameters
     {
       get { return _parameters; }
     }
 
-    // TODO Review 2977: Document this
+
+    /// <summary>
+    /// Gets the in-memory projection associated with this <see cref="SqlCommandData"/>. The in-memory projection can be used to construct the
+    /// objects selected by a LINQ query by applying it to each of the rows returned for the query defined by <see cref="CommandText"/>. The result 
+    /// for each row is accessed via an implementation of <see cref="IDatabaseResultRow"/> supplied by the LINQ provider.
+    /// </summary>
+    /// <value>The in-memory projection associated with this <see cref="SqlCommandData"/>.</value>
     public Expression<Func<IDatabaseResultRow, object>> InMemoryProjection
     {
       get { return _inMemoryProjection; }

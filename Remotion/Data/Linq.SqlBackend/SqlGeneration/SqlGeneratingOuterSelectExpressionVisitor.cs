@@ -26,7 +26,11 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  // TODO Review 2977: Missing docs
+  /// <summary>
+  /// Extends <see cref="SqlGeneratingSelectExpressionVisitor"/> by building an in-memory projection. This should be used for the 
+  /// <see cref="SqlStatement.SelectProjection"/> of the outermost <see cref="SqlStatement"/> in a query. For substatements, 
+  /// <see cref="SqlGeneratingSelectExpressionVisitor"/> should be used instead.
+  /// </summary>
   public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor
   {
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");

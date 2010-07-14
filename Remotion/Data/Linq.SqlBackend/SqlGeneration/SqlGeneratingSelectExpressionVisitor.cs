@@ -24,7 +24,12 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  // TODO Review 2977: Missing docs
+  /// <summary>
+  /// Extends <see cref="SqlGeneratingExpressionVisitor"/> by emitting "AS" aliases for <see cref="NamedExpression"/> and 
+  /// <see cref="SqlEntityExpression"/> instances. This should be used for the 
+  /// <see cref="SqlStatement.SelectProjection"/> of substatements. For the outermost statement, <see cref="SqlGeneratingOuterSelectExpressionVisitor"/>
+  /// should be used.
+  /// </summary>
   public class SqlGeneratingSelectExpressionVisitor : SqlGeneratingExpressionVisitor, ISqlGroupingSelectExpressionVisitor
   {
     public static new void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)

@@ -22,7 +22,9 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  // TODO Review 2977: Missing docs
+  /// <summary>
+  /// Default implementation of <see cref="ISqlCommandBuilder"/> with SQL Server identifier semantics.
+  /// </summary>
   public class SqlCommandBuilder : ISqlCommandBuilder
   {
     private readonly StringBuilder _stringBuilder;

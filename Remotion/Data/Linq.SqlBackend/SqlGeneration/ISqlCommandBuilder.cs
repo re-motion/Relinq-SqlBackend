@@ -4,7 +4,10 @@ using System.Linq.Expressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  // TODO Review 2977: Missing docs
+  /// <summary>
+  /// Used by the classes in the SQL generation stage to build a SQL command. Use <see cref="GetCommand"/> to access the command when the stage
+  /// has finished.
+  /// </summary>
   public interface ISqlCommandBuilder
   {
     ParameterExpression InMemoryProjectionRowParameter { get; }
@@ -25,6 +28,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     string GetCommandText ();
     CommandParameter[] GetCommandParameters ();
     SqlCommandData GetCommand ();
-
   }
 }

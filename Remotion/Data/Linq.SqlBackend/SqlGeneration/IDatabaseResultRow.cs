@@ -15,13 +15,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
-  // TODO Review 2977: Missing docs; also document the methods
+  /// <summary>
+  /// Used by re-linq's in-memory projections (see <see cref="SqlCommandData.InMemoryProjection"/>) in order to access values and entities from
+  /// the database result. Implementers of <see cref="IDatabaseResultRow"/> must represent a row in the database result for an executed SQL command.
+  /// When the <see cref="SqlCommandData.InMemoryProjection"/> is executed against the row, it will read all values and entities needed by the
+  /// LINQ query's select projection and then construct the full projection in-memory.
+  /// </summary>
   public interface IDatabaseResultRow
   {
+    /// <summary>
+    /// Gets the value indicated by <paramref name="columnID"/>. The value is of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The expected type of the value coming from the database result row.</typeparam>
+    /// <param name="columnID">The <see cref="ColumnID"/> identifying the value.</param>
+    /// <returns>The value of the given column in the current result row.</returns>
     T GetValue<T> (ColumnID columnID);
+    /// <summary>
+    /// Gets an entity indicated by a number of <paramref name="columnIDs"/>. The entity is of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The expected type of the entity coming from the database result row.</typeparam>
+    /// <param name="columnIDs">A list of <see cref="ColumnID"/> instances that identify all values to be used for instantiating the entity. These
+    /// values identify the columns returned by <see cref="IMappingResolver.ResolveSimpleTableInfo"/>, and they are given in the same order in which 
+    /// that method returned them.</param>
+    /// <returns>An entity constructed of the given columns in the current result row.</returns>
     T GetEntity<T> (params ColumnID[] columnIDs);
   }
 }
