@@ -54,21 +54,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     protected override void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       column.Accept (this);
+      
+      string alias = GetAliasForColumnOfEntity(column, entity);
+      if (alias != null)
+      {
+        CommandBuilder.Append (" AS ");
+        CommandBuilder.AppendIdentifier (alias);
+      }
+    }
+
+    protected string GetAliasForColumnOfEntity (SqlColumnExpression column, SqlEntityExpression entity)
+    {
       if (column.ColumnName != "*")
       {
         if (entity.Name != null)
         {
-          CommandBuilder.Append (" AS ");
-          CommandBuilder.AppendIdentifier (entity.Name + "_" + column.ColumnName);
+          return entity.Name + "_" + column.ColumnName;
         }
         else if ((entity is SqlEntityReferenceExpression) && ((SqlEntityReferenceExpression) entity).ReferencedEntity.Name != null)
         {
           // entity references without a name that point to an entity with a name must assign aliases to their columns;
           // otherwise, their columns would include the referenced entity's name
-          CommandBuilder.Append (" AS ");
-          CommandBuilder.AppendIdentifier (column.ColumnName);
+          return column.ColumnName;
         }
       }
+      return null;
     }
   }
 }

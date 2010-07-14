@@ -194,7 +194,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       return Expression.Call (
           expectedRowParameter,
           typeof (IDatabaseResultRow).GetMethod ("GetEntity").MakeGenericMethod (typeof (Cook)),
-          Expression.Constant (new[] { new ColumnID ("ID", columnPositionStart++), new ColumnID ("Name", columnPositionStart++), new ColumnID ("FirstName", columnPositionStart++)}));
+          Expression.Constant (new[] { 
+              new ColumnID ("test_ID", columnPositionStart), 
+              new ColumnID ("test_Name", columnPositionStart + 1), 
+              new ColumnID ("test_FirstName", columnPositionStart + 2) }));
     }
 
     private MethodCallExpression GetExpectedProjectionForNamedExpression (ParameterExpression expectedRowParameter, string name, int columnPosoitionStart)

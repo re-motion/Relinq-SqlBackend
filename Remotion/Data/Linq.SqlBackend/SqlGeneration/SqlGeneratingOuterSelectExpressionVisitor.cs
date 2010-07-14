@@ -76,10 +76,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var getEntityMethod = RowParameter.Type.GetMethod ("GetEntity");
+      var columnIds = expression.Columns
+          .Select (e => new ColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName, ColumnPosition++))
+          .ToArray();
       ProjectionExpression = Expression.Call (
           RowParameter,
           getEntityMethod.MakeGenericMethod (expression.Type),
-          Expression.Constant (expression.Columns.Select (e => new ColumnID (e.ColumnName ?? "value", ColumnPosition++)).ToArray()));
+          Expression.Constant (columnIds));
 
       return base.VisitSqlEntityExpression (expression);
     }

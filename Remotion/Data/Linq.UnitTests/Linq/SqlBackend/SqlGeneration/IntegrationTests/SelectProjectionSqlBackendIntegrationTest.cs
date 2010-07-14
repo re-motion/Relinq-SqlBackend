@@ -30,7 +30,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
   [TestFixture]
   public class SelectProjectionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
-    // TODO Review 2977: Add more integration tests for the projection
     [Test]
     public void Entity ()
     {
@@ -64,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           Kitchens.Select<Kitchen, object> (k => null),
           "SELECT NULL AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object)row.GetValue<object> (new ColumnID ("value", 0)));
+          row => (object) row.GetValue<object> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -73,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from k in Kitchens select true,
           "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object)Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
+          row => (object) Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
           new CommandParameter ("@1", 1));
     }
 
@@ -269,13 +268,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],[t2].[Name] AS [A_Name],"+
           "[t2].[IsStarredCook] AS [A_IsStarredCook],[t2].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
           "[t2].[SubstitutedID] AS [A_SubstitutedID],[t2].[KitchenID] AS [A_KitchenID] FROM [CookTable] AS [t2]) AS [q0]) AS [q1]",
-          row => (object) new { A = row.GetEntity<Cook> (new ColumnID ("ID", 0),
-                                                         new ColumnID ("FirstName", 1),
-                                                         new ColumnID ("Name", 2),
-                                                         new ColumnID ("IsStarredCook", 3),
-                                                         new ColumnID ("IsFullTimeCook", 4),
-                                                         new ColumnID ("SubstitutedID", 5),
-                                                         new ColumnID ("KitchenID", 6)) });
+          row => (object) new { A = row.GetEntity<Cook> (new ColumnID ("A_ID", 0),
+                                                         new ColumnID ("A_FirstName", 1),
+                                                         new ColumnID ("A_Name", 2),
+                                                         new ColumnID ("A_IsStarredCook", 3),
+                                                         new ColumnID ("A_IsFullTimeCook", 4),
+                                                         new ColumnID ("A_SubstitutedID", 5),
+                                                         new ColumnID ("A_KitchenID", 6))
+          });
 
       CheckQuery (
           from x in (from y in (from c in Cooks select new { A = c.ID }).Distinct () select new { B = y }).Distinct () select x,
@@ -323,17 +323,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook },
-          "SELECT [t0].[IsStarredCook] AS [IsStarredCook] FROM [CookTable] AS [t0]");
+          "SELECT [t0].[IsStarredCook] AS [IsStarredCook] FROM [CookTable] AS [t0]",
+          row => (object) new { IsStarredCook = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0))) });
 
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true },
           "SELECT [t0].[IsStarredCook] AS [IsStarredCook],@1 AS [True] FROM [CookTable] AS [t0]",
+          row => (object) new 
+          { 
+              IsStarredCook = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0))), 
+              True = Convert.ToBoolean (row.GetValue<int> (new ColumnID("True", 1))) 
+          },
           new CommandParameter ("@1", 1));
       
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true, HasFirstName = c.FirstName != null },
           "SELECT [t0].[IsStarredCook] AS [IsStarredCook]," 
           + "@1 AS [True],CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [HasFirstName] FROM [CookTable] AS [t0]",
+          row => (object) new
+          { 
+              IsStarredCook = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0))),
+              True = Convert.ToBoolean (row.GetValue<int> (new ColumnID("True", 1))),
+              HasFirstName = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("HasFirstName", 2)))
+          },
           new CommandParameter ("@1", 1));
     }
 
