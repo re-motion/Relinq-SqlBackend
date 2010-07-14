@@ -326,7 +326,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 2977")]
     public void OfType ()
     {
       CheckQuery (
@@ -356,7 +355,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               new ColumnID ("IsStarredCook", 3),
               new ColumnID ("IsFullTimeCook", 4),
               new ColumnID ("SubstitutedID", 5),
-              new ColumnID ("KitchenID", 6)),
+              new ColumnID ("KitchenID", 6),
+              new ColumnID ("LetterOfRecommendation", 7)),
           new CommandParameter("@1", 1));
 
       CheckQuery (
@@ -370,7 +370,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               new ColumnID ("IsStarredCook", 3),
               new ColumnID ("IsFullTimeCook", 4),
               new ColumnID ("SubstitutedID", 5),
-              new ColumnID ("KitchenID", 6)),
+              new ColumnID ("KitchenID", 6),
+              new ColumnID ("LetterOfRecommendation", 7)),
           new CommandParameter("@1", 1));
     }
 
