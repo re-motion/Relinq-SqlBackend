@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForSelectionExpression (commandBuilder, expression);
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
 
     public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return GenerateTextForOuterSelectionExpression (commandBuilder, expression);
+      return SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
 
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForNonSelectionExpression (commandBuilder, expression);
+      GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForNonSelectionExpression (commandBuilder, expression);
+      GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForNonSelectionExpression (commandBuilder, expression);
+      GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -81,7 +81,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForNonSelectionExpression (commandBuilder, expression);
+      GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public void GenerateTextForGroupByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      GenerateTextForNonSelectionExpression (commandBuilder, expression);
+      GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering)
@@ -127,31 +127,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, true);
     }
 
-    // TODO Review 2977: Rename
-    protected virtual void GenerateTextForNonSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    protected virtual void GenerateTextForNonSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, this);
-    }
-
-    // TODO Review 2977: Remove
-    protected virtual void GenerateTextForSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
-    {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
-    }
-
-    // TODO Review 2977: Remove
-    protected virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSelectionExpression (ISqlCommandBuilder commandBuilder, Expression expression)
-    {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      return SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
   }
 }
