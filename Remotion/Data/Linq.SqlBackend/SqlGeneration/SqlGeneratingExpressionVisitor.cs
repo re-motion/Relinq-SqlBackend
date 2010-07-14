@@ -42,7 +42,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        ISqlGroupingSelectExpressionVisitor,
         IConvertedBooleanExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
@@ -340,17 +339,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
-
-      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
-
-      return expression;
-    }
-    
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

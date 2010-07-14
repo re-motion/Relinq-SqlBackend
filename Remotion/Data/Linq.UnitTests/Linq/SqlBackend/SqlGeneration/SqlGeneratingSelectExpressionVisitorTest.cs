@@ -61,7 +61,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name] AS [test]"));
     }
 
-    // TODO Review 2977: Test with unnamed entity
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_UnnamedEntity ()
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
+      var sqlColumnListExpression = new SqlEntityDefinitionExpression (
+          typeof (string),
+          "t",
+          null,
+          primaryKeyColumn,
+          new[]
+          {
+              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+          });
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (
+          sqlColumnListExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
+    }
 
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity ()
@@ -103,7 +122,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_VisitSqlEntityExpression_EntityReference_Unnamed_ToNamed ()
+    public void GenerateSql_VisitSqlEntityExpression_UnnamedEntity_ReferencingNamed ()
     {
       var referencedEntity = new SqlEntityDefinitionExpression (
           typeof (Cook),
@@ -122,9 +141,57 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Cook_Name] AS [Name],[c].[Cook_City] AS [City]"));
     }
 
-    // TODO Review 2977: Test with unnamed entity reference to unnamed and named entity reference
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_UnnamedEntity_ReferencingUnnamed ()
+    {
+      var referencedEntity = new SqlEntityDefinitionExpression (
+          typeof (Cook),
+          "c",
+          null,
+          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          new[]
+          {
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+          });
+      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", null, referencedEntity);
 
-    // TODO Review 2977: Move implementation of VisitSqlGroupingSelectExpression to this visitor
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name],[c].[City]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_NamedEntity_ReferencingNamed ()
+    {
+      var referencedEntity = new SqlEntityDefinitionExpression (
+          typeof (Cook),
+          "c",
+          "Cook",
+          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          new[]
+          {
+              new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
+              new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
+          });
+      var entityExpression = new SqlEntityReferenceExpression (typeof (Cook), "c", "ref", referencedEntity);
+
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (entityExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Cook_Name] AS [ref_Name],[c].[Cook_City] AS [ref_City]"));
+    }
+
+    [Test]
+    public void VisitSqlGroupingSelectExpression_WithoutAggregationExpressions ()
+    {
+      var groupingExpression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
+
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (groupingExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo ("keyExpression"));
+    }
+
     [Test]
     public void VisitSqlGroupingSelectExpression_WithAggregationExpressions_AndNames ()
     {
@@ -139,6 +206,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandParameters ()[1].Value, Is.EqualTo ("aggregation1"));
       Assert.That (_commandBuilder.GetCommandParameters ()[2].Value, Is.EqualTo ("aggregation2"));
     }
-
   }
 }

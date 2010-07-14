@@ -73,47 +73,56 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitNamedExpression ()
     {
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
       _visitor.VisitNamedExpression (_namedExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
-      // TODO Review 2977: Ensure that position has been incremented
-      // TODO Review 2977: probably not required
-      // TODO Review 2977: Also check command text
-      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 AS [test]"));
     }
 
     [Test]
     public void VisitSqlEntityExpression ()
     {
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
       _visitor.VisitSqlEntityExpression (_entityExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (3));
 
       var expectedProjection = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 0);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _visitor.ProjectionExpression);
-      // TODO Review 2977: Ensure that position has been incremented
-      // TODO Review 2977: Probably not required
-      // TODO Review 2977: Also check command text
-      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
     }
 
     [Test]
     public void VisitNewExpression_WithoutMembers ()
     {
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
       var newExpression = Expression.New (
           typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof(int), typeof (Cook)}), 
           new Expression[] { _namedExpression, _entityExpression });
-
       _visitor.VisitNewExpression (newExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (4));
 
       var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
-      var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpression (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
+      
+      var expectedProjectionForNewExpression = Expression.New (
+          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression });
 
-      // TODO Review 2977: Also check command text
-      // TODO Review 2977: Also check position
+      Assert.That (
+          _commandBuilder.GetCommandText (), 
+          Is.EqualTo ("@1 AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
-      // TODO Review 2977: Probably not needed
-      ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
     }
 
     [Test]
@@ -130,7 +139,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (_expectedRowParameter, "test", 0);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (_expectedRowParameter, 1);
-      var expectedProjectionForNewExpression = GetExpectedProjectionForNewExpressionWithMembers (expectedProjectionForNamedExpression, expectedProjectionForEntityExpression);
+      
+      var expectedProjectionForNewExpression = Expression.New (
+          keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression },
+          keyValueType.GetProperty ("Key"), keyValueType.GetProperty ("Value"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _visitor.ProjectionExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (_expectedRowParameter, _visitor.RowParameter);
@@ -225,24 +238,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
       _visitor.VisitSqlGroupingSelectExpression (expression);
-    }
-
-    // TODO Review 2977: Inline
-    private NewExpression GetExpectedProjectionForNewExpression (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)
-    {
-      return Expression.New (
-          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
-          new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression });
-    }
-
-    // TODO Review 2977: Inline
-    private NewExpression GetExpectedProjectionForNewExpressionWithMembers (MethodCallExpression expectedProjectionForNamedExpression, MethodCallExpression expectedProjectionForEntityExpression)
-    {
-      var keyValueType = typeof (KeyValuePair<int, Cook>);
-      return Expression.New (
-          keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
-          new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression },
-          keyValueType.GetProperty ("Key"), keyValueType.GetProperty ("Value"));
     }
 
     private MethodCallExpression GetExpectedProjectionForEntityExpression (ParameterExpression expectedRowParameter, int columnPositionStart)

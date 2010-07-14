@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -23,7 +24,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   // TODO Review 2977: Missing docs
-  public class SqlGeneratingSelectExpressionVisitor : SqlGeneratingExpressionVisitor
+  public class SqlGeneratingSelectExpressionVisitor : SqlGeneratingExpressionVisitor, ISqlGroupingSelectExpressionVisitor
   {
     public static new void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -48,6 +49,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       CommandBuilder.Append (" AS ");
       CommandBuilder.AppendIdentifier (expression.Name ?? "value");
       
+      return expression;
+    }
+
+    public virtual Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
+
+      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
+
       return expression;
     }
 

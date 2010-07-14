@@ -586,12 +586,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitNamedExpression ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
-      // TODO Review 2977: Test with a non-null name
-      var expression = new NamedExpression (null, columnExpression);
+      var expression = new NamedExpression ("xx", columnExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[c].[Name]"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[Name]"));
     }
 
     [Test]
@@ -647,32 +646,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("COUNT(*)"));
-    }
-
-    [Test]
-    public void VisitSqlGroupingSelectExpression_WithoutAggregationExpressions ()
-    {
-      var groupingExpression = new SqlGroupingSelectExpression (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
-
-      SqlGeneratingExpressionVisitor.GenerateSql (groupingExpression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
-      Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo ("keyExpression"));
-    }
-
-    [Test]
-    public void VisitSqlGroupingSelectExpression_WithAggregationExpressions_AndNames ()
-    {
-      var groupingExpression = SqlGroupingSelectExpression.CreateWithNames (Expression.Constant ("keyExpression"), Expression.Constant ("elementExpression"));
-      groupingExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation1"));
-      groupingExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation2"));
-
-      SqlGeneratingExpressionVisitor.GenerateSql (groupingExpression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1, @2, @3"));
-      Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo ("keyExpression"));
-      Assert.That (_commandBuilder.GetCommandParameters()[1].Value, Is.EqualTo ("aggregation1"));
-      Assert.That (_commandBuilder.GetCommandParameters()[2].Value, Is.EqualTo ("aggregation2"));
     }
 
     [Test]
