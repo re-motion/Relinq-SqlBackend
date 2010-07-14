@@ -22,6 +22,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
@@ -37,6 +38,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "Queries selecting collections are not supported because SQL is not well-suited to returning collections.", 
+        MatchType = MessageMatch.Contains)]
+    public void GenerateSql_Collection ()
+    {
+      var expression = Expression.Constant (new Cook[] { });
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+    }
+
+    [Test]
+    public void GenerateSql_Collection_Grouping ()
+    {
+      var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
+    }
+
+    [Test]
+    public void GenerateTextForSelectExpression_CollectionInSelectProjection_StringsNotDetectedAsCollections ()
+    {
+      var expression = Expression.Constant ("test");
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
     }
 
     [Test]

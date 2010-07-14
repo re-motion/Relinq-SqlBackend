@@ -60,6 +60,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Queries selecting collections are not supported because SQL is not well-suited to returning collections.",
+        MatchType = MessageMatch.Contains)]
+    public void GenerateSql_Collection ()
+    {
+      var expression = Expression.Constant (new Cook[] { });
+      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+    }
+
+    [Test]
     public void GenerateSql_CreatesFullInMemoryProjectionLambda ()
     {
       var result = SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);

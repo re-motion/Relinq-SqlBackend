@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -32,12 +33,36 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
+      EnsureNoCollectionExpression (expression);
+
       var visitor = new SqlGeneratingSelectExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
     }
 
+    protected static void EnsureNoCollectionExpression (Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+      {
+        var message = 
+            "Queries selecting collections are not supported because SQL is not well-suited to returning collections. You can use "
+            + "SelectMany or an additional 'from' clause to return the elements of the collection, grouping them in-memory."
+            + Environment.NewLine
+            + Environment.NewLine
+            + "Ie., instead of 'from c in Cooks select c.Assistants', write the following query: "
+            + Environment.NewLine
+            + "'(from c in Cooks from a in Assistants select new { GroupID = c.ID, Element = a }).AsEnumerable().GroupBy (t => t.GroupID, t => t.Element)'"
+            + Environment.NewLine
+            + Environment.NewLine
+            + "Note that above query will group the query result in-memory, which might be inefficient, depending on the number of results returned "
+            + "by the query.";
+        throw new NotSupportedException (message);
+      }
+    }
+
     protected SqlGeneratingSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
-        : base(commandBuilder, stage)
+        : base (commandBuilder, stage)
     {
     }
 

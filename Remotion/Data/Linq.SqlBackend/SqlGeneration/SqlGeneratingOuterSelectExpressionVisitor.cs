@@ -34,6 +34,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
+      EnsureNoCollectionExpression (expression);
+
       var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
       visitor.VisitExpression (expression);
 

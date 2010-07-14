@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -42,10 +41,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO Review 2977: Move this check to the select visitors; encapsulate and reuse in a common method
-      if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
-        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
-
       GenerateTextForSelectionExpression (commandBuilder, expression);
     }
 
@@ -53,10 +48,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
-
-      // TODO Review 2977: Move this check to the select visitors; encapsulate and reuse in a common method
-      if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
-        throw new NotSupportedException ("Subquery selects a collection where a single value is expected.");
 
       return GenerateTextForOuterSelectionExpression (commandBuilder, expression);
     }
