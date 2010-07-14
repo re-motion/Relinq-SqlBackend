@@ -102,16 +102,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3020: Invalid name")]
     public void GroupBy_Min_WithNonTrivialElementExpression ()
     {
       CheckQuery (
           from c in Cooks group c.Weight by c.Name into cooksByName where cooksByName.Min () > 18 select cooksByName.Key, 
           "SELECT [q0].[key] AS [key] FROM (" +
-            "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) as [a0] FROM [CookTable] AS [t1] "+
+            "SELECT [t1].[Name] AS [key], MIN([t1].[Weight]) AS [a0] FROM [CookTable] AS [t1] "+
             "GROUP BY [t1].[Name]) AS [q0] "+
             "WHERE ([q0].[a0] > @1)",
-            new CommandParameter ("@1", 18));
+            new CommandParameter ("@1", 18.0));
     }
 
     [Test]
