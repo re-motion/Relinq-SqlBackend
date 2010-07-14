@@ -68,70 +68,89 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       _generator = new UniqueIdentifierGenerator();
     }
 
-    protected SqlCommandData GenerateSql (Expression expression)
-    {
-      return GenerateSql(ExpressionHelper.ParseQuery (expression));
-    }
-
     protected SqlCommandData GenerateSql (QueryModel queryModel)
     {
-      var preparationContext = new SqlPreparationContext ();
-      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
-      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+      var preparationContext = new SqlPreparationContext();
+      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
+      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
           queryModel,
           preparationContext,
-          new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault (), resultOperatorHandlerRegistry, uniqueIdentifierGenerator), _generator, resultOperatorHandlerRegistry);
+          new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), resultOperatorHandlerRegistry, uniqueIdentifierGenerator),
+          _generator,
+          resultOperatorHandlerRegistry);
 
-      var resolver = new MappingResolverStub ();
+      var resolver = new MappingResolverStub();
       var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
-      var mappingResolutionContext = new MappingResolutionContext ();
+      var mappingResolutionContext = new MappingResolutionContext();
       var newSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);
 
-      var commandBuilder = new SqlCommandBuilder ();
-      var sqlGenerationStage = new DefaultSqlGenerationStage ();
+      var commandBuilder = new SqlCommandBuilder();
+      var sqlGenerationStage = new DefaultSqlGenerationStage();
       commandBuilder.InMemoryProjection = sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, newSqlStatement);
 
-      return commandBuilder.GetCommand ();
+      return commandBuilder.GetCommand();
     }
 
     protected void CheckQuery<T> (IQueryable<T> queryable, string expectedStatement, params CommandParameter[] expectedParameters)
     {
-      var result = GenerateSql (queryable.Expression);
-
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
-      Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
+      CheckQuery (queryable, expectedStatement, null, expectedParameters);
     }
 
     protected void CheckQuery<T> (
-        IQueryable<T> queryable, 
-        string expectedStatement, 
+        IQueryable<T> queryable,
+        string expectedStatement,
         Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
         params CommandParameter[] expectedParameters)
     {
-      var result = GenerateSql (queryable.Expression);
-
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
-      Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
-
-      var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
-      ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.InMemoryProjection);
+      CheckQuery (queryable.Expression, expectedStatement, expectedInMemoryProjection, expectedParameters);
     }
 
     protected void CheckQuery<T> (Expression<Func<T>> queryLambda, string expectedStatement, params CommandParameter[] expectedParameters)
     {
-      var result = GenerateSql (queryLambda.Body);
-
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
-      Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
+      CheckQuery (queryLambda, expectedStatement, null, expectedParameters);
     }
 
-    protected void CheckQuery(QueryModel queryModel, string expectedStatement, params CommandParameter[] expectedParameters)
+    protected void CheckQuery<T> (
+        Expression<Func<T>> queryLambda,
+        string expectedStatement,
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        params CommandParameter[] expectedParameters)
+    {
+      CheckQuery (queryLambda.Body, expectedStatement, expectedInMemoryProjection, expectedParameters);
+    }
+
+    protected void CheckQuery (
+        Expression queryExpression,
+        string expectedStatement,
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        params CommandParameter[] expectedParameters)
+    {
+      var queryModel = ExpressionHelper.ParseQuery (queryExpression);
+      CheckQuery (queryModel, expectedStatement, expectedInMemoryProjection, expectedParameters);
+    }
+
+    protected void CheckQuery (QueryModel queryModel, string expectedStatement, params CommandParameter[] expectedParameters)
+    {
+      CheckQuery (queryModel, expectedStatement, null, expectedParameters);
+    }
+
+    protected void CheckQuery (
+        QueryModel queryModel,
+        string expectedStatement,
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        params CommandParameter[] expectedParameters)
     {
       var result = GenerateSql (queryModel);
 
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
+
+      if (expectedInMemoryProjection != null)
+      {
+        var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
+        ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.InMemoryProjection);
+      }
     }
   }
 }

@@ -43,6 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.FirstName == "Hugo" ? "test1" : "test2",
           "SELECT CASE WHEN ([t0].[FirstName] = @1) THEN @2 ELSE @3 END AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "test1"),
           new CommandParameter ("@3", "test2"));

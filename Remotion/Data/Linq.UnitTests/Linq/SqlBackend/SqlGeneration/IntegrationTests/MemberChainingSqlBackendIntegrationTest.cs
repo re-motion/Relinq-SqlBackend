@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -29,7 +30,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in Cooks select s.FirstName,
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -38,7 +40,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from k in Kitchens select k.Cook,
           "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
-          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]");
+          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]",
+           row => (object) row.GetEntity<Cook> (
+              new ColumnID ("ID", 0),
+              new ColumnID ("FirstName", 1),
+              new ColumnID ("Name", 2),
+              new ColumnID ("IsStarredCook", 3),
+              new ColumnID ("IsFullTimeCook", 4),
+              new ColumnID ("SubstitutedID", 5),
+              new ColumnID ("KitchenID", 6)));
     }
 
     [Test]
@@ -99,7 +109,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.MetaID.ClassID,
-          "SELECT [t0].[ClassID] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT [t0].[ClassID] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0))
           );
     }
   }

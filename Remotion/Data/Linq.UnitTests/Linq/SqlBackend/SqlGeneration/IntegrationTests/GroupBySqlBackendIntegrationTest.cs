@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -43,7 +44,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks group c by c.Name into cooksByName select cooksByName.Key,
           "SELECT [q0].[key] AS [key] FROM (" +
             "SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] " +
-            "GROUP BY [t1].[Name]) AS [q0]");
+            "GROUP BY [t1].[Name]) AS [q0]",
+          row => (object) row.GetValue<string> (new ColumnID ("key", 0)));
     }
 
     [Test]
@@ -61,7 +63,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
               + "GROUP BY [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID]"
               + ") AS [q0] "
-          + "WHERE ([q0].[key_ID] IS NOT NULL)");
+          + "WHERE ([q0].[key_ID] IS NOT NULL)",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -76,7 +79,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           select x.Cooks.Key,
           "SELECT [q1].[Cooks_key] AS [key] FROM [RestaurantTable] AS [t2] CROSS APPLY (SELECT [t2].[ID] AS [RestaurantID],"
             + "[q0].[key] AS [Cooks_key] FROM (SELECT [t3].[Name] AS [key] FROM [CookTable] AS [t3] WHERE ([t2].[ID] = [t3].[RestaurantID]) "
-            + "GROUP BY [t3].[Name]) AS [q0]) AS [q1]");
+            + "GROUP BY [t3].[Name]) AS [q0]) AS [q1]",
+          row => (object) row.GetValue<string> (new ColumnID ("key", 0)));
     }
 
     [Test]
@@ -86,7 +90,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks group c.ID by c.Name into cooksByName select new { Name = cooksByName.Key, Count = cooksByName.Count() }, 
           "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] FROM ("+
             "SELECT [t1].[Name] AS [key], COUNT(*) AS [a0] FROM [CookTable] AS [t1] "+
-            "GROUP BY [t1].[Name]) AS [q0]");
+            "GROUP BY [t1].[Name]) AS [q0]",
+            row => (object) new { 
+                Name = row.GetValue<string> (new ColumnID ("Name_key", 0)), 
+                Count = row.GetValue<int> (new ColumnID ("Count", 1)) });
     }
 
     [Test]
@@ -195,7 +202,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "CROSS APPLY ("
           + "SELECT [t1].[ID] AS [element] FROM [CookTable] AS [t1] "
           + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
-          + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]");
+          + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]",
+          row => (object) new 
+          { 
+              Key = row.GetValue<string> (new ColumnID ("Key_key", 0)), 
+              CookID = row.GetValue<int> (new ColumnID ("CookID", 1))
+          });
     }
     
     [Test]
@@ -223,7 +235,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "FROM [CookTable] AS [t1] "
           + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
           + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2] "
-          + "WHERE ([q2].[element_ID] IS NOT NULL)");
+          + "WHERE ([q2].[element_ID] IS NOT NULL)",
+          row => (object) new 
+          {
+            Key = row.GetValue<string> (new ColumnID ("Key_key", 0)),
+            CookID = row.GetEntity<Cook> (
+              new ColumnID ("CookID_ID", 1),
+              new ColumnID ("CookID_FirstName", 2),
+              new ColumnID ("CookID_Name", 3),
+              new ColumnID ("CookID_IsStarredCook", 4),
+              new ColumnID ("CookID_IsFullTimeCook", 5),
+              new ColumnID ("CookID_SubstitutedID", 6),
+              new ColumnID ("CookID_KitchenID", 7))
+          });
     }
 
     [Test]
@@ -305,7 +329,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         Cooks.GroupBy  (c => c.Name, (key, group) => new { Name = key }),
         "SELECT [q0].[key] AS [Name_key] "
-        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
+        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name_key", 0)) });
     }
 
     [Test]
@@ -314,7 +339,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key }),
         "SELECT [q0].[key] AS [Name_key] "
-        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
+        + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name_key", 0)) });
     }
 
     [Test]
@@ -324,7 +350,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         Cooks.GroupBy (c => c.Name, (key, group) => new { Name = key, Count = group.Count() }),
         "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] "
-        + "FROM (SELECT [t1].[Name] AS [key],COUNT(*) AS [Count] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]");
+        + "FROM (SELECT [t1].[Name] AS [key],COUNT(*) AS [Count] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
+          row => (object) new 
+          { 
+            Name = row.GetValue<string> (new ColumnID ("Name_key", 0)),
+            Count = row.GetValue<string> (new ColumnID ("Count", 1))
+          });
     }
 
     [Test]
@@ -334,7 +365,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key, Count = group.Min () }),
         "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] "
-        + "FROM (SELECT [t1].[Name] AS [key],MIN([t1].[ID]) AS [a0] FROM [CookTable] [t1] GROUP BY [t1].[Name]) AS [q0]");
+        + "FROM (SELECT [t1].[Name] AS [key],MIN([t1].[ID]) AS [a0] FROM [CookTable] [t1] GROUP BY [t1].[Name]) AS [q0]",
+        row => (object) new 
+          { 
+            Name = row.GetValue<string> (new ColumnID ("Name_key", 0)),
+            Count = row.GetValue<string> (new ColumnID ("Count", 1))
+          });
     }
   }
 }

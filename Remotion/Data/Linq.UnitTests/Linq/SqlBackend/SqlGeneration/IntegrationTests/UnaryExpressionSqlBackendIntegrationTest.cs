@@ -36,7 +36,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           query,
-          "SELECT +[t0].[Weight] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT +[t0].[Weight] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<double> (new ColumnID ("value", 0))
           );
     }
 
@@ -45,7 +46,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select -c.ID,
-          "SELECT -[t0].[ID] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT -[t0].[ID] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0))
           );
     }
 
@@ -72,7 +74,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select !c.IsStarredCook,
-          "SELECT CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]"
+          "SELECT CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
+          row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))
           );
     }
 
@@ -81,7 +84,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select ~c.ID,
-          "SELECT ~[t0].[ID] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT ~[t0].[ID] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0))
           );
     }
 

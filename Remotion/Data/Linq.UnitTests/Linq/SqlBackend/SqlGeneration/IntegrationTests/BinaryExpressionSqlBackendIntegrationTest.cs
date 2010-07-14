@@ -146,15 +146,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void AndAlso_OrElse_WithTrueFalse ()
     {
-      // ReSharper disable ConditionIsAlwaysTrueOrFalse
       CheckQuery (
+        // ReSharper disable ConditionIsAlwaysTrueOrFalse
+        // ReSharper disable RedundantLogicalConditionalExpressionOperand
           from c in Cooks where ((c.Name == "Huber") && true) || (false && (c.Name == "Huber")) select c.FirstName,
+      // ReSharper restore RedundantLogicalConditionalExpressionOperand
+        // ReSharper restore ConditionIsAlwaysTrueOrFalse
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND (@2 = 1)) OR ((@3 = 1) AND ([t0].[Name] = @4)))",
           new CommandParameter ("@1", "Huber"),
           new CommandParameter ("@2", 1),
           new CommandParameter ("@3", 0),
           new CommandParameter ("@4", "Huber"));
-      // ReSharper restore ConditionIsAlwaysTrueOrFalse
     }
 
     [Test]
@@ -163,6 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.FirstName ?? "hugo",
           "SELECT (COALESCE ([t0].[FirstName], @1)) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "hugo")
           );
     }
@@ -173,16 +176,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.FirstName + "Test",
           "SELECT ([t0].[FirstName] + @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Test")
           );
       CheckQuery (
           from c in Cooks select c.FirstName + 10,
           "SELECT ([t0].[FirstName] + @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.FirstName + " " + c.Name,
           "SELECT (([t0].[FirstName] + @1) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", " ")
           );
     }
@@ -193,26 +199,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.ID + 10,
           "SELECT ([t0].[ID] + @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID - 10,
           "SELECT ([t0].[ID] - @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID * 10,
           "SELECT ([t0].[ID] * @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID / 10,
           "SELECT ([t0].[ID] / @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID % 10,
           "SELECT ([t0].[ID] % @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
     }
@@ -223,16 +234,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select checked (c.ID + 10),
           "SELECT ([t0].[ID] + @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select checked (c.ID - 10),
           "SELECT ([t0].[ID] - @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select checked (c.ID * 10),
           "SELECT ([t0].[ID] * @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
     }
@@ -243,16 +257,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select unchecked (c.ID + 10),
           "SELECT ([t0].[ID] + @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select unchecked (c.ID - 10),
           "SELECT ([t0].[ID] - @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select unchecked (c.ID * 10),
           "SELECT ([t0].[ID] * @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
     }
@@ -268,6 +285,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           query,
           "SELECT (POWER ([t0].[Weight], @1)) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<double> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 3.0)
           );
     }
@@ -278,16 +296,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks select c.ID & 10,
           "SELECT ([t0].[ID] & @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID | 10,
           "SELECT ([t0].[ID] | @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
       CheckQuery (
           from c in Cooks select c.ID ^ 10,
           "SELECT ([t0].[ID] ^ @1) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 10)
           );
     }
@@ -299,16 +320,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from k in Kitchens where k.Cook == null select k.Name,
           "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
           + "WHERE ([t1].[ID] IS NULL)");
-
-      //"SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t2] ON [t0].[ID] = [t2].[KitchenID] 
-      //+"WHERE ([t2].[ID] IS NULL)"
     }
 
 
     [Test]
     public void EntityConstantExpression_WithIDMember ()
     {
-      var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
+      var cook = new Cook { ID = 5, Name = "Maier", FirstName = "Hugo" };
       CheckQuery (
           from c in Cooks where c.ID == cook.ID select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
@@ -319,7 +337,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void EntityConstantExpression_WithReference ()
     {
-      var cook = new Cook() { ID = 5, Name = "Maier", FirstName = "Hugo" };
+      var cook = new Cook { ID = 5, Name = "Maier", FirstName = "Hugo" };
       CheckQuery (
           from c in Cooks where c == cook select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
