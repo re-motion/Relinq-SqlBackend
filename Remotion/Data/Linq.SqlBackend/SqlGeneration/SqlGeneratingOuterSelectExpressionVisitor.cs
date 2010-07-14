@@ -45,8 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       visitor.VisitExpression (expression);
     }
 
-    // TODO Review 2977: Make private
-    protected int ColumnPosition;
+    private int _columnPosition;
 
     protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
         : base (commandBuilder, stage)
@@ -60,8 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var newInMemoryProjectionBody = Expression.Call (
           CommandBuilder.InMemoryProjectionRowParameter, 
           s_getValueMethod.MakeGenericMethod (expression.Type), 
-          Expression.Constant (new ColumnID (expression.Name ?? "value", ColumnPosition++)));
-      // TODO Review 2977: Extract and reuse ColumnID construction
+          Expression.Constant (GetNextColumnID (expression.Name ?? "value")));
 
       CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
 
@@ -73,7 +71,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var columnIds = expression.Columns
-          .Select (e => new ColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName, ColumnPosition++))
+          .Select (e => GetNextColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName))
           .ToArray();
       
       var newInMemoryProjectionBody = Expression.Call (
@@ -147,6 +145,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
           + Environment.NewLine + "or: "
           + Environment.NewLine + "'from c in Cooks group c.ID by c.Name into groupedCooks "
           + Environment.NewLine + " select new { Key = groupedCooks.Key, Count = groupedCooks.Count() }'.");
+    }
+
+    protected ColumnID GetNextColumnID (string columnName)
+    {
+      return new ColumnID (columnName, _columnPosition++);
     }
 
     private Expression VisitArgumentExpression (Expression argumentExpression)

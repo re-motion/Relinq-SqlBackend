@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestUtilities;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
@@ -28,9 +29,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
     }
 
-    public new int ColumnPosition
+    public int ColumnPosition
     {
-      get { return base.ColumnPosition; }
+      get { return (int) PrivateInvoke.GetNonPublicField (this, typeof (SqlGeneratingOuterSelectExpressionVisitor), "_columnPosition"); }
     }
 
     public new Expression VisitNewExpression (NewExpression expression)
