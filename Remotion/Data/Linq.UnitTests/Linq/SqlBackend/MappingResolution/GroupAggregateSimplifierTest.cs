@@ -249,8 +249,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (preparedResolvedAggregate)
           .WhenCalled (mi => {
             var expectedReplacedAggregate = new AggregationExpression (
-                typeof (int), 
-                _associatedGroupingSelectExpression.ElementExpression, 
+                typeof (int),
+                ((NamedExpression) _associatedGroupingSelectExpression.ElementExpression).Expression, 
                 AggregationModifier.Count);
             ExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, (Expression) mi.Arguments[0]);
           });

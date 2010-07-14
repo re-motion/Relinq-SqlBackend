@@ -43,6 +43,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
+    public void StripSurroundingNames_Unnamed ()
+    {
+      var result = NamedExpression.StripSurroundingNames (_wrappedExpression);
+      Assert.That (result, Is.SameAs (_wrappedExpression));
+    }
+
+    [Test]
+    public void StripSurroundingNames_Named ()
+    {
+      var result = NamedExpression.StripSurroundingNames (_namedExpression);
+      Assert.That (result, Is.SameAs (_wrappedExpression));
+    }
+
+    [Test]
+    public void StripSurroundingNames_DoubleNamed ()
+    {
+      var result = NamedExpression.StripSurroundingNames (new NamedExpression ("outer", _namedExpression));
+      Assert.That (result, Is.SameAs (_wrappedExpression));
+    }
+
+    [Test]
     public void CreateFromMemberName ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Name");

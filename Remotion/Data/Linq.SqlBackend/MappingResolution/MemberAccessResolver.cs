@@ -111,8 +111,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         var binding = MemberBinding.Bind (_memberInfo, expression);
         var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
         var result = membersAndAssignedExpressions.SingleOrDefault (c => binding.MatchesReadAccess (c.Member));
+
         if (result != null)
-          return result.Argument;
+        {
+          // remove name if any - the name is only required at the definition, not at the reference
+          return NamedExpression.StripSurroundingNames (result.Argument);
+        }
       }
 
       throw new InvalidOperationException (

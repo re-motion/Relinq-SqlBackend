@@ -63,9 +63,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       {
         var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo();
 
+        // Strip surrounding names so that there won't be a named expression inside the new aggregation
+        var elementExpression = NamedExpression.StripSurroundingNames (joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
         var visitor = new GroupAggregateSimplifier (
             resolvedSqlStatement.SqlTables[0], 
-            joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
+            elementExpression);
         
         var aggregationExpression = FindAggregationExpression (unresolvedSelectProjection);
         if (aggregationExpression == null)

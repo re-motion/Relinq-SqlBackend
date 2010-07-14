@@ -132,10 +132,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in (from sc in Cooks select new { A = sc.Name, B = sc.ID }).Distinct() where c.B != 0 select c.A,
-            "SELECT [q0].[A] AS [A] FROM ("
+            "SELECT [q0].[A] AS [value] FROM ("
             + "SELECT DISTINCT [t1].[Name] AS [A],[t1].[ID] AS [B] FROM [CookTable] AS [t1]) AS [q0] "
             + "WHERE ([q0].[B] <> @1)",
-            row => (object) row.GetValue<string> (new ColumnID ("A", 0)),
+            row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
             new CommandParameter("@1", 0)
           );
     }
@@ -145,9 +145,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in (from sc in Cooks select new { A = sc, B = sc.ID }).Distinct () where c.B != 0 select c.A,
-            "SELECT [q0].[A_ID] AS [A_ID],[q0].[A_FirstName] AS [A_FirstName],[q0].[A_Name] AS [A_Name],"+
-            "[q0].[A_IsStarredCook] AS [A_IsStarredCook],[q0].[A_IsFullTimeCook] AS [A_IsFullTimeCook],"+
-            "[q0].[A_SubstitutedID] AS [A_SubstitutedID],[q0].[A_KitchenID] AS [A_KitchenID] "+
+            "SELECT [q0].[A_ID] AS [ID],[q0].[A_FirstName] AS [FirstName],[q0].[A_Name] AS [Name],"+
+            "[q0].[A_IsStarredCook] AS [IsStarredCook],[q0].[A_IsFullTimeCook] AS [IsFullTimeCook],"+
+            "[q0].[A_SubstitutedID] AS [SubstitutedID],[q0].[A_KitchenID] AS [KitchenID] "+
             "FROM (SELECT DISTINCT [t1].[ID] AS [A_ID],[t1].[FirstName] AS [A_FirstName],[t1].[Name] AS [A_Name],"+
             "[t1].[IsStarredCook] AS [A_IsStarredCook],[t1].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
             "[t1].[SubstitutedID] AS [A_SubstitutedID],[t1].[KitchenID] AS [A_KitchenID],[t1].[ID] AS [B] "+
@@ -183,10 +183,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
                 }) // NamedExpression ("get_C_get_D", ...))))) => SqlValueReference ("get_C_get_D")
           where c.C.D != null // MemberExpression (MemberExpression (SqlTableReferenceExpression))
           select c.B,
-          "SELECT [q0].[B] AS [B] FROM [KitchenTable] AS [t1] CROSS APPLY "+
+          "SELECT [q0].[B] AS [value] FROM [KitchenTable] AS [t1] CROSS APPLY "+
           "(SELECT @1 AS [A],[t2].[Name] AS [B],[t2].[Name] AS [C_D] FROM [CookTable] AS [t2]) AS [q0] "+
           "WHERE ([q0].[C_D] IS NOT NULL)",
-          row => (object) row.GetValue<string> (new ColumnID ("B", 0)),
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter("@1", 10));
     }
 
@@ -213,10 +213,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               from y in Cooks select new { A = y, B = y.ID }).Distinct () 
             select new { X = c.A }).Distinct () 
           select x.X.FirstName,
-          "SELECT [q1].[X_A_FirstName] AS [value] FROM (SELECT DISTINCT [q0].[A_ID] AS [X_A_ID],"+
-          "[q0].[A_FirstName] AS [X_A_FirstName],[q0].[A_Name] AS [X_A_Name],"+
-          "[q0].[A_IsStarredCook] AS [X_A_IsStarredCook],[q0].[A_IsFullTimeCook] AS [X_A_IsFullTimeCook],"+
-          "[q0].[A_SubstitutedID] AS [X_A_SubstitutedID],[q0].[A_KitchenID] AS [X_A_KitchenID] "+
+          "SELECT [q1].[X_FirstName] AS [value] FROM (SELECT DISTINCT [q0].[A_ID] AS [X_ID],"+
+          "[q0].[A_FirstName] AS [X_FirstName],[q0].[A_Name] AS [X_Name],"+
+          "[q0].[A_IsStarredCook] AS [X_IsStarredCook],[q0].[A_IsFullTimeCook] AS [X_IsFullTimeCook],"+
+          "[q0].[A_SubstitutedID] AS [X_SubstitutedID],[q0].[A_KitchenID] AS [X_KitchenID] "+
           "FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],[t2].[Name] AS [A_Name],"+
           "[t2].[IsStarredCook] AS [A_IsStarredCook],[t2].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
           "[t2].[SubstitutedID] AS [A_SubstitutedID],[t2].[KitchenID] AS [A_KitchenID],[t2].[ID] AS [B] "+
@@ -233,10 +233,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
               from y in Cooks select new { A = y, B = y.ID }).Distinct () 
             select c.A).Distinct () 
           select x.FirstName,
-          "SELECT [q1].[A_FirstName] AS [value] FROM (SELECT DISTINCT [q0].[A_ID] AS [A_ID],[q0].[A_FirstName] AS [A_FirstName],"+
-          "[q0].[A_Name] AS [A_Name],[q0].[A_IsStarredCook] AS [A_IsStarredCook],"+
-          "[q0].[A_IsFullTimeCook] AS [A_IsFullTimeCook],[q0].[A_SubstitutedID] AS [A_SubstitutedID],"+
-          "[q0].[A_KitchenID] AS [A_KitchenID] FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],"+
+          "SELECT [q1].[FirstName] AS [value] FROM (SELECT DISTINCT [q0].[A_ID] AS [ID],[q0].[A_FirstName] AS [FirstName],"+
+          "[q0].[A_Name] AS [Name],[q0].[A_IsStarredCook] AS [IsStarredCook],"+
+          "[q0].[A_IsFullTimeCook] AS [IsFullTimeCook],[q0].[A_SubstitutedID] AS [SubstitutedID],"+
+          "[q0].[A_KitchenID] AS [KitchenID] FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],"+
           "[t2].[Name] AS [A_Name],[t2].[IsStarredCook] AS [A_IsStarredCook],[t2].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
           "[t2].[SubstitutedID] AS [A_SubstitutedID],[t2].[KitchenID] AS [A_KitchenID],[t2].[ID] AS [B] "+
           "FROM [CookTable] AS [t2]) AS [q0]) AS [q1]",
@@ -248,9 +248,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from x in (from y in (from c in Cooks select new { A = c.FirstName, B = c.ID }).Distinct() select y).Distinct() select x.A,
-          "SELECT [q1].[A] AS [A] FROM (SELECT DISTINCT [q0].[A] AS [A],[q0].[B] AS [B] "+
+          "SELECT [q1].[A] AS [value] FROM (SELECT DISTINCT [q0].[A] AS [A],[q0].[B] AS [B] "+
           "FROM (SELECT DISTINCT [t2].[FirstName] AS [A],[t2].[ID] AS [B] FROM [CookTable] AS [t2]) AS [q0]) AS [q1]",
-          row => (object) row.GetValue<string> (new ColumnID ("A", 0)));
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
 
       CheckQuery (
           from x in (from y in (from c in Cooks select new { A = c.FirstName, B = c.ID }).Distinct () select y).Distinct () select x,

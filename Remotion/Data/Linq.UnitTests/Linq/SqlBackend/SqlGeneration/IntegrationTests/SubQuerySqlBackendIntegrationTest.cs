@@ -192,7 +192,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         // => from s in Cooks from s2 in (from s2 in Cooks select new { Key = s2.ID, Value = new { Key = s2.Name, Value = null } }) orderby s.Value.Key select s.Key  
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID) select s2,
-          "SELECT [q0].[Key] AS [Key] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [Key],[t2].[Name] AS [Value] " +
+          "SELECT [q0].[Key] AS [value] FROM [CookTable] AS [t1] CROSS APPLY (SELECT [t2].[ID] AS [Key],[t2].[Name] AS [Value] " +
           "FROM [CookTable] AS [t2]) AS [q0] ORDER BY [q0].[Value] ASC");
 
       CheckQuery (
@@ -210,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID).Take (10) select s2,
-          "SELECT [q0].[Key] AS [Key] FROM [CookTable] AS [t1] CROSS APPLY ("
+          "SELECT [q0].[Key] AS [value] FROM [CookTable] AS [t1] CROSS APPLY ("
           + "SELECT TOP (@1) [t2].[ID] AS [Key],[t2].[Name] AS [Value] FROM [CookTable] AS [t2] "
           + "ORDER BY [t2].[Name] ASC) AS [q0] "
           + "ORDER BY [q0].[Value] ASC",

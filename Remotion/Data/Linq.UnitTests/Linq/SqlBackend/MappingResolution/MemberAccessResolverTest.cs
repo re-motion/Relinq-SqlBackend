@@ -246,7 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           _stageMock,
           _mappingResolutionContext);
 
-      Assert.That (result, Is.SameAs (newExpression.Arguments[1]));
+      Assert.That (result, Is.SameAs (((NamedExpression) newExpression.Arguments[1]).Expression));
     }
 
     [Test]
@@ -265,7 +265,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           _stageMock,
           _mappingResolutionContext);
 
-      Assert.That (result, Is.SameAs (newExpression.Arguments[0]));
+      Assert.That (result, Is.SameAs (((NamedExpression) newExpression.Arguments[0]).Expression));
     }
 
     [Test]

@@ -333,9 +333,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
       CommandBuilder.Append ("(");
 
-      // TODO 3032: Fix this check
-      var nextExpression = expression.Expression is NamedExpression ? ((NamedExpression) expression.Expression).Expression : expression.Expression;
-      VisitExpression (nextExpression);
+      VisitExpression (expression.Expression);
       CommandBuilder.Append (")");
 
       return expression;

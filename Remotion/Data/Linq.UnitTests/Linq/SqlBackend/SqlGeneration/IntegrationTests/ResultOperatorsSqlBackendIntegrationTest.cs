@@ -421,7 +421,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from r in Restaurants orderby r.ID select r).Skip (5),
-          "SELECT [q0].[Key_ID] AS [Key_ID],[q0].[Key_CookID] AS [Key_CookID],[q0].[Key_Name] AS [Key_Name] "+
+          "SELECT [q0].[Key_ID] AS [ID],[q0].[Key_CookID] AS [CookID],[q0].[Key_Name] AS [Name] "+
           "FROM (SELECT [t0].[ID] AS [Key_ID],[t0].[CookID] AS [Key_CookID],[t0].[Name] AS [Key_Name],"+
           "ROW_NUMBER() OVER (ORDER BY [t0].[ID] ASC) AS [Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
           "WHERE ([q0].[Value] > @1) ORDER BY [q0].[Value] ASC",
@@ -433,7 +433,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from r in Restaurants select r).Skip (5),
-          "SELECT [q0].[Key_ID] AS [Key_ID],[q0].[Key_CookID] AS [Key_CookID],[q0].[Key_Name] AS [Key_Name] "+
+          "SELECT [q0].[Key_ID] AS [ID],[q0].[Key_CookID] AS [CookID],[q0].[Key_Name] AS [Name] "+
           "FROM (SELECT [t0].[ID] AS [Key_ID],[t0].[CookID] AS [Key_CookID],[t0].[Name] AS [Key_Name],"+
           "ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
           "WHERE ([q0].[Value] > @2) ORDER BY [q0].[Value] ASC",
@@ -446,7 +446,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100),
-          "SELECT [q0].[Key] AS [Key] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
           "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[Value] > @1) ORDER BY [q0].[Value] ASC",
           new CommandParameter ("@1", 100));
     }
@@ -456,7 +456,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Skip (100),
-          "SELECT [q0].[Key] AS [Key] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] " +
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] " +
           "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[Value] > @2) ORDER BY [q0].[Value] ASC",
           new CommandParameter ("@1", 1),
           new CommandParameter("@2", 100));
@@ -467,7 +467,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks orderby 20 select 10).Skip (100),
-          "SELECT [q0].[Key] AS [Key] FROM (SELECT @1 AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @2) ASC) AS [Value] " +
+          "SELECT [q0].[Key] AS [value] FROM (SELECT @1 AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @2) ASC) AS [Value] " +
           "FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[Value] > @3) ORDER BY [q0].[Value] ASC",
           new CommandParameter ("@1", 10),
           new CommandParameter ("@2", 20),

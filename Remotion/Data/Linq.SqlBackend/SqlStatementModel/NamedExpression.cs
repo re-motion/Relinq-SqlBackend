@@ -40,6 +40,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     private readonly string _name;
     private readonly Expression _expression;
 
+    public static Expression StripSurroundingNames (Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      while (expression is NamedExpression)
+        expression = ((NamedExpression) expression).Expression;
+      return expression;
+    }
+
     public static NamedExpression CreateFromMemberName (string memberName, Expression innerExpression)
     {
       ArgumentUtility.CheckNotNull ("memberName", memberName);
