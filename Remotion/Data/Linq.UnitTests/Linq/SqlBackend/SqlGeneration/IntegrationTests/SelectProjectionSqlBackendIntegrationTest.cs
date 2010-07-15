@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           Kitchens.Select<Kitchen, object> (k => null),
           "SELECT NULL AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object) row.GetValue<object> (new ColumnID ("value", 0)));
+          row => row.GetValue<object> (new ColumnID ("value", 0)));
     }
 
     [Test]

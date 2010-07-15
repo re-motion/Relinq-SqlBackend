@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
 
-      Assert.That (_commandBuilder.GetInMemoryProjection(), Is.Not.Null);
+      Assert.That (_commandBuilder.GetInMemoryProjection<object>(), Is.Not.Null);
     }
 
     [Test]
@@ -185,8 +185,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.GenerateTextForOuterSqlStatement (_commandBuilder, sqlStatement);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
-      
-      var inMemoryProjection = _commandBuilder.GetInMemoryProjection ();
+
+      var inMemoryProjection = _commandBuilder.GetInMemoryProjection<object>();
       Assert.That (inMemoryProjection.Parameters.Count, Is.EqualTo (1));
       Assert.That (inMemoryProjection.Parameters[0].Type, Is.EqualTo (typeof (IDatabaseResultRow)));
       Assert.That (inMemoryProjection.Parameters[0].Name, Is.EqualTo ("row"));

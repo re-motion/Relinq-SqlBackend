@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
           Expression.Convert (GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0), typeof (object)),
           expectedRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjection());
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjection<object>());
     }
 
     [Test]

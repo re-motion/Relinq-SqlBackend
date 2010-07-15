@@ -90,21 +90,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GetInMemoryProjection_NoProjectionSet ()
     {
-      var result = _sqlCommandBuilder.GetInMemoryProjection ();
+      var result = _sqlCommandBuilder.GetInMemoryProjection<int> ();
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    public void GetInMemoryProjection_ProjectionSet ()
+    public void GetInMemoryProjection_ProjectionSet_NoConversionRequired ()
     {
       var body = Expression.Constant (0);
       _sqlCommandBuilder.SetInMemoryProjectionBody (body);
-      
-      var result = _sqlCommandBuilder.GetInMemoryProjection ();
+
+      var result = _sqlCommandBuilder.GetInMemoryProjection<int> ();
+
+      var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, int>> (body, _sqlCommandBuilder.InMemoryProjectionRowParameter);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void GetInMemoryProjection_ProjectionSet_ConversionRequired ()
+    {
+      var body = Expression.Constant (0);
+      _sqlCommandBuilder.SetInMemoryProjectionBody (body);
+
+      var result = _sqlCommandBuilder.GetInMemoryProjection<object> ();
 
       var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (body, typeof (object)), 
+          Expression.Convert (body, typeof (object)),
           _sqlCommandBuilder.InMemoryProjectionRowParameter);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
