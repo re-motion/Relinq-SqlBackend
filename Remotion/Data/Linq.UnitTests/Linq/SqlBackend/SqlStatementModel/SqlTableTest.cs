@@ -65,8 +65,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var sqlTableWithInnerJoinSemantic = new SqlTable (_oldTableInfo, JoinSemantics.Inner);
       var sqlTableWithLeftJoinSemantic = new SqlTable (_oldTableInfo, JoinSemantics.Left);
 
-      Assert.That (sqlTableWithInnerJoinSemantic.JoinSemantic, Is.EqualTo (JoinSemantics.Inner));
-      Assert.That (sqlTableWithLeftJoinSemantic.JoinSemantic, Is.EqualTo (JoinSemantics.Left));
+      Assert.That (sqlTableWithInnerJoinSemantic.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (sqlTableWithLeftJoinSemantic.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
 
     [Test]

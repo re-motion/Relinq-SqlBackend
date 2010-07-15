@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
@@ -31,14 +30,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   {
     private readonly Dictionary<MemberInfo, SqlJoinedTable> _joinedTables = new Dictionary<MemberInfo, SqlJoinedTable>();
     private readonly Type _itemType;
+    private readonly JoinSemantics _joinSemantics;
 
     public abstract void Accept (ISqlTableBaseVisitor visitor);
     
-    protected SqlTableBase (Type itemType)
+    protected SqlTableBase (Type itemType, JoinSemantics joinSemantics)
     {
       ArgumentUtility.CheckNotNull ("itemType", itemType);
 
       _itemType = itemType;
+      _joinSemantics = joinSemantics;
     }
 
     public abstract IResolvedTableInfo GetResolvedTableInfo ();
@@ -51,6 +52,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public IEnumerable<SqlJoinedTable> JoinedTables
     {
       get { return _joinedTables.Values; }
+    }
+
+    public JoinSemantics JoinSemantics
+    {
+      get { return _joinSemantics; }
     }
 
     public SqlJoinedTable GetOrAddLeftJoin (IJoinInfo joinInfo, MemberInfo memberInfo)

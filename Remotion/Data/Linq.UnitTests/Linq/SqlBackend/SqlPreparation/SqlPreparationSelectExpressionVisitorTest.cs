@@ -128,8 +128,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((StreamedSequenceInfo) statement.DataInfo).DataType, Is.EqualTo(typeof (IEnumerable<>).MakeGenericType(typeof(int))));
       Assert.That (((StreamedSequenceInfo) statement.DataInfo).ItemExpression, Is.SameAs(selectProjection));
       Assert.That (_preparationQueryModelVisitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _preparationQueryModelVisitor.SqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf(typeof(ResolvedSubStatementTableInfo)));
-      // TODO Review 3014: Check JoinSemantics
+      Assert.That (((SqlTable) _preparationQueryModelVisitor.SqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (_preparationQueryModelVisitor.SqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
   }
 }

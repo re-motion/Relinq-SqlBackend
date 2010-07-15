@@ -124,10 +124,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _handler.EnsureNoTopExpression (_statementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (originalStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement()));
-      Assert.That (
-          originalStatement, Is.EqualTo (((ResolvedSubStatementTableInfo) ((SqlTable) _statementBuilder.SqlTables[0]).TableInfo).SqlStatement));
-      // TODO Review 3014: Check JoinSemantics
+      Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
+      Assert.That (_statementBuilder.TopExpression, Is.Null);
+      
+      var sqlTable = (SqlTable) _statementBuilder.SqlTables[0];
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
     [Test]
@@ -150,15 +152,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
     }
 
-    // TODO Review 3014: Test missing for EnsureNoGroupExpression_WithGroupExpression
-
     [Test]
-    public void EnsureNoDistinctQuery_DistinctQuery ()
+    public void EnsureNoGroupExpression_WithGroupExpression ()
     {
-      _statementBuilder.IsDistinctQuery = true;
-      var sqlStatement = _statementBuilder.GetSqlStatement ();
-
-      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
+      _statementBuilder.GroupByExpression = Expression.Constant ("top");
+      var originalStatement = _statementBuilder.GetSqlStatement ();
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new Ordering[0]);
 
       _stageMock
           .Expect (
@@ -166,12 +165,39 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
-      _handler.EnsureNoDistinctQuery(_statementBuilder, _generator, _stageMock, _context);
+      _handler.EnsureNoGroupExpression (_statementBuilder, _generator, _stageMock, _context);
 
-      _stageMock.VerifyAllExpectations();
-      Assert.That (sqlStatement, Is.Not.EqualTo (_statementBuilder.GetSqlStatement ()));
-      // TODO Review 3014: Check JoinSemantics
-      // TODO Review 3014: Check moved to substatement
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
+      Assert.That (_statementBuilder.GroupByExpression, Is.Null);
+
+      var sqlTable = (SqlTable) _statementBuilder.SqlTables[0];
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+    }
+
+    [Test]
+    public void EnsureNoDistinctQuery_WithDistinctQuery ()
+    {
+      _statementBuilder.IsDistinctQuery = true;
+      var originalStatement = _statementBuilder.GetSqlStatement ();
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new Ordering[0]);
+
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.EnsureNoDistinctQuery (_statementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
+      Assert.That (_statementBuilder.IsDistinctQuery, Is.False);
+
+      var sqlTable = (SqlTable) _statementBuilder.SqlTables[0];
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
     [Test]
@@ -193,12 +219,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _handler.UpdateDataInfo (_resultOperator, _statementBuilder, streamDataInfo);
 
       Assert.That (_statementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
-    }
-
-    private bool IsSubStatementExpression (Expression expr, SqlStatement originalStatement)
-    {
-      return expr is SqlSubStatementExpression
-             && ((SqlSubStatementExpression) expr).SqlStatement.Equals (originalStatement);
     }
 
     private FromExpressionInfo CreateFakeFromExpressionInfo (Ordering[] extractedOrderings)

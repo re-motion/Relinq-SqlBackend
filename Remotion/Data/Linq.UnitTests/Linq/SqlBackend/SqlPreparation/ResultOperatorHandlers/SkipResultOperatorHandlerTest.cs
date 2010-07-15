@@ -99,10 +99,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      // TODO Review 3014: Check JoinSemantics
+      var sqlTable = ((SqlTable) _sqlStatementBuilder.SqlTables[0]);
+      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
 
-      var subStatementTableInfo = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo);
+      var subStatementTableInfo = ((ResolvedSubStatementTableInfo) sqlTable.TableInfo);
       Assert.That (subStatementTableInfo.SqlStatement.SelectProjection, Is.SameAs (fakePreparedProjection));
       Assert.That (subStatementTableInfo.TableAlias, Is.EqualTo ("q0"));
     }

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
@@ -244,7 +243,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var castTableInfo = (UnresolvedGroupReferenceTableInfo) tableInfo;
       Assert.That (castTableInfo.ItemType, Is.SameAs (typeof (int)));
       Assert.That (castTableInfo.ReferencedGroupSource, Is.SameAs (sqlTable));
-      // TODO Review 3014: Check JoinSemantics
+      Assert.That (result.SqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
     [Test]
@@ -268,28 +267,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           expression, _stageMock, _generator, _registry, _context, null);
-    }
-
-    private Expression GetFakeSekectProjectionFromSqlStatement(SqlStatement sqlStatement)
-    {
-      Expression newSelectProjection = Expression.Constant (null);
-      Type tupleType;
-
-      for (var i = sqlStatement.Orderings.Count - 1; i >= 0; --i)
-      {
-        tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.Orderings[i].Expression.Type, newSelectProjection.Type);
-        newSelectProjection =
-            Expression.New (
-                tupleType.GetConstructors ()[0],
-                new[] { sqlStatement.Orderings[i].Expression, newSelectProjection },
-                new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
-      }
-
-      tupleType = typeof (KeyValuePair<,>).MakeGenericType (sqlStatement.SelectProjection.Type, newSelectProjection.Type);
-      return Expression.New (
-          tupleType.GetConstructors ()[0],
-          new[] { sqlStatement.SelectProjection, newSelectProjection },
-          new[] { tupleType.GetMethod ("get_Key"), tupleType.GetMethod ("get_Value") });
     }
   }
 }

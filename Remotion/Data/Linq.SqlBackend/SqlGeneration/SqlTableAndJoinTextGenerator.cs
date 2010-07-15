@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      if (sqlTable.JoinSemantic == JoinSemantics.Inner)
+      if (sqlTable.JoinSemantics == JoinSemantics.Inner)
       {
         if (_context == Context.NonFirstTable)
         {
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
             _commandBuilder.Append ("APPLY ");
         }
       }
-      else if (sqlTable.JoinSemantic == JoinSemantics.Left)
+      else if (sqlTable.JoinSemantics == JoinSemantics.Left)
       {
         if (_context == Context.FirstTable)
           _commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");

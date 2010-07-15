@@ -530,7 +530,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddQuerySource_FromExpressionIsAlreadyATableReference ()
+    public void AddQuerySource ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
@@ -543,7 +543,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                   Arg.Is (_mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context),
                   Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
-          .Return (preparedFromExpressionInfo);
+          .Return (preparedFromExpressionInfo)
+          .WhenCalled (mi => 
+          {
+            var tableCreator = (Func<ITableInfo, SqlTableBase>) mi.Arguments[2];
+            var sampleTableInfo = new UnresolvedTableInfo (typeof (Cook));
+            
+            var table = tableCreator (sampleTableInfo);
+
+            Assert.That (table, Is.TypeOf (typeof (SqlTable)));
+            Assert.That (((SqlTable) table).TableInfo, Is.SameAs (sampleTableInfo));
+            Assert.That (table.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+          });
       _stageMock.Replay();
 
       var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);
@@ -552,8 +563,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result, Is.SameAs (sqlTable));
       Assert.That (_visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
     }
-
-    // TODO Review 3014: Add test for AddQuerySource with new table; check that creator makes table with correct join semantics
 
     [Test]
     public void AddPreparedFromExpression_IsNewTable_AddSqlTable ()
