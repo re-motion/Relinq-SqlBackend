@@ -213,5 +213,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "FROM [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID])) AS [q0] ON 1 = 1) AS [q1]");
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "When a sequence retrieved by a subquery is used in a from expression, the subquery must end with a GroupBy operator.")]
+    public void ExplicitJoinWithInto_PropagatedFromSubStatement ()
+    {
+      // To enable this test, see RM-3037
+      CheckQuery (
+          from cooks in (from k in Kitchens join c in Cooks on k.Name equals c.FirstName into cooks select cooks).Take(2)
+          from c in cooks
+          select c.Name,
+          "SELECT [t2].[Name] AS [value] "
+          + "FROM (SELECT [k].[Name] AS [key] FROM [KitchenTable] AS [t0]) AS [q1] "
+          + "CROSS JOIN [CookTable] AS [t2] WHERE ([t0].[Name] = [q1].[FirstName])"
+          );
+    }
+
   }
 }
