@@ -59,8 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       throw new NotSupportedException (message);
     }
 
-    private readonly ISqlPreparationStage _stage;
-    private readonly MethodCallTransformerRegistry _registry;
+    private readonly UniqueIdentifierGenerator _generator;
     private readonly ISqlPreparationContext _context;
 
     private FromExpressionInfo? _fromExpressionInfo;
@@ -72,10 +71,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         MethodCallTransformerRegistry registry,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
-        : base (context, stage, generator, registry)
+        : base (context, stage, registry)
     {
-      _stage = stage;
-      _registry = registry;
+      _generator = generator;
       _context = context;
       _fromExpressionInfo = null;
       _tableGenerator = tableGenerator;
@@ -97,7 +95,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, _stage, Generator, _registry);
+      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, Stage, Registry);
 
       var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
@@ -114,7 +112,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
-      var factory = new SqlPreparationSubStatementTableFactory (_stage, _context, Generator);
+      var factory = new SqlPreparationSubStatementTableFactory (Stage, _context, _generator);
       _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
 

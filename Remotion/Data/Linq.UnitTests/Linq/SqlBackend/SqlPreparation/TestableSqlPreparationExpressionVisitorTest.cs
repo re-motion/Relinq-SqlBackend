@@ -21,8 +21,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   public class TestableSqlPreparationExpressionVisitorTest : SqlPreparationExpressionVisitor
   {
-    public TestableSqlPreparationExpressionVisitorTest (ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, MethodCallTransformerRegistry registry)
-        : base(context, stage, generator, registry)
+    public TestableSqlPreparationExpressionVisitorTest (ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+        : base (context, stage, registry)
     {
     }
   }

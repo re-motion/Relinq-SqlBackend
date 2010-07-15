@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -47,27 +46,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     public virtual Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpressionForSelectProjection (expression, context);
+      return SqlPreparationSelectExpressionVisitor.TranslateExpression (expression, context, this, _generator, _methodCallTransformerRegistry);
     }
 
     public virtual Expression PrepareWhereExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression, context);
+      return PrepareNonSelectExpression (expression, context);
     }
 
     public virtual Expression PrepareTopExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression, context);
+      return PrepareNonSelectExpression (expression, context);
     }
 
     public virtual Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression, context);
+      return PrepareNonSelectExpression (expression, context);
     }
 
     public virtual Expression PrepareResultOperatorItemExpression (Expression expression, ISqlPreparationContext context)
     {
-      return PrepareExpression (expression, context);
+      return PrepareNonSelectExpression (expression, context);
     }
 
     public virtual FromExpressionInfo PrepareFromExpression (
@@ -84,18 +83,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, parentContext, this, _generator, _resultOperatorHandlerRegistry);
     }
 
-    protected virtual Expression PrepareExpression (Expression expression, ISqlPreparationContext context)
+    protected virtual Expression PrepareNonSelectExpression (Expression expression, ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _generator, _methodCallTransformerRegistry);
-    }
-
-    protected virtual Expression PrepareExpressionForSelectProjection (Expression expression, ISqlPreparationContext context)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      return SqlPreparationSelectExpressionVisitor.TranslateExpression (expression, context, this, _generator, _methodCallTransformerRegistry);
+      return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerRegistry);
     }
   }
 }

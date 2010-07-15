@@ -27,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
@@ -36,22 +37,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   {
     private UniqueIdentifierGenerator _generator;
     private ISqlPreparationStage _stageMock;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _contextMock;
     private MethodCallTransformerRegistry _registry;
     private TestableSqlPreparationSelectExpressionVisitor _visitor;
-    private TestableSqlPreparationQueryModelVisitor _preparationQueryModelVisitor;
 
     [SetUp]
     public void SetUp ()
     {
       _generator = new UniqueIdentifierGenerator();
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
-      var parentContext = new SqlPreparationContext();
-      _preparationQueryModelVisitor = new TestableSqlPreparationQueryModelVisitor (
-          new SqlPreparationContext(), _stageMock, _generator, ResultOperatorHandlerRegistry.CreateDefault());
-      _context = new SqlPreparationContext (parentContext, _preparationQueryModelVisitor);
+      _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
+      _contextMock = MockRepository.GenerateMock<ISqlPreparationContext>();
       _registry = MethodCallTransformerRegistry.CreateDefault();
-      _visitor = new TestableSqlPreparationSelectExpressionVisitor (_context, _stageMock, _generator, _registry);
+      _visitor = new TestableSqlPreparationSelectExpressionVisitor (_contextMock, _stageMock, _generator, _registry);
     }
 
     [Test]
@@ -101,10 +98,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitSqlSubStatementExpression_StreamedSingleValueInfo ()
     {
       var selectProjection = Expression.Constant (1);
-      var sqlStatement = new SqlStatement (
+      var originalSubStatement = new SqlStatement (
           new StreamedSingleValueInfo (typeof(int), false),
           selectProjection,
-          new SqlTable[0],
+          new[] { SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook))},
           null,
           null,
           new Ordering[0],
@@ -112,24 +109,41 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           false,
           null,
           null);
-      var expression = new SqlSubStatementExpression (sqlStatement);
+      var expression = new SqlSubStatementExpression (originalSubStatement);
+
+      var fromExpressionInfo = new FromExpressionInfo();
+      _contextMock
+          .Expect (mock => mock.AddFromExpression (Arg<FromExpressionInfo>.Is.Anything))
+          .WhenCalled (mi => fromExpressionInfo = (FromExpressionInfo) mi.Arguments[0]);
+      _contextMock.Replay ();
 
       var result = _visitor.VisitSqlSubStatementExpression (expression);
 
-      // TODO Review 3007: Rewrite this test
+      _contextMock.VerifyAllExpectations ();
+
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.TypeOf (typeof (SqlTable)));
-      Assert.That (((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (fromExpressionInfo.SqlTable));
+
+      Assert.That (fromExpressionInfo.ExtractedOrderings, Is.Empty);
+      Assert.That (fromExpressionInfo.WhereCondition, Is.Null);
+      Assert.That (fromExpressionInfo.IsNewTable, Is.True);
       
-      var statement = ((ResolvedSubStatementTableInfo) ((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo).SqlStatement;
+      var expectedItemSelector = new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, fromExpressionInfo.ItemSelector);
+
+      Assert.That (fromExpressionInfo.SqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (fromExpressionInfo.SqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       
-      Assert.That (statement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (statement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) statement.DataInfo).DataType, Is.EqualTo(typeof (IEnumerable<>).MakeGenericType(typeof(int))));
-      Assert.That (((StreamedSequenceInfo) statement.DataInfo).ItemExpression, Is.SameAs(selectProjection));
-      Assert.That (_preparationQueryModelVisitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _preparationQueryModelVisitor.SqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (_preparationQueryModelVisitor.SqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+      var tableInfo = ((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo;
+      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+
+      var newSubStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
+
+      Assert.That (newSubStatement.SelectProjection, Is.SameAs (originalSubStatement.SelectProjection));
+      Assert.That (newSubStatement.SqlTables, Is.EqualTo (originalSubStatement.SqlTables));
+      Assert.That (newSubStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).DataType, Is.SameAs (typeof (IEnumerable<>).MakeGenericType (typeof(int))));
+      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).ItemExpression, Is.SameAs (selectProjection));
     }
   }
 }

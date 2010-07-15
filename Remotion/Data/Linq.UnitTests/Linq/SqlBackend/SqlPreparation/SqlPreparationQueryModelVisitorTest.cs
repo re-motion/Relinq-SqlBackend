@@ -27,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -509,7 +510,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var resultOperator = new TestChoiceResultOperator (false);
 
       var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler>();
-      ResultOperatorHandlerRegistry registry = new ResultOperatorHandlerRegistry();
+      
+      var registry = new ResultOperatorHandlerRegistry();
       registry.Register (typeof (TestChoiceResultOperator), handlerMock);
       var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
       var sqlStatementBuilder = queryModelVisitor.SqlStatementBuilder;
@@ -579,7 +581,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
     }
 
-    // TODO Review 3007: IsNewTable_False
+    [Test]
+    public void AddPreparedFromExpression_IsNewTableFalse_AddSqlTable ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null, false);
+
+      _visitor.SqlStatementBuilder.SqlTables.Clear ();
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
+    }
 
     [Test]
     public void AddPreparedFromExpression_OrderingIsAdded ()
@@ -597,7 +611,34 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.Orderings[0], Is.SameAs (ordering));
     }
 
-    // TODO Review 3007: Empty orderings
+    [Test]
+    public void AddPreparedFromExpression_NoOrderings ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, false);
+
+      _visitor.SqlStatementBuilder.Orderings.Clear ();
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void AddPreparedFromExpression_WhereConditionIsSet ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var whereCondition = Expression.Constant (true);
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), whereCondition, false);
+
+      _visitor.SqlStatementBuilder.WhereCondition = null;
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (whereCondition));
+    }
 
     [Test]
     public void AddPreparedFromExpression_WhereConditionIsAdded ()
@@ -607,15 +648,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var preparedFromExpressionInfo = new FromExpressionInfo (
           sqlTable, new Ordering[0] , new SqlTableReferenceExpression (sqlTable), whereCondition, false);
 
-      // TODO Review 3007: Test with existing where condition to ensure AND is used
-      _visitor.SqlStatementBuilder.WhereCondition = null;
+      var originalWhereCondition = Expression.Constant (false);
+      _visitor.SqlStatementBuilder.WhereCondition = originalWhereCondition;
 
       _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
 
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs(whereCondition));
+      var expectedCombinedWhereCondition = Expression.AndAlso (originalWhereCondition, whereCondition);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedCombinedWhereCondition, _visitor.SqlStatementBuilder.WhereCondition);
     }
 
-    // TODO Review 3007: No where condition
+    [Test]
+    public void AddPreparedFromExpression_NoWhereCondition ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var preparedFromExpressionInfo = new FromExpressionInfo (
+          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, false);
+
+      var originalWhereCondition = Expression.Constant (false);
+      _visitor.SqlStatementBuilder.WhereCondition = originalWhereCondition;
+
+      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
+
+      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (originalWhereCondition));
+    }
 
     [Test]
     public void AddJoinClause ()

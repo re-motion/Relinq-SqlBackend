@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -36,14 +35,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    private readonly UniqueIdentifierGenerator _generator;
     private readonly MethodCallTransformerRegistry _registry;
 
     public static Expression TranslateExpression (
         Expression expression,
         ISqlPreparationContext context,
         ISqlPreparationStage stage,
-        UniqueIdentifierGenerator generator,
         MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -51,22 +48,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
-      var visitor = new SqlPreparationExpressionVisitor (context, stage, generator, registry);
+      var visitor = new SqlPreparationExpressionVisitor (context, stage, registry);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
     protected SqlPreparationExpressionVisitor (
-        ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, MethodCallTransformerRegistry registry)
+        ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("registry", registry);
 
       _context = context;
       _stage = stage;
-      _generator = generator;
       _registry = registry;
     }
 
@@ -78,12 +73,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected ISqlPreparationStage Stage
     {
       get { return _stage; }
-    }
-
-    // TODO Review 3007: Remove this, this class doesn't require the generator
-    protected UniqueIdentifierGenerator Generator
-    {
-      get { return _generator; }
     }
 
     protected MethodCallTransformerRegistry Registry

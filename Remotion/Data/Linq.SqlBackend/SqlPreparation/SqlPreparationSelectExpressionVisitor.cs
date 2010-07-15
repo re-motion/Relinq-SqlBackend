@@ -21,7 +21,6 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -33,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public class SqlPreparationSelectExpressionVisitor : SqlPreparationExpressionVisitor
   {
-    public new static Expression TranslateExpression (
+    public static Expression TranslateExpression (
         Expression expression,
         ISqlPreparationContext context,
         ISqlPreparationStage stage,
@@ -51,10 +50,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return result;
     }
 
+    private readonly UniqueIdentifierGenerator _generator;
+
     protected SqlPreparationSelectExpressionVisitor (
         ISqlPreparationContext context, ISqlPreparationStage stage, UniqueIdentifierGenerator generator, MethodCallTransformerRegistry registry)
-        : base (context, stage, generator, registry)
+        : base (context, stage, registry)
     {
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      _generator = generator;
     }
 
     public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
@@ -73,7 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
         var newStatement = new SqlStatementBuilder (expression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
 
-        var subStatementTableInfo = new ResolvedSubStatementTableInfo (Generator.GetUniqueIdentifier ("q"), newStatement);
+        var subStatementTableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), newStatement);
         var sqlTable = new SqlTable (subStatementTableInfo, JoinSemantics.Left);
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
         

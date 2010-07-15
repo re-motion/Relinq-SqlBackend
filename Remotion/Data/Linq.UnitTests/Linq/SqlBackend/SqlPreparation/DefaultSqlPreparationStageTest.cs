@@ -18,7 +18,9 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -55,11 +57,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void PrepareSelectExpression ()
     {
-      // TODO Review 3007: change to ensure the select visitor is used
-      var result = _stage.PrepareSelectExpression (_querySourceReferenceExpression, _context);
+      var singleDataInfo = new StreamedSingleValueInfo (typeof (int), false);
+      var selectProjection = Expression.Constant (0);
+      var subStatement = new SqlStatement (singleDataInfo, selectProjection, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
+      var expressionWithSubStatement = new SqlSubStatementExpression (subStatement);
 
-      var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      var result = _stage.PrepareSelectExpression (expressionWithSubStatement, _context);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
     }
 
     [Test]

@@ -57,7 +57,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("fromExpressionInfo", fromExpressionInfo);
 
-      _visitor.AddPreparedFromExpression (fromExpressionInfo);
+      if (_visitor != null) // TODO: consider changing this class so that visitor can't be null
+        _visitor.AddPreparedFromExpression (fromExpressionInfo);
     }
 
     public Expression TryGetExpressionMapping (Expression original)
