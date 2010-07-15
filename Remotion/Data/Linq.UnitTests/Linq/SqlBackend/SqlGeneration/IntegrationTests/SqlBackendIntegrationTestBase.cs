@@ -149,7 +149,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       if (expectedInMemoryProjection != null)
       {
         var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
-        ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.InMemoryProjection);
+        ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.GetInMemoryProjection<object>());
       }
     }
   }

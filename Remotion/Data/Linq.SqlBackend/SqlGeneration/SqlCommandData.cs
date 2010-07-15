@@ -21,30 +21,37 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlCommandData"/> contains the SQL command text and parameters generated for a LINQ query.
+  /// <see cref="SqlCommandData"/> contains the SQL command text and parameters generated for a LINQ query. In addition, it provides the possibility
+  /// to get an in-memory projection expression that can be compiled to a delegate and executed on every row of the result set in order to construct
+  /// a projection result as defined by the LINQ query.
   /// </summary>
   public struct SqlCommandData
   {
     private readonly string _commandText;
     private readonly CommandParameter[] _parameters;
-    private readonly Expression<Func<IDatabaseResultRow, object>> _inMemoryProjection;
+    private readonly ParameterExpression _inMemoryProjectionParameter;
+    private readonly Expression _inMemoryProjectionBody;
 
-    public SqlCommandData (string commandText, CommandParameter[] parameters) : this (commandText, parameters, null)
+    public SqlCommandData (
+        string commandText, 
+        CommandParameter[] parameters, 
+        ParameterExpression inMemoryProjectionParameter, 
+        Expression inMemoryProjectionBody)
     {
-    }
-
-    public SqlCommandData (string commandText, CommandParameter[] parameters, Expression<Func<IDatabaseResultRow, object>> inMemoryProjection)
-    {
-      ArgumentUtility.CheckNotNull ("commandText", commandText);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
+      ArgumentUtility.CheckNotNull ("inMemoryProjectionParameter", inMemoryProjectionParameter);
+      // ArgumentUtility.CheckNotNull ("inMemoryProjectionBody", inMemoryProjectionBody);
       
       _commandText = commandText;
       _parameters = parameters;
-      _inMemoryProjection = inMemoryProjection;
+      _inMemoryProjectionParameter = inMemoryProjectionParameter;
+      _inMemoryProjectionBody = inMemoryProjectionBody;
     }
 
     /// <summary>
-    /// Gets the SQL command text. This is the command to be executed against the database. For each result row, <see cref="InMemoryProjection"/>
+    /// Gets the SQL command text. This is the command to be executed against the database. For each result row, a delegate compiled from the
+    /// <see cref=" GetInMemoryProjection{T}">in-memory projection</see>
     /// should be executed in order to retrieve the constructed projection.
     /// </summary>
     /// <value>The SQL command text.</value>
@@ -65,13 +72,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     /// <summary>
     /// Gets the in-memory projection associated with this <see cref="SqlCommandData"/>. The in-memory projection can be used to construct the
-    /// objects selected by a LINQ query by applying it to each of the rows returned for the query defined by <see cref="CommandText"/>. The result 
-    /// for each row is accessed via an implementation of <see cref="IDatabaseResultRow"/> supplied by the LINQ provider.
+    /// objects selected by a LINQ query by applying it to each of the rows returned for the query defined by <see cref="CommandText"/>. The result
+    /// for each row is accessed via an implementation of <see cref="IDatabaseResultRow"/> supplied by the LINQ provider. Compile the returned
+    /// expression in order to get an executable delegate that executes the in-memory projection.
     /// </summary>
-    /// <value>The in-memory projection associated with this <see cref="SqlCommandData"/>.</value>
-    public Expression<Func<IDatabaseResultRow, object>> InMemoryProjection
+    /// <typeparam name="T">The type of the values to be returned by the projection. This corresponds to the type parameters passed to the methods of 
+    /// <see cref="IQueryExecutor"/>. If the type is not known, pass <see cref="object"/>.</typeparam>
+    /// <returns>
+    /// The in-memory projection associated with this <see cref="SqlCommandData"/>.
+    /// </returns>
+    public Expression<Func<IDatabaseResultRow, T>> GetInMemoryProjection<T> ()
     {
-      get { return _inMemoryProjection; }
+      if (_inMemoryProjectionBody != null)
+      {
+        var body = typeof (T) == _inMemoryProjectionBody.Type ? _inMemoryProjectionBody : Expression.Convert (_inMemoryProjectionBody, typeof (T));
+        return Expression.Lambda<Func<IDatabaseResultRow, T>> (body, _inMemoryProjectionParameter);
+      }
+
+      return null;
     }
   }
 }

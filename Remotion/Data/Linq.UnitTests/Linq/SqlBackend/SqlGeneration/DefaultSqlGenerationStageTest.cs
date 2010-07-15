@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
 
-      Assert.That (_commandBuilder.GetInMemoryProjection<object>(), Is.Not.Null);
+      Assert.That (_commandBuilder.GetInMemoryProjectionBody(), Is.Not.Null);
     }
 
     [Test]
@@ -186,13 +186,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
 
-      var inMemoryProjection = _commandBuilder.GetInMemoryProjection<object>();
-      Assert.That (inMemoryProjection.Parameters.Count, Is.EqualTo (1));
-      Assert.That (inMemoryProjection.Parameters[0].Type, Is.EqualTo (typeof (IDatabaseResultRow)));
-      Assert.That (inMemoryProjection.Parameters[0].Name, Is.EqualTo ("row"));
-      Assert.That (inMemoryProjection.Body, Is.TypeOf(typeof(UnaryExpression)));
+      var inMemoryProjection = _commandBuilder.GetInMemoryProjectionBody();
+      Assert.That (inMemoryProjection, Is.TypeOf (typeof (MethodCallExpression)));
 
-      var methodCallExpression = (MethodCallExpression) ((UnaryExpression) inMemoryProjection.Body).Operand;
+      var methodCallExpression = (MethodCallExpression) inMemoryProjection;
       Assert.That (methodCallExpression.Method, Is.EqualTo ((typeof (IDatabaseResultRow).GetMethod ("GetEntity").MakeGenericMethod (sqlStatement.SelectProjection.Type))));
       Assert.That (methodCallExpression.Arguments.Count, Is.EqualTo (1));
       Assert.That (((ColumnID[]) ((ConstantExpression) methodCallExpression.Arguments[0]).Value)[0].ColumnName, Is.EqualTo ("ID"));

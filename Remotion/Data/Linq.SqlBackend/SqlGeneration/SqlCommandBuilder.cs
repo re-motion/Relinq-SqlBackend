@@ -114,19 +114,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return _inMemoryProjectionBody;
     }
 
-    public Expression<Func<IDatabaseResultRow, T>> GetInMemoryProjection<T> ()
-    {
-      // TODO Review 2977: Make generic
-
-      if (_inMemoryProjectionBody != null)
-      {
-        var body = typeof (T) == _inMemoryProjectionBody.Type ? _inMemoryProjectionBody : Expression.Convert (_inMemoryProjectionBody, typeof (T));
-        return Expression.Lambda<Func<IDatabaseResultRow, T>> (body, _inMemoryProjectionRowParameter);
-      }
-
-      return null;
-    }
-
+ 
     public string GetCommandText ()
     {
       return _stringBuilder.ToString();
@@ -137,10 +125,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       return _parameters.ToArray();
     }
 
-    // TODO Review 2977: Consider making this method and SqlCommandData generic
     public SqlCommandData GetCommand ()
     {
-      return new SqlCommandData (GetCommandText(), GetCommandParameters(), GetInMemoryProjection<object>());
+      return new SqlCommandData (GetCommandText(), GetCommandParameters(), InMemoryProjectionRowParameter, GetInMemoryProjectionBody());
     }
   }
 }

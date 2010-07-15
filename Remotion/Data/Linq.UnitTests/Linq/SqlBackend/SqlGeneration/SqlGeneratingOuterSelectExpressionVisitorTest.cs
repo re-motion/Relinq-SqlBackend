@@ -73,10 +73,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
        SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedFullProjection = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0), typeof (object)),
-          expectedRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjection<object>());
+      var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjectionBody());
     }
 
     [Test]

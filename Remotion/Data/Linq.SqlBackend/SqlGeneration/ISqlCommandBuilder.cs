@@ -23,8 +23,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     void SetInMemoryProjectionBody (Expression body);
     Expression GetInMemoryProjectionBody ();
-    Expression<Func<IDatabaseResultRow, T>> GetInMemoryProjection<T> ();
-
+ 
     string GetCommandText ();
     CommandParameter[] GetCommandParameters ();
     SqlCommandData GetCommand ();

@@ -20,11 +20,14 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// Used by re-linq's in-memory projections (see <see cref="SqlCommandData.InMemoryProjection"/>) in order to access values and entities from
+  /// Used by re-linq's in-memory projections (see <see cref="SqlCommandData.GetInMemoryProjection{T}"/>) in order to access values and entities from
   /// the database result. Implementers of <see cref="IDatabaseResultRow"/> must represent a row in the database result for an executed SQL command.
-  /// When the <see cref="SqlCommandData.InMemoryProjection"/> is executed against the row, it will read all values and entities needed by the
+  /// When the <see cref="SqlCommandData.GetInMemoryProjection{T}"/> is executed against the row, it will read all values and entities needed by the
   /// LINQ query's select projection and then construct the full projection in-memory.
   /// </summary>
+  /// <remarks>
+  /// The result of scalar or single queries should be represented as if there was one row with one value.
+  /// </remarks>
   public interface IDatabaseResultRow
   {
     /// <summary>

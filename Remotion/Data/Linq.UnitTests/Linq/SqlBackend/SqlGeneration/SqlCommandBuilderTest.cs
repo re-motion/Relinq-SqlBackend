@@ -46,11 +46,50 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GetCommandParameters ()
     {
-      var commandParameter = new CommandParameter ("@1", "value");
       _sqlCommandBuilder.CreateParameter ("value");
 
-      Assert.That (_sqlCommandBuilder.GetCommandParameters().Length, Is.EqualTo (1));
-      Assert.That (_sqlCommandBuilder.GetCommandParameters()[0], Is.EqualTo (commandParameter));
+      var expectedCommandParameter = new CommandParameter ("@1", "value");
+      Assert.That (_sqlCommandBuilder.GetCommandParameters (), Is.EqualTo (new[] { expectedCommandParameter }));
+    }
+
+    [Test]
+    public void GetInMemoryProjectionBody ()
+    {
+      Assert.That (_sqlCommandBuilder.GetInMemoryProjectionBody (), Is.Null);
+
+      var expression = Expression.Constant (0);
+      _sqlCommandBuilder.SetInMemoryProjectionBody (expression);
+
+      Assert.That (_sqlCommandBuilder.GetInMemoryProjectionBody (), Is.SameAs (expression));
+    }
+
+    [Test]
+    public void GetCommand ()
+    {
+      _sqlCommandBuilder.Append ("Test");
+      _sqlCommandBuilder.CreateParameter ("value");
+
+      var body = Expression.Constant (0);
+      _sqlCommandBuilder.SetInMemoryProjectionBody (body);
+
+      var data = _sqlCommandBuilder.GetCommand();
+
+      Assert.That (data.CommandText, Is.EqualTo ("Test"));
+
+      var expectedCommandParameter = new CommandParameter ("@1", "value");
+      Assert.That (_sqlCommandBuilder.GetCommandParameters (), Is.EqualTo (new[] { expectedCommandParameter }));
+
+      var expectedInMemoryProjection = Expression.Lambda<Func<IDatabaseResultRow, int>> (body, _sqlCommandBuilder.InMemoryProjectionRowParameter);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedInMemoryProjection, data.GetInMemoryProjection<int> ());
+    }
+
+    [Test]
+    public void GetCommand_NoProjectionSet ()
+    {
+      _sqlCommandBuilder.Append ("Test");
+      var data = _sqlCommandBuilder.GetCommand ();
+
+      Assert.That (data.GetInMemoryProjection<int> (), Is.Null);
     }
 
     [Test]
@@ -85,40 +124,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _sqlCommandBuilder.AppendSeparated (",", new List<string> { "Hugo", "Sepp" },(cb, value) => cb.Append(value));
       Assert.That (_sqlCommandBuilder.GetCommandText (), Is.EqualTo ("Hugo,Sepp"));
-    }
-
-    [Test]
-    public void GetInMemoryProjection_NoProjectionSet ()
-    {
-      var result = _sqlCommandBuilder.GetInMemoryProjection<int> ();
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void GetInMemoryProjection_ProjectionSet_NoConversionRequired ()
-    {
-      var body = Expression.Constant (0);
-      _sqlCommandBuilder.SetInMemoryProjectionBody (body);
-
-      var result = _sqlCommandBuilder.GetInMemoryProjection<int> ();
-
-      var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, int>> (body, _sqlCommandBuilder.InMemoryProjectionRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-
-    [Test]
-    public void GetInMemoryProjection_ProjectionSet_ConversionRequired ()
-    {
-      var body = Expression.Constant (0);
-      _sqlCommandBuilder.SetInMemoryProjectionBody (body);
-
-      var result = _sqlCommandBuilder.GetInMemoryProjection<object> ();
-
-      var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, object>> (
-          Expression.Convert (body, typeof (object)),
-          _sqlCommandBuilder.InMemoryProjectionRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
   }
 }
