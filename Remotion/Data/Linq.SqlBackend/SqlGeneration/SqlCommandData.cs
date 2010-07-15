@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
       ArgumentUtility.CheckNotNull ("inMemoryProjectionParameter", inMemoryProjectionParameter);
-      // ArgumentUtility.CheckNotNull ("inMemoryProjectionBody", inMemoryProjectionBody);
+      ArgumentUtility.CheckNotNull ("inMemoryProjectionBody", inMemoryProjectionBody);
       
       _commandText = commandText;
       _parameters = parameters;
@@ -83,13 +83,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     /// </returns>
     public Expression<Func<IDatabaseResultRow, T>> GetInMemoryProjection<T> ()
     {
-      if (_inMemoryProjectionBody != null)
-      {
-        var body = typeof (T) == _inMemoryProjectionBody.Type ? _inMemoryProjectionBody : Expression.Convert (_inMemoryProjectionBody, typeof (T));
-        return Expression.Lambda<Func<IDatabaseResultRow, T>> (body, _inMemoryProjectionParameter);
-      }
-
-      return null;
+      var body = typeof (T) == _inMemoryProjectionBody.Type ? _inMemoryProjectionBody : Expression.Convert (_inMemoryProjectionBody, typeof (T));
+      return Expression.Lambda<Func<IDatabaseResultRow, T>> (body, _inMemoryProjectionParameter);
     }
   }
 }

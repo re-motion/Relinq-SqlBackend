@@ -127,7 +127,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public SqlCommandData GetCommand ()
     {
-      return new SqlCommandData (GetCommandText(), GetCommandParameters(), InMemoryProjectionRowParameter, GetInMemoryProjectionBody());
+      var commandText = GetCommandText();
+      var commandParameters = GetCommandParameters();
+      var inMemoryProjectionBody = GetInMemoryProjectionBody();
+
+      if (string.IsNullOrEmpty (commandText))
+        throw new InvalidOperationException ("Command text must be appended before a command can be created.");
+
+      if (inMemoryProjectionBody == null)
+        throw new InvalidOperationException ("An in-memory projection body must be appended before a command can be created.");
+
+      return new SqlCommandData (commandText, commandParameters, InMemoryProjectionRowParameter, inMemoryProjectionBody);
     }
   }
 }
