@@ -146,7 +146,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3018")]
+    [Ignore ("TODO 3045")]
     public void GroupBy_Aggregation_FromNestedSubQuery ()
     {
       CheckQuery (
@@ -158,23 +158,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           ).Take (3)
         where x.Min (c => c) > 18
         select x.Key,
-        "SELECT [q1].[key] AS [key] "
+        "SELECT [q1].[key] AS [value] "
             + "FROM (SELECT TOP (@1) [q0].[key] AS [key],[q0].[a0] AS [a0] FROM ("
-                + "SELECT [t2].[Name] AS [key],MIN([t2].[ID]) AS [a0] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0]"
+                + "SELECT [t2].[Name] AS [key], MIN([t2].[ID]) AS [a0] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0]"
             + ") AS [q1] "
             + "WHERE ([q1].[a0] > @3)",
         new CommandParameter ("@1", 18));
     }
 
     [Test]
-    [Ignore ("TODO 3018")]
+    [Ignore ("TODO 3045")]
     public void GroupBy_MinWithProjection_SelectingAnotherTable_InWhereCondition ()
     {
       CheckQuery (
           from c in Cooks group c.Weight by c.Name into cooksByName 
           from k in Kitchens
           where cooksByName.Min (c => k.ID) > 18 select cooksByName.Key,
-          "SELECT [q0].[key] AS [key] "
+          "SELECT [q0].[key] AS [value] "
           + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
           + "CROSS JOIN [KitchenTable] AS [t2] "
           + "WHERE (("
@@ -300,7 +300,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3018")]
+    [Ignore ("TODO 3045")]
     public void GroupBy_GroupInFromExpression_FromNestedSubQuery ()
     {
       CheckQuery (
@@ -312,7 +312,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           ).Take (3)
         from y in x
         select new { x.Key, y },
-        "SELECT [q1].[key] AS [Key_key],[q3].[element] AS [y] "
+        "SELECT [q1].[key] AS [Key],[q3].[element] AS [y] "
             + "FROM ("
                 + "SELECT TOP (@1) [q0].[key] AS [key] "
                 + "FROM (SELECT [t2].[Name] AS [key] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0]) AS [q1] "
@@ -320,7 +320,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
                     + "SELECT [t2].[ID] AS [element] FROM [CookTable] AS [t2] "
                     + "WHERE ((([t2].[Name] IS NULL) AND ([q1].[key] IS NULL)) "
                         + "OR ((([t2].[Name] IS NOT NULL) AND ([q1].[key] IS NOT NULL)) AND ([t2].[Name] = [q1].[key])))) AS [q3]",
-        new CommandParameter ("@1", 18));
+        new CommandParameter ("@1", 3));
     }
 
     [Test]
@@ -344,37 +344,37 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3018")]
+    [Ignore ("TODO 3045")]
     public void GroupBy_WithResultSelector_AndAggregate ()
     {
       CheckQuery (
         Cooks.GroupBy (c => c.Name, (key, group) => new { Name = key, Count = group.Count() }),
-        "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] "
-        + "FROM (SELECT [t1].[Name] AS [key],COUNT(*) AS [Count] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
+        "SELECT [q0].[key] AS [Name],[q0].[a0] AS [Count] "
+        + "FROM (SELECT [t1].[Name] AS [key], COUNT(*) AS [a0] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0]",
           row => (object) new 
           { 
-            Name = row.GetValue<string> (new ColumnID ("Name_key", 0)),
-            Count = row.GetValue<string> (new ColumnID ("Count", 1))
+            Name = row.GetValue<string> (new ColumnID ("Name", 0)),
+            Count = row.GetValue<int> (new ColumnID ("Count", 1))
           });
     }
 
     [Test]
-    [Ignore ("TODO 3018")]
+    [Ignore ("TODO 3045")]
     public void GroupBy_WithResultSelector_AndElementSelector_AndAggregate ()
     {
       CheckQuery (
         Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key, Count = group.Min () }),
-        "SELECT [q0].[key] AS [Name_key],[q0].[a0] AS [Count] "
+        "SELECT [q0].[key] AS [Name], [q0].[a0] AS [Count] "
         + "FROM (SELECT [t1].[Name] AS [key],MIN([t1].[ID]) AS [a0] FROM [CookTable] [t1] GROUP BY [t1].[Name]) AS [q0]",
         row => (object) new 
           { 
             Name = row.GetValue<string> (new ColumnID ("Name_key", 0)),
-            Count = row.GetValue<string> (new ColumnID ("Count", 1))
+            Count = row.GetValue<int> (new ColumnID ("Count", 1))
           });
     }
 
      [Test]
-    [Ignore ("TODO 3021/3018")]
+     [Ignore ("TODO 3021/3045")]
     public void GroupBy_WithMemberInFromClause_AndGroupingComingFromSubQuery ()
     {
       CheckQuery (
