@@ -372,5 +372,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             Count = row.GetValue<string> (new ColumnID ("Count", 1))
           });
     }
+
+     [Test]
+    [Ignore ("TODO 3021/3018")]
+    public void GroupBy_WithMemberInFromClause_AndGroupingComingFromSubQuery ()
+    {
+      CheckQuery (
+          from x in
+            (
+              from c in Cooks
+              group c.ID by c.Name into cooksByName
+              select new { X = cooksByName, Y = 12 }
+            ).Take (3)
+          from y in x.X
+          select new { x.X.Key, y },
+          "SELECT [q1].[X_key] AS [Key],[q3].[element] AS [y] "
+              + "FROM ("
+                  + "SELECT TOP (@1) [q0].[key] AS [X_key], @1 AS [Y] "
+                  + "FROM (SELECT [t2].[Name] AS [key] FROM [CookTable] AS [t2] GROUP BY [t2].[Name]) AS [q0]) AS [q1] "
+              + "CROSS APPLY ("
+                  + "SELECT [t2].[ID] AS [element] FROM [CookTable] AS [t2] "
+                  + "WHERE ((([t2].[Name] IS NULL) AND ([q1].[X_key] IS NULL)) "
+                      + "OR ((([t2].[Name] IS NOT NULL) AND ([q1].[X_key] IS NOT NULL)) AND ([t2].[Name] = [q1].[X_key])))) AS [q3]",
+          new CommandParameter ("@1", 3),
+          new CommandParameter ("@2", 12));
+    }
   }
 }
