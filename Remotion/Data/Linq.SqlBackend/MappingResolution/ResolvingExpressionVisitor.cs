@@ -33,7 +33,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
 
-    public static Expression ResolveExpression (Expression expression, IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+    public static Expression ResolveExpression (
+        Expression expression, IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -59,7 +60,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      
+
       var resolvedExpression = _stage.ResolveTableReferenceExpression (expression, _context);
       return VisitExpression (resolvedExpression);
     }
@@ -82,6 +83,35 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var sourceExpression = VisitExpression (expression.Expression);
       return _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
+    }
+
+    protected override Expression VisitBinaryExpression (BinaryExpression expression)
+    {
+      var newBinaryExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
+
+      var leftExpressionAsNewExpression = newBinaryExpression.Left as NewExpression;
+      var rightExpressionAsNewExpression = newBinaryExpression.Right as NewExpression;
+
+      if (leftExpressionAsNewExpression != null && rightExpressionAsNewExpression != null)
+      {
+        if (leftExpressionAsNewExpression.Constructor != rightExpressionAsNewExpression.Constructor)
+          throw new InvalidOperationException ("The results of constructor invocations can only be compared if the same ctors are used.");
+
+        Expression binaryExpression = null;
+        for (int i = 0; i < leftExpressionAsNewExpression.Arguments.Count; i++)
+        {
+          var argumentComparisonExpression = Expression.MakeBinary (
+              expression.NodeType, leftExpressionAsNewExpression.Arguments[i], rightExpressionAsNewExpression.Arguments[i]);
+
+          if (binaryExpression == null)
+            binaryExpression = argumentComparisonExpression;
+          else
+            binaryExpression = Expression.AndAlso (binaryExpression, argumentComparisonExpression);
+        }
+        return binaryExpression;
+      }
+
+      return newBinaryExpression;
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)
@@ -115,6 +145,5 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return base.VisitUnknownExpression (expression);
     }
-   
   }
 }
