@@ -76,7 +76,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (subStatement, Is.SameAs (statementWithoutOrderings));
 
       Assert.That (result.WhereCondition, Is.Null);
-      Assert.That (result.IsNewTable, Is.True);
       Assert.That (result.ExtractedOrderings, Is.Empty);
 
       var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
@@ -114,7 +113,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (subStatement, Is.EqualTo (expectedSubStatementBuilder.GetSqlStatement()));
 
       Assert.That (result.WhereCondition, Is.Null);
-      Assert.That (result.IsNewTable, Is.True);
     }
 
     [Test]

@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_statementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
       Assert.That (_statementBuilder.SelectProjection, Is.SameAs (fakeFromExpressionInfo.ItemSelector));
 
-      var mappedItemExpression = _context.TryGetExpressionMappingFromHierarchy (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
+      var mappedItemExpression = _context.GetExpressionMapping (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
       Assert.That (mappedItemExpression, Is.Not.Null);
       Assert.That (mappedItemExpression, Is.SameAs (fakeFromExpressionInfo.ItemSelector));
     }
@@ -227,8 +227,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           new SqlTable (new ResolvedSubStatementTableInfo("sc", _statementBuilder.GetSqlStatement()), JoinSemantics.Inner),
           extractedOrderings,
           Expression.Constant (0),
-          null,
-          false);
+          null);
     }
 
   }

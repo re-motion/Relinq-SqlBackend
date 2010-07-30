@@ -199,7 +199,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, true);
+          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null);
 
       _stageMock
           .Expect (
@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { preparedSqlTable }));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause))).SqlTable,
+          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause))).SqlTable,
           Is.SameAs (preparedSqlTable));
     }
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, true);
+          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null);
 
       _stageMock
           .Expect (
@@ -249,7 +249,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (_visitor.SqlStatementBuilder.SqlTables, Is.EqualTo (new[] { fakeSqlTableForMainFromClause, preparedSqlTable }));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (additionalFromClause))).
+          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (additionalFromClause))).
               SqlTable,
           Is.SameAs (preparedSqlTable));
     }
@@ -263,8 +263,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           preparedJoinedTable,
           new Ordering[] { },
           new SqlTableReferenceExpression (preparedJoinedTable),
-          new JoinConditionExpression (preparedJoinedTable),
-          true);
+          new JoinConditionExpression (preparedJoinedTable));
 
       _stageMock
         .Expect (
@@ -285,7 +284,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs (preparedJoinedTable));
       Assert.That (((JoinConditionExpression) _visitor.SqlStatementBuilder.WhereCondition).JoinedTable, Is.SameAs (preparedJoinedTable));
       Assert.That (
-          ((SqlTableReferenceExpression) _visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
+          ((SqlTableReferenceExpression) _visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (fromClause))).SqlTable,
           Is.SameAs (_visitor.SqlStatementBuilder.SqlTables[0]));
     }
 
@@ -379,7 +378,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, true);
+          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null);
       var fakeWhereCondition = Expression.Constant (1);
 
       _stageMock
@@ -411,7 +410,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, false);
+          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null);
 
       var fakeWhereCondition = Expression.Constant (1);
 
@@ -536,7 +535,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null, false);
+          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null);
 
       _stageMock
           .Expect (
@@ -563,15 +562,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (sqlTable));
-      Assert.That (_visitor.Context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
+      Assert.That (_visitor.Context.GetExpressionMapping (new QuerySourceReferenceExpression (_mainFromClause)), Is.Not.Null);
     }
 
     [Test]
-    public void AddPreparedFromExpression_IsNewTable_AddSqlTable ()
+    public void AddPreparedFromExpression_AddSqlTable ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null, true);
+          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null);
 
       _visitor.SqlStatementBuilder.SqlTables.Clear();
 
@@ -582,26 +581,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddPreparedFromExpression_IsNewTableFalse_AddSqlTable ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
-      var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null, false);
-
-      _visitor.SqlStatementBuilder.SqlTables.Clear ();
-
-      _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
-
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
-    }
-
-    [Test]
     public void AddPreparedFromExpression_OrderingIsAdded ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       var ordering = new Ordering(Expression.Constant("order"), OrderingDirection.Asc);
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), null, false);
+          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), null);
       
       _visitor.SqlStatementBuilder.Orderings.Clear ();
       
@@ -616,7 +601,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, false);
+          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
 
       _visitor.SqlStatementBuilder.Orderings.Clear ();
 
@@ -631,7 +616,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       var whereCondition = Expression.Constant (true);
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), whereCondition, false);
+          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), whereCondition);
 
       _visitor.SqlStatementBuilder.WhereCondition = null;
 
@@ -646,7 +631,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       var whereCondition = Expression.Constant(true);
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[0] , new SqlTableReferenceExpression (sqlTable), whereCondition, false);
+          sqlTable, new Ordering[0] , new SqlTableReferenceExpression (sqlTable), whereCondition);
 
       var originalWhereCondition = Expression.Constant (false);
       _visitor.SqlStatementBuilder.WhereCondition = originalWhereCondition;
@@ -662,7 +647,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, false);
+          sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
 
       var originalWhereCondition = Expression.Constant (false);
       _visitor.SqlStatementBuilder.WhereCondition = originalWhereCondition;
@@ -679,7 +664,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var preparedExpression = new SqlTableReferenceExpression (sqlTable);
       var joinClause = ExpressionHelper.CreateJoinClause();
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null, false);
+          sqlTable, new Ordering[] { }, new SqlTableReferenceExpression (sqlTable), null);
 
       _stageMock
           .Expect (

@@ -27,7 +27,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     void AddExpressionMapping (Expression original, Expression replacement);
     void AddFromExpression (FromExpressionInfo fromExpressionInfo);
-    Expression TryGetExpressionMapping (Expression original);
-    Expression TryGetExpressionMappingFromHierarchy (Expression original);
+    Expression GetExpressionMapping (Expression original);
   }
 }

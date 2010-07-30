@@ -17,9 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -61,29 +58,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         _visitor.AddPreparedFromExpression (fromExpressionInfo);
     }
 
-    public Expression TryGetExpressionMapping (Expression original)
-    {
-      ArgumentUtility.CheckNotNull ("original", original);
-
-      Expression result = TryGetExpressionMappingFromHierarchy (original);
-      if (result != null) // search this context and parent context's for query source
-        return result;
-
-      if (_visitor != null)
-      {
-        // if whole hierarchy doesn't contain source, check whether it's a group join; group joins are lazily added
-        var keyAsQuerySourceReferenceExpression = original as QuerySourceReferenceExpression;
-        if (keyAsQuerySourceReferenceExpression != null)
-        {
-          var groupJoinClause = keyAsQuerySourceReferenceExpression.ReferencedQuerySource as GroupJoinClause;
-          if (groupJoinClause != null)
-            return new SqlTableReferenceExpression (_visitor.AddJoinClause (groupJoinClause.JoinClause));
-        }
-      }
-      return null;
-    }
-
-    public Expression TryGetExpressionMappingFromHierarchy (Expression original)
+    public Expression GetExpressionMapping (Expression original)
     {
       ArgumentUtility.CheckNotNull ("original", original);
 
@@ -92,9 +67,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return result;
 
       if (_parentContext != null)
-        return _parentContext.TryGetExpressionMappingFromHierarchy (original);
+        return _parentContext.GetExpressionMapping (original);
 
       return null;
     }
+    
   }
 }

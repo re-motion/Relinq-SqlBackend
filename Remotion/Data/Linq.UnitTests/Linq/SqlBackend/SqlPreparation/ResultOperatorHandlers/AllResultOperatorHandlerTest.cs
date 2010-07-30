@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       var sqlStatement = _sqlStatementBuilder.GetSqlStatement ();
       var fakePreparedSelectProjection = Expression.Constant (false);
       var sqlTable = _sqlStatementBuilder.SqlTables[0];
-      var fakeFromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, false);
+      var fakeFromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
 
       _stageMock
           .Expect (

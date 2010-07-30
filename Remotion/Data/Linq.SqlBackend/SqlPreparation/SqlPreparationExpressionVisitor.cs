@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -84,7 +85,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       if (expression != null)
       {
-        var replacementExpression = _context.TryGetExpressionMapping (expression);
+        var replacementExpression = _context.GetExpressionMapping (expression);
         if (replacementExpression != null)
           expression = replacementExpression;
       }
@@ -96,12 +97,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var message = string.Format (
-          "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
-          + "supported yet.",
-          expression.Type.Name);
-      throw new KeyNotFoundException (message);
+      if (expression.ReferencedQuerySource is GroupJoinClause)
+      {
+        var message = string.Format (
+            "The results of a GroupJoin ('{0}') can only be used as a query source, for example, in a from expression.",
+            expression.ReferencedQuerySource.ItemName);
+        throw new NotSupportedException (message);
+      }
+      else
+      {
+        var message = string.Format (
+            "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
+            + "supported yet.",
+            expression.Type.Name);
+        throw new KeyNotFoundException (message);
+      }
     }
+  
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {

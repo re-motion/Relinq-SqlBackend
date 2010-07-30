@@ -126,8 +126,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (fromExpressionInfo.ExtractedOrderings, Is.Empty);
       Assert.That (fromExpressionInfo.WhereCondition, Is.Null);
-      Assert.That (fromExpressionInfo.IsNewTable, Is.True);
-      
+     
       var expectedItemSelector = new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, fromExpressionInfo.ItemSelector);
 

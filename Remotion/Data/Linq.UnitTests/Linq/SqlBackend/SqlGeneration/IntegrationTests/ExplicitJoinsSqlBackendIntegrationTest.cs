@@ -214,8 +214,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "When a sequence retrieved by a subquery is used in a from expression, the subquery must end with a GroupBy operator.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression.")]
     public void ExplicitJoinWithInto_PropagatedFromSubStatement ()
     {
       // To enable this test, see RM-3037

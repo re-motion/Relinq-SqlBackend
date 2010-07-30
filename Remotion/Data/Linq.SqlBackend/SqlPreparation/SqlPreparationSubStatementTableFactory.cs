@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       {
         var tableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), sqlStatement);
         var sqlTable = tableCreator (tableInfo);
-        return new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, true);
+        return new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
       }
 
       var selectExpressionWithOrderings = GetNewSelectExpressionWithOrderings (sqlStatement);
@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           .Skip (1) // ignore original projection
           .Select ((expr, i) => new Ordering (expr, originalSqlStatement.Orderings[i].OrderingDirection));
 
-      return new FromExpressionInfo (tableWithSubStatement, orderingsFromSubStatement.ToArray (), projectionFromSubStatement, null, true);
+      return new FromExpressionInfo (tableWithSubStatement, orderingsFromSubStatement.ToArray (), projectionFromSubStatement, null);
     }
   }
 }

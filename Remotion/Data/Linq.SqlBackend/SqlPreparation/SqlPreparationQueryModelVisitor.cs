@@ -219,8 +219,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
         SqlStatementBuilder.Orderings.Add (ordering);
 
-      if (fromExpressionInfo.IsNewTable)
-        SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
+      SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
     }
 
     private ICollection GetConstantCollectionValue (QueryModel queryModel)

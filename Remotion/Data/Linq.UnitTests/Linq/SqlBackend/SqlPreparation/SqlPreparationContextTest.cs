@@ -63,7 +63,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void AddExpressionMapping ()
     {
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (_source), new SqlTableReferenceExpression (_sqlTable));
-      Assert.That (_context.TryGetExpressionMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
+      Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (_source)), Is.Not.Null);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_source);
       _context.AddExpressionMapping (querySourceReferenceExpression, new SqlTableReferenceExpression (_sqlTable));
       Assert.That (
-          ((SqlTableReferenceExpression) _context.TryGetExpressionMapping (querySourceReferenceExpression)).SqlTable,
+          ((SqlTableReferenceExpression) _context.GetExpressionMapping (querySourceReferenceExpression)).SqlTable,
           Is.SameAs (_sqlTable));
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
       _context.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
 
-      Expression result = _context.TryGetExpressionMappingFromHierarchy (querySourceReferenceExpression);
+      Expression result = _context.GetExpressionMapping (querySourceReferenceExpression);
 
       Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
     }
@@ -94,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (_parentSource);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
       _parentContext.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
-      Assert.That (_contextWithParent.TryGetExpressionMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
+      Assert.That (_contextWithParent.GetExpressionMapping (querySourceReferenceExpression), Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
@@ -104,60 +104,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (_parentSqlTable);
       _parentContext.AddExpressionMapping (querySourceReferenceExpression, sqlTableReferenceExpression);
 
-      Expression result = _contextWithParent.TryGetExpressionMappingFromHierarchy (querySourceReferenceExpression);
+      Expression result = _contextWithParent.GetExpressionMapping (querySourceReferenceExpression);
 
       Assert.That (result, Is.SameAs (sqlTableReferenceExpression));
     }
 
     [Test]
-    public void GetExpressionMapping_GroupJoinClause ()
-    {
-      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause();
-      var preparedExpression = Expression.Constant (0);
-      var preparedSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var preparedFromExpressionInfo = new FromExpressionInfo (
-          preparedSqlTable, new Ordering[] { }, new SqlTableReferenceExpression (preparedSqlTable), null, false);
-
-      _stageMock
-        .Expect (
-          mock => mock.PrepareFromExpression (
-              Arg<Expression>.Matches (e => e == groupJoinClause.JoinClause.InnerSequence),
-              Arg<ISqlPreparationContext>.Matches (c => c != _context), Arg < Func<ITableInfo, SqlTableBase>>.Is.Anything))
-         .Return (preparedFromExpressionInfo);
-      _stageMock
-          .Expect (
-              mock =>
-              mock.PrepareWhereExpression (
-                  Arg<Expression>.Matches (
-                      e =>
-                      ((BinaryExpression) e).Left == groupJoinClause.JoinClause.OuterKeySelector
-                      && ((BinaryExpression) e).Right == groupJoinClause.JoinClause.InnerKeySelector),
-                  Arg<ISqlPreparationContext>.Matches (c => c != _context)))
-          .Return (preparedExpression);
-      _stageMock.Replay();
-
-      var result = _contextWithParent.TryGetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause));
-
-      _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.Not.Null);
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (preparedSqlTable));
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (preparedExpression));
-    }
-
-    [Test]
-    public void TryGetExpressionMapping_GroupJoinClause ()
-    {
-      var groupJoinClause = ExpressionHelper.CreateGroupJoinClause();
-
-      Expression result = _contextWithParent.TryGetExpressionMappingFromHierarchy (new QuerySourceReferenceExpression (groupJoinClause));
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
     public void TryGetExpressionMappingFromHierarchy_ReturnsNullWhenSourceNotAdded ()
     {
-      Expression result = _context.TryGetExpressionMappingFromHierarchy (new QuerySourceReferenceExpression (_source));
+      Expression result = _context.GetExpressionMapping (new QuerySourceReferenceExpression (_source));
 
       Assert.That (result, Is.Null);
     }
@@ -169,7 +124,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var whereCondition = Expression.Constant (true);
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Asc);
       var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), whereCondition, true);
+          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), whereCondition);
       _visitor.SqlStatementBuilder.WhereCondition = null;
       _visitor.SqlStatementBuilder.Orderings.Clear ();
       _visitor.SqlStatementBuilder.SqlTables.Clear ();

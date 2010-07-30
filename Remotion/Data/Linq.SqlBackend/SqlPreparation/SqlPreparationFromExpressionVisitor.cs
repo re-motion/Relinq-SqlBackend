@@ -17,8 +17,10 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -65,6 +67,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private FromExpressionInfo? _fromExpressionInfo;
     private readonly Func<ITableInfo, SqlTableBase> _tableGenerator;
 
+    protected FromExpressionInfo? FromExpressionInfo
+    {
+      get { return _fromExpressionInfo; }
+    }
+
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
@@ -86,7 +93,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var itemType = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "from expression");
       var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null, true);
+      _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null);
 
       return sqlTableReferenceExpression;
     }
@@ -102,7 +109,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var oldStyleJoinedTable = _tableGenerator (joinedTable);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
       _fromExpressionInfo = new FromExpressionInfo (
-          oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new JoinConditionExpression (joinedTable), true);
+          oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new JoinConditionExpression (joinedTable));
 
       return sqlTableReferenceExpression;
     }
@@ -123,18 +130,40 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Type != typeof (string) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
+      var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
+      
+      return expression;
+    }
+
+    protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
+    {
+      var groupJoinClause = expression.ReferencedQuerySource as GroupJoinClause;
+      if (groupJoinClause != null)
       {
-        var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
-        var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-        _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null, true);
-      }
-      else
-      {
-        _fromExpressionInfo = new FromExpressionInfo (expression.SqlTable, new Ordering[0], expression, null, false);
+        var fromExpressionInfo = AnalyzeFromExpression (
+            groupJoinClause.JoinClause.InnerSequence, Stage, _generator, Registry, _context, _tableGenerator);
+
+        _context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);
+
+        var whereCondition =
+            Stage.PrepareWhereExpression (
+                Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), _context);
+
+        if (fromExpressionInfo.WhereCondition != null)
+          whereCondition = Expression.AndAlso (fromExpressionInfo.WhereCondition, whereCondition);
+
+        _fromExpressionInfo = new FromExpressionInfo (
+            fromExpressionInfo.SqlTable,
+            fromExpressionInfo.ExtractedOrderings.ToArray(),
+            new SqlTableReferenceExpression (fromExpressionInfo.SqlTable),
+            whereCondition);
+
+        return new SqlTableReferenceExpression(fromExpressionInfo.SqlTable);
       }
 
-      return expression;
+      return base.VisitQuerySourceReferenceExpression (expression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
