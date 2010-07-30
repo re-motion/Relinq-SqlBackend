@@ -317,7 +317,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression1);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression2))
           .Return (rightArgumentExpression2);
-      _resolverMock.Replay ();
+      _resolverMock.Replay();
 
       ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
     }
@@ -339,7 +339,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      _resolverMock.Replay();
+      _resolverMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (result.NodeType, Is.EqualTo (ExpressionType.Equal));
       Assert.That (((BinaryExpression) result).Left, Is.SameAs (leftArgumentExpression));
@@ -357,7 +357,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), leftArgumentExpression1, leftArgumentExpression2);
       var rightExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), rightArgumentExpression1, rightArgumentExpression2);
-      var expression = Expression.MakeBinary( ExpressionType.NotEqual, leftExpression, rightExpression);
+      var expression = Expression.MakeBinary (ExpressionType.NotEqual, leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
           .Return (leftArgumentExpression1);
@@ -371,17 +371,189 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      _resolverMock.Replay();
+      _resolverMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (result.NodeType, Is.EqualTo(ExpressionType.AndAlso));
+      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.AndAlso));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (((BinaryExpression) result).Left.NodeType, Is.EqualTo(ExpressionType.NotEqual));
+      Assert.That (((BinaryExpression) result).Left.NodeType, Is.EqualTo (ExpressionType.NotEqual));
       Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Left, Is.SameAs (leftArgumentExpression1));
       Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Right, Is.SameAs (rightArgumentExpression1));
       Assert.That (((BinaryExpression) result).Right.NodeType, Is.EqualTo (ExpressionType.NotEqual));
       Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Left, Is.SameAs (leftArgumentExpression2));
       Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Right, Is.SameAs (rightArgumentExpression2));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The results of constructor invocations can only be compared if the members corresponding to the ctor args are given.")]
+    public void VisitBinaryExpression_NewExpressionOnLeftSide_WithoutMembers_ThrowsException ()
+    {
+      var leftArgumentExpression = Expression.Constant (1);
+      var leftExpression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), leftArgumentExpression);
+      var rightExpression = Expression.Constant (new TypeForNewExpression (1));
+      var expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
+          .Return (leftArgumentExpression);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightExpression))
+          .Return (rightExpression);
+      _resolverMock.Replay();
+
+      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NewExpressionOnLeftSide_WithOneMember_ReturnsBinaryExpression ()
+    {
+      var leftArgumentExpression = Expression.Constant (1);
+      var leftExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { leftArgumentExpression },
+          typeof (TypeForNewExpression).GetProperty ("A"));
+      var rightExpression = Expression.Constant (new TypeForNewExpression (1));
+      var expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
+          .Return (leftArgumentExpression);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightExpression))
+          .Return (rightExpression);
+      _resolverMock.Replay();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      //_resolverMock.VerifyAllExpectations();
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.Equal));
+      Assert.That (((BinaryExpression) result).Left, Is.SameAs (leftArgumentExpression));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) ((BinaryExpression) result).Right).Expression, Is.SameAs(rightExpression));
+      Assert.That (((MemberExpression) ((BinaryExpression) result).Right).Member, Is.SameAs (leftExpression.Members[0]));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NewExpressionOnLeftSide_WithTwoMembers_ReturnsBinaryExpression ()
+    {
+      var leftArgumentExpression1 = Expression.Constant (1);
+      var leftArgumentExpression2 = Expression.Constant (2);
+      var leftExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof(int) }),
+          new[] { leftArgumentExpression1, leftArgumentExpression2 },
+          typeof (TypeForNewExpression).GetProperty ("A"), typeof (TypeForNewExpression).GetProperty ("B"));
+      var rightExpression = Expression.Constant (new TypeForNewExpression (1, 2));
+      var expression = Expression.MakeBinary (ExpressionType.NotEqual, leftExpression, rightExpression);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
+          .Return (leftArgumentExpression1);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
+          .Return (leftArgumentExpression2);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightExpression))
+          .Return (rightExpression);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations();
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.AndAlso));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Left.NodeType, Is.EqualTo (ExpressionType.NotEqual));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Left, Is.SameAs (leftArgumentExpression1));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Right, Is.TypeOf(typeof(MemberExpression)));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Left).Right).Expression, Is.SameAs(rightExpression));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Left).Right).Member, Is.SameAs (leftExpression.Members[0]));
+      Assert.That (((BinaryExpression) result).Right.NodeType, Is.EqualTo (ExpressionType.NotEqual));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Left, Is.SameAs (leftArgumentExpression2));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Right, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Right).Right).Expression, Is.SameAs (rightExpression));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Right).Right).Member, Is.SameAs (leftExpression.Members[1]));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The results of constructor invocations can only be compared if the members corresponding to the ctor args are given.")]
+    public void VisitBinaryExpression_NewExpressionOnRightSide_WithoutMembers_ThrowsException ()
+    {
+      var leftExpression = Expression.Constant (new TypeForNewExpression (1));
+      var rightArgumentExpression = Expression.Constant (1);
+      var rightExpression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), rightArgumentExpression);
+      var expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftExpression))
+          .Return (leftExpression);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
+          .Return (rightArgumentExpression);
+      _resolverMock.Replay ();
+
+      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NewExpressionOnRightSide_WithOneMember_ReturnsBinaryExpression ()
+    {
+      var leftExpression = Expression.Constant (new TypeForNewExpression (1));
+      var rightArgumentExpression = Expression.Constant (1);
+      var rightExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          new[] { rightArgumentExpression },
+          typeof (TypeForNewExpression).GetProperty ("A"));
+      var expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftExpression))
+          .Return (leftExpression);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
+          .Return (rightArgumentExpression);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.Equal));
+      Assert.That (((BinaryExpression) result).Left, Is.SameAs (rightArgumentExpression));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) ((BinaryExpression) result).Right).Expression, Is.SameAs (leftExpression));
+      Assert.That (((MemberExpression) ((BinaryExpression) result).Right).Member, Is.SameAs (rightExpression.Members[0]));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NewExpressionOnRightSide_WithTwoMembers_ReturnsBinaryExpression ()
+    {
+      var leftExpression = Expression.Constant (new TypeForNewExpression (1, 2));
+      var rightArgumentExpression1 = Expression.Constant (1);
+      var rightArgumentExpression2 = Expression.Constant (2);
+      var rightExpression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof(int) }),
+          new[] { rightArgumentExpression1, rightArgumentExpression2 },
+          typeof (TypeForNewExpression).GetProperty ("A"), typeof (TypeForNewExpression).GetProperty ("B"));
+      var expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftExpression))
+          .Return (leftExpression);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression1))
+          .Return (rightArgumentExpression1);
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression2))
+          .Return (rightArgumentExpression2);
+      _resolverMock.Replay ();
+
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.AndAlso));
+      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (((BinaryExpression) result).Left.NodeType, Is.EqualTo (ExpressionType.Equal));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Left, Is.SameAs (rightArgumentExpression1));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Right, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Left).Right).Expression, Is.SameAs (leftExpression));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Left).Right).Member, Is.SameAs (rightExpression.Members[0]));
+      Assert.That (((BinaryExpression) result).Right.NodeType, Is.EqualTo (ExpressionType.Equal));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Left, Is.SameAs (rightArgumentExpression2));
+      Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Right, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Right).Right).Expression, Is.SameAs (leftExpression));
+      Assert.That (((MemberExpression) ((BinaryExpression) ((BinaryExpression) result).Right).Right).Member, Is.SameAs (rightExpression.Members[1]));
     }
 
     private SqlStatement CreateSimplifiableResolvedSqlStatement ()

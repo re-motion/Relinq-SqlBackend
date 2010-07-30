@@ -386,5 +386,36 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT TOP (1) [t2].[ID] FROM [KitchenTable] AS [t1] "
           +"LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID]))");
     }
+
+    [Test]
+    public void CompoundValuesComparison_Equal_OnTopLevel ()
+    {
+      CheckQuery (
+          from c in Cooks where new { X = c.Name, Y = c.IsFullTimeCook } == new { X = c.FirstName, Y = c.IsStarredCook } select c.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] = [t0].[FirstName]) AND ([t0].[IsFullTimeCook] = "
+          +"[t0].[IsStarredCook]))");
+    }
+
+    [Test]
+    public void CompoundValuesComparison_NotEqual_OnTopLevel ()
+    {
+      CheckQuery (
+          from c in Cooks where new { X = c.Name, Y = c.IsFullTimeCook } != new { X = c.FirstName, Y = c.IsStarredCook } select c.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] <> [t0].[FirstName]) AND ([t0].[IsFullTimeCook] <> "
+          + "[t0].[IsStarredCook]))");
+    }
+
+    [Test]
+    [Ignore("RM-3031")]
+    public void CompoundValuesComparison_ValuesComingFromSubquery ()
+    {
+      CheckQuery (
+          from x in Cooks.Select (c => new { FirstName = c.FirstName, LastName = c.Name }).Distinct()
+          where x == new { FirstName = "Hugo", LastName = "Boss" }
+          select x.FirstName,
+          ""
+          );
+    }
+
   }
 }

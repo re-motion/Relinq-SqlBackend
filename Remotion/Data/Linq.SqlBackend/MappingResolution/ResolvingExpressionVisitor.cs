@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Threading;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -111,6 +112,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return binaryExpression;
       }
 
+      if (leftExpressionAsNewExpression != null)
+        return GetNewBinaryExpression(expression.NodeType, (ConstantExpression) newBinaryExpression.Right, leftExpressionAsNewExpression);
+      
+      if (rightExpressionAsNewExpression != null)
+        return GetNewBinaryExpression (expression.NodeType, (ConstantExpression) newBinaryExpression.Left, rightExpressionAsNewExpression);
+      
       return newBinaryExpression;
     }
 
@@ -144,6 +151,27 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return base.VisitUnknownExpression (expression);
+    }
+
+    private Expression GetNewBinaryExpression (ExpressionType expressionType, ConstantExpression constantExpression, NewExpression newExpression)
+    {
+      if (newExpression.Members == null || newExpression.Members.Count == 0)
+        throw new InvalidOperationException (
+            "The results of constructor invocations can only be compared if the members corresponding to the ctor args are given.");
+
+      Expression binaryExpression = null;
+      for (int i = 0; i < newExpression.Members.Count; i++)
+      {
+        //var memberExpression = Expression.MakeMemberAccess (constantExpression, newExpression.Members[i]);
+        var memberExpression = Expression.MakeMemberAccess (constantExpression, constantExpression.Value.GetType().GetProperty(newExpression.Members[i].Name.Replace("get_", string.Empty)));
+        var argumentComparisonExpression = Expression.MakeBinary (expressionType, newExpression.Arguments[i], memberExpression);
+
+        if (binaryExpression == null)
+          binaryExpression = argumentComparisonExpression;
+        else
+          binaryExpression = Expression.AndAlso (binaryExpression, argumentComparisonExpression);
+      }
+      return binaryExpression;
     }
   }
 }
