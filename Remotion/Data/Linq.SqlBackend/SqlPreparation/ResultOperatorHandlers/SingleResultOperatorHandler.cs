@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -33,7 +34,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var equivalentTakeOperator = new TakeResultOperator (new SqlLiteralExpression (2)); 
       var takeHandler = new TakeResultOperatorHandler();
       takeHandler.HandleResultOperator (equivalentTakeOperator, sqlStatementBuilder, generator, stage, context);
-      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+      //UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+      sqlStatementBuilder.DataInfo = new StreamedForcedSingleValueInfo (
+          resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo).DataType, resultOperator.ReturnDefaultWhenEmpty);
     }
   }
 }

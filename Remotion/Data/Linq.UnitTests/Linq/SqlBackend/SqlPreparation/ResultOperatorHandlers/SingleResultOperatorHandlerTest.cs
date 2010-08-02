@@ -62,8 +62,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (((SqlLiteralExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo(2));
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
-      Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Cook)));
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedForcedSingleValueInfo)));
+      Assert.That (((StreamedForcedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Cook)));
     }
 
     [Test]
