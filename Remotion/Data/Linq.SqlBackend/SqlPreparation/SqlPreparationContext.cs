@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -28,17 +29,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   public class SqlPreparationContext : ISqlPreparationContext
   {
     private readonly ISqlPreparationContext _parentContext;
-    private readonly SqlPreparationQueryModelVisitor _visitor;
+    private readonly SqlStatementBuilder _sqlStatementBuilder;
     private readonly Dictionary<Expression, Expression> _mapping;
 
-    public SqlPreparationContext () : this(null, null)
+    public SqlPreparationContext (SqlStatementBuilder sqlStatementBuilder) 
+      : this(null, sqlStatementBuilder)
     {
     }
 
-    public SqlPreparationContext (ISqlPreparationContext parentContext, SqlPreparationQueryModelVisitor visitor)
+    public SqlPreparationContext (ISqlPreparationContext parentContext, SqlStatementBuilder sqlStatementBuilder)
     {
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+
       _parentContext = parentContext;
-      _visitor = visitor;
+      _sqlStatementBuilder = sqlStatementBuilder;
       _mapping = new Dictionary<Expression, Expression>();
     }
 
@@ -52,12 +56,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping[original] = replacement;
     }
 
-    public void AddFromExpression (FromExpressionInfo fromExpressionInfo)
+    public void AddSqlTable (SqlTableBase sqlTableBase)
     {
-      ArgumentUtility.CheckNotNull ("fromExpressionInfo", fromExpressionInfo);
+      ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
 
-      if (_visitor != null) // TODO: consider changing this class so that visitor can't be null
-        _visitor.AddPreparedFromExpression (fromExpressionInfo);
+      _sqlStatementBuilder.SqlTables.Add(sqlTableBase);
     }
 
     public Expression GetExpressionMapping (Expression original)

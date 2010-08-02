@@ -26,6 +26,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -38,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private SqlStatementBuilder _statementBuilder;
     private UniqueIdentifierGenerator _generator;
     private ISqlPreparationStage _stageMock;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -50,7 +51,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()));
       _generator = new UniqueIdentifierGenerator();
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
 
     [Test]

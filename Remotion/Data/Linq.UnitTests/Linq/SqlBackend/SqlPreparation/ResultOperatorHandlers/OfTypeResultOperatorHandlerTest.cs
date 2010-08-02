@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private OfTypeResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
           MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new OfTypeResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
-      _context = new SqlPreparationContext ();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
 
     [Test]

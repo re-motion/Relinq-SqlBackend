@@ -35,28 +35,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private ISqlPreparationContext _context;
     private MainFromClause _source;
     private SqlTable _sqlTable;
-    private SqlPreparationContext _parentContext;
+    private ISqlPreparationContext _parentContext;
     private MainFromClause _parentSource;
     private SqlTable _parentSqlTable;
-    private TestableSqlPreparationQueryModelVisitor _visitor;
-    private ISqlPreparationStage _stageMock;
     private ISqlPreparationContext _contextWithParent;
+    private SqlStatementBuilder _sqlStatementBuilder;
 
     [SetUp]
     public void SetUp ()
     {
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
       _source = ExpressionHelper.CreateMainFromClause_Cook();
       var source = new UnresolvedTableInfo (typeof (int));
       _sqlTable = new SqlTable (source, JoinSemantics.Inner);
-
-      _parentContext = new SqlPreparationContext();
+      _parentContext = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _parentSource = ExpressionHelper.CreateMainFromClause_Cook();
       _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)), JoinSemantics.Inner);
-      _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
-      _visitor = new TestableSqlPreparationQueryModelVisitor (
-          _parentContext, _stageMock, new UniqueIdentifierGenerator(), ResultOperatorHandlerRegistry.CreateDefault());
-      _contextWithParent = new SqlPreparationContext (_parentContext, _visitor);
+      _sqlStatementBuilder = new SqlStatementBuilder();
+      _contextWithParent = new SqlPreparationContext (_parentContext, _sqlStatementBuilder);
     }
 
     [Test]
@@ -125,24 +121,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void AddFromExpression ()
+    public void AddSqlTable ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
-      var whereCondition = Expression.Constant (true);
-      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Asc);
-      var preparedFromExpressionInfo = new FromExpressionInfo (
-          sqlTable, new[] { ordering }, new SqlTableReferenceExpression (sqlTable), whereCondition);
-      _visitor.SqlStatementBuilder.WhereCondition = null;
-      _visitor.SqlStatementBuilder.Orderings.Clear ();
-      _visitor.SqlStatementBuilder.SqlTables.Clear ();
+      
+      _contextWithParent.AddSqlTable (sqlTable);
 
-      _contextWithParent.AddFromExpression (preparedFromExpressionInfo);
-
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (_visitor.SqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (_visitor.SqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
-      Assert.That (_visitor.SqlStatementBuilder.Orderings[0], Is.SameAs (ordering));
-      Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs (whereCondition));
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (_sqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
     }
   }
 }

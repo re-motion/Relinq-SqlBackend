@@ -32,6 +32,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -41,13 +42,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
   {
     private ISqlPreparationStage _stageMock;
     private UniqueIdentifierGenerator _generator;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private SkipResultOperatorHandler _handler;
-
     private SqlTable _sqlTable;
     private SqlTableReferenceExpression _selectProjection;
     private Ordering _ordering;
-    
     private SqlStatementBuilder _sqlStatementBuilder;
     private ConstructorInfo _tupleCtor;
 
@@ -56,7 +55,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
-      _context = new SqlPreparationContext ();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
 
       _handler = new SkipResultOperatorHandler ();
       

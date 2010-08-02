@@ -26,6 +26,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -70,7 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     protected SqlCommandData GenerateSql (QueryModel queryModel)
     {
-      var preparationContext = new SqlPreparationContext();
+      var preparationContext = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (

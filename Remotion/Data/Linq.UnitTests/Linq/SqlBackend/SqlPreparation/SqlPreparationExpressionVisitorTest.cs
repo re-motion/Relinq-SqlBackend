@@ -39,10 +39,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   public class SqlPreparationExpressionVisitorTest
   {
     private ISqlPreparationContext _context;
-
     private MainFromClause _cookMainFromClause;
     private QuerySourceReferenceExpression _cookQuerySourceReferenceExpression;
-
     private SqlTable _sqlTable;
     private ISqlPreparationStage _stageMock;
     private MethodCallTransformerRegistry _registry;
@@ -51,7 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
       var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);

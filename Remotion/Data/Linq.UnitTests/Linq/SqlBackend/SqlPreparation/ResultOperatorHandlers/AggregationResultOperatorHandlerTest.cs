@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private TestableAggregationResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
         DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5)),
         SelectProjection = new NamedExpression (null, Expression.Constant (0))
       };
-      _context = new SqlPreparationContext ();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
 
     [Test]

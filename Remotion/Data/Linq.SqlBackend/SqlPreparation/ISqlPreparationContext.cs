@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
@@ -27,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     bool IsOuterMostQuery { get; }
     void AddExpressionMapping (Expression original, Expression replacement);
-    void AddFromExpression (FromExpressionInfo fromExpressionInfo);
+    void AddSqlTable (SqlTableBase sqlTableBase);
     Expression GetExpressionMapping (Expression original);
   }
 }

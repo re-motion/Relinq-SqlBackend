@@ -38,8 +38,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     private UniqueIdentifierGenerator _generator;
     private CastResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private QueryModel _queryModel;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -51,8 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       {
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
       };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
-      _context = new SqlPreparationContext ();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
 
     [Test]

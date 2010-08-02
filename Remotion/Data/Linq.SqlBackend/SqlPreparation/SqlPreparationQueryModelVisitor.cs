@@ -65,12 +65,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      _context = new SqlPreparationContext (parentContext, this);
       _stage = stage;
       _generator = generator;
       _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
 
       _sqlStatementBuilder = new SqlStatementBuilder();
+      _context = new SqlPreparationContext (parentContext, _sqlStatementBuilder);
     }
 
     public ISqlPreparationContext Context

@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   {
     private ISqlPreparationStage _stageMock;
     private UniqueIdentifierGenerator _generator;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private MethodCallTransformerRegistry _registry;
     private TestableSqlPreparationFromExpressionVisitor _visitor;
 
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
       _generator = new UniqueIdentifierGenerator();
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _registry = MethodCallTransformerRegistry.CreateDefault();
       _visitor = new TestableSqlPreparationFromExpressionVisitor (
           _generator, _stageMock, _registry, _context, info => new SqlTable (info, JoinSemantics.Inner));

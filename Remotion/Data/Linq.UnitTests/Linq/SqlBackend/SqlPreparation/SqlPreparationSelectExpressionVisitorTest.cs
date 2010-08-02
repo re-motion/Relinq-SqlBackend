@@ -98,10 +98,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitSqlSubStatementExpression_StreamedSingleValueInfo ()
     {
       var selectProjection = Expression.Constant (1);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var originalSubStatement = new SqlStatement (
           new StreamedSingleValueInfo (typeof(int), false),
           selectProjection,
-          new[] { SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook))},
+          new[] { sqlTable},
           null,
           null,
           new Ordering[0],
@@ -111,27 +112,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           null);
       var expression = new SqlSubStatementExpression (originalSubStatement);
 
-      var fromExpressionInfo = new FromExpressionInfo();
+      SqlTableBase newSqlTable = null;
       _contextMock
-          .Expect (mock => mock.AddFromExpression (Arg<FromExpressionInfo>.Is.Anything))
-          .WhenCalled (mi => fromExpressionInfo = (FromExpressionInfo) mi.Arguments[0]);
+          .Expect (mock => mock.AddSqlTable(Arg<SqlTableBase>.Is.Anything))
+          .WhenCalled (mi => newSqlTable = (SqlTableBase) mi.Arguments[0]);
       _contextMock.Replay ();
 
       var result = _visitor.VisitSqlSubStatementExpression (expression);
 
       _contextMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (fromExpressionInfo.SqlTable));
+       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (newSqlTable));
 
-      Assert.That (fromExpressionInfo.ExtractedOrderings, Is.Empty);
-      Assert.That (fromExpressionInfo.WhereCondition, Is.Null);
-     
-      var expectedItemSelector = new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, fromExpressionInfo.ItemSelector);
+      var expectedItemSelector = new SqlTableReferenceExpression (newSqlTable);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, new SqlTableReferenceExpression(newSqlTable));
 
-      Assert.That (fromExpressionInfo.SqlTable, Is.TypeOf (typeof (SqlTable)));
-      Assert.That (fromExpressionInfo.SqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+      Assert.That (newSqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (newSqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       
       var tableInfo = ((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));

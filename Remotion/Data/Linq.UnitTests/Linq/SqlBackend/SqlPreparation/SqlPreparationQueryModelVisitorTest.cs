@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _generator = new UniqueIdentifierGenerator();
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
       _defaultStage = new DefaultSqlPreparationStage (
           MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
 

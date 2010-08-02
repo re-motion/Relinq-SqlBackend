@@ -224,5 +224,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           CreateSqlGroupingSelectExpression(), 
           "q1");
     }
+
+    public static ISqlPreparationContext CreateSqlPreparationContext ()
+    {
+      return new SqlPreparationContext (null, new SqlStatementBuilder());
+    }
+
   }
 }

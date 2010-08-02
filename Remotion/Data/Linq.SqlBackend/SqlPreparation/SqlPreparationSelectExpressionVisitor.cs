@@ -80,8 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var sqlTable = new SqlTable (subStatementTableInfo, JoinSemantics.Left);
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
         
-        var fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null);
-        Context.AddFromExpression (fromExpressionInfo);
+        Context.AddSqlTable(sqlTable);
         return sqlTableReferenceExpression;
       }
 

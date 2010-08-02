@@ -27,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
@@ -41,7 +42,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [SetUp]
     public void SetUp ()
     {
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
 
       var querySource = ExpressionHelper.CreateMainFromClause_Cook();
       _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)), JoinSemantics.Inner);

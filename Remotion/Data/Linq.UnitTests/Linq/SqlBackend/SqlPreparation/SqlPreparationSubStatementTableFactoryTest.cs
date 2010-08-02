@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   public class SqlPreparationSubStatementTableFactoryTest
   {
     private ISqlPreparationStage _stageMock;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private UniqueIdentifierGenerator _generator;
     private SqlPreparationSubStatementTableFactory _factory;
     private SqlStatement _statementWithOrderings;
@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
-      _context = new SqlPreparationContext();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _generator = new UniqueIdentifierGenerator();
       _factory = new SqlPreparationSubStatementTableFactory (_stageMock, _context, _generator);
 
