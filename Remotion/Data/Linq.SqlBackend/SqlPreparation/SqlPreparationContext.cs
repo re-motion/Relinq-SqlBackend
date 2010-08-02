@@ -42,6 +42,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping = new Dictionary<Expression, Expression>();
     }
 
+    public bool IsOuterMostQuery { get { return _parentContext == null; } }
+    
     public void AddExpressionMapping (Expression original, Expression replacement)
     {
       ArgumentUtility.CheckNotNull ("original", original);

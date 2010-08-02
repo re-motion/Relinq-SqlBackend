@@ -25,6 +25,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   // TODO Review: Consider removing this interface
   public interface ISqlPreparationContext
   {
+    bool IsOuterMostQuery { get; }
     void AddExpressionMapping (Expression original, Expression replacement);
     void AddFromExpression (FromExpressionInfo fromExpressionInfo);
     Expression GetExpressionMapping (Expression original);

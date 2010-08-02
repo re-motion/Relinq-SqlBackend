@@ -60,6 +60,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void Initialization ()
+    {
+      Assert.That (_context.IsOuterMostQuery, Is.True);
+      Assert.That (_contextWithParent.IsOuterMostQuery, Is.False);
+    }
+
+    [Test]
     public void AddExpressionMapping ()
     {
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (_source), new SqlTableReferenceExpression (_sqlTable));
