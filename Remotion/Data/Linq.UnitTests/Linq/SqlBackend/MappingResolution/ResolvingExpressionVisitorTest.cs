@@ -341,10 +341,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.Equal));
-      Assert.That (((BinaryExpression) result).Left, Is.SameAs (leftArgumentExpression));
-      Assert.That (((BinaryExpression) result).Right, Is.SameAs (rightArgumentExpression));
+      var expectedResult = Expression.Equal (leftArgumentExpression, rightArgumentExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -373,16 +371,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.AndAlso));
-      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (((BinaryExpression) result).Left.NodeType, Is.EqualTo (ExpressionType.NotEqual));
-      Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Left, Is.SameAs (leftArgumentExpression1));
-      Assert.That (((BinaryExpression) ((BinaryExpression) result).Left).Right, Is.SameAs (rightArgumentExpression1));
-      Assert.That (((BinaryExpression) result).Right.NodeType, Is.EqualTo (ExpressionType.NotEqual));
-      Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Left, Is.SameAs (leftArgumentExpression2));
-      Assert.That (((BinaryExpression) ((BinaryExpression) result).Right).Right, Is.SameAs (rightArgumentExpression2));
+      var expectedLeftSideExpression = Expression.NotEqual (leftArgumentExpression1, rightArgumentExpression1);
+      var expectedRightSideExpression = Expression.NotEqual (leftArgumentExpression2, rightArgumentExpression2);
+      var expectedResult = Expression.AndAlso (expectedLeftSideExpression, expectedRightSideExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
 
@@ -424,8 +416,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedResult = Expression.Equal (leftArgumentExpression, Expression.MakeMemberAccess (newConstantExpression, leftArgumentMemberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
 
     [Test]
@@ -453,10 +444,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedLeftSide = Expression.Equal (leftArgumentExpression1, Expression.MakeMemberAccess (newConstantExpression, leftArgumentMemberInfo1));
-      var expectedRightSide = Expression.Equal (leftArgumentExpression2, Expression.MakeMemberAccess (newConstantExpression, leftArgumentMemberInfo2));
-      var expectedResult = Expression.AndAlso (expectedLeftSide, expectedRightSide);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
 
     [Test]
@@ -466,7 +454,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetField ("C");
       var leftExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
+      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1));
       var expression = Expression.Equal (leftExpression, newConstantExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
@@ -477,8 +465,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedResult = Expression.Equal (leftArgumentExpression, Expression.MakeMemberAccess (newConstantExpression, leftArgumentMemberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
 
     [Test]
@@ -499,8 +486,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedResult = Expression.Equal (leftArgumentExpression, Expression.Call (newConstantExpression, leftArgumentMemberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
 
     [Test]
@@ -515,7 +501,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new[] { leftArgumentExpression1, leftArgumentExpression2 },
           leftArgumentMemberInfo1,
           leftArgumentMemberInfo2);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0, 1));
+      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1, 2));
       var expression = Expression.Equal (leftExpression, newConstantExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
@@ -528,10 +514,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedLeftSide = Expression.Equal (leftArgumentExpression1, Expression.Call (newConstantExpression, leftArgumentMemberInfo1));
-      var expectedRightSide = Expression.Equal (leftArgumentExpression2, Expression.Call (newConstantExpression, leftArgumentMemberInfo2));
-      var expectedResult = Expression.AndAlso (expectedLeftSide, expectedRightSide);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
 
     [Test]
@@ -561,7 +544,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
       var rightExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { rightArgumentExpression }, rightArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
+      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1));
       var expression = Expression.Equal (newConstantExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
@@ -572,8 +555,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedResult = Expression.Equal (rightArgumentExpression, Expression.MakeMemberAccess (newConstantExpression, rightArgumentMemberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
 
     [Test]
@@ -583,7 +565,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetField ("C");
       var rightExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { rightArgumentExpression }, rightArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
+      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1));
       var expression = Expression.Equal (newConstantExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
@@ -594,8 +576,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedResult = Expression.Equal (rightArgumentExpression, Expression.MakeMemberAccess (newConstantExpression, rightArgumentMemberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
 
     [Test]
@@ -616,8 +597,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
 
-      var expectedResult = Expression.Equal (rightArgumentExpression, Expression.Call (newConstantExpression, rightArgumentMemberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
     }
 
     private SqlStatement CreateSimplifiableResolvedSqlStatement ()

@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -181,7 +182,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         else
           binaryExpression = Expression.AndAlso (binaryExpression, argumentComparisonExpression);
       }
-      return binaryExpression;
+      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees(binaryExpression);
     }
   }
 }

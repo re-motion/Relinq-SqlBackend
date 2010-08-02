@@ -406,14 +406,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("RM-3031")]
     public void CompoundValuesComparison_ValuesComingFromSubquery ()
     {
       CheckQuery (
           from x in Cooks.Select (c => new { FirstName = c.FirstName, LastName = c.Name }).Distinct()
           where x == new { FirstName = "Hugo", LastName = "Boss" }
           select x.FirstName,
-          ""
+          "SELECT [q0].[FirstName] AS [value] FROM (SELECT DISTINCT [t1].[FirstName] AS [FirstName],[t1].[Name] AS [LastName] "+
+          "FROM [CookTable] AS [t1]) AS [q0] WHERE (([q0].[FirstName] = @1) AND ([q0].[LastName] = @2))",
+          new CommandParameter("@1", "Hugo"),
+          new CommandParameter("@2", "Boss")
           );
     }
 
