@@ -277,6 +277,42 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitMemberExpression_WithInnerConditionalExpression ()
+    {
+      var testPredicate = Expression.Constant (true);
+      var thenValue = Expression.Constant (new TypeForNewExpression(1));
+      var elseValue = Expression.Constant (new TypeForNewExpression(2));
+      var conditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
+      var memberInfo = typeof (TypeForNewExpression).GetProperty ("A");
+      var memberExpression = Expression.MakeMemberAccess (conditionalExpression, memberInfo);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      
+      var expectedResult = new SqlCaseExpression (
+          testPredicate, Expression.MakeMemberAccess (thenValue, memberInfo), Expression.MakeMemberAccess (elseValue, memberInfo));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitMemberExpression_WithInnerConditionalExpression_RevisitsResult ()
+    {
+      var testPredicate = Expression.Constant (true);
+      var thenValue = Expression.Constant ("testValue");
+      var elseValue = Expression.Constant ("elseValue");
+      var conditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
+      var memberInfo = typeof (string).GetProperty ("Length");
+      var memberExpression = Expression.MakeMemberAccess (conditionalExpression, memberInfo);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      var expectedResult = new SqlCaseExpression (
+          testPredicate, new SqlFunctionExpression (typeof (int), "LEN", thenValue), new SqlFunctionExpression (typeof (int), "LEN", elseValue));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
     public void VisitBinaryExpression ()
     {
       var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));

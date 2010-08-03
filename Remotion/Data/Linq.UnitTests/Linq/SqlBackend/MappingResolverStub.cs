@@ -191,6 +191,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "IsStarredCook":
           case "Weight":
           case "MetaID":
+          case "SpecificInformation":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Substitution":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);

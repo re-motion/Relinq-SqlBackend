@@ -141,6 +141,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      var newInnerExpressionAsSqlCaseExpression = VisitExpression (expression.Expression) as SqlCaseExpression;
+      if (newInnerExpressionAsSqlCaseExpression!=null)
+      {
+        var newThenValueExpression = Expression.MakeMemberAccess (newInnerExpressionAsSqlCaseExpression.ThenValue, expression.Member);
+        var newElseValueExpression = Expression.MakeMemberAccess (newInnerExpressionAsSqlCaseExpression.ElseValue, expression.Member);
+        var newSqlCaseExpression = new SqlCaseExpression (newInnerExpressionAsSqlCaseExpression.TestPredicate, newThenValueExpression, newElseValueExpression);
+        return VisitExpression (newSqlCaseExpression);
+      }
+
       var memberAsPropertyInfo = expression.Member as PropertyInfo;
       if (memberAsPropertyInfo!=null)
       {
