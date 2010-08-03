@@ -265,5 +265,30 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
+
+    [Test]
+    public void Serialize_WithMemberFilterNested ()
+    {
+      var instance0 = new SerializerTestClassWithFields { PublicField1 = 11, PublicField2 = "test 0" };
+      var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };
+      var instance = new
+      {
+        EnumerableProperty = new SerializerTestClassWithFields[] { instance0, instance1 }
+      };
+      TestResultSerializer serializer = new TestResultSerializer (_writer, memberInfo => !memberInfo.Name.Equals("PublicField2"));
+
+      serializer.Serialize (instance);
+      var expected = instance.GetType ().Name + Environment.NewLine
+                    + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
+                    + "    SerializerTestClassWithFields" + Environment.NewLine
+                    + "      PublicField1: 11" + Environment.NewLine
+                    //+ "      PublicField2: 'test 0'" + Environment.NewLine
+                    + "    SerializerTestClassWithFields" + Environment.NewLine
+                    + "      PublicField1: 12" + Environment.NewLine
+                    //+ "      PublicField2: 'test 1'" + Environment.NewLine
+                    + "  }" + Environment.NewLine;
+
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
   }
 }
