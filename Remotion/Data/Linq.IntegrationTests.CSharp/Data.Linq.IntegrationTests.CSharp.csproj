@@ -44,12 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SerializerTestClassWithFields.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializerTestClassWithProperties.cs" />
-    <Compile Include="SerializerTestClassWithReferenceTypes.cs" />
-    <Compile Include="TestResultSerializer.cs" />
-    <Compile Include="TestResultSerializerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq\Data.Linq.csproj">

@@ -17,10 +17,12 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.LinqToSqlAdapter;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
   public class TestResultSerializerTest
@@ -199,17 +201,69 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
     [Test]
     public void Serialize_ComplexEnumberable ()
     {
-      
-      
-      
-      // Complex[] {
-      //   SerializerTestClassWithFields
-      //     PublicField1: 11
-      //     PublicField2: 'test 0'
-      //   SerializerTestClassWithFields
-      //     PublicField1: 11
-      //     PublicField2: 'test 0'
-      // }
+      var instance0 = new SerializerTestClassWithFields { PublicField1 = 11, PublicField2 = "test 0" };
+      var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };
+      var enumerable = new SerializerTestClassWithFields[] { instance0, instance1 };
+
+      _serializer.Serialize (enumerable);
+
+      var expected = "SerializerTestClassWithFields[] {" + Environment.NewLine
+                     + "  SerializerTestClassWithFields" + Environment.NewLine
+                     + "    PublicField1: 11" + Environment.NewLine
+                     + "    PublicField2: 'test 0'" + Environment.NewLine
+                     + "  SerializerTestClassWithFields" + Environment.NewLine
+                     + "    PublicField1: 12" + Environment.NewLine
+                     + "    PublicField2: 'test 1'" + Environment.NewLine
+                     + "}" + Environment.NewLine;
+
+      Assert.That (_writer.ToString(), Is.EqualTo (expected));
+    }
+    
+
+    [Test]
+    public void Serialize_EnumerableInProperty ()
+    {
+      var instance0 = new SerializerTestClassWithFields { PublicField1 = 11, PublicField2 = "test 0" };
+      var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };
+      var instance = new
+                     {
+                       EnumerableProperty = new SerializerTestClassWithFields[] { instance0, instance1 }
+                     };
+
+      _serializer.Serialize (instance);
+
+      var expected = instance.GetType().Name + Environment.NewLine
+                    + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
+                    + "    SerializerTestClassWithFields" + Environment.NewLine
+                    + "      PublicField1: 11" + Environment.NewLine
+                    + "      PublicField2: 'test 0'" + Environment.NewLine
+                    + "    SerializerTestClassWithFields" + Environment.NewLine
+                    + "      PublicField1: 12" + Environment.NewLine
+                    + "      PublicField2: 'test 1'" + Environment.NewLine
+                    + "  }" + Environment.NewLine;
+
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize_WithTestMethod ()
+    {
+      _serializer.Serialize (12, MethodBase.GetCurrentMethod());
+
+      var expected = "Serialize_WithTestMethod:" + Environment.NewLine + "  12";
+    }
+
+    [Test]
+    public void Serialize_WithMemberFilter ()
+    {
+      var instance = new SerializerTestClassWithProperties { PublicProperty1 = 17, PublicProperty2 = "test" };
+      TestResultSerializer serializer = new TestResultSerializer (_writer, memberInfo => memberInfo.Name.Contains ("1"));
+
+      serializer.Serialize (instance);
+      var expected = "SerializerTestClassWithProperties" + Environment.NewLine
+          + "  PublicProperty1: 17" + Environment.NewLine;
+
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
   }
 }

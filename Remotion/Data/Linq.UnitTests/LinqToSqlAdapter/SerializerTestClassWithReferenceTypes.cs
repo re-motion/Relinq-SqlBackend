@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
   public class SerializerTestClassWithReferenceTypes
   {

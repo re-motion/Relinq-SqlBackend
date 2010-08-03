@@ -14,15 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.Data.Linq.IntegrationTests.CSharp
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
-  public class SerializerTestClassWithProperties
+  public class SerializerTestClassWithFields
   {
-    public static int PublicStaticProperty { get; set; }
-    public int PublicProperty1 { get; set; }
-    public string PublicProperty2 { get; set; }
-    private int PrivateProperty { get; set; }
+    public static int PublicStaticField;
+
+    public int PublicField1;
+    public string PublicField2;
+    
+#pragma warning disable 169
+    private int _privateField;
+#pragma warning restore 169
   }
 }
