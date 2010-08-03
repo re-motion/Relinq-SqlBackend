@@ -259,7 +259,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var expressions = expression.Arguments.Select (expr => ApplySqlExpressionContext (expr, SqlExpressionContext.ValueRequired, _stage, _context));
-      if (expression.Members != null)
+      if (expression.Members != null && expression.Members.Count>0)
         return Expression.New (expression.Constructor, expressions, expression.Members);
       else
         return Expression.New (expression.Constructor, expressions);
@@ -272,10 +272,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newAggregationExpressions = expression.AggregationExpressions.Select (
           e => ApplySqlExpressionContext (e, SqlExpressionContext.ValueRequired, _stage, _context));
 
-      if (newKeyExpression != expression.KeyExpression 
+      if (newKeyExpression != expression.KeyExpression
           || newElementExpression != expression.ElementExpression
           || !newAggregationExpressions.SequenceEqual (expression.AggregationExpressions))
         return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
+        //TODO RM-3045:_context.UpdateGroupingSelectAndAddMapping (expression, newKeyExpression, newElementExpression, newAggregationExpressions);
 
       return expression;
     }

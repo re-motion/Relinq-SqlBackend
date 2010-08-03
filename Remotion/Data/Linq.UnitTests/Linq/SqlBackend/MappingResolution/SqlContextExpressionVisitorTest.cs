@@ -831,10 +831,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var aggregateExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression, new[] { aggregateExpression });
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _mappingResolutionContext.AddGroupReferenceMapping (expression, sqlTable);
 
       var result = _valueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
+      Assert.That (_mappingResolutionContext.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
 
     [Test]
@@ -845,6 +848,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var aggregateExpression = new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0)));
 
       var expression = new SqlGroupingSelectExpression (keyExpression, elementExpression, new[] { aggregateExpression });
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _mappingResolutionContext.AddGroupReferenceMapping (expression, sqlTable);
 
       var result = (SqlGroupingSelectExpression) _valueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
 
@@ -854,6 +859,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.KeyExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.ElementExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.AggregationExpressions[0]);
+      //TODO RM-3045: Assert.That (_mappingResolutionContext.GetReferencedGroupSource (result), Is.SameAs (sqlTable));
     }
 
     [Test]

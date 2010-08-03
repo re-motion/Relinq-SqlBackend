@@ -75,7 +75,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           string.Format ("No associated table found for grouping select expression '{0}'.", groupingSelectExpression.Type.Name));
     }
 
-    // TODO: Test this method
     public SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName)
     {
       ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);

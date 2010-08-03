@@ -156,6 +156,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var aggregationExpression = new NamedExpression ("a0", Expression.Constant ("aggregation"));
       var groupingSelectExpression = new SqlGroupingSelectExpression (keyExpression, elementExpression, new[]{aggregationExpression});
       var expression = new NamedExpression ("outer", groupingSelectExpression);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _context.AddGroupReferenceMapping (groupingSelectExpression, sqlTable);
 
       var expectedResult = new SqlGroupingSelectExpression (
           new NamedExpression ("outer_key", Expression.Constant ("key")), 
@@ -165,6 +167,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = NamedExpressionCombiner.ProcessNames (_context, expression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
+      //TODO RM-3045: Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
 
     [Test]
