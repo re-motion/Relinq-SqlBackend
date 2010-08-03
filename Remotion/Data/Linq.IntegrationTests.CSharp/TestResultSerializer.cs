@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -71,6 +72,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
         _textWriter.WriteLine ("null");
       else if (value is string)
         SerializeString ((string) value);
+      else if (value is IEnumerable)
+        SerializeEnumerable ((IEnumerable) value);
       else if (value is ValueType)
         _textWriter.WriteLine (value);
       else
@@ -79,20 +82,38 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
 
     private void SerializeString (string value)
     {
+      Debug.Assert (value != null, "should be handled by caller");
+
       var escapedValue = value.Replace ("'", "''");
       _textWriter.WriteLine ("'" + escapedValue + "'");
+    }
+
+    private void SerializeEnumerable (IEnumerable value)
+    {
+      Debug.Assert (value != null, "should be handled by caller");
+
+      WriteTypeName (value);
+      _textWriter.WriteLine (" {");
+      TestResultSerializer elementSerializer = CreateIndentedSerializer();
+      
+      foreach (var element in value)
+        elementSerializer.Serialize (element);
+
+      WriteSpacing();
+      _textWriter.WriteLine ("}");
     }
 
     private void SerializeComplexValue (object value)
     {
       Debug.Assert (value != null, "should be handled by caller");
-      _textWriter.WriteLine (value.GetType().Name);
+      WriteTypeName(value);
+      _textWriter.WriteLine();
 
       MemberInfo[] members = value.GetType().GetMembers (BindingFlags.Public | BindingFlags.Instance);
       
       Array.Sort (members, (m1, m2) => m1.Name.CompareTo(m2.Name));
 
-      var memberValueSerializer = new TestResultSerializer (_textWriter, _spacer, _level + 1);
+      var memberValueSerializer = CreateIndentedSerializer();
       foreach (var memberInfo in members)
       {
         object memberValue;
@@ -126,5 +147,14 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
         _textWriter.Write (_spacer);
     }
 
+    private void WriteTypeName (object value)
+    {
+      _textWriter.Write (value.GetType ().Name);
+    }
+
+    private TestResultSerializer CreateIndentedSerializer ()
+    {
+      return new TestResultSerializer (_textWriter, _spacer, _level + 1);
+    }
   }
 }

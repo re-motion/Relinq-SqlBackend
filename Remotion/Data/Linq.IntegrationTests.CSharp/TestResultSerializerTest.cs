@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -74,6 +75,14 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
       _serializer.Serialize (null);
 
       Assert.That (_writer.ToString (), Is.EqualTo ("null" + Environment.NewLine));
+    }
+
+    [Test]
+    public void Serialize_Enums ()
+    {
+      _serializer.Serialize (DateTimeKind.Utc);
+
+      Assert.That (_writer.ToString (), Is.EqualTo ("Utc" + Environment.NewLine));
     }
 
     [Test]
@@ -153,6 +162,54 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
                      + "    PublicProperty2: 'test 3'" + Environment.NewLine; // 2
       
       Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize_SimpleEnumerables ()
+    {
+      IEnumerable enumerable = new[] { 1, 2, 3 };
+
+      _serializer.Serialize (enumerable);
+      
+      var expected =   "Int32[] {" + Environment.NewLine
+                     + "  1" + Environment.NewLine
+                     + "  2" + Environment.NewLine
+                     + "  3" + Environment.NewLine
+                     + "}" + Environment.NewLine;
+
+      Assert.That (_writer.ToString(), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize_SimpleEnumerables_WithSpacing ()
+    {
+      IEnumerable enumerable = new[] { 1, 2, 3 };
+
+      _serializerWithLevel1.Serialize (enumerable);
+
+      var expected = "..Int32[] {" + Environment.NewLine
+                     + "....1" + Environment.NewLine
+                     + "....2" + Environment.NewLine
+                     + "....3" + Environment.NewLine
+                     + "..}" + Environment.NewLine;
+
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize_ComplexEnumberable ()
+    {
+      
+      
+      
+      // Complex[] {
+      //   SerializerTestClassWithFields
+      //     PublicField1: 11
+      //     PublicField2: 'test 0'
+      //   SerializerTestClassWithFields
+      //     PublicField1: 11
+      //     PublicField2: 'test 0'
+      // }
     }
   }
 }
