@@ -167,7 +167,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = NamedExpressionCombiner.ProcessNames (_context, expression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
-      //TODO RM-3045: Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
+      Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
 
     [Test]

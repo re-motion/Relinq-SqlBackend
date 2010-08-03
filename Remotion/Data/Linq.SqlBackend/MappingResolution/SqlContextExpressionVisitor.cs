@@ -275,8 +275,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newKeyExpression != expression.KeyExpression
           || newElementExpression != expression.ElementExpression
           || !newAggregationExpressions.SequenceEqual (expression.AggregationExpressions))
-        return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
-        //TODO RM-3045:_context.UpdateGroupingSelectAndAddMapping (expression, newKeyExpression, newElementExpression, newAggregationExpressions);
+        return _context.UpdateGroupingSelectAndAddMapping (expression, newKeyExpression, newElementExpression, newAggregationExpressions);
 
       return expression;
     }

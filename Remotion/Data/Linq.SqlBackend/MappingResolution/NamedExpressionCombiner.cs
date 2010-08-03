@@ -75,8 +75,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
             new NamedExpression (outerExpression.Name, groupingSelectExpression.ElementExpression));
         var newAggregationExpressions = groupingSelectExpression.AggregationExpressions.Select (
             e => ProcessNames (mappingResolutionContext, new NamedExpression (outerExpression.Name, e)));
-        return new SqlGroupingSelectExpression (newKeyExpression, newElementExpression, newAggregationExpressions);
-        //TODO-3045: return mappingResolutionContext.UpdateGroupingSelectAndAddMapping (groupingSelectExpression, newKeyExpression, newElementExpression, newAggregationExpressions);
+        return mappingResolutionContext.UpdateGroupingSelectAndAddMapping (groupingSelectExpression, newKeyExpression, newElementExpression, newAggregationExpressions);
       }
       else if (outerExpression.Expression is ConvertedBooleanExpression)
       {

@@ -96,8 +96,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("aggregations", aggregations);
 
       var newSqlGroupingSelectExpression = expression.Update (newKey, newElement, aggregations);
-      var tableForGroupingSelectExpression = GetReferencedGroupSource (expression);
-      AddGroupReferenceMapping (newSqlGroupingSelectExpression, tableForGroupingSelectExpression);
+      SqlTableBase tableForGroupingSelectExpression; 
+      if(_groupReferenceMapping.TryGetValue(expression, out tableForGroupingSelectExpression))
+        AddGroupReferenceMapping (newSqlGroupingSelectExpression, tableForGroupingSelectExpression);
       return newSqlGroupingSelectExpression;
     }
   }

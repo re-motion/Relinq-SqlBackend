@@ -102,5 +102,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.AggregationExpressions[1], Is.SameAs (newAggregationExpression2));
       Assert.That (_context.GetReferencedGroupSource (result), Is.SameAs (_sqlTable));
     }
+
+    [Test]
+    public void UpdateGroupingSelectAndAddMapping_MappingDoesNotExist ()
+    {
+      var newKeyExpression = Expression.Constant ("newKey");
+      var newElementExpression = Expression.Constant ("newElement");
+      var newAggregationExpression1 = Expression.Constant ("agg1");
+      var newAggregationExpression2 = Expression.Constant ("agg2");
+
+      var result = _context.UpdateGroupingSelectAndAddMapping (
+          _groupingSelectExpression, newKeyExpression, newElementExpression, new[] { newAggregationExpression1, newAggregationExpression2 });
+
+      Assert.That (result.KeyExpression, Is.SameAs (newKeyExpression));
+      Assert.That (result.ElementExpression, Is.SameAs (newElementExpression));
+      Assert.That (result.AggregationExpressions[0], Is.SameAs (newAggregationExpression1));
+      Assert.That (result.AggregationExpressions[1], Is.SameAs (newAggregationExpression2));
+    }
   }
 }

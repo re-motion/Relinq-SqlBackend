@@ -859,7 +859,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.KeyExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.ElementExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.AggregationExpressions[0]);
-      //TODO RM-3045: Assert.That (_mappingResolutionContext.GetReferencedGroupSource (result), Is.SameAs (sqlTable));
+      Assert.That (_mappingResolutionContext.GetReferencedGroupSource (result), Is.SameAs (sqlTable));
     }
 
     [Test]
