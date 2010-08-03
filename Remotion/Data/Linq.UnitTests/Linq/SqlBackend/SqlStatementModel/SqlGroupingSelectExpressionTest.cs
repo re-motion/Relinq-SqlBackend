@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -178,6 +179,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlGroupingSelectExpression);
+    }
+
+    [Test]
+    public void Update ()
+    {
+      var newKeyExpression = Expression.Constant ("newKey");
+      var newElementExpression = Expression.Constant ("newElement");
+      var aggregations = new[] { Expression.Constant ("agg1"), Expression.Constant ("agg2") };
+
+      var result = _sqlGroupingSelectExpression.Update (newKeyExpression, newElementExpression, aggregations);
+
+      Assert.That (result.KeyExpression, Is.SameAs (newKeyExpression));
+      Assert.That (result.ElementExpression, Is.SameAs (newElementExpression));
+      Assert.That (result.AggregationExpressions.SequenceEqual (aggregations), Is.True);
     }
 
     [Test]

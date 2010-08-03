@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
@@ -27,7 +29,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   public interface IMappingResolutionContext
   {
     void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable);
+    void AddGroupReferenceMapping (SqlGroupingSelectExpression expression, SqlTableBase table);
     SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression);
+    SqlTableBase GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression);
     SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName);
+    SqlGroupingSelectExpression UpdateGroupingSelectAndAddMapping (
+        SqlGroupingSelectExpression expression, Expression newKey, Expression newElement, IEnumerable<Expression> aggregations);
   }
 }

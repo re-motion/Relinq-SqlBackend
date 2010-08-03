@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -29,6 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   public class MappingResolutionContextTest
   {
     private SqlEntityExpression _entityExpression;
+    private SqlGroupingSelectExpression _groupingSelectExpression;
     private MappingResolutionContext _context;
     private SqlTable _sqlTable;
 
@@ -36,16 +38,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _context = new MappingResolutionContext();
-      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      _entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      _groupingSelectExpression = new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
       _sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
     }
 
     [Test]
-    public void AddMapping_EntityExists ()
+    public void AddMapping_KeyExists ()
     {
       _context.AddSqlEntityMapping (_entityExpression, _sqlTable);
+      _context.AddGroupReferenceMapping (_groupingSelectExpression, _sqlTable);
 
       Assert.That (_context.GetSqlTableForEntityExpression (_entityExpression), Is.SameAs (_sqlTable));
+      Assert.That (_context.GetReferencedGroupSource (_groupingSelectExpression), Is.SameAs (_sqlTable));
     }
 
     [Test]
@@ -53,6 +59,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void GetSqlTableForEntityExpression_EntityDoesNotExist ()
     {
       _context.GetSqlTableForEntityExpression (_entityExpression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "No associated table found for grouping select expression 'IGrouping`2'.")]
+    public void GetReferencedGroupSource_GroupingSelectExpressionDoesNotExist ()
+    {
+      _context.GetReferencedGroupSource (_groupingSelectExpression);
     }
 
     [Test]
@@ -67,6 +81,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.TableAlias, Is.EqualTo ("newAlias"));
       Assert.That (result.Name, Is.EqualTo ("newName"));
       Assert.That (_context.GetSqlTableForEntityExpression (result), Is.SameAs (sqlTable));
+    }
+
+    [Test]
+    public void UpdateGroupingSelectAndAddMapping ()
+    {
+      var newKeyExpression = Expression.Constant ("newKey");
+      var newElementExpression = Expression.Constant ("newElement");
+      var newAggregationExpression1 = Expression.Constant ("agg1");
+      var newAggregationExpression2 = Expression.Constant ("agg2");
+
+      _context.AddGroupReferenceMapping (_groupingSelectExpression, _sqlTable);
+
+      var result = _context.UpdateGroupingSelectAndAddMapping (
+          _groupingSelectExpression, newKeyExpression, newElementExpression, new[] {newAggregationExpression1, newAggregationExpression2});
+
+      Assert.That (result.KeyExpression, Is.SameAs (newKeyExpression));
+      Assert.That (result.ElementExpression, Is.SameAs (newElementExpression));
+      Assert.That (result.AggregationExpressions[0], Is.SameAs (newAggregationExpression1));
+      Assert.That (result.AggregationExpressions[1], Is.SameAs (newAggregationExpression2));
+      Assert.That (_context.GetReferencedGroupSource (result), Is.SameAs (_sqlTable));
     }
   }
 }

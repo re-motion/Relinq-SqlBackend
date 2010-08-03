@@ -85,6 +85,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return name;
     }
 
+    public SqlGroupingSelectExpression Update (Expression newKeyEpression, Expression newElementExpression, IEnumerable<Expression> aggregations)
+    {
+      return new SqlGroupingSelectExpression (newKeyEpression, newElementExpression, aggregations);
+    }
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
