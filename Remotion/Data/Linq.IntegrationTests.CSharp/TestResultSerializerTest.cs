@@ -26,12 +26,14 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
   {
     private StringWriter _writer;
     private TestResultSerializer _serializer;
+    private TestResultSerializer _serializerWithLevel1;
 
     [SetUp]
     public void SetUp ()
     {
       _writer = new StringWriter ();
       _serializer = new TestResultSerializer (_writer);
+      _serializerWithLevel1 = new TestResultSerializer (_writer, "..", 1);
     }
 
     [Test]
@@ -40,6 +42,14 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
       _serializer.Serialize (12);
 
       Assert.That (_writer.ToString (), Is.EqualTo ("12" + Environment.NewLine));
+    }
+
+    [Test]
+    public void Serialize_WithLevel ()
+    {
+      _serializerWithLevel1.Serialize (12);
+
+      Assert.That (_writer.ToString (), Is.EqualTo ("..12" + Environment.NewLine));
     }
 
     [Test]
@@ -76,6 +86,22 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
     }
 
     [Test]
+    public void Serialize_WithName ()
+    {
+      _serializer.Serialize (12, "Name");
+
+      Assert.That (_writer.ToString (), Is.EqualTo ("Name: 12" + Environment.NewLine));
+    }
+
+    [Test]
+    public void Serialize_WithName_AndLevel ()
+    {
+      _serializerWithLevel1.Serialize (12, "Name");
+
+      Assert.That (_writer.ToString (), Is.EqualTo ("..Name: 12" + Environment.NewLine));
+    }
+
+    [Test]
     public void Serialize_ReferenceType_WithProperties ()
     {
       var instance = new SerializerTestClassWithProperties { PublicProperty1 = 17, PublicProperty2 = "test" };
@@ -98,6 +124,34 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
       var expected = "SerializerTestClassWithFields" + Environment.NewLine
           + "  PublicField1: 17" + Environment.NewLine
           + "  PublicField2: 'test'" + Environment.NewLine;
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize_ReferenceType_WithReferenceType ()
+    {
+      var instance = new SerializerTestClassWithReferenceTypes();
+      instance.FieldWithFields = new SerializerTestClassWithFields { PublicField1 = 11, PublicField2 = "test 0" };
+      instance.FieldWithProperties = new SerializerTestClassWithProperties { PublicProperty1 = 12, PublicProperty2 = "test 1"};
+      instance.PropertyWithFields = new SerializerTestClassWithFields { PublicField1 = 13, PublicField2 = "test 2" };
+      instance.PropertyWithProperties = new SerializerTestClassWithProperties { PublicProperty1 = 14, PublicProperty2 = "test 3" };
+
+      _serializer.Serialize (instance);
+
+      var expected =   "SerializerTestClassWithReferenceTypes" + Environment.NewLine // 0
+                     + "  FieldWithFields: SerializerTestClassWithFields" + Environment.NewLine // 1
+                     + "    PublicField1: 11" + Environment.NewLine // 2
+                     + "    PublicField2: 'test 0'" + Environment.NewLine // 2
+                     + "  FieldWithProperties: SerializerTestClassWithProperties" + Environment.NewLine // 1
+                     + "    PublicProperty1: 12" + Environment.NewLine // 2
+                     + "    PublicProperty2: 'test 1'" + Environment.NewLine // 2
+                     + "  PropertyWithFields: SerializerTestClassWithFields" + Environment.NewLine // 1
+                     + "    PublicField1: 13" + Environment.NewLine // 2
+                     + "    PublicField2: 'test 2'" + Environment.NewLine // 2
+                     + "  PropertyWithProperties: SerializerTestClassWithProperties" + Environment.NewLine // 1
+                     + "    PublicProperty1: 14" + Environment.NewLine // 2
+                     + "    PublicProperty2: 'test 3'" + Environment.NewLine; // 2
+      
       Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
   }

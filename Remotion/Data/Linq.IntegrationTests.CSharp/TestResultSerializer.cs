@@ -27,15 +27,45 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
   /// </summary>
   public class TestResultSerializer
   {
-    private readonly TextWriter _textWriter;
+    public const string DefaultSpacer = "  ";
 
-    public TestResultSerializer (TextWriter textWriter)
+    private readonly TextWriter _textWriter;
+    private readonly string _spacer;
+    private readonly int _level;
+
+    public TestResultSerializer (TextWriter textWriter, string spacer, int level)
     {
       ArgumentUtility.CheckNotNull ("textWriter", textWriter);
+
       _textWriter = textWriter;
+      _spacer = spacer;
+      _level = level;
     }
 
+    public TestResultSerializer (TextWriter textWriter)
+      : this (textWriter, DefaultSpacer, 0)
+    {}
+
     public void Serialize (object value)
+    {
+      WriteSpacing();
+
+      SerializeWithoutSpacing(value);
+    }
+
+    public void Serialize (object value, string name)
+    {
+      ArgumentUtility.CheckNotNull ("name", name);
+
+      WriteSpacing();
+
+      _textWriter.Write (name);
+      _textWriter.Write (": ");
+
+      SerializeWithoutSpacing(value);
+    }
+
+    private void SerializeWithoutSpacing (object value)
     {
       if (value == null)
         _textWriter.WriteLine ("null");
@@ -58,17 +88,16 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
       Debug.Assert (value != null, "should be handled by caller");
       _textWriter.WriteLine (value.GetType().Name);
 
-      foreach (var memberInfo in value.GetType().GetMembers (BindingFlags.Public | BindingFlags.Instance))
+      MemberInfo[] members = value.GetType().GetMembers (BindingFlags.Public | BindingFlags.Instance);
+      
+      Array.Sort (members, (m1, m2) => m1.Name.CompareTo(m2.Name));
+
+      var memberValueSerializer = new TestResultSerializer (_textWriter, _spacer, _level + 1);
+      foreach (var memberInfo in members)
       {
         object memberValue;
         if (TryGetValue (value, memberInfo, out memberValue))
-        {
-          _textWriter.Write ("  ");
-          _textWriter.Write (memberInfo.Name);
-          _textWriter.Write (": ");
-
-          Serialize (memberValue);
-        }
+          memberValueSerializer.Serialize (memberValue, memberInfo.Name);
       }
     }
 
@@ -90,5 +119,12 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp
         return false;
       }
     }
+
+    private void WriteSpacing ()
+    {
+      for (int i = 0; i < _level; ++i)
+        _textWriter.Write (_spacer);
+    }
+
   }
 }
