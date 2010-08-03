@@ -402,7 +402,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VistSqlCaseExpression ()
     {
-      var caseExpression = new SqlCaseExpression (
+      var caseExpression = Expression.Condition(
           Expression.Equal (Expression.Constant (2), Expression.Constant (2)),
           Expression.Constant (0),
           Expression.Constant (1));

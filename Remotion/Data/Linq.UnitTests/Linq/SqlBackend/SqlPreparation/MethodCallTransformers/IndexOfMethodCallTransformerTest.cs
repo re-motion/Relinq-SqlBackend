@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type, "CHARINDEX", argument1, objectExpression);
       var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, new SqlLiteralExpression(0), elseValue);
+      var expectedResult = Expression.Condition(testPredicate, new SqlLiteralExpression(0), elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           expression.Type, "CHARINDEX", argument1, objectExpression);
       var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, new SqlLiteralExpression (0), elseValue);
+      var expectedResult = Expression.Condition(testPredicate, new SqlLiteralExpression (0), elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -121,7 +121,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+      var expectedResult = Expression.Condition(testPredicate, argument2, elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -152,7 +152,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+      var expectedResult = Expression.Condition(testPredicate, argument2, elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -188,7 +188,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+      var expectedResult = Expression.Condition(testPredicate, argument2, elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -224,7 +224,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-      var expectedResult = new SqlCaseExpression (testPredicate, argument2, elseValue);
+      var expectedResult = Expression.Condition(testPredicate, argument2, elseValue);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

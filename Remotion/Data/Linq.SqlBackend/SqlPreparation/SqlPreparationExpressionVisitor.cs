@@ -141,13 +141,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newInnerExpressionAsSqlCaseExpression = VisitExpression (expression.Expression) as SqlCaseExpression;
-      if (newInnerExpressionAsSqlCaseExpression!=null)
+      var innerExpressionAsConditionalExpression = VisitExpression (expression.Expression) as ConditionalExpression;
+      if (innerExpressionAsConditionalExpression!=null)
       {
-        var newThenValueExpression = Expression.MakeMemberAccess (newInnerExpressionAsSqlCaseExpression.ThenValue, expression.Member);
-        var newElseValueExpression = Expression.MakeMemberAccess (newInnerExpressionAsSqlCaseExpression.ElseValue, expression.Member);
-        var newSqlCaseExpression = new SqlCaseExpression (newInnerExpressionAsSqlCaseExpression.TestPredicate, newThenValueExpression, newElseValueExpression);
-        return VisitExpression (newSqlCaseExpression);
+        var newThenValueExpression = Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member);
+        var newElseValueExpression = Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfFalse, expression.Member);
+        var newConditionalExpression = Expression.Condition(innerExpressionAsConditionalExpression.Test, newThenValueExpression, newElseValueExpression);
+        return VisitExpression (newConditionalExpression);
       }
 
       var memberAsPropertyInfo = expression.Member as PropertyInfo;
@@ -216,7 +216,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlCaseExpression (VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
+      return Expression.Condition(VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)

@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             methodCallExpression.Type, "CHARINDEX", methodCallExpression.Arguments[0], methodCallExpression.Object);
         var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression(1));
 
-        return new SqlCaseExpression (testPredicate, new SqlLiteralExpression(0) , elseValue);
+        return Expression.Condition(testPredicate, new SqlLiteralExpression(0) , elseValue);
       }
       else if (methodCallExpression.Arguments.Count == 2)
       {
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         
         var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-        return new SqlCaseExpression (testPredicate, methodCallExpression.Arguments[1], elseValue);
+        return Expression.Condition(testPredicate, methodCallExpression.Arguments[1], elseValue);
       }
       else if (methodCallExpression.Arguments.Count == 3)
       {
@@ -90,7 +90,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
         var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-        return new SqlCaseExpression (testPredicate, methodCallExpression.Arguments[1], elseValue);
+        return Expression.Condition(testPredicate, methodCallExpression.Arguments[1], elseValue);
       }
       else
         throw new NotSupportedException (string.Format ("IndexOf function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));

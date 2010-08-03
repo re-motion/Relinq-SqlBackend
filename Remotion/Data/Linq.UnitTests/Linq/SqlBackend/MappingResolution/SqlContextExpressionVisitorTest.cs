@@ -117,7 +117,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
-      var expected = new ConvertedBooleanExpression(new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
+      var expected = new ConvertedBooleanExpression(Expression.Condition(expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
-      var expected = new ConvertedBooleanExpression(new SqlCaseExpression (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
+      var expected = new ConvertedBooleanExpression(Expression.Condition(expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
@@ -482,7 +482,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedExpression =
           BinaryExpression.And (
               Expression.Convert (
-                  new ConvertedBooleanExpression(new SqlCaseExpression (
+                  new ConvertedBooleanExpression(Expression.Condition(
                       Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
                       new SqlLiteralExpression (1),
                       new SqlLiteralExpression (0))),
@@ -556,7 +556,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedExpression =
           Expression.Not (
               Expression.Convert (
-                 new ConvertedBooleanExpression( new SqlCaseExpression (
+                 new ConvertedBooleanExpression(Expression.Condition(
                       Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
                       new SqlLiteralExpression (1),
                       new SqlLiteralExpression (0))),
@@ -940,7 +940,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void HandleValueSemantics_ConvertedBooleanExpressionsAreNotWrapedIntoSclCaseExpressions ()
+    public void HandleValueSemantics_ConvertedBooleanExpressionsAreNotWrapedIntoSqlConditionalExpressions ()
     {
       var convertedBooleanExpression = new ConvertedBooleanExpression (Expression.Constant (1));
 

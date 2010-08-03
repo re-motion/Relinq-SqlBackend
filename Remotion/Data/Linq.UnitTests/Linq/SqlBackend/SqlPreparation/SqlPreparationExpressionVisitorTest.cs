@@ -288,7 +288,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
       
-      var expectedResult = new SqlCaseExpression (
+      var expectedResult = Expression.Condition(
           testPredicate, Expression.MakeMemberAccess (thenValue, memberInfo), Expression.MakeMemberAccess (elseValue, memberInfo));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -306,7 +306,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
 
-      var expectedResult = new SqlCaseExpression (
+      var expectedResult = Expression.Condition(
           testPredicate, new SqlFunctionExpression (typeof (int), "LEN", thenValue), new SqlFunctionExpression (typeof (int), "LEN", elseValue));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -419,10 +419,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
-      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.EqualTo (testPredicate));
-      Assert.That (((SqlCaseExpression) result).ThenValue, Is.EqualTo (ifTrueExpression));
-      Assert.That (((SqlCaseExpression) result).ElseValue, Is.EqualTo (ifFalseExpression));
+      Assert.That (result, Is.TypeOf (typeof (ConditionalExpression)));
+      Assert.That (((ConditionalExpression) result).Test, Is.EqualTo (testPredicate));
+      Assert.That (((ConditionalExpression) result).IfTrue, Is.EqualTo (ifTrueExpression));
+      Assert.That (((ConditionalExpression) result).IfFalse, Is.EqualTo (ifFalseExpression));
     }
 
     [Test]
@@ -435,10 +435,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
-      Assert.That (((SqlCaseExpression) result).TestPredicate, Is.TypeOf (typeof (SqlCaseExpression)));
-      Assert.That (((SqlCaseExpression) result).ThenValue, Is.TypeOf (typeof (SqlCaseExpression)));
-      Assert.That (((SqlCaseExpression) result).ElseValue, Is.TypeOf (typeof (SqlCaseExpression)));
+      Assert.That (result, Is.TypeOf (typeof (ConditionalExpression)));
+      Assert.That (((ConditionalExpression) result).Test, Is.TypeOf (typeof (ConditionalExpression)));
+      Assert.That (((ConditionalExpression) result).IfTrue, Is.TypeOf (typeof (ConditionalExpression)));
+      Assert.That (((ConditionalExpression) result).IfFalse, Is.TypeOf (typeof (ConditionalExpression)));
     }
 
     [Test]
@@ -455,11 +455,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlCaseExpression)));
+      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (ConditionalExpression)));
 
-      Assert.That (((SqlCaseExpression) ((BinaryExpression) result).Right).TestPredicate, Is.SameAs (testPredicate));
-      Assert.That (((SqlCaseExpression) ((BinaryExpression) result).Right).ThenValue, Is.SameAs (ifTrueExpression));
-      Assert.That (((SqlCaseExpression) ((BinaryExpression) result).Right).ElseValue, Is.SameAs (ifFalseExpression));
+      Assert.That (((ConditionalExpression) ((BinaryExpression) result).Right).Test, Is.SameAs (testPredicate));
+      Assert.That (((ConditionalExpression) ((BinaryExpression) result).Right).IfTrue, Is.SameAs (ifTrueExpression));
+      Assert.That (((ConditionalExpression) ((BinaryExpression) result).Right).IfFalse, Is.SameAs (ifFalseExpression));
     }
 
     [Test]

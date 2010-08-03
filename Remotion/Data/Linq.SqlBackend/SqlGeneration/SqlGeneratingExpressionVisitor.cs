@@ -283,14 +283,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
               unhandledItem.GetType().Name));
     }
 
-    public virtual Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    protected override Expression VisitConditionalExpression (ConditionalExpression expression)
     {
       _commandBuilder.Append ("CASE WHEN ");
-      VisitExpression (expression.TestPredicate);
+      VisitExpression (expression.Test);
       _commandBuilder.Append (" THEN ");
-      VisitExpression (expression.ThenValue);
+      VisitExpression (expression.IfTrue);
       _commandBuilder.Append (" ELSE ");
-      VisitExpression (expression.ElseValue);
+      VisitExpression (expression.IfFalse);
       _commandBuilder.Append (" END");
       return expression;
     }

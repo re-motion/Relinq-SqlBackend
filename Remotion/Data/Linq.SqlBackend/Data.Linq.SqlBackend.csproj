@@ -191,7 +191,6 @@
     <Compile Include="SqlStatementModel\Resolved\ResolvedJoinedGroupingTableInfo.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
-    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlConvertExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlFunctionExpression.cs" />

@@ -25,7 +25,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public interface ISqlSpecificExpressionVisitor
   {
-    Expression VisitSqlCaseExpression (SqlCaseExpression expression);
     Expression VisitSqlLiteralExpression (SqlLiteralExpression expression);
     Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression);
     Expression VisitSqlIsNullExpression (SqlIsNullExpression expression);

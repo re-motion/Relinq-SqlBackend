@@ -138,14 +138,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return expression; // rely on VisitExpression to apply correct semantics
     }
 
-    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    protected override Expression VisitConditionalExpression (ConditionalExpression expression)
     {
-      var testPredicate = ApplySqlExpressionContext (expression.TestPredicate, SqlExpressionContext.PredicateRequired, _stage, _context);
-      var thenValue = ApplySqlExpressionContext (expression.ThenValue, SqlExpressionContext.SingleValueRequired, _stage, _context);
-      var elseValue = ApplySqlExpressionContext (expression.ElseValue, SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var testPredicate = ApplySqlExpressionContext (expression.Test, SqlExpressionContext.PredicateRequired, _stage, _context);
+      var thenValue = ApplySqlExpressionContext (expression.IfTrue, SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var elseValue = ApplySqlExpressionContext (expression.IfFalse, SqlExpressionContext.SingleValueRequired, _stage, _context);
 
-      if (testPredicate != expression.TestPredicate || thenValue != expression.ThenValue || elseValue != expression.ElseValue)
-        return new SqlCaseExpression (testPredicate, thenValue, elseValue);
+      if (testPredicate != expression.Test || thenValue != expression.IfTrue || elseValue != expression.IfFalse)
+        return Expression.Condition(testPredicate, thenValue, elseValue);
       else
         return expression;
     }
@@ -362,7 +362,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpression = base.VisitExpression (expression);
       if (newExpression.Type == typeof (bool) && !(newExpression is ConvertedBooleanExpression))
       {
-        var convertedExpression = new SqlCaseExpression (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+        var convertedExpression = Expression.Condition(newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
         return new ConvertedBooleanExpression (convertedExpression);
       } 
       else
