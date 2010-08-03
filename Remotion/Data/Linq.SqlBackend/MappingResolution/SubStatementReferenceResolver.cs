@@ -106,6 +106,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       foreach (var aggregationExpression in referenceToAggregationExpressions)
         newGroupingExpression.AddAggregationExpressionWithName (aggregationExpression);
 
+      _context.AddGroupReferenceMapping (newGroupingExpression, _sqlTable);
+
       return newGroupingExpression;
     }
 

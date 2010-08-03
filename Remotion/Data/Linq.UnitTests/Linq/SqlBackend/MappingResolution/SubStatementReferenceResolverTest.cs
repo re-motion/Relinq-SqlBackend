@@ -170,6 +170,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var referencedAggregationExpression = ((SqlGroupingSelectExpression) result).AggregationExpressions[0];
       var expectedReferencedAggregationExpression = new NamedExpression("a0", new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedAggregationExpression, referencedAggregationExpression);
+
+      Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
 
     [Test]
@@ -189,6 +191,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           expression, tableInfo, sqlTable, expression.Type, _context);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, exprectedResult);
+      Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
   }
 }
