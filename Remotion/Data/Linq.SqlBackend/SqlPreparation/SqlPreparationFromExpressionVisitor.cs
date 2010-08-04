@@ -118,6 +118,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
+      
+      var selectProjectionAsSqlGroupingSelectExpression = ((NamedExpression)sqlStatement.SelectProjection).Expression as SqlGroupingSelectExpression;
+      if (selectProjectionAsSqlGroupingSelectExpression!=null && selectProjectionAsSqlGroupingSelectExpression.ElementExpression.Type == typeof (bool))
+        throw new NotSupportedException ("It is not currently supported to use boolean values as a query source, eg., in the from clause of a query.");
+
       var factory = new SqlPreparationSubStatementTableFactory (Stage, _context, _generator);
       _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);

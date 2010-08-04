@@ -121,7 +121,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSqlSubStatementExpression ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
+                         {
+                             SelectProjection = new NamedExpression("test", Expression.Constant ("test"))
+                         }.GetSqlStatement();
 
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
       var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry(), _generator);
@@ -138,10 +141,57 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitSqlSubStatementExpression_WithNonBooleanSqlGroupingSelectExpression ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ())
+      {
+        SelectProjection = new NamedExpression ("test", new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element")))
+      }.GetSqlStatement ();
+
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
+      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry (), _generator);
+
+      var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
+          sqlSubStatementExpression,
+          stage,
+          _generator,
+          _registry,
+          _context,
+          info => new SqlTable (info, JoinSemantics.Inner));
+
+      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), 
+      ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query.")]
+    public void VisitSqlSubStatementExpression_WithBooleanSqlGroupingSelectExpression ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ())
+      {
+        SelectProjection = new NamedExpression ("test", new SqlGroupingSelectExpression(Expression.Constant("key"), Expression.Constant(true)))
+      }.GetSqlStatement ();
+
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
+      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry (), _generator);
+
+      SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
+          sqlSubStatementExpression,
+          stage,
+          _generator,
+          _registry,
+          _context,
+          info => new SqlTable (info, JoinSemantics.Inner));
+    }
+
+    [Test]
     public void VisitSqlSubStatementExpression_WithOrderingsAndNoTopExpression ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
-                    { Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) } };
+                    { 
+                      SelectProjection = new NamedExpression("test", Expression.Constant("test")),
+                      Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) } 
+                    };
       var statement = builder.GetSqlStatement();
       var sqlSubStatementExpression = new SqlSubStatementExpression (statement);
 
