@@ -41,6 +41,7 @@
     <Reference Include="nunit.framework, Version=2.5.4.10098, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -48,6 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDomain\Northwind\Mapping.cs" />
+    <Compile Include="TestDomain\Northwind\Northwind.cs" />
+    <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
+    <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
+    <Compile Include="Utilities\ObjectDumper.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithReferenceTypes.cs" />
@@ -61,18 +67,12 @@
       <Link>remotion.snk</Link>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\Linq.IntegrationTests.CSharp\Data.Linq.IntegrationTests.CSharp.csproj">
-      <Project>{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}</Project>
-      <Name>Data.Linq.IntegrationTests.CSharp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Linq\Data.Linq.csproj">
       <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
       <Name>Data.Linq</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TestDomain\Northwind\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
