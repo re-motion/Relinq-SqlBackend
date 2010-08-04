@@ -239,7 +239,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlLikeExpression (SqlLikeExpression expression)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      VisitExpression (expression.Left);
+      _commandBuilder.Append (" LIKE ");
+      VisitExpression (expression.Right);
+
+      return expression;
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)

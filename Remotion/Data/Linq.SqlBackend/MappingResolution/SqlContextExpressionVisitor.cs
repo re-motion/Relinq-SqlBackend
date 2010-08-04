@@ -307,7 +307,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlLikeExpression (SqlLikeExpression expression)
     {
-      throw new NotImplementedException();
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)

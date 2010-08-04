@@ -21,6 +21,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
@@ -47,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new LikeMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var expectedResult = new SqlBinaryOperatorExpression (typeof(bool), "LIKE", expression.Arguments[0], expression.Arguments[1]);
+      var expectedResult = new SqlLikeExpression (expression.Arguments[0], expression.Arguments[1]);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }

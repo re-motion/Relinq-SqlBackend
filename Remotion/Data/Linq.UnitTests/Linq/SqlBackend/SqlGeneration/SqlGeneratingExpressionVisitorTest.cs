@@ -471,6 +471,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitSqlLikeExpression ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
+      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
+      var sqlInExpression = new SqlLikeExpression (Expression.Constant (1), sqlSubStatementExpression);
+
+      _stageMock
+          .Expect (
+              mock =>
+              mock.GenerateTextForSqlStatement (
+                  Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
+      _stageMock.Replay ();
+
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          sqlInExpression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 LIKE (test)"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void VisitSqlIsNullExpression ()
     {
       var expression = Expression.Constant ("test");

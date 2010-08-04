@@ -79,7 +79,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ApplyContext_SemanticsPropagatedToChildExpressionsByDefault ()
     {
       var expressionOfCorrectType = new TestExtensionExpression (new TestExtensionExpressionWithoutChildren (typeof (bool)));
-      var expressionOfIncorrectType = new TestExtensionExpression (new ConvertedBooleanExpression (new TestExtensionExpressionWithoutChildren (typeof (int))));
+      var expressionOfIncorrectType =
+          new TestExtensionExpression (new ConvertedBooleanExpression (new TestExtensionExpressionWithoutChildren (typeof (int))));
 
       var result1 = _predicateRequiredVisitor.VisitExpression (expressionOfCorrectType);
       var result2 = _predicateRequiredVisitor.VisitExpression (expressionOfIncorrectType);
@@ -117,7 +118,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
-      var expected = new ConvertedBooleanExpression(Expression.Condition(expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
+      var expected = new ConvertedBooleanExpression (Expression.Condition (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
@@ -130,7 +131,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (expression);
 
-      var expected = new ConvertedBooleanExpression(Expression.Condition(expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
+      var expected = new ConvertedBooleanExpression (Expression.Condition (expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0)));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
@@ -482,10 +483,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedExpression =
           BinaryExpression.And (
               Expression.Convert (
-                  new ConvertedBooleanExpression(Expression.Condition(
-                      Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
-                      new SqlLiteralExpression (1),
-                      new SqlLiteralExpression (0))),
+                  new ConvertedBooleanExpression (
+                      Expression.Condition (
+                          Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
+                          new SqlLiteralExpression (1),
+                          new SqlLiteralExpression (0))),
                   typeof (int)),
               Expression.Constant (5));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -556,10 +558,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedExpression =
           Expression.Not (
               Expression.Convert (
-                 new ConvertedBooleanExpression(Expression.Condition(
-                      Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
-                      new SqlLiteralExpression (1),
-                      new SqlLiteralExpression (0))),
+                  new ConvertedBooleanExpression (
+                      Expression.Condition (
+                          Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))),
+                          new SqlLiteralExpression (1),
+                          new SqlLiteralExpression (0))),
                   typeof (int)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
@@ -865,7 +868,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlTableReferenceExpression ()
     {
-      var expression = new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner));
+      var expression =
+          new SqlTableReferenceExpression (new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner));
 
       var result = _predicateRequiredVisitor.VisitSqlTableReferenceExpression (expression);
 
@@ -876,7 +880,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitSqlFunctionExpression ()
     {
       var expression = new SqlFunctionExpression (typeof (int), "Test", Expression.Constant (true));
-      var expectedResult = new SqlFunctionExpression (typeof (int), "Test", new ConvertedBooleanExpression(Expression.Constant (1)));
+      var expectedResult = new SqlFunctionExpression (typeof (int), "Test", new ConvertedBooleanExpression (Expression.Constant (1)));
 
       var result = _predicateRequiredVisitor.VisitSqlFunctionExpression (expression);
 
@@ -935,6 +939,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (bool), "AND", new ConvertedBooleanExpression (Expression.Constant (1)), new ConvertedBooleanExpression (Expression.Constant (1)));
 
       var result = _predicateRequiredVisitor.VisitSqlBinaryOperatorExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void SqlLikeExpression ()
+    {
+      var expression = new SqlLikeExpression (Expression.Constant (true), Expression.Constant (true));
+      var expectedResult = new SqlLikeExpression (
+          new ConvertedBooleanExpression (Expression.Constant (1)), new ConvertedBooleanExpression (Expression.Constant (1)));
+
+      var result = _predicateRequiredVisitor.VisitSqlLikeExpression (expression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
