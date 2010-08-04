@@ -946,9 +946,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void SqlLikeExpression ()
     {
-      var expression = new SqlLikeExpression (Expression.Constant (true), Expression.Constant (true));
+      var expression = new SqlLikeExpression (Expression.Constant (true), Expression.Constant (true), new SqlLiteralExpression (@"\"));
       var expectedResult = new SqlLikeExpression (
-          new ConvertedBooleanExpression (Expression.Constant (1)), new ConvertedBooleanExpression (Expression.Constant (1)));
+          new ConvertedBooleanExpression (Expression.Constant (1)), new ConvertedBooleanExpression (Expression.Constant (1)), new SqlLiteralExpression (@"\"));
 
       var result = _predicateRequiredVisitor.VisitSqlLikeExpression (expression);
 

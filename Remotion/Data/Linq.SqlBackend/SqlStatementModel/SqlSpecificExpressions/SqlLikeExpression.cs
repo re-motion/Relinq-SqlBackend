@@ -30,15 +30,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     private readonly Expression _left;
     private readonly Expression _right;
+    private readonly Expression _escapeExpression;
 
-    public SqlLikeExpression (Expression left, Expression right)
+    public SqlLikeExpression (Expression left, Expression right, Expression escapeExpression)
         : base(typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("left", left);
       ArgumentUtility.CheckNotNull ("right", right);
+      ArgumentUtility.CheckNotNull ("escapeExpression", escapeExpression);
 
       _left = left;
       _right = right;
+      _escapeExpression = escapeExpression;
     }
 
     public Expression Left
@@ -51,13 +54,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _right; }
     }
 
+    public Expression EscapeExpression
+    {
+      get { return _escapeExpression; }
+    }
+
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newLeftExpression = visitor.VisitExpression (_left);
       var newRightExpression = visitor.VisitExpression (_right);
+      var newEscapeExpression = visitor.VisitExpression (_escapeExpression);
 
-      if (newLeftExpression != _left || newRightExpression != _right)
-        return new SqlLikeExpression (newLeftExpression, newRightExpression);
+      if (newLeftExpression != _left || newRightExpression != _right || newEscapeExpression != _escapeExpression)
+        return new SqlLikeExpression (newLeftExpression, newRightExpression, newEscapeExpression);
       return this;
     }
 

@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var transformer = new LikeMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var expectedResult = new SqlLikeExpression (expression.Arguments[0], expression.Arguments[1]);
+      var expectedResult = new SqlLikeExpression (expression.Arguments[0], expression.Arguments[1], new SqlLiteralExpression (@"\"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }

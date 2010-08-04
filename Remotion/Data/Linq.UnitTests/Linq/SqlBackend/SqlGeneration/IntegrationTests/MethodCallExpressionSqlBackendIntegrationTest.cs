@@ -48,13 +48,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("abc") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
           new CommandParameter ("@1", "%abc%")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.Contains ("a%b_c[a] [^]") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]%")
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
+          new CommandParameter ("@1", @"%a\%b\_c\[a] \[^]%")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.Contains (null) select c.ID,
@@ -78,13 +78,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("abc") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
           new CommandParameter ("@1", "abc%")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith ("a%b_c[a] [^]") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "a[%]b[_]c[[]a] [[]^]%")
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
+          new CommandParameter ("@1", @"a\%b\_c\[a] \[^]%")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith (null) select c.ID,
@@ -109,13 +109,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith ("abc") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
           new CommandParameter ("@1", "%abc")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith ("a%b_c[a] [^]") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
-          new CommandParameter ("@1", "%a[%]b[_]c[[]a] [[]^]")
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
+          new CommandParameter ("@1", @"%a\%b\_c\[a] \[^]")
           );
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith(null) select c.ID,
@@ -270,13 +270,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.SqlLike ("%ab%c") select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1",
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE @1 ESCAPE '\'",
           new CommandParameter ("@1", "%ab%c")
           );
 
       CheckQuery (
           from c in Cooks where c.FirstName.SqlLike (c.Name) select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name]");
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE [t0].[Name] ESCAPE '\'");
     }
 
     [Test]

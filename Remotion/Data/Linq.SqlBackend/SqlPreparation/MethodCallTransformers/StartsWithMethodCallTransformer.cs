@@ -46,9 +46,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       if (argumentExpression.Value == null)
         return Expression.Constant (false);
       
-      var rightExpression = Expression.Constant (string.Format ("{0}%", LikeEscapeUtility.Escape ((string)argumentExpression.Value)));
+      var rightExpression = Expression.Constant (string.Format ("{0}%", LikeEscapeUtility.Escape ((string)argumentExpression.Value, @"\")));
 
-      return new SqlLikeExpression (methodCallExpression.Object, rightExpression);
+      return new SqlLikeExpression (methodCallExpression.Object, rightExpression, new SqlLiteralExpression (@"\"));
     }
   }
 }

@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       var leftExpression = Expression.Constant("left");
       var rightExpression = Expression.Constant("right");
       
-      _likeExpression = new SqlLikeExpression(leftExpression, rightExpression);
+      _likeExpression = new SqlLikeExpression(leftExpression, rightExpression, new SqlLiteralExpression(@"\"));
     }
 
     [Test]
@@ -50,6 +50,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock
           .Expect (mock => mock.VisitExpression (_likeExpression.Right))
           .Return (_likeExpression.Right);
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.EscapeExpression))
+          .Return (_likeExpression.EscapeExpression);
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
@@ -70,6 +73,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       visitorMock
          .Expect (mock => mock.VisitExpression (_likeExpression.Right))
          .Return (newRightExpression);
+      visitorMock
+         .Expect (mock => mock.VisitExpression (_likeExpression.EscapeExpression))
+         .Return (_likeExpression.EscapeExpression);
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);

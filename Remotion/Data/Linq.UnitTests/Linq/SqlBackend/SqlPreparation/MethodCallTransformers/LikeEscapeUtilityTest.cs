@@ -22,30 +22,30 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class EscapeUtilityTest
+  public class LikeEscapeUtilityTest
   {
     [Test]
     public void Escape_Bracket ()
     {
-      var result = LikeEscapeUtility.Escape ("test[test");
+      var result = LikeEscapeUtility.Escape ("test[test", @"\");
 
-      Assert.That (result, Is.EqualTo ("test[[]test"));
+      Assert.That (result, Is.EqualTo (@"test\[test"));
     }
 
     [Test]
     public void Escape_Percent ()
     {
-      var result = LikeEscapeUtility.Escape ("test%test");
+      var result = LikeEscapeUtility.Escape ("test%test", @"\");
 
-      Assert.That (result, Is.EqualTo ("test[%]test"));
+      Assert.That (result, Is.EqualTo (@"test\%test"));
     }
 
     [Test]
     public void Escape_Underline ()
     {
-      var result = LikeEscapeUtility.Escape ("test_test");
+      var result = LikeEscapeUtility.Escape ("test_test", @"\");
 
-      Assert.That (result, Is.EqualTo ("test[_]test"));
+      Assert.That (result, Is.EqualTo (@"test\_test"));
     }
   }
 }

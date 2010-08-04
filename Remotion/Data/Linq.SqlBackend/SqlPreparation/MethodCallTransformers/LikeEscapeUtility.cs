@@ -22,14 +22,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// <summary>
   /// <see cref="LikeEscapeUtility"/> is an utility class to escape strings as required by the LIKE SQL function.
   /// </summary>
-  public static class LikeEscapeUtility
+  public static class LikeEscapeUtility // TODO: Move to SqlLikeExpression
   {
-    public static string Escape (string text)
+    public static string Escape (string text, string escapeSequence)
     {
       var escapedString = new StringBuilder (text);
-      escapedString.Replace ("[", "[[]");
-      escapedString.Replace ("%", "[%]");
-      escapedString.Replace ("_", "[_]");
+      escapedString.Replace (escapeSequence, escapeSequence + escapeSequence);
+      escapedString.Replace ("[", @"\[");
+      escapedString.Replace ("%", @"\%");
+      escapedString.Replace ("_", @"\_");
       return escapedString.ToString();
     }
   }

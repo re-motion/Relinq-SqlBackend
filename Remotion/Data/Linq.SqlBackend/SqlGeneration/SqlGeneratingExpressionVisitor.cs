@@ -244,6 +244,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       VisitExpression (expression.Left);
       _commandBuilder.Append (" LIKE ");
       VisitExpression (expression.Right);
+      _commandBuilder.Append (" ESCAPE ");
+      VisitExpression (expression.EscapeExpression);
 
       return expression;
     }
