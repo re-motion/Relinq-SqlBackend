@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 {
   [TestFixture]
   public class TestResultCheckerTest

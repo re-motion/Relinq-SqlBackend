@@ -19,10 +19,9 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 {
   [TestFixture]
   public class TestResultSerializerTest

@@ -21,7 +21,7 @@ using System.IO;
 using System.Reflection;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
   /// <summary>
   /// Provides functionality to serialize the result of LINQ tests into a human-readable and machine-readable format for comparison between tests.
