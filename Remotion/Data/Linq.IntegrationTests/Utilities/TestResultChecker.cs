@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 { 
   /// <summary>
@@ -26,10 +28,25 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       bool returnValue = expected.Equals(actual);
       if (!returnValue)
       {
+        var expectedLines = expected.Split (Environment.NewLine.ToCharArray());
+        var actualLines = actual.Split (Environment.NewLine.ToCharArray ());
         
+        if (expectedLines.Length == actualLines.Length)
+          CheckInLinesDiff (expectedLines, actualLines);
+        else
+          CheckCompleteDiff (expectedLines, actualLines);
       }
-
       return returnValue;
+    }
+
+    private static void CheckInLinesDiff (string[] expected, string[] actual)
+    {
+      // TODO: find lines with differencess;
+    }
+
+    private static void CheckCompleteDiff (string[] expected, string[] actual)
+    {
+      // TODO: find missing /additional lines and differences inside
     }
   }
 }

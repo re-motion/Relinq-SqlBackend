@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
@@ -23,7 +24,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
   public class TestResultCheckerTest
   {
     [Test]
-    public void Check_SimpleValue ()
+    public void Check_OneLineValue ()
     {
       var test_expected = "should be";
       var test_actual = "should be";
@@ -34,10 +35,35 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     }
 
     [Test]
-    public void Check_SimpleValueFalse ()
+    public void Check_OneLineValueFalse ()
     {
       var test_expected = "should be";
       var test_actual = "";
+
+      var result = TestResultChecker.Check (test_expected, test_actual);
+
+      Assert.That (result, Is.EqualTo (false));
+    }
+
+    [Test]
+    public void Check_MultiLineValue()
+    {
+      var test_expected = "should be" + Environment.NewLine
+        + "including second line";
+      var test_actual = "should be" + Environment.NewLine
+        + "including second line";
+
+      var result = TestResultChecker.Check (test_expected, test_actual);
+
+      Assert.That (result, Is.EqualTo (true));
+    }
+    
+    [Test]
+    public void Check_MultiLineValueFalse ()
+    {
+      var test_expected = "should be" + Environment.NewLine
+        + "including second line";
+      var test_actual = "should be" + Environment.NewLine;
 
       var result = TestResultChecker.Check (test_expected, test_actual);
 
