@@ -19,28 +19,35 @@ using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupTopBottom : Executor
+  internal class GroupPaging:Executor
   {
-    //This sample uses Take to select the first 5 Employees hired.")]
-    public void LinqToSqlTop01 ()
+    //This sample uses the Skip and Take operators to do paging by skipping the first 50 records and then returning the next 10, thereby 
+    //providing the data for page 6 of the Products table.")]
+    public void LinqToSqlPaging01 ()
     {
       var q = (
-                  from e in db.Employees
-                  orderby e.HireDate
-                  select e)
-          .Take (5);
+                  from c in db.Customers
+                  orderby c.ContactName
+                  select c)
+          .Skip (50)
+          .Take (10);
 
       serializer.Serialize (q);
     }
 
-    //This sample uses Skip to select all but the 10 most expensive Products.")]
-    public void LinqToSqlTop02 ()
+    //This sample uses a where clause and the Take operator to do paging by, 
+    //first filtering to get only the ProductIDs above 50 (the last ProductID 
+    //from page 5), then ordering by ProductID, and finally taking the first 10 results, 
+    //thereby providing the data for page 6 of the Products table.  
+    //Note that this method only works when ordering by a unique key.")]
+    public void LinqToSqlPaging02 ()
     {
       var q = (
                   from p in db.Products
-                  orderby p.UnitPrice descending
+                  where p.ProductID > 50
+                  orderby p.ProductID
                   select p)
-          .Skip (10);
+          .Take (10);
 
       serializer.Serialize (q);
     }

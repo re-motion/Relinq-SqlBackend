@@ -15,12 +15,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  public class Name
+  internal class GroupView:Executor
   {
-    public string FirstName;
-    public string LastName;
+    //This sample uses SELECT and WHERE to return a sequence of invoices
+    //where shipping city is London.")]
+    public void LinqToSqlView01 ()
+    {
+      var q =
+          from i in db.Invoices
+          where i.ShipCity == "London"
+          select new { i.OrderID, i.ProductName, i.Quantity, i.CustomerName };
+
+      serializer.Serialize (q);
+    }
+
+    //This sample uses SELECT to query QuarterlyOrders.")]
+    public void LinqToSqlView02 ()
+    {
+      var q =
+          from qo in db.QuarterlyOrders
+          select qo;
+
+      serializer.Serialize (q);
+    }
   }
 }

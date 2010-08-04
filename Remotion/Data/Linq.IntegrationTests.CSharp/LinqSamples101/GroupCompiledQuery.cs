@@ -15,12 +15,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.Linq;
+using System.Linq;
+using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  public class Name
+  internal class GroupCompiledQuery : Executor
   {
-    public string FirstName;
-    public string LastName;
+    //This sample create a compiled query and then use it to retrieve customers of the input city")]
+    public void LinqToSqlCompileQuery01 ()
+    {
+      //Create compiled query
+      var fn = CompiledQuery.Compile (
+          (Northwind db2, string city) =>
+          from c in db2.Customers
+          where c.City == city
+          select c);
+
+      serializer.Serialize ("****** Call compiled query to retrieve customers from London ******");
+      var LonCusts = fn (db, "London");
+      serializer.Serialize (LonCusts);
+
+      serializer.Serialize (string.Empty);
+
+      serializer.Serialize ("****** Call compiled query to retrieve customers from Seattle ******");
+      var SeaCusts = fn (db, "Seattle");
+      serializer.Serialize (SeaCusts);
+    }
   }
 }

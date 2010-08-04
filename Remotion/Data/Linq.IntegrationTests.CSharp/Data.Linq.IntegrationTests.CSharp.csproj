@@ -49,15 +49,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LinqSamples101\Executor.cs" />
+    <Compile Include="LinqSamples101\GroupAdvanced.cs" />
     <Compile Include="LinqSamples101\GroupAggregates.cs" />
+    <Compile Include="LinqSamples101\GroupCompiledQuery.cs" />
+    <Compile Include="LinqSamples101\GroupConversionOperators.cs" />
     <Compile Include="LinqSamples101\GroupExistsInAnyAllContains.cs" />
+    <Compile Include="LinqSamples101\GroupExternalMapping.cs" />
     <Compile Include="LinqSamples101\GroupGroupByHaving.cs" />
+    <Compile Include="LinqSamples101\GroupInheritance.cs" />
     <Compile Include="LinqSamples101\GroupJoin.cs" />
     <Compile Include="LinqSamples101\GroupNull.cs" />
+    <Compile Include="LinqSamples101\GroupObjectIdentity.cs" />
+    <Compile Include="LinqSamples101\GroupObjectLoading.cs" />
     <Compile Include="LinqSamples101\GroupOrderBy.cs" />
+    <Compile Include="LinqSamples101\GroupPaging.cs" />
     <Compile Include="LinqSamples101\GroupSelectDistinct.cs" />
+    <Compile Include="LinqSamples101\GroupSqlMethods.cs" />
+    <Compile Include="LinqSamples101\GroupStoredProcedures.cs" />
+    <Compile Include="LinqSamples101\GroupStringDateFunctions.cs" />
     <Compile Include="LinqSamples101\GroupTopBottom.cs" />
     <Compile Include="LinqSamples101\GroupUnionAllIntersect.cs" />
+    <Compile Include="LinqSamples101\GroupUserDefinedFunctions.cs" />
+    <Compile Include="LinqSamples101\GroupView.cs" />
     <Compile Include="LinqSamples101\GroupWhere.cs" />
     <Compile Include="LinqSamples101\Name.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,6 +90,7 @@
       <Link>remotion.snk</Link>
     </None>
     <None Include="app.config" />
+    <None Include="LinqSamples101\NorthwindMapped.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />
