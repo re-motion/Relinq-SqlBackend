@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -31,7 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Cooks where c.FirstName != null && c.FirstName.Length > 0 select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NOT NULL) AND (LEN([t0].[FirstName]) > @1))",
-          new CommandParameter("@1", 0)
+          new CommandParameter ("@1", 0)
           );
     }
 
@@ -39,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void String_IsNullOrEmpty ()
     {
       CheckQuery (
-          from c in Cooks where string.IsNullOrEmpty(c.FirstName) select c.ID,
+          from c in Cooks where string.IsNullOrEmpty (c.FirstName) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NULL) OR (LEN([t0].[FirstName]) = 0))");
     }
 
@@ -63,14 +64,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only expressions that can be evaluated locally can be used as the argument for Contains ('search condition').")]
-    public void Contains_Unevaluatable ()
+    public void Contains_WithNonConstantValue ()
     {
       CheckQuery (
           from c in Cooks where c.FirstName.Contains (c.Name) select c.ID,
-          ""
-          );
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\['), ']', '\]') ESCAPE '\'"
+        );
     }
 
     [Test]
@@ -94,15 +93,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only expressions that can be evaluated locally can be used as the argument for StartsWith ('search condition').")]
-    public void StartsWith_Unevaluatable ()
+    public void StartsWith_WithNonConstantValue()
     {
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith (c.Name) select c.ID,
-          ""
-          );
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\['), ']', '\]') ESCAPE '\'"
+        );
     }
+
 
     [Test]
     public void EndsWith ()
@@ -118,21 +116,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", @"%a\%b\_c\[a] \[^]")
           );
       CheckQuery (
-          from c in Cooks where c.FirstName.EndsWith(null) select c.ID,
+          from c in Cooks where c.FirstName.EndsWith (null) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 0)
           );
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only expressions that can be evaluated locally can be used as the argument for EndsWith ('search condition').")]
-    public void EndsWith_Unevaluatable ()
+    public void EndsWith_WithNonConstantValue ()
     {
       CheckQuery (
-          from c in Cooks where c.FirstName.EndsWith (c.Name) select c.ID,
-          ""
-          );
+          from c in Cooks where c.FirstName.EndsWith(c.Name) select c.ID,
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\['), ']', '\]') ESCAPE '\'"
+        );
     }
 
     [Test]

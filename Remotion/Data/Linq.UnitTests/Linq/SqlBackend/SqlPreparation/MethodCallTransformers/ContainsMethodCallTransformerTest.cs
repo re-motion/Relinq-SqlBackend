@@ -20,8 +20,8 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -50,6 +50,48 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var rightExpression = Expression.Constant (string.Format ("%{0}%", argument1.Value));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
       
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void Transform_ArgumentIsNotNullAndIsNoConstantValue_ ()
+    {
+      var method = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
+      var objectExpression = Expression.Constant ("Test");
+      var argument1 = Expression.MakeMemberAccess (Expression.Constant(new Cook()), typeof (Cook).GetProperty ("Name"));
+      var expression = Expression.Call (objectExpression, method, argument1);
+      var transformer = new ContainsMethodCallTransformer ();
+
+      var result = transformer.Transform (expression);
+
+      var rightExpression = new SqlFunctionExpression (
+          typeof (string),
+          "REPLACE",
+          new SqlFunctionExpression (
+              typeof (string),
+              "REPLACE",
+              new SqlFunctionExpression (
+                  typeof (string),
+                  "REPLACE",
+                  new SqlFunctionExpression (
+                      typeof (string),
+                      "REPLACE",
+                      new SqlFunctionExpression (
+                          typeof (string),
+                          "REPLACE",
+                          argument1,
+                          new SqlLiteralExpression (@"\"),
+                          new SqlLiteralExpression (@"\\")),
+                      new SqlLiteralExpression (@"%"),
+                      new SqlLiteralExpression (@"\%")),
+                  new SqlLiteralExpression (@"_"),
+                  new SqlLiteralExpression (@"\_")),
+              new SqlLiteralExpression (@"["),
+              new SqlLiteralExpression (@"\[")),
+          new SqlLiteralExpression (@"]"),
+          new SqlLiteralExpression (@"\]"));
+      var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
+
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

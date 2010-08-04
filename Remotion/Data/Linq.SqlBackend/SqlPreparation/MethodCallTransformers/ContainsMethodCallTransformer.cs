@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -40,14 +39,20 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
-      var argumentExpression = MethodCallTransformerUtility.CheckConstantExpression (
-          methodCallExpression.Method.Name, methodCallExpression.Arguments[0], "search condition");
 
-      if (argumentExpression.Value == null)
-        return Expression.Constant (false);
+      Expression rightExpression;
+      var argumentAsConstantExpression = methodCallExpression.Arguments[0] as ConstantExpression;
+      if (argumentAsConstantExpression != null)
+      {
+        if (argumentAsConstantExpression.Value == null)
+          return Expression.Constant (false);
 
-      var rightExpression = Expression.Constant (string.Format ("%{0}%", LikeEscapeUtility.Escape ((string)argumentExpression.Value, @"\")));
-
+        rightExpression = Expression.Constant (string.Format ("%{0}%", LikeEscapeUtility.Escape ((string) argumentAsConstantExpression.Value, @"\")));
+      }
+      else
+      {
+        rightExpression = LikeEscapeUtility.Escape (methodCallExpression.Arguments[0], @"\");
+      }
       return new SqlLikeExpression (methodCallExpression.Object, rightExpression, new SqlLiteralExpression (@"\"));
     }
   }
