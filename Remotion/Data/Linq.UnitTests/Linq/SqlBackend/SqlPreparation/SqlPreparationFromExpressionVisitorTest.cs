@@ -260,6 +260,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (groupJoinClause);
       var fakeWhereExpression = Expression.Constant (true);
 
+      // TODO Review 3066: Add WhenCalled and check mi.Arguments[0] to match the where condition (expected expression, etc)
       _stageMock
           .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
           .Return (fakeWhereExpression);
@@ -268,13 +269,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = _visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause)), Is.Not.Null);
-      Assert.That (((UnresolvedTableInfo) ((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo).ItemType, Is.EqualTo(typeof (Cook)));
-      Assert.That (_visitor.FromExpressionInfo.HasValue, Is.True);
-      Assert.That (((UnresolvedTableInfo) ((SqlTable) _visitor.FromExpressionInfo.Value.SqlTable).TableInfo).ItemType, Is.EqualTo (typeof (Cook)));
-      Assert.That (((SqlTableReferenceExpression) _visitor.FromExpressionInfo.Value.ItemSelector).SqlTable, Is.SameAs (_visitor.FromExpressionInfo.Value.SqlTable));
-      Assert.That (_visitor.FromExpressionInfo.Value.WhereCondition, Is.SameAs(fakeWhereExpression));
-      Assert.That (_visitor.FromExpressionInfo.Value.ExtractedOrderings.Count, Is.EqualTo(0));
+
+      Assert.IsNotNull (_visitor.FromExpressionInfo);
+      var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
+
+      Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause)), Is.Not.Null); // TODO Review 3066: Use expected expression (SqlTableReferenceExpression to fromExpressionInfo.SqlTable)
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (fromExpressionInfo.SqlTable));  // TODO Review 3066: Use expected expression instead (SqlTableReferenceExpression to fromExpressionInfo.SqlTable)
+      Assert.That (((UnresolvedTableInfo) ((SqlTable) fromExpressionInfo.SqlTable).TableInfo).ItemType, Is.EqualTo (typeof (Cook)));
+      Assert.That (((SqlTableReferenceExpression) fromExpressionInfo.ItemSelector).SqlTable, Is.SameAs (fromExpressionInfo.SqlTable));  // TODO Review 3066: Use expected expression (SqlTableReferenceExpression to fromExpressionInfo.SqlTable)
+      Assert.That (fromExpressionInfo.WhereCondition, Is.SameAs (fakeWhereExpression));
+      Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo(0));
     }
   }
 }

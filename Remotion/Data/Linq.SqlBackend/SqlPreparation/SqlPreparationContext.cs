@@ -22,7 +22,6 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
-  
   /// <summary>
   /// <see cref="SqlPreparationContext"/> holds context information required during SQL preparation stage.
   /// </summary>
@@ -32,8 +31,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private readonly SqlStatementBuilder _sqlStatementBuilder;
     private readonly Dictionary<Expression, Expression> _mapping;
 
-    public SqlPreparationContext (SqlStatementBuilder sqlStatementBuilder) 
-      : this(null, sqlStatementBuilder)
+    public SqlPreparationContext (SqlStatementBuilder sqlStatementBuilder)
+        : this (null, sqlStatementBuilder)
     {
     }
 
@@ -46,8 +45,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _mapping = new Dictionary<Expression, Expression>();
     }
 
-    public bool IsOuterMostQuery { get { return _parentContext == null; } }
-    
+    public bool IsOuterMostQuery
+    {
+      get { return _parentContext == null; }
+    }
+
     public void AddExpressionMapping (Expression original, Expression replacement)
     {
       ArgumentUtility.CheckNotNull ("original", original);
@@ -60,7 +62,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
 
-      _sqlStatementBuilder.SqlTables.Add(sqlTableBase);
+      _sqlStatementBuilder.SqlTables.Add (sqlTableBase);
     }
 
     public Expression GetExpressionMapping (Expression original)
@@ -76,6 +78,5 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       return null;
     }
-    
   }
 }

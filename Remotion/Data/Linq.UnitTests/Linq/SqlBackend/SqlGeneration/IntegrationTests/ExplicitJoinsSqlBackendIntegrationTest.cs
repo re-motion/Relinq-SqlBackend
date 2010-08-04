@@ -214,6 +214,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 3066")]
+    public void ExplicitJoinWithInto_WithOrderBy ()
+    {
+      CheckQuery (
+          from k in Kitchens
+          join c in Cooks.OrderBy(c => c.FirstName).Select (c => c.ID) on k.Cook.ID equals c into gkc
+          from kc in gkc
+          select kc,
+          "SELECT [q0].[Key] AS [Key] "
+          + "FROM [KitchenTable] AS [t1] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON [t1].[ID] = [t3].[KitchenID] "
+          + "CROSS APPLY (SELECT [t2].[ID] AS [Key],[t2].[FirstName] AS [Value] FROM [CookTable] AS [t2]) AS [q0] "
+          + "WHERE ([t3].[ID] = [q0].[Key]) ORDER BY [q0].[Value] ASC");
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression.")]
     public void ExplicitJoinWithInto_PropagatedFromSubStatement ()
