@@ -53,7 +53,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
       db = new Northwind (connString) { Log = oldLog };
       serializer = new TestResultSerializer (new StreamWriter ("C:\\csharpTestOut.txt"), memberInfo => !memberInfo.IsDefined (typeof (AssociationAttribute), false));
-          //new StreamWriter ("C:\\csharpTestOut.txt"));
     }
 
     private static void CallAllTypes (Assembly assembly)
