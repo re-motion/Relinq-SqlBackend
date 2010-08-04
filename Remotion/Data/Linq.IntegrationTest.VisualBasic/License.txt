@@ -1,0 +1,2 @@
+﻿The license is temporarly stated to be LGPL - that is not correct this project is using MS-PL.
+This issue is just for developement simplification and will be resolved later.
