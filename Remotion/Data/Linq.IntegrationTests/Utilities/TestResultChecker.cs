@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
-{
+{ 
   /// <summary>
   /// Supports better comparability for the output of two results from <see cref="TestResultSerializer"/>
   /// </summary>
