@@ -137,18 +137,31 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return expression;
     }
 
+    private Expression CreateAndRevisitConditionalExpression(Expression testPredicate, Expression thenValue, Expression elseValue)
+    {
+      var newConditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
+      return VisitExpression (newConditionalExpression);
+    }
+
     protected override Expression VisitMemberExpression (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var innerExpressionAsConditionalExpression = VisitExpression (expression.Expression) as ConditionalExpression;
+      var newInnerExpression = VisitExpression (expression.Expression);
+
+      var innerExpressionAsConditionalExpression = newInnerExpression as ConditionalExpression;
       if (innerExpressionAsConditionalExpression!=null)
-      {
-        var newThenValueExpression = Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member);
-        var newElseValueExpression = Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfFalse, expression.Member);
-        var newConditionalExpression = Expression.Condition(innerExpressionAsConditionalExpression.Test, newThenValueExpression, newElseValueExpression);
-        return VisitExpression (newConditionalExpression);
-      }
+        return CreateAndRevisitConditionalExpression (
+            innerExpressionAsConditionalExpression.Test,
+            Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member),
+            Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfFalse, expression.Member));
+
+      var innerExpressionAsBinaryExpression = newInnerExpression as BinaryExpression;
+      if (innerExpressionAsBinaryExpression != null && innerExpressionAsBinaryExpression.NodeType == ExpressionType.Coalesce)
+        return CreateAndRevisitConditionalExpression (
+            new SqlIsNotNullExpression (innerExpressionAsBinaryExpression.Left),
+            Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Left, expression.Member),
+            Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Right, expression.Member));
 
       var memberAsPropertyInfo = expression.Member as PropertyInfo;
       if (memberAsPropertyInfo!=null)

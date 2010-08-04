@@ -113,12 +113,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           row => (object) row.GetValue<string> (new ColumnID ("value", 0))
           );
     }
-
-    [Test]
-    public void MemberAccessOnConditionalExpression ()
-    {
-      CheckQuery (Cooks.Select (c => (c.IsStarredCook ? c.Name : c.SpecificInformation).Length),
-        "SELECT CASE WHEN ([t0].[IsStarredCook] = 1) THEN LEN([t0].[Name]) ELSE LEN([t0].[SpecificInformation]) END AS [value] FROM [CookTable] AS [t0]");
-    }
+    
   }
 }

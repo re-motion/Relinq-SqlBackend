@@ -171,6 +171,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void MemberAccessOnCoalesceExpression ()
+    {
+      CheckQuery (Cooks.Select (c => (c.FirstName ?? c.Name).ToUpper ()),
+        "SELECT UPPER((COALESCE ([t0].[FirstName], [t0].[Name]))) AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void MemberAccessOnConditionalExpression ()
+    {
+      CheckQuery (Cooks.Select (c => (c.IsStarredCook ? c.Name : c.SpecificInformation).Length),
+        "SELECT CASE WHEN ([t0].[IsStarredCook] = 1) THEN LEN([t0].[Name]) ELSE LEN([t0].[SpecificInformation]) END AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
     public void StringConcatenation ()
     {
       CheckQuery (

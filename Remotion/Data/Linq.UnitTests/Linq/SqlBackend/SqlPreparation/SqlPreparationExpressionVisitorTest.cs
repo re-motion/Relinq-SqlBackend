@@ -313,6 +313,44 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitMemberExpression_WithInnerCoalesceExpression ()
+    {
+      var left = Expression.Constant (new TypeForNewExpression (1));
+      var right = Expression.Constant (new TypeForNewExpression (2));
+      var coalesceExpression = Expression.Coalesce (left, right);
+      var memberInfo = typeof (TypeForNewExpression).GetProperty ("A");
+      var memberExpression = Expression.MakeMemberAccess (coalesceExpression, memberInfo);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      var expectedResult = Expression.Condition (
+          new SqlIsNotNullExpression (coalesceExpression.Left),
+          Expression.MakeMemberAccess (coalesceExpression.Left, memberInfo),
+          Expression.MakeMemberAccess (coalesceExpression.Right, memberInfo));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitMemberExpression_WithInnerCoalesceExpression_RevisitsResult ()
+    {
+      var left = Expression.Constant("left");
+      var right = Expression.Constant("right");
+      var coalesceExpression = Expression.Coalesce (left, right);
+      var memberInfo = typeof (string).GetProperty ("Length");
+      var memberExpression = Expression.MakeMemberAccess (coalesceExpression, memberInfo);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      var expectedResult = Expression.Condition (
+          new SqlIsNotNullExpression (coalesceExpression.Left),
+          new SqlFunctionExpression(typeof(int), "LEN", coalesceExpression.Left),
+          new SqlFunctionExpression (typeof (int), "LEN", coalesceExpression.Right));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
     public void VisitBinaryExpression ()
     {
       var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
