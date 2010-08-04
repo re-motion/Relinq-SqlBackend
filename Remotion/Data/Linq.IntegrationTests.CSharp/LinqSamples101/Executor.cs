@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
@@ -10,11 +12,21 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     private readonly static string connString = "Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;";
 
     protected static Northwind db;
+    protected static TestResultSerializer serializer;
 
     public static void Main ()
     {
       InitSample();
-      CallAllMethods (typeof (GroupWhere));
+      //CallAllMethods (typeof (GroupWhere));
+      //CallAllMethods (typeof (GroupSelectDistinct));
+      //CallAllMethods (typeof (GroupAggregates));
+      //CallAllMethods (typeof (GroupJoin));
+      //CallAllMethods (typeof (GroupOrderBy));
+      //CallAllMethods (typeof (GroupGroupByHaving));
+      //CallAllMethods (typeof (GroupExistsInAnyAllContains));
+      //CallAllMethods (typeof (GroupUnionAllIntersect));
+      CallAllMethods (typeof (GroupTopBottom));
+
       Console.Read ();
     }
 
@@ -30,6 +42,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
         oldLog = db.Log;
 
       db = new Northwind (connString) { Log = oldLog };
+      serializer = new TestResultSerializer (Console.Out,memberInfo => !memberInfo.IsDefined (typeof(System.Data.Linq.Mapping.AssociationAttribute), false));//new StreamWriter ("C:\\csharpTestOut.txt"));
     }
 
     private static void CallAllMethods (Type testClass)
@@ -41,7 +54,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
         if (methodInfo.Name.Contains ("LinqToSql"))
         {
-          Console.WriteLine ("Call: " + methodInfo.Name);
+          Debug.WriteLine ("Call: " + methodInfo.Name);
           methodInfo.Invoke (instance, null);
         }
       }

@@ -53,7 +53,6 @@
     <Compile Include="TestDomain\Northwind\Northwind.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
-    <Compile Include="Utilities\ObjectDumper.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithReferenceTypes.cs" />

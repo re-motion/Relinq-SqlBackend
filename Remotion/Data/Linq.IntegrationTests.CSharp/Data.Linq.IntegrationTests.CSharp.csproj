@@ -49,7 +49,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LinqSamples101\Executor.cs" />
+    <Compile Include="LinqSamples101\GroupAggregates.cs" />
+    <Compile Include="LinqSamples101\GroupExistsInAnyAllContains.cs" />
+    <Compile Include="LinqSamples101\GroupGroupByHaving.cs" />
+    <Compile Include="LinqSamples101\GroupJoin.cs" />
+    <Compile Include="LinqSamples101\GroupNull.cs" />
+    <Compile Include="LinqSamples101\GroupOrderBy.cs" />
+    <Compile Include="LinqSamples101\GroupSelectDistinct.cs" />
+    <Compile Include="LinqSamples101\GroupTopBottom.cs" />
+    <Compile Include="LinqSamples101\GroupUnionAllIntersect.cs" />
     <Compile Include="LinqSamples101\GroupWhere.cs" />
+    <Compile Include="LinqSamples101\Name.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +76,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />

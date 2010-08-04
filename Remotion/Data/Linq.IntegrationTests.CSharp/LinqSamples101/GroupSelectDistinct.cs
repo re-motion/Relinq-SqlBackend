@@ -1,0 +1,185 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
+
+namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
+{
+  class GroupSelectDistinct:Executor
+  {
+    //This sample uses SELECT to return a sequence of just the Customers' contact names.
+    public void LinqToSqlSelect01 ()
+    {
+      var q =
+          from c in db.Customers
+          select c.ContactName;
+
+      serializer.Serialize (q);
+    }
+
+    //This sample uses SELECT and anonymous types to return a sequence of just the Customers' contact names and phone numbers.
+    public void LinqToSqlSelect02 ()
+    {
+      var q =
+          from c in db.Customers
+          select new { c.ContactName, c.Phone };
+
+      serializer.Serialize (q);
+    }
+
+    //This sample uses SELECT and anonymous types to return a sequence of just the Employees' names and phone numbers, 
+    //with the FirstName and LastName fields combined into a single field, 'Name', and the HomePhone field renamed to
+    //Phone in the resulting sequence.
+    public void LinqToSqlSelect03 ()
+    {
+      var q =
+          from e in db.Employees
+          select new { Name = e.FirstName + " " + e.LastName, Phone = e.HomePhone };
+
+      serializer.Serialize (q);
+    }
+
+    //This sample uses SELECT and anonymous types to return 
+    //a sequence of all Products' IDs and a calculated value 
+    //called HalfPrice which is set to the Product's UnitPrice divided by 2.
+    public void LinqToSqlSelect04 ()
+    {
+      var q =
+          from p in db.Products
+          select new { p.ProductID, HalfPrice = p.UnitPrice / 2 };
+      serializer.Serialize (q);
+    }
+
+    //This sample uses SELECT and a conditional statement to return a sequence of product name and product availability.
+    public void LinqToSqlSelect05 ()
+    {
+      var q =
+          from p in db.Products
+          select new { p.ProductName, Availability = p.UnitsInStock - p.UnitsOnOrder < 0 ? "Out Of Stock" : "In Stock" };
+
+      serializer.Serialize (q);
+    }
+
+    //This sample uses SELECT and a known type to return a sequence of employees' names.
+    public void LinqToSqlSelect06 ()
+    {
+      var q =
+          from e in db.Employees
+          select new Name { FirstName = e.FirstName, LastName = e.LastName };
+
+      serializer.Serialize (q);
+    }
+
+    //[Category ("Select/Distinct")]
+    //[Title ("Select - Filtered")]
+    //[Description ("This sample uses SELECT and WHERE to return a sequence of just the London Customers' contact names.
+    public void LinqToSqlSelect07 ()
+    {
+      var q =
+          from c in db.Customers
+          where c.City == "London"
+          select c.ContactName;
+
+      serializer.Serialize (q);
+    }
+
+    //[Category ("Select/Distinct")]
+    //[Title ("Select - Shaped")]
+    //[Description ("This sample uses SELECT and anonymous types to return " +
+    //             "a shaped subset of the data about Customers.")]
+    public void LinqToSqlSelect08 ()
+    {
+      var q =
+          from c in db.Customers
+          select new
+          {
+            c.CustomerID,
+            CompanyInfo = new { c.CompanyName, c.City, c.Country },
+            ContactInfo = new { c.ContactName, c.ContactTitle }
+          };
+
+      serializer.Serialize (q);
+    }
+
+    //[Category ("Select/Distinct")]
+    //[Title ("Select - Nested ")]
+    //[Description ("This sample uses nested queries to return a sequence of " +
+    //             "all orders containing their OrderID, a subsequence of the " +
+    //             "items in the order where there is a discount, and the money " +
+    //             "saved if shipping is not included.")]
+    public void LinqToSqlSelect09 ()
+    {
+      var q =
+          from o in db.Orders
+          select new
+          {
+            o.OrderID,
+            DiscountedProducts =
+                from od in o.OrderDetails
+                where od.Discount > 0.0
+                select od,
+            FreeShippingDiscount = o.Freight
+          };
+
+      serializer.Serialize (q);
+    }
+
+    // Phone converter that converts a phone number to 
+    // an international format based on its country.
+    // This sample only supports USA and UK formats, for 
+    // phone numbers from the Northwind database.
+    public string PhoneNumberConverter (string Country, string Phone)
+    {
+      Phone = Phone.Replace (" ", "").Replace (")", ")-");
+      switch (Country)
+      {
+        case "USA":
+          return "1-" + Phone;
+        case "UK":
+          return "44-" + Phone;
+        default:
+          return Phone;
+      }
+    }
+
+    //This sample uses a Local Method Call to 'PhoneNumberConverter' to convert Phone number " +
+    //             "to an international format.")]
+    public void LinqToSqlLocalMethodCall01 ()
+    {
+      var q = from c in db.Customers
+              where c.Country == "UK" || c.Country == "USA"
+              select new { c.CustomerID, c.CompanyName, Phone = c.Phone, InternationalPhone = PhoneNumberConverter (c.Country, c.Phone) };
+
+      serializer.Serialize (q);
+    }
+
+    //This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
+    public void LinqToSqlLocalMethodCall02 ()
+    {
+      XDocument doc = new XDocument (
+          new XElement ("Customers", from c in db.Customers
+                                     where c.Country == "UK" || c.Country == "USA"
+                                     select (new XElement ("Customer",
+                                         new XAttribute ("CustomerID", c.CustomerID),
+                                         new XAttribute ("CompanyName", c.CompanyName),
+                                         new XAttribute ("InterationalPhone", PhoneNumberConverter (c.Country, c.Phone))
+                                         ))));
+
+      serializer.Serialize (doc.ToString ());
+    }
+
+
+    //This sample uses Distinct to select a sequence of the unique cities that have Customers.
+    public void LinqToSqlSelect10 ()
+    {
+      var q = (
+          from c in db.Customers
+          select c.City)
+          .Distinct ();
+
+      serializer.Serialize (q);
+    }
+  }
+}
