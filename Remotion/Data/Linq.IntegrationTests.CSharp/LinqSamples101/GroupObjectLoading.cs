@@ -36,7 +36,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       foreach (var cust in custs)
       {
         foreach (var ord in cust.Orders)
-          Console.WriteLine ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID);
+          serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
       }
     }
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       foreach (var cust in custs)
       {
         foreach (var ord in cust.Orders)
-          Console.WriteLine ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID);
+          serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
       }
     }
 
@@ -88,13 +88,14 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
         {
           foreach (var orderDetail in ord.OrderDetails)
           {
-            Console.WriteLine (
-                "CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.",
-                cust.CustomerID,
-                ord.OrderID,
-                ord.ShipVia,
-                orderDetail.ProductID,
-                orderDetail.Product.ProductName);
+            serializer.Serialize (
+                String.Format (
+                    "CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.",
+                    cust.CustomerID,
+                    ord.OrderID,
+                    ord.ShipVia,
+                    orderDetail.ProductID,
+                    orderDetail.Product.ProductName));
           }
         }
       }
@@ -127,12 +128,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
         {
           foreach (var orderDetail in ord.OrderDetails)
           {
-            Console.WriteLine (
-                "CustomerID {0} has an OrderID {1} with ProductID {2} that has Quantity {3}.",
-                cust.CustomerID,
-                ord.OrderID,
-                orderDetail.ProductID,
-                orderDetail.Quantity);
+            serializer.Serialize (
+                string.Format (
+                    "CustomerID {0} has an OrderID {1} with ProductID {2} that has Quantity {3}.",
+                    cust.CustomerID,
+                    ord.OrderID,
+                    orderDetail.ProductID,
+                    orderDetail.Quantity));
           }
         }
       }
@@ -149,7 +151,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       foreach (var emp in emps)
       {
         foreach (var man in emp.Employees)
-          Console.WriteLine ("Employee {0} reported to Manager {1}.", emp.FirstName, man.FirstName);
+          serializer.Serialize (String.Format ("Employee {0} reported to Manager {1}.", emp.FirstName, man.FirstName));
       }
     }
 
@@ -162,7 +164,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
                  select c;
 
       foreach (Employee emp in emps)
-        Console.WriteLine ("{0}", emp.Notes);
+        serializer.Serialize ("{0}", emp.Notes);
     }
 
 
@@ -185,7 +187,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       foreach (var cat in q)
       {
         foreach (var prod in cat.Products)
-          Console.WriteLine ("Category {0} has a ProductID {1} that Discontined = {2}.", cat.CategoryID, prod.ProductID, prod.Discontinued);
+          serializer.Serialize (String.Format ("Category {0} has a ProductID {1} that Discontined = {2}.", cat.CategoryID, prod.ProductID, prod.Discontinued));
       }
     }
   }

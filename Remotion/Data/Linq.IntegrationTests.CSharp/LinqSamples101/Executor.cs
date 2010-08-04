@@ -36,6 +36,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       InitSample();
       CallAllTypes (Assembly.Load ("Remotion.Data.Linq.IntegrationTests.CSharp"));
 
+      Console.WriteLine ("finished! :)");
       Console.Read();
     }
 
@@ -51,7 +52,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
         oldLog = db.Log;
 
       db = new Northwind (connString) { Log = oldLog };
-      serializer = new TestResultSerializer (Console.Out, memberInfo => !memberInfo.IsDefined (typeof (AssociationAttribute), false));
+      serializer = new TestResultSerializer (new StreamWriter ("C:\\csharpTestOut.txt"), memberInfo => !memberInfo.IsDefined (typeof (AssociationAttribute), false));
           //new StreamWriter ("C:\\csharpTestOut.txt"));
     }
 
@@ -63,7 +64,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
         if (classType.BaseType != null)
         {
           if (classType.BaseType.Name.Equals ("Executor"))
+          {
+            Console.WriteLine ("Call Methods Class: " + classType.Name);
             CallAllMethods (classType);
+          }
         }
       }
     }
@@ -77,7 +81,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
         if (methodInfo.Name.Contains ("LinqToSql"))
         {
-          Debug.WriteLine ("Call: " + methodInfo.Name);
+          Console.WriteLine ("\t Call: " + methodInfo.Name);
           methodInfo.Invoke (instance, null);
         }
       }

@@ -37,7 +37,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       Mapped.NorthwindMapped nw = new Mapped.NorthwindMapped (db.Connection, mappingSource);
 
       // demonstrate use of an externally-mapped entity 
-      Console.WriteLine ("****** Externally-mapped entity ******");
+      serializer.Serialize ("****** Externally-mapped entity ******");
       Mapped.Order order = nw.Orders.First ();
       serializer.Serialize (order);
 
@@ -45,34 +45,34 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       var contacts = from c in nw.Contacts
                      where c is Mapped.EmployeeContact
                      select c;
-      Console.WriteLine ();
-      Console.WriteLine ("****** Externally-mapped inheritance hierarchy ******");
+      serializer.Serialize ();
+      serializer.Serialize ("****** Externally-mapped inheritance hierarchy ******");
       foreach (var contact in contacts)
       {
-        Console.WriteLine ("Company name: {0}", contact.CompanyName);
-        Console.WriteLine ("Phone: {0}", contact.Phone);
-        Console.WriteLine ("This is a {0}", contact.GetType ());
-        Console.WriteLine ();
+        serializer.Serialize ("Company name: {0}", contact.CompanyName);
+        serializer.Serialize ("Phone: {0}", contact.Phone);
+        serializer.Serialize ("This is a {0}", contact.GetType ());
+        serializer.Serialize ();
       }
 
       // demonstrate use of an externally-mapped stored procedure
-      Console.WriteLine ();
-      Console.WriteLine ("****** Externally-mapped stored procedure ******");
+      serializer.Serialize ();
+      serializer.Serialize ("****** Externally-mapped stored procedure ******");
       foreach (Mapped.CustOrderHistResult result in nw.CustomerOrderHistory ("ALFKI"))
       {
         serializer.Serialize (result);
       }
 
       // demonstrate use of an externally-mapped scalar user defined function
-      Console.WriteLine ();
-      Console.WriteLine ("****** Externally-mapped scalar UDF ******");
+      serializer.Serialize ();
+      serializer.Serialize ("****** Externally-mapped scalar UDF ******");
       var totals = from c in nw.Categories
                    select new { c.CategoryID, TotalUnitPrice = nw.TotalProductUnitPriceByCategory (c.CategoryID) };
       serializer.Serialize (totals);
 
       // demonstrate use of an externally-mapped table-valued user-defined function
-      Console.WriteLine ();
-      Console.WriteLine ("****** Externally-mapped table-valued UDF ******");
+      serializer.Serialize ();
+      serializer.Serialize ("****** Externally-mapped table-valued UDF ******");
       var products = from p in nw.ProductsUnderThisUnitPrice (9.75M)
                      where p.SupplierID == 8
                      select p;

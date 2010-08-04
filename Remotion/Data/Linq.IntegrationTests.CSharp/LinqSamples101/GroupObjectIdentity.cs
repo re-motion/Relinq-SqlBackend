@@ -29,8 +29,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       Customer cust1 = db.Customers.First (c => c.CustomerID == "BONAP");
       Customer cust2 = db.Customers.First (c => c.CustomerID == "BONAP");
 
-      Console.WriteLine ("cust1 and cust2 refer to the same object in memory: {0}",
-                        Object.ReferenceEquals (cust1, cust2));
+      serializer.Serialize (String.Format ("cust1 and cust2 refer to the same object in memory: {0}",
+                        Object.ReferenceEquals (cust1, cust2)));
     }
 
     //This sample demonstrates how, upon executing different queries that " +
@@ -46,8 +46,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
           .First ()
           .Customer;
 
-      Console.WriteLine ("cust1 and cust2 refer to the same object in memory: {0}",
-                        Object.ReferenceEquals (cust1, cust2));
+      serializer.Serialize (String.Format ("cust1 and cust2 refer to the same object in memory: {0}",
+                        Object.ReferenceEquals (cust1, cust2)));
     }
 
   }
