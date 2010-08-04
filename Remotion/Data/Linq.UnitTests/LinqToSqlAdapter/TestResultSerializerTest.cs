@@ -20,7 +20,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.LinqToSqlAdapter;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
