@@ -197,6 +197,7 @@
     <Compile Include="SqlStatementModel\SqlGroupingSelectExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNotNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNullExpression.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLikeExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLiteralExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlRowNumberExpression.cs" />
     <Compile Include="SqlStatementModel\SqlStatement.cs" />

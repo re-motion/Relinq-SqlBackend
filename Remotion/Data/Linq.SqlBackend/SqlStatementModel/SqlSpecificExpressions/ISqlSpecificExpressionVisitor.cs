@@ -33,5 +33,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     Expression VisitSqlConvertExpression (SqlConvertExpression expression);
     Expression VisitSqlExistsExpression (SqlExistsExpression expression);
     Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression);
+    Expression VisitSqlLikeExpression (SqlLikeExpression expression);
   }
 }
