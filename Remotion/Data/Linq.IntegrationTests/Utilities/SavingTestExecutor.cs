@@ -15,24 +15,34 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
+  /// <summary>
+  /// saves <see cref="TestResultSerializer"/> output to a file with correct naming and extension into a specified directory -
+  /// as a resource for later use with <see cref="CheckingTestExecutor"/>
+  /// </summary>
   public class SavingTestExecutor : ITestExecutor
   {
-    private string _directory;
+    private readonly string _directory;
 
     public SavingTestExecutor (string directory)
     {
-      // TODO: Complete member initialization
       this._directory = directory;
     }
 
     public void Execute (object queryResult, MethodBase executingMethod)
     {
-      // TODO: implement
-      throw new NotImplementedException();
+      var resourceName = executingMethod.DeclaringType.Namespace + ".Resources." + executingMethod.DeclaringType.Name
+        + "." + executingMethod.Name + ".result";
+      var fileName = Path.Combine (_directory, resourceName);
+      using (var writer = File.CreateText(fileName))
+      {
+        var serializer = new TestResultSerializer (writer);
+        serializer.Serialize (queryResult);
+      }
     }
   }
 }

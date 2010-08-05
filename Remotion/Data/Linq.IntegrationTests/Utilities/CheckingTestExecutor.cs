@@ -16,17 +16,23 @@
 // 
 using System.IO;
 using System.Reflection;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
+  /// <summary>
+  /// checkes the queryResult against a previously created resource
+  /// </summary>
   public class CheckingTestExecutor : ITestExecutor
   {
     public void Execute (object queryResult, MethodBase executingMethod)
     {
+      ArgumentUtility.CheckNotNull ("executingMethod", executingMethod);
       var referenceResult = GetReferenceResult (executingMethod);
       var actualResult = GetActualResult (queryResult);
 
-      TestResultChecker.Check (referenceResult, actualResult);
+      var result = TestResultChecker.Check (referenceResult, actualResult);
+      // TODO: Assert??
     }
 
     private string GetActualResult (object queryResult)
@@ -39,7 +45,8 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
 
     private string GetReferenceResult (MethodBase executingMethod)
     {
-      var resourceName = executingMethod.DeclaringType.FullName + "." + executingMethod + ".result";
+      var resourceName = executingMethod.DeclaringType.Namespace + ".Resources." + executingMethod.DeclaringType.Name 
+        + "." + executingMethod.Name + ".result";
       using (var resourceStream = executingMethod.DeclaringType.Assembly.GetManifestResourceStream (resourceName))
       {
         using (var streamReader = new StreamReader (resourceStream))
