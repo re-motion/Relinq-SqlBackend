@@ -15,18 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
-{ 
-  /// <summary>
-  /// Supports better comparability for the output of two results from <see cref="TestResultSerializer"/>
-  /// </summary>
-  public class TestResultChecker
+namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
+{
+  internal class LinqToSqlNorthwindDataProvider : INorthwindDataProvider
   {
-    public static ComparisonResult Check (string expected, string actual)
+    private readonly Northwind _dataContext = new Northwind ("...");
+
+    // TODO: ctor
+    // TODO: implement additional properties - see INorthwindDataProvider
+    public IQueryable<Product> Products
     {
-      var isEqual = expected.Equals(actual);
-      return new ComparisonResult (isEqual, expected, actual);
+      get { return _dataContext.Products; }
     }
   }
 }

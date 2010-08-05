@@ -15,18 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
-{ 
-  /// <summary>
-  /// Supports better comparability for the output of two results from <see cref="TestResultSerializer"/>
-  /// </summary>
-  public class TestResultChecker
+{
+  public interface ITestExecutor
   {
-    public static ComparisonResult Check (string expected, string actual)
-    {
-      var isEqual = expected.Equals(actual);
-      return new ComparisonResult (isEqual, expected, actual);
-    }
+    void Execute (object queryResult, MethodBase executingMethod);
   }
 }

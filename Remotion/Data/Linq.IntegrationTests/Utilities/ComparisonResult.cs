@@ -15,18 +15,46 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
-{ 
-  /// <summary>
-  /// Supports better comparability for the output of two results from <see cref="TestResultSerializer"/>
-  /// </summary>
-  public class TestResultChecker
+{
+  public class ComparisonResult
   {
-    public static ComparisonResult Check (string expected, string actual)
+    private readonly bool _isEqual;
+    private readonly string _expected;
+    private readonly string _actual;
+
+    public ComparisonResult (bool isEqual, string expected, string actual)
     {
-      var isEqual = expected.Equals(actual);
-      return new ComparisonResult (isEqual, expected, actual);
+      _isEqual = isEqual;
+      _actual = actual;
+      _expected = expected;
+    }
+
+    public string Actual
+    {
+      get { return _actual; }
+    }
+
+    public string Expected
+    {
+      get { return _expected; }
+    }
+
+    public bool IsEqual
+    {
+      get { return _isEqual; }
+    }
+
+    public string GetDiffSet ()
+    {
+      var output = new StringBuilder();
+      output.AppendLine ("expected:");
+      output.Append (_expected);
+      output.AppendLine ("actual:");
+      output.Append (_actual);
+      return output.ToString();
     }
   }
 }
