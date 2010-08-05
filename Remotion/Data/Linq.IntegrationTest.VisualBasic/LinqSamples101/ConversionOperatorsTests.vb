@@ -24,15 +24,12 @@ Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 Namespace LinqSamples101
   Public Class ConversionOperatorsTests
     Inherits TestBase
-    '<Category("Conversion Operators")> _
-    ' <Title("AsEnumerable")> _
-    ' <Description("This sample uses ToArray so that the client-side IEnumerable(Of T) " & _
-    '              "implementation of Where is used, instead of the default Query(Of T) " & _
-    '              "implementation which would be converted to SQL and executed " & _
-    '              "on the server.  This is necessary because the where clause " & _
-    '              "references a user-defined client-side method, isValidProduct, " & _
-    '              "which cannot be converted to SQL.")> _
-    ' <LinkedFunction("isValidProduct")> _
+    
+    'This sample uses ToArray so that the client-side IEnumerable(Of T) implementation of Where is used, instead of the default Query(Of T) 
+    'implementation which would be converted to SQL and executed " & _
+    'on the server.  This is necessary because the where clause " & _
+    'references a user-defined client-side method, isValidProduct, " & _
+    'which cannot be converted to SQL.")> _
     Public Sub LinqToSqlConversions01()
       Dim prodQuery = From prod In DB.Products.AsEnumerable() _
             Where isValidProduct(prod)

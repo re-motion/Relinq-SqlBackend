@@ -98,7 +98,7 @@
     <Compile Include="LinqSamples101\CompiledQueryTests.vb" />
     <Compile Include="LinqSamples101\ConversionOperatorsTests.vb" />
     <Compile Include="LinqSamples101\GroupExternalMapping.vb" />
-    <Compile Include="LinqSamples101\GroupGroupByHaving.vb" />
+    <Compile Include="LinqSamples101\GroupByHavingTests.vb" />
     <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.vb" />
     <Compile Include="LinqSamples101\GroupInheritance.vb" />
     <Compile Include="LinqSamples101\GroupJoin.vb" />

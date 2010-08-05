@@ -17,92 +17,81 @@
 Option Infer On
 Option Strict On
 
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupGroupByHaving
-    Inherits Executor
-    'This sample uses Group By to partition Products by " & _
-    '             "CategoryID.")> _
+  Public Class GroupByHavingTests
+    Inherits TestBase
+
+    'This sample uses Group By to partition Products by CategoryID.
     Public Sub LinqToSqlGroupBy01()
       Dim categorizedProducts = From prod In db.Products _
             Group prod By prod.CategoryID Into prodGroup = Group _
             Select prodGroup
 
-      serializer.Serialize(categorizedProducts)
+      TestExecutor.Execute(categorizedProducts, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Max " & _
-    '             "to find the maximum unit price for each CategoryID.")> _
+    'This sample uses Group By and Max to find the maximum unit price for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy02()
-      Dim maxPrices = From prod In db.Products _
+      Dim maxPrices = From prod In DB.Products _
             Group prod By prod.CategoryID _
             Into prodGroup = Group, MaxPrice = Max(prod.UnitPrice) _
             Select prodGroup, MaxPrice
 
-      serializer.Serialize(maxPrices)
+      TestExecutor.Execute(maxPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Min " & _
-    '             "to find the minimum unit price for each CategoryID.")> _
+    'This sample uses Group By and Min to find the minimum unit price for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy03()
       Dim minPrices = From prod In db.Products _
             Group prod By prod.CategoryID _
             Into prodGroup = Group, MinPrice = Min(prod.UnitPrice)
 
-      serializer.Serialize(minPrices)
+      TestExecutor.Execute(minPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Average " & _
-    '             "to find the average UnitPrice for each CategoryID.")> _
+    'This sample uses Group By and Average to find the average UnitPrice for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy04()
       Dim avgPrices = From prod In db.Products _
             Group prod By prod.CategoryID _
             Into prodGroup = Group, AveragePrice = Average(prod.UnitPrice)
 
-      serializer.Serialize(avgPrices)
+      TestExecutor.Execute(avgPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Sum " & _
-    '             "to find the total UnitPrice for each CategoryID.")> _
+    'This sample uses Group By and Sum to find the total UnitPrice for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy05()
       Dim totalPrices = From prod In db.Products _
             Group prod By prod.CategoryID _
             Into prodGroup = Group, TotalPrice = Sum(prod.UnitPrice)
 
-      serializer.Serialize(totalPrices)
+      TestExecutor.Execute(totalPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Count " & _
-    '             "to find the number of Products in each CategoryID.")> _
+    'This sample uses Group By and Count to find the number of Products in each CategoryID.")> _
     Public Sub LinqToSqlGroupBy06()
       Dim prodQuery = From prod In db.Products _
             Group prod By prod.CategoryID _
             Into prodGroup = Group _
             Select prodGroup, NumProducts = prodGroup.Count()
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Count " & _
-    '             "to find the number of Products in each CategoryID " & _
-    '             "that are discontinued.")> _
+    'This sample uses Group By and Count to find the number of Products in each CategoryID that are discontinued.")> _
     Public Sub LinqToSqlGroupBy07()
 
-      Dim prodQuery = From prod In db.Products _
+      Dim prodQuery = From prod In DB.Products _
             Group prod By prod.CategoryID _
             Into prodGroup = Group, NumProducts = Count(prod.Discontinued)
 
-      'Alternative Syntax
-      'Dim prodQuery = From prod In db.Products _
-      '                Group prod By prod.CategoryID Into prodGroup = Group _
-      '                Select prodGroup, _
-      '                       NumProducts = prodGroup.Count(Function(prod2) prod2.Discontinued)
-
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a Where clause after a Group By clause " & _
-    '             "to find all categories that have at least 10 products.")> _
+    'This sample uses a Where clause after a Group By clause to find all categories that have at least 10 products.")> _
     Public Sub LinqToSqlGroupBy08()
       Dim bigCategories = From prod In db.Products _
             Group prod By prod.CategoryID _
@@ -110,7 +99,7 @@ Namespace LinqSamples101
             Where ProdCount >= 10 _
             Select ProdGroup, ProdCount
 
-      serializer.Serialize(bigCategories)
+      TestExecutor.Execute(bigCategories, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Group By to group products by CategoryID and SupplierID.")> _
@@ -120,19 +109,17 @@ Namespace LinqSamples101
             Into prodGroup = Group _
             Select Key, prodGroup
 
-      serializer.Serialize(categories)
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By to return two sequences of products. " & _
-    '             "The first sequence contains products with unit price " & _
-    '             "greater than 10. The second sequence contains products " & _
-    '             "with unit price less than or equal to 10.")> _
+    'This sample uses Group By to return two sequences of products. The first sequence contains products with unit price
+    'greater than 10. The second sequence contains products with unit price less than or equal to 10.
     Public Sub LinqToSqlGroupBy10()
       Dim categories = From prod In db.Products _
             Group prod By Key = New With {.Criterion = prod.UnitPrice > 10} _
             Into ProductGroup = Group
 
-      serializer.Serialize(categories)
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

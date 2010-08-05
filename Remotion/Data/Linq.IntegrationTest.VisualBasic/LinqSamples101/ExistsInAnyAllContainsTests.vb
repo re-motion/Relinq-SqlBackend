@@ -17,20 +17,19 @@
 Option Infer On
 Option Strict On
 
+Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
   Public Class ExistsInAnyAllContainsTests
     Inherits TestBase
-    '<Category("EXISTS/IN/ANY/ALL")> _
-    ' <Title("Any - Simple")> _
-    ' <Description("This sample uses the Any operator to return only Customers that have no Orders.")> _
+    'This sample uses the Any operator to return only Customers that have no Orders.
     Public Sub LinqToSqlExists01()
-      Dim custQuery = From cust In db.Customers _
+      Dim custQuery = From cust In DB.Customers _
             Where Not cust.Orders.Any()
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Any to return only Categories that have " & _
@@ -39,7 +38,7 @@ Namespace LinqSamples101
       Dim prodQuery = From cust In db.Categories _
             Where (From prod In cust.Products Where prod.Discontinued).Any()
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses All to return Customers whom all of their orders " & _
@@ -48,7 +47,7 @@ Namespace LinqSamples101
       Dim ordQuery = From cust In db.Customers _
             Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
 
-      serializer.Serialize(ordQuery)
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Contain to find which Customer contains an order with OrderID 10248.")> _
@@ -59,13 +58,7 @@ Namespace LinqSamples101
 
       Dim q = db.Customers.Where(Function(p) p.Orders.Contains(order)).ToList()
 
-      For Each cust In q
-        For Each ord In cust.Orders
-
-          serializer.Serialize(String.Format("Customer {0} has OrderID {1}.", _
-                                               cust.CustomerID, ord.OrderID))
-        Next
-      Next
+      TestExecutor.Execute(New With {order, q}, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
@@ -74,7 +67,7 @@ Namespace LinqSamples101
 
       Dim q = db.Customers.Where(Function(p) cities.Contains(p.City)).ToList()
 
-      serializer.Serialize(q)
+      TestExecutor.Execute(q, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

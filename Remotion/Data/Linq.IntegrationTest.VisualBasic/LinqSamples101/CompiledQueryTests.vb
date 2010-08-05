@@ -37,7 +37,7 @@ Namespace LinqSamples101
     '  Dim LonCusts = fn(DB, "London")
     '  Dim SeaCusts = fn(DB, "Seattle")
 
-    '  TestExecutor.Execute(New Object() {LonCusts, SeaCusts}, MethodBase.GetCurrentMethod())
+    '  TestExecutor.Execute(New With {LonCusts, SeaCusts}, MethodBase.GetCurrentMethod())
     'End Sub
   End Class
 End Namespace
