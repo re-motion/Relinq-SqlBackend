@@ -8,11 +8,11 @@
     <SchemaVersion>
     </SchemaVersion>
     <ProjectGuid>{9A0EDD9F-DA8E-48EA-8D91-D194E97CFD67}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Remotion.Data.Linq.IntegrationTest.VisualBasic</RootNamespace>
     <AssemblyName>Remotion.Data.Linq.IntegrationTest.VisualBasic</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Windows</MyType>
+    <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -51,9 +51,14 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Remotion.Data.Linq.IntegrationTest.VisualBasic.LinqSamples101.Executor</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -70,6 +75,29 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinqSamples101\Executor.vb" />
+    <Compile Include="LinqSamples101\GroupAdvanced.vb" />
+    <Compile Include="LinqSamples101\GroupAggregates.vb" />
+    <Compile Include="LinqSamples101\GroupCompiledQuery.vb" />
+    <Compile Include="LinqSamples101\GroupConversionOperators.vb" />
+    <Compile Include="LinqSamples101\GroupGroupByHaving.vb" />
+    <Compile Include="LinqSamples101\GroupExistsInAnyAllContains.vb" />
+    <Compile Include="LinqSamples101\GroupInheritance.vb" />
+    <Compile Include="LinqSamples101\GroupJoin.vb" />
+    <Compile Include="LinqSamples101\GroupNull.vb" />
+    <Compile Include="LinqSamples101\GroupObjectIdentity.vb" />
+    <Compile Include="LinqSamples101\GroupObjectLoading.vb" />
+    <Compile Include="LinqSamples101\GroupOrderBy.vb" />
+    <Compile Include="LinqSamples101\GroupPaging.vb" />
+    <Compile Include="LinqSamples101\GroupSelectDistinct.vb" />
+    <Compile Include="LinqSamples101\GroupSqlMethods.vb" />
+    <Compile Include="LinqSamples101\GroupStoredProcedures.vb" />
+    <Compile Include="LinqSamples101\GroupStringDateFunctions.vb" />
+    <Compile Include="LinqSamples101\GroupTopBottom.vb" />
+    <Compile Include="LinqSamples101\GroupUnionAllIntersect.vb" />
+    <Compile Include="LinqSamples101\GroupUserDefinedFunctions.vb" />
+    <Compile Include="LinqSamples101\GroupView.vb" />
+    <Compile Include="LinqSamples101\GroupWhere.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -112,7 +140,10 @@
     <Content Include="License.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="LinqSamples101\" />
+    <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.csproj">
+      <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
+      <Name>Data.Linq.IntegrationTests</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
