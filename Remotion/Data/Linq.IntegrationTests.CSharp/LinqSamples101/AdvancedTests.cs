@@ -28,7 +28,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
   {
     ///<summary>
     ///This sample builds a query dynamically to return the contact name of each customer. 
-    ///The GetCommand method is used to get the generated T-SQL of the query.
     /// </summary>
     [Test]
     public void LinqToSqlAdvanced01 ()
@@ -40,8 +39,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       IQueryable<Customer> custs = DB.Customers;
       Expression expr = Expression.Call (typeof (Queryable), "Select", new Type[] { typeof (Customer), typeof (string) }, Expression.Constant (custs), pred);
       IQueryable<string> query = DB.Customers.AsQueryable ().Provider.CreateQuery<string> (expr);
-
-      System.Data.Common.DbCommand cmd = DB.GetCommand (query);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
