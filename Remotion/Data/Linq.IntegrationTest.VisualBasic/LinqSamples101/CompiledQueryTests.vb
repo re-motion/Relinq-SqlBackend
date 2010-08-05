@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 Imports Remotion.Data.Linq.IntegrationTests
 
 Namespace LinqSamples101
@@ -25,6 +27,7 @@ Namespace LinqSamples101
 
     'This sample create a compiled query and then use it to retrieve customers of the input city
     ' TODO: Won't compile since INorthwindDataProvider is no subtype of DataContext, which is necessary for using CompiledQuery.Compile(..) - Check if tests are necessary
+    '<Test>
     'Public Sub LinqToSqlCompileQuery01()
 
     '  '' Create compiled query

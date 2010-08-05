@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 Imports Remotion.Data.Linq.IntegrationTests
 
 
@@ -25,6 +27,7 @@ Namespace LinqSamples101
     Inherits TestBase
     'TODO: OutOfMemoryException due to circular dependency
     'This sample demonstrates how to create a data context that uses an external XML mapping source.")> _
+    '<Test>
     'Public Sub LinqToSqlExternal01()
     '  ' load the mapping source
     '  Dim path2 = Path.Combine(Application.StartupPath, "..\..\..\Linq.IntegrationTests\TestDomain\Northwind\NorthwindMapped.map")

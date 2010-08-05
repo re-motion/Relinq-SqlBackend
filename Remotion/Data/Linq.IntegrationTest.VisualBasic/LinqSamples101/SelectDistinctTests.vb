@@ -17,118 +17,127 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  '<Title("LINQ to SQL Samples")> <Prefix("LinqToSql")> _
-  Public Class GroupSelectDistinct
-    Inherits Executor
+  Public Class SelectDistinctTests
+    Inherits TestBase
 
     Public Class Name
       Public FirstName As String
       Public LastName As String
     End Class
 
-    '    <Category("SELECT/DISTINCT")> _
-    '<Title("Select - Simple")> _
-    '<Description("This sample uses Select to return a sequence of just the " & _
-    '             "Customers' contact names.")> _
+    'This sample uses Select to return a sequence of just the
+    'Customers contact names.
+    <Test()>
     Public Sub LinqToSqlSelect01()
-      Dim contactList = From cust In db.Customers _
+      Dim contactList = From cust In DB.Customers _
             Select cust.ContactName
 
-      serializer.Serialize(contactList)
+      TestExecutor.Execute(contactList, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Select and anonymous types to return " & _
-    '             "a sequence of just the Customers' contact names and phone numbers.")> _
+    'This sample uses Select and anonymous types to return
+    'a sequence of just the Customers contact names and phone numbers.
+    <Test()>
     Public Sub LinqToSqlSelect02()
-      Dim nameAndNumber = From cust In db.Customers _
+      Dim nameAndNumber = From cust In DB.Customers _
             Select cust.ContactName, cust.Phone
 
-      serializer.Serialize(nameAndNumber)
+      TestExecutor.Execute(nameAndNumber, MethodBase.GetCurrentMethod())
     End Sub
 
 
-    'This sample uses Select and anonymous types to return " & _
-    '             "a sequence of just the Employees' names and phone numbers, " & _
-    '             "with the FirstName and LastName fields combined into a single field, 'Name', " & _
-    '             "and the HomePhone field renamed to Phone in the resulting sequence.")> _
+    'This sample uses Select and anonymous types to return 
+    'a sequence of just the Employees' names and phone numbers,
+    'with the FirstName and LastName fields combined into a single field, 'Name',
+    'and the HomePhone field renamed to Phone in the resulting sequence.
+    <Test()>
     Public Sub LinqToSqlSelect03()
-      Dim nameAndNumber = From emp In db.Employees _
+      Dim nameAndNumber = From emp In DB.Employees _
             Select Name = emp.FirstName & " " & emp.LastName, _
             Phone = emp.HomePhone
 
-      serializer.Serialize(nameAndNumber)
+      TestExecutor.Execute(nameAndNumber, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Select and anonymous types to return " & _
-    '             "a sequence of all Products' IDs and a calculated value " & _
-    '             "called HalfPrice which is set to the Product's UnitPrice " & _
-    '             "divided by 2.")> _
+    'This sample uses Select and anonymous types to return
+    'a sequence of all Products' IDs and a calculated value 
+    'called HalfPrice which is set to the Product's UnitPrice 
+    'divided by 2.")> _
+    <Test()>
     Public Sub LinqToSqlSelect04()
-      Dim prices = From prod In db.Products _
+      Dim prices = From prod In DB.Products _
             Select prod.ProductID, HalfPrice = prod.UnitPrice / 2
 
-      serializer.Serialize(prices)
+      TestExecutor.Execute(prices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Select and a conditional statment to return a sequence of product " & _
-    '             " name and product availability.")> _
+    'This sample uses Select and a conditional statment to return a sequence of product
+    'name and product availability.
+    <Test()>
     Public Sub LinqToSqlSelect05()
-      Dim inStock = From prod In db.Products _
+      Dim inStock = From prod In DB.Products _
             Select prod.ProductName, _
             Availability = If((prod.UnitsInStock - prod.UnitsOnOrder) < 0, _
                               "Out Of Stock", _
                               "In Stock")
-      serializer.Serialize(inStock)
+      TestExecutor.Execute(inStock, MethodBase.GetCurrentMethod())
     End Sub
 
-    ' <Category("SELECT/DISTINCT")> _
-    '<Title("Select - Named Type")> _
-    '<Description("This sample uses Select and a known type to return a sequence of employee names.")> _
+    'This sample uses Select and a known type to return a sequence of employee names.
+    <Test()>
     Public Sub LinqToSqlSelect06()
-      Dim names = From emp In db.Employees _
+      Dim names = From emp In DB.Employees _
             Select New Name With {.FirstName = emp.FirstName, _
             .LastName = emp.LastName}
 
-      serializer.Serialize(names)
+      TestExecutor.Execute(names, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Select and Where clauses to return a sequence of " & _
-    '             "just the London Customers' contact names.")> _
+    'This sample uses Select and Where clauses to return a sequence of
+    'just the London Customers' contact names.
+    <Test()>
     Public Sub LinqToSqlSelect07()
-      Dim londonNames = From cust In db.Customers _
+      Dim londonNames = From cust In DB.Customers _
             Where cust.City = "London" _
             Select cust.ContactName
 
-      serializer.Serialize(londonNames)
+      TestExecutor.Execute(londonNames, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Select and anonymous types to return " & _
-    '             "a shaped subset of the data about Customers.")> _
+    'This sample uses Select and anonymous types to return
+    'a shaped subset of the data about Customers.
+    <Test()>
     Public Sub LinqToSqlSelect08()
-      Dim customers = From cust In db.Customers _
+      Dim customers = From cust In DB.Customers _
             Select cust.CustomerID, CompanyInfo = New With {cust.CompanyName, _
             cust.City, _
             cust.Country}, _
             ContactInfo = New With {cust.ContactName, _
             cust.ContactTitle}
 
-      serializer.Serialize(customers)
+      TestExecutor.Execute(customers, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses nested queries to return a sequence of " & _
-    '             "all orders containing their OrderID, a subsequence of the " & _
-    '             "items in the order where there is a discount, and the money " & _
-    '             "saved if shipping is not included.")> _
+    'This sample uses nested queries to return a sequence of
+    'all orders containing their OrderID, a subsequence of the
+    'items in the order where there is a discount, and the money 
+    'saved if shipping is not included.")> _
     'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
+    <Test()>
     Public Sub LinqToSqlSelect09()
-      Dim orders = From ord In db.Orders _
+      Dim orders = From ord In DB.Orders _
             Select ord.OrderID, DiscountedProducts = (From od In ord.OrderDetails _
             Where od.Discount > 0.0), _
             FreeShippingDiscount = ord.Freight
 
-      serializer.Serialize(orders)
+      TestExecutor.Execute(orders, MethodBase.GetCurrentMethod())
     End Sub
 
     '' Phone converter that converts a phone number to 
@@ -147,44 +156,47 @@ Namespace LinqSamples101
       End Select
     End Function
 
-    'This sample uses a Local Method Call to " & _
-    '             "'PhoneNumberConverter' to convert Phone number " & _
-    '             "to an international format.")> _
+    'This sample uses a Local Method Call to
+    ''PhoneNumberConverter' to convert Phone number
+    'to an international format.
+    <Test()>
     Public Sub LinqToSqlLocalMethodCall01()
 
-      Dim q = From c In db.Customers _
+      Dim q = From c In DB.Customers _
             Where c.Country = "UK" Or c.Country = "USA" _
             Select _
             c.CustomerID, c.CompanyName, Phone = c.Phone, InternationalPhone = PhoneNumberConverter(c.Country, c.Phone)
 
-      serializer.Serialize(q)
+      TestExecutor.Execute(q, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a Local Method Call to " & _
-    '             "convert phone numbers to an international format " & _
-    '             "and create XDocument.")> _
+    'This sample uses a Local Method Call to
+    'convert phone numbers to an international format
+    'and create XDocument.")> _
+    <Test()>
     Public Sub LinqToSqlLocalMethodCall02()
 
       Dim doc = <Customers>
-                  <%= From c In db.Customers _
+                  <%= From c In DB.Customers _
                     Where c.Country = "UK" Or c.Country = "USA" _
                     Select <Customer CustomerID=<%= c.CustomerID %>
                              CompanyName=<%= c.CompanyName %>
                              InternationalPhone=<%= PhoneNumberConverter(c.Country, c.Phone) %>/> %>
                 </Customers>
 
-      serializer.Serialize(doc.ToString())
+      TestExecutor.Execute(doc, MethodBase.GetCurrentMethod())
     End Sub
 
 
-    'This sample uses Distinct to select a sequence of the unique cities " & _
-    '             "that have Customers.")> _
+    'This sample uses Distinct to select a sequence of the unique cities
+    'that have Customers.
+    <Test()>
     Public Sub LinqToSqlSelect10()
-      Dim cities = From cust In db.Customers _
+      Dim cities = From cust In DB.Customers _
             Select cust.City _
             Distinct
 
-      serializer.Serialize(cities)
+      TestExecutor.Execute(cities, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

@@ -17,28 +17,25 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupTopBottom
-    Inherits Executor
-    '<Category("TOP/BOTTOM")> _
-    '  <Title("Take")> _
-    '  <Description("This sample uses Take to select the first 5 Employees hired.")> _
-    Public Sub LinqToSqlTop01()
-      Dim first5Employees = From emp In db.Employees _
-            Order By emp.HireDate _
-            Take 5
+  Public Class UnionAllIntersectTests
+    Inherits TestBase
 
-      serializer.Serialize(first5Employees)
-    End Sub
+    'This sample uses Except to return a sequence of all countries that
+    'Customers live in but no Employees live in.
+    <Test()>
+    Public Sub LinqToSqlUnion05()
+      Dim countries = (From cust In DB.Customers _
+            Select cust.Country).Except(From emp In DB.Employees _
+                                          Select emp.Country)
 
-    'This sample uses Skip to select all but the 10 most expensive Products.")> _
-    Public Sub LinqToSqlTop02()
-      Dim expensiveProducts = From prod In db.Products _
-            Order By prod.UnitPrice Descending _
-            Skip 10
-
-      serializer.Serialize(expensiveProducts)
+      TestExecutor.Execute(countries, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -26,6 +28,7 @@ Namespace LinqSamples101
     Inherits TestBase
 
     'This sample returns all contacts where the city is London.
+    <Test()>
     Public Sub LinqToSqlInheritance01()
 
       Dim cons = From contact In db.Contacts _
@@ -35,6 +38,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses OfType to return all customer contacts.")> _
+    <Test()>
     Public Sub LinqToSqlInheritance02()
 
       Dim cons = From contact In DB.Contacts.OfType(Of CustomerContact)() _
@@ -44,6 +48,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses IS to return all shipper contacts.")> _
+    <Test()>
     Public Sub LinqToSqlInheritance03()
 
       Dim cons = From contact In DB.Contacts _
@@ -55,6 +60,7 @@ Namespace LinqSamples101
 
 
     'This sample uses CType to return FullContact or Nothing.")> _
+    <Test()>
     Public Sub LinqToSqlInheritance04()
       Dim cons = From contact In DB.Contacts _
             Select CType(contact, FullContact)
@@ -63,6 +69,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses a cast to retrieve customer contacts who live in London.")> _
+    <Test()>
     Public Sub LinqToSqlInheritance05()
       Dim cons = From contact In DB.Contacts _
             Where contact.ContactType = "Customer" _

@@ -8,11 +8,11 @@
     <SchemaVersion>
     </SchemaVersion>
     <ProjectGuid>{9A0EDD9F-DA8E-48EA-8D91-D194E97CFD67}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Remotion.Data.Linq.IntegrationTest.VisualBasic</RootNamespace>
     <AssemblyName>Remotion.Data.Linq.IntegrationTest.VisualBasic</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Console</MyType>
+    <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
@@ -68,9 +68,14 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Remotion.Data.Linq.IntegrationTest.VisualBasic.LinqSamples101.Executor</StartupObject>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
@@ -102,21 +107,21 @@
     <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.vb" />
     <Compile Include="LinqSamples101\InheritanceTests.vb" />
     <Compile Include="LinqSamples101\JoinTests.vb" />
-    <Compile Include="LinqSamples101\GroupNull.vb" />
-    <Compile Include="LinqSamples101\GroupObjectIdentity.vb" />
-    <Compile Include="LinqSamples101\GroupObjectLoading.vb" />
-    <Compile Include="LinqSamples101\GroupOrderBy.vb" />
-    <Compile Include="LinqSamples101\GroupPaging.vb" />
-    <Compile Include="LinqSamples101\GroupSelectDistinct.vb" />
-    <Compile Include="LinqSamples101\GroupSqlMethods.vb" />
-    <Compile Include="LinqSamples101\GroupStoredProcedures.vb" />
-    <Compile Include="LinqSamples101\GroupStringDateFunctions.vb" />
-    <Compile Include="LinqSamples101\GroupTopBottom.vb" />
-    <Compile Include="LinqSamples101\GroupUnionAllIntersect.vb" />
-    <Compile Include="LinqSamples101\GroupUserDefinedFunctions.vb" />
-    <Compile Include="LinqSamples101\GroupVBSamplesOnly.vb" />
-    <Compile Include="LinqSamples101\GroupView.vb" />
-    <Compile Include="LinqSamples101\GroupWhere.vb" />
+    <Compile Include="LinqSamples101\NullTests.vb" />
+    <Compile Include="LinqSamples101\ObjectIdentityTests.vb" />
+    <Compile Include="LinqSamples101\ObjectLoadingTests.vb" />
+    <Compile Include="LinqSamples101\OrderByTests.vb" />
+    <Compile Include="LinqSamples101\PagingTests.vb" />
+    <Compile Include="LinqSamples101\SelectDistinctTests.vb" />
+    <Compile Include="LinqSamples101\SqlMethodsTests.vb" />
+    <Compile Include="LinqSamples101\StoredProceduresTests.vb" />
+    <Compile Include="LinqSamples101\StringDateFunctionsTests.vb" />
+    <Compile Include="LinqSamples101\TopBottomTests.vb" />
+    <Compile Include="LinqSamples101\UnionAllIntersectTests.vb" />
+    <Compile Include="LinqSamples101\UserDefinedFunctionsTests.vb" />
+    <Compile Include="LinqSamples101\VBSamplesOnlyTests.vb" />
+    <Compile Include="LinqSamples101\ViewTests.vb" />
+    <Compile Include="LinqSamples101\WhereTests.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

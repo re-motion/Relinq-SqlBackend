@@ -17,184 +17,205 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupStringDateFunctions
-    Inherits Executor
+  Public Class StringDateFunctionsTests
+    Inherits TestBase
 
-    'This sample uses the & operator to concatenate string fields " & _
-    '         "and string literals in forming the Customers' calculated " & _
-    '         "Location value.")> _
+    'This sample uses the & operator to concatenate string fields
+    'and string literals in forming the Customers' calculated
+    'Location value.
+    <Test()>
     Public Sub LinqToSqlString01()
       Dim custQuery = From cust In db.Customers _
             Select cust.CustomerID, _
             Location = cust.City & ", " & cust.Country
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Length property to find all Products whose " & _
-    '              "name is shorter than 10 characters.")> _
+    'This sample uses the Length property to find all Products whose
+    'name is shorter than 10 characters.
+    <Test()>
     Public Sub LinqToSqlString02()
       Dim shortProducts = From prod In db.Products _
             Where prod.ProductName.Length < 10
 
-      serializer.Serialize(shortProducts)
+      TestExecutor.Execute(shortProducts, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Contains method to find all Customers whose " & _
-    '             "contact name contains 'Anders'.")> _
+    'This sample uses the Contains method to find all Customers whose
+    'contact name contains 'Anders'.
+    <Test()>
     Public Sub LinqToSqlString03()
       Dim custQuery = From cust In db.Customers _
             Where cust.ContactName.Contains("Anders")
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the IndexOf method to find the first instance of " & _
-    '             "a space in each Customer's contact name.")> _
+    'This sample uses the IndexOf method to find the first instance of
+    'a space in each Customer's contact name.
+    <Test()>
     Public Sub LinqToSqlString04()
       Dim custQuery = From cust In db.Customers _
             Select cust.ContactName, SpacePos = cust.ContactName.IndexOf(" ")
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the StartsWith method to find Customers whose " & _
-    '             "contact name starts with 'Maria'.")> _
+    'This sample uses the StartsWith method to find Customers whose contact name starts with 'Maria'.
+    <Test()>
     Public Sub LinqToSqlString05()
       Dim custQuery = From cust In db.Customers _
             Where cust.ContactName.StartsWith("Maria")
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses the StartsWith method to find Customers whose " & _
-    '             "contact name ends with 'Anders'.")> _
+    'contact name ends with 'Anders'.")> _
+    <Test()>
     Public Sub LinqToSqlString06()
       Dim custQuery = From cust In db.Customers _
             Where cust.ContactName.EndsWith("Anders")
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Substring method to return Product names starting " & _
-    '             "from the fourth letter.")> _
+    'This sample uses the Substring method to return Product names starting from the fourth letter.
+    <Test()>
     Public Sub LinqToSqlString07()
       Dim prodQuery = From prod In db.Products _
             Select prod.ProductName.Substring(3)
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Substring method to find Employees whose " & _
-    '             "home phone numbers have '555' as the seventh through ninth digits.")> _
+    'This sample uses the Substring method to find Employees whose
+    'home phone numbers have '555' as the seventh through ninth digits.
+    <Test()>
     Public Sub LinqToSqlString08()
       Dim empQuery = From emp In db.Employees _
             Where emp.HomePhone.Substring(6, 3) = "555"
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the ToUpper method to return Employee names " & _
-    '             "where the last name has been converted to uppercase.")> _
+    'This sample uses the ToUpper method to return Employee names
+    'where the last name has been converted to uppercase.
+    <Test()>
     Public Sub LinqToSqlString09()
       Dim empQuery = From emp In db.Employees _
             Select LastName = emp.LastName.ToUpper(), emp.FirstName
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the ToLower method to return Category names " & _
-    '             "that have been converted to lowercase.")> _
+    'This sample uses the ToLower method to return Category names
+    'that have been converted to lowercase.
+    <Test()>
     Public Sub LinqToSqlString10()
       Dim categoryQuery = From category In db.Categories _
             Select category.CategoryName.ToLower()
 
-      serializer.Serialize(categoryQuery)
+      TestExecutor.Execute(categoryQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Trim method to return the first five " & _
-    '             "digits of Employee home phone numbers, with leading and " & _
-    '             "trailing spaces removed.")> _
+    'This sample uses the Trim method to return the first five
+    'digits of Employee home phone numbers, with leading and
+    'trailing spaces removed.
+    <Test()>
     Public Sub LinqToSqlString11()
       Dim empQuery = From emp In db.Employees _
             Select emp.HomePhone.Substring(0, 5).Trim()
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Insert method to return a sequence of " & _
-    '             "employee phone numbers that have a ) in the fifth position, " & _
-    '             "inserting a : after the ).")> _
+    'This sample uses the Insert method to return a sequence of
+    'employee phone numbers that have a ) in the fifth position, 
+    'inserting a : after the ).
+    <Test()>
     Public Sub LinqToSqlString12()
       Dim empQuery = From emp In db.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
             Select emp.HomePhone.Insert(5, ":")
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Insert method to return a sequence of " & _
-    '             "employee phone numbers that have a ) in the fifth position, " & _
-    '             "removing all characters starting from the tenth character.")> _
+    'This sample uses the Insert method to return a sequence of
+    'employee phone numbers that have a ) in the fifth position,
+    'removing all characters starting from the tenth character.
+    <Test()>
     Public Sub LinqToSqlString13()
       Dim empQuery = From emp In db.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
             Select emp.HomePhone.Remove(9)
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Insert method to return a sequence of " & _
-    '             "employee phone numbers that have a ) in the fifth position, " & _
-    '             "removing the first six characters.")> _
+    'This sample uses the Insert method to return a sequence of
+    'employee phone numbers that have a ) in the fifth position,
+    'removing the first six characters.
+    <Test()>
     Public Sub LinqToSqlString14()
       Dim empQuery = From emp In db.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
             Select emp.HomePhone.Remove(0, 6)
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the Replace method to return a sequence of " & _
-    '             "Supplier information where the Country field has had " & _
-    '             "UK replaced with United Kingdom and USA replaced with " & _
-    '             "United States of America.")> _
+    'This sample uses the Replace method to return a sequence of
+    'Supplier information where the Country field has had
+    'UK replaced with United Kingdom and USA replaced with
+    'United States of America.")> _
+    <Test()>
     Public Sub LinqToSqlString15()
       Dim supplierQuery = From supplier In db.Suppliers _
             Select supplier.CompanyName, _
             Country = supplier.Country.Replace("UK", "United Kingdom") _
             .Replace("USA", "United States of America")
 
-      serializer.Serialize(supplierQuery)
+      TestExecutor.Execute(supplierQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses the DateTime's Year property to " & _
-    '             "find Orders placed in 1997.")> _
+    'find Orders placed in 1997.")> _
+    <Test()>
     Public Sub LinqToSqlString16()
       Dim ordersIn97 = From ord In db.Orders _
             Where ord.OrderDate.Value.Year = 1997
 
-      serializer.Serialize(ordersIn97)
+      TestExecutor.Execute(ordersIn97, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the DateTime's Month property to " & _
-    '             "find Orders placed in December.")> _
+    'This sample uses the DateTime's Month property to
+    'find Orders placed in December.
+    <Test()>
     Public Sub LinqToSqlString17()
       Dim decemberOrders = From ord In db.Orders _
             Where ord.OrderDate.Value.Month = 12
 
-      serializer.Serialize(decemberOrders)
+      TestExecutor.Execute(decemberOrders, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the DateTime's Day property to " & _
-    '             "find Orders placed on the 31st day of the month.")> _
+    'This sample uses the DateTime's Day property to
+    'find Orders placed on the 31st day of the month.
+    <Test()>
     Public Sub LinqToSqlString18()
       Dim ordQuery = From ord In db.Orders _
             Where ord.OrderDate.Value.Day = 31
 
-      serializer.Serialize(ordQuery)
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

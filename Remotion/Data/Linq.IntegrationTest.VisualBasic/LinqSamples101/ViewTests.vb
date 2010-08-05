@@ -17,29 +17,33 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupView
-    Inherits Executor
-    '<Category("View")> _
-    ' <Title("Query - Anonymous Type")> _
-    ' <Description("This sample uses Select and Where to return a sequence of invoices " & _
-    '              "where the shipping city is London.")> _
+  Public Class ViewTests
+    Inherits TestBase
+    'This sample uses Select and Where to return a sequence of invoices
+    'where the shipping city is London.
+    <Test()>
     Public Sub LinqToSqlView01()
       Dim shipToLondon = From inv In db.Invoices _
             Where inv.ShipCity = "London" _
             Select inv.OrderID, inv.ProductName, inv.Quantity, inv.CustomerName
 
-      serializer.Serialize(shipToLondon)
+      TestExecutor.Execute(shipToLondon, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Select to query QuarterlyOrders.")> _
+    'This sample uses Select to query QuarterlyOrders.
+    <Test()>
     Public Sub LinqToSqlView02()
       'WORKAROUND: changed Quarterly_Orders to QuarterlyOrders
       Dim quarterlyOrders = From qo In db.QuarterlyOrders _
             Select qo
 
-      serializer.Serialize(quarterlyOrders)
+      TestExecutor.Execute(quarterlyOrders, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

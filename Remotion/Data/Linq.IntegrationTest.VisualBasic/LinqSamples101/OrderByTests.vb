@@ -17,66 +17,72 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupOrderBy
-    Inherits Executor
-    '<Category("ORDER BY")> _
-    ' <Title("OrderBy - Simple")> _
-    ' <Description("This sample uses Order By to sort Employees " & _
-    '              "by hire date.")> _
+  Public Class OrderByTests
+    Inherits TestBase
+
+    'This sample uses Order By to sort Employees by hire date.
+    <Test()>
     Public Sub LinqToSqlOrderBy01()
-      Dim empQuery = From emp In db.Employees _
+      Dim empQuery = From emp In DB.Employees _
             Order By emp.HireDate
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Where and Order By to sort Orders " & _
-    '             "shipped to London by freight.")> _
+    'This sample uses Where and Order By to sort Orders shipped to London by freight.
+    <Test()>
     Public Sub LinqToSqlOrderBy02()
-      Dim londonOrders = From ord In db.Orders _
+      Dim londonOrders = From ord In DB.Orders _
             Where ord.ShipCity = "London" _
             Order By ord.Freight
 
-      serializer.Serialize(londonOrders)
+      TestExecutor.Execute(londonOrders, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Order By to sort Products " & _
-    '             "by unit price from highest to lowest.")> _
+    'This sample uses Order By to sort Products
+    'by unit price from highest to lowest.
+    <Test()>
     Public Sub LinqToSqlOrderBy03()
-      Dim sortedProducts = From prod In db.Products _
+      Dim sortedProducts = From prod In DB.Products _
             Order By prod.UnitPrice Descending
 
-      serializer.Serialize(sortedProducts)
+      TestExecutor.Execute(sortedProducts, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a compound Order By to sort Customers " & _
-    '             "by city and then contact name.")> _
+    'This sample uses a compound Order By to sort Customers
+    'by city and then contact name.
+    <Test()>
     Public Sub LinqToSqlOrderBy04()
-      Dim custQuery = From cust In db.Customers _
+      Dim custQuery = From cust In DB.Customers _
             Select cust _
             Order By cust.City, cust.ContactName
 
-      serializer.Serialize(custQuery)
+      TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Order By to sort Orders from EmployeeID 1 " & _
-    '             "by ship-to country, and then by freight from highest to lowest.")> _
+    'This sample uses Order By to sort Orders from EmployeeID 1
+    'by ship-to country, and then by freight from highest to lowest.
+    <Test()>
     Public Sub LinqToSqlOrderBy05()
-      Dim ordQuery = From ord In db.Orders _
+      Dim ordQuery = From ord In DB.Orders _
             Where ord.EmployeeID = 1 _
             Order By ord.ShipCountry, ord.Freight Descending
 
-      serializer.Serialize(ordQuery)
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    '  <Category("ORDER BY")> _
-    '<Title("OrderBy - Group By")> _
-    '<Description("This sample uses Order By, Max and Group By to find the Products that have " & _
-    '             "the highest unit price in each category, and sorts the group by category id.")> _
+    'This sample uses Order By, Max and Group By to find the Products that have
+    'the highest unit price in each category, and sorts the group by category id.
+    <Test()>
     Public Sub LinqToSqlOrderBy06()
-      Dim categories = From prod In db.Products _
+      Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into Group _
             Order By CategoryID _
             Select Group, _
@@ -85,7 +91,7 @@ Namespace LinqSamples101
             Where prod2.UnitPrice = _
                   Group.Max(Function(prod3) prod3.UnitPrice)
 
-      serializer.Serialize(categories)
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

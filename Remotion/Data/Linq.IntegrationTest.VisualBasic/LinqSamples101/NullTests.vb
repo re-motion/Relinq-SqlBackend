@@ -17,40 +17,48 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupNull
-    Inherits Executor
+  Public Class NullTests
+    Inherits TestBase
 
-    'This sample uses the Nothing value to find Employees " & _
-    '         "that do not report to another Employee.")> _
+    'This sample uses the Nothing value to find Employees
+    'that do not report to another Employee.
+    <Test()>
     Public Sub LinqToSqlNull01()
-      Dim empQuery = From emp In db.Employees _
+      Dim empQuery = From emp In DB.Employees _
             Where emp.ReportsTo Is Nothing
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Nullable(Of T).HasValue to find Employees " & _
-    '             "that do not report to another Employee.")> _
+    'that do not report to another Employee.")> _
+    <Test()>
     Public Sub LinqToSqlNull02()
-      Dim empQuery = From emp In db.Employees _
+      Dim empQuery = From emp In DB.Employees _
             Where Not emp.ReportsTo.HasValue _
             Select emp
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Nullable(Of T).Value for Employees " & _
-    '             "that report to another Employee to return the " & _
-    '             "EmployeeID number of that employee.  Note that " & _
-    '             "the .Value is optional.")> _
+    'This sample uses Nullable(Of T).Value for Employees 
+    'that report to another Employee to return the
+    'EmployeeID number of that employee.  Note that
+    'the .Value is optional.
+    <Test()>
     Public Sub LinqToSqlNull03()
-      Dim empQuery = From emp In db.Employees _
+      Dim empQuery = From emp In DB.Employees _
             Where emp.ReportsTo.HasValue _
             Select emp.FirstName, emp.LastName, ReportsTo = emp.ReportsTo.Value
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

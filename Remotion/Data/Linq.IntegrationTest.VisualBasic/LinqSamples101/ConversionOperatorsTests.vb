@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -30,6 +32,7 @@ Namespace LinqSamples101
     'on the server.  This is necessary because the where clause " & _
     'references a user-defined client-side method, isValidProduct, " & _
     'which cannot be converted to SQL.")> _
+    <Test()>
     Public Sub LinqToSqlConversions01()
       Dim prodQuery = From prod In DB.Products.AsEnumerable() _
             Where isValidProduct(prod)
@@ -37,14 +40,15 @@ Namespace LinqSamples101
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    Private Function isValidProduct (ByVal prod As Product) As Boolean
-      Return (prod.ProductName.LastIndexOf ("C") = 0)
+    Private Function isValidProduct(ByVal prod As Product) As Boolean
+      Return (prod.ProductName.LastIndexOf("C") = 0)
     End Function
 
     'This sample uses ToArray to immediately evaluate a query into an array " & _
-    '             "and get the 3rd element.")> _
+    'and get the 3rd element.")> _
+    <Test()>
     Public Sub LinqToSqlConversions02()
-      Dim londonCustomers = From cust In db.Customers _
+      Dim londonCustomers = From cust In DB.Customers _
             Where cust.City = "London"
 
       Dim custArray = londonCustomers.ToArray()
@@ -52,6 +56,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
+    <Test()>
     Public Sub LinqToSqlConversions03()
       Dim hiredAfter1994 = From emp In db.Employees _
             Where emp.HireDate >= #1/1/1994#
@@ -61,13 +66,14 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses ToDictionary to immediately evaluate a query and " & _
-    '             "a key expression into an Dictionary(Of K, T).")> _
+    'a key expression into an Dictionary(Of K, T).")> _
+    <Test()>
     Public Sub LinqToSqlConversion04()
       Dim prodQuery = From prod In db.Products _
             Where prod.UnitsInStock <= prod.ReorderLevel _
                   AndAlso Not prod.Discontinued
 
-      Dim qDictionary = prodQuery.ToDictionary (Function(prod) prod.ProductID)
+      Dim qDictionary = prodQuery.ToDictionary(Function(prod) prod.ProductID)
 
       TestExecutor.Execute(qDictionary, MethodBase.GetCurrentMethod())
     End Sub

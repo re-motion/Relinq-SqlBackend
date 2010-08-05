@@ -17,12 +17,18 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupVBSamplesOnly
-    Inherits Executor
+  Public Class VBSamplesOnlyTests
+    Inherits TestBase
 
     'This sample selects 2 columns and returns the data from the database.")> _
+    <Test()>
     Public Sub LinqToSqlFirst01()
 
       'Instead of returning the entire Customers table, just return the
@@ -30,32 +36,30 @@ Namespace LinqSamples101
       Dim londonCustomers = From cust In db.Customers _
                             Select cust.CompanyName, cust.Country
 
-      'Execute the query and print out the results
-      For Each custRow In londonCustomers
-        serializer.Serialize("Company: " & custRow.CompanyName & vbTab & _
-                          "Country: " & custRow.Country)
-      Next
+      TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a method mapped to the 'ProductsUnderThisUnitPrice' function " & _
-    '             "in Northwind database to return products with unit price less than $10.00. " & _
-    '             "Methods can be created by dragging database functions from the Server " & _
-    '             "Explorer onto the O/R Designer which can be accessed by double-clicking " & _
-    '             "on the .DBML file in the Solution Explorer.")> _
+    'This sample uses a method mapped to the 'ProductsUnderThisUnitPrice' function
+    'in Northwind database to return products with unit price less than $10.00.
+    'Methods can be created by dragging database functions from the Server
+    'Explorer onto the O/R Designer which can be accessed by double-clicking
+    'on the .DBML file in the Solution Explorer.")> _
+    <Test()>
     Public Sub LinqToSqlStoredProc06()
       Dim cheapProducts = db.ProductsUnderThisUnitPrice(10D)
 
-      serializer.Serialize(cheapProducts)
+      TestExecutor.Execute(cheapProducts, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample queries against a collection of products returned by " & _
-    '             "'ProductsUnderThisUnitPrice' method. The method was created from the database  " & _
-    '             "function 'ProductsUnderThisUnitPrice' in Northwind database. ")> _
+    'This sample queries against a collection of products returned by
+    ''ProductsUnderThisUnitPrice' method. The method was created from the database
+    'function 'ProductsUnderThisUnitPrice' in Northwind database.
+    <Test()>
     Public Sub LinqToSqlStoredProc07()
       Dim cheapProducts = From prod In db.ProductsUnderThisUnitPrice(10D) _
                           Where prod.Discontinued = True
 
-      serializer.Serialize(cheapProducts)
+      TestExecutor.Execute(cheapProducts, MethodBase.GetCurrentMethod())
     End Sub
 
   End Class

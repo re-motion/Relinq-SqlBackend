@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 
 Imports Remotion.Data.Linq.IntegrationTests
 Imports System.Reflection
@@ -27,6 +29,7 @@ Namespace LinqSamples101
     Inherits TestBase
 
     'This sample uses Count to find the number of Customers in the database.")> _
+    <Test()>
     Public Sub LinqToSqlCount01()
       Dim custCount = db.Customers.Count()
 
@@ -34,7 +37,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Count to find the number of Products in the database " & _
-    '             "that are not discontinued.")> _
+    'that are not discontinued.")> _
+    <Test()>
     Public Sub LinqToSqlCount02()
       Dim activeProducts = Aggregate prod In db.Products _
             Into Count(Not prod.Discontinued)
@@ -48,6 +52,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Sum to find the total freight over all Orders.")> _
+    <Test()>
     Public Sub LinqToSqlCount03()
 
       Dim totalFreight = Aggregate ord In db.Orders _
@@ -61,6 +66,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Sum to find the total number of units on order over all Products.")> _
+    <Test()>
     Public Sub LinqToSqlCount04()
       Dim totalUnits = (From prod In db.Products _
             Select CInt(prod.UnitsOnOrder.Value)).Sum()
@@ -69,6 +75,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Min to find the lowest unit price of any Product.")> _
+    <Test()>
     Public Sub LinqToSqlCount05()
       Dim lowestPrice = Aggregate prod In db.Products _
             Into Min(prod.UnitPrice)
@@ -77,6 +84,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Min to find the lowest freight of any Order.")> _
+    <Test()>
     Public Sub LinqToSqlCount06()
       Dim lowestFreight = Aggregate ord In db.Orders _
             Into Min(ord.Freight)
@@ -85,7 +93,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Min to find the Products that have the lowest unit price " & _
-    '             "in each category.")> _
+    'in each category.")> _
+    <Test()>
     Public Sub LinqToSqlCount07()
       Dim categories = From prod In db.Products _
             Group prod By prod.CategoryID Into g = Group _
@@ -100,6 +109,7 @@ Namespace LinqSamples101
 
 
     'This sample uses Max to find the latest hire date of any Employee.")> _
+    <Test()>
     Public Sub LinqToSqlCount08()
       Dim latestHire = Aggregate emp In db.Employees _
             Into Max(emp.HireDate)
@@ -108,6 +118,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Max to find the most units in stock of any Product.")> _
+    <Test()>
     Public Sub LinqToSqlCount09()
       Dim mostInStock = Aggregate prod In db.Products _
             Into Max(prod.UnitsInStock)
@@ -116,7 +127,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Max to find the Products that have the highest unit price " & _
-    '             "in each category.")> _
+    'in each category.")> _
+    <Test()>
     Public Sub LinqToSqlCount10()
       Dim categories = From prod In db.Products _
             Group prod By prod.CategoryID Into g = Group _
@@ -130,6 +142,7 @@ Namespace LinqSamples101
 
 
     'This sample uses Average to find the average freight of all Orders.")> _
+    <Test()>
     Public Sub LinqToSqlCount11()
       Dim avgFreight = Aggregate ord In db.Orders _
             Into Average(ord.Freight)
@@ -138,6 +151,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Average to find the average unit price of all Products.")> _
+    <Test()>
     Public Sub LinqToSqlCount12()
       Dim avgPrice = Aggregate prod In db.Products _
             Into Average(prod.UnitPrice)
@@ -146,7 +160,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Average to find the Products that have unit price higher than " & _
-    '             "the average unit price of the category for each category.")> _
+    'the average unit price of the category for each category.")> _
+    <Test()>
     Public Sub LinqToSqlCount13()
       Dim categories = From prod In db.Products _
             Group prod By prod.CategoryID Into g = Group _

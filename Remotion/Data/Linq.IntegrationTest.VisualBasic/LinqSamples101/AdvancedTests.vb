@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 Imports System.Linq.Expressions
 Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -27,6 +29,7 @@ Namespace LinqSamples101
     Inherits TestBase
 
     'This sample builds a query dynamically to return the contact name of each customer.
+    <Test()>
     Public Sub LinqToSqlAdvanced01()
       Dim param = Expression.Parameter(GetType(Customer), "c")
       Dim selector = Expression.Property(param, GetType(Customer).GetProperty("ContactName"))
@@ -45,6 +48,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample builds a query dynamically to filter for Customers in London.
+    <Test()>
     Public Sub LinqToSqlAdvanced02()
 
       Dim custs = db.Customers
@@ -65,6 +69,7 @@ Namespace LinqSamples101
 
 
     'This sample builds a query dynamically to filter for Customers in London and order them by ContactName.
+    <Test()>
     Public Sub LinqToSqlAdvanced03()
 
       Dim param = Expression.Parameter(GetType(Customer), "c")
@@ -92,6 +97,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample dynamically builds a Union to return a sequence of all countries where either a customer or an employee live.
+    <Test()>
     Public Sub LinqToSqlAdvanced04()
 
       Dim custs = db.Customers
@@ -122,6 +128,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses OrderByDescending and Take to return the discontinued products of the top 10 most expensive products.
+    <Test()>
     Public Sub LinqToSqlAdvanced06()
       Dim prods = From prod In DB.Products.OrderByDescending(Function(p) p.UnitPrice) _
             Take 10 _

@@ -17,16 +17,21 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupObjectIdentity
-    Inherits Executor
+  Public Class ObjectIdentityTests
+    Inherits TestBase
 
     ' UNRESOLVED nicht benötigt (?)
     ''  <Category("Object Identity")> _
     ''<Title("Object Caching - 1")> _
     ''<Description("This sample demonstrates how, upon executing the same query twice, " & _
     ''             "you will receive a reference to the same object in memory each time.")> _
+    '<Test>
     'Public Sub LinqToSqlObjectIdentity01()
     '  Dim cust1 = db.Customers.First(Function(cust) cust.CustomerID = "BONAP")
     '  Dim cust2 = (From cust In db.Customers _
@@ -39,6 +44,7 @@ Namespace LinqSamples101
     ''This sample demonstrates how, upon executing different queries that " & _
     ''             "return the same row from the database, you will receive a " & _
     ''             "reference to the same object in memory each time.")> _
+    '<Test>
     'Public Sub LinqToSqlObjectIdentity02()
     '  Dim cust1 = db.Customers.First(Function(cust) cust.CustomerID = "BONAP")
     '  Dim cust2 = (From ord In db.Orders _

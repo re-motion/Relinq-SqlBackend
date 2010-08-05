@@ -17,40 +17,48 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupUserDefinedFunctions
-    Inherits Executor
-    '<Category("User-Defined Functions")> _
-    '   <Title("Scalar Function - Select")> _
-    '   <Description("This sample demonstrates using a scalar user-defined function in a projection.")> _
+  Public Class UserDefinedFunctionsTests
+    Inherits TestBase
+
+    'This sample demonstrates using a scalar user-defined function in a projection.
+    <Test()>
     Public Sub LinqToSqlUserDefined01()
       Dim catQuery = From category In db.Categories _
             Select category.CategoryID, _
             TotalUnitPrice = db.TotalProductUnitPriceByCategory(category.CategoryID)
 
-      serializer.Serialize(catQuery)
+      TestExecutor.Execute(catQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample demonstrates using a scalar user-defined function in a Where clause.")> _
+    'This sample demonstrates using a scalar user-defined function in a Where clause.
+    <Test()>
     Public Sub LinqToSqlUserDefined02()
 
       Dim prodQuery = From prod In db.Products _
             Where prod.UnitPrice = db.MinUnitPriceByCategory(prod.CategoryID)
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample demonstrates selecting from a table-valued user-defined function.")> _
+    'This sample demonstrates selecting from a table-valued user-defined function.
+    <Test()>
     Public Sub LinqToSqlUserDefined03()
 
       Dim prodQuery = From p In db.ProductsUnderThisUnitPrice(10.25D) _
             Where Not p.Discontinued
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample demonstrates joining to the results of a table-valued user-defined function.")> _
+    'This sample demonstrates joining to the results of a table-valued user-defined function.
+    <Test()>
     Public Sub LinqToSqlUserDefined04()
 
       Dim q = From category In db.Categories _
@@ -61,7 +69,7 @@ Namespace LinqSamples101
             Select category.CategoryID, category.CategoryName, _
             prod2.ProductName, prod2.UnitPrice
 
-      serializer.Serialize(q)
+      TestExecutor.Execute(q, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

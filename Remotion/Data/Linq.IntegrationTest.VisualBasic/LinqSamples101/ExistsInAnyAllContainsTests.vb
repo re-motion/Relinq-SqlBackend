@@ -17,6 +17,8 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
 Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests
 
@@ -25,6 +27,7 @@ Namespace LinqSamples101
   Public Class ExistsInAnyAllContainsTests
     Inherits TestBase
     'This sample uses the Any operator to return only Customers that have no Orders.
+    <Test()>
     Public Sub LinqToSqlExists01()
       Dim custQuery = From cust In DB.Customers _
             Where Not cust.Orders.Any()
@@ -32,8 +35,9 @@ Namespace LinqSamples101
       TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Any to return only Categories that have " & _
-    '             "at least one Discontinued product.")> _
+    'This sample uses Any to return only Categories that have
+    'at least one Discontinued product.")> _
+    <Test()>
     Public Sub LinqToSqlExists02()
       Dim prodQuery = From cust In db.Categories _
             Where (From prod In cust.Products Where prod.Discontinued).Any()
@@ -42,7 +46,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses All to return Customers whom all of their orders " & _
-    '             "have been shipped to their own city or whom have no orders.")> _
+    'have been shipped to their own city or whom have no orders.")> _
+    <Test()>
     Public Sub LinqToSqlExists03()
       Dim ordQuery = From cust In db.Customers _
             Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
@@ -51,6 +56,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Contain to find which Customer contains an order with OrderID 10248.")> _
+    <Test()>
     Public Sub LinqToSqlExists04()
 
       Dim order = (From o In db.Orders _
@@ -62,6 +68,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
+    <Test()>
     Public Sub LinqToSqlExists05()
       Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
 

@@ -17,98 +17,102 @@
 Option Infer On
 Option Strict On
 
+Imports NUnit.Framework
+
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupWhere
-    Inherits Executor
-    'This sample uses a Where clause to filter for Customers in London.")> _
+  Public Class WhereTests
+    Inherits TestBase
 
+    'This sample uses a Where clause to filter for Customers in London.
+    <Test()>
     Public Sub LinqToSqlWhere01()
 
       'Only return customers from London
-      Dim londonCustomers = From cust In db.Customers _
+      Dim londonCustomers = From cust In DB.Customers _
             Where cust.City = "London" _
             Select cust.CompanyName, cust.City, cust.Country
 
-      'Execute the query and print out the results
-      For Each custRow In londonCustomers
-        serializer.Serialize("Company: " & custRow.CompanyName & vbTab & _
-                              "City: " & custRow.City & vbTab & _
-                              "Country: " & custRow.Country)
-      Next
+      TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
     End Sub
 
 
-    'This sample uses a Where clause to filter for Employees hired " & _
-    '"during or after 1994.")> _
+    'This sample uses a Where clause to filter for Employees hired
+    '"during or after 1994.
+    <Test()>
     Public Sub LinqToSqlWhere02()
       Dim hiredAfter1994 = From emp In db.Employees _
             Where emp.HireDate >= #1/1/1994# _
             Select emp
 
-      serializer.Serialize(hiredAfter1994)
+      TestExecutor.Execute(hiredAfter1994, MethodBase.GetCurrentMethod())
     End Sub
 
-    '    <Category("WHERE")> _
-    '<Title("Where - 2")> _
-    '<Description("This sample uses a Where clause to filter for Products that have stock below their " & _
-    '             "reorder level and are not discontinued.")> _
+    'This sample uses a Where clause to filter for Products that have stock below their
+    'reorder level and are not discontinued.
+    <Test()>
     Public Sub LinqToSqlWhere03()
       Dim needToOrder = From prod In db.Products _
             Where prod.UnitsInStock <= prod.ReorderLevel _
                   AndAlso Not prod.Discontinued _
             Select prod
 
-      serializer.Serialize(needToOrder)
+      TestExecutor.Execute(needToOrder, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a Where clause to filter out Products that are either " & _
-    '             "discontinued or that have a UnitPrice greater than 10.")> _
+    'This sample uses a Where clause to filter out Products that are either
+    'discontinued or that have a UnitPrice greater than 10.
+    <Test()>
     Public Sub LinqToSqlWhere04()
       Dim prodQuery = From prod In db.Products _
             Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    '    <Category("WHERE")> _
-    '<Title("Where - 4")> _
-    '<Description("This sample uses two Where clauses to filter out Products that are discontinued " & _
-    '             "and with UnitPrice greater than 10")> _
+    'This sample uses two Where clauses to filter out Products that are discontinued 
+    'and with UnitPrice greater than 10
+    <Test()>
     Public Sub LinqToSqlWhere05()
 
       Dim prodQuery = From prod In db.Products _
             Where prod.UnitPrice > 10D _
             Where prod.Discontinued
 
-      serializer.Serialize(prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
 
-    'This sample uses First to select the first Shipper in the table.")> _
+    'This sample uses First to select the first Shipper in the table.
+    <Test()>
     Public Sub LinqToSqlWhere06()
       Dim shipper = db.Shippers.First()
 
-      serializer.Serialize(shipper)
+      TestExecutor.Execute(shipper, MethodBase.GetCurrentMethod())
     End Sub
 
 
-    'This sample uses Take to select the first Customer with CustomerID 'BONAP'.")> _
+    'This sample uses Take to select the first Customer with CustomerID 'BONAP'.
+    <Test()>
     Public Sub LinqToSqlWhere07()
       Dim customer = From cust In db.Customers _
             Where cust.CustomerID = "BONAP" _
             Take 1
 
-      serializer.Serialize(customer)
+      TestExecutor.Execute(customer, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses First to select an Order with freight greater than 10.00.")> _
+    'This sample uses First to select an Order with freight greater than 10.00.
+    <Test()>
     Public Sub LinqToSqlWhere08()
       Dim firstOrd = (From ord In db.Orders _
             Where ord.Freight > 10D _
             Select ord).First()
 
-      serializer.Serialize(firstOrd)
+      TestExecutor.Execute(firstOrd, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace
