@@ -17,10 +17,12 @@
 Option Infer On
 Option Strict On
 
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupExternalMapping
-    Inherits Executor
+  Public Class ExternalMappingTests
+    Inherits TestBase
     'TODO: OutOfMemoryException due to circular dependency
     'This sample demonstrates how to create a data context that uses an external XML mapping source.")> _
     'Public Sub LinqToSqlExternal01()

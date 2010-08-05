@@ -17,63 +17,58 @@
 Option Infer On
 Option Strict On
 
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 Namespace LinqSamples101
-  Public Class GroupInheritance
-    Inherits Executor
-    ' <Category("Inheritance")> _
-    '<Title("Simple")> _
-    '<Description("This sample returns all contacts where the city is London.")> _
+  Public Class InheritanceTests
+    Inherits TestBase
+
+    'This sample returns all contacts where the city is London.
     Public Sub LinqToSqlInheritance01()
 
       Dim cons = From contact In db.Contacts _
             Select contact
 
-      For Each con As Contact In cons
-        serializer.Serialize ("Company name: " & con.CompanyName)
-        serializer.Serialize ("Phone: " & con.Phone)
-        serializer.Serialize ("This is a " & con.GetType().ToString)
-        serializer.Serialize (Environment.NewLine)
-      Next
-
+      TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses OfType to return all customer contacts.")> _
     Public Sub LinqToSqlInheritance02()
 
-      Dim cons = From contact In db.Contacts.OfType(Of CustomerContact)() _
+      Dim cons = From contact In DB.Contacts.OfType(Of CustomerContact)() _
             Select contact
 
-      serializer.Serialize(cons)
+      TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses IS to return all shipper contacts.")> _
     Public Sub LinqToSqlInheritance03()
 
-      Dim cons = From contact In db.Contacts _
+      Dim cons = From contact In DB.Contacts _
             Where TypeOf contact Is ShipperContact _
             Select contact
 
-      serializer.Serialize(cons)
+      TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
 
     'This sample uses CType to return FullContact or Nothing.")> _
     Public Sub LinqToSqlInheritance04()
-      Dim cons = From contact In db.Contacts _
+      Dim cons = From contact In DB.Contacts _
             Select CType(contact, FullContact)
 
-      serializer.Serialize(cons)
+      TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses a cast to retrieve customer contacts who live in London.")> _
     Public Sub LinqToSqlInheritance05()
-      Dim cons = From contact In db.Contacts _
+      Dim cons = From contact In DB.Contacts _
             Where contact.ContactType = "Customer" _
-                  AndAlso (DirectCast (contact, CustomerContact)).City = "London"
+                  AndAlso (DirectCast(contact, CustomerContact)).City = "London"
 
-      serializer.Serialize (cons)
+      TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace
