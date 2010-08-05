@@ -42,8 +42,6 @@ Namespace LinqSamples101
                            Expression.Constant(custs), pred)
       Dim query = custs.AsQueryable().Provider.CreateQuery(Of String)(expr)
 
-      Dim cmd = DB.GetCommand(query)
-
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 

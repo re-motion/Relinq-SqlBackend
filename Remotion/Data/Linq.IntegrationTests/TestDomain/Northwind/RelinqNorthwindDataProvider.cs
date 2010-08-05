@@ -11,7 +11,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
   {
     public IQueryable<Product> Products
     {
-      get { throw new NotImplementedException (); }
+      get { throw new NotImplementedException(); }
     }
 
     public IQueryable<Customer> Customers
@@ -29,57 +29,39 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       get { throw new NotImplementedException(); }
     }
 
-    IQueryable<Order> INorthwindDataProvider.Orders
+    public IQueryable<Order> Orders
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
     }
 
     public IQueryable<OrderDetail> OrderDetails
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
     }
 
     public IQueryable<Contact> Contacts
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
     }
 
     public IQueryable<Invoices> Invoices
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
     }
 
     public IQueryable<QuarterlyOrder> QuarterlyOrders
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
     }
 
     public IQueryable<Shipper> Shippers
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
     }
 
     public IQueryable<Supplier> Suppliers
     {
       get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
-    }
-
-    public EntitySet<Order> Orders
-    {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
-    }
-
-    public DbCommand GetCommand (IQueryable<string> query)
-    {
-      throw new NotImplementedException();
     }
 
     public decimal? TotalProductUnitPriceByCategory (int categoryID)

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data.Common;
 using System.Data.Linq;
 using System.Linq;
 
@@ -23,11 +22,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   internal class LinqToSqlNorthwindDataProvider : INorthwindDataProvider
   {
-    //TODO edit connection
-    private readonly Northwind _dataContext = new Northwind ("...");
+    private readonly Northwind _dataContext = new Northwind ("Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;");
 
-    // TODO: ctor
-    // TODO: implement additional properties - see INorthwindDataProvider
     public IQueryable<Product> Products
     {
       get { return _dataContext.Products; }
@@ -35,110 +31,92 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public IQueryable<Customer> Customers
     {
-      get { throw new NotImplementedException(); }
+      get { return _dataContext.Customers; }
     }
 
     public IQueryable<Employee> Employees
     {
-      get { throw new NotImplementedException(); }
+      get { return _dataContext.Employees; }
     }
 
     public IQueryable<Category> Categories
     {
-      get { throw new NotImplementedException(); }
+      get { return _dataContext.Categories; }
     }
 
     IQueryable<Order> INorthwindDataProvider.Orders
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { return _dataContext.Orders; }
     }
 
     public IQueryable<OrderDetail> OrderDetails
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { return _dataContext.OrderDetails; }
     }
 
     public IQueryable<Contact> Contacts
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { return _dataContext.Contacts; }
     }
 
     public IQueryable<Invoices> Invoices
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { return _dataContext.Invoices; }
     }
 
     public IQueryable<QuarterlyOrder> QuarterlyOrders
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { return _dataContext.QuarterlyOrders; }
     }
 
     public IQueryable<Shipper> Shippers
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { return _dataContext.Shippers; }
     }
 
     public IQueryable<Supplier> Suppliers
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
-    }
-
-    public EntitySet<Order> Orders
-    {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
-    }
-
-    public DbCommand GetCommand (IQueryable<string> query)
-    {
-      throw new NotImplementedException();
+      get { return _dataContext.Suppliers;  }
     }
 
     public decimal? TotalProductUnitPriceByCategory (int categoryID)
     {
-      throw new NotImplementedException();
+      return _dataContext.TotalProductUnitPriceByCategory(categoryID);
     }
 
     public decimal? MinUnitPriceByCategory (int? nullable)
     {
-      throw new NotImplementedException();
+      return _dataContext.MinUnitPriceByCategory (nullable);
     }
 
     public IQueryable<ProductsUnderThisUnitPriceResult> ProductsUnderThisUnitPrice (decimal @decimal)
     {
-      throw new NotImplementedException();
+      return _dataContext.ProductsUnderThisUnitPrice (@decimal);
     }
 
     public int CustomersCountByRegion (string wa)
     {
-      throw new NotImplementedException();
+      return _dataContext.CustomersCountByRegion (wa);
     }
 
     public ISingleResult<CustomersByCityResult> CustomersByCity (string london)
     {
-      throw new NotImplementedException();
+      return _dataContext.CustomersByCity (london);
     }
 
     public IMultipleResults WholeOrPartialCustomersSet (int p0)
     {
-      throw new NotImplementedException();
+      return _dataContext.WholeOrPartialCustomersSet (p0);
     }
 
     public IMultipleResults GetCustomerAndOrders (string seves)
     {
-      throw new NotImplementedException();
+      return _dataContext.GetCustomerAndOrders (seves);
     }
 
     public void CustomerTotalSales (string customerID, ref decimal? totalSales)
     {
-      throw new NotImplementedException();
+      _dataContext.CustomerTotalSales (customerID, ref totalSales);
     }
   }
 }

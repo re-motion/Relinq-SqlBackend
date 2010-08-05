@@ -15,34 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.Linq;
 using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
-  // TODO: There are two Product classes - Northwind seems to be mapped twice
   public interface INorthwindDataProvider
   {
     IQueryable<Product> Products { get;  }
-
-
-
-    // TODO: add properties for all used data-objects
-
     IQueryable<Customer> Customers { get; }
     IQueryable<Employee> Employees { get; }
     IQueryable<Category> Categories { get; }
-    IQueryable<Order> Orders { get; set; }
-    IQueryable<OrderDetail> OrderDetails { get; set; }
-    IQueryable<Contact> Contacts { get; set; }
-    IQueryable<Invoices> Invoices { get; set; }
-    IQueryable<QuarterlyOrder> QuarterlyOrders { get; set; }
-    IQueryable<Shipper> Shippers { get; set; }
-    IQueryable<Supplier> Suppliers { get; set; }
+    IQueryable<Order> Orders { get;}
+    IQueryable<OrderDetail> OrderDetails { get;}
+    IQueryable<Contact> Contacts { get;}
+    IQueryable<Invoices> Invoices { get; }
+    IQueryable<QuarterlyOrder> QuarterlyOrders { get;}
+    IQueryable<Shipper> Shippers { get;}
+    IQueryable<Supplier> Suppliers { get;}
 
-    DbCommand GetCommand (IQueryable<string> query);
     decimal? TotalProductUnitPriceByCategory (int categoryID);
     decimal? MinUnitPriceByCategory (int? nullable);
     IQueryable<ProductsUnderThisUnitPriceResult> ProductsUnderThisUnitPrice (decimal @decimal);
