@@ -180,7 +180,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
                                      select (new XElement ("Customer",
                                          new XAttribute ("CustomerID", c.CustomerID),
                                          new XAttribute ("CompanyName", c.CompanyName),
-                                         new XAttribute ("InterationalPhone", PhoneNumberConverter (c.Country, c.Phone))
+                                         new XAttribute ("InternationalPhone", PhoneNumberConverter (c.Country, c.Phone))
                                          ))));
 
       serializer.Serialize (doc.ToString ());

@@ -81,6 +81,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
         if (methodInfo.Name.Contains ("LinqToSql"))
         {
           Console.WriteLine ("\t Call: " + methodInfo.Name);
+          serializer.Serialize  ("Call: " + methodInfo.Name);
           methodInfo.Invoke (instance, null);
         }
       }

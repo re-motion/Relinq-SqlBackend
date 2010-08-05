@@ -70,6 +70,7 @@ Namespace LinqSamples101
 
         If methodInfo.Name.Contains("LinqToSql") Then
           Debug.Print("Call: " + methodInfo.Name)
+          serializer.Serialize("Call: " + methodInfo.Name)
           methodInfo.Invoke(instance, Nothing)
         End If
       Next
