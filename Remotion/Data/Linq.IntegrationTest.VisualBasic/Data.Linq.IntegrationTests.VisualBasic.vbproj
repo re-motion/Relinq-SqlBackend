@@ -98,6 +98,7 @@
     <Compile Include="LinqSamples101\GroupTopBottom.vb" />
     <Compile Include="LinqSamples101\GroupUnionAllIntersect.vb" />
     <Compile Include="LinqSamples101\GroupUserDefinedFunctions.vb" />
+    <Compile Include="LinqSamples101\GroupVBSamplesOnly.vb" />
     <Compile Include="LinqSamples101\GroupView.vb" />
     <Compile Include="LinqSamples101\GroupWhere.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

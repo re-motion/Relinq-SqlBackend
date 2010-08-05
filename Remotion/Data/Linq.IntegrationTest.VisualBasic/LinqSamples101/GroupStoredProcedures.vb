@@ -55,13 +55,13 @@ Namespace LinqSamples101
       Dim result = db.GetCustomerAndOrders("SEVES")
 
       serializer.Serialize("********** Customer Result-set ***********")
-      'WORKAROUND: original code: "Dim customer As IEnumerable(Of Get_Customer_And_OrdersResult) = result" changed to
+      'WORKAROUND: original code: "Dim customer As IEnumerable(Of Get_Customer_And_OrdersResult) = result" changed to following line
       Dim customer As IEnumerable(Of CustomerResultSet) = result.GetResult(Of CustomerResultSet)()
 
       serializer.Serialize(customer)
       serializer.Serialize(Environment.NewLine)
 
-      'TODO in c# but not in vb
+      'WORKAROUND: in c# but not in vb
       'serializer.Serialize("********** Orders Result-set ***********");
       '      IEnumerable<OrdersResultSet> orders = result.GetResult<OrdersResultSet>();
       '      serializer.Serialize(orders);
@@ -84,35 +84,7 @@ Namespace LinqSamples101
       serializer.Serialize(String.Format("Total Sales for Customer '{0}' = {1:C}", customerID, totalSales))
     End Sub
 
-    'TODO: in vb but not in c#
-
-    '<Category("Stored Procedures")> _
-    '<Title("Function")> _
-    '<Description("This sample uses a method mapped to the 'ProductsUnderThisUnitPrice' function " & _
-    '             "in Northwind database to return products with unit price less than $10.00. " & _
-    '             "Methods can be created by dragging database functions from the Server " & _
-    '             "Explorer onto the O/R Designer which can be accessed by double-clicking " & _
-    '             "on the .DBML file in the Solution Explorer.")> _
-    'Public Sub LinqToSqlStoredProc06()
-    '  Dim cheapProducts = db.ProductsUnderThisUnitPrice(10D)
-
-    ' serializer.Serialize(cheapProducts, 0)
-    'End Sub
-
-    ''<Category("Stored Procedures")> _
-    ''<Title("Query over methods")> _
-    ''<Description("This sample queries against a collection of products returned by " & _
-    ''             "'ProductsUnderThisUnitPrice' method. The method was created from the database  " & _
-    ''             "function 'ProductsUnderThisUnitPrice' in Northwind database. ")> _
-    'Public Sub LinqToSqlStoredProc07()
-    '  Dim cheapProducts = From prod In db.ProductsUnderThisUnitPrice(10D) _
-    '                      Where prod.Discontinued = True
-
-    ' serializer.Serialize(cheapProducts, 0)
-    'End Sub
-
-
-    'TODO: in c# but not in vb
+    'WORKAROUND: in c# but not in vb
 
     '[Category("Stored Procedures")]
     '   [Title("Single Result-Set - Multiple Possible Shapes")]
