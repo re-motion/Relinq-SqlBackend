@@ -185,15 +185,10 @@ Namespace LinqSamples101
 
       Dim doc = <Customers>
                   <%= From c In db.Customers _
-            Where c.Country = "UK" Or c.Country = "USA" _
-            Select _
-            <Customer CustomerID=<%= c.CustomerID %>
-                              _
-             _
-            CompanyName=<%= c.CompanyName %>
-                              _
-             _
-            InternationalPhone=<%= PhoneNumberConverter (c.Country, c.Phone) %>/> %>
+                    Where c.Country = "UK" Or c.Country = "USA" _
+                    Select <Customer CustomerID=<%= c.CustomerID %>
+                             CompanyName=<%= c.CompanyName %>
+                             InternationalPhone=<%= PhoneNumberConverter(c.Country, c.Phone) %>/> %>
                 </Customers>
 
       serializer.Serialize(doc.ToString())
