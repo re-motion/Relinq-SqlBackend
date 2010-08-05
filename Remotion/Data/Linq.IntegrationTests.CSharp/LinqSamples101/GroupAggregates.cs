@@ -16,20 +16,21 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   /// <summary>
   ///  für die COUNT/SUM/MIN/MAX/AVG
   /// </summary>
-  internal class GroupAggregates : Executor
+  internal class GroupAggregates : TestBase
   {
     //[Title ("Count - Simple")]
     //[Description ("This sample uses Count to find the number of Customers in the database.")]
     public void LinqToSqlCount01 ()
     {
-      var q = db.Customers.Count();
-      serializer.Serialize (q);
+      var q = DB.Customers.Count();
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -38,8 +39,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //             "that are not discontinued.")]
     public void LinqToSqlCount02 ()
     {
-      var q = db.Products.Count (p => !p.Discontinued);
-      serializer.Serialize (q);
+      var q = DB.Products.Count (p => !p.Discontinued);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -47,8 +48,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Sum to find the total freight over all Orders.")]
     public void LinqToSqlCount03 ()
     {
-      var q = db.Orders.Select (o => o.Freight).Sum();
-      serializer.Serialize (q);
+      var q = DB.Orders.Select (o => o.Freight).Sum();
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -56,8 +57,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Sum to find the total number of units on order over all Products.")]
     public void LinqToSqlCount04 ()
     {
-      var q = db.Products.Sum (p => p.UnitsOnOrder);
-      serializer.Serialize (q);
+      var q = DB.Products.Sum (p => p.UnitsOnOrder);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -65,8 +66,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Min to find the lowest unit price of any Product.")]
     public void LinqToSqlCount05 ()
     {
-      var q = db.Products.Select (p => p.UnitPrice).Min();
-      serializer.Serialize (q);
+      var q = DB.Products.Select (p => p.UnitPrice).Min();
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -74,8 +75,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Min to find the lowest freight of any Order.")]
     public void LinqToSqlCount06 ()
     {
-      var q = db.Orders.Min (o => o.Freight);
-      serializer.Serialize (q);
+      var q = DB.Orders.Min (o => o.Freight);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -85,7 +86,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlCount07 ()
     {
       var categories =
-          from p in db.Products
+          from p in DB.Products
           group p by p.CategoryID
           into g
           select new
@@ -97,7 +98,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
               select p2
                  };
 
-      serializer.Serialize (categories);
+      TestExecutor.Execute (categories, MethodBase.GetCurrentMethod());
     }
 
 
@@ -105,8 +106,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Max to find the latest hire date of any Employee.")]
     public void LinqToSqlCount08 ()
     {
-      var q = db.Employees.Select (e => e.HireDate).Max();
-      serializer.Serialize (q);
+      var q = DB.Employees.Select (e => e.HireDate).Max();
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -114,8 +115,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Max to find the most units in stock of any Product.")]
     public void LinqToSqlCount09 ()
     {
-      var q = db.Products.Max (p => p.UnitsInStock);
-      serializer.Serialize (q);
+      var q = DB.Products.Max (p => p.UnitsInStock);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -125,7 +126,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlCount10 ()
     {
       var categories =
-          from p in db.Products
+          from p in DB.Products
           group p by p.CategoryID
           into g
           select new
@@ -137,7 +138,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
               select p2
                  };
 
-      serializer.Serialize (categories);
+      TestExecutor.Execute (categories, MethodBase.GetCurrentMethod ());
     }
 
 
@@ -145,8 +146,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Average to find the average freight of all Orders.")]
     public void LinqToSqlCount11 ()
     {
-      var q = db.Orders.Select (o => o.Freight).Average();
-      serializer.Serialize (q);
+      var q = DB.Orders.Select (o => o.Freight).Average();
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -154,8 +155,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //[Description ("This sample uses Average to find the average unit price of all Products.")]
     public void LinqToSqlCount12 ()
     {
-      var q = db.Products.Average (p => p.UnitPrice);
-      serializer.Serialize (q);
+      var q = DB.Products.Average (p => p.UnitPrice);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
 
@@ -165,7 +166,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlCount13 ()
     {
       var categories =
-          from p in db.Products
+          from p in DB.Products
           group p by p.CategoryID
           into g
           select new
@@ -177,7 +178,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
               select p2
                  };
 
-      serializer.Serialize (categories);
+      TestExecutor.Execute (categories, MethodBase.GetCurrentMethod ());
     }
   }
 }

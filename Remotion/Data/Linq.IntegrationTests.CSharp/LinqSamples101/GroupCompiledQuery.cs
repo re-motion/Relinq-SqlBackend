@@ -17,31 +17,41 @@
 using System;
 using System.Data.Linq;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupCompiledQuery : Executor
+  internal class GroupCompiledQuery : TestBase
   {
-    //This sample create a compiled query and then use it to retrieve customers of the input city")]
-    public void LinqToSqlCompileQuery01 ()
-    {
-      //Create compiled query
-      var fn = CompiledQuery.Compile (
-          (Northwind db2, string city) =>
-          from c in db2.Customers
-          where c.City == city
-          select c);
+    //TODO: Won't compile since INorthwindDataProvider is no subtype of DataContext, which is necessary for using CompiledQuery.Compile(..) - Check if tests are necessary
+    ////This sample create a compiled query and then use it to retrieve customers of the input city")]
+    //public void LinqToSqlCompileQuery01_1 ()
+    //{
+    //  //Create compiled query
+    //  var fn = CompiledQuery.Compile (
+    //      (INorthwindDataProvider db2, string city) =>
+    //      from c in db2.Customers
+    //      where c.City == city
+    //      select c);
 
-      serializer.Serialize ("****** Call compiled query to retrieve customers from London ******");
-      var LonCusts = fn (db, "London");
-      serializer.Serialize (LonCusts);
+    //  var LonCusts = fn (DB, "London");
+    //  TestExecutor.Execute (LonCusts, MethodBase.GetCurrentMethod());
+    //}
 
-      serializer.Serialize (string.Empty);
+    ////This sample create a compiled query and then use it to retrieve customers of the input city")]
+    //public void LinqToSqlCompileQuery01_2 ()
+    //{
+    //  //Create compiled query
+    //  var fn = CompiledQuery.Compile (
+    //      (Northwind db2, string city) =>
+    //      from c in db2.Customers
+    //      where c.City == city
+    //      select c);
 
-      serializer.Serialize ("****** Call compiled query to retrieve customers from Seattle ******");
-      var SeaCusts = fn (db, "Seattle");
-      serializer.Serialize (SeaCusts);
-    }
+    //  var SeaCusts = fn (DB, "Seattle");
+    //  TestExecutor.Execute (SeaCusts, MethodBase.GetCurrentMethod ());
+    //}
+
   }
 }

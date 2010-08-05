@@ -17,11 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupConversionOperators:Executor
+  internal class GroupConversionOperators:TestBase
   {
     private bool isValidProduct (Product p)
     {
@@ -38,11 +39,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlConversion01 ()
     {
       var q =
-          from p in db.Products.AsEnumerable()
+          from p in DB.Products.AsEnumerable()
           where isValidProduct (p)
           select p;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses ToArray to immediately evaluate a query into an array 
@@ -51,24 +52,24 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlConversion02 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           where c.City == "London"
           select c;
 
       Customer[] qArray = q.ToArray();
-      serializer.Serialize (qArray[3]);
+      TestExecutor.Execute (qArray[3], MethodBase.GetCurrentMethod());
     }
 
     //This sample uses ToList to immediately evaluate a query into a List<T>.")]
     public void LinqToSqlConversion03 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.HireDate >= new DateTime (1994, 1, 1)
           select e;
 
       List<Employee> qList = q.ToList();
-      serializer.Serialize (qList);
+      TestExecutor.Execute (qList, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses ToDictionary to immediately evaluate a query and 
@@ -77,7 +78,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlConversion04 ()
     {
       var q =
-          from p in db.Products
+          from p in DB.Products
           where p.UnitsInStock <= p.ReorderLevel && !p.Discontinued
           select p;
 

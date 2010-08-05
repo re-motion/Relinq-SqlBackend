@@ -15,65 +15,67 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupInheritance:Executor
+  internal class GroupInheritance:TestBase
   {
 
     //This sample returns all contacts where the city is London.")]
     public void LinqToSqlInheritance01 ()
     {
-      var cons = from c in db.Contacts
+      var cons = from c in DB.Contacts
                  select c;
 
-      foreach (var con in cons)
-      {
-        serializer.Serialize (string.Format ("Company name: {0}", con.CompanyName));
-        serializer.Serialize (string.Format ("Phone: {0}", con.Phone));
-        serializer.Serialize (string.Format ("This is a {0}", con.GetType ()));
-        serializer.Serialize (Environment.NewLine);
-      }
+      //List<String> strings = new List<String>();
+      //foreach (var con in cons)
+      //{
+      //  strings.Add (string.Format ("Company name: {0}, Phone: {1}, This is a {2}", con.CompanyName, con.Phone, con.GetType ()));
+      //}
+      TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
+
     }
 
     //This sample uses OfType to return all customer contacts.")]
     public void LinqToSqlInheritance02 ()
     {
-      var cons = from c in db.Contacts.OfType<CustomerContact> ()
+      var cons = from c in DB.Contacts.OfType<CustomerContact> ()
                  select c;
 
-      serializer.Serialize (cons);
+      TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses IS to return all shipper contacts.")]
     public void LinqToSqlInheritance03 ()
     {
-      var cons = from c in db.Contacts
+      var cons = from c in DB.Contacts
                  where c is ShipperContact
                  select c;
 
-      serializer.Serialize (cons);
+      TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses AS to return FullContact or null.")]
     public void LinqToSqlInheritance04 ()
     {
-      var cons = from c in db.Contacts
+      var cons = from c in DB.Contacts
                  select c as FullContact;
 
-      serializer.Serialize (cons);
+      TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses a cast to retrieve customer contacts who live in London.")]
     public void LinqToSqlInheritance05 ()
     {
-      var cons = from c in db.Contacts
+      var cons = from c in DB.Contacts
                  where c.ContactType == "Customer" && ((CustomerContact) c).City == "London"
                  select c;
 
-      serializer.Serialize (cons);
+      TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
   }
 }

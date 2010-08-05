@@ -16,21 +16,22 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupNull:Executor
+  class GroupNull:TestBase
   {
     //This sample uses the null value to find Employees " +
     //"that do not report to another Employee.")]
     public void LinqToSqlNull01 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.ReportsToEmployee == null
           select e;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses Nullable<T>.HasValue to find Employees " +
@@ -38,11 +39,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlNull02 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where !e.ReportsTo.HasValue
           select e;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses Nullable<T>.Value for Employees " +
@@ -52,11 +53,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlNull03 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.ReportsTo.HasValue
           select new { e.FirstName, e.LastName, ReportsTo = e.ReportsTo.Value };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }

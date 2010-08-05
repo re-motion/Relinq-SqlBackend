@@ -20,35 +20,36 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupObjectIdentity:Executor
+  internal class GroupObjectIdentity:TestBase
   {
-    //This sample demonstrates how, upon executing the same query twice, " +
-    //you will receive a reference to the same object in memory each time.")]
-    public void LinqToSqlObjectIdentity01 ()
-    {
-      Customer cust1 = db.Customers.First (c => c.CustomerID == "BONAP");
-      Customer cust2 = db.Customers.First (c => c.CustomerID == "BONAP");
+    //TODO: Tests use Object.ReferenceEquals, implement for TestExecuter
+  //  //This sample demonstrates how, upon executing the same query twice, " +
+  //  //you will receive a reference to the same object in memory each time.")]
+  //  public void LinqToSqlObjectIdentity01 ()
+  //  {
+  //    Customer cust1 = DB.Customers.First (c => c.CustomerID == "BONAP");
+  //    Customer cust2 = DB.Customers.First (c => c.CustomerID == "BONAP");
 
-      serializer.Serialize (String.Format ("cust1 and cust2 refer to the same object in memory: {0}",
-                        Object.ReferenceEquals (cust1, cust2)));
-    }
+  //    serializer.Serialize (String.Format ("cust1 and cust2 refer to the same object in memory: {0}",
+  //                      Object.ReferenceEquals (cust1, cust2)));
+  //  }
 
-    //This sample demonstrates how, upon executing different queries that " +
-    //return the same row from the database, you will receive a " +
-    //reference to the same object in memory each time.")]
-    public void LinqToSqlObjectIdentity02 ()
-    {
-      Customer cust1 = db.Customers.First (c => c.CustomerID == "BONAP");
-      Customer cust2 = (
-          from o in db.Orders
-          where o.Customer.CustomerID == "BONAP"
-          select o)
-          .First ()
-          .Customer;
+  //  //This sample demonstrates how, upon executing different queries that " +
+  //  //return the same row from the database, you will receive a " +
+  //  //reference to the same object in memory each time.")]
+  //  public void LinqToSqlObjectIdentity02 ()
+  //  {
+  //    Customer cust1 = DB.Customers.First (c => c.CustomerID == "BONAP");
+  //    Customer cust2 = (
+  //        from o in DB.Orders
+  //        where o.Customer.CustomerID == "BONAP"
+  //        select o)
+  //        .First ()
+  //        .Customer;
 
-      serializer.Serialize (String.Format ("cust1 and cust2 refer to the same object in memory: {0}",
-                        Object.ReferenceEquals (cust1, cust2)));
-    }
+  //    serializer.Serialize (String.Format ("cust1 and cust2 refer to the same object in memory: {0}",
+  //                      Object.ReferenceEquals (cust1, cust2)));
+  //  }
 
   }
 }
