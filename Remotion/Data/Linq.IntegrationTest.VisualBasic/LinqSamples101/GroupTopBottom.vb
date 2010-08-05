@@ -32,9 +32,7 @@ Namespace LinqSamples101
       serializer.Serialize(first5Employees)
     End Sub
 
-    '<Category("TOP/BOTTOM")> _
-    '<Title("Skip")> _
-    '<Description("This sample uses Skip to select all but the 10 most expensive Products.")> _
+    'This sample uses Skip to select all but the 10 most expensive Products.")> _
     Public Sub LinqToSqlTop02()
       Dim expensiveProducts = From prod In db.Products _
             Order By prod.UnitPrice Descending _

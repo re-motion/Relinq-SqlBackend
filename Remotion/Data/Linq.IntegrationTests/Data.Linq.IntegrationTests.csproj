@@ -53,7 +53,6 @@
     <Compile Include="TestBase.cs" />
     <Compile Include="TestDomain\Northwind\INorthwindDataProvider.cs" />
     <Compile Include="TestDomain\Northwind\LinqToSqlNorthwindDataProvider.cs" />
-    <Compile Include="TestDomain\Northwind\Mapping.cs" />
     <Compile Include="TestDomain\Northwind\Northwind.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />

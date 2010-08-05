@@ -35,9 +35,7 @@ Namespace LinqSamples101
                             Object.ReferenceEquals(cust1, cust2))
     End Sub
 
-    '<Category("Object Identity")> _
-    '<Title("Object Caching - 2")> _
-    '<Description("This sample demonstrates how, upon executing different queries that " & _
+    'This sample demonstrates how, upon executing different queries that " & _
     '             "return the same row from the database, you will receive a " & _
     '             "reference to the same object in memory each time.")> _
     Public Sub LinqToSqlObjectIdentity02()

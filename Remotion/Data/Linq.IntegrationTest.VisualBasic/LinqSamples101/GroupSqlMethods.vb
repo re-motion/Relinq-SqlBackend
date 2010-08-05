@@ -36,9 +36,7 @@ Namespace LinqSamples101
 
     End Sub
 
-    '<Category("SqlMethods")> _
-    '<Title("SqlMethods - DateDiffDay")> _
-    '<Description("This sample uses SqlMethods to find all orders which shipped within 10 days the order created")> _
+    'This sample uses SqlMethods to find all orders which shipped within 10 days the order created")> _
     Public Sub LinqToSqlSqlMethods02()
 
       Dim orderQuery = From o In db.Orders _

@@ -18,14 +18,14 @@ Option Infer On
 Option Strict On
 
 Imports System.Linq.Expressions
+Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 Namespace LinqSamples101
-  Public Class GroupAdvanced
+  Public Class AdvancedTests
     Inherits Executor
-    '<Category("Advanced")> _
-    '<Title("Dynamic query - Select")> _
-    '<Description("This sample builds a query dynamically to return the contact name of each customer.")> _
+
+    'This sample builds a query dynamically to return the contact name of each customer.")> _
     Public Sub LinqToSqlAdvanced01()
       Dim param = Expression.Parameter(GetType(Customer), "c")
       Dim selector = Expression.Property(param, GetType(Customer).GetProperty("ContactName"))
@@ -39,17 +39,12 @@ Namespace LinqSamples101
       Dim query = custs.AsQueryable().Provider.CreateQuery(Of String)(expr)
 
       Dim cmd = db.GetCommand(query)
-      serializer.Serialize("Generated T-SQL:")
-      serializer.Serialize(cmd.CommandText)
-      serializer.Serialize(Environment.NewLine)
 
 
       serializer.Serialize(query)
     End Sub
 
-    '<Category("Advanced")> _
-    '<Title("Dynamic query - Where")> _
-    '<Description("This sample builds a query dynamically to filter for Customers in London.")> _
+    'This sample builds a query dynamically to filter for Customers in London.")> _
     Public Sub LinqToSqlAdvanced02()
 
       Dim custs = db.Customers
@@ -68,9 +63,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("Advanced")> _
-    '<Title("Dynamic query - OrderBy")> _
-    '<Description("This sample builds a query dynamically to filter for Customers in London" & _
+    'This sample builds a query dynamically to filter for Customers in London" & _
     '             " and order them by ContactName.")> _
     Public Sub LinqToSqlAdvanced03()
 
@@ -98,9 +91,7 @@ Namespace LinqSamples101
       serializer.Serialize(query)
     End Sub
 
-    '<Category("Advanced")> _
-    '<Title("Dynamic query - Union")> _
-    '<Description("This sample dynamically builds a Union to return a sequence of all countries where either " & _
+    'This sample dynamically builds a Union to return a sequence of all countries where either " & _
     '             "a customer or an employee live.")> _
     Public Sub LinqToSqlAdvanced04()
 
@@ -131,9 +122,7 @@ Namespace LinqSamples101
       serializer.Serialize(finalQuery)
     End Sub
 
-    '<Category("Advanced")> _
-    '<Title("Nested in FROM")> _
-    '<Description("This sample uses OrderByDescending and Take to return the " & _
+    'This sample uses OrderByDescending and Take to return the " & _
     '             "discontinued products of the top 10 most expensive products.")> _
     Public Sub LinqToSqlAdvanced06()
       Dim prods = From prod In db.Products.OrderByDescending(Function(p) p.UnitPrice) _

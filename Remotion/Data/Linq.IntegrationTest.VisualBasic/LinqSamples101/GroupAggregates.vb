@@ -21,17 +21,13 @@ Option Strict On
 Namespace LinqSamples101
   Public Class GroupAggregates
     Inherits Executor
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Count - Simple")> _
-    '<Description("This sample uses Count to find the number of Customers in the database.")> _
+    'This sample uses Count to find the number of Customers in the database.")> _
     Public Sub LinqToSqlCount01()
       Dim custCount = db.Customers.Count()
       serializer.Serialize(custCount)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Count - Conditional")> _
-    '<Description("This sample uses Count to find the number of Products in the database " & _
+    'This sample uses Count to find the number of Products in the database " & _
     '             "that are not discontinued.")> _
     Public Sub LinqToSqlCount02()
       Dim activeProducts = Aggregate prod In db.Products _
@@ -45,9 +41,7 @@ Namespace LinqSamples101
       serializer.Serialize(activeProducts)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Sum - Simple")> _
-    '<Description("This sample uses Sum to find the total freight over all Orders.")> _
+    'This sample uses Sum to find the total freight over all Orders.")> _
     Public Sub LinqToSqlCount03()
 
       Dim totalFreight = Aggregate ord In db.Orders _
@@ -60,9 +54,7 @@ Namespace LinqSamples101
       serializer.Serialize(totalFreight)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Sum - Mapped")> _
-    '<Description("This sample uses Sum to find the total number of units on order over all Products.")> _
+    'This sample uses Sum to find the total number of units on order over all Products.")> _
     Public Sub LinqToSqlCount04()
       Dim totalUnits = (From prod In db.Products _
             Select CInt(prod.UnitsOnOrder.Value)).Sum()
@@ -70,9 +62,7 @@ Namespace LinqSamples101
       serializer.Serialize(totalUnits)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Min - Simple")> _
-    '<Description("This sample uses Min to find the lowest unit price of any Product.")> _
+    'This sample uses Min to find the lowest unit price of any Product.")> _
     Public Sub LinqToSqlCount05()
       Dim lowestPrice = Aggregate prod In db.Products _
             Into Min(prod.UnitPrice)
@@ -80,9 +70,7 @@ Namespace LinqSamples101
       serializer.Serialize(lowestPrice)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Min - Mapped")> _
-    '<Description("This sample uses Min to find the lowest freight of any Order.")> _
+    'This sample uses Min to find the lowest freight of any Order.")> _
     Public Sub LinqToSqlCount06()
       Dim lowestFreight = Aggregate ord In db.Orders _
             Into Min(ord.Freight)
@@ -90,9 +78,7 @@ Namespace LinqSamples101
       serializer.Serialize(lowestFreight)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Min - Elements")> _
-    '<Description("This sample uses Min to find the Products that have the lowest unit price " & _
+    'This sample uses Min to find the Products that have the lowest unit price " & _
     '             "in each category.")> _
     Public Sub LinqToSqlCount07()
       Dim categories = From prod In db.Products _
@@ -107,9 +93,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Max - Simple")> _
-    '<Description("This sample uses Max to find the latest hire date of any Employee.")> _
+    'This sample uses Max to find the latest hire date of any Employee.")> _
     Public Sub LinqToSqlCount08()
       Dim latestHire = Aggregate emp In db.Employees _
             Into Max(emp.HireDate)
@@ -117,9 +101,7 @@ Namespace LinqSamples101
       serializer.Serialize(latestHire)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Max - Mapped")> _
-    '<Description("This sample uses Max to find the most units in stock of any Product.")> _
+    'This sample uses Max to find the most units in stock of any Product.")> _
     Public Sub LinqToSqlCount09()
       Dim mostInStock = Aggregate prod In db.Products _
             Into Max(prod.UnitsInStock)
@@ -127,9 +109,7 @@ Namespace LinqSamples101
       serializer.Serialize(mostInStock)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Max - Elements")> _
-    '<Description("This sample uses Max to find the Products that have the highest unit price " & _
+    'This sample uses Max to find the Products that have the highest unit price " & _
     '             "in each category.")> _
     Public Sub LinqToSqlCount10()
       Dim categories = From prod In db.Products _
@@ -143,9 +123,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Average - Simple")> _
-    '<Description("This sample uses Average to find the average freight of all Orders.")> _
+    'This sample uses Average to find the average freight of all Orders.")> _
     Public Sub LinqToSqlCount11()
       Dim avgFreight = Aggregate ord In db.Orders _
             Into Average(ord.Freight)
@@ -153,9 +131,7 @@ Namespace LinqSamples101
       serializer.Serialize(avgFreight)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Average - Mapped")> _
-    '<Description("This sample uses Average to find the average unit price of all Products.")> _
+    'This sample uses Average to find the average unit price of all Products.")> _
     Public Sub LinqToSqlCount12()
       Dim avgPrice = Aggregate prod In db.Products _
             Into Average(prod.UnitPrice)
@@ -163,9 +139,7 @@ Namespace LinqSamples101
       serializer.Serialize(avgPrice)
     End Sub
 
-    '<Category("COUNT/SUM/MIN/MAX/AVG")> _
-    '<Title("Average - Elements")> _
-    '<Description("This sample uses Average to find the Products that have unit price higher than " & _
+    'This sample uses Average to find the Products that have unit price higher than " & _
     '             "the average unit price of the category for each category.")> _
     Public Sub LinqToSqlCount13()
       Dim categories = From prod In db.Products _

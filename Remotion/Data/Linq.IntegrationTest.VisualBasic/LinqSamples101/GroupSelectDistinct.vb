@@ -39,9 +39,7 @@ Namespace LinqSamples101
       serializer.Serialize(contactList)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Anonymous Type 1")> _
-    '<Description("This sample uses Select and anonymous types to return " & _
+    'This sample uses Select and anonymous types to return " & _
     '             "a sequence of just the Customers' contact names and phone numbers.")> _
     Public Sub LinqToSqlSelect02()
       Dim nameAndNumber = From cust In db.Customers _
@@ -51,9 +49,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Anonymous Type 2")> _
-    '<Description("This sample uses Select and anonymous types to return " & _
+    'This sample uses Select and anonymous types to return " & _
     '             "a sequence of just the Employees' names and phone numbers, " & _
     '             "with the FirstName and LastName fields combined into a single field, 'Name', " & _
     '             "and the HomePhone field renamed to Phone in the resulting sequence.")> _
@@ -65,9 +61,7 @@ Namespace LinqSamples101
       serializer.Serialize(nameAndNumber)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Anonymous Type 3")> _
-    '<Description("This sample uses Select and anonymous types to return " & _
+    'This sample uses Select and anonymous types to return " & _
     '             "a sequence of all Products' IDs and a calculated value " & _
     '             "called HalfPrice which is set to the Product's UnitPrice " & _
     '             "divided by 2.")> _
@@ -78,9 +72,7 @@ Namespace LinqSamples101
       serializer.Serialize(prices)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Conditional ")> _
-    '<Description("This sample uses Select and a conditional statment to return a sequence of product " & _
+    'This sample uses Select and a conditional statment to return a sequence of product " & _
     '             " name and product availability.")> _
     Public Sub LinqToSqlSelect05()
       Dim inStock = From prod In db.Products _
@@ -102,9 +94,7 @@ Namespace LinqSamples101
       serializer.Serialize(names)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Filtered")> _
-    '<Description("This sample uses Select and Where clauses to return a sequence of " & _
+    'This sample uses Select and Where clauses to return a sequence of " & _
     '             "just the London Customers' contact names.")> _
     Public Sub LinqToSqlSelect07()
       Dim londonNames = From cust In db.Customers _
@@ -114,9 +104,7 @@ Namespace LinqSamples101
       serializer.Serialize(londonNames)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Shaped")> _
-    '<Description("This sample uses Select and anonymous types to return " & _
+    'This sample uses Select and anonymous types to return " & _
     '             "a shaped subset of the data about Customers.")> _
     Public Sub LinqToSqlSelect08()
       Dim customers = From cust In db.Customers _
@@ -129,9 +117,7 @@ Namespace LinqSamples101
       serializer.Serialize(customers)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Nested")> _
-    '<Description("This sample uses nested queries to return a sequence of " & _
+    'This sample uses nested queries to return a sequence of " & _
     '             "all orders containing their OrderID, a subsequence of the " & _
     '             "items in the order where there is a discount, and the money " & _
     '             "saved if shipping is not included.")> _
@@ -161,9 +147,7 @@ Namespace LinqSamples101
       End Select
     End Function
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Local Method Call 1")> _
-    '<Description("This sample uses a Local Method Call to " & _
+    'This sample uses a Local Method Call to " & _
     '             "'PhoneNumberConverter' to convert Phone number " & _
     '             "to an international format.")> _
     Public Sub LinqToSqlLocalMethodCall01()
@@ -176,9 +160,7 @@ Namespace LinqSamples101
       serializer.Serialize(q)
     End Sub
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Select - Local Method Call 2")> _
-    '<Description("This sample uses a Local Method Call to " & _
+    'This sample uses a Local Method Call to " & _
     '             "convert phone numbers to an international format " & _
     '             "and create XDocument.")> _
     Public Sub LinqToSqlLocalMethodCall02()
@@ -195,9 +177,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("SELECT/DISTINCT")> _
-    '<Title("Distinct")> _
-    '<Description("This sample uses Distinct to select a sequence of the unique cities " & _
+    'This sample uses Distinct to select a sequence of the unique cities " & _
     '             "that have Customers.")> _
     Public Sub LinqToSqlSelect10()
       Dim cities = From cust In db.Customers _

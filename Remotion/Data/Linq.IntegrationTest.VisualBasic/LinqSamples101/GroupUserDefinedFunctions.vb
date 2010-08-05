@@ -32,9 +32,7 @@ Namespace LinqSamples101
       serializer.Serialize(catQuery)
     End Sub
 
-    '<Category("User-Defined Functions")> _
-    '<Title("Scalar Function - Where")> _
-    '<Description("This sample demonstrates using a scalar user-defined function in a Where clause.")> _
+    'This sample demonstrates using a scalar user-defined function in a Where clause.")> _
     Public Sub LinqToSqlUserDefined02()
 
       Dim prodQuery = From prod In db.Products _
@@ -43,9 +41,7 @@ Namespace LinqSamples101
       serializer.Serialize(prodQuery)
     End Sub
 
-    '<Category("User-Defined Functions")> _
-    '<Title("Table-Valued Function")> _
-    '<Description("This sample demonstrates selecting from a table-valued user-defined function.")> _
+    'This sample demonstrates selecting from a table-valued user-defined function.")> _
     Public Sub LinqToSqlUserDefined03()
 
       Dim prodQuery = From p In db.ProductsUnderThisUnitPrice(10.25D) _
@@ -54,9 +50,7 @@ Namespace LinqSamples101
       serializer.Serialize(prodQuery)
     End Sub
 
-    '<Category("User-Defined Functions")> _
-    '<Title("Table-Valued Function - Join")> _
-    '<Description("This sample demonstrates joining to the results of a table-valued user-defined function.")> _
+    'This sample demonstrates joining to the results of a table-valued user-defined function.")> _
     Public Sub LinqToSqlUserDefined04()
 
       Dim q = From category In db.Categories _

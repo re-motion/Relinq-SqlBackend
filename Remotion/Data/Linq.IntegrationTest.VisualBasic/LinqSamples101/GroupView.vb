@@ -33,9 +33,7 @@ Namespace LinqSamples101
       serializer.Serialize(shipToLondon)
     End Sub
 
-    '<Category("View")> _
-    '<Title("Query - Identity mapping")> _
-    '<Description("This sample uses Select to query QuarterlyOrders.")> _
+    'This sample uses Select to query QuarterlyOrders.")> _
     Public Sub LinqToSqlView02()
       'WORKAROUND: changed Quarterly_Orders to QuarterlyOrders
       Dim quarterlyOrders = From qo In db.QuarterlyOrders _

@@ -32,9 +32,7 @@ Namespace LinqSamples101
       serializer.Serialize(ordersInLondon)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("SelectMany - 1 to Many - 2")> _
-    '<Description("This sample uses foreign key navigation in the " & _
+    'This sample uses foreign key navigation in the " & _
     '             "Where clause to filter for Products whose Supplier is in the USA " & _
     '             "that are out of stock.")> _
     Public Sub LinqToSqlJoin02()
@@ -44,9 +42,7 @@ Namespace LinqSamples101
       serializer.Serialize(outOfStock)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("SelectMany - Many to Many")> _
-    '<Description("This sample uses foreign key navigation in the " & _
+    'This sample uses foreign key navigation in the " & _
     '             "from clause to filter for employees in Seattle, " & _
     '             "and also list their territories.")> _
     Public Sub LinqToSqlJoin03()
@@ -57,9 +53,7 @@ Namespace LinqSamples101
       serializer.Serialize(seattleEmployees)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("SelectMany - Self-Join")> _
-    '<Description("This sample uses foreign key navigation in the " & _
+    'This sample uses foreign key navigation in the " & _
     '             "Select clause to filter for pairs of employees where " & _
     '             "one employee reports to the other and where " & _
     '             "both employees are from the same City.")> _
@@ -72,9 +66,7 @@ Namespace LinqSamples101
       serializer.Serialize(empQuery)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("GroupJoin - Two way join")> _
-    '<Description("This sample explictly joins two tables and projects results from both tables.")> _
+    'This sample explictly joins two tables and projects results from both tables.")> _
     Public Sub LinqToSqlJoin05()
       Dim ordCount = From cust In db.Customers _
             Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -84,9 +76,7 @@ Namespace LinqSamples101
       serializer.Serialize(ordCount)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("GroupJoin - Three way join")> _
-    '<Description("This sample explictly joins three tables and projects results from each of them.")> _
+    'This sample explictly joins three tables and projects results from each of them.")> _
     Public Sub LinqToSqlJoin06()
       Dim joinQuery = From cust In db.Customers _
             Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -98,9 +88,7 @@ Namespace LinqSamples101
       serializer.Serialize(joinQuery)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("GroupJoin - LEFT OUTER JOIN")> _
-    '<Description("This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). " & _
+    'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). " & _
     '             "The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.")> _
     Public Sub LinqToSqlJoin07()
       Dim empQuery = From emp In db.Employees _
@@ -112,9 +100,7 @@ Namespace LinqSamples101
       serializer.Serialize(empQuery)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("GroupJoin - Projected let assignment")> _
-    '<Description("This sample projects a 'Let' expression resulting from a join.")> _
+    'This sample projects a 'Let' expression resulting from a join.")> _
     Public Sub LinqToSqlJoin08()
       Dim ordQuery = From cust In db.Customers _
             Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -126,9 +112,7 @@ Namespace LinqSamples101
       serializer.Serialize(ordQuery)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("GroupJoin - Composite Key")> _
-    '<Description("This sample shows a join with a composite key.")> _
+    'This sample shows a join with a composite key.")> _
     Public Sub LinqToSqlJoin09()
 
       'The Key keyword means that when the anonymous types are tested for equality,
@@ -146,9 +130,7 @@ Namespace LinqSamples101
       serializer.Serialize(ordQuery)
     End Sub
 
-    '<Category("JOIN")> _
-    '<Title("GroupJoin - Nullable\\Nonnullable Key Relationship")> _
-    '<Description("This sample shows how to construct a join where one side is nullable and the other isn't.")> _
+    'This sample shows how to construct a join where one side is nullable and the other isn't.")> _
     Public Sub LinqToSqlJoin10()
       Dim ordQuery = From ord In db.Orders _
             Group Join emp In db.Employees _

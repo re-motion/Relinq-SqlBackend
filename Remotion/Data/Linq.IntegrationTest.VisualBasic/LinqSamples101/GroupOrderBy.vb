@@ -32,9 +32,7 @@ Namespace LinqSamples101
       serializer.Serialize(empQuery)
     End Sub
 
-    '<Category("ORDER BY")> _
-    '<Title("OrderBy - With Where")> _
-    '<Description("This sample uses Where and Order By to sort Orders " & _
+    'This sample uses Where and Order By to sort Orders " & _
     '             "shipped to London by freight.")> _
     Public Sub LinqToSqlOrderBy02()
       Dim londonOrders = From ord In db.Orders _
@@ -44,9 +42,7 @@ Namespace LinqSamples101
       serializer.Serialize(londonOrders)
     End Sub
 
-    '<Category("ORDER BY")> _
-    '<Title("OrderByDescending")> _
-    '<Description("This sample uses Order By to sort Products " & _
+    'This sample uses Order By to sort Products " & _
     '             "by unit price from highest to lowest.")> _
     Public Sub LinqToSqlOrderBy03()
       Dim sortedProducts = From prod In db.Products _
@@ -55,9 +51,7 @@ Namespace LinqSamples101
       serializer.Serialize(sortedProducts)
     End Sub
 
-    '<Category("ORDER BY")> _
-    '<Title("ThenBy")> _
-    '<Description("This sample uses a compound Order By to sort Customers " & _
+    'This sample uses a compound Order By to sort Customers " & _
     '             "by city and then contact name.")> _
     Public Sub LinqToSqlOrderBy04()
       Dim custQuery = From cust In db.Customers _
@@ -67,9 +61,7 @@ Namespace LinqSamples101
       serializer.Serialize(custQuery)
     End Sub
 
-    '<Category("ORDER BY")> _
-    '<Title("ThenByDescending")> _
-    '<Description("This sample uses Order By to sort Orders from EmployeeID 1 " & _
+    'This sample uses Order By to sort Orders from EmployeeID 1 " & _
     '             "by ship-to country, and then by freight from highest to lowest.")> _
     Public Sub LinqToSqlOrderBy05()
       Dim ordQuery = From ord In db.Orders _

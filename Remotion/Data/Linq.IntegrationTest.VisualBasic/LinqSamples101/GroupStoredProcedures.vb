@@ -22,9 +22,7 @@ Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 Namespace LinqSamples101
   Public Class GroupStoredProcedures
     Inherits Executor
-    '<Category("Stored Procedures")> _
-    '<Title("Scalar Return")> _
-    '<Description("This sample uses a stored procedure to return the number of Customers in the 'WA' Region.")> _
+    'This sample uses a stored procedure to return the number of Customers in the 'WA' Region.")> _
     Public Sub LinqToSqlStoredProc01()
       'WORKAROUND: Customers_Count_By_Region not available => changed to  CustomersCountByRegion
       Dim count = db.CustomersCountByRegion("WA")
@@ -46,9 +44,7 @@ Namespace LinqSamples101
       serializer.Serialize(custQuery)
     End Sub
 
-    '<Category("Stored Procedures")> _
-    '<Title("Multiple Result-Sets")> _
-    '<Description("This sample uses a stored procedure to return the Customer 'SEVES' and all it's Orders.")> _
+    'This sample uses a stored procedure to return the Customer 'SEVES' and all it's Orders.")> _
     Public Sub LinqToSqlStoredProc04()
 
       'WORKAROUND: Get_Customer_And_Orders not available => changed to  GetCustomerAndOrders
@@ -67,9 +63,7 @@ Namespace LinqSamples101
       '      serializer.Serialize(orders);
     End Sub
 
-    '<Category("Stored Procedures")> _
-    '<Title("Out parameters")> _
-    '<Description("This sample uses a stored procedure that returns an out parameter.")> _
+    'This sample uses a stored procedure that returns an out parameter.")> _
     Public Sub LinqToSqlStoredProc05()
       Dim totalSales? = 0@
 

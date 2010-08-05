@@ -31,9 +31,7 @@ Namespace LinqSamples101
       serializer.Serialize(custQuery)
     End Sub
 
-    '<Category("EXISTS/IN/ANY/ALL")> _
-    '<Title("Any - Conditional")> _
-    '<Description("This sample uses Any to return only Categories that have " & _
+    'This sample uses Any to return only Categories that have " & _
     '             "at least one Discontinued product.")> _
     Public Sub LinqToSqlExists02()
       Dim prodQuery = From cust In db.Categories _
@@ -42,9 +40,7 @@ Namespace LinqSamples101
       serializer.Serialize(prodQuery)
     End Sub
 
-    '<Category("EXISTS/IN/ANY/ALL")> _
-    '<Title("All - Conditional")> _
-    '<Description("This sample uses All to return Customers whom all of their orders " & _
+    'This sample uses All to return Customers whom all of their orders " & _
     '             "have been shipped to their own city or whom have no orders.")> _
     Public Sub LinqToSqlExists03()
       Dim ordQuery = From cust In db.Customers _
@@ -53,9 +49,7 @@ Namespace LinqSamples101
       serializer.Serialize(ordQuery)
     End Sub
 
-    '<Category("Exists/In/Any/All/Contains")> _
-    '<Title("Contains - One Object")> _
-    '<Description("This sample uses Contain to find which Customer contains an order with OrderID 10248.")> _
+    'This sample uses Contain to find which Customer contains an order with OrderID 10248.")> _
     Public Sub LinqToSqlExists04()
 
       Dim order = (From o In db.Orders _
@@ -72,9 +66,7 @@ Namespace LinqSamples101
       Next
     End Sub
 
-    '<Category("Exists/In/Any/All/Contains")> _
-    '<Title("Contains - Multiple values")> _
-    '<Description("This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
+    'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
     Public Sub LinqToSqlExists05()
       Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
 

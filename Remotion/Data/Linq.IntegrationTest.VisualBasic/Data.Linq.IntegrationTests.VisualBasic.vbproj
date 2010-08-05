@@ -93,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LinqSamples101\Executor.vb" />
-    <Compile Include="LinqSamples101\GroupAdvanced.vb" />
+    <Compile Include="LinqSamples101\AdvancedTests.vb" />
     <Compile Include="LinqSamples101\GroupAggregates.vb" />
     <Compile Include="LinqSamples101\GroupCompiledQuery.vb" />
     <Compile Include="LinqSamples101\GroupConversionOperators.vb" />

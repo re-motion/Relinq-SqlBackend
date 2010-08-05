@@ -22,9 +22,7 @@ Namespace LinqSamples101
   Public Class GroupNull
     Inherits Executor
 
-    '<Category("NULL")> _
-    '<Title("Handling NULL (Nothing in VB)")> _
-    '<Description("This sample uses the Nothing value to find Employees " & _
+    'This sample uses the Nothing value to find Employees " & _
     '         "that do not report to another Employee.")> _
     Public Sub LinqToSqlNull01()
       Dim empQuery = From emp In db.Employees _
@@ -33,9 +31,7 @@ Namespace LinqSamples101
       serializer.Serialize(empQuery)
     End Sub
 
-    '<Category("NULL")> _
-    '<Title("Nullable(Of T).HasValue")> _
-    '<Description("This sample uses Nullable(Of T).HasValue to find Employees " & _
+    'This sample uses Nullable(Of T).HasValue to find Employees " & _
     '             "that do not report to another Employee.")> _
     Public Sub LinqToSqlNull02()
       Dim empQuery = From emp In db.Employees _
@@ -45,9 +41,7 @@ Namespace LinqSamples101
       serializer.Serialize(empQuery)
     End Sub
 
-    '<Category("NULL")> _
-    '<Title("Nullable(Of T).Value")> _
-    '<Description("This sample uses Nullable(Of T).Value for Employees " & _
+    'This sample uses Nullable(Of T).Value for Employees " & _
     '             "that report to another Employee to return the " & _
     '             "EmployeeID number of that employee.  Note that " & _
     '             "the .Value is optional.")> _

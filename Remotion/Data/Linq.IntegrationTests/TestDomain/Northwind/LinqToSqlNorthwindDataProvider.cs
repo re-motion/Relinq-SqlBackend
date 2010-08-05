@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.Common;
+using System.Data.Linq;
 using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -28,6 +30,47 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     public IQueryable<Product> Products
     {
       get { return _dataContext.Products; }
+    }
+
+    public IQueryable<Customer> Customers
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IQueryable<Employee> Employees
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IQueryable<Category> Categories
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public EntitySet<Order> Orders
+    {
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
+
+    public DbCommand GetCommand (IQueryable<string> query)
+    {
+      throw new NotImplementedException();
+    }
+
+    public decimal? TotalProductUnitPriceByCategory (int categoryID)
+    {
+      throw new NotImplementedException();
+    }
+
+    public decimal? MinUnitPriceByCategory (int? nullable)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IQueryable<ProductsUnderThisUnitPriceResult> ProductsUnderThisUnitPrice (decimal @decimal)
+    {
+      throw new NotImplementedException();
     }
   }
 }

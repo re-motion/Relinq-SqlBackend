@@ -35,9 +35,7 @@ Namespace LinqSamples101
       serializer.Serialize(productPage)
     End Sub
 
-    '<Category("Paging")> _
-    '<Title("Paging - Ordered Unique Key")> _
-    '<Description("This sample uses a Where clause and the Take operator to do paging by, " & _
+    'This sample uses a Where clause and the Take operator to do paging by, " & _
     '             "first filtering to get only the ProductIDs above 50 (the last ProductID " & _
     '             "from page 5), then ordering by ProductID, and finally taking the first 10 results, " & _
     '             "thereby providing the data for page 6 of the Products table.  " & _

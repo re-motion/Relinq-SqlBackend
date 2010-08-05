@@ -42,32 +42,26 @@ Namespace LinqSamples101
       Return (prod.ProductName.LastIndexOf ("C") = 0)
     End Function
 
-    '<Category("Conversion Operators")> _
-    '<Title("ToArray")> _
-    '<Description("This sample uses ToArray to immediately evaluate a query into an array " & _
+    'This sample uses ToArray to immediately evaluate a query into an array " & _
     '             "and get the 3rd element.")> _
     Public Sub LinqToSqlConversions02()
       Dim londonCustomers = From cust In db.Customers _
             Where cust.City = "London"
 
       Dim custArray = londonCustomers.ToArray()
-      serializer.Serialize (custArray (3))
+      serializer.Serialize(custArray(3))
     End Sub
 
-    '<Category("Conversion Operators")> _
-    '<Title("ToList")> _
-    '<Description("This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
+    'This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
     Public Sub LinqToSqlConversions03()
       Dim hiredAfter1994 = From emp In db.Employees _
             Where emp.HireDate >= #1/1/1994#
 
       Dim qList = hiredAfter1994.ToList()
-      serializer.Serialize (qList)
+      serializer.Serialize(qList)
     End Sub
 
-    '<Category("Conversion Operators")> _
-    '<Title("ToDictionary")> _
-    '<Description("This sample uses ToDictionary to immediately evaluate a query and " & _
+    'This sample uses ToDictionary to immediately evaluate a query and " & _
     '             "a key expression into an Dictionary(Of K, T).")> _
     Public Sub LinqToSqlConversion04()
       Dim prodQuery = From prod In db.Products _

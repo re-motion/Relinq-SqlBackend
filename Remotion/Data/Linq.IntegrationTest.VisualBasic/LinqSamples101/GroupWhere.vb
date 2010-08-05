@@ -21,9 +21,7 @@ Option Strict On
 Namespace LinqSamples101
   Public Class GroupWhere
     Inherits Executor
-    '<Category("Your First LINQ Query")> _
-    '<Title("Simple Filtering")> _
-    '<Description("This sample uses a Where clause to filter for Customers in London.")> _
+    'This sample uses a Where clause to filter for Customers in London.")> _
 
     Public Sub LinqToSqlWhere01()
 
@@ -41,9 +39,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("WHERE")> _
-    '<Title("Where - 1")> _
-    '<Description("This sample uses a Where clause to filter for Employees hired " & _
+    'This sample uses a Where clause to filter for Employees hired " & _
     '"during or after 1994.")> _
     Public Sub LinqToSqlWhere02()
       Dim hiredAfter1994 = From emp In db.Employees _
@@ -66,9 +62,7 @@ Namespace LinqSamples101
       serializer.Serialize(needToOrder)
     End Sub
 
-    '<Category("WHERE")> _
-    '<Title("Where - 3")> _
-    '<Description("This sample uses a Where clause to filter out Products that are either " & _
+    'This sample uses a Where clause to filter out Products that are either " & _
     '             "discontinued or that have a UnitPrice greater than 10.")> _
     Public Sub LinqToSqlWhere04()
       Dim prodQuery = From prod In db.Products _
@@ -91,9 +85,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("WHERE")> _
-    '<Title("First - Simple")> _
-    '<Description("This sample uses First to select the first Shipper in the table.")> _
+    'This sample uses First to select the first Shipper in the table.")> _
     Public Sub LinqToSqlWhere06()
       Dim shipper = db.Shippers.First()
 
@@ -101,9 +93,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    '<Category("WHERE")> _
-    '<Title("First - Element")> _
-    '<Description("This sample uses Take to select the first Customer with CustomerID 'BONAP'.")> _
+    'This sample uses Take to select the first Customer with CustomerID 'BONAP'.")> _
     Public Sub LinqToSqlWhere07()
       Dim customer = From cust In db.Customers _
             Where cust.CustomerID = "BONAP" _
@@ -112,9 +102,7 @@ Namespace LinqSamples101
       serializer.Serialize(customer)
     End Sub
 
-    '<Category("WHERE")> _
-    '<Title("First - Condition")> _
-    '<Description("This sample uses First to select an Order with freight greater than 10.00.")> _
+    'This sample uses First to select an Order with freight greater than 10.00.")> _
     Public Sub LinqToSqlWhere08()
       Dim firstOrd = (From ord In db.Orders _
             Where ord.Freight > 10D _

@@ -22,9 +22,7 @@ Namespace LinqSamples101
   Public Class GroupExternalMapping
     Inherits Executor
     'TODO: OutOfMemoryException due to circular dependency
-    '<Category("External Mapping")> _
-    '<Title("Load and use an External Mapping")> _
-    '<Description("This sample demonstrates how to create a data context that uses an external XML mapping source.")> _
+    'This sample demonstrates how to create a data context that uses an external XML mapping source.")> _
     'Public Sub LinqToSqlExternal01()
     '  ' load the mapping source
     '  Dim path2 = Path.Combine(Application.StartupPath, "..\..\..\Linq.IntegrationTests\TestDomain\Northwind\NorthwindMapped.map")
