@@ -178,10 +178,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void MemberAccessOnCoalesceExpression_WithEntities ()
+    {
+      CheckQuery (
+          from c in Cooks
+          select (c.Substitution ?? c).Name,
+          "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
+            +"LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+    }
+
+    [Test]
     public void MemberAccessOnConditionalExpression ()
     {
       CheckQuery (Cooks.Select (c => (c.IsStarredCook ? c.Name : c.SpecificInformation).Length),
         "SELECT CASE WHEN ([t0].[IsStarredCook] = 1) THEN LEN([t0].[Name]) ELSE LEN([t0].[SpecificInformation]) END AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void MemberAccessOnConditionalExpression_WithEntities ()
+    {
+      CheckQuery (
+          from c in Cooks
+          select (c.Substitution!=null ? c.Substitution : c).Name,
+          "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
+            + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
     }
 
     [Test]
