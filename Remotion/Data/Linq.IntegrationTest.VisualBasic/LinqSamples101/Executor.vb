@@ -85,7 +85,7 @@ Namespace LinqSamples101
       Dim mscorlib As Assembly = Assembly.Load("Remotion.Data.Linq.IntegrationTest.VisualBasic")
       For Each type As Type In mscorlib.GetTypes()
 
-        If type.BaseType <> Nothing Then
+        If Not type.BaseType.Equals(Nothing) Then
           If type.BaseType.Name.Equals("Executor") Then
             Debug.Print("Call Methods Class: " + type.Name)
             CallAllMethods(type)
