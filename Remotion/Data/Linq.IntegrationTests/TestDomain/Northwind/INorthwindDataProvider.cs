@@ -34,7 +34,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     IQueryable<Customer> Customers { get; }
     IQueryable<Employee> Employees { get; }
     IQueryable<Category> Categories { get; }
-    EntitySet<Order> Orders { get; set; }
+    IQueryable<Order> Orders { get; set; }
+    IQueryable<OrderDetail> OrderDetails { get; set; }
+    IQueryable<Contact> Contacts { get; set; }
     DbCommand GetCommand (IQueryable<string> query);
     decimal? TotalProductUnitPriceByCategory (int categoryID);
 
