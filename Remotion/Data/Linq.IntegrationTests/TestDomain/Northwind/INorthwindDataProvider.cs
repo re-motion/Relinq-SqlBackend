@@ -15,18 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.Common;
 using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   // TODO: There are two Product classes - Northwind seems to be mapped twice
-  internal class INorthwindDataProvider
+  public interface INorthwindDataProvider
   {
-    private IQueryable<Product> Products
-    {
-      get { throw new NotImplementedException(); }
-    }
+    IQueryable<Product> Products { get;  }
+
+
 
     // TODO: add properties for all used data-objects
+
+    IQueryable<Customer> Customers { get; set; }
+    IQueryable<Employee> Employees { get; set; }
+    DbCommand GetCommand (IQueryable<string> query);
   }
 }

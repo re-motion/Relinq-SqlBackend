@@ -13,9 +13,19 @@ namespace Remotion.Data.Linq.IntegrationTests
   public class TestBase 
   {
     public TestMode Mode = TestMode.SaveReferenceResults;
-
     private INorthwindDataProvider _db;
     private ITestExecutor _testExecutor;
+
+    protected INorthwindDataProvider DB
+    {
+      get { return _db; }
+    }
+
+    protected ITestExecutor TestExecutor 
+    {
+      get { return _testExecutor; }
+    }
+   
 
     [SetUp]
     public virtual void SetUp ()
