@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestDomain\Northwind\Mapping.cs" />
     <Compile Include="TestDomain\Northwind\Northwind.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />

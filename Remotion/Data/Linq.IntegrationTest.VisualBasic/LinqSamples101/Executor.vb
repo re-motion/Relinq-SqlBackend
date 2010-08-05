@@ -34,10 +34,11 @@ Namespace LinqSamples101
       InitSample()
 
 
-      'ExecuteAllSamples()
+      ExecuteAllSamples()
 
-      CallAllMethods(GetType(GroupExternalMapping))
+      'CallAllMethods(GetType(GroupExternalMapping))
       Debug.Print("All Methods executed")
+
       'Console.Read()
     End Sub
 
