@@ -39,17 +39,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void Transform_ArgumentIsNotNull ()
     {
-      var method = typeof (string).GetMethod ("Contains", new [] { typeof (string) });
+      var method = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("test");
       var expression = Expression.Call (objectExpression, method, argument1);
       var transformer = new ContainsMethodCallTransformer();
-      
+
       var result = transformer.Transform (expression);
 
       var rightExpression = Expression.Constant (string.Format ("%{0}%", argument1.Value));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
-      
+
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -58,13 +58,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       var method = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");
-      var argument1 = Expression.MakeMemberAccess (Expression.Constant(new Cook()), typeof (Cook).GetProperty ("Name"));
+      var argument1 = Expression.MakeMemberAccess (Expression.Constant (new Cook()), typeof (Cook).GetProperty ("Name"));
       var expression = Expression.Call (objectExpression, method, argument1);
-      var transformer = new ContainsMethodCallTransformer ();
+      var transformer = new ContainsMethodCallTransformer();
 
       var result = transformer.Transform (expression);
 
-      var rightExpression = new SqlFunctionExpression (
+      Expression rightExpression = new SqlFunctionExpression (
           typeof (string),
           "REPLACE",
           new SqlFunctionExpression (
@@ -90,6 +90,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
               new SqlLiteralExpression (@"\[")),
           new SqlLiteralExpression (@"]"),
           new SqlLiteralExpression (@"\]"));
+      rightExpression = Expression.Add (
+          new SqlLiteralExpression ("%"), rightExpression, typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
+      rightExpression = Expression.Add (
+          rightExpression, new SqlLiteralExpression ("%"), typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -100,13 +104,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       var method = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");
-      var argument1 = Expression.Constant (null, typeof(string));
+      var argument1 = Expression.Constant (null, typeof (string));
       var expression = Expression.Call (objectExpression, method, argument1);
-      var transformer = new ContainsMethodCallTransformer ();
-     
+      var transformer = new ContainsMethodCallTransformer();
+
       var result = transformer.Transform (expression);
 
-     ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
     }
   }
 }

@@ -79,7 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var result = transformer.Transform (expression);
 
-      var rightExpression = new SqlFunctionExpression (
+      Expression rightExpression = new SqlFunctionExpression (
           typeof (string),
           "REPLACE",
           new SqlFunctionExpression (
@@ -105,6 +105,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
               new SqlLiteralExpression (@"\[")),
           new SqlLiteralExpression (@"]"),
           new SqlLiteralExpression (@"\]"));
+      rightExpression = Expression.Add (
+          new SqlLiteralExpression ("%"), rightExpression, typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);

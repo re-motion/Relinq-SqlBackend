@@ -52,6 +52,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       else
       {
         rightExpression = LikeEscapeUtility.Escape (methodCallExpression.Arguments[0], @"\");
+        rightExpression = Expression.Add (
+            new SqlLiteralExpression ("%"),
+            rightExpression,
+            typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
+        rightExpression = Expression.Add (
+            rightExpression, new SqlLiteralExpression ("%"), typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
       }
       return new SqlLikeExpression (methodCallExpression.Object, rightExpression, new SqlLiteralExpression (@"\"));
     }
