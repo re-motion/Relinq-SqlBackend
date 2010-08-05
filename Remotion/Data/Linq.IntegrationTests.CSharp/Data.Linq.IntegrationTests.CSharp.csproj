@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Data.Linq.IntegrationTests.CSharp</RootNamespace>
     <AssemblyName>Remotion.Data.Linq.IntegrationTests.CSharp</AssemblyName>

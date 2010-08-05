@@ -35,6 +35,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
           where i.ShipCity == "London"
           select new { i.OrderID, i.ProductName, i.Quantity, i.CustomerName };
 
+
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
