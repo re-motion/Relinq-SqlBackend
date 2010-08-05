@@ -15,12 +15,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
-namespace Remotion.Data.Linq.IntegrationTests
+namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
-  public enum TestMode
+  public class SavingTestExecutor : ITestExecutor
   {
-    SaveReferenceResults,
-    CheckActualResults
+    private string _directory;
+
+    public SavingTestExecutor (string directory)
+    {
+      // TODO: Complete member initialization
+      this._directory = directory;
+    }
+
+    public void Execute (object queryResult, MethodBase executingMethod)
+    {
+      // TODO: implement
+      throw new NotImplementedException();
+    }
   }
 }

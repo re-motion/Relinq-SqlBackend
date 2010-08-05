@@ -57,8 +57,8 @@
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
-    <Compile Include="UnitTests\Utilities\CheckingTestExecutor.cs" />
-    <Compile Include="UnitTests\Utilities\SavingTestExecutor.cs" />
+    <Compile Include="Utilities\CheckingTestExecutor.cs" />
+    <Compile Include="Utilities\SavingTestExecutor.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithReferenceTypes.cs" />
