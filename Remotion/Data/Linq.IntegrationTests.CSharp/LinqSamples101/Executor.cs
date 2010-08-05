@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data.Linq.Mapping;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
@@ -57,7 +57,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     private static void CallAllTypes (Assembly assembly)
     {
-      Type[] classes = assembly.GetTypes();
+      List<Type> classes = new List<Type> (assembly.GetTypes ());
+      classes.Sort ((m1, m2) => m1.Name.CompareTo (m2.Name));
+
       foreach (var classType in classes)
       {
         if (classType.BaseType != null)
@@ -73,7 +75,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     private static void CallAllMethods (Type testClass)
     {
-      MethodInfo[] methods = testClass.GetMethods();
+      List<MethodInfo> methods = new List<MethodInfo>(testClass.GetMethods());
+      methods.Sort ((m1, m2) => m1.Name.CompareTo (m2.Name));
+      
       foreach (var methodInfo in methods)
       {
         object instance = Activator.CreateInstance (testClass);
