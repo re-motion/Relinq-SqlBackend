@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
@@ -25,7 +26,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
   internal class InheritanceTests:TestBase
   {
 
-    //This sample returns all contacts where the city is London.")]
+    /// <summary>
+    /// This sample returns all contacts where the city is London.
+    /// </summary>
+    [Test]
     public void LinqToSqlInheritance01 ()
     {
       var cons = from c in DB.Contacts
@@ -40,7 +44,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     }
 
-    //This sample uses OfType to return all customer contacts.")]
+    /// <summary>
+    /// This sample uses OfType to return all customer contacts.
+    /// </summary>
+    [Test]
     public void LinqToSqlInheritance02 ()
     {
       var cons = from c in DB.Contacts.OfType<CustomerContact> ()
@@ -49,7 +56,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses IS to return all shipper contacts.")]
+    /// <summary>
+    /// This sample uses IS to return all shipper contacts.
+    /// </summary>
+    [Test]
     public void LinqToSqlInheritance03 ()
     {
       var cons = from c in DB.Contacts
@@ -59,7 +69,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses AS to return FullContact or null.")]
+    /// <summary>
+    /// This sample uses AS to return FullContact or null.
+    /// </summary>
+    [Test]
     public void LinqToSqlInheritance04 ()
     {
       var cons = from c in DB.Contacts
@@ -68,7 +81,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses a cast to retrieve customer contacts who live in London.")]
+    /// <summary>
+    /// This sample uses a cast to retrieve customer contacts who live in London.
+    /// </summary>
+    [Test]
     public void LinqToSqlInheritance05 ()
     {
       var cons = from c in DB.Contacts

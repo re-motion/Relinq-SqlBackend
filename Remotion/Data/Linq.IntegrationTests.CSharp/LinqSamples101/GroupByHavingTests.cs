@@ -19,13 +19,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class GroupByHavingTests:TestBase
   {
-    //This sample uses group by to partition Products by CategoryID.
+    /// <summary>
+    /// This sample uses group by to partition Products by CategoryID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy01 ()
     {
       var q =
@@ -36,7 +41,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses group by and Max to find the maximum unit price for each CategoryID.
+    /// <summary>
+    /// This sample uses group by and Max to find the maximum unit price for each CategoryID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy02 ()
     {
       var q =
@@ -51,7 +59,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses group by and Min to find the minimum unit price for each CategoryID.")]
+    /// <summary>
+    /// This sample uses group by and Min to find the minimum unit price for each CategoryID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy03 ()
     {
       var q =
@@ -66,7 +77,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses group by and Average to find the average UnitPrice for each CategoryID.
+    /// <summary>
+    /// This sample uses group by and Average to find the average UnitPrice for each CategoryID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy04 ()
     {
       var q =
@@ -81,7 +95,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses group by and Sum to find the total UnitPrice for each CategoryID.
+    /// <summary>
+    /// This sample uses group by and Sum to find the total UnitPrice for each CategoryID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy05 ()
     {
       var q =
@@ -96,7 +113,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses group by and Count to find the number of Products in each CategoryID.")]
+    /// <summary>
+    /// This sample uses group by and Count to find the number of Products in each CategoryID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy06 ()
     {
       var q =
@@ -111,7 +131,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses group by and Count to find the number of Products in each CategoryID that are discontinued.")]
+    /// <summary>
+    /// This sample uses group by and Count to find the number of Products in each CategoryID that are discontinued.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy07 ()
     {
       var q =
@@ -126,7 +149,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses a where clause after a group by clause to find all categories that have at least 10 products.
+    /// <summary>
+    /// This sample uses a where clause after a group by clause to find all categories that have at least 10 products.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy08 ()
     {
       var q =
@@ -142,7 +168,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Group By to group products by CategoryID and SupplierID.")]
+    /// <summary>
+    /// This sample uses Group By to group products by CategoryID and SupplierID.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy09 ()
     {
       var categories =
@@ -153,8 +182,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (categories, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses Group By to return two sequences of products. The first sequence contains products with unit price 
-    //greater than 10. The second sequence contains products with unit price less than or equal to 10.
+    /// <summary>
+    /// This sample uses Group By to return two sequences of products. The first sequence contains products with unit price greater than 10.
+    /// The second sequence contains products with unit price less than or equal to 10.
+    /// </summary>
+    [Test]
     public void LinqToSqlGroupBy10 ()
     {
       var categories =

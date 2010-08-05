@@ -18,10 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class ConversionOperatorsTests:TestBase
   {
     private bool isValidProduct (Product p)
@@ -30,12 +32,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //This sample uses AsEnumerable so that the client-side IEnumerable<T> 
-    //implementation of Where is used, instead of the default IQueryable<T> 
-    //implementation which would be converted to SQL and executed 
-    //on the server.  This is necessary because the where clause 
-    //references a user-defined client-side method, isValidProduct, 
-    //which cannot be converted to SQL.
+    ///<summary>
+    ///This sample uses AsEnumerable so that the client-side IEnumerable<T> implementation of Where is used, 
+    ///instead of the default IQueryable<T> implementation which would be converted to SQL and executed on the server.
+    ///This is necessary because the where clause references a user-defined client-side method, isValidProduct, 
+    ///which cannot be converted to SQL.
+    ///</summary>
+    [Test]
     public void LinqToSqlConversion01 ()
     {
       var q =
@@ -46,9 +49,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses ToArray to immediately evaluate a query into an array 
-    //and get the 3rd element.")]
-
+    ///<summary>
+    ///This sample uses ToArray to immediately evaluate a query into an array and get the 3rd element.
+    ///</summary>
+    [Test]
     public void LinqToSqlConversion02 ()
     {
       var q =
@@ -60,7 +64,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (qArray[3], MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses ToList to immediately evaluate a query into a List<T>.")]
+    ///<summary>
+    ///This sample uses ToList to immediately evaluate a query into a List<T>.
+    ///</summary>
+    [Test]
     public void LinqToSqlConversion03 ()
     {
       var q =
@@ -72,8 +79,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (qList, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses ToDictionary to immediately evaluate a query and 
-    //a key expression into an Dictionary<K, T>.")]
+    ///<summary>
+    ///This sample uses ToDictionary to immediately evaluate a query and a key expression into an Dictionary<K, T>.
+    ///</summary>
+    [Test]
     public void LinqToSqlConversion04 ()
     {
       var q =

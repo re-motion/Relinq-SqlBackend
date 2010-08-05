@@ -18,16 +18,19 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class AdvancedTests:TestBase
   {
     ///<summary>
     ///This sample builds a query dynamically to return the contact name of each customer. 
-    ///The GetCommand method is used to get the generated T-SQL of the query.")]
+    ///The GetCommand method is used to get the generated T-SQL of the query.
     /// </summary>
+    [Test]
     public void LinqToSqlAdvanced01 ()
     {
       ParameterExpression param = Expression.Parameter (typeof (Customer), "c");
@@ -44,8 +47,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
     /// <summary>
-    /// This sample builds a query dynamically to filter for Customers in London.")] 
+    /// This sample builds a query dynamically to filter for Customers in London. 
     /// </summary>
+    [Test]
     public void LinqToSqlAdvanced02 ()
     {
       IQueryable<Customer> custs = DB.Customers;
@@ -63,8 +67,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     
     /// <summary>
     /// This sample builds a query dynamically to filter for Customers in London
-    /// and order them by ContactName.")]
+    /// and order them by ContactName.
     /// </summary>
+    [Test]
     public void LinqToSqlAdvanced03 ()
     {
       ParameterExpression param = Expression.Parameter (typeof (Customer), "c");
@@ -90,8 +95,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     ///<summary>
     ///This sample dynamically builds a Union to return a sequence of all countries where either 
-    ///a customer or an employee live.")]
+    ///a customer or an employee live.
     ///</summary>
+    [Test]
     public void LinqToSqlAdvanced04 ()
     {
       IQueryable<Customer> custs = DB.Customers;
@@ -117,8 +123,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     ///<summary>
     ///This sample uses orderbyDescending and Take to return the 
-    ///discontinued products of the top 10 most expensive products.")]
+    ///discontinued products of the top 10 most expensive products.
     ///</summary>
+    [Test]
     public void LinqToSqlAdvanced06 ()
     {
       var prods = from p in DB.Products.OrderByDescending (p => p.UnitPrice).Take (10)

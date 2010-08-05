@@ -15,18 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class WhereTests:TestBase
   {
-    //This sample uses WHERE to filter for Customers in London.
-
+    /// <summary>
+    /// This sample uses WHERE to filter for Customers in London.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere01 ()
     {
       var q =
@@ -36,7 +38,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses WHERE to filter for Employees hired during or after 1994.
+    /// <summary>
+    /// This sample uses WHERE to filter for Employees hired during or after 1994.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere02 ()
     {
       var q =
@@ -47,7 +52,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses WHERE to filter for Products that have stock below their reorder level and are not discontinued.
+    /// <summary>
+    /// This sample uses WHERE to filter for Products that have stock below their reorder level and are not discontinued.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere03 ()
     {
       var q =
@@ -58,7 +66,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses WHERE to filter out Products that are either UnitPrice is greater than 10 or is discontinued.
+    /// <summary>
+    /// This sample uses WHERE to filter out Products that are either UnitPrice is greater than 10 or is discontinued.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere04 ()
     {
       var q =
@@ -69,7 +80,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample calls WHERE twice to filter out Products that UnitPrice is greater than 10 and is discontinued.
+    /// <summary>
+    /// This sample calls WHERE twice to filter out Products that UnitPrice is greater than 10 and is discontinued.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere05 ()
     {
       var q =
@@ -78,21 +92,30 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses First to select the first Shipper in the table.
+    /// <summary>
+    /// This sample uses First to select the first Shipper in the table.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere06 ()
     {
       Shipper shipper = DB.Shippers.First ();
       TestExecutor.Execute (shipper, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses First to select the single Customer with CustomerID 'BONAP'.
+    /// <summary>
+    /// This sample uses First to select the single Customer with CustomerID 'BONAP'.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere07 ()
     {
       Customer cust = DB.Customers.First (c => c.CustomerID == "BONAP");
       TestExecutor.Execute (cust, MethodBase.GetCurrentMethod ());
     }
 
-    // This sample uses First to select an Order with freight greater than 10.00.
+    /// <summary>
+    ///  This sample uses First to select an Order with freight greater than 10.00.
+    /// </summary>
+    [Test]
     public void LinqToSqlWhere08 ()
     {
       Order ord = DB.Orders.First (o => o.Freight > 10.00M);

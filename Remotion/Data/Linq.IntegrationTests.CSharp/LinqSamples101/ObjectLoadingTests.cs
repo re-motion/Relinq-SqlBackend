@@ -18,30 +18,33 @@ using System;
 using System.Data.Linq;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class ObjectLoadingTests : TestBase
   {
+    //01 uses trigger, not necessary to test
     //This sample demonstrates how navigating through relationships in 
     //retrieved objects can end up triggering new queries to the database 
     //if the data was not requested by the original query.
-    public void LinqToSqlObject01 ()
-    {
-      var custs =
-          from c in DB.Customers
-          where c.City == "Sao Paulo"
-          select c;
+    //public void LinqToSqlObject01 ()
+    //{
+    //  var custs =
+    //      from c in DB.Customers
+    //      where c.City == "Sao Paulo"
+    //      select c;
 
-      TestExecutor.Execute (custs, MethodBase.GetCurrentMethod());
+    //  TestExecutor.Execute (custs, MethodBase.GetCurrentMethod());
 
-      //foreach (var cust in custs)
-      //{
-      //  foreach (var ord in cust.Orders)
-      //    serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
-      //}
-    }
+    //  //foreach (var cust in custs)
+    //  //{
+    //  //  foreach (var ord in cust.Orders)
+    //  //    serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
+    //  //}
+    //}
 
     //TODO: won't compile since needs Northwind object, do we need this test ?
     ////This sample demonstrates how to use LoadWith to request related 
@@ -149,27 +152,29 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //  }
     //}
 
-    //This sample demonstrates how navigating through relationships in 
-    //retrieved objects can result in triggering new queries to the database 
-    //if the data was not requested by the original query.")]
-    public void LinqToSqlObject05 ()
-    {
-      var emps = from e in DB.Employees
-                 select e;
+    //05 and 06 use Triggers - not necessary to test
 
-      TestExecutor.Execute (emps, MethodBase.GetCurrentMethod());
-    }
+    ////This sample demonstrates how navigating through relationships in 
+    ////retrieved objects can result in triggering new queries to the database 
+    ////if the data was not requested by the original query.")]
+    //public void LinqToSqlObject05 ()
+    //{
+    //  var emps = from e in DB.Employees
+    //             select e;
 
-    //This sample demonstrates how navigating through Link in 
-    //retrieved objects can end up triggering new queries to the database 
-    //if the data type is Link.")]
-    public void LinqToSqlObject06 ()
-    {
-      var emps = from c in DB.Employees
-                 select c;
+    //  TestExecutor.Execute (emps, MethodBase.GetCurrentMethod());
+    //}
 
-      TestExecutor.Execute (emps, MethodBase.GetCurrentMethod());
-    }
+    ////This sample demonstrates how navigating through Link in 
+    ////retrieved objects can end up triggering new queries to the database 
+    ////if the data type is Link.")]
+    //public void LinqToSqlObject06 ()
+    //{
+    //  var emps = from c in DB.Employees
+    //             select c;
+
+    //  TestExecutor.Execute (emps, MethodBase.GetCurrentMethod());
+    //}
 
 
     //TODO: won't compile since needs Northwind object, do we need this test ?

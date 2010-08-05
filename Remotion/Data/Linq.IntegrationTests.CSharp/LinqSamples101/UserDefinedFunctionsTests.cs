@@ -17,12 +17,17 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class UserDefinedFunctionsTests:TestBase
   {
-    //This sample demonstrates using a scalar user-defined function in a projection.")]
+    /// <summary>
+    /// This sample demonstrates using a scalar user-defined function in a projection.
+    /// </summary>
+    [Test]
     public void LinqToSqlUserDefined01 ()
     {
       var q = from c in DB.Categories
@@ -31,7 +36,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample demonstrates using a scalar user-defined function in a where clause.")]
+    /// <summary>
+    /// This sample demonstrates using a scalar user-defined function in a where clause.
+    /// </summary>
+    [Test]
     public void LinqToSqlUserDefined02 ()
     {
       var q = from p in DB.Products
@@ -41,7 +49,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample demonstrates selecting from a table-valued user-defined function.")]
+    /// <summary>
+    /// This sample demonstrates selecting from a table-valued user-defined function.
+    /// </summary>
+    [Test]
     public void LinqToSqlUserDefined03 ()
     {
       var q = from p in DB.ProductsUnderThisUnitPrice (10.25M)
@@ -51,7 +62,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample demonstrates joining to the results of a table-valued user-defined function.")]
+    /// <summary>
+    /// This sample demonstrates joining to the results of a table-valued user-defined function.
+    /// </summary>
+    [Test]
     public void LinqToSqlUserDefined04 ()
     {
       var q = from c in DB.Categories

@@ -18,9 +18,11 @@ using System;
 using System.Data.Linq.Mapping;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class GroupExternalMapping:TestBase
   {
     //This sample demonstrates how to create a data context that uses an external XML mapping source.

@@ -2,12 +2,17 @@
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class SqlMethodsTests:TestBase
   {
-    //This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.")]
+    /// <summary>
+    /// This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.
+    /// </summary>
+    [Test]
     public void LinqToSqlSqlMethods01 ()
     {
 
@@ -19,7 +24,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     }
 
-    //This sample uses SqlMethods to find all orders which shipped within 10 days the order created")]
+    /// <summary>
+    /// This sample uses SqlMethods to find all orders which shipped within 10 days the order created")]
+    /// </summary>
+    [Test]
     public void LinqToSqlSqlMethods02 ()
     {
 

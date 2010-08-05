@@ -19,13 +19,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class UnionAllIntersectTests:TestBase
   {
-    //This sample uses Concat to return a sequence of all Customer and Employee phone/fax numbers.")]
+    /// <summary>
+    /// This sample uses Concat to return a sequence of all Customer and Employee phone/fax numbers.
+    /// </summary>
+    [Test]
     public void LinqToSqlUnion01 ()
     {
       var q = (
@@ -42,7 +47,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Concat to return a sequence of all Customer and Employee name and phone number mappings.")]
+    /// <summary>
+    /// This sample uses Concat to return a sequence of all Customer and Employee name and phone number mappings.
+    /// </summary>
+    [Test]
     public void LinqToSqlUnion02 ()
     {
       var q = (
@@ -56,7 +64,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Union to return a sequence of all countries that either Customers or Employees are in.")]
+    /// <summary>
+    /// This sample uses Union to return a sequence of all countries that either Customers or Employees are in.
+    /// </summary>
+    [Test]
     public void LinqToSqlUnion03 ()
     {
       var q = (
@@ -70,7 +81,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Intersect to return a sequence of all countries that both Customers and Employees live in.")]
+    /// <summary>
+    /// This sample uses Intersect to return a sequence of all countries that both Customers and Employees live in.
+    /// </summary>
+    [Test]
     public void LinqToSqlUnion04 ()
     {
       var q = (
@@ -84,7 +98,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Except to return a sequence of all countries that Customers live in but no Employees live in.")]
+    /// <summary>
+    /// This sample uses Except to return a sequence of all countries that Customers live in but no Employees live in.
+    /// </summary>
+    [Test]
     public void LinqToSqlUnion05 ()
     {
       var q = (

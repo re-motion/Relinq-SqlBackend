@@ -17,13 +17,19 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class PagingTests:TestBase
   {
-    //This sample uses the Skip and Take operators to do paging by skipping the first 50 records and then returning the next 10, thereby 
-    //providing the data for page 6 of the Products table.")]
+    /// <summary>
+    /// This sample uses the Skip and Take operators to do paging by skipping 
+    /// the first 50 records and then returning the next 10, thereby providing the 
+    /// data for page 6 of the Products table.
+    /// </summary>
+    [Test]
     public void LinqToSqlPaging01 ()
     {
       var q = (
@@ -36,11 +42,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses a where clause and the Take operator to do paging by, 
-    //first filtering to get only the ProductIDs above 50 (the last ProductID 
-    //from page 5), then ordering by ProductID, and finally taking the first 10 results, 
-    //thereby providing the data for page 6 of the Products table.  
-    //Note that this method only works when ordering by a unique key.")]
+    /// <summary>
+    /// This sample uses a where clause and the Take operator to do paging by, first filtering to get 
+    /// only the ProductIDs above 50 (the last ProductID from page 5), then ordering by ProductID, and 
+    /// finally taking the first 10 results, thereby providing the data for page 6 of the Products table. 
+    /// Note that this method only works when ordering by a unique key.
+    /// </summary>
+    [Test]
     public void LinqToSqlPaging02 ()
     {
       var q = (

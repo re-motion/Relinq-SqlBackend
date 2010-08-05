@@ -15,18 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class ExistsInAnyAllContainsTests:TestBase
   {
-
-    //This sample uses Any to return only Customers that have no Orders.")]
+    ///<summary>
+    ///This sample uses Any to return only Customers that have no Orders.
+    ///</summary>
+    [Test]
     public void LinqToSqlExists01 ()
     {
       var q =
@@ -37,7 +38,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Any to return only Categories that have at least one Discontinued product.")]
+    /// <summary>
+    /// This sample uses Any to return only Categories that have at least one Discontinued product.
+    /// </summary>
+    [Test]
     public void LinqToSqlExists02 ()
     {
       var q =
@@ -48,7 +52,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses All to return Customers whom all of their orders have been shipped to their own city or whom have no orders.")]
+    /// <summary>
+    /// This sample uses All to return Customers whom all of their orders have been shipped to their own city or whom have no orders.
+    /// </summary>
+    [Test]
     public void LinqToSqlExists03 ()
     {
       var q =
@@ -59,7 +66,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Contain to find which Customer contains an order with OrderID 10248.")]
+    /// <summary>
+    /// This sample uses Contain to find which Customer contains an order with OrderID 10248.
+    /// </summary>
+    [Test]
     public void LinqToSqlExists04 ()
     {
       var order = (from o in DB.Orders
@@ -71,7 +81,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (new { order, q }, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")]
+    /// <summary>
+    /// This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.
+    /// </summary>
+    [Test]
     public void LinqToSqlExists05 ()
     {
       string[] cities = new string[] { "Seattle", "London", "Vancouver", "Paris" };

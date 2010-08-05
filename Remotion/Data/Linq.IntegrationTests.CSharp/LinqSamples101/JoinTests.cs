@@ -15,18 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class JoinTests:TestBase
   {
-    // This sample uses foreign key navigation in the " +
-    //             "from clause to select all orders for customers in London.")]
+    /// <summary>
+    ///  This sample uses foreign key navigation in the from clause to select all orders for customers in London.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin01 ()
     {
       var q =
@@ -38,9 +39,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample uses foreign key navigation in the " +
-    //             "where clause to filter for Products whose Supplier is in the USA " +
-    //             "that are out of stock.")]
+    /// <summary>
+    ///  This sample uses foreign key navigation in the where clause to filter for Products whose Supplier is in the USA that are out of stock.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin02 ()
     {
       var q =
@@ -51,9 +53,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample uses foreign key navigation in the " +
-    //             "from clause to filter for employees in Seattle, " +
-    //             "and also list their territories.")]
+    /// <summary>
+    ///  This sample uses foreign key navigation in the from clause to filter for employees in Seattle, and also list their territories.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin03 ()
     {
       var q =
@@ -65,10 +68,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample uses foreign key navigation in the " +
-    //             "select clause to filter for pairs of employees where " +
-    //             "one employee reports to the other and where " +
-    //             "both employees are from the same City.")]
+    /// <summary>
+    ///  This sample uses foreign key navigation in the select clause to filter for pairs of employees where one employee reports to the other and where both employees are from the same City.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin04 ()
     {
       var q =
@@ -87,7 +90,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample explicitly joins two tables and projects results from both tables.")]
+    /// <summary>
+    ///  This sample explicitly joins two tables and projects results from both tables.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin05 ()
     {
       var q =
@@ -98,7 +104,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample explicitly joins three tables and projects results from each of them.")]
+    /// <summary>
+    ///  This sample explicitly joins three tables and projects results from each of them.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin06 ()
     {
       var q =
@@ -110,8 +119,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty().
-    //The DefaultIfEmpty() method returns null when there is no Order for the Employee.")]
+    /// <summary>
+    ///  This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin07 ()
     {
       var q =
@@ -123,7 +134,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample projects a 'let' expression resulting from a join.")]
+    /// <summary>
+    ///  This sample projects a 'let' expression resulting from a join.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin08 ()
     {
       var q =
@@ -136,7 +150,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample shows a join with a composite key.")]
+    /// <summary>
+    ///  This sample shows a join with a composite key.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin09 ()
     {
       var q =
@@ -151,7 +168,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // This sample shows how to construct a join where one side is nullable and the other is not.")]
+    /// <summary>
+    ///  This sample shows how to construct a join where one side is nullable and the other is not.
+    /// </summary>
+    [Test]
     public void LinqToSqlJoin10 ()
     {
       var q =

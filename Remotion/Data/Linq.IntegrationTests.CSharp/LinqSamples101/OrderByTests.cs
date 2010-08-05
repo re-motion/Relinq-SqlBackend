@@ -19,13 +19,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class OrderByTests:TestBase
+  [TestFixture]
+  internal class OrderByTests:TestBase
   {
-    //This sample uses orderby to sort Employees by hire date.
+    /// <summary>
+    /// This sample uses orderby to sort Employees by hire date.
+    /// </summary>
+    [Test]
     public void LinqToSqlOrderBy01 ()
     {
       var q =
@@ -36,7 +41,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses where and orderby to sort Orders shipped to London by freight.
+    /// <summary>
+    /// This sample uses where and orderby to sort Orders shipped to London by freight.
+    /// </summary>
+    [Test]
     public void LinqToSqlOrderBy02 ()
     {
       var q =
@@ -48,7 +56,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses orderby to sort Products by unit price from highest to lowest.
+    /// <summary>
+    /// This sample uses orderby to sort Products by unit price from highest to lowest.
+    /// </summary>
+    [Test]
     public void LinqToSqlOrderBy03 ()
     {
       var q =
@@ -59,7 +70,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses a compound orderby to sort Customers by city and then contact name.
+    /// <summary>
+    /// This sample uses a compound orderby to sort Customers by city and then contact name.
+    /// </summary>
+    [Test]
     public void LinqToSqlOrderBy04 ()
     {
       var q =
@@ -70,7 +84,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses orderby to sort Orders from EmployeeID 1 by ship-to country, and then by freight from highest to lowest.
+    /// <summary>
+    /// This sample uses orderby to sort Orders from EmployeeID 1 by ship-to country, and then by freight from highest to lowest.
+    /// </summary>
+    [Test]
     public void LinqToSqlOrderBy05 ()
     {
       var q =
@@ -83,8 +100,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //This sample uses orderby, Max and Group By to find the Products that have the highest unit price in 
-    //each category, and sorts the group by category id.
+    /// <summary>
+    /// This sample uses orderby, Max and Group By to find the Products that have the highest 
+    /// unit price in each category, and sorts the group by category id.
+    /// </summary>
+    [Test]
     public void LinqToSqlOrderBy06 ()
     {
       var categories =

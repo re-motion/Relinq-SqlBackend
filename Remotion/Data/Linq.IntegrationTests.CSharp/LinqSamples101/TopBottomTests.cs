@@ -17,12 +17,17 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class TopBottomTests : TestBase
   {
-    //This sample uses Take to select the first 5 Employees hired.")]
+    /// <summary>
+    /// This sample uses Take to select the first 5 Employees hired.
+    /// </summary>
+    [Test]
     public void LinqToSqlTop01 ()
     {
       var q = (
@@ -34,7 +39,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Skip to select all but the 10 most expensive Products.")]
+    /// <summary>
+    /// This sample uses Skip to select all but the 10 most expensive Products.
+    /// </summary>
+    [Test]
     public void LinqToSqlTop02 ()
     {
       var q = (

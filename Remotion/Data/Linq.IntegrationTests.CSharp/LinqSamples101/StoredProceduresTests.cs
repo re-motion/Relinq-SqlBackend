@@ -19,13 +19,18 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class StoredProceduresTests:TestBase
   {
-    //This sample uses a stored procedure to return the number of Customers in the 'WA' Region.")]
+    /// <summary>
+    /// This sample uses a stored procedure to return the number of Customers in the 'WA' Region.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc01 ()
     {
       int count = DB.CustomersCountByRegion ("WA");
@@ -33,8 +38,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (count, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses a stored procedure to return the CustomerID, ContactName, CompanyName
-    // and City of customers who are in London.")]
+    /// <summary>
+    /// This sample uses a stored procedure to return the CustomerID, ContactName, CompanyName and City of customers who are in London.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc02 ()
     {
       ISingleResult<CustomersByCityResult> result = DB.CustomersByCity ("London");
@@ -42,10 +49,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (result, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses a stored procedure to return a set of 
-    //Customers in the 'WA' Region.  The result set-shape returned depends on the parameter passed in. 
-    //If the parameter equals 1, all Customer properties are returned. 
-    //If the parameter equals 2, the CustomerID, ContactName and CompanyName properties are returned.")]
+    /// <summary>
+    /// This sample uses a stored procedure to return a set of Customers in the 'WA' Region.
+    /// The result set-shape returned depends on the parameter passed in. If the parameter equals 1, 
+    /// all Customer properties are returned. If the parameter equals 2, the CustomerID, ContactName and
+    /// CompanyName properties are returned.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc03_1 ()
     {
       IMultipleResults result = DB.WholeOrPartialCustomersSet (1);
@@ -54,10 +64,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (shape1, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses a stored procedure to return a set of 
-    //Customers in the 'WA' Region.  The result set-shape returned depends on the parameter passed in. 
-    //If the parameter equals 1, all Customer properties are returned. 
-    //If the parameter equals 2, the CustomerID, ContactName and CompanyName properties are returned.")]
+    /// <summary>
+    /// This sample uses a stored procedure to return a set of Customers in the 'WA' Region.  
+    /// The result set-shape returned depends on the parameter passed in. If the parameter equals 1, 
+    /// all Customer properties are returned. If the parameter equals 2, the CustomerID, ContactName 
+    /// and CompanyName properties are returned.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc03_2 ()
     {
       IMultipleResults result = DB.WholeOrPartialCustomersSet (2);
@@ -66,7 +79,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (shape2, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.")]
+    /// <summary>
+    /// This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc04_1 ()
     {
       IMultipleResults result = DB.GetCustomerAndOrders ("SEVES");
@@ -75,7 +91,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (customer, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.")]
+    /// <summary>
+    /// This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc04_2 ()
     {
       IMultipleResults result = DB.GetCustomerAndOrders ("SEVES");
@@ -84,7 +103,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (orders, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses a stored procedure that returns an out parameter.")]
+    /// <summary>
+    /// This sample uses a stored procedure that returns an out parameter.
+    /// </summary>
+    [Test]
     public void LinqToSqlStoredProc05 ()
     {
       decimal? totalSales = 0;

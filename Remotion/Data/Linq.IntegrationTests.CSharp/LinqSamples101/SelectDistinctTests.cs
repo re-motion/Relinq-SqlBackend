@@ -15,18 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Xml.Linq;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   class SelectDistinctTests:TestBase
   {
-    //This sample uses SELECT to return a sequence of just the Customers' contact names.
+    /// <summary>
+    /// This sample uses SELECT to return a sequence of just the Customers' contact names.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect01 ()
     {
       var q =
@@ -36,7 +38,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses SELECT and anonymous types to return a sequence of just the Customers' contact names and phone numbers.
+    /// <summary>
+    /// This sample uses SELECT and anonymous types to return a sequence of just the Customers' contact names and phone numbers.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect02 ()
     {
       var q =
@@ -46,9 +51,12 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses SELECT and anonymous types to return a sequence of just the Employees' names and phone numbers, 
-    //with the FirstName and LastName fields combined into a single field, 'Name', and the HomePhone field renamed to
-    //Phone in the resulting sequence.
+    /// <summary>
+    /// This sample uses SELECT and anonymous types to return a sequence of just the Employees' 
+    /// names and phone numbers, with the FirstName and LastName fields combined into a single field, 
+    /// 'Name', and the HomePhone field renamed to Phone in the resulting sequence.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect03 ()
     {
       var q =
@@ -58,9 +66,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses SELECT and anonymous types to return 
-    //a sequence of all Products' IDs and a calculated value 
-    //called HalfPrice which is set to the Product's UnitPrice divided by 2.
+    /// <summary>
+    /// This sample uses SELECT and anonymous types to return a sequence of all Products' IDs 
+    /// and a calculated value called HalfPrice which is set to the Product's UnitPrice divided by 2.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect04 ()
     {
       var q =
@@ -69,7 +79,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses SELECT and a conditional statement to return a sequence of product name and product availability.
+    /// <summary>
+    /// This sample uses SELECT and a conditional statement to return a sequence of product name and product availability.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect05 ()
     {
       var q =
@@ -79,7 +92,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses SELECT and a known type to return a sequence of employees' names.
+    /// <summary>
+    /// This sample uses SELECT and a known type to return a sequence of employees' names.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect06 ()
     {
       var q =
@@ -89,9 +105,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //[Category ("Select/Distinct")]
-    //[Title ("Select - Filtered")]
-    //[Description ("This sample uses SELECT and WHERE to return a sequence of just the London Customers' contact names.
+    /// <summary>
+    /// This sample uses SELECT and WHERE to return a sequence of just the London Customers' contact names.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect07 ()
     {
       var q =
@@ -102,10 +119,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //[Category ("Select/Distinct")]
-    //[Title ("Select - Shaped")]
-    //[Description ("This sample uses SELECT and anonymous types to return " +
-    //             "a shaped subset of the data about Customers.")]
+    /// <summary>
+    /// This sample uses SELECT and anonymous types to return a shaped subset of the data about Customers.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect08 ()
     {
       var q =
@@ -120,12 +137,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //[Category ("Select/Distinct")]
-    //[Title ("Select - Nested ")]
-    //[Description ("This sample uses nested queries to return a sequence of " +
-    //             "all orders containing their OrderID, a subsequence of the " +
-    //             "items in the order where there is a discount, and the money " +
-    //             "saved if shipping is not included.")]
+    /// <summary>
+    /// This sample uses nested queries to return a sequence of all orders containing their OrderID, 
+    /// a subsequence of the items in the order where there is a discount, and the money saved if shipping is not included.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect09 ()
     {
       var q =
@@ -143,10 +159,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    // Phone converter that converts a phone number to 
-    // an international format based on its country.
-    // This sample only supports USA and UK formats, for 
-    // phone numbers from the Northwind database.
+    /// <summary>
+    ///  Phone converter that converts a phone number to an international format based on its country. 
+    ///  This sample only supports USA and UK formats, for phone numbers from the Northwind database.
+    /// </summary>
+    [Test]
     public string PhoneNumberConverter (string Country, string Phone)
     {
       Phone = Phone.Replace (" ", "").Replace (")", ")-");
@@ -161,8 +178,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       }
     }
 
-    //This sample uses a Local Method Call to 'PhoneNumberConverter' to convert Phone number " +
-    //             "to an international format.")]
+    /// <summary>
+    /// This sample uses a Local Method Call to 'PhoneNumberConverter' to convert Phone number to an international format.
+    /// </summary>
+    [Test]
     public void LinqToSqlLocalMethodCall01 ()
     {
       var q = from c in DB.Customers
@@ -172,7 +191,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
+    /// <summary>
+    /// This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
+    /// </summary>
+    [Test]
     public void LinqToSqlLocalMethodCall02 ()
     {
       XDocument doc = new XDocument (
@@ -188,7 +210,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //This sample uses Distinct to select a sequence of the unique cities that have Customers.
+    /// <summary>
+    /// This sample uses Distinct to select a sequence of the unique cities that have Customers.
+    /// </summary>
+    [Test]
     public void LinqToSqlSelect10 ()
     {
       var q = (

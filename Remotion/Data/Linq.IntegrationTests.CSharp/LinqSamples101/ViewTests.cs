@@ -17,13 +17,17 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
+  [TestFixture]
   internal class ViewTests:TestBase
   {
-    //This sample uses SELECT and WHERE to return a sequence of invoices
-    //where shipping city is London.")]
+    /// <summary>
+    /// This sample uses SELECT and WHERE to return a sequence of invoices where shipping city is London.
+    /// </summary>
+    [Test]
     public void LinqToSqlView01 ()
     {
       var q =
@@ -34,7 +38,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses SELECT to query QuarterlyOrders.")]
+    /// <summary>
+    /// This sample uses SELECT to query QuarterlyOrders.
+    /// </summary>
+    [Test]
     public void LinqToSqlView02 ()
     {
       var q =

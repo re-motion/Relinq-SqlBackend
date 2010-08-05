@@ -17,16 +17,17 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  /// <summary>
-  ///  für die COUNT/SUM/MIN/MAX/AVG
-  /// </summary>
+  [TestFixture]
   internal class AggregatesTests : TestBase
   {
-    //[Title ("Count - Simple")]
-    //[Description ("This sample uses Count to find the number of Customers in the database.")]
+    ///<summary>
+    ///This sample uses Count to find the number of Customers in the database.
+    ///</summary>
+    [Test]
     public void LinqToSqlCount01 ()
     {
       var q = DB.Customers.Count();
@@ -34,9 +35,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Count - Conditional")]
-    //[Description ("This sample uses Count to find the number of Products in the database " +
-    //             "that are not discontinued.")]
+    ///<summary>
+    ///This sample uses Count to find the number of Products in the database that are not discontinued.
+    ///</summary>
+    [Test]
     public void LinqToSqlCount02 ()
     {
       var q = DB.Products.Count (p => !p.Discontinued);
@@ -44,17 +46,20 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Sum - Simple")]
-    //[Description ("This sample uses Sum to find the total freight over all Orders.")]
+    /// <summary>
+    /// This sample uses Sum to find the total freight over all Orders.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount03 ()
     {
       var q = DB.Orders.Select (o => o.Freight).Sum();
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-
-    //[Title ("Sum - Mapped")]
-    //[Description ("This sample uses Sum to find the total number of units on order over all Products.")]
+    /// <summary>
+    ///This sample uses Sum to find the total number of units on order over all Products.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount04 ()
     {
       var q = DB.Products.Sum (p => p.UnitsOnOrder);
@@ -62,8 +67,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Min - Simple")]
-    //[Description ("This sample uses Min to find the lowest unit price of any Product.")]
+    /// <summary>
+    /// This sample uses Min to find the lowest unit price of any Product.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount05 ()
     {
       var q = DB.Products.Select (p => p.UnitPrice).Min();
@@ -71,8 +78,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Min - Mapped")]
-    //[Description ("This sample uses Min to find the lowest freight of any Order.")]
+    /// <summary>
+    /// This sample uses Min to find the lowest freight of any Order.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount06 ()
     {
       var q = DB.Orders.Min (o => o.Freight);
@@ -80,9 +89,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Min - Elements")]
-    //[Description ("This sample uses Min to find the Products that have the lowest unit price " +
-    //             "in each category.")]
+    /// <summary>
+    /// This sample uses Min to find the Products that have the lowest unit price in each category.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount07 ()
     {
       var categories =
@@ -102,8 +112,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Max - Simple")]
-    //[Description ("This sample uses Max to find the latest hire date of any Employee.")]
+    /// <summary>
+    /// This sample uses Max to find the latest hire date of any Employee.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount08 ()
     {
       var q = DB.Employees.Select (e => e.HireDate).Max();
@@ -111,8 +123,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Max - Mapped")]
-    //[Description ("This sample uses Max to find the most units in stock of any Product.")]
+    /// <summary>
+    /// This sample uses Max to find the most units in stock of any Product.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount09 ()
     {
       var q = DB.Products.Max (p => p.UnitsInStock);
@@ -120,9 +134,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Max - Elements")]
-    //[Description ("This sample uses Max to find the Products that have the highest unit price " +
-    //             "in each category.")]
+    /// <summary>
+    /// This sample uses Max to find the Products that have the highest unit price in each category.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount10 ()
     {
       var categories =
@@ -142,8 +157,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Average - Simple")]
-    //[Description ("This sample uses Average to find the average freight of all Orders.")]
+    /// <summary>
+    /// This sample uses Average to find the average freight of all Orders.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount11 ()
     {
       var q = DB.Orders.Select (o => o.Freight).Average();
@@ -151,8 +168,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Average - Mapped")]
-    //[Description ("This sample uses Average to find the average unit price of all Products.")]
+    /// <summary>
+    /// This sample uses Average to find the average unit price of all Products.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount12 ()
     {
       var q = DB.Products.Average (p => p.UnitPrice);
@@ -160,9 +179,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
 
-    //[Title ("Average - Elements")]
-    //[Description ("This sample uses Average to find the Products that have unit price higher than " +
-    //             "the average unit price of the category for each category.")]
+    /// <summary>
+    /// This sample uses Average to find the Products that have unit price higher than the average unit price of the category for each category.
+    /// </summary>
+    [Test]
     public void LinqToSqlCount13 ()
     {
       var categories =
