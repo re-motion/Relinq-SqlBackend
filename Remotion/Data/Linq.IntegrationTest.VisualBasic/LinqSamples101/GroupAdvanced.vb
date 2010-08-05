@@ -2,17 +2,9 @@
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
 Imports System.Linq
 Imports System.Linq.Expressions
-Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
-Imports System.Data.Linq
-Imports System.Text
 
 Namespace LinqSamples101
   Public Class GroupAdvanced

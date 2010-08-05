@@ -122,7 +122,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    'TODO: Additional Method
+    'TODO: in vb but not in c#
     'Additional methods
 
     '  <Category("Your First LINQ Query")> _

@@ -2,12 +2,7 @@
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
 Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
 Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 Imports Remotion.Data.Linq.IntegrationTests.Utilities
@@ -22,20 +17,11 @@ Namespace LinqSamples101
     Public Shared Sub Main()
       InitSample()
 
-      Dim mscorlib As Assembly = Assembly.Load("Remotion.Data.Linq.IntegrationTest.VisualBasic")
 
-      For Each type As Type In mscorlib.GetTypes()
 
-        If type.BaseType <> Nothing Then
-          If type.BaseType.Name.Equals("Executor") Then
-            Debug.Print("Call Methods Class: " + type.Name)
-            CallAllMethods(type)
-          End If
-        End If
+      'ExecuteAllSamples()
 
-      Next
-
-      'CallAllMethods(GetType(GroupStoredProcedures))
+      CallAllMethods(GetType(GroupExternalMapping))
       Debug.Print("All Methods executed")
       'Console.Read()
     End Sub
@@ -72,6 +58,20 @@ Namespace LinqSamples101
                         + testClass.Name _
                         + " executed " _
                         + System.Environment.NewLine)
+    End Sub
+
+    Private Shared Sub ExecuteAllSamples()
+      Dim mscorlib As Assembly = Assembly.Load("Remotion.Data.Linq.IntegrationTest.VisualBasic")
+      For Each type As Type In mscorlib.GetTypes()
+
+        If type.BaseType <> Nothing Then
+          If type.BaseType.Name.Equals("Executor") Then
+            Debug.Print("Call Methods Class: " + type.Name)
+            CallAllMethods(type)
+          End If
+        End If
+
+      Next
     End Sub
 
   End Class

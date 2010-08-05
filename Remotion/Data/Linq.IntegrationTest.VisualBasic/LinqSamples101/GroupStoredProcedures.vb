@@ -56,7 +56,7 @@ Namespace LinqSamples101
       serializer.Serialize(customer)
       serializer.Serialize(Environment.NewLine)
 
-      'TODO in c# but not here
+      'TODO in c# but not in vb
       'serializer.Serialize("********** Orders Result-set ***********");
       '      IEnumerable<OrdersResultSet> orders = result.GetResult<OrdersResultSet>();
       '      serializer.Serialize(orders);
