@@ -20,42 +20,28 @@ using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupNull:TestBase
+  internal class TopBottomTests : TestBase
   {
-    //This sample uses the null value to find Employees " +
-    //"that do not report to another Employee.")]
-    public void LinqToSqlNull01 ()
+    //This sample uses Take to select the first 5 Employees hired.")]
+    public void LinqToSqlTop01 ()
     {
-      var q =
-          from e in DB.Employees
-          where e.ReportsToEmployee == null
-          select e;
+      var q = (
+                  from e in DB.Employees
+                  orderby e.HireDate
+                  select e)
+          .Take (5);
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-    //This sample uses Nullable<T>.HasValue to find Employees " +
-    //"that do not report to another Employee.")]
-    public void LinqToSqlNull02 ()
+    //This sample uses Skip to select all but the 10 most expensive Products.")]
+    public void LinqToSqlTop02 ()
     {
-      var q =
-          from e in DB.Employees
-          where !e.ReportsTo.HasValue
-          select e;
-
-      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
-    }
-
-    //This sample uses Nullable<T>.Value for Employees " +
-    //"that report to another Employee to return the " +
-    //"EmployeeID number of that employee.  Note that " +
-    //the .Value is optional.")]
-    public void LinqToSqlNull03 ()
-    {
-      var q =
-          from e in DB.Employees
-          where e.ReportsTo.HasValue
-          select new { e.FirstName, e.LastName, ReportsTo = e.ReportsTo.Value };
+      var q = (
+                  from p in DB.Products
+                  orderby p.UnitPrice descending
+                  select p)
+          .Skip (10);
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }

@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupJoin:TestBase
+  class JoinTests:TestBase
   {
     // This sample uses foreign key navigation in the " +
     //             "from clause to select all orders for customers in London.")]

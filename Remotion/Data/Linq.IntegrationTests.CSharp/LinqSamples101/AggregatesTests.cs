@@ -23,7 +23,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
   /// <summary>
   ///  für die COUNT/SUM/MIN/MAX/AVG
   /// </summary>
-  internal class GroupAggregates : TestBase
+  internal class AggregatesTests : TestBase
   {
     //[Title ("Count - Simple")]
     //[Description ("This sample uses Count to find the number of Customers in the database.")]

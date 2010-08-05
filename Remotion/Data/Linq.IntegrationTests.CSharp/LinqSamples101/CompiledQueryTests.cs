@@ -22,7 +22,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupCompiledQuery : TestBase
+  internal class CompiledQueryTests : TestBase
   {
     //TODO: Won't compile since INorthwindDataProvider is no subtype of DataContext, which is necessary for using CompiledQuery.Compile(..) - Check if tests are necessary
     ////This sample create a compiled query and then use it to retrieve customers of the input city")]

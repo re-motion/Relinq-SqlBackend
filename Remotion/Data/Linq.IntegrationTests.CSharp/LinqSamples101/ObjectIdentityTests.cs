@@ -21,7 +21,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupObjectIdentity:TestBase
+  internal class ObjectIdentityTests:TestBase
   {
     //This sample demonstrates how, upon executing the same query twice, " +
     //you will receive a reference to the same object in memory each time.")]

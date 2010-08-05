@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupGroupByHaving:TestBase
+  class GroupByHavingTests:TestBase
   {
     //This sample uses group by to partition Products by CategoryID.
     public void LinqToSqlGroupBy01 ()

@@ -40,6 +40,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     IQueryable<Invoices> Invoices { get; set; }
     IQueryable<QuarterlyOrder> QuarterlyOrders { get; set; }
     IQueryable<Shipper> Shippers { get; set; }
+    IQueryable<Supplier> Suppliers { get; set; }
 
     DbCommand GetCommand (IQueryable<string> query);
     decimal? TotalProductUnitPriceByCategory (int categoryID);

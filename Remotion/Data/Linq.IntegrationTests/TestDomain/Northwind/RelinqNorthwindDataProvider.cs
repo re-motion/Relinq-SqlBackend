@@ -65,6 +65,12 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       set { throw new NotImplementedException(); }
     }
 
+    public IQueryable<Supplier> Suppliers
+    {
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
+
     public EntitySet<Order> Orders
     {
       get { throw new NotImplementedException(); }

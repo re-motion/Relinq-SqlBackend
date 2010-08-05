@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupWhere:TestBase
+  class WhereTests:TestBase
   {
     //This sample uses WHERE to filter for Customers in London.
 

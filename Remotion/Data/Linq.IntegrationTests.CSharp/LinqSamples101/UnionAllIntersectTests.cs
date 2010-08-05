@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupUnionAllIntersect:TestBase
+  class UnionAllIntersectTests:TestBase
   {
     //This sample uses Concat to return a sequence of all Customer and Employee phone/fax numbers.")]
     public void LinqToSqlUnion01 ()

@@ -22,7 +22,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupObjectLoading : TestBase
+  internal class ObjectLoadingTests : TestBase
   {
     //This sample demonstrates how navigating through relationships in 
     //retrieved objects can end up triggering new queries to the database 

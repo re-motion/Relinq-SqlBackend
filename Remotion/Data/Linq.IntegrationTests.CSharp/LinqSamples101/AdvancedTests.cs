@@ -22,10 +22,12 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupAdvanced:TestBase
+  internal class AdvancedTests:TestBase
   {
-    //This sample builds a query dynamically to return the contact name of each customer. 
-    //The GetCommand method is used to get the generated T-SQL of the query.")]
+    ///<summary>
+    ///This sample builds a query dynamically to return the contact name of each customer. 
+    ///The GetCommand method is used to get the generated T-SQL of the query.")]
+    /// </summary>
     public void LinqToSqlAdvanced01 ()
     {
       ParameterExpression param = Expression.Parameter (typeof (Customer), "c");
@@ -41,7 +43,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    //This sample builds a query dynamically to filter for Customers in London.")]
+    /// <summary>
+    /// This sample builds a query dynamically to filter for Customers in London.")] 
+    /// </summary>
     public void LinqToSqlAdvanced02 ()
     {
       IQueryable<Customer> custs = DB.Customers;
@@ -56,8 +60,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    //This sample builds a query dynamically to filter for Customers in London
-    //and order them by ContactName.")]
+    
+    /// <summary>
+    /// This sample builds a query dynamically to filter for Customers in London
+    /// and order them by ContactName.")]
+    /// </summary>
     public void LinqToSqlAdvanced03 ()
     {
       ParameterExpression param = Expression.Parameter (typeof (Customer), "c");
@@ -81,8 +88,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    //This sample dynamically builds a Union to return a sequence of all countries where either 
-    //a customer or an employee live.")]
+    ///<summary>
+    ///This sample dynamically builds a Union to return a sequence of all countries where either 
+    ///a customer or an employee live.")]
+    ///</summary>
     public void LinqToSqlAdvanced04 ()
     {
       IQueryable<Customer> custs = DB.Customers;
@@ -106,8 +115,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q3, MethodBase.GetCurrentMethod ());
     }
 
-    //This sample uses orderbyDescending and Take to return the 
-    //discontinued products of the top 10 most expensive products.")]
+    ///<summary>
+    ///This sample uses orderbyDescending and Take to return the 
+    ///discontinued products of the top 10 most expensive products.")]
+    ///</summary>
     public void LinqToSqlAdvanced06 ()
     {
       var prods = from p in DB.Products.OrderByDescending (p => p.UnitPrice).Take (10)

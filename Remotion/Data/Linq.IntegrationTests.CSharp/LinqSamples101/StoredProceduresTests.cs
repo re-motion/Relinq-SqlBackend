@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupStoredProcedures:TestBase
+  internal class StoredProceduresTests:TestBase
   {
     //This sample uses a stored procedure to return the number of Customers in the 'WA' Region.")]
     public void LinqToSqlStoredProc01 ()

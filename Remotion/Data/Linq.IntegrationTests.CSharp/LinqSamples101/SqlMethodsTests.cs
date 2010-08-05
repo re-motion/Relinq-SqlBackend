@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupSqlMethods:TestBase
+  class SqlMethodsTests:TestBase
   {
     //This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.")]
     public void LinqToSqlSqlMethods01 ()

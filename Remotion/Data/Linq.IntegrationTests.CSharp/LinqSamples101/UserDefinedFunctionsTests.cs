@@ -20,7 +20,7 @@ using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupUserDefinedFunctions:TestBase
+  internal class UserDefinedFunctionsTests:TestBase
   {
     //This sample demonstrates using a scalar user-defined function in a projection.")]
     public void LinqToSqlUserDefined01 ()

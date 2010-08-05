@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupExistsInAnyAllContains:TestBase
+  class ExistsInAnyAllContainsTests:TestBase
   {
 
     //This sample uses Any to return only Customers that have no Orders.")]

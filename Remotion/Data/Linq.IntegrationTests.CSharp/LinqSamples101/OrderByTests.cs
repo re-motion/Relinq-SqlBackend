@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupOrderBy:TestBase
+  class OrderByTests:TestBase
   {
     //This sample uses orderby to sort Employees by hire date.
     public void LinqToSqlOrderBy01 ()

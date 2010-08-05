@@ -22,7 +22,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupConversionOperators:TestBase
+  internal class ConversionOperatorsTests:TestBase
   {
     private bool isValidProduct (Product p)
     {
@@ -74,7 +74,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
     //This sample uses ToDictionary to immediately evaluate a query and 
     //a key expression into an Dictionary<K, T>.")]
-
     public void LinqToSqlConversion04 ()
     {
       var q =
@@ -82,14 +81,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
           where p.UnitsInStock <= p.ReorderLevel && !p.Discontinued
           select p;
 
-      Dictionary<int, Product> qDictionary = q.ToDictionary (p => p.ProductID);
 
-      foreach (int key in qDictionary.Keys)
-      {
-        serializer.Serialize (string.Format ("Key {0}:", key));
-        serializer.Serialize (qDictionary[key]);
-        serializer.Serialize (Environment.NewLine);
-      }
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }

@@ -22,7 +22,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupInheritance:TestBase
+  internal class InheritanceTests:TestBase
   {
 
     //This sample returns all contacts where the city is London.")]

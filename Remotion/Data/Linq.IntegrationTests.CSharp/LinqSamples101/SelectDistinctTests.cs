@@ -24,7 +24,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupSelectDistinct:TestBase
+  class SelectDistinctTests:TestBase
   {
     //This sample uses SELECT to return a sequence of just the Customers' contact names.
     public void LinqToSqlSelect01 ()
@@ -184,7 +184,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
                                          new XAttribute ("InternationalPhone", PhoneNumberConverter (c.Country, c.Phone))
                                          ))));
 
-      serializer.Serialize (doc.ToString ());
+      TestExecutor.Execute (doc, MethodBase.GetCurrentMethod());
     }
 
 
