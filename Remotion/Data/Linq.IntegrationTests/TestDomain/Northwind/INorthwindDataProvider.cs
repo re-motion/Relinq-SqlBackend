@@ -16,12 +16,15 @@
 // 
 using System;
 using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   public interface INorthwindDataProvider
   {
+    MetaModel NorthwindMetaModel{ get; }
+
     IQueryable<Product> Products { get;  }
     IQueryable<Customer> Customers { get; }
     IQueryable<Employee> Employees { get; }

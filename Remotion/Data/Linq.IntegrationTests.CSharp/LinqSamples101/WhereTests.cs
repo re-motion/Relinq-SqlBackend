@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -22,8 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  [TestFixture]
-  class WhereTests:TestBase
+  public class WhereTests:TestBase
   {
     /// <summary>
     /// This sample uses WHERE to filter for Customers in London.
@@ -35,6 +35,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
           from c in DB.Customers
           where c.City == "London"
           select c;
+
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 

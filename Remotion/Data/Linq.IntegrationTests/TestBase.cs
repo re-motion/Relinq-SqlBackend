@@ -10,6 +10,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests
 {
+  [TestFixture]
   public class TestBase 
   {
     public TestMode Mode = TestMode.SaveReferenceResults;

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -23,6 +24,11 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
   internal class LinqToSqlNorthwindDataProvider : INorthwindDataProvider
   {
     private readonly Northwind _dataContext = new Northwind ("Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;");
+
+    public MetaModel NorthwindMetaModel
+    {
+      get { return _dataContext.Mapping; }
+    }
 
     public IQueryable<Product> Products
     {

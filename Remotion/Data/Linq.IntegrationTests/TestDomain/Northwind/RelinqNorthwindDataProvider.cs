@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 
@@ -9,6 +10,11 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   class RelinqNorthwindDataProvider : INorthwindDataProvider // TODO: implement
   {
+    public MetaModel NorthwindMetaModel
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public IQueryable<Product> Products
     {
       get { throw new NotImplementedException(); }
