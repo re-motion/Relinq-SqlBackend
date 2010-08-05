@@ -20,12 +20,13 @@ Option Strict On
 Imports System.Linq.Expressions
 Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
+Imports System.Reflection
 
 Namespace LinqSamples101
   Public Class AdvancedTests
-    Inherits Executor
+    Inherits TestBase
 
-    'This sample builds a query dynamically to return the contact name of each customer.")> _
+    'This sample builds a query dynamically to return the contact name of each customer.
     Public Sub LinqToSqlAdvanced01()
       Dim param = Expression.Parameter(GetType(Customer), "c")
       Dim selector = Expression.Property(param, GetType(Customer).GetProperty("ContactName"))
@@ -38,13 +39,12 @@ Namespace LinqSamples101
                            Expression.Constant(custs), pred)
       Dim query = custs.AsQueryable().Provider.CreateQuery(Of String)(expr)
 
-      Dim cmd = db.GetCommand(query)
+      Dim cmd = DB.GetCommand(query)
 
-
-      serializer.Serialize(query)
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample builds a query dynamically to filter for Customers in London.")> _
+    'This sample builds a query dynamically to filter for Customers in London.
     Public Sub LinqToSqlAdvanced02()
 
       Dim custs = db.Customers
@@ -58,13 +58,13 @@ Namespace LinqSamples101
         expr = _
           Expression.Call(GetType(Queryable), "Where", New Type() {GetType(Customer)}, Expression.Constant(custs), _
                            pred)
-      Dim query = db.Customers.AsQueryable().Provider.CreateQuery(Of Customer)(expr)
-      serializer.Serialize(query)
+      Dim query = DB.Customers.AsQueryable().Provider.CreateQuery(Of Customer)(expr)
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
 
-    'This sample builds a query dynamically to filter for Customers in London" & _
-    '             " and order them by ContactName.")> _
+    'This sample builds a query dynamically to filter for Customers in London and order them by ContactName.
     Public Sub LinqToSqlAdvanced03()
 
       Dim param = Expression.Parameter(GetType(Customer), "c")
@@ -88,11 +88,10 @@ Namespace LinqSamples101
 
       Dim query = db.Customers.AsQueryable().Provider.CreateQuery(Of Customer)(expr)
 
-      serializer.Serialize(query)
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample dynamically builds a Union to return a sequence of all countries where either " & _
-    '             "a customer or an employee live.")> _
+    'This sample dynamically builds a Union to return a sequence of all countries where either a customer or an employee live.
     Public Sub LinqToSqlAdvanced04()
 
       Dim custs = db.Customers
@@ -119,17 +118,16 @@ Namespace LinqSamples101
 
       Dim finalQuery = custQuery1.Union(empQuery1)
 
-      serializer.Serialize(finalQuery)
+      TestExecutor.Execute(finalQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses OrderByDescending and Take to return the " & _
-    '             "discontinued products of the top 10 most expensive products.")> _
+    'This sample uses OrderByDescending and Take to return the discontinued products of the top 10 most expensive products.
     Public Sub LinqToSqlAdvanced06()
-      Dim prods = From prod In db.Products.OrderByDescending(Function(p) p.UnitPrice) _
+      Dim prods = From prod In DB.Products.OrderByDescending(Function(p) p.UnitPrice) _
             Take 10 _
             Where prod.Discontinued
 
-      serializer.Serialize(prods)
+      TestExecutor.Execute(prods, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace
