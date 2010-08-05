@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;

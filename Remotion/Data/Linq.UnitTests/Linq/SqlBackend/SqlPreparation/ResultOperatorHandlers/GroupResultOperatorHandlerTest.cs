@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
@@ -26,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -185,6 +187,57 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
       Assert.That (subStatement.GroupByExpression, Is.SameAs(groupByExpression));
+    }
+
+    [Test]
+    public void HandleResultOperator_TrasnformSubqueriesUsedAsGroupByKeys ()
+    {
+      var groupByExpression = Expression.Constant ("group");
+      _sqlStatementBuilder.GroupByExpression = groupByExpression;
+
+      var keySelector = Expression.Constant ("keySelector");
+      var elementSelector = Expression.Constant ("elementSelector");
+      var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
+
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var sqlStatement = new SqlStatement (new StreamedSingleValueInfo(typeof (Cook), false),
+          new SqlTableReferenceExpression (sqlTable), new SqlTableBase[0], null, null, new Ordering[] { }, null, false, null, null);
+      var fakeKeySelector = new SqlSubStatementExpression(sqlStatement);
+      var fakeSqlTable = new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ()), JoinSemantics.Inner);
+      var fakeFromExpressionInfo = new FromExpressionInfo (
+          fakeSqlTable, new Ordering[0], elementSelector, null);
+
+      _stageMock
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
+          .Return (fakeKeySelector);
+      _stageMock
+          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
+          .Return (elementSelector);
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
+      Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof(SqlTable)));
+      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[1]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[1]).TableInfo;
+      Assert.That (groupKeyTableTableInfo.SqlStatement.SelectProjection, Is.SameAs (fakeKeySelector.SqlStatement.SelectProjection));
+      Assert.That (groupKeyTableTableInfo.SqlStatement.DataInfo, Is.TypeOf(typeof(StreamedSequenceInfo)));
+      Assert.That (groupKeyTableTableInfo.SqlStatement.DataInfo.DataType, Is.EqualTo(typeof (IEnumerable<>).MakeGenericType(typeof(Cook))));
+      Assert.That (groupKeyTableTableInfo.SqlStatement.SqlTables.Count, Is.EqualTo(0));
+      Assert.That (groupKeyTableTableInfo.SqlStatement.Orderings.Count, Is.EqualTo (0));
+      Assert.That (groupKeyTableTableInfo.SqlStatement.TopExpression, Is.Null);
+      Assert.That (groupKeyTableTableInfo.SqlStatement.GroupByExpression, Is.Null);
+      Assert.That (groupKeyTableTableInfo.SqlStatement.IsDistinctQuery, Is.False);
+      Assert.That (groupKeyTableTableInfo.SqlStatement.RowNumberSelector, Is.Null);
+      Assert.That (groupKeyTableTableInfo.SqlStatement.WhereCondition, Is.Null);
+      Assert.That (groupKeyTableTableInfo.SqlStatement.CurrentRowNumberOffset, Is.Null);
+      ExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1]));
     }
  }
 }
