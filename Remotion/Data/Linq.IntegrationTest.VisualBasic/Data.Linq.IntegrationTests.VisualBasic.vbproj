@@ -101,7 +101,7 @@
     <Compile Include="LinqSamples101\GroupByHavingTests.vb" />
     <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.vb" />
     <Compile Include="LinqSamples101\InheritanceTests.vb" />
-    <Compile Include="LinqSamples101\GroupJoin.vb" />
+    <Compile Include="LinqSamples101\JoinTests.vb" />
     <Compile Include="LinqSamples101\GroupNull.vb" />
     <Compile Include="LinqSamples101\GroupObjectIdentity.vb" />
     <Compile Include="LinqSamples101\GroupObjectLoading.vb" />

@@ -17,53 +17,55 @@
 Option Infer On
 Option Strict On
 
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupJoin
-    Inherits Executor
-    '  <Category("JOIN")> _
-    '<Title("SelectMany - 1 to Many - 1")> _
-    '<Description("This sample uses foreign key navigation in the " & _
-    '"From clause to select all orders for customers in London.")> _
+  Public Class JoinTests
+    Inherits TestBase
+
+    'This sample uses foreign key navigation in the 
+    'From clause to select all orders for customers in London.
     Public Sub LinqToSqlJoin01()
-      Dim ordersInLondon = From cust In db.Customers, ord In cust.Orders _
+      Dim ordersInLondon = From cust In DB.Customers, ord In cust.Orders _
             Where cust.City = "London"
 
-      serializer.Serialize(ordersInLondon)
+      TestExecutor.Execute(ordersInLondon, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses foreign key navigation in the " & _
-    '             "Where clause to filter for Products whose Supplier is in the USA " & _
-    '             "that are out of stock.")> _
+    'This sample uses foreign key navigation in the
+    'Where clause to filter for Products whose Supplier is in the USA
+    'that are out of stock.
     Public Sub LinqToSqlJoin02()
       Dim outOfStock = From prod In db.Products _
             Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0
 
-      serializer.Serialize(outOfStock)
+      TestExecutor.Execute(outOfStock, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses foreign key navigation in the " & _
-    '             "from clause to filter for employees in Seattle, " & _
-    '             "and also list their territories.")> _
+    'This sample uses foreign key navigation in the 
+    'from clause to filter for employees in Seattle,
+    'and also list their territories.
     Public Sub LinqToSqlJoin03()
       Dim seattleEmployees = From emp In db.Employees, et In emp.EmployeeTerritories _
             Where emp.City = "Seattle" _
             Select emp.FirstName, emp.LastName, et.Territory.TerritoryDescription
 
-      serializer.Serialize(seattleEmployees)
+      TestExecutor.Execute(seattleEmployees, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses foreign key navigation in the " & _
-    '             "Select clause to filter for pairs of employees where " & _
-    '             "one employee reports to the other and where " & _
-    '             "both employees are from the same City.")> _
+    'This sample uses foreign key navigation in the 
+    'Select clause to filter for pairs of employees where
+    'one employee reports to the other and where
+    'both employees are from the same City.
     Public Sub LinqToSqlJoin04()
       Dim empQuery = From emp1 In db.Employees, emp2 In emp1.Employees _
             Where emp1.City = emp2.City _
             Select FirstName1 = emp1.FirstName, LastName1 = emp1.LastName, _
             FirstName2 = emp2.FirstName, LastName2 = emp2.LastName, emp1.City
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample explictly joins two tables and projects results from both tables.")> _
@@ -73,7 +75,7 @@ Namespace LinqSamples101
             Into orders = Group _
             Select cust.ContactName, OrderCount = orders.Count()
 
-      serializer.Serialize(ordCount)
+      TestExecutor.Execute(ordCount, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample explictly joins three tables and projects results from each of them.")> _
@@ -85,11 +87,11 @@ Namespace LinqSamples101
             Into emps = Group _
             Select cust.ContactName, ords = ords.Count(), emps = emps.Count()
 
-      serializer.Serialize(joinQuery)
+      TestExecutor.Execute(joinQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). " & _
-    '             "The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.")> _
+    'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty().
+    'The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.
     Public Sub LinqToSqlJoin07()
       Dim empQuery = From emp In db.Employees _
             Group Join ord In db.Orders On emp Equals ord.Employee _
@@ -97,10 +99,10 @@ Namespace LinqSamples101
             From ord2 In ords.DefaultIfEmpty _
             Select emp.FirstName, emp.LastName, Order = ord2
 
-      serializer.Serialize(empQuery)
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample projects a 'Let' expression resulting from a join.")> _
+    'This sample projects a 'Let' expression resulting from a join.
     Public Sub LinqToSqlJoin08()
       Dim ordQuery = From cust In db.Customers _
             Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -109,10 +111,10 @@ Namespace LinqSamples101
             From ord2 In ords _
             Select cust.ContactName, ord2.OrderID, Location
 
-      serializer.Serialize(ordQuery)
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample shows a join with a composite key.")> _
+    'This sample shows a join with a composite key.
     Public Sub LinqToSqlJoin09()
 
       'The Key keyword means that when the anonymous types are tested for equality,
@@ -127,10 +129,10 @@ Namespace LinqSamples101
             From d In details _
             Select ord.OrderID, prod.ProductID, d.UnitPrice
 
-      serializer.Serialize(ordQuery)
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample shows how to construct a join where one side is nullable and the other isn't.")> _
+    'This sample shows how to construct a join where one side is nullable and the other isn't.
     Public Sub LinqToSqlJoin10()
       Dim ordQuery = From ord In db.Orders _
             Group Join emp In db.Employees _
@@ -139,7 +141,7 @@ Namespace LinqSamples101
             From emp2 In emps _
             Select ord.OrderID, emp2.FirstName
 
-      serializer.Serialize(ordQuery)
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace
