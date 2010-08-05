@@ -1,18 +1,23 @@
-﻿' Copyright (c) Microsoft Corporation.  All rights reserved.
+﻿' This file is part of the re-motion Core Framework (www.re-motion.org)
+' Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+' 
+' The re-motion Core Framework is free software; you can redistribute it 
+' and/or modify it under the terms of the GNU Lesser General Public License 
+' as published by the Free Software Foundation; either version 2.1 of the 
+' License, or (at your option) any later version.
+' 
+' re-motion is distributed in the hope that it will be useful, 
+' but WITHOUT ANY WARRANTY; without even the implied warranty of 
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+' GNU Lesser General Public License for more details.
+' 
+' You should have received a copy of the GNU Lesser General Public License
+' along with re-motion; if not, see http://www.gnu.org/licenses.
+' 
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
-Imports System.Data.Linq
-Imports System.Text
 
 Namespace LinqSamples101
   Public Class GroupConversionOperators
@@ -28,13 +33,13 @@ Namespace LinqSamples101
     ' <LinkedFunction("isValidProduct")> _
     Public Sub LinqToSqlConversions01()
       Dim prodQuery = From prod In db.Products.AsEnumerable() _
-                      Where isValidProduct(prod)
+            Where isValidProduct (prod)
 
-      serializer.Serialize(prodQuery)
+      serializer.Serialize (prodQuery)
     End Sub
 
-    Private Function isValidProduct(ByVal prod As Product) As Boolean
-      Return (prod.ProductName.LastIndexOf("C") = 0)
+    Private Function isValidProduct (ByVal prod As Product) As Boolean
+      Return (prod.ProductName.LastIndexOf ("C") = 0)
     End Function
 
     '<Category("Conversion Operators")> _
@@ -43,10 +48,10 @@ Namespace LinqSamples101
     '             "and get the 3rd element.")> _
     Public Sub LinqToSqlConversions02()
       Dim londonCustomers = From cust In db.Customers _
-                            Where cust.City = "London"
+            Where cust.City = "London"
 
       Dim custArray = londonCustomers.ToArray()
-      serializer.Serialize(custArray(3))
+      serializer.Serialize (custArray (3))
     End Sub
 
     '<Category("Conversion Operators")> _
@@ -54,10 +59,10 @@ Namespace LinqSamples101
     '<Description("This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
     Public Sub LinqToSqlConversions03()
       Dim hiredAfter1994 = From emp In db.Employees _
-                           Where emp.HireDate >= #1/1/1994#
+            Where emp.HireDate >= #1/1/1994#
 
       Dim qList = hiredAfter1994.ToList()
-      serializer.Serialize(qList)
+      serializer.Serialize (qList)
     End Sub
 
     '<Category("Conversion Operators")> _
@@ -66,15 +71,15 @@ Namespace LinqSamples101
     '             "a key expression into an Dictionary(Of K, T).")> _
     Public Sub LinqToSqlConversion04()
       Dim prodQuery = From prod In db.Products _
-                      Where prod.UnitsInStock <= prod.ReorderLevel _
-                            AndAlso Not prod.Discontinued
+            Where prod.UnitsInStock <= prod.ReorderLevel _
+                  AndAlso Not prod.Discontinued
 
-      Dim qDictionary = prodQuery.ToDictionary(Function(prod) prod.ProductID)
+      Dim qDictionary = prodQuery.ToDictionary (Function(prod) prod.ProductID)
 
       For Each key In qDictionary.Keys
-        serializer.Serialize("Key " & key & ":")
-        serializer.Serialize(qDictionary(key))
-        serializer.Serialize(Environment.NewLine)
+        serializer.Serialize ("Key " & key & ":")
+        serializer.Serialize (qDictionary (key))
+        serializer.Serialize (Environment.NewLine)
       Next
     End Sub
   End Class

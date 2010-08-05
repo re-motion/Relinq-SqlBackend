@@ -1,15 +1,22 @@
-' Copyright (c) Microsoft Corporation.  All rights reserved.
+' This file is part of the re-motion Core Framework (www.re-motion.org)
+' Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+' 
+' The re-motion Core Framework is free software; you can redistribute it 
+' and/or modify it under the terms of the GNU Lesser General Public License 
+' as published by the Free Software Foundation; either version 2.1 of the 
+' License, or (at your option) any later version.
+' 
+' re-motion is distributed in the hope that it will be useful, 
+' but WITHOUT ANY WARRANTY; without even the implied warranty of 
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+' GNU Lesser General Public License for more details.
+' 
+' You should have received a copy of the GNU Lesser General Public License
+' along with re-motion; if not, see http://www.gnu.org/licenses.
+' 
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
 
 Namespace LinqSamples101
   Public Class GroupGroupByHaving
@@ -20,8 +27,8 @@ Namespace LinqSamples101
     '             "CategoryID.")> _
     Public Sub LinqToSqlGroupBy01()
       Dim categorizedProducts = From prod In db.Products _
-                                Group prod By prod.CategoryID Into prodGroup = Group _
-                                Select prodGroup
+            Group prod By prod.CategoryID Into prodGroup = Group _
+            Select prodGroup
 
       serializer.Serialize(categorizedProducts)
     End Sub
@@ -32,9 +39,9 @@ Namespace LinqSamples101
     '             "to find the maximum unit price for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy02()
       Dim maxPrices = From prod In db.Products _
-                      Group prod By prod.CategoryID _
-                      Into prodGroup = Group, MaxPrice = Max(prod.UnitPrice) _
-                      Select prodGroup, MaxPrice
+            Group prod By prod.CategoryID _
+            Into prodGroup = Group, MaxPrice = Max(prod.UnitPrice) _
+            Select prodGroup, MaxPrice
 
       serializer.Serialize(maxPrices)
     End Sub
@@ -45,8 +52,8 @@ Namespace LinqSamples101
     '             "to find the minimum unit price for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy03()
       Dim minPrices = From prod In db.Products _
-                      Group prod By prod.CategoryID _
-                      Into prodGroup = Group, MinPrice = Min(prod.UnitPrice)
+            Group prod By prod.CategoryID _
+            Into prodGroup = Group, MinPrice = Min(prod.UnitPrice)
 
       serializer.Serialize(minPrices)
     End Sub
@@ -57,8 +64,8 @@ Namespace LinqSamples101
     '             "to find the average UnitPrice for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy04()
       Dim avgPrices = From prod In db.Products _
-                      Group prod By prod.CategoryID _
-                      Into prodGroup = Group, AveragePrice = Average(prod.UnitPrice)
+            Group prod By prod.CategoryID _
+            Into prodGroup = Group, AveragePrice = Average(prod.UnitPrice)
 
       serializer.Serialize(avgPrices)
     End Sub
@@ -69,8 +76,8 @@ Namespace LinqSamples101
     '             "to find the total UnitPrice for each CategoryID.")> _
     Public Sub LinqToSqlGroupBy05()
       Dim totalPrices = From prod In db.Products _
-                        Group prod By prod.CategoryID _
-                        Into prodGroup = Group, TotalPrice = Sum(prod.UnitPrice)
+            Group prod By prod.CategoryID _
+            Into prodGroup = Group, TotalPrice = Sum(prod.UnitPrice)
 
       serializer.Serialize(totalPrices)
     End Sub
@@ -81,9 +88,9 @@ Namespace LinqSamples101
     '             "to find the number of Products in each CategoryID.")> _
     Public Sub LinqToSqlGroupBy06()
       Dim prodQuery = From prod In db.Products _
-                      Group prod By prod.CategoryID _
-                      Into prodGroup = Group _
-                      Select prodGroup, NumProducts = prodGroup.Count()
+            Group prod By prod.CategoryID _
+            Into prodGroup = Group _
+            Select prodGroup, NumProducts = prodGroup.Count()
 
       serializer.Serialize(prodQuery)
     End Sub
@@ -96,8 +103,8 @@ Namespace LinqSamples101
     Public Sub LinqToSqlGroupBy07()
 
       Dim prodQuery = From prod In db.Products _
-                      Group prod By prod.CategoryID _
-                      Into prodGroup = Group, NumProducts = Count(prod.Discontinued)
+            Group prod By prod.CategoryID _
+            Into prodGroup = Group, NumProducts = Count(prod.Discontinued)
 
       'Alternative Syntax
       'Dim prodQuery = From prod In db.Products _
@@ -114,10 +121,10 @@ Namespace LinqSamples101
     '             "to find all categories that have at least 10 products.")> _
     Public Sub LinqToSqlGroupBy08()
       Dim bigCategories = From prod In db.Products _
-                          Group prod By prod.CategoryID _
-                          Into ProdGroup = Group, ProdCount = Count() _
-                          Where ProdCount >= 10 _
-                          Select ProdGroup, ProdCount
+            Group prod By prod.CategoryID _
+            Into ProdGroup = Group, ProdCount = Count() _
+            Where ProdCount >= 10 _
+            Select ProdGroup, ProdCount
 
       serializer.Serialize(bigCategories)
     End Sub
@@ -127,9 +134,9 @@ Namespace LinqSamples101
     '<Description("This sample uses Group By to group products by CategoryID and SupplierID.")> _
     Public Sub LinqToSqlGroupBy09()
       Dim categories = From prod In db.Products _
-                       Group By Key = New With {prod.CategoryID, prod.SupplierID} _
-                       Into prodGroup = Group _
-                       Select Key, prodGroup
+            Group By Key = New With {prod.CategoryID, prod.SupplierID} _
+            Into prodGroup = Group _
+            Select Key, prodGroup
 
       serializer.Serialize(categories)
     End Sub
@@ -142,8 +149,8 @@ Namespace LinqSamples101
     '             "with unit price less than or equal to 10.")> _
     Public Sub LinqToSqlGroupBy10()
       Dim categories = From prod In db.Products _
-                       Group prod By Key = New With {.Criterion = prod.UnitPrice > 10} _
-                       Into ProductGroup = Group
+            Group prod By Key = New With {.Criterion = prod.UnitPrice > 10} _
+            Into ProductGroup = Group
 
       serializer.Serialize(categories)
     End Sub

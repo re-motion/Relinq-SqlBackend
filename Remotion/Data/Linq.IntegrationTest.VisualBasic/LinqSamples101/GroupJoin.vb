@@ -1,15 +1,22 @@
-' Copyright (c) Microsoft Corporation.  All rights reserved.
+' This file is part of the re-motion Core Framework (www.re-motion.org)
+' Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+' 
+' The re-motion Core Framework is free software; you can redistribute it 
+' and/or modify it under the terms of the GNU Lesser General Public License 
+' as published by the Free Software Foundation; either version 2.1 of the 
+' License, or (at your option) any later version.
+' 
+' re-motion is distributed in the hope that it will be useful, 
+' but WITHOUT ANY WARRANTY; without even the implied warranty of 
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+' GNU Lesser General Public License for more details.
+' 
+' You should have received a copy of the GNU Lesser General Public License
+' along with re-motion; if not, see http://www.gnu.org/licenses.
+' 
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
 
 Namespace LinqSamples101
   Public Class GroupJoin
@@ -20,7 +27,7 @@ Namespace LinqSamples101
     '"From clause to select all orders for customers in London.")> _
     Public Sub LinqToSqlJoin01()
       Dim ordersInLondon = From cust In db.Customers, ord In cust.Orders _
-                           Where cust.City = "London"
+            Where cust.City = "London"
 
       serializer.Serialize(ordersInLondon)
     End Sub
@@ -32,7 +39,7 @@ Namespace LinqSamples101
     '             "that are out of stock.")> _
     Public Sub LinqToSqlJoin02()
       Dim outOfStock = From prod In db.Products _
-                       Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0
+            Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0
 
       serializer.Serialize(outOfStock)
     End Sub
@@ -44,8 +51,8 @@ Namespace LinqSamples101
     '             "and also list their territories.")> _
     Public Sub LinqToSqlJoin03()
       Dim seattleEmployees = From emp In db.Employees, et In emp.EmployeeTerritories _
-                             Where emp.City = "Seattle" _
-                             Select emp.FirstName, emp.LastName, et.Territory.TerritoryDescription
+            Where emp.City = "Seattle" _
+            Select emp.FirstName, emp.LastName, et.Territory.TerritoryDescription
 
       serializer.Serialize(seattleEmployees)
     End Sub
@@ -58,9 +65,9 @@ Namespace LinqSamples101
     '             "both employees are from the same City.")> _
     Public Sub LinqToSqlJoin04()
       Dim empQuery = From emp1 In db.Employees, emp2 In emp1.Employees _
-                     Where emp1.City = emp2.City _
-                     Select FirstName1 = emp1.FirstName, LastName1 = emp1.LastName, _
-                            FirstName2 = emp2.FirstName, LastName2 = emp2.LastName, emp1.City
+            Where emp1.City = emp2.City _
+            Select FirstName1 = emp1.FirstName, LastName1 = emp1.LastName, _
+            FirstName2 = emp2.FirstName, LastName2 = emp2.LastName, emp1.City
 
       serializer.Serialize(empQuery)
     End Sub
@@ -70,9 +77,9 @@ Namespace LinqSamples101
     '<Description("This sample explictly joins two tables and projects results from both tables.")> _
     Public Sub LinqToSqlJoin05()
       Dim ordCount = From cust In db.Customers _
-                     Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
-                     Into orders = Group _
-                     Select cust.ContactName, OrderCount = orders.Count()
+            Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
+            Into orders = Group _
+            Select cust.ContactName, OrderCount = orders.Count()
 
       serializer.Serialize(ordCount)
     End Sub
@@ -82,11 +89,11 @@ Namespace LinqSamples101
     '<Description("This sample explictly joins three tables and projects results from each of them.")> _
     Public Sub LinqToSqlJoin06()
       Dim joinQuery = From cust In db.Customers _
-                      Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
-                            Into ords = Group _
-                      Group Join emp In db.Employees On cust.City Equals emp.City _
-                            Into emps = Group _
-                      Select cust.ContactName, ords = ords.Count(), emps = emps.Count()
+            Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
+            Into ords = Group _
+            Group Join emp In db.Employees On cust.City Equals emp.City _
+            Into emps = Group _
+            Select cust.ContactName, ords = ords.Count(), emps = emps.Count()
 
       serializer.Serialize(joinQuery)
     End Sub
@@ -97,10 +104,10 @@ Namespace LinqSamples101
     '             "The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.")> _
     Public Sub LinqToSqlJoin07()
       Dim empQuery = From emp In db.Employees _
-                     Group Join ord In db.Orders On emp Equals ord.Employee _
-                           Into ords = Group _
-                     From ord2 In ords.DefaultIfEmpty _
-                     Select emp.FirstName, emp.LastName, Order = ord2
+            Group Join ord In db.Orders On emp Equals ord.Employee _
+            Into ords = Group _
+            From ord2 In ords.DefaultIfEmpty _
+            Select emp.FirstName, emp.LastName, Order = ord2
 
       serializer.Serialize(empQuery)
     End Sub
@@ -110,11 +117,11 @@ Namespace LinqSamples101
     '<Description("This sample projects a 'Let' expression resulting from a join.")> _
     Public Sub LinqToSqlJoin08()
       Dim ordQuery = From cust In db.Customers _
-                     Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
-                     Into ords = Group _
-                     Let Location = cust.City + cust.Country _
-                     From ord2 In ords _
-                     Select cust.ContactName, ord2.OrderID, Location
+            Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
+            Into ords = Group _
+            Let Location = cust.City + cust.Country _
+            From ord2 In ords _
+            Select cust.ContactName, ord2.OrderID, Location
 
       serializer.Serialize(ordQuery)
     End Sub
@@ -128,13 +135,13 @@ Namespace LinqSamples101
       'only the OrderID field will be compared
       'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
       Dim ordQuery = From ord In db.Orders _
-                     From prod In db.Products _
-                     Group Join details In db.OrderDetails _
-                         On New With {Key ord.OrderID, prod.ProductID} _
-                         Equals New With {Key details.OrderID, details.ProductID} _
-                     Into details = Group _
-                     From d In details _
-                     Select ord.OrderID, prod.ProductID, d.UnitPrice
+            From prod In db.Products _
+            Group Join details In db.OrderDetails _
+            On New With {Key ord.OrderID, prod.ProductID} _
+            Equals New With {Key details.OrderID, details.ProductID} _
+            Into details = Group _
+            From d In details _
+            Select ord.OrderID, prod.ProductID, d.UnitPrice
 
       serializer.Serialize(ordQuery)
     End Sub
@@ -144,11 +151,11 @@ Namespace LinqSamples101
     '<Description("This sample shows how to construct a join where one side is nullable and the other isn't.")> _
     Public Sub LinqToSqlJoin10()
       Dim ordQuery = From ord In db.Orders _
-                     Group Join emp In db.Employees _
-                         On ord.EmployeeID Equals CType(emp.EmployeeID, Integer?) _
-                     Into emps = Group _
-                     From emp2 In emps _
-                     Select ord.OrderID, emp2.FirstName
+            Group Join emp In db.Employees _
+            On ord.EmployeeID Equals CType(emp.EmployeeID, Integer?) _
+            Into emps = Group _
+            From emp2 In emps _
+            Select ord.OrderID, emp2.FirstName
 
       serializer.Serialize(ordQuery)
     End Sub

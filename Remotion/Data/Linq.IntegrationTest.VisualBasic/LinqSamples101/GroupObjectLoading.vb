@@ -1,21 +1,26 @@
-﻿' Copyright (c) Microsoft Corporation.  All rights reserved.
+﻿' This file is part of the re-motion Core Framework (www.re-motion.org)
+' Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+' 
+' The re-motion Core Framework is free software; you can redistribute it 
+' and/or modify it under the terms of the GNU Lesser General Public License 
+' as published by the Free Software Foundation; either version 2.1 of the 
+' License, or (at your option) any later version.
+' 
+' re-motion is distributed in the hope that it will be useful, 
+' but WITHOUT ANY WARRANTY; without even the implied warranty of 
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+' GNU Lesser General Public License for more details.
+' 
+' You should have received a copy of the GNU Lesser General Public License
+' along with re-motion; if not, see http://www.gnu.org/licenses.
+' 
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
 Imports System.Data.Linq
-Imports System.Text
+Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 Namespace LinqSamples101
-
   Public Class GroupObjectLoading
     Inherits Executor
 
@@ -26,12 +31,12 @@ Namespace LinqSamples101
     '             "if the data was not requested by the original query.")> _
     Public Sub LinqToSqlObject01()
       Dim custs = From cust In db.Customers _
-                  Where cust.City = "Sao Paulo" _
-                  Select cust
+            Where cust.City = "Sao Paulo" _
+            Select cust
 
       For Each cust In custs
         For Each ord In cust.Orders
-          serializer.Serialize("CustomerID " & cust.CustomerID & " has an OrderID " & ord.OrderID)
+          serializer.Serialize ("CustomerID " & cust.CustomerID & " has an OrderID " & ord.OrderID)
         Next
       Next
     End Sub
@@ -44,20 +49,20 @@ Namespace LinqSamples101
     '             "the retrieved objects.")> _
     Public Sub LinqToSqlObject02()
 
-      Dim db2 = New Northwind(connString)
+      Dim db2 = New Northwind (connString)
       'db2.Log = Me.OutputStreamWriter
 
       Dim ds = New DataLoadOptions()
-      ds.LoadWith(Of Customer)(Function(cust) cust.Orders)
+      ds.LoadWith (Of Customer) (Function(cust) cust.Orders)
 
       db2.LoadOptions = ds
 
       Dim custs = From cust In db.Customers _
-                  Where cust.City = "Sao Paulo"
+            Where cust.City = "Sao Paulo"
 
       For Each cust In custs
         For Each ord In cust.Orders
-          serializer.Serialize("CustomerID " & cust.CustomerID & " has an OrderID " & ord.OrderID)
+          serializer.Serialize ("CustomerID " & cust.CustomerID & " has an OrderID " & ord.OrderID)
         Next
       Next
 
@@ -71,25 +76,27 @@ Namespace LinqSamples101
     '             "objects can be filtered using AssoicateWith when they are deferred loaded.")> _
     Public Sub LinqToSqlObject03()
 
-      Dim db2 As New Northwind(connString)
+      Dim db2 As New Northwind (connString)
       'db2.Log = Me.OutputStreamWriter
 
       Dim ds As New DataLoadOptions()
-      ds.AssociateWith(Of Customer)(Function(p) p.Orders.Where(Function(o) o.ShipVia.Value > 1))
+      ds.AssociateWith (Of Customer) (Function(p) p.Orders.Where (Function(o) o.ShipVia.Value > 1))
 
       db2.LoadOptions = ds
 
       Dim custs = From cust In db2.Customers _
-                  Where cust.City = "London"
-
+            Where cust.City = "London"
 
 
       For Each cust In custs
         For Each ord In cust.Orders
           For Each orderDetail In ord.OrderDetails
 
-            serializer.Serialize(String.Format("CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.", _
-                cust.CustomerID, ord.OrderID, ord.ShipVia, orderDetail.ProductID, orderDetail.Product.ProductName))
+            serializer.Serialize ( _
+                                  String.Format ( _
+                                                 "CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.", _
+                                                 cust.CustomerID, ord.OrderID, ord.ShipVia, orderDetail.ProductID, _
+                                                 orderDetail.Product.ProductName))
           Next
         Next
       Next
@@ -104,26 +111,29 @@ Namespace LinqSamples101
     '             "objects can be ordered by using Assoicate With when they are eager loaded.")> _
     Public Sub LinqToSqlObject04()
 
-      Dim db2 = New Northwind(connString)
+      Dim db2 = New Northwind (connString)
       'db2.Log = Me.OutputStreamWriter
 
 
       Dim ds As New DataLoadOptions()
-      ds.LoadWith(Of Customer)(Function(cust) cust.Orders)
-      ds.LoadWith(Of Order)(Function(ord) ord.OrderDetails)
+      ds.LoadWith (Of Customer) (Function(cust) cust.Orders)
+      ds.LoadWith (Of Order) (Function(ord) ord.OrderDetails)
 
-      ds.AssociateWith(Of Order)(Function(p) p.OrderDetails.OrderBy(Function(o) o.Quantity))
+      ds.AssociateWith (Of Order) (Function(p) p.OrderDetails.OrderBy (Function(o) o.Quantity))
 
       db2.LoadOptions = ds
 
       Dim custs = From cust In db.Customers _
-                  Where cust.City = "London"
+            Where cust.City = "London"
 
       For Each cust In custs
         For Each ord In cust.Orders
           For Each orderDetail In ord.OrderDetails
-            serializer.Serialize(String.Format("CustomerID {0} has an OrderID {1} with ProductID {2} that has quantity {3}.", _
-                cust.CustomerID, ord.OrderID, orderDetail.ProductID, orderDetail.Quantity))
+            serializer.Serialize ( _
+                                  String.Format ( _
+                                                 "CustomerID {0} has an OrderID {1} with ProductID {2} that has quantity {3}.", _
+                                                 cust.CustomerID, ord.OrderID, orderDetail.ProductID, _
+                                                 orderDetail.Quantity))
           Next
         Next
       Next
@@ -131,8 +141,8 @@ Namespace LinqSamples101
     End Sub
 
 
-    Private Function isValidProduct(ByVal prod As Product) As Boolean
-      Return (prod.ProductName.LastIndexOf("C") = 0)
+    Private Function isValidProduct (ByVal prod As Product) As Boolean
+      Return (prod.ProductName.LastIndexOf ("C") = 0)
     End Function
 
     '<Category("Object Loading")> _
@@ -145,7 +155,7 @@ Namespace LinqSamples101
 
       For Each emp In emps
         For Each man In emp.Employees
-          serializer.Serialize("Employee " & emp.FirstName & " reported to Manager " & man.FirstName)
+          serializer.Serialize ("Employee " & emp.FirstName & " reported to Manager " & man.FirstName)
         Next
       Next
     End Sub
@@ -159,7 +169,7 @@ Namespace LinqSamples101
       Dim emps = db.Employees
 
       For Each emp In emps
-        serializer.Serialize(emp.Notes)
+        serializer.Serialize (emp.Notes)
       Next
 
     End Sub
@@ -171,25 +181,23 @@ Namespace LinqSamples101
     '             "LoadProducts is being called to load products that are not discontinued in this category. ")> _
     Public Sub LinqToSqlObject07()
 
-      Dim db2 As New Northwind(connString)
+      Dim db2 As New Northwind (connString)
 
       Dim ds As New DataLoadOptions()
 
-      ds.LoadWith(Of Category)(Function(p) p.Products)
+      ds.LoadWith (Of Category) (Function(p) p.Products)
       db2.LoadOptions = ds
 
       Dim q = From c In db2.Categories _
-              Where c.CategoryID < 3
+            Where c.CategoryID < 3
 
       For Each cat In q
         For Each prod In cat.Products
-          serializer.Serialize(String.Format("Category {0} has a ProductID {1} that Discontined = {2}.", _
-                            cat.CategoryID, prod.ProductID, prod.Discontinued))
+          serializer.Serialize (String.Format ("Category {0} has a ProductID {1} that Discontined = {2}.", _
+                                               cat.CategoryID, prod.ProductID, prod.Discontinued))
         Next
       Next
 
     End Sub
-
   End Class
-
 End Namespace

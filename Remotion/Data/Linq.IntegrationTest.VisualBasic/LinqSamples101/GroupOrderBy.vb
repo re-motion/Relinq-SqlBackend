@@ -1,19 +1,24 @@
-' Copyright (c) Microsoft Corporation.  All rights reserved.
+' This file is part of the re-motion Core Framework (www.re-motion.org)
+' Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+' 
+' The re-motion Core Framework is free software; you can redistribute it 
+' and/or modify it under the terms of the GNU Lesser General Public License 
+' as published by the Free Software Foundation; either version 2.1 of the 
+' License, or (at your option) any later version.
+' 
+' re-motion is distributed in the hope that it will be useful, 
+' but WITHOUT ANY WARRANTY; without even the implied warranty of 
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+' GNU Lesser General Public License for more details.
+' 
+' You should have received a copy of the GNU Lesser General Public License
+' along with re-motion; if not, see http://www.gnu.org/licenses.
+' 
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
 
 Namespace LinqSamples101
-
-
   Public Class GroupOrderBy
     Inherits Executor
     '<Category("ORDER BY")> _
@@ -22,7 +27,7 @@ Namespace LinqSamples101
     '              "by hire date.")> _
     Public Sub LinqToSqlOrderBy01()
       Dim empQuery = From emp In db.Employees _
-                     Order By emp.HireDate
+            Order By emp.HireDate
 
       serializer.Serialize(empQuery)
     End Sub
@@ -33,8 +38,8 @@ Namespace LinqSamples101
     '             "shipped to London by freight.")> _
     Public Sub LinqToSqlOrderBy02()
       Dim londonOrders = From ord In db.Orders _
-                         Where ord.ShipCity = "London" _
-                         Order By ord.Freight
+            Where ord.ShipCity = "London" _
+            Order By ord.Freight
 
       serializer.Serialize(londonOrders)
     End Sub
@@ -45,7 +50,7 @@ Namespace LinqSamples101
     '             "by unit price from highest to lowest.")> _
     Public Sub LinqToSqlOrderBy03()
       Dim sortedProducts = From prod In db.Products _
-                           Order By prod.UnitPrice Descending
+            Order By prod.UnitPrice Descending
 
       serializer.Serialize(sortedProducts)
     End Sub
@@ -56,8 +61,8 @@ Namespace LinqSamples101
     '             "by city and then contact name.")> _
     Public Sub LinqToSqlOrderBy04()
       Dim custQuery = From cust In db.Customers _
-                      Select cust _
-                      Order By cust.City, cust.ContactName
+            Select cust _
+            Order By cust.City, cust.ContactName
 
       serializer.Serialize(custQuery)
     End Sub
@@ -68,8 +73,8 @@ Namespace LinqSamples101
     '             "by ship-to country, and then by freight from highest to lowest.")> _
     Public Sub LinqToSqlOrderBy05()
       Dim ordQuery = From ord In db.Orders _
-                     Where ord.EmployeeID = 1 _
-                     Order By ord.ShipCountry, ord.Freight Descending
+            Where ord.EmployeeID = 1 _
+            Order By ord.ShipCountry, ord.Freight Descending
 
       serializer.Serialize(ordQuery)
     End Sub
@@ -80,13 +85,13 @@ Namespace LinqSamples101
     '             "the highest unit price in each category, and sorts the group by category id.")> _
     Public Sub LinqToSqlOrderBy06()
       Dim categories = From prod In db.Products _
-                       Group prod By prod.CategoryID Into Group _
-                       Order By CategoryID _
-                       Select Group, _
-                              MostExpensiveProducts = _
-                                  From prod2 In Group _
-                                  Where prod2.UnitPrice = _
-                                      Group.Max(Function(prod3) prod3.UnitPrice)
+            Group prod By prod.CategoryID Into Group _
+            Order By CategoryID _
+            Select Group, _
+            MostExpensiveProducts = _
+            From prod2 In Group _
+            Where prod2.UnitPrice = _
+                  Group.Max(Function(prod3) prod3.UnitPrice)
 
       serializer.Serialize(categories)
     End Sub

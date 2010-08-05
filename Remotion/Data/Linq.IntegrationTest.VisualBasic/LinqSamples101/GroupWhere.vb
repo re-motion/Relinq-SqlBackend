@@ -1,15 +1,22 @@
-' Copyright (c) Microsoft Corporation.  All rights reserved.
+' This file is part of the re-motion Core Framework (www.re-motion.org)
+' Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+' 
+' The re-motion Core Framework is free software; you can redistribute it 
+' and/or modify it under the terms of the GNU Lesser General Public License 
+' as published by the Free Software Foundation; either version 2.1 of the 
+' License, or (at your option) any later version.
+' 
+' re-motion is distributed in the hope that it will be useful, 
+' but WITHOUT ANY WARRANTY; without even the implied warranty of 
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+' GNU Lesser General Public License for more details.
+' 
+' You should have received a copy of the GNU Lesser General Public License
+' along with re-motion; if not, see http://www.gnu.org/licenses.
+' 
 Option Infer On
 Option Strict On
 
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.IO
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests.Utilities
 
 Namespace LinqSamples101
   '<Title("LINQ to SQL Samples")> <Prefix("LinqToSql")> _
@@ -32,9 +39,9 @@ Namespace LinqSamples101
 
       'Execute the query and print out the results
       For Each custRow In londonCustomers
-        serializer.Serialize("Company: " & custRow.CompanyName & vbTab & _
-                          "City: " & custRow.City & vbTab & _
-                          "Country: " & custRow.Country)
+        serializer.Serialize ("Company: " & custRow.CompanyName & vbTab & _
+                              "City: " & custRow.City & vbTab & _
+                              "Country: " & custRow.Country)
       Next
     End Sub
 
@@ -48,7 +55,7 @@ Namespace LinqSamples101
             Where emp.HireDate >= #1/1/1994# _
             Select emp
 
-      serializer.Serialize(hiredAfter1994)
+      serializer.Serialize (hiredAfter1994)
     End Sub
 
     '    <Category("WHERE")> _
@@ -57,11 +64,11 @@ Namespace LinqSamples101
     '             "reorder level and are not discontinued.")> _
     Public Sub LinqToSqlWhere02()
       Dim needToOrder = From prod In db.Products _
-                        Where prod.UnitsInStock <= prod.ReorderLevel _
-                              AndAlso Not prod.Discontinued _
-                        Select prod
+            Where prod.UnitsInStock <= prod.ReorderLevel _
+                  AndAlso Not prod.Discontinued _
+            Select prod
 
-      serializer.Serialize(needToOrder)
+      serializer.Serialize (needToOrder)
     End Sub
 
     '<Category("WHERE")> _
@@ -70,9 +77,9 @@ Namespace LinqSamples101
     '             "discontinued or that have a UnitPrice greater than 10.")> _
     Public Sub LinqToSqlWhere03()
       Dim prodQuery = From prod In db.Products _
-                      Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
+            Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
 
-      serializer.Serialize(prodQuery)
+      serializer.Serialize (prodQuery)
     End Sub
 
     '    <Category("WHERE")> _
@@ -82,10 +89,10 @@ Namespace LinqSamples101
     Public Sub LinqToSqlWhere04()
 
       Dim prodQuery = From prod In db.Products _
-                      Where prod.UnitPrice > 10D _
-                      Where prod.Discontinued
+            Where prod.UnitPrice > 10D _
+            Where prod.Discontinued
 
-      serializer.Serialize(prodQuery)
+      serializer.Serialize (prodQuery)
     End Sub
 
 
@@ -95,7 +102,7 @@ Namespace LinqSamples101
     Public Sub LinqToSqlWhere05()
       Dim shipper = db.Shippers.First()
 
-      serializer.Serialize(shipper)
+      serializer.Serialize (shipper)
     End Sub
 
 
@@ -104,10 +111,10 @@ Namespace LinqSamples101
     '<Description("This sample uses Take to select the first Customer with CustomerID 'BONAP'.")> _
     Public Sub LinqToSqlWhere06()
       Dim customer = From cust In db.Customers _
-                     Where cust.CustomerID = "BONAP" _
-                     Take 1
+            Where cust.CustomerID = "BONAP" _
+            Take 1
 
-      serializer.Serialize(customer)
+      serializer.Serialize (customer)
     End Sub
 
     '<Category("WHERE")> _
@@ -115,10 +122,10 @@ Namespace LinqSamples101
     '<Description("This sample uses First to select an Order with freight greater than 10.00.")> _
     Public Sub LinqToSqlWhere07()
       Dim firstOrd = (From ord In db.Orders _
-                      Where ord.Freight > 10D _
-                      Select ord).First()
+            Where ord.Freight > 10D _
+            Select ord).First()
 
-      serializer.Serialize(firstOrd)
+      serializer.Serialize (firstOrd)
     End Sub
 
 
@@ -141,7 +148,6 @@ Namespace LinqSamples101
     '                        "Country: " & custRow.Country)
     '    Next
     '  End Sub
-
 
 
     'Linq specific ?
