@@ -17,11 +17,13 @@
 Option Infer On
 Option Strict On
 
+Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 Namespace LinqSamples101
-  Public Class GroupConversionOperators
-    Inherits Executor
+  Public Class ConversionOperatorsTests
+    Inherits TestBase
     '<Category("Conversion Operators")> _
     ' <Title("AsEnumerable")> _
     ' <Description("This sample uses ToArray so that the client-side IEnumerable(Of T) " & _
@@ -32,10 +34,10 @@ Namespace LinqSamples101
     '              "which cannot be converted to SQL.")> _
     ' <LinkedFunction("isValidProduct")> _
     Public Sub LinqToSqlConversions01()
-      Dim prodQuery = From prod In db.Products.AsEnumerable() _
-            Where isValidProduct (prod)
+      Dim prodQuery = From prod In DB.Products.AsEnumerable() _
+            Where isValidProduct(prod)
 
-      serializer.Serialize (prodQuery)
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     Private Function isValidProduct (ByVal prod As Product) As Boolean
@@ -49,7 +51,7 @@ Namespace LinqSamples101
             Where cust.City = "London"
 
       Dim custArray = londonCustomers.ToArray()
-      serializer.Serialize(custArray(3))
+      TestExecutor.Execute(custArray(3), MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
@@ -58,7 +60,7 @@ Namespace LinqSamples101
             Where emp.HireDate >= #1/1/1994#
 
       Dim qList = hiredAfter1994.ToList()
-      serializer.Serialize(qList)
+      TestExecutor.Execute(qList, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses ToDictionary to immediately evaluate a query and " & _
@@ -70,11 +72,7 @@ Namespace LinqSamples101
 
       Dim qDictionary = prodQuery.ToDictionary (Function(prod) prod.ProductID)
 
-      For Each key In qDictionary.Keys
-        serializer.Serialize ("Key " & key & ":")
-        serializer.Serialize (qDictionary (key))
-        serializer.Serialize (Environment.NewLine)
-      Next
+      TestExecutor.Execute(qDictionary, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

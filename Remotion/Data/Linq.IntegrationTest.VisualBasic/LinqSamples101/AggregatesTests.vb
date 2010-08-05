@@ -18,13 +18,19 @@ Option Infer On
 Option Strict On
 
 
+Imports Remotion.Data.Linq.IntegrationTests
+Imports System.Reflection
+
+
 Namespace LinqSamples101
-  Public Class GroupAggregates
-    Inherits Executor
+  Public Class AggregatesTests
+    Inherits TestBase
+
     'This sample uses Count to find the number of Customers in the database.")> _
     Public Sub LinqToSqlCount01()
       Dim custCount = db.Customers.Count()
-      serializer.Serialize(custCount)
+
+      TestExecutor.Execute(custCount, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Count to find the number of Products in the database " & _
@@ -38,7 +44,7 @@ Namespace LinqSamples101
       '                      Where Not prod.Discontinued _
       '                      Select prod).Count()
 
-      serializer.Serialize(activeProducts)
+      TestExecutor.Execute(activeProducts, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Sum to find the total freight over all Orders.")> _
@@ -51,7 +57,7 @@ Namespace LinqSamples101
       'Dim totalFreight = (From ord In db.Orders _
       '                    Select ord.Freight).Sum()
 
-      serializer.Serialize(totalFreight)
+      TestExecutor.Execute(totalFreight, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Sum to find the total number of units on order over all Products.")> _
@@ -59,7 +65,7 @@ Namespace LinqSamples101
       Dim totalUnits = (From prod In db.Products _
             Select CInt(prod.UnitsOnOrder.Value)).Sum()
 
-      serializer.Serialize(totalUnits)
+      TestExecutor.Execute(totalUnits, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Min to find the lowest unit price of any Product.")> _
@@ -67,7 +73,7 @@ Namespace LinqSamples101
       Dim lowestPrice = Aggregate prod In db.Products _
             Into Min(prod.UnitPrice)
 
-      serializer.Serialize(lowestPrice)
+      TestExecutor.Execute(lowestPrice, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Min to find the lowest freight of any Order.")> _
@@ -75,7 +81,7 @@ Namespace LinqSamples101
       Dim lowestFreight = Aggregate ord In db.Orders _
             Into Min(ord.Freight)
 
-      serializer.Serialize(lowestFreight)
+      TestExecutor.Execute(lowestFreight, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Min to find the Products that have the lowest unit price " & _
@@ -89,7 +95,7 @@ Namespace LinqSamples101
             Where p2.UnitPrice = g.Min(Function(p3) p3.UnitPrice) _
             Select p2
 
-      serializer.Serialize(categories)
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
     End Sub
 
 
@@ -98,7 +104,7 @@ Namespace LinqSamples101
       Dim latestHire = Aggregate emp In db.Employees _
             Into Max(emp.HireDate)
 
-      serializer.Serialize(latestHire)
+      TestExecutor.Execute(latestHire, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Max to find the most units in stock of any Product.")> _
@@ -106,7 +112,7 @@ Namespace LinqSamples101
       Dim mostInStock = Aggregate prod In db.Products _
             Into Max(prod.UnitsInStock)
 
-      serializer.Serialize(mostInStock)
+      TestExecutor.Execute(mostInStock, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Max to find the Products that have the highest unit price " & _
@@ -119,7 +125,7 @@ Namespace LinqSamples101
             From p2 In g _
             Where p2.UnitPrice = g.Max(Function(p3) p3.UnitPrice)
 
-      serializer.Serialize(categories)
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
     End Sub
 
 
@@ -128,7 +134,7 @@ Namespace LinqSamples101
       Dim avgFreight = Aggregate ord In db.Orders _
             Into Average(ord.Freight)
 
-      serializer.Serialize(avgFreight)
+      TestExecutor.Execute(avgFreight, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Average to find the average unit price of all Products.")> _
@@ -136,7 +142,7 @@ Namespace LinqSamples101
       Dim avgPrice = Aggregate prod In db.Products _
             Into Average(prod.UnitPrice)
 
-      serializer.Serialize(avgPrice)
+      TestExecutor.Execute(avgPrice, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample uses Average to find the Products that have unit price higher than " & _
@@ -149,7 +155,7 @@ Namespace LinqSamples101
             From prod2 In g _
             Where (prod2.UnitPrice > g.Average(Function(p3) p3.UnitPrice))
 
-      serializer.Serialize(categories)
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

@@ -94,12 +94,12 @@
   <ItemGroup>
     <Compile Include="LinqSamples101\Executor.vb" />
     <Compile Include="LinqSamples101\AdvancedTests.vb" />
-    <Compile Include="LinqSamples101\GroupAggregates.vb" />
-    <Compile Include="LinqSamples101\GroupCompiledQuery.vb" />
-    <Compile Include="LinqSamples101\GroupConversionOperators.vb" />
+    <Compile Include="LinqSamples101\AggregatesTests.vb" />
+    <Compile Include="LinqSamples101\CompiledQueryTests.vb" />
+    <Compile Include="LinqSamples101\ConversionOperatorsTests.vb" />
     <Compile Include="LinqSamples101\GroupExternalMapping.vb" />
     <Compile Include="LinqSamples101\GroupGroupByHaving.vb" />
-    <Compile Include="LinqSamples101\GroupExistsInAnyAllContains.vb" />
+    <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.vb" />
     <Compile Include="LinqSamples101\GroupInheritance.vb" />
     <Compile Include="LinqSamples101\GroupJoin.vb" />
     <Compile Include="LinqSamples101\GroupNull.vb" />

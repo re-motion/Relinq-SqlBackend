@@ -17,10 +17,12 @@
 Option Infer On
 Option Strict On
 
+Imports Remotion.Data.Linq.IntegrationTests
+
 
 Namespace LinqSamples101
-  Public Class GroupExistsInAnyAllContains
-    Inherits Executor
+  Public Class ExistsInAnyAllContainsTests
+    Inherits TestBase
     '<Category("EXISTS/IN/ANY/ALL")> _
     ' <Title("Any - Simple")> _
     ' <Description("This sample uses the Any operator to return only Customers that have no Orders.")> _
