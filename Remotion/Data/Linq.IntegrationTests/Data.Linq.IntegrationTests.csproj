@@ -65,6 +65,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="TestDomain\Northwind\NorthwindMapped.map" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

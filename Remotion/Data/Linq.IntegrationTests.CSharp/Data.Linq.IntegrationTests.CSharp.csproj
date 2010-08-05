@@ -90,7 +90,6 @@
       <Link>remotion.snk</Link>
     </None>
     <None Include="app.config" />
-    <None Include="LinqSamples101\NorthwindMapped.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />

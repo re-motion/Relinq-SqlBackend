@@ -34,7 +34,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public static void Main ()
     {
       InitSample();
-      CallAllTypes (Assembly.Load ("Remotion.Data.Linq.IntegrationTests.CSharp"));
+      //CallAllTypes (Assembly.Load ("Remotion.Data.Linq.IntegrationTests.CSharp"));
+      CallAllMethods (typeof(GroupExternalMapping));
 
       Console.WriteLine ("finished! :)");
       Console.Read();
