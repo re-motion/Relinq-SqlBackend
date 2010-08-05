@@ -431,7 +431,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter("@1", "Hugo"),
           new CommandParameter("@2", "Boss")
           );
-    }
+     }
 
   }
 }

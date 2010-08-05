@@ -15,12 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -46,7 +48,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlPreparationStage>();
       _generator = new UniqueIdentifierGenerator();
-      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
+      _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
       _registry = MethodCallTransformerRegistry.CreateDefault();
       _visitor = new TestableSqlPreparationFromExpressionVisitor (
           _generator, _stageMock, _registry, _context, info => new SqlTable (info, JoinSemantics.Inner));
@@ -123,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
                          {
-                             SelectProjection = new NamedExpression("test", Expression.Constant ("test"))
+                             SelectProjection = new NamedExpression ("test", Expression.Constant ("test"))
                          }.GetSqlStatement();
 
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
@@ -143,13 +145,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitSqlSubStatementExpression_WithNonBooleanSqlGroupingSelectExpression ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ())
-      {
-        SelectProjection = new NamedExpression ("test", new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element")))
-      }.GetSqlStatement ();
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
+                         {
+                             SelectProjection =
+                                 new NamedExpression (
+                                     "test", new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element")))
+                         }.GetSqlStatement();
 
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry (), _generator);
+      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry(), _generator);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
@@ -163,17 +167,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), 
-      ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query.")]
+    [ExpectedException (typeof (NotSupportedException),
+        ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query.")]
     public void VisitSqlSubStatementExpression_WithBooleanSqlGroupingSelectExpression ()
     {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook ())
-      {
-        SelectProjection = new NamedExpression ("test", new SqlGroupingSelectExpression(Expression.Constant("key"), Expression.Constant(true)))
-      }.GetSqlStatement ();
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
+                         {
+                             SelectProjection =
+                                 new NamedExpression (
+                                     "test", new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant (true)))
+                         }.GetSqlStatement();
 
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry (), _generator);
+      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry(), _generator);
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           sqlSubStatementExpression,
@@ -188,9 +194,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitSqlSubStatementExpression_WithOrderingsAndNoTopExpression ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
-                    { 
-                      SelectProjection = new NamedExpression("test", Expression.Constant("test")),
-                      Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) } 
+                    {
+                        SelectProjection = new NamedExpression ("test", Expression.Constant ("test")),
+                        Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) }
                     };
       var statement = builder.GetSqlStatement();
       var sqlSubStatementExpression = new SqlSubStatementExpression (statement);
@@ -299,7 +305,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitQuerySourceReferenceExpression ()
     {
-      var innerSequenceExpression = Expression.Constant (new[] { new Cook () });
+      var innerSequenceExpression = Expression.Constant (new[] { new Cook() });
       var joinClause = new JoinClause (
           "x",
           typeof (Cook[]),
@@ -310,9 +316,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (groupJoinClause);
       var fakeWhereExpression = Expression.Constant (true);
 
-      // TODO Review 3066: Add WhenCalled and check mi.Arguments[0] to match the where condition (expected expression, etc)
       _stageMock
           .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
+          .WhenCalled (
+              mi =>
+              ExpressionTreeComparer.CheckAreEqualTrees (
+                  Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
+                  (Expression) mi.Arguments[0]))
           .Return (fakeWhereExpression);
       _stageMock.Replay();
 
@@ -323,12 +333,125 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.IsNotNull (_visitor.FromExpressionInfo);
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
 
-      Assert.That (_context.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause)), Is.Not.Null); // TODO Review 3066: Use expected expression (SqlTableReferenceExpression to fromExpressionInfo.SqlTable)
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (fromExpressionInfo.SqlTable));  // TODO Review 3066: Use expected expression instead (SqlTableReferenceExpression to fromExpressionInfo.SqlTable)
+      ExpressionTreeComparer.CheckAreEqualTrees (
+          new SqlTableReferenceExpression (fromExpressionInfo.SqlTable),
+          _context.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause)));
+      ExpressionTreeComparer.CheckAreEqualTrees (fromExpressionInfo.ItemSelector, result);
       Assert.That (((UnresolvedTableInfo) ((SqlTable) fromExpressionInfo.SqlTable).TableInfo).ItemType, Is.EqualTo (typeof (Cook)));
-      Assert.That (((SqlTableReferenceExpression) fromExpressionInfo.ItemSelector).SqlTable, Is.SameAs (fromExpressionInfo.SqlTable));  // TODO Review 3066: Use expected expression (SqlTableReferenceExpression to fromExpressionInfo.SqlTable)
       Assert.That (fromExpressionInfo.WhereCondition, Is.SameAs (fakeWhereExpression));
-      Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo(0));
+      Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void VisitQuerySourceReferenceExpression_WithNonNullWhereCondition ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("Assistants");
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
+      var innerSequenceExpression =
+          Expression.MakeMemberAccess (
+              sqlTableReferenceExpression, memberInfo);
+      var joinClause = new JoinClause (
+          "x",
+          typeof (Cook[]),
+          innerSequenceExpression,
+          Expression.Constant (new Cook()),
+          Expression.Constant (new Cook()));
+      var groupJoinClause = new GroupJoinClause ("g", typeof (Cook[]), joinClause);
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (groupJoinClause);
+      var fakeWhereExpression = Expression.Constant (true);
+
+      _stageMock
+          .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
+          .WhenCalled (
+              mi =>
+              ExpressionTreeComparer.CheckAreEqualTrees (
+                  Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
+                  (Expression) mi.Arguments[0]))
+          .Return (fakeWhereExpression);
+      _stageMock.Replay();
+
+      _visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
+
+      _stageMock.VerifyAllExpectations();
+
+      var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
+      Assert.That (fromExpressionInfo.WhereCondition, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (fromExpressionInfo.WhereCondition.NodeType, Is.EqualTo(ExpressionType.AndAlso));
+      Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Left, Is.TypeOf(typeof(JoinConditionExpression)));
+      Assert.That (((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
+      Assert.That (
+          ((UnresolvedCollectionJoinInfo) ((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo).SourceExpression, Is.SameAs(sqlTableReferenceExpression));
+      Assert.That (
+          ((UnresolvedCollectionJoinInfo) ((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
+      Assert.That (((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinSemantics, Is.EqualTo(JoinSemantics.Inner));
+      Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Right, Is.SameAs (fakeWhereExpression));
+    }
+
+    [Test]
+    public void VisitQuerySourceReferenceExpression_WithExtractedOrderings ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var selectProjection = new NamedExpression("test", Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("Name")));
+      var orderingExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("ID"));
+      var sqlStatement = new SqlStatementBuilder()
+                         {
+                             DataInfo = new StreamedSequenceInfo(typeof(string), Expression.Constant('t')),
+                             SelectProjection = selectProjection,
+                             SqlTables = { sqlTable },
+                             Orderings =
+                                 { new Ordering (orderingExpression, OrderingDirection.Asc) }
+                         }.GetSqlStatement();
+      var fakeSelectExpression = Expression.Constant (new KeyValuePair<string, int>("test", 5));
+      var fakeWhereExpression = Expression.Constant (true);
+
+      var innerSequenceExpression = new SqlSubStatementExpression (sqlStatement);
+          
+      var joinClause = new JoinClause (
+          "x",
+          typeof (Cook[]),
+          innerSequenceExpression,
+          Expression.Constant (new Cook ()),
+          Expression.Constant (new Cook ()));
+      var groupJoinClause = new GroupJoinClause ("g", typeof (Cook[]), joinClause);
+      var querySourceReferenceExpression = new QuerySourceReferenceExpression (groupJoinClause);
+
+      _stageMock
+          .Expect (mock => mock.PrepareSelectExpression(Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
+          .Return (fakeSelectExpression);
+      _stageMock
+          .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
+          .WhenCalled (
+              mi =>
+              ExpressionTreeComparer.CheckAreEqualTrees (
+                  Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
+                  (Expression) mi.Arguments[0]))
+          .Return (fakeWhereExpression);
+      _stageMock.Replay ();
+
+      _visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
+
+      _stageMock.VerifyAllExpectations ();
+
+      var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
+      Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo(1));
+      Assert.That (fromExpressionInfo.ExtractedOrderings[0].Expression, Is.TypeOf(typeof(MemberExpression)));
+      Assert.That (((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
+      Assert.That (
+          ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (
+          ((SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      var resolvedSubStatementtableInfo =
+         (ResolvedSubStatementTableInfo) ((SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable).TableInfo;
+      Assert.That (resolvedSubStatementtableInfo.SqlStatement.SelectProjection, Is.SameAs(fakeSelectExpression));
+      Assert.That (resolvedSubStatementtableInfo.SqlStatement.Orderings.Count, Is.EqualTo (0));
+      Assert.That (((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Member, Is.EqualTo(typeof(KeyValuePair<,>).MakeGenericType(typeof(string), typeof(int)).GetProperty("Value")));
+      Assert.That (fromExpressionInfo.ItemSelector, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (((MemberExpression) fromExpressionInfo.ItemSelector).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ItemSelector).Expression).SqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (
+          ((SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ItemSelector).Expression).SqlTable).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((MemberExpression) fromExpressionInfo.ItemSelector).Member, Is.EqualTo (typeof (KeyValuePair<,>).MakeGenericType (typeof (string), typeof (int)).GetProperty ("Key")));
     }
   }
 }

@@ -214,7 +214,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3066")]
     public void ExplicitJoinWithInto_WithOrderBy ()
     {
       CheckQuery (
@@ -222,7 +221,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           join c in Cooks.OrderBy(c => c.FirstName).Select (c => c.ID) on k.Cook.ID equals c into gkc
           from kc in gkc
           select kc,
-          "SELECT [q0].[Key] AS [Key] "
+          "SELECT [q0].[Key] AS [value] "
           + "FROM [KitchenTable] AS [t1] "
           + "LEFT OUTER JOIN [CookTable] AS [t3] ON [t1].[ID] = [t3].[KitchenID] "
           + "CROSS APPLY (SELECT [t2].[ID] AS [Key],[t2].[FirstName] AS [Value] FROM [CookTable] AS [t2]) AS [q0] "

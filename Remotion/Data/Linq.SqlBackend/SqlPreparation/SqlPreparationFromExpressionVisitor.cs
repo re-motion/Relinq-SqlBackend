@@ -160,15 +160,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             Stage.PrepareWhereExpression (
                 Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), _context);
 
-        // TODO Review 3066: Add a unit test for this method where AnalyzeFromExpression actually returns a non-null WhereCondition. For example, use a collection member access (cook.Assistants) as the groupJoinClause.JoinClause.InnerSequence. Then check that the old where condition is actually integrated with the new one
         if (fromExpressionInfo.WhereCondition != null)
           whereCondition = Expression.AndAlso (fromExpressionInfo.WhereCondition, whereCondition);
 
-        // TODO Review 3066: Add a unit test for this method where AnalyzeFromExpression returns extracted orderings, eg. use a sub-statement expression with OrderBy (Cooks.OrderBy(c => c.ID)) as the inner sequence. Then check that the extracted orderings are passed on to the result. 
         _fromExpressionInfo = new FromExpressionInfo (
             fromExpressionInfo.SqlTable,
             fromExpressionInfo.ExtractedOrderings.ToArray(),
-            new SqlTableReferenceExpression (fromExpressionInfo.SqlTable), // TODO Review 3066: This is actually a bug, fromExpressionInfo.ItemExpression should be used (see integration test "ExplicitJoinWithInto_WithOrderBy" in both re-store and SQL backend test suites). For the unit test added above (with order by in a subquery), make sure the returned expression is not a SqlTableReferenceExpression, but a MemberExpression (SqlTableReferenceExpression (table), "Key") (or something similar). Use an expected expression for this.
+            fromExpressionInfo.ItemSelector,
             whereCondition);
 
         return new SqlTableReferenceExpression(fromExpressionInfo.SqlTable);
