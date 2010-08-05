@@ -15,15 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
@@ -348,6 +352,36 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           new SqlFunctionExpression (typeof (int), "LEN", coalesceExpression.Right));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitMemberExpression_WithInnerSqlSubStatementExpression()
+    {
+      var selectProjection = Expression.Constant (new Cook());
+      var fakeStatement = SqlStatementModelObjectMother.CreateSqlStatement (
+          new NamedExpression("test", selectProjection), new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),JoinSemantics.Left));
+      var memberInfo = typeof (Cook).GetProperty ("Name");
+      var queryModel = ExpressionHelper.CreateQueryModel_Cook();
+      queryModel.ResultOperators.Add (new FirstResultOperator (false));
+      var expression = new SubQueryExpression(queryModel);
+      var memberExpression = Expression.MakeMemberAccess (expression, memberInfo);
+
+      _stageMock
+          .Expect (mock => mock.PrepareSqlStatement (queryModel, _context))
+          .Return (fakeStatement);
+      _stageMock.Replay();
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+
+      _stageMock.VerifyAllExpectations();
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      Assert.That (((NamedExpression) ((SqlSubStatementExpression) result).SqlStatement.SelectProjection).Expression, Is.TypeOf(typeof(MemberExpression)));
+      var resultMemberExpression =
+          (MemberExpression) ((NamedExpression) ((SqlSubStatementExpression) result).SqlStatement.SelectProjection).Expression;
+      Assert.That (resultMemberExpression.Expression, Is.SameAs (selectProjection));
+      Assert.That (resultMemberExpression.Member, Is.SameAs (memberInfo));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo.DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(string))));
     }
 
     [Test]

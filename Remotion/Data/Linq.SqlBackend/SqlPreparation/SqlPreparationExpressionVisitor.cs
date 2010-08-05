@@ -113,7 +113,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         throw new KeyNotFoundException (message);
       }
     }
-  
+
 
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
@@ -137,7 +137,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return expression;
     }
 
-    private Expression CreateAndRevisitConditionalExpression(Expression testPredicate, Expression thenValue, Expression elseValue)
+    private Expression CreateAndRevisitConditionalExpression (Expression testPredicate, Expression thenValue, Expression elseValue)
     {
       var newConditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
       return VisitExpression (newConditionalExpression);
@@ -150,21 +150,36 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var newInnerExpression = VisitExpression (expression.Expression);
 
       var innerExpressionAsConditionalExpression = newInnerExpression as ConditionalExpression;
-      if (innerExpressionAsConditionalExpression!=null)
+      if (innerExpressionAsConditionalExpression != null)
+      {
         return CreateAndRevisitConditionalExpression (
             innerExpressionAsConditionalExpression.Test,
             Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member),
             Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfFalse, expression.Member));
+      }
 
       var innerExpressionAsBinaryExpression = newInnerExpression as BinaryExpression;
       if (innerExpressionAsBinaryExpression != null && innerExpressionAsBinaryExpression.NodeType == ExpressionType.Coalesce)
+      {
         return CreateAndRevisitConditionalExpression (
             new SqlIsNotNullExpression (innerExpressionAsBinaryExpression.Left),
             Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Left, expression.Member),
             Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Right, expression.Member));
+      }
+
+      var innerExpressionAsSqlSubStatementExpression = newInnerExpression as SqlSubStatementExpression;
+      if (innerExpressionAsSqlSubStatementExpression != null)
+      {
+        var sqlStatementBuilder = new SqlStatementBuilder (innerExpressionAsSqlSubStatementExpression.SqlStatement);
+        var namedExpression = (NamedExpression) sqlStatementBuilder.SelectProjection;
+        sqlStatementBuilder.SelectProjection = new NamedExpression (
+            namedExpression.Name, VisitExpression (Expression.MakeMemberAccess (namedExpression.Expression, expression.Member)));
+        sqlStatementBuilder.RecalculateDataInfo (innerExpressionAsSqlSubStatementExpression.SqlStatement.SelectProjection);
+        return new SqlSubStatementExpression (sqlStatementBuilder.GetSqlStatement());
+      }
 
       var memberAsPropertyInfo = expression.Member as PropertyInfo;
-      if (memberAsPropertyInfo!=null)
+      if (memberAsPropertyInfo != null)
       {
         var methodInfo = expression.Member.DeclaringType.GetMethod ("get_Length");
         if (methodInfo != null)
@@ -229,7 +244,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return Expression.Condition(VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
+      return Expression.Condition (VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
@@ -239,7 +254,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (e => VisitExpression (e)));
     }
 
-    
+
     private bool IsNullConstant (Expression expression)
     {
       var constantExpression = expression as ConstantExpression;
