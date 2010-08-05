@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.Linq;
 using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -29,8 +31,14 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     // TODO: add properties for all used data-objects
 
-    IQueryable<Customer> Customers { get; set; }
-    IQueryable<Employee> Employees { get; set; }
+    IQueryable<Customer> Customers { get; }
+    IQueryable<Employee> Employees { get; }
+    IQueryable<Category> Categories { get; }
+    EntitySet<Order> Orders { get; set; }
     DbCommand GetCommand (IQueryable<string> query);
+    decimal? TotalProductUnitPriceByCategory (int categoryID);
+
+    decimal? MinUnitPriceByCategory (int? nullable);
+    IQueryable<ProductsUnderThisUnitPriceResult> ProductsUnderThisUnitPrice (decimal @decimal);
   }
 }
