@@ -16,31 +16,32 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupView:Executor
+  internal class GroupView:TestBase
   {
     //This sample uses SELECT and WHERE to return a sequence of invoices
     //where shipping city is London.")]
     public void LinqToSqlView01 ()
     {
       var q =
-          from i in db.Invoices
+          from i in DB.Invoices
           where i.ShipCity == "London"
           select new { i.OrderID, i.ProductName, i.Quantity, i.CustomerName };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses SELECT to query QuarterlyOrders.")]
     public void LinqToSqlView02 ()
     {
       var q =
-          from qo in db.QuarterlyOrders
+          from qo in DB.QuarterlyOrders
           select qo;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }

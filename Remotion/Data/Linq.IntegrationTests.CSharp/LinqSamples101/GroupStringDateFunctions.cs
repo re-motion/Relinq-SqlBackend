@@ -16,10 +16,11 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupStringDateFunctions:Executor
+  internal class GroupStringDateFunctions:TestBase
   {
     //This sample uses the + operator to concatenate string fields " +
     //and string literals in forming the Customers' calculated " +
@@ -27,10 +28,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString01 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           select new { c.CustomerID, Location = c.City + ", " + c.Country };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Length property to find all Products whose " +
@@ -38,11 +39,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString02 ()
     {
       var q =
-          from p in db.Products
+          from p in DB.Products
           where p.ProductName.Length < 10
           select p;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Contains method to find all Customers whose " +
@@ -50,11 +51,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString03 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           where c.ContactName.Contains ("Anders")
           select c;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the IndexOf method to find the first instance of " +
@@ -62,10 +63,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString04 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           select new { c.ContactName, SpacePos = c.ContactName.IndexOf (" ") };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the StartsWith method to find Customers whose " +
@@ -73,11 +74,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString05 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           where c.ContactName.StartsWith ("Maria")
           select c;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the EndsWith method to find Customers whose " +
@@ -85,11 +86,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString06 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           where c.ContactName.EndsWith ("Anders")
           select c;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Substring method to return Product names starting " +
@@ -97,10 +98,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString07 ()
     {
       var q =
-          from p in db.Products
+          from p in DB.Products
           select p.ProductName.Substring (3);
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Substring method to find Employees whose " +
@@ -108,11 +109,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString08 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.HomePhone.Substring (6, 3) == "555"
           select e;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the ToUpper method to return Employee names " +
@@ -120,10 +121,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString09 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           select new { LastName = e.LastName.ToUpper (), e.FirstName };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the ToLower method to return Category names " +
@@ -131,10 +132,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString10 ()
     {
       var q =
-          from c in db.Categories
+          from c in DB.Categories
           select c.CategoryName.ToLower ();
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Trim method to return the first five " +
@@ -143,10 +144,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString11 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           select e.HomePhone.Substring (0, 5).Trim ();
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Insert method to return a sequence of " +
@@ -155,11 +156,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString12 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.HomePhone.Substring (4, 1) == ")"
           select e.HomePhone.Insert (5, ":");
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Remove method to return a sequence of " +
@@ -168,11 +169,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString13 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.HomePhone.Substring (4, 1) == ")"
           select e.HomePhone.Remove (9);
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Remove method to return a sequence of " +
@@ -181,11 +182,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString14 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           where e.HomePhone.Substring (4, 1) == ")"
           select e.HomePhone.Remove (0, 6);
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the Replace method to return a sequence of " +
@@ -195,7 +196,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString15 ()
     {
       var q =
-          from s in db.Suppliers
+          from s in DB.Suppliers
           select new
           {
             s.CompanyName,
@@ -203,7 +204,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
                                .Replace ("USA", "United States of America")
           };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the DateTime's Year property to " +
@@ -211,11 +212,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString16 ()
     {
       var q =
-          from o in db.Orders
+          from o in DB.Orders
           where o.OrderDate.Value.Year == 1997
           select o;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the DateTime's Month property to " +
@@ -223,11 +224,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString17 ()
     {
       var q =
-          from o in db.Orders
+          from o in DB.Orders
           where o.OrderDate.Value.Month == 12
           select o;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses the DateTime's Day property to " +
@@ -235,11 +236,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlString18 ()
     {
       var q =
-          from o in db.Orders
+          from o in DB.Orders
           where o.OrderDate.Value.Day == 31
           select o;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
   }

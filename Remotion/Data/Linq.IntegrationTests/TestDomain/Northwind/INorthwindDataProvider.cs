@@ -37,10 +37,18 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     IQueryable<Order> Orders { get; set; }
     IQueryable<OrderDetail> OrderDetails { get; set; }
     IQueryable<Contact> Contacts { get; set; }
+    IQueryable<Invoices> Invoices { get; set; }
+    IQueryable<QuarterlyOrder> QuarterlyOrders { get; set; }
+    IQueryable<Shipper> Shippers { get; set; }
+
     DbCommand GetCommand (IQueryable<string> query);
     decimal? TotalProductUnitPriceByCategory (int categoryID);
-
     decimal? MinUnitPriceByCategory (int? nullable);
     IQueryable<ProductsUnderThisUnitPriceResult> ProductsUnderThisUnitPrice (decimal @decimal);
+    int CustomersCountByRegion (string wa);
+    ISingleResult<CustomersByCityResult> CustomersByCity (string london);
+    IMultipleResults WholeOrPartialCustomersSet (int p0);
+    IMultipleResults GetCustomerAndOrders (string seves);
+    void CustomerTotalSales (string customerID, ref decimal? totalSales);
   }
 }

@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Data.Linq.SqlClient;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupSqlMethods:Executor
+  class GroupSqlMethods:TestBase
   {
     //This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.")]
     public void LinqToSqlSqlMethods01 ()
     {
 
-      var q = from c in db.Customers
+      var q = from c in DB.Customers
               where SqlMethods.Like (c.CustomerID, "C%")
               select c;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
 
     }
 
@@ -22,11 +23,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSqlMethods02 ()
     {
 
-      var q = from o in db.Orders
+      var q = from o in DB.Orders
               where SqlMethods.DateDiffDay (o.OrderDate, o.ShippedDate) < 10
               select o;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
 
     }
 

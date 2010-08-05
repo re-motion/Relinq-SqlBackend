@@ -18,62 +18,70 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
+using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupStoredProcedures:Executor
+  internal class GroupStoredProcedures:TestBase
   {
     //This sample uses a stored procedure to return the number of Customers in the 'WA' Region.")]
     public void LinqToSqlStoredProc01 ()
     {
-      int count = db.CustomersCountByRegion ("WA");
+      int count = DB.CustomersCountByRegion ("WA");
 
-      serializer.Serialize (count);
+      TestExecutor.Execute (count, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses a stored procedure to return the CustomerID, ContactName, CompanyName
     // and City of customers who are in London.")]
     public void LinqToSqlStoredProc02 ()
     {
-      ISingleResult<CustomersByCityResult> result = db.CustomersByCity ("London");
+      ISingleResult<CustomersByCityResult> result = DB.CustomersByCity ("London");
 
-      serializer.Serialize (result);
+      TestExecutor.Execute (result, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses a stored procedure to return a set of 
     //Customers in the 'WA' Region.  The result set-shape returned depends on the parameter passed in. 
     //If the parameter equals 1, all Customer properties are returned. 
     //If the parameter equals 2, the CustomerID, ContactName and CompanyName properties are returned.")]
-    public void LinqToSqlStoredProc03 ()
+    public void LinqToSqlStoredProc03_1 ()
     {
-      serializer.Serialize ("********** Whole Customer Result-set ***********");
-      IMultipleResults result = db.WholeOrPartialCustomersSet (1);
+      IMultipleResults result = DB.WholeOrPartialCustomersSet (1);
       IEnumerable<WholeCustomersSetResult> shape1 = result.GetResult<WholeCustomersSetResult> ();
 
-      serializer.Serialize (shape1);
+      TestExecutor.Execute (shape1, MethodBase.GetCurrentMethod ());
+    }
 
-      serializer.Serialize (Environment.NewLine);
-      serializer.Serialize ("********** Partial Customer Result-set ***********");
-      result = db.WholeOrPartialCustomersSet (2);
+    //This sample uses a stored procedure to return a set of 
+    //Customers in the 'WA' Region.  The result set-shape returned depends on the parameter passed in. 
+    //If the parameter equals 1, all Customer properties are returned. 
+    //If the parameter equals 2, the CustomerID, ContactName and CompanyName properties are returned.")]
+    public void LinqToSqlStoredProc03_2 ()
+    {
+      IMultipleResults result = DB.WholeOrPartialCustomersSet (2);
       IEnumerable<PartialCustomersSetResult> shape2 = result.GetResult<PartialCustomersSetResult> ();
 
-      serializer.Serialize (shape2);
+      TestExecutor.Execute (shape2, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.")]
-    public void LinqToSqlStoredProc04 ()
+    public void LinqToSqlStoredProc04_1 ()
     {
-      IMultipleResults result = db.GetCustomerAndOrders ("SEVES");
+      IMultipleResults result = DB.GetCustomerAndOrders ("SEVES");
 
-      serializer.Serialize ("********** Customer Result-set ***********");
       IEnumerable<CustomerResultSet> customer = result.GetResult<CustomerResultSet> ();
-      serializer.Serialize (customer);
-      serializer.Serialize (Environment.NewLine);
+      TestExecutor.Execute (customer, MethodBase.GetCurrentMethod ());
+    }
 
-      serializer.Serialize ("********** Orders Result-set ***********");
+    //This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.")]
+    public void LinqToSqlStoredProc04_2 ()
+    {
+      IMultipleResults result = DB.GetCustomerAndOrders ("SEVES");
+
       IEnumerable<OrdersResultSet> orders = result.GetResult<OrdersResultSet> ();
-      serializer.Serialize (orders);
+      TestExecutor.Execute (orders, MethodBase.GetCurrentMethod ());
     }
 
     //This sample uses a stored procedure that returns an out parameter.")]
@@ -85,9 +93,9 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       // Out parameters are passed by ref, to support scenarios where
       // the parameter is 'in/out'.  In this case, the parameter is only
       // 'out'.
-      db.CustomerTotalSales (customerID, ref totalSales);
+      DB.CustomerTotalSales (customerID, ref totalSales);
 
-      serializer.Serialize (string.Format ("Total Sales for Customer '{0}' = {1:C}", customerID, totalSales));
+      TestExecutor.Execute (totalSales, MethodBase.GetCurrentMethod ());
     }
   }
 }

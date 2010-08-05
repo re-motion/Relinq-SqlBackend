@@ -17,11 +17,12 @@
 using System;
 using System.Data.Linq;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupObjectLoading : Executor
+  internal class GroupObjectLoading : TestBase
   {
     //This sample demonstrates how navigating through relationships in 
     //retrieved objects can end up triggering new queries to the database 
@@ -29,130 +30,134 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlObject01 ()
     {
       var custs =
-          from c in db.Customers
+          from c in DB.Customers
           where c.City == "Sao Paulo"
           select c;
 
-      foreach (var cust in custs)
-      {
-        foreach (var ord in cust.Orders)
-          serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
-      }
+      TestExecutor.Execute (custs, MethodBase.GetCurrentMethod());
+
+      //foreach (var cust in custs)
+      //{
+      //  foreach (var ord in cust.Orders)
+      //    serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
+      //}
     }
 
-    //This sample demonstrates how to use LoadWith to request related 
-    //data during the original query so that additional roundtrips to the 
-    //database are not required later when navigating through 
-    //the retrieved objects.
-    public void LinqToSqlObject02 ()
-    {
-      Northwind db2 = new Northwind (connString);
+    //TODO: won't compile since needs Northwind object, do we need this test ?
+    ////This sample demonstrates how to use LoadWith to request related 
+    ////data during the original query so that additional roundtrips to the 
+    ////database are not required later when navigating through 
+    ////the retrieved objects.
+    //public void LinqToSqlObject02 ()
+    //{
+    //  Northwind db2 = new Northwind (connString);
 
-      DataLoadOptions ds = new DataLoadOptions();
-      ds.LoadWith<Customer> (p => p.Orders);
+    //  DataLoadOptions ds = new DataLoadOptions();
+    //  ds.LoadWith<Customer> (p => p.Orders);
 
-      db2.LoadOptions = ds;
+    //  db2.LoadOptions = ds;
 
-      var custs = (
-                      from c in db2.Customers
-                      where c.City == "Sao Paulo"
-                      select c);
+    //  var custs = (
+    //                  from c in db2.Customers
+    //                  where c.City == "Sao Paulo"
+    //                  select c);
 
-      foreach (var cust in custs)
-      {
-        foreach (var ord in cust.Orders)
-          serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
-      }
-    }
+    //  TestExecutor.Execute (custs, MethodBase.GetCurrentMethod ());
 
+    //  //foreach (var cust in custs)
+    //  //{
+    //  //  foreach (var ord in cust.Orders)
+    //  //    serializer.Serialize (String.Format ("CustomerID {0} has an OrderID {1}.", cust.CustomerID, ord.OrderID));
+    //  //}
+    //}
+
+    //TODO: won't compile since needs Northwind object, do we need this test ?
     //This sample demonstrates how navigating through relationships in 
     //retrieved objects can end up triggering new queries to the database 
     //if the data was not requested by the original query. Also this sample shows relationship 
     //objects can be filtered using Assoicate With when they are deferred loaded.
-    public void LinqToSqlObject03 ()
-    {
-      Northwind db2 = new Northwind (connString);
+    //public void LinqToSqlObject03 ()
+    //{
+    //  Northwind db2 = new Northwind (connString);
 
-      DataLoadOptions ds = new DataLoadOptions();
-      ds.AssociateWith<Customer> (p => p.Orders.Where (o => o.ShipVia > 1));
+    //  DataLoadOptions ds = new DataLoadOptions();
+    //  ds.AssociateWith<Customer> (p => p.Orders.Where (o => o.ShipVia > 1));
 
-      db2.LoadOptions = ds;
-      var custs =
-          from c in db2.Customers
-          where c.City == "London"
-          select c;
+    //  db2.LoadOptions = ds;
+    //  var custs =
+    //      from c in db2.Customers
+    //      where c.City == "London"
+    //      select c;
 
-      foreach (var cust in custs)
-      {
-        foreach (var ord in cust.Orders)
-        {
-          foreach (var orderDetail in ord.OrderDetails)
-          {
-            serializer.Serialize (
-                String.Format (
-                    "CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.",
-                    cust.CustomerID,
-                    ord.OrderID,
-                    ord.ShipVia,
-                    orderDetail.ProductID,
-                    orderDetail.Product.ProductName));
-          }
-        }
-      }
-    }
+    //  foreach (var cust in custs)
+    //  {
+    //    foreach (var ord in cust.Orders)
+    //    {
+    //      foreach (var orderDetail in ord.OrderDetails)
+    //      {
+    //        serializer.Serialize (
+    //            String.Format (
+    //                "CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.",
+    //                cust.CustomerID,
+    //                ord.OrderID,
+    //                ord.ShipVia,
+    //                orderDetail.ProductID,
+    //                orderDetail.Product.ProductName));
+    //      }
+    //    }
+    //  }
+    //}
 
-    //This sample demonstrates how to use LoadWith to request related 
-    //data during the original query so that additional roundtrips to the 
-    //database are not required later when navigating through 
-    //the retrieved objects. Also this sample shows relationship 
-    //objects can be ordered by using Assoicate With when they are eager loaded.")]
-    public void LinqToSqlObject04 ()
-    {
-      Northwind db2 = new Northwind (connString);
 
-      DataLoadOptions ds = new DataLoadOptions();
-      ds.LoadWith<Customer> (p => p.Orders);
-      ds.LoadWith<Order> (p => p.OrderDetails);
-      ds.AssociateWith<Order> (p => p.OrderDetails.OrderBy (o => o.Quantity));
+    //TODO: won't compile since needs Northwind object, do we need this test ?
+    ////This sample demonstrates how to use LoadWith to request related 
+    ////data during the original query so that additional roundtrips to the 
+    ////database are not required later when navigating through 
+    ////the retrieved objects. Also this sample shows relationship 
+    ////objects can be ordered by using Assoicate With when they are eager loaded.")]
+    //public void LinqToSqlObject04 ()
+    //{
+    //  Northwind db2 = new Northwind (connString);
 
-      db2.LoadOptions = ds;
+    //  DataLoadOptions ds = new DataLoadOptions();
+    //  ds.LoadWith<Customer> (p => p.Orders);
+    //  ds.LoadWith<Order> (p => p.OrderDetails);
+    //  ds.AssociateWith<Order> (p => p.OrderDetails.OrderBy (o => o.Quantity));
 
-      var custs = (
-                      from c in db2.Customers
-                      where c.City == "London"
-                      select c);
+    //  db2.LoadOptions = ds;
 
-      foreach (var cust in custs)
-      {
-        foreach (var ord in cust.Orders)
-        {
-          foreach (var orderDetail in ord.OrderDetails)
-          {
-            serializer.Serialize (
-                string.Format (
-                    "CustomerID {0} has an OrderID {1} with ProductID {2} that has Quantity {3}.",
-                    cust.CustomerID,
-                    ord.OrderID,
-                    orderDetail.ProductID,
-                    orderDetail.Quantity));
-          }
-        }
-      }
-    }
+    //  var custs = (
+    //                  from c in db2.Customers
+    //                  where c.City == "London"
+    //                  select c);
+
+    //  foreach (var cust in custs)
+    //  {
+    //    foreach (var ord in cust.Orders)
+    //    {
+    //      foreach (var orderDetail in ord.OrderDetails)
+    //      {
+    //        serializer.Serialize (
+    //            string.Format (
+    //                "CustomerID {0} has an OrderID {1} with ProductID {2} that has Quantity {3}.",
+    //                cust.CustomerID,
+    //                ord.OrderID,
+    //                orderDetail.ProductID,
+    //                orderDetail.Quantity));
+    //      }
+    //    }
+    //  }
+    //}
 
     //This sample demonstrates how navigating through relationships in 
     //retrieved objects can result in triggering new queries to the database 
     //if the data was not requested by the original query.")]
     public void LinqToSqlObject05 ()
     {
-      var emps = from e in db.Employees
+      var emps = from e in DB.Employees
                  select e;
 
-      foreach (var emp in emps)
-      {
-        foreach (var man in emp.Employees)
-          serializer.Serialize (String.Format ("Employee {0} reported to Manager {1}.", emp.FirstName, man.FirstName));
-      }
+      TestExecutor.Execute (emps, MethodBase.GetCurrentMethod());
     }
 
     //This sample demonstrates how navigating through Link in 
@@ -160,35 +165,31 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //if the data type is Link.")]
     public void LinqToSqlObject06 ()
     {
-      var emps = from c in db.Employees
+      var emps = from c in DB.Employees
                  select c;
 
-      foreach (Employee emp in emps)
-        serializer.Serialize ("{0}", emp.Notes);
+      TestExecutor.Execute (emps, MethodBase.GetCurrentMethod());
     }
 
 
-    //This samples overrides the partial method LoadProducts in Category class. When products of a category are being loaded,
-    //LoadProducts is being called to load products that are not discontinued in this category. ")]
-    public void LinqToSqlObject07 ()
-    {
-      Northwind db2 = new Northwind (connString);
+    //TODO: won't compile since needs Northwind object, do we need this test ?
+    ////This samples overrides the partial method LoadProducts in Category class. When products of a category are being loaded,
+    ////LoadProducts is being called to load products that are not discontinued in this category. ")]
+    //public void LinqToSqlObject07 ()
+    //{
+    //  Northwind db2 = new Northwind (connString);
 
-      DataLoadOptions ds = new DataLoadOptions();
+    //  DataLoadOptions ds = new DataLoadOptions();
 
-      ds.LoadWith<Category> (p => p.Products);
-      db2.LoadOptions = ds;
+    //  ds.LoadWith<Category> (p => p.Products);
+    //  db2.LoadOptions = ds;
 
-      var q = (
-                  from c in db2.Categories
-                  where c.CategoryID < 3
-                  select c);
+    //  var q = (
+    //              from c in db2.Categories
+    //              where c.CategoryID < 3
+    //              select c);
 
-      foreach (var cat in q)
-      {
-        foreach (var prod in cat.Products)
-          serializer.Serialize (String.Format ("Category {0} has a ProductID {1} that Discontined = {2}.", cat.CategoryID, prod.ProductID, prod.Discontinued));
-      }
-    }
+    //  TestExecutor.Execute (q, MethodBase.GetCurrentMethod ());
+    //}
   }
 }

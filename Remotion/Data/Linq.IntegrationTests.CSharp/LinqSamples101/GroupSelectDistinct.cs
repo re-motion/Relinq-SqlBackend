@@ -17,32 +17,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  class GroupSelectDistinct:Executor
+  class GroupSelectDistinct:TestBase
   {
     //This sample uses SELECT to return a sequence of just the Customers' contact names.
     public void LinqToSqlSelect01 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           select c.ContactName;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses SELECT and anonymous types to return a sequence of just the Customers' contact names and phone numbers.
     public void LinqToSqlSelect02 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           select new { c.ContactName, c.Phone };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses SELECT and anonymous types to return a sequence of just the Employees' names and phone numbers, 
@@ -51,10 +52,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSelect03 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           select new { Name = e.FirstName + " " + e.LastName, Phone = e.HomePhone };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses SELECT and anonymous types to return 
@@ -63,29 +64,29 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSelect04 ()
     {
       var q =
-          from p in db.Products
+          from p in DB.Products
           select new { p.ProductID, HalfPrice = p.UnitPrice / 2 };
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses SELECT and a conditional statement to return a sequence of product name and product availability.
     public void LinqToSqlSelect05 ()
     {
       var q =
-          from p in db.Products
+          from p in DB.Products
           select new { p.ProductName, Availability = p.UnitsInStock - p.UnitsOnOrder < 0 ? "Out Of Stock" : "In Stock" };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses SELECT and a known type to return a sequence of employees' names.
     public void LinqToSqlSelect06 ()
     {
       var q =
-          from e in db.Employees
+          from e in DB.Employees
           select new Name { FirstName = e.FirstName, LastName = e.LastName };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //[Category ("Select/Distinct")]
@@ -94,11 +95,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSelect07 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           where c.City == "London"
           select c.ContactName;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //[Category ("Select/Distinct")]
@@ -108,7 +109,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSelect08 ()
     {
       var q =
-          from c in db.Customers
+          from c in DB.Customers
           select new
           {
             c.CustomerID,
@@ -116,7 +117,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
             ContactInfo = new { c.ContactName, c.ContactTitle }
           };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //[Category ("Select/Distinct")]
@@ -128,7 +129,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSelect09 ()
     {
       var q =
-          from o in db.Orders
+          from o in DB.Orders
           select new
           {
             o.OrderID,
@@ -139,7 +140,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
             FreeShippingDiscount = o.Freight
           };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     // Phone converter that converts a phone number to 
@@ -164,18 +165,18 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //             "to an international format.")]
     public void LinqToSqlLocalMethodCall01 ()
     {
-      var q = from c in db.Customers
+      var q = from c in DB.Customers
               where c.Country == "UK" || c.Country == "USA"
               select new { c.CustomerID, c.CompanyName, Phone = c.Phone, InternationalPhone = PhoneNumberConverter (c.Country, c.Phone) };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
     public void LinqToSqlLocalMethodCall02 ()
     {
       XDocument doc = new XDocument (
-          new XElement ("Customers", from c in db.Customers
+          new XElement ("Customers", from c in DB.Customers
                                      where c.Country == "UK" || c.Country == "USA"
                                      select (new XElement ("Customer",
                                          new XAttribute ("CustomerID", c.CustomerID),
@@ -191,11 +192,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlSelect10 ()
     {
       var q = (
-          from c in db.Customers
+          from c in DB.Customers
           select c.City)
           .Distinct ();
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }

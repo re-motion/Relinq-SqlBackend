@@ -68,14 +68,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
       var q = DB.Customers.Where (p => p.Orders.Contains (order)).ToList ();
 
-      List<String> strings = new List<String>();
-      foreach (var cust in q)
-      {
-        foreach (var ord in cust.Orders)
-        {
-          strings.Add (String.Format ("Customer {0} has OrderID {1}.", cust.CustomerID, ord.OrderID));
-        }
-      }
+      TestExecutor.Execute (new { order, q }, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")]

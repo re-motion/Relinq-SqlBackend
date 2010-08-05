@@ -16,49 +16,50 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupUserDefinedFunctions:Executor
+  internal class GroupUserDefinedFunctions:TestBase
   {
     //This sample demonstrates using a scalar user-defined function in a projection.")]
     public void LinqToSqlUserDefined01 ()
     {
-      var q = from c in db.Categories
-              select new { c.CategoryID, TotalUnitPrice = db.TotalProductUnitPriceByCategory (c.CategoryID) };
+      var q = from c in DB.Categories
+              select new { c.CategoryID, TotalUnitPrice = DB.TotalProductUnitPriceByCategory (c.CategoryID) };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample demonstrates using a scalar user-defined function in a where clause.")]
     public void LinqToSqlUserDefined02 ()
     {
-      var q = from p in db.Products
-              where p.UnitPrice == db.MinUnitPriceByCategory (p.CategoryID)
+      var q = from p in DB.Products
+              where p.UnitPrice == DB.MinUnitPriceByCategory (p.CategoryID)
               select p;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample demonstrates selecting from a table-valued user-defined function.")]
     public void LinqToSqlUserDefined03 ()
     {
-      var q = from p in db.ProductsUnderThisUnitPrice (10.25M)
+      var q = from p in DB.ProductsUnderThisUnitPrice (10.25M)
               where !(p.Discontinued ?? false)
               select p;
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample demonstrates joining to the results of a table-valued user-defined function.")]
     public void LinqToSqlUserDefined04 ()
     {
-      var q = from c in db.Categories
-              join p in db.ProductsUnderThisUnitPrice (8.50M) on c.CategoryID equals p.CategoryID into prods
+      var q = from c in DB.Categories
+              join p in DB.ProductsUnderThisUnitPrice (8.50M) on c.CategoryID equals p.CategoryID into prods
               from p in prods
               select new { c.CategoryID, c.CategoryName, p.ProductName, p.UnitPrice };
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }

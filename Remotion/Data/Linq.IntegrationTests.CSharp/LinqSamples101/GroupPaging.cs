@@ -16,23 +16,24 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class GroupPaging:Executor
+  internal class GroupPaging:TestBase
   {
     //This sample uses the Skip and Take operators to do paging by skipping the first 50 records and then returning the next 10, thereby 
     //providing the data for page 6 of the Products table.")]
     public void LinqToSqlPaging01 ()
     {
       var q = (
-                  from c in db.Customers
+                  from c in DB.Customers
                   orderby c.ContactName
                   select c)
           .Skip (50)
           .Take (10);
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
     //This sample uses a where clause and the Take operator to do paging by, 
@@ -43,13 +44,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     public void LinqToSqlPaging02 ()
     {
       var q = (
-                  from p in db.Products
+                  from p in DB.Products
                   where p.ProductID > 50
                   orderby p.ProductID
                   select p)
           .Take (10);
 
-      serializer.Serialize (q);
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }
