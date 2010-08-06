@@ -70,14 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         // Transform this to a substatement returning a sequence of items; because we don't change the TopExpression/SelectProjection, 
         // the sequence will still contain exactly one item.
 
-        var newDataInfo = new StreamedSequenceInfo (
-            typeof (IEnumerable<>).MakeGenericType (expression.Type),
-            expression.SqlStatement.SelectProjection);
-
-        var newStatement = new SqlStatementBuilder (expression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
-
-        var subStatementTableInfo = new ResolvedSubStatementTableInfo (_generator.GetUniqueIdentifier ("q"), newStatement);
-        var sqlTable = new SqlTable (subStatementTableInfo, JoinSemantics.Left);
+        var sqlTable = Context.MoveSubStatementToSqlTable (expression, JoinSemantics.Left, _generator.GetUniqueIdentifier ("q"));
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
         
         Context.AddSqlTable(sqlTable);

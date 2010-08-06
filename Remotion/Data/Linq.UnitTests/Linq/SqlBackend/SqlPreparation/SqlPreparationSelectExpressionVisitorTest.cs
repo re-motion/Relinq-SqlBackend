@@ -112,10 +112,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           null);
       var expression = new SqlSubStatementExpression (originalSubStatement);
 
-      SqlTableBase newSqlTable = null;
+      var fakeSqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Left);
+      
       _contextMock
-          .Expect (mock => mock.AddSqlTable(Arg<SqlTableBase>.Is.Anything))
-          .WhenCalled (mi => newSqlTable = (SqlTableBase) mi.Arguments[0]);
+          .Expect (mock => mock.MoveSubStatementToSqlTable (Arg.Is(expression), Arg.Is(JoinSemantics.Left), Arg<string>.Matches(ui=>ui=="q0")))
+          .Return (fakeSqlTable);
+      _contextMock
+          .Expect (mock => mock.AddSqlTable (fakeSqlTable));
       _contextMock.Replay ();
 
       var result = _visitor.VisitSqlSubStatementExpression (expression);
@@ -123,24 +126,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _contextMock.VerifyAllExpectations ();
 
        Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (newSqlTable));
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (fakeSqlTable));
 
-      var expectedItemSelector = new SqlTableReferenceExpression (newSqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, new SqlTableReferenceExpression(newSqlTable));
-
-      Assert.That (newSqlTable, Is.TypeOf (typeof (SqlTable)));
-      Assert.That (newSqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
-      
-      var tableInfo = ((SqlTable) ((SqlTableReferenceExpression) result).SqlTable).TableInfo;
-      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-
-      var newSubStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
-
-      Assert.That (newSubStatement.SelectProjection, Is.SameAs (originalSubStatement.SelectProjection));
-      Assert.That (newSubStatement.SqlTables, Is.EqualTo (originalSubStatement.SqlTables));
-      Assert.That (newSubStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).DataType, Is.SameAs (typeof (IEnumerable<>).MakeGenericType (typeof(int))));
-      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).ItemExpression, Is.SameAs (selectProjection));
+      var expectedItemSelector = new SqlTableReferenceExpression (fakeSqlTable);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, new SqlTableReferenceExpression(fakeSqlTable));
     }
   }
 }

@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
@@ -77,6 +79,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return _parentContext.GetExpressionMapping (original);
 
       return null;
+    }
+
+    public SqlTable MoveSubStatementToSqlTable (SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier)
+    {
+      var newDataInfo = new StreamedSequenceInfo (
+          typeof (IEnumerable<>).MakeGenericType (subStatementExpression.Type),
+          subStatementExpression.SqlStatement.SelectProjection);
+      var subSqlStatement =new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
+
+      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, subSqlStatement);
+      return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
     }
   }
 }

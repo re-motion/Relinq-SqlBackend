@@ -344,7 +344,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    //[Ignore("TODO 3091")]
     public void GroupBy_SubqueryUsedAsGroupByKey ()
     {
       var query = (from c in Cooks
@@ -356,6 +355,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             +"CROSS APPLY (SELECT TOP (1) [t3].[ID],[t3].[CookID],[t3].[Name],[t3].[RestaurantID],[t3].[SubKitchenID] "
             +"FROM [KitchenTable] AS [t3] WHERE ([t3].[ID] IS NOT NULL)) AS [t0] "
             +"GROUP BY [t0].[ID],[t0].[CookID],[t0].[Name],[t0].[RestaurantID],[t0].[SubKitchenID]) AS [q1]");
+    }
+
+    [Test]
+    public void GroupBy_WithConstantKey_GetsReplacedBySubquery ()
+    {
+      CheckQuery (Cooks.GroupBy (c => 0).Select (c => c.Key),
+        "SELECT [q1].[key] AS [value] FROM (SELECT @1 AS [key] FROM [CookTable] AS [t2] CROSS APPLY (SELECT @2) AS [t0] GROUP BY @3) AS [q1]",
+        new CommandParameter("@1", 0),
+        new CommandParameter("@2", 0),
+        new CommandParameter("@3", 0));
     }
 
     [Test]

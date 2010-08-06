@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -45,23 +44,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);
       var preparedElementSelector = stage.PrepareResultOperatorItemExpression (resultOperator.ElementSelector, context);
-      
+
+      var preparedKeySelectorAsConstantExpression = preparedKeySelector as ConstantExpression;
+      if (preparedKeySelectorAsConstantExpression != null)
+      {
+        var subSqlStatement = new SqlStatementBuilder ()
+                           {
+                             DataInfo = new StreamedSingleValueInfo (preparedKeySelectorAsConstantExpression.Type, false),
+                             SelectProjection = preparedKeySelectorAsConstantExpression
+                           }.GetSqlStatement ();
+        preparedKeySelector = new SqlSubStatementExpression (subSqlStatement);
+      }
+
       var preparedKeySelectorasSqlSubStatementExpression = preparedKeySelector as SqlSubStatementExpression;
       if (preparedKeySelectorasSqlSubStatementExpression != null)
       {
-        var newDataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (preparedKeySelectorasSqlSubStatementExpression.Type),
-           preparedKeySelectorasSqlSubStatementExpression.SqlStatement.SelectProjection); //TODO: helper method (see task)
-        var subSqlStatement =
-            new SqlStatementBuilder (preparedKeySelectorasSqlSubStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement();
-        var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (
-            generator.GetUniqueIdentifier ("t"), subSqlStatement);
-        var sqlTable = new SqlTable (resolvedSubStatementTableInfo, JoinSemantics.Inner); //TODO: left join ???
+        var sqlTable = context.MoveSubStatementToSqlTable (preparedKeySelectorasSqlSubStatementExpression, JoinSemantics.Inner, generator.GetUniqueIdentifier("t"));
         sqlStatementBuilder.SqlTables.Add (sqlTable);
         preparedKeySelector = new SqlTableReferenceExpression (sqlTable);
       }
-
+      
       sqlStatementBuilder.GroupByExpression = preparedKeySelector;
       sqlStatementBuilder.SelectProjection = SqlGroupingSelectExpression.CreateWithNames (preparedKeySelector, preparedElementSelector);
     }
+    
   }
 }

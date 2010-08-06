@@ -30,5 +30,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     void AddExpressionMapping (Expression original, Expression replacement);
     void AddSqlTable (SqlTableBase sqlTableBase);
     Expression GetExpressionMapping (Expression original);
+    SqlTable MoveSubStatementToSqlTable (SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier);
   }
 }
