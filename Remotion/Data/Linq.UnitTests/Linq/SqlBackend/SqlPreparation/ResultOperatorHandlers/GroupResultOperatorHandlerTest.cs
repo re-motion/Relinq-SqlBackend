@@ -274,7 +274,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
       Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof (SqlTable)));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[1]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[1]).TableInfo;
-      Assert.That (groupKeyTableTableInfo.SqlStatement.SelectProjection, Is.SameAs (fakeKeySelector));
+      Assert.That (((NamedExpression) groupKeyTableTableInfo.SqlStatement.SelectProjection).Expression, Is.SameAs (fakeKeySelector));
       Assert.That (groupKeyTableTableInfo.SqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (groupKeyTableTableInfo.SqlStatement.DataInfo.DataType, Is.EqualTo (typeof (IEnumerable<>).MakeGenericType (typeof (string))));
       Assert.That (groupKeyTableTableInfo.SqlStatement.SqlTables.Count, Is.EqualTo (0));

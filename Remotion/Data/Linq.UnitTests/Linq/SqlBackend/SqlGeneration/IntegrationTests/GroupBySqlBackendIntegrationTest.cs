@@ -358,7 +358,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO RM-3092")]
     public void GroupBy_WithConstantKey_GetsReplacedBySubquery ()
     {
       CheckQuery (Cooks.GroupBy (c => 0).Select (c => c.Key),

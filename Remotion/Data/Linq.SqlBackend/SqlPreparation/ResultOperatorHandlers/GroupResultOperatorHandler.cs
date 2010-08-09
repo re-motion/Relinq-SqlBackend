@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -48,11 +49,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var preparedKeySelectorAsConstantExpression = preparedKeySelector as ConstantExpression;
       if (preparedKeySelectorAsConstantExpression != null)
       {
-        var subSqlStatement = new SqlStatementBuilder ()
-                           {
-                             DataInfo = new StreamedSingleValueInfo (preparedKeySelectorAsConstantExpression.Type, false),
-                             SelectProjection = preparedKeySelectorAsConstantExpression
+        var subSqlStatement = new SqlStatementBuilder()
+                              {
+                                  DataInfo = new StreamedSingleValueInfo (preparedKeySelectorAsConstantExpression.Type, false),
+                                  SelectProjection = new NamedExpression ("value", preparedKeySelectorAsConstantExpression)
                            }.GetSqlStatement ();
+        
         preparedKeySelector = new SqlSubStatementExpression (subSqlStatement);
       }
 
