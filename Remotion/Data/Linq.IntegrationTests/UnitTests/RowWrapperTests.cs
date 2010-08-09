@@ -14,7 +14,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
   [TestFixture]
-  public class RowWrapperTest
+  public class RowWrapperTests
   {
     private IDataReader _readerMock;
     private IReverseMappingResolver _reverseMappingResolverMock;
@@ -93,7 +93,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       //this.p_4 = p_4;
     }
 
-    [Column (Name = "First")]
+    [Column (Name = "First", IsPrimaryKey = true)]
     public string First { get; set; }
 
     [Column (Name = "Age")]
@@ -118,7 +118,6 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     {
       // TODO: write your implementation of GetHashCode() here
       throw new NotImplementedException ();
-      return base.GetHashCode ();
     }
   }
 

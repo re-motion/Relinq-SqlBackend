@@ -8,6 +8,7 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
+using Remotion.Data.Linq.IntegrationTests.UnitTests;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
@@ -74,7 +75,58 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
-      throw new NotImplementedException();
+      //var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      //if (memberInfo.DeclaringType == typeof (Cook))
+      //{
+      //  switch (memberInfo.Name)
+      //  {
+      //    case "ID":
+      //      return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
+      //    case "FirstName":
+      //    case "Name":
+      //    case "IsFullTimeCook":
+      //    case "IsStarredCook":
+      //    case "Weight":
+      //    case "MetaID":
+      //      return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
+      //    case "Substitution":
+      //      return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+
+      //  }
+      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+
+      MetaTable table = _metaModel.GetTable (memberInfo.DeclaringType);
+
+      foreach (var dataMember in table.RowType.DataMembers)
+      {
+        if (dataMember.MappedName.Equals (memberInfo.Name))
+        {
+          if (dataMember.IsAssociation) //ref
+          {
+            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+          }
+          else
+          {
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, dataMember.IsPrimaryKey);
+          }
+        }
+
+        //foreach (var assoc in table.RowType.Associations)
+        //{
+        //  foreach (var member in assoc.OtherKey)
+        //  {
+        //    if (member.MappedName.Equals (memberInfo.Name))
+        //    {
+        //      return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+        //    }
+        //  }
+        //  //return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+        //}
+      }
+      throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+
+      //tableCol.GetType().GetProperty(memberInfo.)
+      //return new SqlColumnDefinitionExpression (typeof (Person).GetProperty ("First").GetType (), "p", "First", true);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)

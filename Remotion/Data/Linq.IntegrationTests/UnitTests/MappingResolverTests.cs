@@ -1,13 +1,14 @@
-﻿using System.Data.Linq;
+﻿using System;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using System.Linq.Expressions;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
@@ -79,56 +80,74 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     }
 
     [Test]
-    public void TestResolveJoinInfo()
+    public void  ResolveMemberExpression()
     {
-      ResolvedSimpleTableInfo orderTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "dbo.Order", "t0");
-      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (Customer), "dbo.Customers", "t1");
 
-      SqlColumnDefinitionExpression customerPrimaryKey = new SqlColumnDefinitionExpression (
-          typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
-      SqlColumnDefinitionExpression orderForeignKey = new SqlColumnDefinitionExpression (
-          typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
+      var memberInfo = typeof (Person).GetProperty ("First");
 
-      SqlEntityDefinitionExpression customerDefinition = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, customerPrimaryKey);
-      PropertyInfo customerOrders = customerTableInfo.ItemType.GetProperty ("Orders");
-      UnresolvedJoinInfo joinInfo = new UnresolvedJoinInfo (customerDefinition, customerOrders, JoinCardinality.Many);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Person), "p", null, new SqlColumnDefinitionExpression (typeof (string), "p", "First", true));
 
-      ResolvedJoinInfo expectedJoinInfo = new ResolvedJoinInfo (orderTableInfo, customerPrimaryKey, orderForeignKey);
-      ResolvedJoinInfo resolvedJoinInfo = _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
+      SqlColumnExpression result = (SqlColumnExpression)_mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedJoinInfo.LeftKey, resolvedJoinInfo.LeftKey);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedJoinInfo.RightKey,resolvedJoinInfo.RightKey);
-      Assert.AreEqual (expectedJoinInfo.ItemType,resolvedJoinInfo.ItemType);
-      Assert.AreEqual (expectedJoinInfo.ForeignTableInfo.ItemType, resolvedJoinInfo.ForeignTableInfo.ItemType);
-      Assert.AreEqual (expectedJoinInfo.ForeignTableInfo.TableAlias, resolvedJoinInfo.ForeignTableInfo.TableAlias);
+      Assert.AreEqual (result.IsPrimaryKey, true);
+      Assert.AreEqual (result.Type, typeof (string));
+      Assert.AreEqual (result.ColumnName, "First");
     }
 
     [Test]
-    public void TestResolveJoinInfoReverse ()
+    public void ResolveMemberExpressionUsingNorthwindEntitiesPrimaryKey ()
     {
-      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (Customer), "dbo.Customers", "t0");
-      ResolvedSimpleTableInfo orderTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "dbo.Order", "t1");
+      //Test object
+      Type type = typeof (Customer);
+      string columnName = "CustomerID";
+      bool isPrimaryKey = true;
 
-      SqlColumnDefinitionExpression customerPrimaryKey = new SqlColumnDefinitionExpression (
-          typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
-      SqlColumnDefinitionExpression orderForeignKey = new SqlColumnDefinitionExpression (
-          typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
-      SqlColumnDefinitionExpression orderPrimaryKey = new SqlColumnDefinitionExpression (
-          typeof (string), orderTableInfo.TableAlias, "OrderID", true);
 
-      SqlEntityDefinitionExpression orderDefinition = new SqlEntityDefinitionExpression (orderTableInfo.ItemType, orderTableInfo.TableAlias, null, orderPrimaryKey);
-      PropertyInfo orderCustomer = orderTableInfo.ItemType.GetProperty ("Customer");
+      var memberInfo = type.GetProperty (columnName);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
 
-      UnresolvedJoinInfo joinInfo = new UnresolvedJoinInfo (orderDefinition, orderCustomer, JoinCardinality.One);
+      SqlColumnExpression result = (SqlColumnExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      ResolvedJoinInfo expectedJoinInfo = new ResolvedJoinInfo (customerTableInfo, orderForeignKey, customerPrimaryKey);
-      ResolvedJoinInfo resolvedJoinInfo = _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedJoinInfo.LeftKey, resolvedJoinInfo.LeftKey);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedJoinInfo.RightKey, resolvedJoinInfo.RightKey);
-      Assert.AreEqual (expectedJoinInfo.ItemType, resolvedJoinInfo.ItemType);
-      Assert.AreEqual (expectedJoinInfo.ForeignTableInfo.ItemType, resolvedJoinInfo.ForeignTableInfo.ItemType);
-      Assert.AreEqual (expectedJoinInfo.ForeignTableInfo.TableAlias, resolvedJoinInfo.ForeignTableInfo.TableAlias);
+      Assert.AreEqual (result.IsPrimaryKey, isPrimaryKey);
+      Assert.AreEqual (result.Type, typeof (string));
+      Assert.AreEqual (result.ColumnName, columnName);
     }
+
+    [Test]
+    public void ResolveMemberExpressionUsingNorthwindEntitiesNonPrimaryKey ()
+    {
+      //Test object
+      Type type = typeof (Customer);
+      string columnName = "CompanyName";
+      bool isPrimaryKey = false;
+
+
+      var memberInfo = type.GetProperty (columnName);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
+
+      SqlColumnExpression result = (SqlColumnExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
+
+      Assert.AreEqual (result.IsPrimaryKey, isPrimaryKey);
+      Assert.AreEqual (result.Type, typeof (string));
+      Assert.AreEqual (result.ColumnName, columnName);
+    }
+
+    [Test]
+    public void ResolveMemberExpressionUsingNorthwindEntitiesAssociated ()
+    {
+      //Test object
+      Type type = typeof (Order);
+      string columnName = "Customer"; //foreign key
+      bool isPrimaryKey = false;
+
+      var memberInfo = type.GetProperty (columnName);
+
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
+
+      SqlEntityRefMemberExpression result = (SqlEntityRefMemberExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
+
+      Assert.AreEqual (result.Type, typeof (string));
+    }
+
   }
 }
