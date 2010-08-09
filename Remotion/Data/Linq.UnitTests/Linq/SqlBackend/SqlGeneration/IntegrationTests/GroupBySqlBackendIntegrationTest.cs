@@ -347,24 +347,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void GroupBy_SubqueryUsedAsGroupByKey ()
     {
       var query = (from c in Cooks
-                   group c by Kitchens.Where (k => k != null).First()).Select (g => g.Key);
-      CheckQuery (query, "SELECT [q1].[key_ID] AS [ID],[q1].[key_CookID] AS [CookID],[q1].[key_Name] AS [Name],[q1].[key_RestaurantID] AS [RestaurantID],"
-            +"[q1].[key_SubKitchenID] AS [SubKitchenID] "
-            +"FROM (SELECT [t0].[ID] AS [key_ID],[t0].[CookID] AS [key_CookID],[t0].[Name] AS [key_Name],[t0].[RestaurantID] AS [key_RestaurantID],"
-            +"[t0].[SubKitchenID] AS [key_SubKitchenID] FROM [CookTable] AS [t2] "
-            +"CROSS APPLY (SELECT TOP (1) [t3].[ID],[t3].[CookID],[t3].[Name],[t3].[RestaurantID],[t3].[SubKitchenID] "
-            +"FROM [KitchenTable] AS [t3] WHERE ([t3].[ID] IS NOT NULL)) AS [t0] "
-            +"GROUP BY [t0].[ID],[t0].[CookID],[t0].[Name],[t0].[RestaurantID],[t0].[SubKitchenID]) AS [q1]");
+                   group c by Kitchens.Where (k => k != null).Select(k => k.Name).First()).Select (g => g.Key);
+      CheckQuery (
+          query, 
+          "SELECT [q1].[key] AS [value] FROM ("
+            + "SELECT [t0].[value] AS [key] "
+            + "FROM [CookTable] AS [t2] "
+            + "CROSS APPLY (SELECT TOP (1) [t3].[Name] AS [value] FROM [KitchenTable] AS [t3] WHERE ([t3].[ID] IS NOT NULL)) AS [t0] "
+            + "GROUP BY [t0].[value]) AS [q1]");
     }
 
     [Test]
+    [Ignore ("TODO RM-3092")]
     public void GroupBy_WithConstantKey_GetsReplacedBySubquery ()
     {
       CheckQuery (Cooks.GroupBy (c => 0).Select (c => c.Key),
-        "SELECT [q1].[key] AS [value] FROM (SELECT @1 AS [key] FROM [CookTable] AS [t2] CROSS APPLY (SELECT @2) AS [t0] GROUP BY @3) AS [q1]",
-        new CommandParameter("@1", 0),
-        new CommandParameter("@2", 0),
-        new CommandParameter("@3", 0));
+        "SELECT [q1].[key] AS [value] FROM ("
+          + "SELECT [t0].[value] AS [key] FROM [CookTable] AS [t2] CROSS APPLY (SELECT @1 AS [value]) AS [t0] GROUP BY [t0].[value]"
+        + ") AS [q1]",
+        new CommandParameter("@1", 0));
     }
 
     [Test]
