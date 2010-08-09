@@ -182,7 +182,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolveSqlStatement (unresolvedSqlStatement, _mappingResolutionContext))
           .Return (simplifiableResolvedSqlStatement);
       _stageMock
-          .Expect (mock => mock.ResolveSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
+          .Expect (mock => mock.ResolveAggregationExpression(Arg<Expression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
           .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
       _stageMock.Replay();
 

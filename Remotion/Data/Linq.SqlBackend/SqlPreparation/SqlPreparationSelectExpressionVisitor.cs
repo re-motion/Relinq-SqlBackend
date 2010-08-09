@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         // Transform this to a substatement returning a sequence of items; because we don't change the TopExpression/SelectProjection, 
         // the sequence will still contain exactly one item.
 
-        var sqlTable = Context.MoveSubStatementToSqlTable (expression, JoinSemantics.Left, _generator.GetUniqueIdentifier ("q"));
+        var sqlTable = expression.CreateSqlTableForSubStatement (expression, JoinSemantics.Left, _generator.GetUniqueIdentifier ("q"));
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
         
         Context.AddSqlTable(sqlTable);

@@ -15,9 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
@@ -79,6 +83,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var result = expression.ToString();
 
       Assert.That (result, Is.EqualTo ("(SELECT [t] FROM [Table] [t])"));
+    }
+
+    [Test]
+    public void CreateSqlTableForSubStatement ()
+    {
+      var selectProjection = Expression.Constant (new Cook ());
+      var sqlStatement =
+          new SqlStatementBuilder () { DataInfo = new StreamedSingleValueInfo (typeof (Cook), false), SelectProjection = selectProjection }.GetSqlStatement ();
+      var expression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = expression.CreateSqlTableForSubStatement (expression, JoinSemantics.Inner, "q0");
+
+      Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.TableInfo.GetResolvedTableInfo ().TableAlias, Is.EqualTo ("q0"));
+      Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      var newSubStatement = ((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement;
+      Assert.That (newSubStatement.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
+      Assert.That (newSubStatement.SqlTables, Is.EqualTo (sqlStatement.SqlTables));
+      Assert.That (newSubStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).DataType, Is.SameAs (typeof (IEnumerable<>).MakeGenericType (typeof (Cook))));
+      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).ItemExpression, Is.SameAs (selectProjection));
     }
   }
 }

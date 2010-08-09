@@ -245,7 +245,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new NamedExpression ("element", Expression.Constant ("e")), 
           AggregationModifier.Count);
       _stageMock
-          .Expect (mock => mock.ResolveSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
+          .Expect (mock => mock.ResolveAggregationExpression(Arg<Expression>.Is.Anything, Arg.Is (_context)))
           .Return (preparedResolvedAggregate)
           .WhenCalled (mi => {
             var expectedReplacedAggregate = new AggregationExpression (

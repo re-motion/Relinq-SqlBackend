@@ -80,7 +80,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
         if (visitor.CanBeTransferredToGroupingSource)
         {
-          var resolvedNewAggregation = stage.ResolveSelectExpression (newAggregation, context);
+          var resolvedNewAggregation = stage.ResolveAggregationExpression(newAggregation, context);
+
           var aggregationName = joinedGroupingTableInfo.AssociatedGroupingSelectExpression.AddAggregationExpressionWithName (resolvedNewAggregation);
 
           return new SqlColumnDefinitionExpression (

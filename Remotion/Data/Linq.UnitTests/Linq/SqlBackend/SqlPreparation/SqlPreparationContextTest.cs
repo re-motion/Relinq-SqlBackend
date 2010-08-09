@@ -134,27 +134,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.SqlTables[0], Is.SameAs (sqlTable));
     }
-
-    [Test]
-    public void MoveStatementToSqlTable ()
-    {
-      var selectProjection = Expression.Constant (new Cook());
-      var sqlStatement =
-          new SqlStatementBuilder()
-          { DataInfo = new StreamedSingleValueInfo (typeof (Cook), false), SelectProjection = selectProjection }.GetSqlStatement();
-      var expression = new SqlSubStatementExpression(sqlStatement);
-
-      var result = _context.MoveSubStatementToSqlTable (expression, JoinSemantics.Inner, "q0");
-
-      Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-      Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));
-      Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      var newSubStatement = ((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement;
-      Assert.That (newSubStatement.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
-      Assert.That (newSubStatement.SqlTables, Is.EqualTo (sqlStatement.SqlTables));
-      Assert.That (newSubStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).DataType, Is.SameAs (typeof (IEnumerable<>).MakeGenericType (typeof (Cook))));
-      Assert.That (((StreamedSequenceInfo) newSubStatement.DataInfo).ItemExpression, Is.SameAs (selectProjection));
-    }
+    
   }
 }

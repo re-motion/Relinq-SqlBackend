@@ -61,7 +61,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var preparedKeySelectorasSqlSubStatementExpression = preparedKeySelector as SqlSubStatementExpression;
       if (preparedKeySelectorasSqlSubStatementExpression != null)
       {
-        var sqlTable = context.MoveSubStatementToSqlTable (preparedKeySelectorasSqlSubStatementExpression, JoinSemantics.Inner, generator.GetUniqueIdentifier("t"));
+        var sqlTable = preparedKeySelectorasSqlSubStatementExpression.CreateSqlTableForSubStatement (
+            preparedKeySelectorasSqlSubStatementExpression, JoinSemantics.Inner, generator.GetUniqueIdentifier ("t"));
         sqlStatementBuilder.SqlTables.Add (sqlTable);
         preparedKeySelector = new SqlTableReferenceExpression (sqlTable);
       }

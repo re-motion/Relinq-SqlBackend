@@ -113,20 +113,19 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expression = new SqlSubStatementExpression (originalSubStatement);
 
       var fakeSqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Left);
-      
+
+      SqlTable generatedSqlTable = null;
       _contextMock
-          .Expect (mock => mock.MoveSubStatementToSqlTable (Arg.Is(expression), Arg.Is(JoinSemantics.Left), Arg<string>.Matches(ui=>ui=="q0")))
-          .Return (fakeSqlTable);
-      _contextMock
-          .Expect (mock => mock.AddSqlTable (fakeSqlTable));
+        .Expect (mock => mock.AddSqlTable (Arg<SqlTable>.Is.Anything))
+        .WhenCalled(mi=>generatedSqlTable=(SqlTable)mi.Arguments[0]);
       _contextMock.Replay ();
 
       var result = _visitor.VisitSqlSubStatementExpression (expression);
 
       _contextMock.VerifyAllExpectations ();
 
-       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
-      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (fakeSqlTable));
+      Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (generatedSqlTable));
 
       var expectedItemSelector = new SqlTableReferenceExpression (fakeSqlTable);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, new SqlTableReferenceExpression(fakeSqlTable));

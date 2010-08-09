@@ -15,6 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
@@ -23,9 +26,28 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class ResolvingSelectExpressionVisitor : ResolvingExpressionVisitor
   {
+    public new static Expression ResolveExpression (
+        Expression expression, IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("resolver", resolver);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      var visitor = new ResolvingSelectExpressionVisitor (resolver, stage, context);
+      var result = visitor.VisitExpression (expression);
+      return result;
+    }
+
     protected ResolvingSelectExpressionVisitor (IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
         : base(resolver, stage, context)
     {
     }
+
+    public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    {
+      return base.VisitSqlSubStatementExpression (expression);
+    }
+
   }
 }

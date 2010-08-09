@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
@@ -62,6 +65,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public override string ToString ()
     {
       return "(" + _sqlStatement+ ")";
+    }
+
+    public SqlTable CreateSqlTableForSubStatement (SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier)
+    {
+      var newDataInfo = new StreamedSequenceInfo (
+          typeof (IEnumerable<>).MakeGenericType (subStatementExpression.Type),
+          subStatementExpression.SqlStatement.SelectProjection);
+      var subSqlStatement = new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
+
+      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, subSqlStatement);
+      return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
     }
   }
 }

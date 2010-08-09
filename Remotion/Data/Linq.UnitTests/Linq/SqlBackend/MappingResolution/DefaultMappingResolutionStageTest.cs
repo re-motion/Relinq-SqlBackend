@@ -173,6 +173,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolveAggregationExpression ()
+    {
+      var expression = Expression.Constant (1);
+      var fakeResult = Expression.Constant (0);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock.Replay ();
+
+      var result = _stage.ResolveAggregationExpression(expression, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
+    }
+
+    [Test]
     public void ResolveTableInfo ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));

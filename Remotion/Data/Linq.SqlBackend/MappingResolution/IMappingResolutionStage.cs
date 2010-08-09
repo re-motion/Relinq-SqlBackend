@@ -33,6 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     Expression ResolveGroupByExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveTopExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveAggregationExpression (Expression expression, IMappingResolutionContext context);
     IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context);
     ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolutionContext context);
     SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context);

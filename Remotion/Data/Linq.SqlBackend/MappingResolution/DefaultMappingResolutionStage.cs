@@ -86,6 +86,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired, context);
     }
 
+    public Expression ResolveAggregationExpression (Expression expression, IMappingResolutionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      var resolvedExpression = ResolveExpression (expression, context);
+      return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
+    }
+
     public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);

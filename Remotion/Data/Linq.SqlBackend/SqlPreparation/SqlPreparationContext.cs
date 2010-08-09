@@ -80,16 +80,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       return null;
     }
-
-    public SqlTable MoveSubStatementToSqlTable (SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier)
-    {
-      var newDataInfo = new StreamedSequenceInfo (
-          typeof (IEnumerable<>).MakeGenericType (subStatementExpression.Type),
-          subStatementExpression.SqlStatement.SelectProjection);
-      var subSqlStatement =new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
-
-      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, subSqlStatement);
-      return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
-    }
+    
   }
 }
