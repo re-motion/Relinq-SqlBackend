@@ -22,6 +22,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+
       MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
 
       return new ResolvedSimpleTableInfo (tableInfo.ItemType, table.TableName, generator.GetUniqueIdentifier("t"));
@@ -35,9 +38,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     //TODO: Better Solution For IResolveTableInfo? (Current: Cast to SimpleTableInfo) 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("simpleTableInfo", tableInfo);
-      ResolvedSimpleTableInfo simpleTableInfo = (ResolvedSimpleTableInfo) tableInfo;
-      
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull ("generator", generator);
 
       SqlColumnExpression primaryColumn=null;
       List<SqlColumnExpression> otherColumns=new List<SqlColumnExpression>();
@@ -46,7 +48,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       foreach (var metaDataMember in table.RowType.DataMembers)
       {
         SqlColumnExpression sqlColumnExpression = new SqlColumnDefinitionExpression (
-            metaDataMember.Type, simpleTableInfo.TableAlias, metaDataMember.MappedName, metaDataMember.IsPrimaryKey);
+            metaDataMember.Type, tableInfo.TableAlias, metaDataMember.MappedName, metaDataMember.IsPrimaryKey);
 
         if (metaDataMember.IsPrimaryKey)
           primaryColumn = sqlColumnExpression;
@@ -55,7 +57,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       }
 
       return new SqlEntityDefinitionExpression (
-          simpleTableInfo.ItemType, simpleTableInfo.TableAlias, simpleTableInfo.TableName, primaryColumn, otherColumns.ToArray());
+          tableInfo.ItemType, tableInfo.TableAlias, null, primaryColumn, otherColumns.ToArray ());
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)

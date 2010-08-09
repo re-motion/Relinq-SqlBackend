@@ -1,10 +1,12 @@
 ﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
@@ -66,16 +68,15 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 
       SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression(typeof(int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression descriptionColumn = new SqlColumnDefinitionExpression(typeof(string),simpleTableInfo.TableAlias, "RegionDescription", false);
-      SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression(typeof(EntitySet<Territory>),simpleTableInfo.TableAlias, "Territories", false);
+      SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression (typeof (EntitySet<Territory>), simpleTableInfo.TableAlias, "Region_Territory", false);
 
-      SqlEntityDefinitionExpression expectedExpr = new SqlEntityDefinitionExpression (simpleTableInfo.ItemType, simpleTableInfo.TableAlias, simpleTableInfo.TableName, primaryColumn, descriptionColumn, territoriesColumn);
+      SqlEntityDefinitionExpression expectedExpr = new SqlEntityDefinitionExpression (simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, primaryColumn, descriptionColumn, territoriesColumn);
 
       SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
 
-      Assert.AreEqual (expectedExpr.Type, resolvedExpr.Type);
-      Assert.AreEqual (expectedExpr.TableAlias, resolvedExpr.TableAlias);
-      Assert.AreEqual (expectedExpr.PrimaryKeyColumn, resolvedExpr.PrimaryKeyColumn);
-      Assert.AreEqual (expectedExpr.Columns, resolvedExpr.Columns);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, resolvedExpr);
     }
+
+   
   }
 }
