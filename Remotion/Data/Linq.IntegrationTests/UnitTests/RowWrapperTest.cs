@@ -15,7 +15,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
   [TestFixture]
-  public class RowWrapperTests
+  public class RowWrapperTest
   {
     private IDataReader _readerMock;
     private IReverseMappingResolver _reverseMappingResolverMock;
@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
           .Expect (mock => mock.GetMetaDataMembers (typeof (Person)))
           .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (Person)).RowType.DataMembers));
 
-      ColumnID[] columnIDs = new[]
+      ColumnID[] columnIDs = new ColumnID[]
                              {
                                  new ColumnID ("FirstName", 1),
                                  new ColumnID ("Age", 2)
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       //this.p_4 = p_4;
     }
 
-    [Column (Name = "First", IsPrimaryKey = true)]
+    [Column (Name = "First")]
     public string First { get; set; }
 
     [Column (Name = "Age")]
@@ -122,6 +122,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     {
       // TODO: write your implementation of GetHashCode() here
       throw new NotImplementedException ();
+      return base.GetHashCode ();
     }
   }
 

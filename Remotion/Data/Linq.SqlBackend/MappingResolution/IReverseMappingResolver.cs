@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Data.Linq.Mapping;
 using System.Reflection;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   public interface IReverseMappingResolver
   {
-    PropertyInfo[] GetEntityMembers (Type entityType);
+    MetaDataMember[] GetMetaDataMembers (Type entityType);
   }
 }

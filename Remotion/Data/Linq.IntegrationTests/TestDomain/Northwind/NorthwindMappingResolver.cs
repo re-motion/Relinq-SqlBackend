@@ -1,9 +1,26 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -12,14 +29,14 @@ using Remotion.Data.Linq.IntegrationTests.UnitTests;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
-  public class NorthwindMappingResolver:IMappingResolver
+  public class NorthwindMappingResolver : IMappingResolver, IReverseMappingResolver
   {
     private readonly MetaModel _metaModel;
-    
 
-    public NorthwindMappingResolver()
+
+    public NorthwindMappingResolver ()
     {
-        _metaModel = new AttributeMappingSource ().GetModel (typeof (Northwind));
+      _metaModel = new AttributeMappingSource ().GetModel (typeof (Northwind));
     }
 
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -29,7 +46,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
       MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
 
-      return new ResolvedSimpleTableInfo (tableInfo.ItemType, table.TableName, generator.GetUniqueIdentifier("t"));
+      return new ResolvedSimpleTableInfo (tableInfo.ItemType, table.TableName, generator.GetUniqueIdentifier ("t"));
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
@@ -54,11 +71,12 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      SqlColumnExpression primaryColumn=null;
-      List<SqlColumnExpression> otherColumns=new List<SqlColumnExpression>();
+      SqlColumnExpression primaryColumn = null;
+      List<SqlColumnExpression> otherColumns = new List<SqlColumnExpression> ();
 
-      MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
-      foreach (var metaDataMember in table.RowType.DataMembers)
+      MetaDataMember[] sortedMembers = GetMetaDataMembers (tableInfo.ItemType);
+
+      foreach (var metaDataMember in sortedMembers)
       {
         SqlColumnExpression sqlColumnExpression = new SqlColumnDefinitionExpression (
             metaDataMember.Type, tableInfo.TableAlias, metaDataMember.MappedName, metaDataMember.IsPrimaryKey);
@@ -131,25 +149,31 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException ();
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException ();
     }
 
     public Expression ResolveTypeCheck (Expression expression, Type desiredType)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException ();
+    }
+
+    public MetaDataMember[] GetMetaDataMembers (Type entityType)
+    {
+      return MemberSortUtility.SortDataMembers (_metaModel.GetTable (entityType).RowType.DataMembers);
     }
 
     #region privateMethods
+
     private ResolvedJoinInfo CreateResolvedJoinInfo (
         SqlEntityExpression originatingEntity, MetaAssociation metaAssociation, IResolvedTableInfo joinedTableInfo)
     {
-      Debug.Assert (metaAssociation.ThisKey.Count==1);
-      Debug.Assert (metaAssociation.OtherKey.Count==1);
+      Debug.Assert (metaAssociation.ThisKey.Count == 1);
+      Debug.Assert (metaAssociation.OtherKey.Count == 1);
 
       var thisKey = metaAssociation.ThisKey[0];
       var otherKey = metaAssociation.OtherKey[0];

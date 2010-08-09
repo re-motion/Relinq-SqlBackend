@@ -24,8 +24,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public T GetEntity<T> (ColumnID[] columnIDs)
     {
-      var instance = (T) Activator.CreateInstance (typeof (T));
-      var entityMembers = _resolver.GetEntityMembers (typeof (T));
+      object instance = (T) Activator.CreateInstance (typeof (T));
+      var entityMembers = _resolver.GetMetaDataMembers (typeof (T));
 
       Debug.Assert (entityMembers.Length == columnIDs.Length);
 
@@ -33,10 +33,10 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       {
         var currentMember = entityMembers[i];
         var value = GetValue<Object> (columnIDs[i]);
-        currentMember.SetValue (instance, value, null);
+        currentMember.MemberAccessor.SetBoxedValue (ref instance, value);
 
       }
-      return instance;
+      return (T) instance;
     }
   }
 }

@@ -69,6 +69,7 @@
     <Compile Include="UnitTests\RowWrapperTests.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
     <Compile Include="Utilities\ExpressionTreeComparer.cs" />
+    <Compile Include="Utilities\MemberSortUtility.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
