@@ -101,5 +101,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         AddGroupReferenceMapping (newSqlGroupingSelectExpression, tableForGroupingSelectExpression);
       return newSqlGroupingSelectExpression;
     }
+
+    public void AddSqlTable (SqlTableBase sqlTableBase, SqlStatementBuilder sqlStatementBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+
+      sqlStatementBuilder.SqlTables.Add (sqlTableBase);
+    }
+
   }
 }

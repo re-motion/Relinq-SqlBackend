@@ -171,7 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("RM-3097")]
+    [Ignore("RM-3097")] //TODO: wrong task number!
     public void Coalesce_WithEntities ()
     {
       CheckQuery (
@@ -186,24 +186,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO: RM-3097")]
     public void EntityMemberAccessOnSubqueryExpressions_InSelectClause ()
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name);
-      CheckQuery (query, "");
+      CheckQuery (query,
+        "SELECT [q4].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) "+
+        "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] "+
+        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q4]");
     }
 
     [Test]
     public void MemberAccessOnSubqueryExpressions_InSelectClause ()
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution.Name ?? a.Name).First ().Length);
-      CheckQuery (query, "SELECT LEN([q2].[value]) AS [value] FROM [CookTable] AS [t3] OUTER APPLY "
-        +"(SELECT TOP (1) (COALESCE ([t5].[Name], [t4].[Name])) AS [value] FROM [CookTable] AS [t4] "
-        +"LEFT OUTER JOIN [CookTable] AS [t5] ON [t4].[ID] = [t5].[SubstitutedID] WHERE ([t3].[ID] = [t4].[AssistedID])) AS [q0] "
-        +"OUTER APPLY (SELECT TOP (1) (COALESCE ([t7].[Name], [t6].[Name])) AS [value] FROM [CookTable] AS [t6] "
-        +"LEFT OUTER JOIN [CookTable] AS [t7] ON [t6].[ID] = [t7].[SubstitutedID] WHERE ([t3].[ID] = [t6].[AssistedID])) AS [q1] "
-        +"OUTER APPLY (SELECT TOP (1) (COALESCE ([t9].[Name], [t8].[Name])) AS [value] FROM [CookTable] AS [t8] "
-        +"LEFT OUTER JOIN [CookTable] AS [t9] ON [t8].[ID] = [t9].[SubstitutedID] WHERE ([t3].[ID] = [t8].[AssistedID])) AS [q2]");
+      CheckQuery (query, 
+        "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] "
+        +"OUTER APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN LEN([t2].[Name]) ELSE LEN([t1].[Name]) END AS [value] "
+        +"FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
+        +"WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
 
     [Test]

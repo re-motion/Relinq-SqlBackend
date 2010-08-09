@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
@@ -26,28 +28,58 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class ResolvingSelectExpressionVisitor : ResolvingExpressionVisitor
   {
-    public new static Expression ResolveExpression (
-        Expression expression, IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+    private readonly SqlStatementBuilder _sqlStatementBuilder;
+
+    public static Expression ResolveExpression (
+        Expression expression,
+        IMappingResolver resolver,
+        IMappingResolutionStage stage,
+        IMappingResolutionContext context,
+        UniqueIdentifierGenerator generator,
+        SqlStatementBuilder sqlStatementBuilder)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
 
-      var visitor = new ResolvingSelectExpressionVisitor (resolver, stage, context);
+      var visitor = new ResolvingSelectExpressionVisitor (resolver, stage, context, generator, sqlStatementBuilder);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
-    protected ResolvingSelectExpressionVisitor (IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
-        : base(resolver, stage, context)
+    protected ResolvingSelectExpressionVisitor (
+        IMappingResolver resolver,
+        IMappingResolutionStage stage,
+        IMappingResolutionContext context,
+        UniqueIdentifierGenerator generator,
+        SqlStatementBuilder sqlStatementBuilder)
+        : base (resolver, stage, context, generator)
     {
+      _sqlStatementBuilder = sqlStatementBuilder;
     }
 
     public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
-      return base.VisitSqlSubStatementExpression (expression);
-    }
+      var newExpression = base.VisitSqlSubStatementExpression (expression);
+      var newExpressionAsSqlSubStatementExpression = newExpression as SqlSubStatementExpression;
 
+      // Substatements returning a single value need to be moved to the FROM part of the SQL statement because they might select more than one value
+      if (newExpressionAsSqlSubStatementExpression != null
+          && newExpressionAsSqlSubStatementExpression.SqlStatement.DataInfo is StreamedSingleValueInfo)
+      {
+        // Transform this to a substatement returning a sequence of items; because we don't change the TopExpression/SelectProjection, 
+        // the sequence will still contain exactly one item.
+
+        var sqlTable = expression.CreateSqlTableForSubStatement (newExpressionAsSqlSubStatementExpression, JoinSemantics.Left, Generator.GetUniqueIdentifier ("q"));
+        var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+
+        Context.AddSqlTable (sqlTable, _sqlStatementBuilder);
+        return VisitExpression(sqlTableReferenceExpression);
+      }
+      return newExpression;
+    }
   }
 }

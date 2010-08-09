@@ -28,9 +28,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
     }
 
-    public new Expression ResolveSelectProjection (Expression selectProjection)
+    public new Expression ResolveSelectProjection (Expression selectProjection, SqlStatementBuilder sqlStatementBuilder)
     {
-      return base.ResolveSelectProjection (selectProjection);
+      return base.ResolveSelectProjection (selectProjection, sqlStatementBuilder);
     }
 
     public new void ResolveSqlTable (SqlTable sqlTable)

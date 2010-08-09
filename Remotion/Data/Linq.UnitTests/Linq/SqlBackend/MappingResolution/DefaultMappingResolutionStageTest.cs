@@ -63,14 +63,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSelectExpression ()
     {
       var expression = Expression.Constant (true);
+      var sqlStatementBuilder = new SqlStatementBuilder();
       var fakeResult = Expression.Constant (0);
-
+     
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = _stage.ResolveSelectExpression (expression, _mappingResolutionContext);
+      var result = _stage.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext);
 
       _resolverMock.VerifyAllExpectations();
 

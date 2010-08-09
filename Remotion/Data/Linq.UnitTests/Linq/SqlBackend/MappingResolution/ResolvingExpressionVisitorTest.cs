@@ -40,6 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private SqlTable _sqlTable;
     private IMappingResolutionStage _stageMock;
     private IMappingResolutionContext _mappingResolutionContext;
+    private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
@@ -48,6 +49,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       _mappingResolutionContext = new MappingResolutionContext();
+      _generator = new UniqueIdentifierGenerator();
     }
 
     [Test]
@@ -66,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -88,7 +90,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -108,7 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResolvedExpression);
       _stageMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
@@ -133,7 +135,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResolvedExpression);
       _stageMock.Replay();
 
-      ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _resolverMock.VerifyAllExpectations();
       _stageMock.VerifyAllExpectations();
@@ -143,7 +145,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new CustomExpression (typeof (int));
-      var result = ResolvingExpressionVisitor.ResolveExpression (unknownExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (unknownExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.SameAs (unknownExpression));
     }
@@ -160,7 +162,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.Replay();
 
       var result =
-          (SqlSubStatementExpression) ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+          (SqlSubStatementExpression) ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result.SqlStatement, Is.EqualTo (expression.SqlStatement));
       _stageMock.VerifyAllExpectations();
@@ -186,7 +188,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
       _stageMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
@@ -208,7 +210,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (sqlFunctionExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlFunctionExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
       Assert.That (((SqlFunctionExpression) result).Args[0], Is.SameAs (resolvedExpression));
@@ -229,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (sqlConvertExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlConvertExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
@@ -252,7 +254,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedTypeExpression);
       _resolverMock.Replay();
 
-      ResolvingExpressionVisitor.ResolveExpression (typeBinaryExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      ResolvingExpressionVisitor.ResolveExpression (typeBinaryExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _resolverMock.VerifyAllExpectations();
     }
@@ -265,7 +267,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var entityRefmemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (entityRefmemberExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (entityRefmemberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.SameAs (entityRefmemberExpression));
     }
@@ -275,7 +277,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlEntityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), "test", "key");
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (sqlEntityConstantExpression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (sqlEntityConstantExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.SameAs (sqlEntityConstantExpression));
     }
@@ -293,7 +295,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _resolverMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (expression));
@@ -320,7 +322,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression2);
       _resolverMock.Replay();
 
-      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
     }
 
     [Test]
@@ -338,7 +340,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _resolverMock.VerifyAllExpectations();
       var expectedResult = Expression.Equal (leftArgumentExpression, rightArgumentExpression);
@@ -368,7 +370,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression2);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _resolverMock.VerifyAllExpectations();
       var expectedLeftSideExpression = Expression.NotEqual (leftArgumentExpression1, rightArgumentExpression1);
@@ -395,7 +397,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
     }
 
     [Test]
@@ -414,7 +416,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
@@ -442,7 +444,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
@@ -463,7 +465,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
@@ -484,7 +486,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
@@ -512,7 +514,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
@@ -534,7 +536,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (newConstantExpression);
       _resolverMock.Replay();
 
-      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
     }
 
     [Test]
@@ -553,7 +555,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
@@ -574,7 +576,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
     }
@@ -595,7 +597,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (rightArgumentExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
     }

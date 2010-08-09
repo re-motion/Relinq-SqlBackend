@@ -182,14 +182,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSelectProjection_ResolvesExpression ()
     {
       var expression = new SqlTableReferenceExpression (_sqlTable);
+      var sqlStatementBuilder = new SqlStatementBuilder();
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-          .Expect (mock => mock.ResolveSelectExpression (expression, _mappingResolutionContext))
+          .Expect (mock => mock.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext))
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = _visitor.ResolveSelectProjection (expression);
+      var result = _visitor.ResolveSelectProjection (expression, sqlStatementBuilder);
 
       _stageMock.VerifyAllExpectations();
 
@@ -311,7 +312,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeOrderExpression = Expression.Constant ("order");
 
       _stageMock
-          .Expect (mock => mock.ResolveSelectExpression (constantExpression, _mappingResolutionContext))
+          .Expect (mock => mock.ResolveSelectExpression (Arg.Is(constantExpression), Arg<SqlStatementBuilder>.Is.Anything, Arg.Is(_mappingResolutionContext)))
           .Return (fakeExpression);
       _stageMock
           .Expect (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))

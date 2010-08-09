@@ -65,7 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = _stage.PrepareSelectExpression (expressionWithSubStatement, _context);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
+      Assert.That (result, Is.SameAs(expressionWithSubStatement));
     }
 
     [Test]

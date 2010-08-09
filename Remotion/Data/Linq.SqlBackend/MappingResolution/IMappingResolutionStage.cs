@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// </summary>
   public interface IMappingResolutionStage
   {
-    Expression ResolveSelectExpression (Expression expression, IMappingResolutionContext context);
+    Expression ResolveSelectExpression (Expression expression, SqlStatementBuilder sqlStatementBuilder, IMappingResolutionContext context);
     Expression ResolveWhereExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveGroupByExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context);

@@ -34,29 +34,58 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly IMappingResolver _resolver;
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
+    private readonly UniqueIdentifierGenerator _generator;
 
     public static Expression ResolveExpression (
-        Expression expression, IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+        Expression expression,
+        IMappingResolver resolver,
+        IMappingResolutionStage stage,
+        IMappingResolutionContext context,
+        UniqueIdentifierGenerator generator
+        )
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var visitor = new ResolvingExpressionVisitor (resolver, stage, context);
+      var visitor = new ResolvingExpressionVisitor (resolver, stage, context, generator);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
-    protected ResolvingExpressionVisitor (IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context)
+    protected IMappingResolver Resolver
+    {
+      get { return _resolver; }
+    }
+
+    protected IMappingResolutionStage Stage
+    {
+      get { return _stage; }
+    }
+
+    protected IMappingResolutionContext Context
+    {
+      get { return _context; }
+    }
+
+    protected UniqueIdentifierGenerator Generator
+    {
+      get { return _generator; }
+    }
+
+    protected ResolvingExpressionVisitor (IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("generator", generator);
 
       _resolver = resolver;
       _stage = stage;
       _context = context;
+      _generator = generator;
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
@@ -115,7 +144,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return VisitExpression (resolvedTypeExpression);
     }
 
-    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -182,7 +211,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         else
           binaryExpression = Expression.AndAlso (binaryExpression, argumentComparisonExpression);
       }
-      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees(binaryExpression);
+      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (binaryExpression);
     }
   }
 }

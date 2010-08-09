@@ -41,16 +41,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _resolver = resolver;
     }
 
-    public virtual Expression ResolveSelectExpression (Expression expression, IMappingResolutionContext context)
+    public virtual Expression ResolveSelectExpression (Expression expression, SqlStatementBuilder sqlStatementBuilder, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolvingSelectExpressionVisitor.ResolveExpression (expression, _resolver, this, context);
+      var resolvedExpression = ResolvingSelectExpressionVisitor.ResolveExpression (expression, _resolver, this, context, _uniqueIdentifierGenerator, sqlStatementBuilder);
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual Expression ResolveWhereExpression (Expression expression, IMappingResolutionContext context)
+    public virtual Expression ResolveWhereExpression (Expression expression,  IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -200,7 +201,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context);
+      return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context, _uniqueIdentifierGenerator);
     }
     
   }

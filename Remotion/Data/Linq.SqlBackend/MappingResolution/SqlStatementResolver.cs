@@ -49,14 +49,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       _context = context;
     }
 
-    protected Expression ResolveSelectProjection (Expression selectProjection) 
+    protected virtual Expression ResolveSelectProjection (Expression selectProjection, SqlStatementBuilder sqlStatementBuilder) 
     {
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
 
-      return _stage.ResolveSelectExpression (selectProjection, _context);
+      return _stage.ResolveSelectExpression (selectProjection, sqlStatementBuilder, _context);
     }
 
-    protected void ResolveSqlTable (SqlTable sqlTable)
+    protected virtual void ResolveSqlTable (SqlTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       
@@ -64,7 +64,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ResolveJoins (sqlTable);
     }
 
-    protected void ResolveJoinedTable (SqlJoinedTable joinedTable)
+    protected virtual void ResolveJoinedTable (SqlJoinedTable joinedTable)
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
@@ -74,35 +74,35 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         ResolveJoinedTable (table);
     }
 
-    protected Expression ResolveWhereCondition (Expression whereCondition)
+    protected virtual Expression ResolveWhereCondition (Expression whereCondition)
     {
       ArgumentUtility.CheckNotNull ("whereCondition", whereCondition);
 
       return _stage.ResolveWhereExpression (whereCondition, _context);
     }
 
-    protected Expression ResolveGroupByExpression (Expression groupByExpression)
+    protected virtual Expression ResolveGroupByExpression (Expression groupByExpression)
     {
       ArgumentUtility.CheckNotNull ("whereCondition", groupByExpression);
 
       return _stage.ResolveGroupByExpression (groupByExpression, _context);
     }
     
-    protected Expression ResolveOrderingExpression (Expression orderByExpression)
+    protected virtual Expression ResolveOrderingExpression (Expression orderByExpression)
     {
       ArgumentUtility.CheckNotNull ("orderByExpression", orderByExpression);
 
       return _stage.ResolveOrderingExpression (orderByExpression, _context);
     }
 
-    protected Expression ResolveTopExpression (Expression topExpression)
+    protected virtual Expression ResolveTopExpression (Expression topExpression)
     {
       ArgumentUtility.CheckNotNull ("topExpression", topExpression);
 
       return _stage.ResolveTopExpression (topExpression, _context);
     }
 
-    protected SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
+    protected virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
@@ -112,17 +112,17 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var sqlStatementBuilder = new SqlStatementBuilder(sqlStatement);
 
       var previousSelectProjection = sqlStatementBuilder.SelectProjection;
-      sqlStatementBuilder.SelectProjection = _stage.ResolveSelectExpression (sqlStatementBuilder.SelectProjection, _context);
+      sqlStatementBuilder.SelectProjection = ResolveSelectProjection(sqlStatementBuilder.SelectProjection, sqlStatementBuilder);
       sqlStatementBuilder.RecalculateDataInfo (previousSelectProjection);
 
       if (sqlStatementBuilder.GroupByExpression != null)
-        sqlStatementBuilder.GroupByExpression = _stage.ResolveGroupByExpression (sqlStatementBuilder.GroupByExpression, _context);
+        sqlStatementBuilder.GroupByExpression = ResolveGroupByExpression(sqlStatementBuilder.GroupByExpression);
 
       if (sqlStatementBuilder.WhereCondition != null)
-        sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context);
+        sqlStatementBuilder.WhereCondition = ResolveWhereCondition(sqlStatementBuilder.WhereCondition);
 
       if (sqlStatementBuilder.TopExpression != null)
-        sqlStatementBuilder.TopExpression = _stage.ResolveTopExpression (sqlStatementBuilder.TopExpression, _context);
+        sqlStatementBuilder.TopExpression = ResolveTopExpression(sqlStatementBuilder.TopExpression);
 
       if (sqlStatementBuilder.Orderings.Count > 0)
       {

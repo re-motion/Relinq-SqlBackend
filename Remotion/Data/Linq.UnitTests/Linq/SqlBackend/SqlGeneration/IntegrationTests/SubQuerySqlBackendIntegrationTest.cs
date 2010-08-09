@@ -231,9 +231,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void InSelectProjection_Entity ()
     {
       CheckQuery (from c in Cooks select (from c2 in Cooks select c2).First (),
-        "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] " +
-        "FROM [CookTable] AS [t1] OUTER APPLY (SELECT TOP (1) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook]," +
-        "[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0]",
+        "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] " +
+        "FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook]," +
+        "[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q2]",
         row => (object) row.GetEntity<Cook> (
             new ColumnID ("ID", 0),
             new ColumnID ("FirstName", 1),
@@ -244,9 +244,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             new ColumnID ("KitchenID", 6)));
 
       CheckQuery (from c in Cooks select (from c2 in Cooks select c2).Single (),
-        "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] " +
-        "FROM [CookTable] AS [t1] OUTER APPLY (SELECT TOP (2) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook]," +
-        "[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0]",
+        "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] " +
+        "FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (2) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook]," +
+        "[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q2]",
         row => (object) row.GetEntity<Cook> (
             new ColumnID ("ID", 0),
             new ColumnID ("FirstName", 1),
@@ -262,12 +262,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name).First(),
-          "SELECT [q0].[value] AS [value] FROM [CookTable] AS [t1] OUTER APPLY (SELECT TOP (1) [t2].[Name] AS [value] FROM [KitchenTable] AS [t2]) AS [q0]",
+          "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
 
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name).Single (),
-          "SELECT [q0].[value] AS [value] FROM [CookTable] AS [t1] OUTER APPLY (SELECT TOP (2) [t2].[Name] AS [value] FROM [KitchenTable] AS [t2]) AS [q0]",
+          "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (2) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
@@ -276,12 +276,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select new { k.Name }).First (),
-          "SELECT [q0].[Name] AS [Name] FROM [CookTable] AS [t1] OUTER APPLY (SELECT TOP (1) [t2].[Name] AS [Name] FROM [KitchenTable] AS [t2]) AS [q0]",
+          "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
 
       CheckQuery (
         from c in Cooks select (from k in Kitchens select new { k.Name }).Single (),
-        "SELECT [q0].[Name] AS [Name] FROM [CookTable] AS [t1] OUTER APPLY (SELECT TOP (2) [t2].[Name] AS [Name] FROM [KitchenTable] AS [t2]) AS [q0]",
+        "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (2) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
     }
   }
