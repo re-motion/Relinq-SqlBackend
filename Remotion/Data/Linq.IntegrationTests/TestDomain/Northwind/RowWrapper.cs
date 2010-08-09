@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Data;
 using System.Diagnostics;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
-  class RowWrapper
+  class RowWrapper: IDatabaseResultRow
   {
     private readonly IDataReader _dataReader;
     private readonly IReverseMappingResolver _resolver;

@@ -1,12 +1,11 @@
 ﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {

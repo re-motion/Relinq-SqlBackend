@@ -42,6 +42,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -61,7 +64,9 @@
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMappingResolver.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
+    <Compile Include="TestDomain\Northwind\RowWrapper.cs" />
     <Compile Include="UnitTests\MappingResolverTests.cs" />
+    <Compile Include="UnitTests\RowWrapperTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
     <Compile Include="Utilities\ExpressionTreeComparer.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />

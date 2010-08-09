@@ -73,6 +73,7 @@
     <Compile Include="MappingResolution\IMappingResolutionContext.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
+    <Compile Include="MappingResolution\IReverseMappingResolver.cs" />
     <Compile Include="MappingResolution\MappingResolutionContext.cs" />
     <Compile Include="MappingResolution\MemberAccessResolver.cs" />
     <Compile Include="MappingResolution\NamedExpressionCombiner.cs" />
