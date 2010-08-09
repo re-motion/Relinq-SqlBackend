@@ -38,9 +38,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private IMappingResolutionContext _mappingResolutionContext;
 
 
-    [SetUp]
-    public void SetUp ()
-    {
+      [SetUp]
+      public void SetUp ()
+      {
       _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       _generator = new UniqueIdentifierGenerator();
