@@ -16,14 +16,12 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.Core.Parsing
+namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
   public class ExpressionTreeComparer
   {
