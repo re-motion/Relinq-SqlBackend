@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -32,10 +33,21 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+
+      IResolvedTableInfo resolvedTable = ResolveTableInfo (new UnresolvedTableInfo (joinInfo.ItemType), generator);
+
+      var metaAssociation = _metaModel.GetTable (joinInfo.OriginatingEntity.Type).RowType.GetDataMember (joinInfo.MemberInfo).Association;
+      ArgumentUtility.CheckNotNull ("metaAssociation", metaAssociation);
+
+      return CreateResolvedJoinInfo (
+          joinInfo.OriginatingEntity,
+          metaAssociation,
+          resolvedTable
+          );
     }
 
-    //TODO: Better Solution For IResolveTableInfo? (Current: Cast to SimpleTableInfo) 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -79,5 +91,23 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     {
       throw new NotImplementedException();
     }
+
+    #region privateMethods
+    private ResolvedJoinInfo CreateResolvedJoinInfo (
+        SqlEntityExpression originatingEntity, MetaAssociation metaAssociation, IResolvedTableInfo joinedTableInfo)
+    {
+      Debug.Assert (metaAssociation.ThisKey.Count==1);
+      Debug.Assert (metaAssociation.OtherKey.Count==1);
+
+      var thisKey = metaAssociation.ThisKey[0];
+      var otherKey = metaAssociation.OtherKey[0];
+
+      var leftColumn = originatingEntity.GetColumn (thisKey.Type, thisKey.MappedName, thisKey.IsPrimaryKey);
+      var rightColumn = new SqlColumnDefinitionExpression (otherKey.Type, joinedTableInfo.TableAlias, otherKey.MappedName, otherKey.IsPrimaryKey);
+
+      return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
+    }
+
+    #endregion
   }
 }
