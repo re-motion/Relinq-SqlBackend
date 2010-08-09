@@ -17,6 +17,7 @@
 using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
@@ -34,28 +35,28 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     private NorthwindMappingResolver _mappingResolver;
 
     [SetUp]
-    public void SetUp ()
+    public void SetUp()
     {
-      _generator = new UniqueIdentifierGenerator();
-      _mappingResolver = new NorthwindMappingResolver();
+       _generator=new UniqueIdentifierGenerator();
+       _mappingResolver = new NorthwindMappingResolver ();
     }
 
     [Test]
-    public void TestMetaModelMapping ()
+    public void TestMetaModelMapping()
     {
       MappingSource mappingSource = new AttributeMappingSource();
 
       var table = mappingSource.GetModel (typeof (Northwind)).GetTable (typeof (Customer));
-      Assert.AreEqual ("dbo.Customers", table.TableName);
+      Assert.AreEqual ("dbo.Customers",table.TableName);
 
       string companyName = "CompanyName";
 
-      string expectedType = "NVarChar(40) NOT NULL";      
-      string resolvedType = string.Empty;
-
+      string expectedType = "NVarChar(40) NOT NULL";
+      string resolvedType=string.Empty;
+      
       foreach (var metaDataMember in table.RowType.DataMembers)
       {
-        if (!metaDataMember.Name.Equals (companyName))
+        if(!metaDataMember.Name.Equals (companyName))
           continue;
 
         resolvedType = metaDataMember.DbType;
@@ -65,25 +66,25 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     }
 
     [Test]
-    public void TestResolveTableInfo ()
+    public void TestResolveTableInfo()
     {
-      UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof (Customer));
-
+      UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof(Customer));
+      
       ResolvedSimpleTableInfo resolvedTableInfo = (ResolvedSimpleTableInfo) _mappingResolver.ResolveTableInfo (unresolvedTableInfo, _generator);
 
-      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Customer), "dbo.Customers", "t0");
-
+      ResolvedSimpleTableInfo simpleTableInfo=new ResolvedSimpleTableInfo (typeof(Customer),"dbo.Customers","t0");
+      
       Assert.AreEqual (simpleTableInfo.ItemType, resolvedTableInfo.ItemType);
       Assert.AreEqual (simpleTableInfo.TableAlias, resolvedTableInfo.TableAlias);
       Assert.AreEqual (simpleTableInfo.TableName, resolvedTableInfo.TableName);
     }
 
     [Test]
-    public void TestResolveSimpleTableInfo ()
+    public void TestResolveSimpleTableInfo()
     {
       ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Region), "dbo.Region", "t0");
 
-      SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "RegionID", true);
+      SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression(typeof(int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression descriptionColumn = new SqlColumnDefinitionExpression (
           typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
       SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression (
@@ -169,15 +170,13 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void  ResolveMemberExpression()
     {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "First", true);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Person), "p", null, primaryKeyColumn);
+
       var memberInfo = typeof (Person).GetProperty ("First");
+      Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Person), "p", null, new SqlColumnDefinitionExpression (typeof (string), "p", "First", true));
-
-      SqlColumnExpression result = (SqlColumnExpression)_mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
-
-      Assert.AreEqual (result.IsPrimaryKey, true);
-      Assert.AreEqual (result.Type, typeof (string));
-      Assert.AreEqual (result.ColumnName, "First");
+      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
     }
 
     [Test]
@@ -188,14 +187,14 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       string columnName = "CustomerID";
       bool isPrimaryKey = true;
 
+      //Expressions
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, primaryKeyColumn);
+
       var memberInfo = type.GetProperty (columnName);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
+      Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      SqlColumnExpression result = (SqlColumnExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
-
-      Assert.AreEqual (result.IsPrimaryKey, isPrimaryKey);
-      Assert.AreEqual (result.Type, typeof (string));
-      Assert.AreEqual (result.ColumnName, columnName);
+      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
     }
 
     [Test]
@@ -206,15 +205,14 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       string columnName = "CompanyName";
       bool isPrimaryKey = false;
 
+      //Expressions
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, primaryKeyColumn);
 
       var memberInfo = type.GetProperty (columnName);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
+      Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      SqlColumnExpression result = (SqlColumnExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
-
-      Assert.AreEqual (result.IsPrimaryKey, isPrimaryKey);
-      Assert.AreEqual (result.Type, typeof (string));
-      Assert.AreEqual (result.ColumnName, columnName);
+      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
     }
 
     [Test]
@@ -225,11 +223,11 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       string columnName = "Customer"; //foreign key
       bool isPrimaryKey = false;
 
-      var memberInfo = type.GetProperty (columnName);
-
       var sqlEntityExpression = new SqlEntityDefinitionExpression (type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
 
+      var memberInfo = type.GetProperty (columnName);
       SqlEntityRefMemberExpression result = (SqlEntityRefMemberExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
+
 
       Assert.AreEqual (result.Type, typeof (string));
     }
