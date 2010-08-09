@@ -186,6 +186,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO: RM-3097")]
+    public void EntityMemberAccessOnSubqueryExpressions_InSelectClause ()
+    {
+      var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name);
+      CheckQuery (query, "");
+    }
+
+    [Test]
     public void MemberAccessOnSubqueryExpressions_InSelectClause ()
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution.Name ?? a.Name).First ().Length);
@@ -196,14 +204,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         +"LEFT OUTER JOIN [CookTable] AS [t7] ON [t6].[ID] = [t7].[SubstitutedID] WHERE ([t3].[ID] = [t6].[AssistedID])) AS [q1] "
         +"OUTER APPLY (SELECT TOP (1) (COALESCE ([t9].[Name], [t8].[Name])) AS [value] FROM [CookTable] AS [t8] "
         +"LEFT OUTER JOIN [CookTable] AS [t9] ON [t8].[ID] = [t9].[SubstitutedID] WHERE ([t3].[ID] = [t8].[AssistedID])) AS [q2]");
-    }
-
-    [Test]
-    [Ignore("TODO: RM-3097")]
-    public void EntityMemberAccessOnSubqueryExpressions_InSelectClause ()
-    {
-      var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution ?? a).First().Name);
-      CheckQuery (query, "");
     }
 
     [Test]

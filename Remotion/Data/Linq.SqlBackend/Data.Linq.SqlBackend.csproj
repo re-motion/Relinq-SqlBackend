@@ -76,6 +76,7 @@
     <Compile Include="MappingResolution\MappingResolutionContext.cs" />
     <Compile Include="MappingResolution\MemberAccessResolver.cs" />
     <Compile Include="MappingResolution\NamedExpressionCombiner.cs" />
+    <Compile Include="MappingResolution\ResolvingSelectExpressionVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextJoinInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextSelectionAdjuster.cs" />
     <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />

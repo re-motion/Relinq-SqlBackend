@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedExpression = ResolveExpression (expression, context);
+      var resolvedExpression = ResolvingSelectExpressionVisitor.ResolveExpression (expression, _resolver, this, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
     }
 
@@ -193,5 +193,6 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context);
     }
+    
   }
 }
