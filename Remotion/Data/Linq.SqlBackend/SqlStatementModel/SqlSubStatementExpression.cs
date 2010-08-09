@@ -16,11 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
@@ -32,7 +34,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   public class SqlSubStatementExpression : ExtensionExpression
   {
     private readonly SqlStatement _sqlStatement;
-    
+
     public SqlSubStatementExpression (SqlStatement sqlStatement)
         : base (sqlStatement.DataInfo.DataType)
     {
@@ -57,22 +59,37 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       var specificVisitor = visitor as ISqlSubStatementVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlSubStatementExpression(this);
+        return specificVisitor.VisitSqlSubStatementExpression (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return "(" + _sqlStatement+ ")";
+      return "(" + _sqlStatement + ")";
     }
 
-    public SqlTable CreateSqlTableForSubStatement (SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier)
+    public SqlTable CreateSqlTableForSubStatement (
+        SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier)
     {
       var newDataInfo = new StreamedSequenceInfo (
           typeof (IEnumerable<>).MakeGenericType (subStatementExpression.Type),
           subStatementExpression.SqlStatement.SelectProjection);
-      var subSqlStatement = new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement ();
+
+      SqlStatement subSqlStatement;
+      if (subStatementExpression.SqlStatement.DataInfo is StreamedForcedSingleValueInfo)
+      {
+        Debug.Assert (
+            subStatementExpression.SqlStatement.TopExpression is SqlLiteralExpression
+            && ((SqlLiteralExpression) subStatementExpression.SqlStatement.TopExpression).Value.Equals (2));
+        subSqlStatement =
+            new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo, TopExpression = new SqlLiteralExpression (1) }.
+                GetSqlStatement ();
+      }
+      else
+      {
+        subSqlStatement = new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement();
+      }
 
       var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, subSqlStatement);
       return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
