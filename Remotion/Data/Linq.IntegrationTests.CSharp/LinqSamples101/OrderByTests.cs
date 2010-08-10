@@ -25,7 +25,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class OrderByTests:TestBase
+  public class OrderByTests:TestBase
   {
     /// <summary>
     /// This sample uses orderby to sort Employees by hire date.

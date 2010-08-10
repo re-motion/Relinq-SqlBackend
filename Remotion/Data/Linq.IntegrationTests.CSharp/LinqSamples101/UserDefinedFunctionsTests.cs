@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class UserDefinedFunctionsTests:TestBase
+  public class UserDefinedFunctionsTests:TestBase
   {
     /// <summary>
     /// This sample demonstrates using a scalar user-defined function in a projection.

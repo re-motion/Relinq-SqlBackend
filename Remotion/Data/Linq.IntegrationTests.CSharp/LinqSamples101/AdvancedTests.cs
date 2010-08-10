@@ -24,7 +24,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class AdvancedTests:TestBase
+  public class AdvancedTests:TestBase
   {
     ///<summary>
     ///This sample builds a query dynamically to return the contact name of each customer. 

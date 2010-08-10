@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class ObjectIdentityTests:TestBase
+  public class ObjectIdentityTests:TestBase
   {
     /// <summary>
     /// This sample demonstrates how, upon executing the same query twice, you will 

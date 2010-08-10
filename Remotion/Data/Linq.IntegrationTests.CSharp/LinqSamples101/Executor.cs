@@ -24,7 +24,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class Executor
+  public class Executor
   {
     protected static readonly string connString = "Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;";
 

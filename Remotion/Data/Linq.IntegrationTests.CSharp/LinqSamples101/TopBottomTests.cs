@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class TopBottomTests : TestBase
+  public class TopBottomTests : TestBase
   {
     /// <summary>
     /// This sample uses Take to select the first 5 Employees hired.

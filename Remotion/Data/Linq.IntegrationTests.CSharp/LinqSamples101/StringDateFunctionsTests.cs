@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class GroupStringDateFunctions:TestBase
+  public class GroupStringDateFunctions:TestBase
   {
     /// <summary>
     /// This sample uses the + operator to concatenate string fields and string literals in forming the Customers' calculated Location value.

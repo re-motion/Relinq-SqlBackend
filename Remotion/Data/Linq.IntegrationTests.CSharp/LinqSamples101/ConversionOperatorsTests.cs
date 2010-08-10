@@ -24,7 +24,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class ConversionOperatorsTests:TestBase
+  public class ConversionOperatorsTests:TestBase
   {
     private bool isValidProduct (Product p)
     {

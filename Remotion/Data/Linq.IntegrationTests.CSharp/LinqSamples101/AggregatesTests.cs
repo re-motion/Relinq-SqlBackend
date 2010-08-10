@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class AggregatesTests : TestBase
+  public class AggregatesTests : TestBase
   {
     ///<summary>
     ///This sample uses Count to find the number of Customers in the database.

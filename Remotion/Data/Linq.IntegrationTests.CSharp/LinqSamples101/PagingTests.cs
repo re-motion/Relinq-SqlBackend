@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class PagingTests:TestBase
+  public class PagingTests:TestBase
   {
     /// <summary>
     /// This sample uses the Skip and Take operators to do paging by skipping 

@@ -20,7 +20,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class CompiledQueryTests : TestBase
+  public class CompiledQueryTests : TestBase
   {
     //TODO: Won't compile since INorthwindDataProvider is no subtype of DataContext, which is necessary for using CompiledQuery.Compile(..) - Check if tests are necessary
     ////This sample create a compiled query and then use it to retrieve customers of the input city")]

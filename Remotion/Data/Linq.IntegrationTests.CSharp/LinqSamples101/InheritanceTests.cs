@@ -23,7 +23,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  internal class InheritanceTests:TestBase
+  public class InheritanceTests:TestBase
   {
 
     /// <summary>

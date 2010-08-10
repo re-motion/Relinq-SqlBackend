@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class ViewTests:TestBase
+  public class ViewTests:TestBase
   {
     /// <summary>
     /// This sample uses SELECT and WHERE to return a sequence of invoices where shipping city is London.

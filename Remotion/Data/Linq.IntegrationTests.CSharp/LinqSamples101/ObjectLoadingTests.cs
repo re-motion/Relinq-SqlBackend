@@ -24,7 +24,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class ObjectLoadingTests : TestBase
+  public class ObjectLoadingTests : TestBase
   {
     //01 uses trigger, not necessary to test
     //This sample demonstrates how navigating through relationships in 

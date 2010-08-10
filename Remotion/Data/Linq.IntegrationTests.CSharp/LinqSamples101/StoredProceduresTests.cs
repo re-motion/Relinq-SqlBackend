@@ -25,7 +25,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  internal class StoredProceduresTests:TestBase
+  public class StoredProceduresTests:TestBase
   {
     /// <summary>
     /// This sample uses a stored procedure to return the number of Customers in the 'WA' Region.
