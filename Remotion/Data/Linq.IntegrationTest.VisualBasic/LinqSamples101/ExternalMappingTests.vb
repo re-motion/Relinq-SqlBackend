@@ -25,7 +25,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 Namespace LinqSamples101
   Public Class ExternalMappingTests
     Inherits TestBase
-    'TODO: OutOfMemoryException due to circular dependency
+    'TODO: OutOfMemoryException due to circular dependency (Circular Dependency (Order -> Customer -> Order -> Customer...)
     'This sample demonstrates how to create a data context that uses an external XML mapping source.")> _
     '<Test>
     'Public Sub LinqToSqlExternal01()

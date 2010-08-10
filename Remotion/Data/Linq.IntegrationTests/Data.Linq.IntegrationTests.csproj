@@ -77,6 +77,7 @@
     <Compile Include="Utilities\ExpressionTreeComparer.cs" />
     <Compile Include="Utilities\IQueryResultRetriever.cs" />
     <Compile Include="Utilities\MemberSortUtility.cs" />
+    <Compile Include="Utilities\QueryableAdapter.cs" />
     <Compile Include="Utilities\QueryResultRetriever.cs" />
     <Compile Include="Utilities\RelinqQueryExecutor.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />

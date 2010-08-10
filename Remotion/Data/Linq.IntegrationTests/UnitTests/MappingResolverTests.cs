@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void SetUp()
     {
       _generator=new UniqueIdentifierGenerator();
-      _mappingResolver = new NorthwindMappingResolver ();
+      _mappingResolver = new NorthwindMappingResolver (new AttributeMappingSource ().GetModel (typeof (Northwind)));
       _reverseMappingResolver = (IReverseMappingResolver) _mappingResolver;
     }
 
@@ -300,7 +300,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       Assert.IsTrue (result is SqlEntityConstantExpression);
       Assert.AreEqual (((SqlEntityConstantExpression)result).PrimaryKeyValue.ToString(), expectedExpr.PrimaryKeyValue.ToString());
       Assert.AreEqual (((SqlEntityConstantExpression)result).Type, result.Type);
-      //TODO better checking than above, see below
+      //TODO implement better checking than above, see below
       //WORKAROUND: CheckAreEqualTrees doesn't work
       //ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
     }

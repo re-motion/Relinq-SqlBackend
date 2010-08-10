@@ -33,9 +33,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     private readonly MetaModel _metaModel;
 
 
-    public NorthwindMappingResolver ()
+    public NorthwindMappingResolver (MetaModel metaModel)
     {
-      _metaModel = new AttributeMappingSource ().GetModel (typeof (Northwind));
+      _metaModel = metaModel;
     }
 
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -90,7 +90,6 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
           tableInfo.ItemType, tableInfo.TableAlias, null, primaryColumn, otherColumns.ToArray ());
     }
 
-    //TODO write test where column name from property name differs and reimplement using dataMember2
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);

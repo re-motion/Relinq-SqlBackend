@@ -17,7 +17,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       _resolver = resolver;
     }
 
-    public T GetValue<T> (ColumnID id) //TODO ColumnID not int
+    public T GetValue<T> (ColumnID id)
     {
       return (T) _dataReader.GetValue (id.Position);
     }

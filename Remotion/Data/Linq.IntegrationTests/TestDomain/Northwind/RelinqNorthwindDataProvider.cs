@@ -1,64 +1,79 @@
 ﻿using System;
 using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Linq;
+using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
-  public class RelinqNorthwindDataProvider : INorthwindDataProvider//,QueryableBase // TODO: implement
+  public class RelinqNorthwindDataProvider : INorthwindDataProvider
   {
+    private readonly IConnectionManager manager;
+    private readonly NorthwindMappingResolver resolver;
+    private readonly IQueryResultRetriever retriever;
+    private readonly IQueryExecutor executor;
+
+    public RelinqNorthwindDataProvider ()
+    {
+      manager = new NorthwindConnectionManager ();
+      resolver = new NorthwindMappingResolver (new AttributeMappingSource().GetModel (typeof (Northwind)));
+      executor = new RelinqQueryExecutor (retriever, resolver);
+      retriever = new QueryResultRetriever (manager, resolver);
+    }
+
     public IQueryable<Product> Products
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Product>(); }
     }
 
     public IQueryable<Customer> Customers
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Customer> (); }
     }
 
     public IQueryable<Employee> Employees
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Employee> (); }
     }
 
     public IQueryable<Category> Categories
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Category> (); }
     }
 
     public IQueryable<Order> Orders
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Order> (); }
     }
 
     public IQueryable<OrderDetail> OrderDetails
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<OrderDetail> (); }
     }
 
     public IQueryable<Contact> Contacts
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Contact> (); }
     }
 
     public IQueryable<Invoices> Invoices
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Invoices> (); }
     }
 
     public IQueryable<QuarterlyOrder> QuarterlyOrders
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<QuarterlyOrder> (); }
     }
 
     public IQueryable<Shipper> Shippers
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Shipper> (); }
     }
 
     public IQueryable<Supplier> Suppliers
     {
-      get { throw new NotImplementedException(); }
+      get { return CreateQueryable<Supplier> (); }
     }
 
     public decimal? TotalProductUnitPriceByCategory (int categoryID)
@@ -100,5 +115,14 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     {
       throw new NotImplementedException();
     }
+
+    #region private methods
+
+    private IQueryable<T> CreateQueryable<T> ()
+    {
+      return new QueryableAdapter<T> (executor);
+    }
+
+    #endregion
   }
 }
