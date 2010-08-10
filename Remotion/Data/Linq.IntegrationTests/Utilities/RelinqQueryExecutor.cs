@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
+using System.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -41,37 +41,49 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
 
     public T ExecuteScalar<T> (QueryModel queryModel)
     {
-      throw new NotImplementedException();
+      SqlCommandData commandData = GenerateSqlCommand (queryModel);
+      return _resultRetriever.GetScalar<T> (commandData.CommandText, commandData.Parameters);
     }
 
     public T ExecuteSingle<T> (QueryModel queryModel, bool returnDefaultWhenEmpty)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
+      var sequence = ExecuteCollection<T> (queryModel);
+
+      if (returnDefaultWhenEmpty)
+        return sequence.SingleOrDefault ();
+      else
+        return sequence.Single ();
     }
 
     public IEnumerable<T> ExecuteCollection<T> (QueryModel queryModel)
     {
-      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault();
-      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
+      SqlCommandData commandData = GenerateSqlCommand (queryModel);
+      Func<IDatabaseResultRow, T> projection = commandData.GetInMemoryProjection<T> ().Compile ();
+      return _resultRetriever.GetResults (projection, commandData.CommandText, commandData.Parameters);
+    }
 
-      ISqlPreparationContext preparationContext = new SqlPreparationContext();
-      IMappingResolutionContext mappingResolutionContext = new MappingResolutionContext();
+    private SqlCommandData GenerateSqlCommand(QueryModel queryModel)
+    {
+      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
 
-      var generator = new UniqueIdentifierGenerator();
+      ISqlPreparationContext preparationContext = new SqlPreparationContext ();
+      IMappingResolutionContext mappingResolutionContext = new MappingResolutionContext ();
+
+      var generator = new UniqueIdentifierGenerator ();
       var preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, generator);
       var preparedStatement = preparationStage.PrepareSqlStatement (queryModel, preparationContext);
 
       var resolutionStage = new DefaultMappingResolutionStage (_mappingResolver, generator);
       var resolvedStatement = resolutionStage.ResolveSqlStatement (preparedStatement, mappingResolutionContext);
 
-      var builder = new SqlCommandBuilder();
-      var generationStage = new DefaultSqlGenerationStage();
+      var builder = new SqlCommandBuilder ();
+      var generationStage = new DefaultSqlGenerationStage ();
       generationStage.GenerateTextForOuterSqlStatement (builder, resolvedStatement);
 
-      SqlCommandData commandData = builder.GetCommand();
-
-      Func<IDatabaseResultRow, T> projection = commandData.GetInMemoryProjection<T>().Compile();
-      return _resultRetriever.GetResults (projection, commandData.CommandText, commandData.Parameters);
+      return builder.GetCommand ();
     }
   }
 }

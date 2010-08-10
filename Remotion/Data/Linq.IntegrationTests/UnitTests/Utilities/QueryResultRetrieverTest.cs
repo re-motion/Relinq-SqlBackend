@@ -96,5 +96,26 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       _commandMock.AssertWasCalled (mock => mock.CommandText = "Text");
       dataParameterCollectionMock.VerifyAllExpectations();
     }
+
+    [Test]
+    public void GetScalar ()
+    {
+      var fakeResult = 10;
+
+      var commandMock = MockRepository.GenerateMock<IDbCommand> ();
+      commandMock.Stub (stub => stub.ExecuteScalar ()).Return (fakeResult);
+
+      var connectionMock = MockRepository.GenerateMock<IDbConnection> ();
+      connectionMock.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+
+      var connectionManagerStub = MockRepository.GenerateStub<IConnectionManager> ();
+      connectionManagerStub.Stub (stub => stub.Open ()).Return (connectionMock);
+
+      var retriever = new QueryResultRetriever (connectionManagerStub, _resolverStub);
+
+      var result = retriever.GetScalar<int> ("Text", new CommandParameter[0]);
+
+      Assert.That (result, Is.EqualTo (fakeResult));
+    }
   }
 }

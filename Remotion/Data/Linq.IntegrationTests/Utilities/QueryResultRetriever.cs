@@ -42,5 +42,18 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
         }
       }
     }
+
+    public T GetScalar<T> (string commandText, CommandParameter[] parameters)
+    {
+      using (var connection = _connectionManager.Open ())
+      using (var command = connection.CreateCommand ())
+      {
+        command.CommandText = commandText;
+
+        Array.ForEach (parameters, p => command.Parameters.Add (p));
+
+        return (T) command.ExecuteScalar ();
+      }
+    }
   }
 }
