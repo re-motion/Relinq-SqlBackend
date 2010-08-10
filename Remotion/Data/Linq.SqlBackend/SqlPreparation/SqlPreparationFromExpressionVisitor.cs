@@ -38,7 +38,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         Expression fromExpression,
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
-        MethodCallTransformerRegistry registry,
+        IMethodCallTransformerRegistry registry,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
     {
@@ -74,7 +74,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
-        MethodCallTransformerRegistry registry,
+        IMethodCallTransformerRegistry registry,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
         : base (context, stage, registry)

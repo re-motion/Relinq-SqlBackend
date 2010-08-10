@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         {
             MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Contains", typeof (string))
         };
-
+    
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);

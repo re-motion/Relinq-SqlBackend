@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private QuerySourceReferenceExpression _cookQuerySourceReferenceExpression;
     private SqlTable _sqlTable;
     private ISqlPreparationStage _stageMock;
-    private MethodCallTransformerRegistry _registry;
+    private IMethodCallTransformerRegistry _registry;
 
     [SetUp]
     public void SetUp ()
@@ -573,7 +573,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (methodCallExpression);
       transformerMock.Replay();
 
-      var registry = new MethodCallTransformerRegistry();
+      var registry = new MethodInfoBasedMethodCallTransformerRegistry();
       registry.Register (method, transformerMock);
 
       SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);
@@ -593,7 +593,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (_cookQuerySourceReferenceExpression);
       transformerMock.Replay();
 
-      var registry = new MethodCallTransformerRegistry();
+      var registry = new MethodInfoBasedMethodCallTransformerRegistry();
       registry.Register (method, transformerMock);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, registry);

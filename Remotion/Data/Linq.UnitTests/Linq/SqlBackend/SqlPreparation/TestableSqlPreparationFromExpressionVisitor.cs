@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
@@ -22,8 +24,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   public class TestableSqlPreparationFromExpressionVisitor : SqlPreparationFromExpressionVisitor
   {
-    public TestableSqlPreparationFromExpressionVisitor (UniqueIdentifierGenerator generator, ISqlPreparationStage stage, MethodCallTransformerRegistry registry, ISqlPreparationContext context, Func<ITableInfo, SqlTableBase> tableGenerator)
-        : base(generator, stage, registry, context, tableGenerator)
+    public TestableSqlPreparationFromExpressionVisitor (
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        IMethodCallTransformerRegistry registry,
+        ISqlPreparationContext context,
+        Func<ITableInfo, SqlTableBase> tableGenerator)
+        : base (generator, stage, registry, context, tableGenerator)
     {
     }
 
@@ -32,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       get { return base.FromExpressionInfo; }
     }
 
-    public new System.Linq.Expressions.Expression VisitQuerySourceReferenceExpression (Clauses.Expressions.QuerySourceReferenceExpression expression)
+    public new Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
     {
       return base.VisitQuerySourceReferenceExpression (expression);
     }

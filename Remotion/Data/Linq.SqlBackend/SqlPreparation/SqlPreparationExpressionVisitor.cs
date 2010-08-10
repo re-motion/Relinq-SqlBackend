@@ -36,13 +36,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    private readonly MethodCallTransformerRegistry _registry;
+    private readonly IMethodCallTransformerRegistry _registry;
 
     public static Expression TranslateExpression (
         Expression expression,
         ISqlPreparationContext context,
         ISqlPreparationStage stage,
-        MethodCallTransformerRegistry registry)
+        IMethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -55,7 +55,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     }
 
     protected SqlPreparationExpressionVisitor (
-        ISqlPreparationContext context, ISqlPreparationStage stage, MethodCallTransformerRegistry registry)
+        ISqlPreparationContext context, ISqlPreparationStage stage, IMethodCallTransformerRegistry registry)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       get { return _stage; }
     }
 
-    protected MethodCallTransformerRegistry Registry
+    protected IMethodCallTransformerRegistry Registry
     {
       get { return _registry; }
     }
@@ -184,10 +184,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var methodInfo = expression.Member.DeclaringType.GetMethod ("get_Length");
         if (methodInfo != null)
         {
-          var tranformer = _registry.GetItem(methodInfo);
+          var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
+          var tranformer = _registry.GetTransformer(methodCallExpression);
           if (tranformer != null)
           {
-            var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
             var tranformedExpression = tranformer.Transform (methodCallExpression);
             return VisitExpression (tranformedExpression);
           }

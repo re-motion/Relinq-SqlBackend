@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private ISqlPreparationStage _stageMock;
     private UniqueIdentifierGenerator _generator;
     private ISqlPreparationContext _context;
-    private MethodCallTransformerRegistry _registry;
+    private IMethodCallTransformerRegistry _registry;
     private TestableSqlPreparationFromExpressionVisitor _visitor;
 
     [SetUp]

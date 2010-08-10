@@ -17,9 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
@@ -37,6 +39,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _methodName = "Concat";
       _methodCallTransformerRegistry = new NameBasedMethodCallTransformerRegistry ();
       _transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
+    }
+
+    [Test]
+    public void CreateDefault ()
+    {
+      NameBasedMethodCallTransformerRegistry registry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
+      registry.Register ("Test", new TestNameBasedMethodCallTransformer());
+
+      AssertAllMethodsRegistered (registry, typeof (TestNameBasedMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (ContainsMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (EndsWithMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (IndexOfMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (LowerMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (RemoveMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (ReplaceMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (StartsWithMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (SubstringMethodCallTransformer));
+      AssertAllMethodsRegistered (registry, typeof (UpperMethodCallTransformer));
     }
 
     [Test]
@@ -103,6 +123,29 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = _methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.SameAs (_transformerStub));
+    }
+
+    private void AssertAllMethodsRegistered (NameBasedMethodCallTransformerRegistry registry, Type type)
+    {
+      var field = type.GetField ("SupportedMethodNames");
+      if (field != null)
+      {
+        var methodNames = (string[]) type.GetField ("SupportedMethodNames").GetValue (null);
+        Assert.That (methodNames.Length, Is.GreaterThan (0));
+
+        foreach (var methodName in methodNames)
+          Assert.That (registry.GetItem(methodName), Is.TypeOf (type));
+      }
+    }
+  }
+
+  internal class TestNameBasedMethodCallTransformer : IMethodCallTransformer
+  {
+    public static string[] SupportedMethodNames = { "Test" };
+
+    public Expression Transform (MethodCallExpression methodCallExpression)
+    {
+      throw new NotImplementedException();
     }
   }
 }
