@@ -22,6 +22,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -32,13 +33,15 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
   public class MappingResolverTests
   {
     private UniqueIdentifierGenerator _generator;
-    private NorthwindMappingResolver _mappingResolver;
+    private IMappingResolver _mappingResolver;
+    private IReverseMappingResolver _reverseMappingResolver;
 
     [SetUp]
     public void SetUp()
     {
-       _generator=new UniqueIdentifierGenerator();
-       _mappingResolver = new NorthwindMappingResolver ();
+      _generator=new UniqueIdentifierGenerator();
+      _mappingResolver = new NorthwindMappingResolver ();
+      _reverseMappingResolver = (IReverseMappingResolver) _mappingResolver;
     }
 
     [Test]
@@ -159,7 +162,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Region), "dbo.Region", "t0");
 
       SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
-      MetaDataMember[] metaDataMembers = _mappingResolver.GetMetaDataMembers (simpleTableInfo.ItemType);
+      MetaDataMember[] metaDataMembers = _reverseMappingResolver.GetMetaDataMembers (simpleTableInfo.ItemType);
 
       Assert.AreEqual (metaDataMembers[0].MappedName, resolvedExpr.PrimaryKeyColumn.ColumnName);
 

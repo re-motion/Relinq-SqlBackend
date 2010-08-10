@@ -25,7 +25,6 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
-using Remotion.Data.Linq.IntegrationTests.UnitTests;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
@@ -168,6 +167,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
+      ArgumentUtility.CheckNotNull ("entityType", entityType);
       return MemberSortUtility.SortDataMembers (_metaModel.GetTable (entityType).RowType.DataMembers);
     }
 
