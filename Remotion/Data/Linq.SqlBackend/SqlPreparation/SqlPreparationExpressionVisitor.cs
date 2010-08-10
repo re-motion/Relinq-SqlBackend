@@ -184,7 +184,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var methodInfo = expression.Member.DeclaringType.GetMethod ("get_Length");
         if (methodInfo != null)
         {
-          var tranformer = _registry.GetItem (methodInfo);
+          var tranformer = _registry.GetItem(methodInfo);
           if (tranformer != null)
           {
             var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
@@ -226,7 +226,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var transformer = _registry.GetItem (expression.Method);
+      var transformer = _registry.GetTransformer(expression);
       if (transformer != null)
       {
         var transformedExpression = transformer.Transform (expression);

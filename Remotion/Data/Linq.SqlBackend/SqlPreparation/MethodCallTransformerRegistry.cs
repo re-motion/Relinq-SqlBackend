@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
 
@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallTransformer"/> instances.
   /// </summary>
-  public class MethodCallTransformerRegistry : RegistryBase<MethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer>
+  public class MethodCallTransformerRegistry : RegistryBase<MethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer>, IMethodCallTransformerRegistry
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="MethodCallTransformerRegistry"/> class. Use 
@@ -34,6 +34,15 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     /// </summary>
     public MethodCallTransformerRegistry ()
     {
+    }
+
+    public IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression)
+    {
+      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
+      var key = methodCallExpression.Method;
+
+      return GetItem(key);
     }
 
     public override IMethodCallTransformer GetItem (MethodInfo key)
@@ -64,5 +73,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       foreach (var supportedMethodsForType in supportedMethodsForTypes)
         Register (supportedMethodsForType.Methods, (IMethodCallTransformer) Activator.CreateInstance (supportedMethodsForType.Generator));
     }
+    
   }
 }

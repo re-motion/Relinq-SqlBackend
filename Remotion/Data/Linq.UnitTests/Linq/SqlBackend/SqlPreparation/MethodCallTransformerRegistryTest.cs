@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -99,10 +100,44 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTransformer_DontFindGenerator_ReturnsNull ()
     {
       var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry ();
+      var methodCallExpression = Expression.Call (Expression.Constant ("test"), _methodInfo, Expression.Constant("a"), Expression.Constant("b"));
 
-      var result = methodCallSqlGeneratorRegistry.GetItem(_methodInfo);
+      var result = methodCallSqlGeneratorRegistry.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetItem_DontFindGenerator_ReturnsNull ()
+    {
+      var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry ();
+
+      var result = methodCallSqlGeneratorRegistry.GetItem (_methodInfo);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetTransformer ()
+    {
+      var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry ();
+      methodCallSqlGeneratorRegistry.Register (_methodInfo, _transformerStub);
+      var methodCallExpression = Expression.Call (Expression.Constant ("test"), _methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
+
+      var result = methodCallSqlGeneratorRegistry.GetTransformer (methodCallExpression);
+
+      Assert.That (result, Is.SameAs(_transformerStub));
+    }
+
+    [Test]
+    public void GetItem ()
+    {
+      var methodCallSqlGeneratorRegistry = new MethodCallTransformerRegistry ();
+      methodCallSqlGeneratorRegistry.Register (_methodInfo, _transformerStub);
+     
+      var result = methodCallSqlGeneratorRegistry.GetItem(_methodInfo);
+
+      Assert.That (result, Is.SameAs (_transformerStub));
     }
 
     [Test]
@@ -112,16 +147,45 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                                      where m.Name == "Distinct" && m.GetParameters ().Length == 1
                                      select m).Single ();
       var closedGenericMethod = genericMethodDefinition.MakeGenericMethod (typeof (Cook));
+      var methodCallExpression = Expression.Call (Expression.Constant (new Cook()), closedGenericMethod, Expression.Constant(null, typeof(IQueryable<>).MakeGenericType(typeof(Cook))));
 
       _methodCallTransformerRegistry.Register (genericMethodDefinition, _transformerStub);
 
-      var expectedTransformer = _methodCallTransformerRegistry.GetItem(closedGenericMethod);
+      var result = _methodCallTransformerRegistry.GetTransformer (methodCallExpression);
+
+      Assert.That (result, Is.SameAs (_transformerStub));
+    }
+
+    [Test]
+    public void GetItem_ForGenericMethodInfo ()
+    {
+      var genericMethodDefinition = (from m in typeof (Queryable).GetMethods ()
+                                     where m.Name == "Distinct" && m.GetParameters ().Length == 1
+                                     select m).Single ();
+      var closedGenericMethod = genericMethodDefinition.MakeGenericMethod (typeof (Cook));
+
+      _methodCallTransformerRegistry.Register (genericMethodDefinition, _transformerStub);
+
+      var expectedTransformer = _methodCallTransformerRegistry.GetItem (closedGenericMethod);
 
       Assert.That (expectedTransformer, Is.SameAs (_transformerStub));
     }
 
     [Test]
-    public void GetTransformer_ForBaseDefintion ()
+    public void GetTransformer_ForBaseDefinition ()
+    {
+      var methodInfo = ReflectionUtility.GetMethod (() => new object ().ToString ());
+      _methodCallTransformerRegistry.Register (methodInfo, _transformerStub);
+
+      int i = 5;
+      var methodCallExpression = Expression.Call (Expression.Constant (i), ReflectionUtility.GetMethod (() => i.ToString()));
+      var result = _methodCallTransformerRegistry.GetTransformer (methodCallExpression);
+
+      Assert.That (result, Is.EqualTo (_transformerStub));
+    }
+
+    [Test]
+    public void GetItem_ForBaseDefintion ()
     {
       var methodInfo = ReflectionUtility.GetMethod (() => new object ().ToString ());
 
@@ -129,7 +193,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       int i = 5;
       var intMethodInfo = ReflectionUtility.GetMethod (() => i.ToString ());
-      var result = _methodCallTransformerRegistry.GetItem(intMethodInfo);
+      var result = _methodCallTransformerRegistry.GetItem (intMethodInfo);
 
       Assert.That (result, Is.EqualTo (_transformerStub));
     }
