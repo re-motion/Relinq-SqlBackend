@@ -25,7 +25,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class UnionAllIntersectTests:TestBase
+  public class UnionAllIntersectTests:TestBase
   {
     /// <summary>
     /// This sample uses Concat to return a sequence of all Customer and Employee phone/fax numbers.

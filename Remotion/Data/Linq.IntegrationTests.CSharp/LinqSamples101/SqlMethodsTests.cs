@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class SqlMethodsTests:TestBase
+  public class SqlMethodsTests:TestBase
   {
     /// <summary>
     /// This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.

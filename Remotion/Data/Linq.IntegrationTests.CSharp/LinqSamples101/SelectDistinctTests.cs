@@ -23,7 +23,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class SelectDistinctTests:TestBase
+  public class SelectDistinctTests:TestBase
   {
     /// <summary>
     /// This sample uses SELECT to return a sequence of just the Customers' contact names.
@@ -194,7 +194,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// <summary>
     /// This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
     /// </summary>
-    [Test]
+    [Test,
+    Ignore]
     public void LinqToSqlLocalMethodCall02 ()
     {
       XDocument doc = new XDocument (

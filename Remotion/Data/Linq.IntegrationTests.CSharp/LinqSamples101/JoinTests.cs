@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class JoinTests:TestBase
+  public class JoinTests:TestBase
   {
     /// <summary>
     ///  This sample uses foreign key navigation in the from clause to select all orders for customers in London.

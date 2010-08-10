@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class NullTests:TestBase
+  public class NullTests:TestBase
   {
     /// <summary>
     /// This sample uses the null value to find Employees that do not report to another Employee.

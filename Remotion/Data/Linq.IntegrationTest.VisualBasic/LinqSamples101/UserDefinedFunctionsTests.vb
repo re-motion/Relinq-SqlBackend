@@ -38,14 +38,14 @@ Namespace LinqSamples101
     End Sub
 
     'This sample demonstrates using a scalar user-defined function in a Where clause.
-    <Test()>
-    Public Sub LinqToSqlUserDefined02()
+        <Test(), Ignore()>
+        Public Sub LinqToSqlUserDefined02()
 
-      Dim prodQuery = From prod In db.Products _
-            Where prod.UnitPrice = db.MinUnitPriceByCategory(prod.CategoryID)
+            Dim prodQuery = From prod In DB.Products _
+                  Where prod.UnitPrice = DB.MinUnitPriceByCategory(prod.CategoryID)
 
-      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
-    End Sub
+            TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
+        End Sub
 
     'This sample demonstrates selecting from a table-valued user-defined function.
     <Test()>

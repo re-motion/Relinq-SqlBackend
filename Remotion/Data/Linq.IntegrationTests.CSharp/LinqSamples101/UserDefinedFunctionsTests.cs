@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
@@ -40,6 +41,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates using a scalar user-defined function in a where clause.
     /// </summary>
     [Test]
+    [Ignore ("User-defined functions not supported when they are not called directly via the DataContext")]
     public void LinqToSqlUserDefined02 ()
     {
       var q = from p in DB.Products

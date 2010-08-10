@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class ExistsInAnyAllContainsTests:TestBase
+  public class ExistsInAnyAllContainsTests:TestBase
   {
     ///<summary>
     ///This sample uses Any to return only Customers that have no Orders.

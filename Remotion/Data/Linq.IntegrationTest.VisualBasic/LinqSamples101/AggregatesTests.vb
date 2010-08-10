@@ -96,15 +96,19 @@ Namespace LinqSamples101
     'in each category.")> _
     <Test()>
     Public Sub LinqToSqlCount07()
-      Dim categories = From prod In db.Products _
-            Group prod By prod.CategoryID Into g = Group _
-            Select CategoryID = g, _
-            CheapestProducts = _
-            From p2 In g _
-            Where p2.UnitPrice = g.Min(Function(p3) p3.UnitPrice) _
-            Select p2
+            Dim categories = From p In DB.Products _
+                 Group p By p.CategoryID Into g = Group _
+                 Select New With _
+                { _
+                  .CategoryID = g, _
+                  .CheapestProducts = _
+                  From p2 In g _
+                   Where p2.UnitPrice = g.Min(Function(p3) p3.UnitPrice) _
+                   Select p2 _
+                 }
 
-      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
+            TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
+
     End Sub
 
 

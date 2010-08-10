@@ -25,7 +25,7 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  class GroupByHavingTests:TestBase
+  public class GroupByHavingTests:TestBase
   {
     /// <summary>
     /// This sample uses group by to partition Products by CategoryID.
