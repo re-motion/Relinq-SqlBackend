@@ -46,6 +46,7 @@
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +61,8 @@
     <Compile Include="TestDomain\Northwind\INorthwindDataProvider.cs" />
     <Compile Include="TestDomain\Northwind\LinqToSqlNorthwindDataProvider.cs" />
     <Compile Include="TestDomain\Northwind\Northwind.cs" />
+    <Compile Include="TestDomain\Northwind\NorthwindConnectionManager.cs" />
+    <Compile Include="UnitTests\NorthwindConnectionManagerTest.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMappingResolver.cs" />
@@ -67,9 +70,15 @@
     <Compile Include="TestDomain\Northwind\RowWrapper.cs" />
     <Compile Include="UnitTests\MappingResolverTests.cs" />
     <Compile Include="UnitTests\RowWrapperTests.cs" />
+    <Compile Include="UnitTests\Utilities\QueryResultRetrieverTest.cs" />
+    <Compile Include="UnitTests\Utilities\RelinqQueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
+    <Compile Include="Utilities\IConnectionManager.cs" />
     <Compile Include="Utilities\ExpressionTreeComparer.cs" />
+    <Compile Include="Utilities\IQueryResultRetriever.cs" />
     <Compile Include="Utilities\MemberSortUtility.cs" />
+    <Compile Include="Utilities\QueryResultRetriever.cs" />
+    <Compile Include="Utilities\RelinqQueryExecutor.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
@@ -85,6 +94,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="App.config" />
     <None Include="TestDomain\Northwind\NorthwindMapped.map" />
   </ItemGroup>
   <ItemGroup />
