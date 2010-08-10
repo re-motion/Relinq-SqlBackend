@@ -171,7 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore("RM-3097")] //TODO: wrong task number!
+    [Ignore("RM-2444")]
     public void Coalesce_WithEntities ()
     {
       CheckQuery (
