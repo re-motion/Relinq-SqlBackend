@@ -90,79 +90,97 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
           tableInfo.ItemType, tableInfo.TableAlias, null, primaryColumn, otherColumns.ToArray ());
     }
 
+    //TODO write test where column name from property name differs and reimplement using dataMember2
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
-      //var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
-      //if (memberInfo.DeclaringType == typeof (Cook))
-      //{
-      //  switch (memberInfo.Name)
-      //  {
-      //    case "ID":
-      //      return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
-      //    case "FirstName":
-      //    case "Name":
-      //    case "IsFullTimeCook":
-      //    case "IsStarredCook":
-      //    case "Weight":
-      //    case "MetaID":
-      //      return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
-      //    case "Substitution":
-      //      return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      //  }
       var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
 
-      MetaTable table = _metaModel.GetTable (memberInfo.DeclaringType);
+      var dataTable = _metaModel.GetMetaType (memberInfo.DeclaringType);
 
-      if (originatingEntity is SqlEntityReferenceExpression)
+      if (dataTable == null)
+        throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+
+      var dataMember = dataTable.GetDataMember (memberInfo);
+
+      if (dataMember == null)
+        throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+
+      if (dataMember.IsAssociation)
       {
         return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
       }
       else
       {
-        foreach (var dataMember in table.RowType.DataMembers)
-        {
-          return originatingEntity.GetColumn (memberType, memberInfo.Name, dataMember.IsPrimaryKey);
-        }
+        return originatingEntity.GetColumn (memberType, dataMember.MappedName, dataMember.IsPrimaryKey);
       }
-
-      /*
-      foreach (var dataMember in table.RowType.DataMembers)
-      {
-        if (dataMember.MappedName.Equals (memberInfo.Name))
-        {
-          if (dataMember.IsAssociation) //ref
-          {
-            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-          }
-          else
-          {
-            return originatingEntity.GetColumn (memberType, memberInfo.Name, dataMember.IsPrimaryKey);
-          }
-        }
-       
-       }
-       * */
-  
-      throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
-
-      //tableCol.GetType().GetProperty(memberInfo.)
-      //return new SqlColumnDefinitionExpression (typeof (Person).GetProperty ("First").GetType (), "p", "First", true);
     }
+
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      throw new NotImplementedException ();
+      //TODO implement if needed by integration tests
+      throw new NotImplementedException ("Implement if needed by integration tests");
+
+      //ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
+      //ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      //if (sqlColumnExpression is SqlColumnReferenceExpression)
+      //{
+      //  return new SqlColumnReferenceExpression (
+      //    ReflectionUtility.GetFieldOrPropertyType(memberInfo),
+      //    sqlColumnExpression.OwningTableAlias,
+      //    memberInfo.Name,
+      //    sqlColumnExpression.IsPrimaryKey,
+      //    ((SqlColumnReferenceExpression) sqlColumnExpression).ReferencedEntity);
+      //}
+      //return new SqlColumnDefinitionExpression (
+      //  ReflectionUtility.GetFieldOrPropertyType (memberInfo),
+      //  sqlColumnExpression.OwningTableAlias, 
+      //  memberInfo.Name, 
+      //  sqlColumnExpression.IsPrimaryKey);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
+
+      var valueType = constantExpression.Value.GetType();
+      var table = _metaModel.GetTable (valueType);
+      if (table != null)
+      {
+        var dataMembers = table.RowType.DataMembers;
+        var primaryKeys = new List<MetaDataMember> ();
+
+        foreach (var member in dataMembers)
+        {
+          if (member.IsPrimaryKey)
+            primaryKeys.Add (member);
+        }
+
+        if (primaryKeys.Count > 1)
+          throw new NotImplementedException("Multiple primary keys currently not supported");
+
+        return new SqlEntityConstantExpression (valueType, constantExpression.Value, primaryKeys[0]);
+      }
+      return constantExpression;
     }
 
     public Expression ResolveTypeCheck (Expression expression, Type desiredType)
     {
-      throw new NotImplementedException ();
+      //TODO check if column supports more than one type and if type is one of those types
+
+      throw new NotImplementedException(("Type check currently not supported"));
+
+      //ArgumentUtility.CheckNotNull ("expression", expression);
+      //ArgumentUtility.CheckNotNull ("desiredType", desiredType);
+
+      //if (desiredType.IsAssignableFrom (expression.Type))
+      //  return Expression.Constant (true);
+
+      //throw new UnmappedItemException ("Cannot resolve type for checkedExpression: " + expression.Type.Name);
     }
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
@@ -183,7 +201,11 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       var otherKey = metaAssociation.OtherKey[0];
 
       var leftColumn = originatingEntity.GetColumn (thisKey.Type, thisKey.MappedName, thisKey.IsPrimaryKey);
-      var rightColumn = new SqlColumnDefinitionExpression (otherKey.Type, joinedTableInfo.TableAlias, otherKey.MappedName, otherKey.IsPrimaryKey);
+      var rightColumn = new SqlColumnDefinitionExpression (
+        otherKey.Type, 
+        joinedTableInfo.TableAlias, 
+        otherKey.MappedName, 
+        otherKey.IsPrimaryKey);
 
       return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
     }

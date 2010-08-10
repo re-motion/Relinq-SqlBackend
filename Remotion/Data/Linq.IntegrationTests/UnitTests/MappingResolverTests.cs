@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq.Expressions;
@@ -173,13 +174,15 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void  ResolveMemberExpression()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "First", true);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Person), "p", null, primaryKeyColumn);
 
       var memberInfo = typeof (Person).GetProperty ("First");
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
+      var expectedExpression = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -197,7 +200,9 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       var memberInfo = type.GetProperty (columnName);
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
+      var expectedExpression = primaryKeyColumn;
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -215,16 +220,18 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       var memberInfo = type.GetProperty (columnName);
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
+      var expectedExpression = primaryKeyColumn;
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
     public void ResolveMemberExpressionUsingNorthwindEntitiesAssociated ()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
-      var referencedSqlException = new SqlEntityDefinitionExpression (typeof (Customer), "c", null, primaryKeyColumn);
+      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (Customer), "c", null, primaryKeyColumn);
 
-      var sqlEntityExpression = new SqlEntityReferenceExpression (typeof (Order), "o", null, referencedSqlException);
+      var sqlEntityExpression = new SqlEntityReferenceExpression (typeof (Order), "o", null, referencedSqlExpression);
 
       var memberInfo = typeof (Order).GetProperty ("Customer");
       var result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
@@ -234,6 +241,92 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
+    //A-TEAM
+
+    [Test]
+    [ExpectedException (typeof (NotImplementedException))]
+    public void ResolveMemberExpressionGivingSqlColumnDefinitionExpression ()
+    {
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
+
+      var memberInfo = typeof (Customer).GetProperty ("CustomerID");
+      var result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo);
+
+      var expectedExpression = columnExpression;
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotImplementedException))]
+    public void ResolveMemberExpressionGivingSqlColumnReferenceExpression ()
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "s", "CustomerID", true);
+      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (Customer), "c", null, primaryKeyColumn);
+      var columnRefExpression = new SqlColumnReferenceExpression (typeof (string), "c", "CustomerID", true, referencedSqlExpression);
+
+      var memberInfo = typeof (Customer).GetProperty ("CustomerID");
+      var result = _mappingResolver.ResolveMemberExpression (columnRefExpression, memberInfo);
+
+      var expectedExpression = columnRefExpression;
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void ResolveConstantExpression ()
+    {
+      var metamodel = new AttributeMappingSource ().GetModel (typeof (Northwind));
+      var table = metamodel.GetTable (typeof (Customer));
+      var dataMembers = table.RowType.DataMembers;
+      var primaryKeys = new List<MetaDataMember>();
+
+      foreach(var member in dataMembers)
+      {
+        if(member.IsPrimaryKey)
+        {
+          primaryKeys.Add (member);
+        }
+      }
+
+      var customer = new Customer();
+      var constantExpr = Expression.Constant (customer);
+      
+      var result = _mappingResolver.ResolveConstantExpression (constantExpr);
+
+      var expectedExpr = new SqlEntityConstantExpression (typeof (Customer), customer, primaryKeys[0]);
+
+      Assert.AreEqual (result.NodeType, expectedExpr.NodeType);
+      Assert.IsTrue (result is SqlEntityConstantExpression);
+      Assert.AreEqual (((SqlEntityConstantExpression)result).PrimaryKeyValue.ToString(), expectedExpr.PrimaryKeyValue.ToString());
+      Assert.AreEqual (((SqlEntityConstantExpression)result).Type, result.Type);
+      //TODO better checking than above, see below
+      //WORKAROUND: CheckAreEqualTrees doesn't work
+      //ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
+    }
+
+    [Test]
+    public void ResolveConstantExpressionShouldReturnSameQuery ()
+    {
+      var constantExpr = Expression.Constant (0);
+
+      var result = _mappingResolver.ResolveConstantExpression (constantExpr);
+
+      var expectedExpr = constantExpr;
+
+      Assert.AreEqual (expectedExpr, result);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotImplementedException))]
+    public void ResolveTypeCheck ()
+    {
+      var expression = Expression.Constant (new Customer());
+
+      var result = _mappingResolver.ResolveTypeCheck (expression, typeof (Customer));
+
+      //Assert.IsTrue((bool)((ConstantExpression) result).Value);
+    }
 
   }
 }

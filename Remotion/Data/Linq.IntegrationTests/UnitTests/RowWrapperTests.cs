@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       //this.p_4 = p_4;
     }
 
-    [Column (Name = "First", IsPrimaryKey = true)]
+    [Column (Name = "FirstName", IsPrimaryKey = true)]
     public string First { get; set; }
 
     [Column (Name = "Age")]
