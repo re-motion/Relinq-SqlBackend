@@ -17,8 +17,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     {
       manager = new NorthwindConnectionManager ();
       resolver = new NorthwindMappingResolver (new AttributeMappingSource().GetModel (typeof (Northwind)));
-      executor = new RelinqQueryExecutor (retriever, resolver);
       retriever = new QueryResultRetriever (manager, resolver);
+      executor = new RelinqQueryExecutor (retriever, resolver);
     }
 
     public IQueryable<Product> Products
