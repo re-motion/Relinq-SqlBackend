@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       var fileName = Path.Combine (_directory, resourceName);
       using (var writer = File.CreateText(fileName))
       {
-        var serializer = new TestResultSerializer (writer);
+        var serializer = new TestResultSerializer (writer, info => !info.IsDefined (typeof (System.Data.Linq.Mapping.AssociationAttribute), false));
         serializer.Serialize (queryResult);
       }
     }
