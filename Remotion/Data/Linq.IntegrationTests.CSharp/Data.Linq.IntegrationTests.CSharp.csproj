@@ -89,13 +89,17 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced06.result" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="LinqSamples101\Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

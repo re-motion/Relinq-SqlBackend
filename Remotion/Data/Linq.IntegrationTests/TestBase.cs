@@ -13,7 +13,7 @@ namespace Remotion.Data.Linq.IntegrationTests
   [TestFixture]
   public class TestBase 
   {
-    public TestMode Mode = TestMode.SaveReferenceResults;
+    public TestMode Mode = TestMode.CheckActualResults;
     private INorthwindDataProvider _db;
     private ITestExecutor _testExecutor;
 

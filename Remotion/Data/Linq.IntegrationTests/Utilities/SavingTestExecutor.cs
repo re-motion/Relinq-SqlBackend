@@ -35,8 +35,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
 
     public void Execute (object queryResult, MethodBase executingMethod)
     {
-      var resourceName = executingMethod.DeclaringType.Namespace + ".Resources." + executingMethod.DeclaringType.Name
-        + "." + executingMethod.Name + ".result";
+      var resourceName = executingMethod.DeclaringType.Name + "." + executingMethod.Name + ".result";
       var fileName = Path.Combine (_directory, resourceName);
       using (var writer = File.CreateText(fileName))
       {

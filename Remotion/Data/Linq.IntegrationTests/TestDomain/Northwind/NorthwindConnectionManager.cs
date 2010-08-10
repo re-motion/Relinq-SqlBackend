@@ -19,8 +19,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
         throw new ArgumentNullException("Connection configuration not found");
       }
 
-
-      return new SqlConnection (connectionSettings.ConnectionString);
+      var conn = new SqlConnection (connectionSettings.ConnectionString);
+      conn.Open();
+      return conn;
     }
   }
 }
