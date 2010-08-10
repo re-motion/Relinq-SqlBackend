@@ -24,7 +24,7 @@ using System.Linq;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// <see cref="MethodCallTransformerRegistry"/> is used to register and get <see cref="IMethodCallTransformer"/> instances.
+  /// <see cref="MethodCallTransformerRegistry"/> is used to register methods and get <see cref="IMethodCallTransformer"/> instances.
   /// </summary>
   public class MethodCallTransformerRegistry : RegistryBase<MethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer>, IMethodCallTransformerRegistry
   {

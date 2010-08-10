@@ -114,6 +114,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\SubstringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistry.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistry.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AggregationResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandler.cs" />
