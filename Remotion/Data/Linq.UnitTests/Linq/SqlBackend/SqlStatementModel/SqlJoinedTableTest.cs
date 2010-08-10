@@ -103,5 +103,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       Assert.That (result, Is.EqualTo ("LEFT JOIN Kitchen.Cook"));
     }
+
+    [Test]
+    public void ToString_WithJoins ()
+    {
+      var joinedTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Left);
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      joinedTable.GetOrAddLeftJoin (joinInfo, memberInfo);
+
+      var result = joinedTable.ToString ();
+      Assert.That (result, Is.EqualTo ("LEFT JOIN Kitchen.Cook LEFT JOIN Kitchen.Cook"));
+    }
   }
 }

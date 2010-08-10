@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
@@ -73,7 +74,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return string.Format ("{0} JOIN {1}", JoinSemantics.ToString ().ToUpper (), JoinInfo);
+      return string.Format ("{0} JOIN ", JoinSemantics.ToString ().ToUpper ()) + JoinInfo + JoinedTables.Aggregate ("", (s, t) => s + " " + t);
     }
   }
 }

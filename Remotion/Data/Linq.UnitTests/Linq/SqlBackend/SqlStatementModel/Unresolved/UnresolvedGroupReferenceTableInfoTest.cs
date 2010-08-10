@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresol
     {
       var result = _tableInfo.ToString();
 
-      Assert.That (result, Is.EqualTo ("GROUP-REF-TABLE(String)"));
+      Assert.That (result, Is.EqualTo ("GROUP-REF-TABLE(TABLE-REF(UnresolvedTableInfo(IGrouping`2)))"));
     }
   }
 }

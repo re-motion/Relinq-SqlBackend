@@ -122,7 +122,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public override string ToString ()
     {
       return String.Format (
-          "GROUPING (KEY: {0}, ELEMENT: {1}, AGGREGATIONS: ({2})", 
+          "GROUPING (KEY: {0}, ELEMENT: {1}, AGGREGATIONS: ({2}))", 
           FormattingExpressionTreeVisitor.Format (KeyExpression), 
           FormattingExpressionTreeVisitor.Format (ElementExpression),
           SeparatedStringBuilder.Build (", ", AggregationExpressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr))));

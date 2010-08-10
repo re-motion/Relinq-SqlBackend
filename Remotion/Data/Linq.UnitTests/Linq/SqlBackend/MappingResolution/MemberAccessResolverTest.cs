@@ -314,8 +314,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(TABLE(Cook))'; the expression type 'SqlTableReferenceExpression' is not "
-        + "supported in member expressions.")]
+        "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(UnresolvedTableInfo(Cook))'; "
+        +"the expression type 'SqlTableReferenceExpression' is not supported in member expressions.")]
     public void VisitMemberExpression_OnSqlTableReferenceExpression ()
     {
       var expression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));

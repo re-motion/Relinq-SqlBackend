@@ -75,6 +75,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
       return _joinedTables[relationMember];
     }
-
+    
   }
 }

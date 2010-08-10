@@ -61,5 +61,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
     }
+
   }
 }

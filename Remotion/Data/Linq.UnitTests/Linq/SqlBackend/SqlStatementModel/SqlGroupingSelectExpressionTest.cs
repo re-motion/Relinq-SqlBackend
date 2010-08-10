@@ -201,7 +201,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       _sqlGroupingSelectExpression.AddAggregationExpressionWithName (_aggregateExpression2);
       var result = _sqlGroupingSelectExpression.ToString();
 
-      Assert.That (result, Is.EqualTo ("GROUPING (KEY: \"key\", ELEMENT: \"element\", AGGREGATIONS: (\"agg1\", \"agg2\" AS a1)"));
+      Assert.That (result, Is.EqualTo ("GROUPING (KEY: \"key\", ELEMENT: \"element\", AGGREGATIONS: (\"agg1\", \"agg2\" AS a1))"));
     }
   }
 }

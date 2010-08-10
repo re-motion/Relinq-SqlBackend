@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -27,19 +28,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public class SqlTableReferenceExpression : ExtensionExpression
   {
-    private readonly SqlTableBase _sqlTable;
+    private readonly SqlTableBase _sqlTableBase;
 
     public SqlTableReferenceExpression (SqlTableBase sqlTable)
         : base(sqlTable.ItemType)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      _sqlTable = sqlTable;
+      _sqlTableBase = sqlTable;
     }
 
     public SqlTableBase SqlTable
     {
-      get { return _sqlTable; }
+      get { return _sqlTableBase; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -61,7 +62,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      return "TABLE-REF(" + _sqlTable + ")";
+      var sqlTableBaseAsSqlTable = _sqlTableBase as SqlTable;
+      if (sqlTableBaseAsSqlTable!=null)
+      {
+        if (sqlTableBaseAsSqlTable.TableInfo is IResolvedTableInfo)
+          return "TABLE-REF(" + sqlTableBaseAsSqlTable.GetResolvedTableInfo ().TableAlias + ")";
+        else
+          return "TABLE-REF(" + sqlTableBaseAsSqlTable.TableInfo.GetType ().Name + "(" + sqlTableBaseAsSqlTable.TableInfo.ItemType.Name + "))";
+      }
+
+      var sqlTableBaseAsSqlJoinedTable = _sqlTableBase as SqlJoinedTable;
+      if (sqlTableBaseAsSqlJoinedTable != null)
+      {
+        if (sqlTableBaseAsSqlJoinedTable.JoinInfo is ResolvedJoinInfo)
+          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetResolvedLeftJoinInfo ().ForeignTableInfo.TableAlias + ")";
+        else
+          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetType().Name + "(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.ItemType.Name + "))";
+      }
+
+      return "TABLE-REF (" + _sqlTableBase.GetType().Name + " (" + _sqlTableBase.ItemType.Name + "))";
     }
   }
 }

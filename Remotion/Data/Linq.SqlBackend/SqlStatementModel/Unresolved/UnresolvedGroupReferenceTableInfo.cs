@@ -61,7 +61,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      return string.Format ("GROUP-REF-TABLE({0})", ItemType.Name);
+      return string.Format ("GROUP-REF-TABLE({0})", new SqlTableReferenceExpression(_referencedGroupSource));
     }
 
   }
