@@ -115,6 +115,19 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
       MetaTable table = _metaModel.GetTable (memberInfo.DeclaringType);
 
+      if (originatingEntity is SqlEntityReferenceExpression)
+      {
+        return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+      }
+      else
+      {
+        foreach (var dataMember in table.RowType.DataMembers)
+        {
+          return originatingEntity.GetColumn (memberType, memberInfo.Name, dataMember.IsPrimaryKey);
+        }
+      }
+
+      /*
       foreach (var dataMember in table.RowType.DataMembers)
       {
         if (dataMember.MappedName.Equals (memberInfo.Name))
@@ -128,19 +141,10 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
             return originatingEntity.GetColumn (memberType, memberInfo.Name, dataMember.IsPrimaryKey);
           }
         }
-
-        //foreach (var assoc in table.RowType.Associations)
-        //{
-        //  foreach (var member in assoc.OtherKey)
-        //  {
-        //    if (member.MappedName.Equals (memberInfo.Name))
-        //    {
-        //      return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-        //    }
-        //  }
-        //  //return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-        //}
-      }
+       
+       }
+       * */
+  
       throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
 
       //tableCol.GetType().GetProperty(memberInfo.)

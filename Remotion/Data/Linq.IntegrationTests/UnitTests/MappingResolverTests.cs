@@ -35,28 +35,28 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     private NorthwindMappingResolver _mappingResolver;
 
     [SetUp]
-    public void SetUp ()
+    public void SetUp()
     {
-      _generator = new UniqueIdentifierGenerator();
-      _mappingResolver = new NorthwindMappingResolver();
+       _generator=new UniqueIdentifierGenerator();
+       _mappingResolver = new NorthwindMappingResolver ();
     }
 
     [Test]
-    public void TestMetaModelMapping ()
+    public void TestMetaModelMapping()
     {
       MappingSource mappingSource = new AttributeMappingSource();
 
       var table = mappingSource.GetModel (typeof (Northwind)).GetTable (typeof (Customer));
-      Assert.AreEqual ("dbo.Customers", table.TableName);
+      Assert.AreEqual ("dbo.Customers",table.TableName);
 
       string companyName = "CompanyName";
 
       string expectedType = "NVarChar(40) NOT NULL";
-      string resolvedType = string.Empty;
-
+      string resolvedType=string.Empty;
+      
       foreach (var metaDataMember in table.RowType.DataMembers)
       {
-        if (!metaDataMember.Name.Equals (companyName))
+        if(!metaDataMember.Name.Equals (companyName))
           continue;
 
         resolvedType = metaDataMember.DbType;
@@ -66,25 +66,25 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     }
 
     [Test]
-    public void TestResolveTableInfo ()
+    public void TestResolveTableInfo()
     {
-      UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof (Customer));
-
+      UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof(Customer));
+      
       ResolvedSimpleTableInfo resolvedTableInfo = (ResolvedSimpleTableInfo) _mappingResolver.ResolveTableInfo (unresolvedTableInfo, _generator);
 
-      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Customer), "dbo.Customers", "t0");
-
+      ResolvedSimpleTableInfo simpleTableInfo=new ResolvedSimpleTableInfo (typeof(Customer),"dbo.Customers","t0");
+      
       Assert.AreEqual (simpleTableInfo.ItemType, resolvedTableInfo.ItemType);
       Assert.AreEqual (simpleTableInfo.TableAlias, resolvedTableInfo.TableAlias);
       Assert.AreEqual (simpleTableInfo.TableName, resolvedTableInfo.TableName);
     }
 
     [Test]
-    public void TestResolveSimpleTableInfo ()
+    public void TestResolveSimpleTableInfo()
     {
       ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Region), "dbo.Region", "t0");
 
-      SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "RegionID", true);
+      SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression(typeof(int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression descriptionColumn = new SqlColumnDefinitionExpression (
           typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
       SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression (
@@ -168,7 +168,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     }
 
     [Test]
-    public void ResolveMemberExpression ()
+    public void  ResolveMemberExpression()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "First", true);
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Person), "p", null, primaryKeyColumn);
@@ -218,19 +218,19 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void ResolveMemberExpressionUsingNorthwindEntitiesAssociated ()
     {
-      //Test object
-      Type type = typeof (Order);
-      string columnName = "Customer"; //foreign key
-      bool isPrimaryKey = false;
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
+      var referencedSqlException = new SqlEntityDefinitionExpression (typeof (Customer), "c", null, primaryKeyColumn);
 
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (
-          type, "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", columnName, isPrimaryKey));
+      var sqlEntityExpression = new SqlEntityReferenceExpression (typeof (Order), "o", null, referencedSqlException);
 
-      var memberInfo = type.GetProperty (columnName);
-      SqlEntityRefMemberExpression result = (SqlEntityRefMemberExpression) _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
+      var memberInfo = typeof (Order).GetProperty ("Customer");
+      var result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
+      var expectedExpression = new SqlEntityRefMemberExpression (sqlEntityExpression, memberInfo);
 
-      Assert.AreEqual (result.Type, typeof (string));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
+
+
   }
 }
