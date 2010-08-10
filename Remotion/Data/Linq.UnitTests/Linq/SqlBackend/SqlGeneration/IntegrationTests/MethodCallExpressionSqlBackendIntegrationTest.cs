@@ -315,5 +315,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks where c.FirstName.SqlContainsFreetext (c.Name) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE FREETEXT([t0].[FirstName], [t0].[Name])");
     }
+
+    [Test]
+    public void Equal ()
+    {
+      CheckQuery (from c in Cooks where c.Name.Equals ("abc") select c.Name, 
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
+        new CommandParameter("@1", "abc"));
+    }
   }
 }

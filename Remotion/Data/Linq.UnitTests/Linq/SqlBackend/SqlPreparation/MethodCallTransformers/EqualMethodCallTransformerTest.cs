@@ -29,12 +29,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          EqualMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "Equals", typeof (object))));
-      Assert.IsTrue (
-          EqualMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod(typeof (object), "Equals", typeof (object), typeof (object))));
+      Assert.IsTrue (EqualMethodCallTransformer.SupportedMethodNames.Contains ("Equals"));
     }
 
     [Test]

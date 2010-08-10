@@ -26,12 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public class EqualMethodCallTransformer : IMethodCallTransformer
   {
-    public static readonly MethodInfo[] SupportedMethods =
-        new[]
-        {
-            MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "Equals", typeof (object)),
-            MethodCallTransformerUtility.GetStaticMethod(typeof (object), "Equals", typeof (object), typeof (object))
-        };
+    public static readonly string[] SupportedMethodNames = new[] { "Equals" };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
