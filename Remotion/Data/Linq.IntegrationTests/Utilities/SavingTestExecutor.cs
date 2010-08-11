@@ -36,7 +36,12 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     public void Execute (object queryResult, MethodBase executingMethod)
     {
       var resourceName = executingMethod.DeclaringType.Name + "." + executingMethod.Name + ".result";
-      //TODO check if directory exists if not create
+
+      if (!Directory.Exists (_directory))
+      {
+        Directory.CreateDirectory (_directory);
+      }
+
       var fileName = Path.Combine (_directory, resourceName);
       using (var writer = File.CreateText(fileName))
       {
