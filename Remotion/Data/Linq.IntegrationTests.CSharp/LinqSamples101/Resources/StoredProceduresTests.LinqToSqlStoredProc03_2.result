@@ -1,0 +1,14 @@
+SingleResult`1 {
+  PartialCustomersSetResult
+    CompanyName: 'Lazy K Kountry Store'
+    ContactName: 'John Steel'
+    CustomerID: 'LAZYK'
+  PartialCustomersSetResult
+    CompanyName: 'Trail''s Head Gourmet Provisioners'
+    ContactName: 'Helvetius Nagy'
+    CustomerID: 'TRAIH'
+  PartialCustomersSetResult
+    CompanyName: 'White Clover Markets'
+    ContactName: 'Karl Jablonski'
+    CustomerID: 'WHITC'
+}

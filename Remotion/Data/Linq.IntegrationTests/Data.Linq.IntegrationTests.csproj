@@ -69,6 +69,7 @@
     <Compile Include="UnitTests\MappingResolverTest.cs" />
     <Compile Include="UnitTests\PersonTestClass.cs" />
     <Compile Include="UnitTests\RowWrapperTests.cs" />
+    <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
     <Compile Include="UnitTests\Utilities\QueryResultRetrieverTest.cs" />
     <Compile Include="UnitTests\Utilities\QueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />

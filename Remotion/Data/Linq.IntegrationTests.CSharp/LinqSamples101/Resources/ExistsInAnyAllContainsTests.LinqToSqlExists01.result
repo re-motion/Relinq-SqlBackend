@@ -1,0 +1,26 @@
+DataQuery`1 {
+  Customer
+    Address: 'C/ Moralzarzal, 86'
+    City: 'Madrid'
+    CompanyName: 'FISSA Fabrica Inter. Salchichas S.A.'
+    ContactName: 'Diego Roel'
+    ContactTitle: 'Accounting Manager'
+    Country: 'Spain'
+    CustomerID: 'FISSA'
+    Fax: '(91) 555 55 93'
+    Phone: '(91) 555 94 44'
+    PostalCode: '28034'
+    Region: null
+  Customer
+    Address: '265, boulevard Charonne'
+    City: 'Paris'
+    CompanyName: 'Paris spécialités'
+    ContactName: 'Marie Bertrand'
+    ContactTitle: 'Owner'
+    Country: 'France'
+    CustomerID: 'PARIS'
+    Fax: '(1) 42.34.22.77'
+    Phone: '(1) 42.34.22.66'
+    PostalCode: '75012'
+    Region: null
+}

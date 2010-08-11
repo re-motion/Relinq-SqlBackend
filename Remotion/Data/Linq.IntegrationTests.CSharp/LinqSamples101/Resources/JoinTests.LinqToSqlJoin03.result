@@ -1,0 +1,26 @@
+DataQuery`1 {
+  <>f__AnonymousType18`3
+    FirstName: 'Nancy'
+    LastName: 'Davolio'
+    TerritoryDescription: 'Wilton                                            '
+  <>f__AnonymousType18`3
+    FirstName: 'Nancy'
+    LastName: 'Davolio'
+    TerritoryDescription: 'Neward                                            '
+  <>f__AnonymousType18`3
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+    TerritoryDescription: 'Philadelphia                                      '
+  <>f__AnonymousType18`3
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+    TerritoryDescription: 'Beachwood                                         '
+  <>f__AnonymousType18`3
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+    TerritoryDescription: 'Findlay                                           '
+  <>f__AnonymousType18`3
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+    TerritoryDescription: 'Racine                                            '
+}

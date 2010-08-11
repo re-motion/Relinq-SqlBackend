@@ -1,0 +1,275 @@
+DataQuery`1 {
+  <>f__AnonymousType1b`2
+    ContactName: 'Maria Anders'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Ana Trujillo'
+    OrderCount: 4
+  <>f__AnonymousType1b`2
+    ContactName: 'Antonio Moreno'
+    OrderCount: 7
+  <>f__AnonymousType1b`2
+    ContactName: 'Thomas Hardy'
+    OrderCount: 13
+  <>f__AnonymousType1b`2
+    ContactName: 'Christina Berglund'
+    OrderCount: 18
+  <>f__AnonymousType1b`2
+    ContactName: 'Hanna Moos'
+    OrderCount: 7
+  <>f__AnonymousType1b`2
+    ContactName: 'Frédérique Citeaux'
+    OrderCount: 11
+  <>f__AnonymousType1b`2
+    ContactName: 'Martín Sommer'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'Laurence Lebihan'
+    OrderCount: 17
+  <>f__AnonymousType1b`2
+    ContactName: 'Elizabeth Lincoln'
+    OrderCount: 14
+  <>f__AnonymousType1b`2
+    ContactName: 'Victoria Ashworth'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Patricio Simpson'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Francisco Chang'
+    OrderCount: 1
+  <>f__AnonymousType1b`2
+    ContactName: 'Yang Wang'
+    OrderCount: 8
+  <>f__AnonymousType1b`2
+    ContactName: 'Pedro Afonso'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Elizabeth Brown'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'Sven Ottlieb'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Janine Labrune'
+    OrderCount: 4
+  <>f__AnonymousType1b`2
+    ContactName: 'Ann Devon'
+    OrderCount: 8
+  <>f__AnonymousType1b`2
+    ContactName: 'Roland Mendel'
+    OrderCount: 30
+  <>f__AnonymousType1b`2
+    ContactName: 'Aria Cruz'
+    OrderCount: 7
+  <>f__AnonymousType1b`2
+    ContactName: 'Diego Roel'
+    OrderCount: 0
+  <>f__AnonymousType1b`2
+    ContactName: 'Martine Rancé'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Maria Larsson'
+    OrderCount: 19
+  <>f__AnonymousType1b`2
+    ContactName: 'Peter Franken'
+    OrderCount: 15
+  <>f__AnonymousType1b`2
+    ContactName: 'Carine Schmitt'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'Paolo Accorti'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Lino Rodriguez'
+    OrderCount: 8
+  <>f__AnonymousType1b`2
+    ContactName: 'Eduardo Saavedra'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'José Pedro Freyre'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'André Fonseca'
+    OrderCount: 9
+  <>f__AnonymousType1b`2
+    ContactName: 'Howard Snyder'
+    OrderCount: 11
+  <>f__AnonymousType1b`2
+    ContactName: 'Manuel Pereira'
+    OrderCount: 2
+  <>f__AnonymousType1b`2
+    ContactName: 'Mario Pontes'
+    OrderCount: 14
+  <>f__AnonymousType1b`2
+    ContactName: 'Carlos Hernández'
+    OrderCount: 18
+  <>f__AnonymousType1b`2
+    ContactName: 'Yoshi Latimer'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Patricia McKenna'
+    OrderCount: 19
+  <>f__AnonymousType1b`2
+    ContactName: 'Helen Bennett'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Philip Cramer'
+    OrderCount: 14
+  <>f__AnonymousType1b`2
+    ContactName: 'Daniel Tonini'
+    OrderCount: 4
+  <>f__AnonymousType1b`2
+    ContactName: 'Annette Roulet'
+    OrderCount: 14
+  <>f__AnonymousType1b`2
+    ContactName: 'Yoshi Tannamuri'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'John Steel'
+    OrderCount: 2
+  <>f__AnonymousType1b`2
+    ContactName: 'Renate Messner'
+    OrderCount: 15
+  <>f__AnonymousType1b`2
+    ContactName: 'Jaime Yorres'
+    OrderCount: 4
+  <>f__AnonymousType1b`2
+    ContactName: 'Carlos González'
+    OrderCount: 14
+  <>f__AnonymousType1b`2
+    ContactName: 'Felipe Izquierdo'
+    OrderCount: 12
+  <>f__AnonymousType1b`2
+    ContactName: 'Fran Wilson'
+    OrderCount: 8
+  <>f__AnonymousType1b`2
+    ContactName: 'Giovanni Rovelli'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Catherine Dewey'
+    OrderCount: 7
+  <>f__AnonymousType1b`2
+    ContactName: 'Jean Fresnière'
+    OrderCount: 13
+  <>f__AnonymousType1b`2
+    ContactName: 'Alexander Feuer'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Simon Crowther'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'Yvonne Moncada'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Rene Phillips'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Henriette Pfalzheim'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Marie Bertrand'
+    OrderCount: 0
+  <>f__AnonymousType1b`2
+    ContactName: 'Guillermo Fernández'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Georg Pipps'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Isabel de Castro'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Bernardo Batista'
+    OrderCount: 9
+  <>f__AnonymousType1b`2
+    ContactName: 'Lúcia Carvalho'
+    OrderCount: 13
+  <>f__AnonymousType1b`2
+    ContactName: 'Horst Kloss'
+    OrderCount: 28
+  <>f__AnonymousType1b`2
+    ContactName: 'Sergio Gutiérrez'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Paula Wilson'
+    OrderCount: 18
+  <>f__AnonymousType1b`2
+    ContactName: 'Maurizio Moroni'
+    OrderCount: 12
+  <>f__AnonymousType1b`2
+    ContactName: 'Janete Limeira'
+    OrderCount: 11
+  <>f__AnonymousType1b`2
+    ContactName: 'Michael Holz'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Alejandra Camino'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Jonas Bergulfsen'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Jose Pavarotti'
+    OrderCount: 31
+  <>f__AnonymousType1b`2
+    ContactName: 'Hari Kumar'
+    OrderCount: 9
+  <>f__AnonymousType1b`2
+    ContactName: 'Jytte Petersen'
+    OrderCount: 7
+  <>f__AnonymousType1b`2
+    ContactName: 'Dominique Perrier'
+    OrderCount: 4
+  <>f__AnonymousType1b`2
+    ContactName: 'Art Braunschweiger'
+    OrderCount: 9
+  <>f__AnonymousType1b`2
+    ContactName: 'Pascale Cartrain'
+    OrderCount: 12
+  <>f__AnonymousType1b`2
+    ContactName: 'Liz Nixon'
+    OrderCount: 4
+  <>f__AnonymousType1b`2
+    ContactName: 'Liu Wong'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'Karin Josephs'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Miguel Angel Paolino'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Anabela Domingues'
+    OrderCount: 6
+  <>f__AnonymousType1b`2
+    ContactName: 'Helvetius Nagy'
+    OrderCount: 3
+  <>f__AnonymousType1b`2
+    ContactName: 'Palle Ibsen'
+    OrderCount: 11
+  <>f__AnonymousType1b`2
+    ContactName: 'Mary Saveley'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Paul Henriot'
+    OrderCount: 5
+  <>f__AnonymousType1b`2
+    ContactName: 'Rita Müller'
+    OrderCount: 10
+  <>f__AnonymousType1b`2
+    ContactName: 'Pirkko Koskitalo'
+    OrderCount: 15
+  <>f__AnonymousType1b`2
+    ContactName: 'Paula Parente'
+    OrderCount: 9
+  <>f__AnonymousType1b`2
+    ContactName: 'Karl Jablonski'
+    OrderCount: 14
+  <>f__AnonymousType1b`2
+    ContactName: 'Matti Karttunen'
+    OrderCount: 7
+  <>f__AnonymousType1b`2
+    ContactName: 'Zbyszek Piestrzeniewicz'
+    OrderCount: 7
+}

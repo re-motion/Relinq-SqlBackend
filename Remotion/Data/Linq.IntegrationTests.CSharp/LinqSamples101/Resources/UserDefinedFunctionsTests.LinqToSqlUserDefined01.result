@@ -1,0 +1,56 @@
+DataQuery`1 {
+  <>f__AnonymousType1`2
+    CategoryID: 1
+    TotalUnitPrice: 455,7500
+  <>f__AnonymousType1`2
+    CategoryID: 2
+    TotalUnitPrice: 276,7500
+  <>f__AnonymousType1`2
+    CategoryID: 3
+    TotalUnitPrice: 327,0800
+  <>f__AnonymousType1`2
+    CategoryID: 4
+    TotalUnitPrice: 287,3000
+  <>f__AnonymousType1`2
+    CategoryID: 5
+    TotalUnitPrice: 141,7500
+  <>f__AnonymousType1`2
+    CategoryID: 6
+    TotalUnitPrice: 324,0400
+  <>f__AnonymousType1`2
+    CategoryID: 10
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 11
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 12
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 13
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 14
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 15
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 16
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 17
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 18
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 19
+    TotalUnitPrice: null
+  <>f__AnonymousType1`2
+    CategoryID: 7
+    TotalUnitPrice: 161,8500
+  <>f__AnonymousType1`2
+    CategoryID: 8
+    TotalUnitPrice: 248,1900
+}

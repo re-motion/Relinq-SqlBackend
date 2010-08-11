@@ -1,0 +1,17 @@
+SingleResult`1 {
+  OrdersResultSet
+    CustomerID: 'SEVES'
+    EmployeeID: null
+    Freight: null
+    OrderDate: null
+    OrderID: null
+    RequiredDate: null
+    ShipAddress: null
+    ShipCity: null
+    ShipCountry: null
+    ShipName: null
+    ShippedDate: null
+    ShipPostalCode: null
+    ShipRegion: null
+    ShipVia: null
+}

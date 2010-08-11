@@ -1,0 +1,62 @@
+DataQuery`1 {
+  Customer
+    Address: 'Cerrito 333'
+    City: 'Buenos Aires'
+    CompanyName: 'Cactus Comidas para llevar'
+    ContactName: 'Patricio Simpson'
+    ContactTitle: 'Sales Agent'
+    Country: 'Argentina'
+    CustomerID: 'CACTU'
+    Fax: '(1) 135-4892'
+    Phone: '(1) 135-5555'
+    PostalCode: '1010'
+    Region: null
+  Customer
+    Address: 'Sierras de Granada 9993'
+    City: 'México D.F.'
+    CompanyName: 'Centro comercial Moctezuma'
+    ContactName: 'Francisco Chang'
+    ContactTitle: 'Marketing Manager'
+    Country: 'Mexico'
+    CustomerID: 'CENTC'
+    Fax: '(5) 555-7293'
+    Phone: '(5) 555-3392'
+    PostalCode: '05022'
+    Region: null
+  Customer
+    Address: 'Hauptstr. 29'
+    City: 'Bern'
+    CompanyName: 'Chop-suey Chinese'
+    ContactName: 'Yang Wang'
+    ContactTitle: 'Owner'
+    Country: 'Switzerland'
+    CustomerID: 'CHOPS'
+    Fax: null
+    Phone: '0452-076545'
+    PostalCode: '3012'
+    Region: null
+  Customer
+    Address: 'Av. dos Lusíadas, 23'
+    City: 'Sao Paulo'
+    CompanyName: 'Comércio Mineiro'
+    ContactName: 'Pedro Afonso'
+    ContactTitle: 'Sales Associate'
+    Country: 'Brazil'
+    CustomerID: 'COMMI'
+    Fax: null
+    Phone: '(11) 555-7647'
+    PostalCode: '05432-043'
+    Region: 'SP'
+  Customer
+    Address: 'Berkeley Gardens 12  Brewery'
+    City: 'London'
+    CompanyName: 'Consolidated Holdings'
+    ContactName: 'Elizabeth Brown'
+    ContactTitle: 'Sales Representative'
+    Country: 'UK'
+    CustomerID: 'CONSH'
+    Fax: '(171) 555-9199'
+    Phone: '(171) 555-2282'
+    PostalCode: 'WX1 6LT'
+    Region: null
+}

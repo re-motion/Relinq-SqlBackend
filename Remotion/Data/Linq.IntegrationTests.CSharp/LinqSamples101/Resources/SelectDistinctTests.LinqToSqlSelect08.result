@@ -1,0 +1,821 @@
+DataQuery`1 {
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Berlin'
+      CompanyName: 'Alfreds Futterkiste'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Maria Anders'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'ALFKI'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'México D.F.'
+      CompanyName: 'Ana Trujillo Emparedados y helados'
+      Country: 'Mexico'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Ana Trujillo'
+      ContactTitle: 'Owner'
+    CustomerID: 'ANATR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'México D.F.'
+      CompanyName: 'Antonio Moreno Taquería'
+      Country: 'Mexico'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Antonio Moreno'
+      ContactTitle: 'Owner'
+    CustomerID: 'ANTON'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'London'
+      CompanyName: 'Around the Horn'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Thomas Hardy'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'AROUT'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Luleå'
+      CompanyName: 'Berglunds snabbköp'
+      Country: 'Sweden'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Christina Berglund'
+      ContactTitle: 'Order Administrator'
+    CustomerID: 'BERGS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Mannheim'
+      CompanyName: 'Blauer See Delikatessen'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Hanna Moos'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'BLAUS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Strasbourg'
+      CompanyName: 'Blondesddsl père et fils'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Frédérique Citeaux'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'BLONP'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Madrid'
+      CompanyName: 'Bólido Comidas preparadas'
+      Country: 'Spain'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Martín Sommer'
+      ContactTitle: 'Owner'
+    CustomerID: 'BOLID'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Marseille'
+      CompanyName: 'Bon app'''
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Laurence Lebihan'
+      ContactTitle: 'Owner'
+    CustomerID: 'BONAP'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Tsawassen'
+      CompanyName: 'Bottom-Dollar Markets'
+      Country: 'Canada'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Elizabeth Lincoln'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'BOTTM'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'London'
+      CompanyName: 'B''s Beverages'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Victoria Ashworth'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'BSBEV'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Buenos Aires'
+      CompanyName: 'Cactus Comidas para llevar'
+      Country: 'Argentina'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Patricio Simpson'
+      ContactTitle: 'Sales Agent'
+    CustomerID: 'CACTU'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'México D.F.'
+      CompanyName: 'Centro comercial Moctezuma'
+      Country: 'Mexico'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Francisco Chang'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'CENTC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Bern'
+      CompanyName: 'Chop-suey Chinese'
+      Country: 'Switzerland'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Yang Wang'
+      ContactTitle: 'Owner'
+    CustomerID: 'CHOPS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Sao Paulo'
+      CompanyName: 'Comércio Mineiro'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Pedro Afonso'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'COMMI'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'London'
+      CompanyName: 'Consolidated Holdings'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Elizabeth Brown'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'CONSH'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Aachen'
+      CompanyName: 'Drachenblut Delikatessen'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Sven Ottlieb'
+      ContactTitle: 'Order Administrator'
+    CustomerID: 'DRACD'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Nantes'
+      CompanyName: 'Du monde entier'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Janine Labrune'
+      ContactTitle: 'Owner'
+    CustomerID: 'DUMON'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'London'
+      CompanyName: 'Eastern Connection'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Ann Devon'
+      ContactTitle: 'Sales Agent'
+    CustomerID: 'EASTC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Graz'
+      CompanyName: 'Ernst Handel'
+      Country: 'Austria'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Roland Mendel'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'ERNSH'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Sao Paulo'
+      CompanyName: 'Familia Arquibaldo'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Aria Cruz'
+      ContactTitle: 'Marketing Assistant'
+    CustomerID: 'FAMIA'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Madrid'
+      CompanyName: 'FISSA Fabrica Inter. Salchichas S.A.'
+      Country: 'Spain'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Diego Roel'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'FISSA'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Lille'
+      CompanyName: 'Folies gourmandes'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Martine Rancé'
+      ContactTitle: 'Assistant Sales Agent'
+    CustomerID: 'FOLIG'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Bräcke'
+      CompanyName: 'Folk och fä HB'
+      Country: 'Sweden'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Maria Larsson'
+      ContactTitle: 'Owner'
+    CustomerID: 'FOLKO'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'München'
+      CompanyName: 'Frankenversand'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Peter Franken'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'FRANK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Nantes'
+      CompanyName: 'France restauration'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Carine Schmitt'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'FRANR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Torino'
+      CompanyName: 'Franchi S.p.A.'
+      Country: 'Italy'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Paolo Accorti'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'FRANS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Lisboa'
+      CompanyName: 'Furia Bacalhau e Frutos do Mar'
+      Country: 'Portugal'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Lino Rodriguez'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'FURIB'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Barcelona'
+      CompanyName: 'Galería del gastrónomo'
+      Country: 'Spain'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Eduardo Saavedra'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'GALED'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Sevilla'
+      CompanyName: 'Godos Cocina Típica'
+      Country: 'Spain'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'José Pedro Freyre'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'GODOS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Campinas'
+      CompanyName: 'Gourmet Lanchonetes'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'André Fonseca'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'GOURL'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Eugene'
+      CompanyName: 'Great Lakes Food Market'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Howard Snyder'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'GREAL'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Caracas'
+      CompanyName: 'GROSELLA-Restaurante'
+      Country: 'Venezuela'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Manuel Pereira'
+      ContactTitle: 'Owner'
+    CustomerID: 'GROSR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Rio de Janeiro'
+      CompanyName: 'Hanari Carnes'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Mario Pontes'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'HANAR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'San Cristóbal'
+      CompanyName: 'HILARION-Abastos'
+      Country: 'Venezuela'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Carlos Hernández'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'HILAA'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Elgin'
+      CompanyName: 'Hungry Coyote Import Store'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Yoshi Latimer'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'HUNGC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Cork'
+      CompanyName: 'Hungry Owl All-Night Grocers'
+      Country: 'Ireland'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Patricia McKenna'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'HUNGO'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Cowes'
+      CompanyName: 'Island Trading'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Helen Bennett'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'ISLAT'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Brandenburg'
+      CompanyName: 'Königlich Essen'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Philip Cramer'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'KOENE'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Versailles'
+      CompanyName: 'La corne d''abondance'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Daniel Tonini'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'LACOR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Toulouse'
+      CompanyName: 'La maison d''Asie'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Annette Roulet'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'LAMAI'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Vancouver'
+      CompanyName: 'Laughing Bacchus Wine Cellars'
+      Country: 'Canada'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Yoshi Tannamuri'
+      ContactTitle: 'Marketing Assistant'
+    CustomerID: 'LAUGB'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Walla Walla'
+      CompanyName: 'Lazy K Kountry Store'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'John Steel'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'LAZYK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Frankfurt a.M.'
+      CompanyName: 'Lehmanns Marktstand'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Renate Messner'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'LEHMS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'San Francisco'
+      CompanyName: 'Let''s Stop N Shop'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Jaime Yorres'
+      ContactTitle: 'Owner'
+    CustomerID: 'LETSS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Barquisimeto'
+      CompanyName: 'LILA-Supermercado'
+      Country: 'Venezuela'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Carlos González'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'LILAS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'I. de Margarita'
+      CompanyName: 'LINO-Delicateses'
+      Country: 'Venezuela'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Felipe Izquierdo'
+      ContactTitle: 'Owner'
+    CustomerID: 'LINOD'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Portland'
+      CompanyName: 'Lonesome Pine Restaurant'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Fran Wilson'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'LONEP'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Bergamo'
+      CompanyName: 'Magazzini Alimentari Riuniti'
+      Country: 'Italy'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Giovanni Rovelli'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'MAGAA'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Bruxelles'
+      CompanyName: 'Maison Dewey'
+      Country: 'Belgium'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Catherine Dewey'
+      ContactTitle: 'Sales Agent'
+    CustomerID: 'MAISD'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Montréal'
+      CompanyName: 'Mère Paillarde'
+      Country: 'Canada'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Jean Fresnière'
+      ContactTitle: 'Marketing Assistant'
+    CustomerID: 'MEREP'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Leipzig'
+      CompanyName: 'Morgenstern Gesundkost'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Alexander Feuer'
+      ContactTitle: 'Marketing Assistant'
+    CustomerID: 'MORGK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'London'
+      CompanyName: 'North/South'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Simon Crowther'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'NORTS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Buenos Aires'
+      CompanyName: 'Océano Atlántico Ltda.'
+      Country: 'Argentina'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Yvonne Moncada'
+      ContactTitle: 'Sales Agent'
+    CustomerID: 'OCEAN'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Anchorage'
+      CompanyName: 'Old World Delicatessen'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Rene Phillips'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'OLDWO'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Köln'
+      CompanyName: 'Ottilies Käseladen'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Henriette Pfalzheim'
+      ContactTitle: 'Owner'
+    CustomerID: 'OTTIK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Paris'
+      CompanyName: 'Paris spécialités'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Marie Bertrand'
+      ContactTitle: 'Owner'
+    CustomerID: 'PARIS'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'México D.F.'
+      CompanyName: 'Pericles Comidas clásicas'
+      Country: 'Mexico'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Guillermo Fernández'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'PERIC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Salzburg'
+      CompanyName: 'Piccolo und mehr'
+      Country: 'Austria'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Georg Pipps'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'PICCO'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Lisboa'
+      CompanyName: 'Princesa Isabel Vinhos'
+      Country: 'Portugal'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Isabel de Castro'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'PRINI'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Rio de Janeiro'
+      CompanyName: 'Que Delícia'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Bernardo Batista'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'QUEDE'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Sao Paulo'
+      CompanyName: 'Queen Cozinha'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Lúcia Carvalho'
+      ContactTitle: 'Marketing Assistant'
+    CustomerID: 'QUEEN'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Cunewalde'
+      CompanyName: 'QUICK-Stop'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Horst Kloss'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'QUICK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Buenos Aires'
+      CompanyName: 'Rancho grande'
+      Country: 'Argentina'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Sergio Gutiérrez'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'RANCH'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Albuquerque'
+      CompanyName: 'Rattlesnake Canyon Grocery'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Paula Wilson'
+      ContactTitle: 'Assistant Sales Representative'
+    CustomerID: 'RATTC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Reggio Emilia'
+      CompanyName: 'Reggiani Caseifici'
+      Country: 'Italy'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Maurizio Moroni'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'REGGC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Rio de Janeiro'
+      CompanyName: 'Ricardo Adocicados'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Janete Limeira'
+      ContactTitle: 'Assistant Sales Agent'
+    CustomerID: 'RICAR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Genève'
+      CompanyName: 'Richter Supermarkt'
+      Country: 'Switzerland'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Michael Holz'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'RICSU'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Madrid'
+      CompanyName: 'Romero y tomillo'
+      Country: 'Spain'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Alejandra Camino'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'ROMEY'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Stavern'
+      CompanyName: 'Santé Gourmet'
+      Country: 'Norway'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Jonas Bergulfsen'
+      ContactTitle: 'Owner'
+    CustomerID: 'SANTG'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Boise'
+      CompanyName: 'Save-a-lot Markets'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Jose Pavarotti'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'SAVEA'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'London'
+      CompanyName: 'Seven Seas Imports'
+      Country: 'UK'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Hari Kumar'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'SEVES'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Kobenhavn'
+      CompanyName: 'Simons bistro'
+      Country: 'Denmark'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Jytte Petersen'
+      ContactTitle: 'Owner'
+    CustomerID: 'SIMOB'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Paris'
+      CompanyName: 'Spécialités du monde'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Dominique Perrier'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'SPECD'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Lander'
+      CompanyName: 'Split Rail Beer & Ale'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Art Braunschweiger'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'SPLIR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Charleroi'
+      CompanyName: 'Suprêmes délices'
+      Country: 'Belgium'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Pascale Cartrain'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'SUPRD'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Portland'
+      CompanyName: 'The Big Cheese'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Liz Nixon'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'THEBI'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Butte'
+      CompanyName: 'The Cracker Box'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Liu Wong'
+      ContactTitle: 'Marketing Assistant'
+    CustomerID: 'THECR'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Münster'
+      CompanyName: 'Toms Spezialitäten'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Karin Josephs'
+      ContactTitle: 'Marketing Manager'
+    CustomerID: 'TOMSP'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'México D.F.'
+      CompanyName: 'Tortuga Restaurante'
+      Country: 'Mexico'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Miguel Angel Paolino'
+      ContactTitle: 'Owner'
+    CustomerID: 'TORTU'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Sao Paulo'
+      CompanyName: 'Tradição Hipermercados'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Anabela Domingues'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'TRADH'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Kirkland'
+      CompanyName: 'Trail''s Head Gourmet Provisioners'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Helvetius Nagy'
+      ContactTitle: 'Sales Associate'
+    CustomerID: 'TRAIH'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Århus'
+      CompanyName: 'Vaffeljernet'
+      Country: 'Denmark'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Palle Ibsen'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'VAFFE'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Lyon'
+      CompanyName: 'Victuailles en stock'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Mary Saveley'
+      ContactTitle: 'Sales Agent'
+    CustomerID: 'VICTE'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Reims'
+      CompanyName: 'Vins et alcools Chevalier'
+      Country: 'France'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Paul Henriot'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'VINET'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Stuttgart'
+      CompanyName: 'Die Wandernde Kuh'
+      Country: 'Germany'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Rita Müller'
+      ContactTitle: 'Sales Representative'
+    CustomerID: 'WANDK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Oulu'
+      CompanyName: 'Wartian Herkku'
+      Country: 'Finland'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Pirkko Koskitalo'
+      ContactTitle: 'Accounting Manager'
+    CustomerID: 'WARTH'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Resende'
+      CompanyName: 'Wellington Importadora'
+      Country: 'Brazil'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Paula Parente'
+      ContactTitle: 'Sales Manager'
+    CustomerID: 'WELLI'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Seattle'
+      CompanyName: 'White Clover Markets'
+      Country: 'USA'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Karl Jablonski'
+      ContactTitle: 'Owner'
+    CustomerID: 'WHITC'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Helsinki'
+      CompanyName: 'Wilman Kala'
+      Country: 'Finland'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Matti Karttunen'
+      ContactTitle: 'Owner/Marketing Assistant'
+    CustomerID: 'WILMK'
+  <>f__AnonymousTypea`3
+    CompanyInfo: <>f__AnonymousType8`3
+      City: 'Warszawa'
+      CompanyName: 'Wolski  Zajazd'
+      Country: 'Poland'
+    ContactInfo: <>f__AnonymousType9`2
+      ContactName: 'Zbyszek Piestrzeniewicz'
+      ContactTitle: 'Owner'
+    CustomerID: 'WOLZA'
+}

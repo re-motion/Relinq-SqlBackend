@@ -25,6 +25,11 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     private readonly string _expected;
     private readonly string _actual;
 
+    public static readonly int columnLength = 70; // line length: pipe in the middle + 4 numbers + braces + space: 148
+    public static readonly int numberWidth = 4;
+    public static readonly int placeHolderWidth = 3; // braces + space
+    public static readonly char paddingChar = ' ';
+
     public ComparisonResult (bool isEqual, string expected, string actual)
     {
       _isEqual = isEqual;
@@ -50,11 +55,67 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     public string GetDiffSet ()
     {
       var output = new StringBuilder();
-      output.AppendLine ("expected:");
-      output.Append (_expected);
-      output.AppendLine ("actual:");
-      output.Append (_actual);
+      output.AppendLine (GetTableHead());
+
+      string[] expectedLines = SplitString (_expected);
+      string[] actualLines = SplitString (_actual);
+
+      bool expectedIsShorter = (expectedLines.Length < actualLines.Length);
+      int minLength = expectedIsShorter ? expectedLines.Length : actualLines.Length;
+      int maxLength = expectedIsShorter ? actualLines.Length : expectedLines.Length;
+
+      for (int i = 0; i < minLength; i++)
+      {
+        if (!expectedLines[i].Equals (actualLines[i]))
+          PadAndCutString (ref output, i + 1, expectedLines[i], actualLines[i]);
+      }
+
+      for (int i = minLength; i < maxLength; i++)
+      {
+        if (expectedIsShorter)
+          PadAndCutString (ref output, i + 1, string.Empty, actualLines[i]);
+        else
+          PadAndCutString (ref output, i + 1, expectedLines[i], string.Empty);
+      }
+
       return output.ToString();
+    }
+
+    private static string GetNumberString (int number)
+    {
+      return number.ToString().PadLeft (numberWidth, '0');
+    }
+
+    private string[] SplitString (string stringToSplit)
+    {
+      return stringToSplit.Split (new[] { Environment.NewLine }, StringSplitOptions.None);
+    }
+
+
+    private void PadAndCutString (ref StringBuilder output, int lineNumber, string leftColumn, string rightColumn)
+    {
+      string numberString = GetNumberString (lineNumber);
+      leftColumn = PadAndCutColumn (leftColumn);
+      rightColumn = PadAndCutColumn (rightColumn);
+
+      output.AppendLine ("(" + numberString + ") " + leftColumn + "|" + rightColumn);
+    }
+
+    private string PadAndCutColumn (string stringToPad)
+    {
+      string paddedString = stringToPad.PadRight (columnLength, paddingChar);
+
+      int actualLength = paddedString.Length;
+      int maxLength = ComparisonResult.columnLength;
+      return actualLength > maxLength ? paddedString.Substring (0, maxLength) : paddedString;
+    }
+
+    public static string GetTableHead ()
+    {
+      string tableHead = "(lines)";
+      tableHead += " expected".PadRight (columnLength, paddingChar) + "|";
+      tableHead += " actual".PadRight (columnLength, paddingChar);
+      return tableHead;
     }
   }
 }

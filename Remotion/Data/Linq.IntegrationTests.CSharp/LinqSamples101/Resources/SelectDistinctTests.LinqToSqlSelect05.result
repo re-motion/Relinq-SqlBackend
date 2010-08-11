@@ -1,0 +1,233 @@
+DataQuery`1 {
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Chai'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Chang'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Aniseed Syrup'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Chef Anton''s Cajun Seasoning'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Chef Anton''s Gumbo Mix'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Grandma''s Boysenberry Spread'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Uncle Bob''s Organic Dried Pears'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Northwoods Cranberry Sauce'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Mishi Kobe Niku'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Ikura'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Queso Cabrales'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Queso Manchego La Pastora'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Konbu'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Tofu'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Genen Shouyu'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Pavlova'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Alice Mutton'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Carnarvon Tigers'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Teatime Chocolate Biscuits'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Sir Rodney''s Marmalade'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Sir Rodney''s Scones'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Gustaf''s Knäckebröd'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Tunnbröd'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Guaraná Fantástica'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'NuNuCa Nuß-Nougat-Creme'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Gumbär Gummibärchen'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Schoggi Schokolade'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Rössle Sauerkraut'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Thüringer Rostbratwurst'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Nord-Ost Matjeshering'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Gorgonzola Telino'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Mascarpone Fabioli'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Geitost'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Sasquatch Ale'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Steeleye Stout'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Inlagd Sill'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Gravad lax'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Côte de Blaye'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Chartreuse verte'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Boston Crab Meat'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Jack''s New England Clam Chowder'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Singaporean Hokkien Fried Mee'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Ipoh Coffee'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Gula Malacca'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Rogede sild'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Spegesild'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Zaanse koeken'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Chocolade'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Maxilaku'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Valkoinen suklaa'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Manjimup Dried Apples'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Filo Mix'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Perth Pasties'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Tourtière'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Pâté chinois'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Gnocchi di nonna Alice'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Ravioli Angelo'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Escargots de Bourgogne'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Raclette Courdavault'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Camembert Pierrot'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Sirop d''érable'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Tarte au sucre'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Vegie-spread'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Wimmers gute Semmelknödel'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Louisiana Fiery Hot Pepper Sauce'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Louisiana Hot Spiced Okra'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Laughing Lumberjack Lager'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Scottish Longbreads'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Gudbrandsdalsost'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Outback Lager'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Flotemysost'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Mozzarella di Giovanni'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Röd Kaviar'
+  <>f__AnonymousType7`2
+    Availability: 'Out Of Stock'
+    ProductName: 'Longlife Tofu'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Rhönbräu Klosterbier'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Lakkalikööri'
+  <>f__AnonymousType7`2
+    Availability: 'In Stock'
+    ProductName: 'Original Frankfurter grüne Soße'
+}

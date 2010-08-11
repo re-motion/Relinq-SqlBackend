@@ -1,0 +1,17 @@
+DataQuery`1 {
+  ShipperContact
+    CompanyName: 'Speedy Express'
+    ContactID: 130
+    ContactType: 'Shipper'
+    Phone: '(503) 555-9831'
+  ShipperContact
+    CompanyName: 'United Package'
+    ContactID: 131
+    ContactType: 'Shipper'
+    Phone: '(503) 555-3199'
+  ShipperContact
+    CompanyName: 'Federal Shipping'
+    ContactID: 132
+    ContactType: 'Shipper'
+    Phone: '(503) 555-9931'
+}

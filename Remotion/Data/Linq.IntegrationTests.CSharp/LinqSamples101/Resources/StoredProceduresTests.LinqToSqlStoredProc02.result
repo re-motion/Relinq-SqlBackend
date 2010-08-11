@@ -1,0 +1,32 @@
+SingleResult`1 {
+  CustomersByCityResult
+    City: 'London'
+    CompanyName: 'Around the Horn'
+    ContactName: 'Thomas Hardy'
+    CustomerID: 'AROUT'
+  CustomersByCityResult
+    City: 'London'
+    CompanyName: 'B''s Beverages'
+    ContactName: 'Victoria Ashworth'
+    CustomerID: 'BSBEV'
+  CustomersByCityResult
+    City: 'London'
+    CompanyName: 'Consolidated Holdings'
+    ContactName: 'Elizabeth Brown'
+    CustomerID: 'CONSH'
+  CustomersByCityResult
+    City: 'London'
+    CompanyName: 'Eastern Connection'
+    ContactName: 'Ann Devon'
+    CustomerID: 'EASTC'
+  CustomersByCityResult
+    City: 'London'
+    CompanyName: 'North/South'
+    ContactName: 'Simon Crowther'
+    CustomerID: 'NORTS'
+  CustomersByCityResult
+    City: 'London'
+    CompanyName: 'Seven Seas Imports'
+    ContactName: 'Hari Kumar'
+    CustomerID: 'SEVES'
+}

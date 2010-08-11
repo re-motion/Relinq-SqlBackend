@@ -1,0 +1,26 @@
+DataQuery`1 {
+  Customer
+    Address: 'Obere Str. 57'
+    City: 'Berlin'
+    CompanyName: 'Alfreds Futterkiste'
+    ContactName: 'Maria Anders'
+    ContactTitle: 'Sales Representative'
+    Country: 'Germany'
+    CustomerID: 'ALFKI'
+    Fax: '030-0076545'
+    Phone: '030-0074321'
+    PostalCode: '12209'
+    Region: null
+  Customer
+    Address: 'Åkergatan 24'
+    City: 'Bräcke'
+    CompanyName: 'Folk och fä HB'
+    ContactName: 'Maria Larsson'
+    ContactTitle: 'Owner'
+    Country: 'Sweden'
+    CustomerID: 'FOLKO'
+    Fax: null
+    Phone: '0695-34 67 21'
+    PostalCode: 'S-844 67'
+    Region: null
+}

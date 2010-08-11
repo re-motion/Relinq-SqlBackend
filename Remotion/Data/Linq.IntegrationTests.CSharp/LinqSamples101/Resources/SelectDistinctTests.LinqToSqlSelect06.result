@@ -1,0 +1,29 @@
+DataQuery`1 {
+  Name
+    FirstName: 'Nancy'
+    LastName: 'Davolio'
+  Name
+    FirstName: 'Andrew'
+    LastName: 'Fuller'
+  Name
+    FirstName: 'Janet'
+    LastName: 'Leverling'
+  Name
+    FirstName: 'Margaret'
+    LastName: 'Peacock'
+  Name
+    FirstName: 'Steven'
+    LastName: 'Buchanan'
+  Name
+    FirstName: 'Michael'
+    LastName: 'Suyama'
+  Name
+    FirstName: 'Robert'
+    LastName: 'King'
+  Name
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+  Name
+    FirstName: 'Anne'
+    LastName: 'Dodsworth'
+}

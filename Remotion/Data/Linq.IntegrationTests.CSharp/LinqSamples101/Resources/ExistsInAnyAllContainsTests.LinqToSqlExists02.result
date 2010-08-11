@@ -1,0 +1,32 @@
+DataQuery`1 {
+  Category
+    CategoryID: 1
+    CategoryName: 'Beverages'
+    Description: 'Soft drinks, coffees, teas, beers, and ales'
+    Picture: Binary
+      Length: 10746
+  Category
+    CategoryID: 2
+    CategoryName: 'Condiments'
+    Description: 'Sweet and savory sauces, relishes, spreads, and seasonings'
+    Picture: Binary
+      Length: 10746
+  Category
+    CategoryID: 5
+    CategoryName: 'Grains/Cereals'
+    Description: 'Breads, crackers, pasta, and cereal'
+    Picture: Binary
+      Length: 10746
+  Category
+    CategoryID: 6
+    CategoryName: 'Meat/Poultry'
+    Description: 'Prepared meats'
+    Picture: Binary
+      Length: 10746
+  Category
+    CategoryID: 7
+    CategoryName: 'Produce'
+    Description: 'Dried fruit and bean curd'
+    Picture: Binary
+      Length: 10746
+}

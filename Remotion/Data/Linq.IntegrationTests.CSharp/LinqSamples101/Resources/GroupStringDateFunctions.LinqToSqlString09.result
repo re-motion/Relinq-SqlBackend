@@ -1,0 +1,29 @@
+DataQuery`1 {
+  <>f__AnonymousTypef`2
+    FirstName: 'Nancy'
+    LastName: 'DAVOLIO'
+  <>f__AnonymousTypef`2
+    FirstName: 'Andrew'
+    LastName: 'FULLER'
+  <>f__AnonymousTypef`2
+    FirstName: 'Janet'
+    LastName: 'LEVERLING'
+  <>f__AnonymousTypef`2
+    FirstName: 'Margaret'
+    LastName: 'PEACOCK'
+  <>f__AnonymousTypef`2
+    FirstName: 'Steven'
+    LastName: 'BUCHANAN'
+  <>f__AnonymousTypef`2
+    FirstName: 'Michael'
+    LastName: 'SUYAMA'
+  <>f__AnonymousTypef`2
+    FirstName: 'Robert'
+    LastName: 'KING'
+  <>f__AnonymousTypef`2
+    FirstName: 'Laura'
+    LastName: 'CALLAHAN'
+  <>f__AnonymousTypef`2
+    FirstName: 'Anne'
+    LastName: 'DODSWORTH'
+}

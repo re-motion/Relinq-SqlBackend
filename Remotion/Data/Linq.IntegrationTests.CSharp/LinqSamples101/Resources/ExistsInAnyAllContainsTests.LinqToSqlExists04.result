@@ -1,0 +1,30 @@
+<>f__AnonymousType15`2
+  order: Order
+    CustomerID: 'VINET'
+    EmployeeID: 5
+    Freight: 32,3800
+    OrderDate: 04.07.1996 00:00:00
+    OrderID: 10248
+    RequiredDate: 01.08.1996 00:00:00
+    ShipAddress: '59 rue de l''Abbaye'
+    ShipCity: 'Reims'
+    ShipCountry: 'France'
+    ShipName: 'Vins et alcools Chevalier'
+    ShippedDate: 16.07.1996 00:00:00
+    ShipPostalCode: '51100'
+    ShipRegion: null
+    ShipVia: 3
+  q: List`1 {
+    Customer
+      Address: '59 rue de l''Abbaye'
+      City: 'Reims'
+      CompanyName: 'Vins et alcools Chevalier'
+      ContactName: 'Paul Henriot'
+      ContactTitle: 'Accounting Manager'
+      Country: 'France'
+      CustomerID: 'VINET'
+      Fax: '26.47.15.11'
+      Phone: '26.47.15.10'
+      PostalCode: '51100'
+      Region: null
+  }

@@ -1,0 +1,34 @@
+DataQuery`1 {
+  <>f__AnonymousType11`3
+    FirstName: 'Nancy'
+    LastName: 'Davolio'
+    ReportsTo: 2
+  <>f__AnonymousType11`3
+    FirstName: 'Janet'
+    LastName: 'Leverling'
+    ReportsTo: 2
+  <>f__AnonymousType11`3
+    FirstName: 'Margaret'
+    LastName: 'Peacock'
+    ReportsTo: 2
+  <>f__AnonymousType11`3
+    FirstName: 'Steven'
+    LastName: 'Buchanan'
+    ReportsTo: 2
+  <>f__AnonymousType11`3
+    FirstName: 'Michael'
+    LastName: 'Suyama'
+    ReportsTo: 5
+  <>f__AnonymousType11`3
+    FirstName: 'Robert'
+    LastName: 'King'
+    ReportsTo: 5
+  <>f__AnonymousType11`3
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+    ReportsTo: 2
+  <>f__AnonymousType11`3
+    FirstName: 'Anne'
+    LastName: 'Dodsworth'
+    ReportsTo: 5
+}

@@ -84,8 +84,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
         if (metaDataMember.IsPrimaryKey)
           primaryColumn = sqlColumnExpression;
-        else
-          otherColumns.Add (sqlColumnExpression);
+
+        otherColumns.Add (sqlColumnExpression);
       }
 
       return new SqlEntityDefinitionExpression (
@@ -148,7 +148,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     {
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
 
-      var valueType = constantExpression.Value.GetType();
+      var valueType = constantExpression.Value.GetType ();
       var table = _metaModel.GetTable (valueType);
       if (table != null)
       {
@@ -162,7 +162,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
         }
 
         if (primaryKeys.Count > 1)
-          throw new NotImplementedException("Multiple primary keys currently not supported");
+          throw new NotImplementedException ("Multiple primary keys currently not supported");
 
         return new SqlEntityConstantExpression (valueType, constantExpression.Value, primaryKeys[0]);
       }
@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     {
       //TODO check if column supports more than one type and if type is one of those types
 
-      throw new NotImplementedException(("Type check currently not supported"));
+      throw new NotImplementedException (("Type check currently not supported"));
 
       //ArgumentUtility.CheckNotNull ("expression", expression);
       //ArgumentUtility.CheckNotNull ("desiredType", desiredType);
@@ -203,9 +203,9 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
       var leftColumn = originatingEntity.GetColumn (thisKey.Type, thisKey.MappedName, thisKey.IsPrimaryKey);
       var rightColumn = new SqlColumnDefinitionExpression (
-        otherKey.Type, 
-        joinedTableInfo.TableAlias, 
-        otherKey.MappedName, 
+        otherKey.Type,
+        joinedTableInfo.TableAlias,
+        otherKey.MappedName,
         otherKey.IsPrimaryKey);
 
       return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);

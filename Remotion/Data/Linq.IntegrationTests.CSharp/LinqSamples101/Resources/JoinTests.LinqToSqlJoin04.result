@@ -1,0 +1,20 @@
+DataQuery`1 {
+  <>f__AnonymousType1a`5
+    City: 'London'
+    FirstName1: 'Steven'
+    FirstName2: 'Michael'
+    LastName1: 'Buchanan'
+    LastName2: 'Suyama'
+  <>f__AnonymousType1a`5
+    City: 'London'
+    FirstName1: 'Steven'
+    FirstName2: 'Robert'
+    LastName1: 'Buchanan'
+    LastName2: 'King'
+  <>f__AnonymousType1a`5
+    City: 'London'
+    FirstName1: 'Steven'
+    FirstName2: 'Anne'
+    LastName1: 'Buchanan'
+    LastName2: 'Dodsworth'
+}

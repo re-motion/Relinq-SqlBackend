@@ -1,0 +1,90 @@
+WhereEnumerableIterator`1 {
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 1
+    ProductName: 'Chai'
+    QuantityPerUnit: '10 boxes x 20 bags'
+    ReorderLevel: 10
+    SupplierID: 1
+    UnitPrice: 18,0000
+    UnitsInStock: 39
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 2
+    ProductName: 'Chang'
+    QuantityPerUnit: '24 - 12 oz bottles'
+    ReorderLevel: 25
+    SupplierID: 1
+    UnitPrice: 19,0000
+    UnitsInStock: 17
+    UnitsOnOrder: 40
+  Product
+    CategoryID: 2
+    Discontinued: True
+    ProductID: 5
+    ProductName: 'Chef Anton''s Gumbo Mix'
+    QuantityPerUnit: '36 boxes'
+    ReorderLevel: 0
+    SupplierID: 2
+    UnitPrice: 21,3500
+    UnitsInStock: 0
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 18
+    ProductName: 'Carnarvon Tigers'
+    QuantityPerUnit: '16 kg pkg.'
+    ReorderLevel: 0
+    SupplierID: 7
+    UnitPrice: 62,5000
+    UnitsInStock: 42
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 38
+    ProductName: 'Côte de Blaye'
+    QuantityPerUnit: '12 - 75 cl bottles'
+    ReorderLevel: 15
+    SupplierID: 18
+    UnitPrice: 263,5000
+    UnitsInStock: 17
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 39
+    ProductName: 'Chartreuse verte'
+    QuantityPerUnit: '750 cc per bottle'
+    ReorderLevel: 5
+    SupplierID: 18
+    UnitPrice: 18,0000
+    UnitsInStock: 69
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 48
+    ProductName: 'Chocolade'
+    QuantityPerUnit: '10 pkgs.'
+    ReorderLevel: 25
+    SupplierID: 22
+    UnitPrice: 12,7500
+    UnitsInStock: 15
+    UnitsOnOrder: 70
+  Product
+    CategoryID: 4
+    Discontinued: False
+    ProductID: 60
+    ProductName: 'Camembert Pierrot'
+    QuantityPerUnit: '15 - 300 g rounds'
+    ReorderLevel: 0
+    SupplierID: 28
+    UnitPrice: 34,0000
+    UnitsInStock: 19
+    UnitsOnOrder: 0
+}

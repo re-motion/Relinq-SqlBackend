@@ -21,4 +21,15 @@ DataQuery`1 {
     UnitPrice: 97,0000
     UnitsInStock: 29
     UnitsOnOrder: 0
+  Product
+    CategoryID: 7
+    Discontinued: True
+    ProductID: 28
+    ProductName: 'Rössle Sauerkraut'
+    QuantityPerUnit: '25 - 825 g cans'
+    ReorderLevel: 0
+    SupplierID: 12
+    UnitPrice: 45,6000
+    UnitsInStock: 26
+    UnitsOnOrder: 0
 }

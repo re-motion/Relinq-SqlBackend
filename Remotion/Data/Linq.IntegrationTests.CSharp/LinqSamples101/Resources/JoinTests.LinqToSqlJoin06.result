@@ -1,0 +1,366 @@
+DataQuery`1 {
+  <>f__AnonymousType1d`3
+    ContactName: 'Maria Anders'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Ana Trujillo'
+    emps: 0
+    ords: 4
+  <>f__AnonymousType1d`3
+    ContactName: 'Antonio Moreno'
+    emps: 0
+    ords: 7
+  <>f__AnonymousType1d`3
+    ContactName: 'Thomas Hardy'
+    emps: 4
+    ords: 13
+  <>f__AnonymousType1d`3
+    ContactName: 'Christina Berglund'
+    emps: 0
+    ords: 18
+  <>f__AnonymousType1d`3
+    ContactName: 'Hanna Moos'
+    emps: 0
+    ords: 7
+  <>f__AnonymousType1d`3
+    ContactName: 'Frédérique Citeaux'
+    emps: 0
+    ords: 11
+  <>f__AnonymousType1d`3
+    ContactName: 'Martín Sommer'
+    emps: 0
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'Laurence Lebihan'
+    emps: 0
+    ords: 17
+  <>f__AnonymousType1d`3
+    ContactName: 'Elizabeth Lincoln'
+    emps: 0
+    ords: 14
+  <>f__AnonymousType1d`3
+    ContactName: 'Victoria Ashworth'
+    emps: 4
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Patricio Simpson'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Francisco Chang'
+    emps: 0
+    ords: 1
+  <>f__AnonymousType1d`3
+    ContactName: 'Yang Wang'
+    emps: 0
+    ords: 8
+  <>f__AnonymousType1d`3
+    ContactName: 'Pedro Afonso'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Elizabeth Brown'
+    emps: 4
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'Sven Ottlieb'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Janine Labrune'
+    emps: 0
+    ords: 4
+  <>f__AnonymousType1d`3
+    ContactName: 'Ann Devon'
+    emps: 4
+    ords: 8
+  <>f__AnonymousType1d`3
+    ContactName: 'Roland Mendel'
+    emps: 0
+    ords: 30
+  <>f__AnonymousType1d`3
+    ContactName: 'Aria Cruz'
+    emps: 0
+    ords: 7
+  <>f__AnonymousType1d`3
+    ContactName: 'Diego Roel'
+    emps: 0
+    ords: 0
+  <>f__AnonymousType1d`3
+    ContactName: 'Martine Rancé'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Maria Larsson'
+    emps: 0
+    ords: 19
+  <>f__AnonymousType1d`3
+    ContactName: 'Peter Franken'
+    emps: 0
+    ords: 15
+  <>f__AnonymousType1d`3
+    ContactName: 'Carine Schmitt'
+    emps: 0
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'Paolo Accorti'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Lino Rodriguez'
+    emps: 0
+    ords: 8
+  <>f__AnonymousType1d`3
+    ContactName: 'Eduardo Saavedra'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'José Pedro Freyre'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'André Fonseca'
+    emps: 0
+    ords: 9
+  <>f__AnonymousType1d`3
+    ContactName: 'Howard Snyder'
+    emps: 0
+    ords: 11
+  <>f__AnonymousType1d`3
+    ContactName: 'Manuel Pereira'
+    emps: 0
+    ords: 2
+  <>f__AnonymousType1d`3
+    ContactName: 'Mario Pontes'
+    emps: 0
+    ords: 14
+  <>f__AnonymousType1d`3
+    ContactName: 'Carlos Hernández'
+    emps: 0
+    ords: 18
+  <>f__AnonymousType1d`3
+    ContactName: 'Yoshi Latimer'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Patricia McKenna'
+    emps: 0
+    ords: 19
+  <>f__AnonymousType1d`3
+    ContactName: 'Helen Bennett'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Philip Cramer'
+    emps: 0
+    ords: 14
+  <>f__AnonymousType1d`3
+    ContactName: 'Daniel Tonini'
+    emps: 0
+    ords: 4
+  <>f__AnonymousType1d`3
+    ContactName: 'Annette Roulet'
+    emps: 0
+    ords: 14
+  <>f__AnonymousType1d`3
+    ContactName: 'Yoshi Tannamuri'
+    emps: 0
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'John Steel'
+    emps: 0
+    ords: 2
+  <>f__AnonymousType1d`3
+    ContactName: 'Renate Messner'
+    emps: 0
+    ords: 15
+  <>f__AnonymousType1d`3
+    ContactName: 'Jaime Yorres'
+    emps: 0
+    ords: 4
+  <>f__AnonymousType1d`3
+    ContactName: 'Carlos González'
+    emps: 0
+    ords: 14
+  <>f__AnonymousType1d`3
+    ContactName: 'Felipe Izquierdo'
+    emps: 0
+    ords: 12
+  <>f__AnonymousType1d`3
+    ContactName: 'Fran Wilson'
+    emps: 0
+    ords: 8
+  <>f__AnonymousType1d`3
+    ContactName: 'Giovanni Rovelli'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Catherine Dewey'
+    emps: 0
+    ords: 7
+  <>f__AnonymousType1d`3
+    ContactName: 'Jean Fresnière'
+    emps: 0
+    ords: 13
+  <>f__AnonymousType1d`3
+    ContactName: 'Alexander Feuer'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Simon Crowther'
+    emps: 4
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'Yvonne Moncada'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Rene Phillips'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Henriette Pfalzheim'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Marie Bertrand'
+    emps: 0
+    ords: 0
+  <>f__AnonymousType1d`3
+    ContactName: 'Guillermo Fernández'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Georg Pipps'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Isabel de Castro'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Bernardo Batista'
+    emps: 0
+    ords: 9
+  <>f__AnonymousType1d`3
+    ContactName: 'Lúcia Carvalho'
+    emps: 0
+    ords: 13
+  <>f__AnonymousType1d`3
+    ContactName: 'Horst Kloss'
+    emps: 0
+    ords: 28
+  <>f__AnonymousType1d`3
+    ContactName: 'Sergio Gutiérrez'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Paula Wilson'
+    emps: 0
+    ords: 18
+  <>f__AnonymousType1d`3
+    ContactName: 'Maurizio Moroni'
+    emps: 0
+    ords: 12
+  <>f__AnonymousType1d`3
+    ContactName: 'Janete Limeira'
+    emps: 0
+    ords: 11
+  <>f__AnonymousType1d`3
+    ContactName: 'Michael Holz'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Alejandra Camino'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Jonas Bergulfsen'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Jose Pavarotti'
+    emps: 0
+    ords: 31
+  <>f__AnonymousType1d`3
+    ContactName: 'Hari Kumar'
+    emps: 4
+    ords: 9
+  <>f__AnonymousType1d`3
+    ContactName: 'Jytte Petersen'
+    emps: 0
+    ords: 7
+  <>f__AnonymousType1d`3
+    ContactName: 'Dominique Perrier'
+    emps: 0
+    ords: 4
+  <>f__AnonymousType1d`3
+    ContactName: 'Art Braunschweiger'
+    emps: 0
+    ords: 9
+  <>f__AnonymousType1d`3
+    ContactName: 'Pascale Cartrain'
+    emps: 0
+    ords: 12
+  <>f__AnonymousType1d`3
+    ContactName: 'Liz Nixon'
+    emps: 0
+    ords: 4
+  <>f__AnonymousType1d`3
+    ContactName: 'Liu Wong'
+    emps: 0
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'Karin Josephs'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Miguel Angel Paolino'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Anabela Domingues'
+    emps: 0
+    ords: 6
+  <>f__AnonymousType1d`3
+    ContactName: 'Helvetius Nagy'
+    emps: 1
+    ords: 3
+  <>f__AnonymousType1d`3
+    ContactName: 'Palle Ibsen'
+    emps: 0
+    ords: 11
+  <>f__AnonymousType1d`3
+    ContactName: 'Mary Saveley'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Paul Henriot'
+    emps: 0
+    ords: 5
+  <>f__AnonymousType1d`3
+    ContactName: 'Rita Müller'
+    emps: 0
+    ords: 10
+  <>f__AnonymousType1d`3
+    ContactName: 'Pirkko Koskitalo'
+    emps: 0
+    ords: 15
+  <>f__AnonymousType1d`3
+    ContactName: 'Paula Parente'
+    emps: 0
+    ords: 9
+  <>f__AnonymousType1d`3
+    ContactName: 'Karl Jablonski'
+    emps: 2
+    ords: 14
+  <>f__AnonymousType1d`3
+    ContactName: 'Matti Karttunen'
+    emps: 0
+    ords: 7
+  <>f__AnonymousType1d`3
+    ContactName: 'Zbyszek Piestrzeniewicz'
+    emps: 0
+    ords: 7
+}

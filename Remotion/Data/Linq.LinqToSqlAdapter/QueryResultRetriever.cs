@@ -3,6 +3,8 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Data;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.Utilities;
@@ -29,13 +31,21 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       using (var command = connection.CreateCommand ())
       {
         command.CommandText = commandText;
-
-        Array.ForEach (parameters, p => command.Parameters.Add(p));
-
-        using (var reader = command.ExecuteReader())
+        foreach (var commandParameter in parameters)
         {
-          while (reader.NextResult())
+          IDbDataParameter dataParameter = command.CreateParameter ();
+          dataParameter.ParameterName = commandParameter.Name;
+          dataParameter.Value = commandParameter.Value;
+
+          command.Parameters.Add (dataParameter);
+        }
+
+        using (var reader = command.ExecuteReader ())
+        {
+          while (reader.Read ())
+          {
             yield return projection (new RowWrapper (reader, _resolver));
+          }
         }
       }
     }

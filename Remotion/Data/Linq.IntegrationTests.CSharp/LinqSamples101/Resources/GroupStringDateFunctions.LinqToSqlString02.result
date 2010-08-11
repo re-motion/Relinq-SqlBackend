@@ -1,0 +1,145 @@
+DataQuery`1 {
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 1
+    ProductName: 'Chai'
+    QuantityPerUnit: '10 boxes x 20 bags'
+    ReorderLevel: 10
+    SupplierID: 1
+    UnitPrice: 18,0000
+    UnitsInStock: 39
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 2
+    ProductName: 'Chang'
+    QuantityPerUnit: '24 - 12 oz bottles'
+    ReorderLevel: 25
+    SupplierID: 1
+    UnitPrice: 19,0000
+    UnitsInStock: 17
+    UnitsOnOrder: 40
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 10
+    ProductName: 'Ikura'
+    QuantityPerUnit: '12 - 200 ml jars'
+    ReorderLevel: 0
+    SupplierID: 4
+    UnitPrice: 31,0000
+    UnitsInStock: 31
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 13
+    ProductName: 'Konbu'
+    QuantityPerUnit: '2 kg box'
+    ReorderLevel: 5
+    SupplierID: 6
+    UnitPrice: 6,0000
+    UnitsInStock: 24
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 7
+    Discontinued: False
+    ProductID: 14
+    ProductName: 'Tofu'
+    QuantityPerUnit: '40 - 100 g pkgs.'
+    ReorderLevel: 0
+    SupplierID: 6
+    UnitPrice: 23,2500
+    UnitsInStock: 35
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 16
+    ProductName: 'Pavlova'
+    QuantityPerUnit: '32 - 500 g boxes'
+    ReorderLevel: 10
+    SupplierID: 7
+    UnitPrice: 17,4500
+    UnitsInStock: 29
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 5
+    Discontinued: False
+    ProductID: 23
+    ProductName: 'Tunnbröd'
+    QuantityPerUnit: '12 - 250 g pkgs.'
+    ReorderLevel: 25
+    SupplierID: 9
+    UnitPrice: 9,0000
+    UnitsInStock: 61
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 4
+    Discontinued: False
+    ProductID: 33
+    ProductName: 'Geitost'
+    QuantityPerUnit: '500 g'
+    ReorderLevel: 20
+    SupplierID: 15
+    UnitPrice: 2,5000
+    UnitsInStock: 112
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 46
+    ProductName: 'Spegesild'
+    QuantityPerUnit: '4 - 450 g glasses'
+    ReorderLevel: 0
+    SupplierID: 21
+    UnitPrice: 12,0000
+    UnitsInStock: 95
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 48
+    ProductName: 'Chocolade'
+    QuantityPerUnit: '10 pkgs.'
+    ReorderLevel: 25
+    SupplierID: 22
+    UnitPrice: 12,7500
+    UnitsInStock: 15
+    UnitsOnOrder: 70
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 49
+    ProductName: 'Maxilaku'
+    QuantityPerUnit: '24 - 50 g pkgs.'
+    ReorderLevel: 15
+    SupplierID: 23
+    UnitPrice: 20,0000
+    UnitsInStock: 10
+    UnitsOnOrder: 60
+  Product
+    CategoryID: 5
+    Discontinued: False
+    ProductID: 52
+    ProductName: 'Filo Mix'
+    QuantityPerUnit: '16 - 2 kg boxes'
+    ReorderLevel: 25
+    SupplierID: 24
+    UnitPrice: 7,0000
+    UnitsInStock: 38
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 6
+    Discontinued: False
+    ProductID: 54
+    ProductName: 'Tourtière'
+    QuantityPerUnit: '16 pies'
+    ReorderLevel: 10
+    SupplierID: 25
+    UnitPrice: 7,4500
+    UnitsInStock: 21
+    UnitsOnOrder: 0
+}

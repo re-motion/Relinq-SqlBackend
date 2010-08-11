@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Data;
+using System.Data.Linq.Mapping;
 using System.Diagnostics;
+using System.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
-  public class RowWrapper: IDatabaseResultRow
+  public class RowWrapper : IDatabaseResultRow
   {
     private readonly IDataReader _dataReader;
     private readonly IReverseMappingResolver _resolver;
@@ -19,6 +21,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public T GetValue<T> (ColumnID id)
     {
+      if (_dataReader.IsDBNull (id.Position))
+      {
+        return default (T);
+      }
+
       return (T) _dataReader.GetValue (id.Position);
     }
 
@@ -28,15 +35,17 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       object instance = (T) Activator.CreateInstance (typeof (T));
       var entityMembers = _resolver.GetMetaDataMembers (typeof (T));
 
-      Debug.Assert (entityMembers.Length == columnIDs.Length);
+      //TODO: WHY?
+      //Debug.Assert (entityMembers.Length == columnIDs.Length);
 
-      for (int i = 0; i < columnIDs.Length; ++i)
+      foreach (var columnID in columnIDs)
       {
-        var currentMember = entityMembers[i];
-        var value = GetValue<Object> (columnIDs[i]);
-        currentMember.MemberAccessor.SetBoxedValue (ref instance, value);
-
+        var value = GetValue<Object> (columnID);
+        var metaMemberCollection = from em in entityMembers where em.MappedName == columnID.ColumnName select em;
+        var metaMember = metaMemberCollection.First ();
+        metaMember.MemberAccessor.SetBoxedValue (ref instance, value);
       }
+
       return (T) instance;
     }
   }
