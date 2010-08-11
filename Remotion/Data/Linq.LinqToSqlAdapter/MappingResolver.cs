@@ -79,6 +79,9 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
       foreach (var metaDataMember in sortedMembers)
       {
+        if(metaDataMember.IsAssociation)
+          continue;
+
         SqlColumnExpression sqlColumnExpression = new SqlColumnDefinitionExpression (
             metaDataMember.Type, tableInfo.TableAlias, metaDataMember.MappedName, metaDataMember.IsPrimaryKey);
 
