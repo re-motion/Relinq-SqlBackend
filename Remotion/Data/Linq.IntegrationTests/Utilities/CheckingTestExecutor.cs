@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     private string GetActualResult (object queryResult)
     {
       var stringWriter = new StringWriter();
-      var serializer = new TestResultSerializer (stringWriter);
+      var serializer = new TestResultSerializer (stringWriter, info => !info.IsDefined (typeof (System.Data.Linq.Mapping.AssociationAttribute), false));
       serializer.Serialize (queryResult);
       return stringWriter.ToString();
     }

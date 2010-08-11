@@ -1,5 +1,5 @@
-DataQuery`1 {
-  Group`2 {
+AnonymousType1 {
+  AnonymousType2 {
     Product
       CategoryID: 2
       Discontinued: False
@@ -155,7 +155,7 @@ DataQuery`1 {
       UnitsInStock: 125
       UnitsOnOrder: 0
   }
-  Group`2 {
+  AnonymousType2 {
     Product
       CategoryID: 1
       Discontinued: False

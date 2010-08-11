@@ -1,6 +1,6 @@
-DataQuery`1 {
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+AnonymousType1 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -24,11 +24,11 @@ DataQuery`1 {
         UnitsInStock: 17
         UnitsOnOrder: 40
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 1
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -41,11 +41,11 @@ DataQuery`1 {
         UnitsInStock: 15
         UnitsOnOrder: 10
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 7
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: True
@@ -58,11 +58,11 @@ DataQuery`1 {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 10
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -75,11 +75,11 @@ DataQuery`1 {
         UnitsInStock: 125
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 12
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -114,11 +114,11 @@ DataQuery`1 {
         UnitsInStock: 52
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 16
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -142,11 +142,11 @@ DataQuery`1 {
         UnitsInStock: 69
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 18
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -159,11 +159,11 @@ DataQuery`1 {
         UnitsInStock: 17
         UnitsOnOrder: 10
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 20
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -176,11 +176,11 @@ DataQuery`1 {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 1
       SupplierID: 23
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -193,11 +193,11 @@ DataQuery`1 {
         UnitsInStock: 13
         UnitsOnOrder: 70
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 1
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -243,11 +243,11 @@ DataQuery`1 {
         UnitsInStock: 4
         UnitsOnOrder: 100
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 2
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -271,11 +271,11 @@ DataQuery`1 {
         UnitsInStock: 6
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 3
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -288,11 +288,11 @@ DataQuery`1 {
         UnitsInStock: 39
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 6
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -305,11 +305,11 @@ DataQuery`1 {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 7
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -322,11 +322,11 @@ DataQuery`1 {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 12
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -339,11 +339,11 @@ DataQuery`1 {
         UnitsInStock: 27
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 20
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -356,11 +356,11 @@ DataQuery`1 {
         UnitsInStock: 113
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 2
       SupplierID: 29
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -373,11 +373,11 @@ DataQuery`1 {
         UnitsInStock: 29
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 3
       SupplierID: 7
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -423,11 +423,11 @@ DataQuery`1 {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 3
       SupplierID: 8
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -462,11 +462,11 @@ DataQuery`1 {
         UnitsInStock: 49
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 3
       SupplierID: 11
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -490,11 +490,11 @@ DataQuery`1 {
         UnitsInStock: 15
         UnitsOnOrder: 70
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 3
       SupplierID: 22
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -518,11 +518,11 @@ DataQuery`1 {
         UnitsInStock: 65
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 3
       SupplierID: 23
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -535,11 +535,11 @@ DataQuery`1 {
         UnitsInStock: 17
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 3
       SupplierID: 29
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 4
         Discontinued: False
@@ -563,11 +563,11 @@ DataQuery`1 {
         UnitsInStock: 86
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 4
       SupplierID: 5
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 4
         Discontinued: False
@@ -602,11 +602,11 @@ DataQuery`1 {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 4
       SupplierID: 14
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 4
         Discontinued: False
@@ -641,11 +641,11 @@ DataQuery`1 {
         UnitsInStock: 26
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 4
       SupplierID: 15
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 4
         Discontinued: False
@@ -669,11 +669,11 @@ DataQuery`1 {
         UnitsInStock: 19
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 4
       SupplierID: 28
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 5
         Discontinued: False
@@ -697,11 +697,11 @@ DataQuery`1 {
         UnitsInStock: 61
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 5
       SupplierID: 9
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 5
         Discontinued: False
@@ -714,11 +714,11 @@ DataQuery`1 {
         UnitsInStock: 22
         UnitsOnOrder: 80
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 5
       SupplierID: 12
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 5
         Discontinued: True
@@ -731,11 +731,11 @@ DataQuery`1 {
         UnitsInStock: 26
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 5
       SupplierID: 20
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 5
         Discontinued: False
@@ -748,11 +748,11 @@ DataQuery`1 {
         UnitsInStock: 38
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 5
       SupplierID: 24
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 5
         Discontinued: False
@@ -776,11 +776,11 @@ DataQuery`1 {
         UnitsInStock: 36
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 5
       SupplierID: 26
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 6
         Discontinued: True
@@ -793,11 +793,11 @@ DataQuery`1 {
         UnitsInStock: 29
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 6
       SupplierID: 4
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 6
         Discontinued: True
@@ -810,11 +810,11 @@ DataQuery`1 {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 6
       SupplierID: 7
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 6
         Discontinued: True
@@ -827,11 +827,11 @@ DataQuery`1 {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 6
       SupplierID: 12
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 6
         Discontinued: True
@@ -844,11 +844,11 @@ DataQuery`1 {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 6
       SupplierID: 24
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 6
         Discontinued: False
@@ -872,11 +872,11 @@ DataQuery`1 {
         UnitsInStock: 115
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 6
       SupplierID: 25
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 7
         Discontinued: False
@@ -889,11 +889,11 @@ DataQuery`1 {
         UnitsInStock: 15
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 7
       SupplierID: 3
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 7
         Discontinued: False
@@ -906,11 +906,11 @@ DataQuery`1 {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 7
       SupplierID: 4
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 7
         Discontinued: False
@@ -923,11 +923,11 @@ DataQuery`1 {
         UnitsInStock: 35
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 7
       SupplierID: 6
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 7
         Discontinued: True
@@ -940,11 +940,11 @@ DataQuery`1 {
         UnitsInStock: 26
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 7
       SupplierID: 12
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 7
         Discontinued: False
@@ -957,11 +957,11 @@ DataQuery`1 {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 7
       SupplierID: 24
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -974,11 +974,11 @@ DataQuery`1 {
         UnitsInStock: 31
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 4
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -991,11 +991,11 @@ DataQuery`1 {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 6
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -1008,11 +1008,11 @@ DataQuery`1 {
         UnitsInStock: 42
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 7
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -1025,11 +1025,11 @@ DataQuery`1 {
         UnitsInStock: 10
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 13
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -1064,11 +1064,11 @@ DataQuery`1 {
         UnitsInStock: 101
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 17
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -1092,11 +1092,11 @@ DataQuery`1 {
         UnitsInStock: 85
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 19
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -1120,11 +1120,11 @@ DataQuery`1 {
         UnitsInStock: 95
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 21
-  <>f__AnonymousType2f`2
-    g: Group`2 {
+  AnonymousType2
+    g: AnonymousType2 {
       Product
         CategoryID: 8
         Discontinued: False
@@ -1137,7 +1137,7 @@ DataQuery`1 {
         UnitsInStock: 62
         UnitsOnOrder: 0
     }
-    Key: <>f__AnonymousType2e`2
+    Key: AnonymousType2
       CategoryID: 8
       SupplierID: 27
 }

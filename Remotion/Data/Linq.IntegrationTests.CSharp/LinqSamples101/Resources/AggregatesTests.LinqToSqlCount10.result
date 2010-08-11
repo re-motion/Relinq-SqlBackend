@@ -1,7 +1,7 @@
-DataQuery`1 {
-  <>f__AnonymousType13`2
+AnonymousType1 {
+  AnonymousType2
     Key: 1
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -14,9 +14,9 @@ DataQuery`1 {
         UnitsInStock: 17
         UnitsOnOrder: 0
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 2
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -29,9 +29,9 @@ DataQuery`1 {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 3
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -44,9 +44,9 @@ DataQuery`1 {
         UnitsInStock: 40
         UnitsOnOrder: 0
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 4
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 4
         Discontinued: False
@@ -59,9 +59,9 @@ DataQuery`1 {
         UnitsInStock: 79
         UnitsOnOrder: 0
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 5
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 5
         Discontinued: False
@@ -74,9 +74,9 @@ DataQuery`1 {
         UnitsInStock: 21
         UnitsOnOrder: 10
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 6
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 6
         Discontinued: True
@@ -89,9 +89,9 @@ DataQuery`1 {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 7
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 7
         Discontinued: False
@@ -104,9 +104,9 @@ DataQuery`1 {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-  <>f__AnonymousType13`2
+  AnonymousType2
     Key: 8
-    MostExpensiveProducts: <Convert>d__0`1 {
+    MostExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 8
         Discontinued: False

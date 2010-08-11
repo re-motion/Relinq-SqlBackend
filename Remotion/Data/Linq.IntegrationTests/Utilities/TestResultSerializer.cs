@@ -188,7 +188,19 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
 
     private void WriteTypeName (object value)
     {
-      _textWriter.Write (value.GetType ().Name);
+      _textWriter.Write (IsAnonymousType (value) ? MakeAnonym (value) : value.GetType().Name);
+    }
+
+    //WORKAROUND: May not working with all compiler version
+    private bool IsAnonymousType(object value)
+    {
+      return value.GetType().Name.Contains ("`");
+    }
+
+    private string MakeAnonym(object value)
+    {
+      int index = value.GetType().Name.IndexOf ("`");
+      return "AnonymousType" + value.GetType().Name.Substring (index + 1);
     }
 
     private TestResultSerializer CreateIndentedSerializer ()

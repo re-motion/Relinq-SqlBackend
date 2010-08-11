@@ -1,17 +1,17 @@
-DataQuery`1 {
-  <>f__AnonymousType2d`2
+AnonymousType1 {
+  AnonymousType2
     Key: 1
     ProductCount: 12
-  <>f__AnonymousType2d`2
+  AnonymousType2
     Key: 2
     ProductCount: 12
-  <>f__AnonymousType2d`2
+  AnonymousType2
     Key: 3
     ProductCount: 13
-  <>f__AnonymousType2d`2
+  AnonymousType2
     Key: 4
     ProductCount: 10
-  <>f__AnonymousType2d`2
+  AnonymousType2
     Key: 8
     ProductCount: 12
 }

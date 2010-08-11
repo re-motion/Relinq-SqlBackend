@@ -1,6 +1,6 @@
-DataQuery`1 {
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+AnonymousType1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 1
         Discontinued: False
@@ -25,8 +25,8 @@ DataQuery`1 {
         UnitsOnOrder: 10
     }
     Key: 1
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 2
         Discontinued: False
@@ -73,8 +73,8 @@ DataQuery`1 {
         UnitsOnOrder: 0
     }
     Key: 2
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 3
         Discontinued: False
@@ -121,8 +121,8 @@ DataQuery`1 {
         UnitsOnOrder: 0
     }
     Key: 3
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 4
         Discontinued: False
@@ -191,8 +191,8 @@ DataQuery`1 {
         UnitsOnOrder: 0
     }
     Key: 4
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 5
         Discontinued: False
@@ -228,8 +228,8 @@ DataQuery`1 {
         UnitsOnOrder: 80
     }
     Key: 5
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 6
         Discontinued: True
@@ -254,8 +254,8 @@ DataQuery`1 {
         UnitsOnOrder: 0
     }
     Key: 6
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 7
         Discontinued: True
@@ -280,8 +280,8 @@ DataQuery`1 {
         UnitsOnOrder: 0
     }
     Key: 7
-  <>f__AnonymousType14`2
-    ExpensiveProducts: <Convert>d__0`1 {
+  AnonymousType2
+    ExpensiveProducts: AnonymousType1 {
       Product
         CategoryID: 8
         Discontinued: False

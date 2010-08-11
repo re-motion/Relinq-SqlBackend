@@ -1,4 +1,4 @@
-DataQuery`1 {
+AnonymousType1 {
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 7

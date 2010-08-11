@@ -1,0 +1,275 @@
+AnonymousType1 {
+  AnonymousType2
+    CompanyName: 'Alfreds Futterkiste'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Ana Trujillo Emparedados y helados'
+    Country: 'Mexico'
+  AnonymousType2
+    CompanyName: 'Antonio Moreno Taquería'
+    Country: 'Mexico'
+  AnonymousType2
+    CompanyName: 'Around the Horn'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Berglunds snabbköp'
+    Country: 'Sweden'
+  AnonymousType2
+    CompanyName: 'Blauer See Delikatessen'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Blondesddsl père et fils'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Bólido Comidas preparadas'
+    Country: 'Spain'
+  AnonymousType2
+    CompanyName: 'Bon app'''
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Bottom-Dollar Markets'
+    Country: 'Canada'
+  AnonymousType2
+    CompanyName: 'B''s Beverages'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Cactus Comidas para llevar'
+    Country: 'Argentina'
+  AnonymousType2
+    CompanyName: 'Centro comercial Moctezuma'
+    Country: 'Mexico'
+  AnonymousType2
+    CompanyName: 'Chop-suey Chinese'
+    Country: 'Switzerland'
+  AnonymousType2
+    CompanyName: 'Comércio Mineiro'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'Consolidated Holdings'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Drachenblut Delikatessen'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Du monde entier'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Eastern Connection'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Ernst Handel'
+    Country: 'Austria'
+  AnonymousType2
+    CompanyName: 'Familia Arquibaldo'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'FISSA Fabrica Inter. Salchichas S.A.'
+    Country: 'Spain'
+  AnonymousType2
+    CompanyName: 'Folies gourmandes'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Folk och fä HB'
+    Country: 'Sweden'
+  AnonymousType2
+    CompanyName: 'Frankenversand'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'France restauration'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Franchi S.p.A.'
+    Country: 'Italy'
+  AnonymousType2
+    CompanyName: 'Furia Bacalhau e Frutos do Mar'
+    Country: 'Portugal'
+  AnonymousType2
+    CompanyName: 'Galería del gastrónomo'
+    Country: 'Spain'
+  AnonymousType2
+    CompanyName: 'Godos Cocina Típica'
+    Country: 'Spain'
+  AnonymousType2
+    CompanyName: 'Gourmet Lanchonetes'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'Great Lakes Food Market'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'GROSELLA-Restaurante'
+    Country: 'Venezuela'
+  AnonymousType2
+    CompanyName: 'Hanari Carnes'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'HILARION-Abastos'
+    Country: 'Venezuela'
+  AnonymousType2
+    CompanyName: 'Hungry Coyote Import Store'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Hungry Owl All-Night Grocers'
+    Country: 'Ireland'
+  AnonymousType2
+    CompanyName: 'Island Trading'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Königlich Essen'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'La corne d''abondance'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'La maison d''Asie'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Laughing Bacchus Wine Cellars'
+    Country: 'Canada'
+  AnonymousType2
+    CompanyName: 'Lazy K Kountry Store'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Lehmanns Marktstand'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Let''s Stop N Shop'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'LILA-Supermercado'
+    Country: 'Venezuela'
+  AnonymousType2
+    CompanyName: 'LINO-Delicateses'
+    Country: 'Venezuela'
+  AnonymousType2
+    CompanyName: 'Lonesome Pine Restaurant'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Magazzini Alimentari Riuniti'
+    Country: 'Italy'
+  AnonymousType2
+    CompanyName: 'Maison Dewey'
+    Country: 'Belgium'
+  AnonymousType2
+    CompanyName: 'Mère Paillarde'
+    Country: 'Canada'
+  AnonymousType2
+    CompanyName: 'Morgenstern Gesundkost'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'North/South'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Océano Atlántico Ltda.'
+    Country: 'Argentina'
+  AnonymousType2
+    CompanyName: 'Old World Delicatessen'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Ottilies Käseladen'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Paris spécialités'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Pericles Comidas clásicas'
+    Country: 'Mexico'
+  AnonymousType2
+    CompanyName: 'Piccolo und mehr'
+    Country: 'Austria'
+  AnonymousType2
+    CompanyName: 'Princesa Isabel Vinhos'
+    Country: 'Portugal'
+  AnonymousType2
+    CompanyName: 'Que Delícia'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'Queen Cozinha'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'QUICK-Stop'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Rancho grande'
+    Country: 'Argentina'
+  AnonymousType2
+    CompanyName: 'Rattlesnake Canyon Grocery'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Reggiani Caseifici'
+    Country: 'Italy'
+  AnonymousType2
+    CompanyName: 'Ricardo Adocicados'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'Richter Supermarkt'
+    Country: 'Switzerland'
+  AnonymousType2
+    CompanyName: 'Romero y tomillo'
+    Country: 'Spain'
+  AnonymousType2
+    CompanyName: 'Santé Gourmet'
+    Country: 'Norway'
+  AnonymousType2
+    CompanyName: 'Save-a-lot Markets'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Seven Seas Imports'
+    Country: 'UK'
+  AnonymousType2
+    CompanyName: 'Simons bistro'
+    Country: 'Denmark'
+  AnonymousType2
+    CompanyName: 'Spécialités du monde'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Split Rail Beer & Ale'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Suprêmes délices'
+    Country: 'Belgium'
+  AnonymousType2
+    CompanyName: 'The Big Cheese'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'The Cracker Box'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Toms Spezialitäten'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Tortuga Restaurante'
+    Country: 'Mexico'
+  AnonymousType2
+    CompanyName: 'Tradição Hipermercados'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'Trail''s Head Gourmet Provisioners'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Vaffeljernet'
+    Country: 'Denmark'
+  AnonymousType2
+    CompanyName: 'Victuailles en stock'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Vins et alcools Chevalier'
+    Country: 'France'
+  AnonymousType2
+    CompanyName: 'Die Wandernde Kuh'
+    Country: 'Germany'
+  AnonymousType2
+    CompanyName: 'Wartian Herkku'
+    Country: 'Finland'
+  AnonymousType2
+    CompanyName: 'Wellington Importadora'
+    Country: 'Brazil'
+  AnonymousType2
+    CompanyName: 'White Clover Markets'
+    Country: 'USA'
+  AnonymousType2
+    CompanyName: 'Wilman Kala'
+    Country: 'Finland'
+  AnonymousType2
+    CompanyName: 'Wolski  Zajazd'
+    Country: 'Poland'
+}
