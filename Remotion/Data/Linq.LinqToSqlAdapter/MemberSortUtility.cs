@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
   public static class MemberSortUtility
   {

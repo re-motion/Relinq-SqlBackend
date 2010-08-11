@@ -21,18 +21,17 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
-using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
-  public class RelinqQueryExecutorTest
+  public class QueryExecutorTest
   {
     private MainFromClause _mainFromClause;
     private SelectClause _selectClause;
@@ -74,7 +73,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 
       object fakeResult = 10;
 
-      var retrieverMock = RelinqQueryExecutorTest.GetRetrieverMockStrictScalar (fakeResult);
+      var retrieverMock = QueryExecutorTest.GetRetrieverMockStrictScalar (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, resolverStub);
       var result = executor.ExecuteScalar<object> (queryModel);
@@ -88,7 +87,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     {
       var fakeResult = new[] { new Customer () };
 
-      var retrieverMock = RelinqQueryExecutorTest.GetRetrieverMockStrict (fakeResult);
+      var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
       var result = executor.ExecuteSingle<Customer> (_queryModel, true);
@@ -102,7 +101,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     {
       Customer[] fakeResult = new Customer[0];
 
-      var retrieverMock = RelinqQueryExecutorTest.GetRetrieverMockStrict (fakeResult);
+      var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
       var result = executor.ExecuteSingle<Customer> (_queryModel, true);
@@ -117,7 +116,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     {
       Customer[] fakeResult = new Customer[0];
 
-      var retrieverMock = RelinqQueryExecutorTest.GetRetrieverMockStrict (fakeResult);
+      var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
       executor.ExecuteSingle<Customer> (_queryModel, false);
@@ -129,7 +128,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     {
       Customer[] fakeResult = new[] {new Customer(),new Customer()};
 
-      var retrieverMock = RelinqQueryExecutorTest.GetRetrieverMockStrict (fakeResult);
+      var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
       executor.ExecuteSingle<Customer> (_queryModel, false);
@@ -140,7 +139,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     {
       var fakeResult = new[] { new Customer(), new Customer() };
 
-      var retrieverMock = RelinqQueryExecutorTest.GetRetrieverMockStrict (fakeResult);
+      var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
       var result = executor.ExecuteCollection<Customer> (_queryModel);

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
   public class RowWrapper: IDatabaseResultRow
   {

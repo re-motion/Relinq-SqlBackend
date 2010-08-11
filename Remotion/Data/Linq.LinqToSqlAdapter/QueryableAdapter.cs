@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Linq.Expressions;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
   public class QueryableAdapter<T> : QueryableBase<T>
   {

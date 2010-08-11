@@ -5,14 +5,13 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
   public class QueryResultRetrieverTest

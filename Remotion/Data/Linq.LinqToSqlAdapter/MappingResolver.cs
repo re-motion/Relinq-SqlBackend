@@ -25,7 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
   public class MappingResolver : IMappingResolver, IReverseMappingResolver
   {

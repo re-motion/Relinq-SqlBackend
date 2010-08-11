@@ -21,18 +21,18 @@ using System.Data.Linq.Mapping;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
-using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using ExpressionTreeComparer = Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities.ExpressionTreeComparer;
 
-namespace Remotion.Data.Linq.IntegrationTests.UnitTests
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
-  public class MappingResolverTests
+  public class MappingResolverTest
   {
     private UniqueIdentifierGenerator _generator;
     private IMappingResolver _mappingResolver;
@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void SetUp()
     {
       _generator=new UniqueIdentifierGenerator();
-      _mappingResolver = new MappingResolver (new AttributeMappingSource ().GetModel (typeof (Northwind)));
+      _mappingResolver = new MappingResolver (new AttributeMappingSource ().GetModel (typeof (DataContextTestClass)));
       _reverseMappingResolver = (IReverseMappingResolver) _mappingResolver;
     }
 
@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     {
       MappingSource mappingSource = new AttributeMappingSource();
 
-      var table = mappingSource.GetModel (typeof (Northwind)).GetTable (typeof (Customer));
+      var table = mappingSource.GetModel (typeof (DataContextTestClass)).GetTable (typeof (DataContextTestClass.Customer));
       Assert.AreEqual ("dbo.Customers",table.TableName);
 
       string companyName = "CompanyName";
@@ -73,11 +73,11 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void TestResolveTableInfo()
     {
-      UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof(Customer));
+      UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof(DataContextTestClass.Customer));
       
       ResolvedSimpleTableInfo resolvedTableInfo = (ResolvedSimpleTableInfo) _mappingResolver.ResolveTableInfo (unresolvedTableInfo, _generator);
 
-      ResolvedSimpleTableInfo simpleTableInfo=new ResolvedSimpleTableInfo (typeof(Customer),"dbo.Customers","t0");
+      ResolvedSimpleTableInfo simpleTableInfo=new ResolvedSimpleTableInfo (typeof(DataContextTestClass.Customer),"Customers","t0");
       
       Assert.AreEqual (simpleTableInfo.ItemType, resolvedTableInfo.ItemType);
       Assert.AreEqual (simpleTableInfo.TableAlias, resolvedTableInfo.TableAlias);
@@ -87,13 +87,13 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void TestResolveSimpleTableInfo()
     {
-      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Region), "dbo.Region", "t0");
+      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Region), "dbo.Region", "t0");
 
       SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression(typeof(int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression descriptionColumn = new SqlColumnDefinitionExpression (
           typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
       SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression (
-          typeof (EntitySet<Territory>), simpleTableInfo.TableAlias, "Region_Territory", false);
+          typeof (EntitySet<DataContextTestClass.Territory>), simpleTableInfo.TableAlias, "Region_Territory", false);
 
       SqlEntityDefinitionExpression expectedExpr = new SqlEntityDefinitionExpression (
           simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, primaryColumn, descriptionColumn, territoriesColumn);
@@ -106,8 +106,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void TestResolveJoinInfo ()
     {
-      ResolvedSimpleTableInfo orderTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "dbo.Order", "t0");
-      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (Customer), "dbo.Customers", "t1");
+      ResolvedSimpleTableInfo orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t0");
+      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
 
       SqlColumnDefinitionExpression customerPrimaryKey = new SqlColumnDefinitionExpression (
           typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
@@ -132,8 +132,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void TestResolveJoinInfoReverse ()
     {
-      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (Customer), "dbo.Customers", "t0");
-      ResolvedSimpleTableInfo orderTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "dbo.Order", "t1");
+      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t0");
+      ResolvedSimpleTableInfo orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
 
       SqlColumnDefinitionExpression customerPrimaryKey = new SqlColumnDefinitionExpression (
           typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
@@ -161,7 +161,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void TestReverseMapping ()
     {
-      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Region), "dbo.Region", "t0");
+      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Region), "dbo.Region", "t0");
 
       SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
       MetaDataMember[] metaDataMembers = _reverseMappingResolver.GetMetaDataMembers (simpleTableInfo.ItemType);
@@ -176,9 +176,9 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void  ResolveMemberExpression()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Person), "p", null, primaryKeyColumn);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, primaryKeyColumn);
 
-      var memberInfo = typeof (Person).GetProperty ("First");
+      var memberInfo = typeof (PersonTestClass).GetProperty ("First");
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
@@ -190,7 +190,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void ResolveMemberExpressionUsingNorthwindEntitiesPrimaryKey ()
     {
       //Test object
-      Type type = typeof (Customer);
+      Type type = typeof (DataContextTestClass.Customer);
       string columnName = "CustomerID";
       bool isPrimaryKey = true;
 
@@ -210,7 +210,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void ResolveMemberExpressionUsingNorthwindEntitiesNonPrimaryKey ()
     {
       //Test object
-      Type type = typeof (Customer);
+      Type type = typeof (DataContextTestClass.Customer);
       string columnName = "CompanyName";
       bool isPrimaryKey = false;
 
@@ -230,11 +230,11 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void ResolveMemberExpressionUsingNorthwindEntitiesAssociated ()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
-      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (Customer), "c", null, primaryKeyColumn);
+      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
 
-      var sqlEntityExpression = new SqlEntityReferenceExpression (typeof (Order), "o", null, referencedSqlExpression);
+      var sqlEntityExpression = new SqlEntityReferenceExpression (typeof (DataContextTestClass.Order), "o", null, referencedSqlExpression);
 
-      var memberInfo = typeof (Order).GetProperty ("Customer");
+      var memberInfo = typeof (DataContextTestClass.Order).GetProperty ("Customer");
       var result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlEntityRefMemberExpression (sqlEntityExpression, memberInfo);
@@ -250,7 +250,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
 
-      var memberInfo = typeof (Customer).GetProperty ("CustomerID");
+      var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
       var result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo);
 
       var expectedExpression = columnExpression;
@@ -263,10 +263,10 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void ResolveMemberExpressionGivingSqlColumnReferenceExpression ()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "s", "CustomerID", true);
-      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (Customer), "c", null, primaryKeyColumn);
+      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
       var columnRefExpression = new SqlColumnReferenceExpression (typeof (string), "c", "CustomerID", true, referencedSqlExpression);
 
-      var memberInfo = typeof (Customer).GetProperty ("CustomerID");
+      var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
       var result = _mappingResolver.ResolveMemberExpression (columnRefExpression, memberInfo);
 
       var expectedExpression = columnRefExpression;
@@ -277,8 +277,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [Test]
     public void ResolveConstantExpression ()
     {
-      var metamodel = new AttributeMappingSource ().GetModel (typeof (Northwind));
-      var table = metamodel.GetTable (typeof (Customer));
+      var metamodel = new AttributeMappingSource ().GetModel (typeof (DataContextTestClass));
+      var table = metamodel.GetTable (typeof (DataContextTestClass.Customer));
       var dataMembers = table.RowType.DataMembers;
       var primaryKeys = new List<MetaDataMember>();
 
@@ -290,12 +290,12 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
         }
       }
 
-      var customer = new Customer();
+      var customer = new DataContextTestClass.Customer();
       var constantExpr = Expression.Constant (customer);
       
       var result = _mappingResolver.ResolveConstantExpression (constantExpr);
 
-      var expectedExpr = new SqlEntityConstantExpression (typeof (Customer), customer, primaryKeys[0]);
+      var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, primaryKeys[0]);
 
       Assert.AreEqual (result.NodeType, expectedExpr.NodeType);
       Assert.IsTrue (result is SqlEntityConstantExpression);
@@ -322,9 +322,9 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     [ExpectedException (typeof (NotImplementedException))]
     public void ResolveTypeCheck ()
     {
-      var expression = Expression.Constant (new Customer());
+      var expression = Expression.Constant (new DataContextTestClass.Customer());
 
-      var result = _mappingResolver.ResolveTypeCheck (expression, typeof (Customer));
+      var result = _mappingResolver.ResolveTypeCheck (expression, typeof (DataContextTestClass.Customer));
 
       //Assert.IsTrue((bool)((ConstantExpression) result).Value);
     }

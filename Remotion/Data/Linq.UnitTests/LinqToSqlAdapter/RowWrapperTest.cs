@@ -8,14 +8,16 @@ using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
   [TestFixture]
-  public class RowWrapperTest
+  public class RowWrapperTests
   {
     private IDataReader _readerMock;
     private IReverseMappingResolver _reverseMappingResolverMock;
@@ -58,10 +60,10 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
           .Expect (mock => mock.GetValue (2))
           .Return (21);
       _reverseMappingResolverMock
-          .Expect (mock => mock.GetMetaDataMembers (typeof (Person)))
-          .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (Person)).RowType.DataMembers));
+          .Expect (mock => mock.GetMetaDataMembers (typeof (PersonTestClass)))
+          .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers));
 
-      ColumnID[] columnIDs = new ColumnID[]
+      ColumnID[] columnIDs = new[]
                              {
                                  new ColumnID ("FirstName", 1),
                                  new ColumnID ("Age", 2)
@@ -69,10 +71,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
 
-      var instance = rowWrapper.GetEntity<Person> (columnIDs);
-      Assert.AreEqual (
-          instance,
-          new Person ("Peter", 21));
+      var instance = rowWrapper.GetEntity<PersonTestClass> (columnIDs);
+      Assert.AreEqual (instance, new PersonTestClass ("Peter", 21));
     }
 
     [TearDown]
@@ -81,49 +81,4 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       _readerMock.VerifyAllExpectations();
     }
   }
-
-  [Table (Name = "Person")]
-  class Person
-  {
-    public Person ()
-    {
-    }
-
-    public Person (string first, int age)
-    {
-      First = first;
-      Age = age;
-      //this.p_3 = p_3;
-      //this.p_4 = p_4;
-    }
-
-    [Column (Name = "First")]
-    public string First { get; set; }
-
-    [Column (Name = "Age")]
-    public int Age { get; set; }
-
-    public override bool Equals (object obj)
-    {
-      if (obj == null || GetType () != obj.GetType ())
-      {
-        return false;
-      }
-
-      if (!((Person) obj).First.Equals (First))
-        return false;
-      if (!((Person) obj).Age.Equals (Age))
-        return false;
-      return true;
-    }
-
-    // override object.GetHashCode
-    public override int GetHashCode ()
-    {
-      // TODO: write your implementation of GetHashCode() here
-      throw new NotImplementedException ();
-      return base.GetHashCode ();
-    }
-  }
-
 }

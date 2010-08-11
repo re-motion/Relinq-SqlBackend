@@ -66,10 +66,11 @@
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
-    <Compile Include="UnitTests\MappingResolverTests.cs" />
+    <Compile Include="UnitTests\MappingResolverTest.cs" />
+    <Compile Include="UnitTests\PersonTestClass.cs" />
     <Compile Include="UnitTests\RowWrapperTests.cs" />
     <Compile Include="UnitTests\Utilities\QueryResultRetrieverTest.cs" />
-    <Compile Include="UnitTests\Utilities\RelinqQueryExecutorTest.cs" />
+    <Compile Include="UnitTests\Utilities\QueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
     <Compile Include="Utilities\ExpressionTreeComparer.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />

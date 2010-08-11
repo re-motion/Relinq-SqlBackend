@@ -16,7 +16,7 @@
 // 
 using System.Data;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
   public interface IConnectionManager
   {

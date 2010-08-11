@@ -3,7 +3,7 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
-using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {

@@ -1,14 +1,11 @@
 ﻿// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-using System;
 using System.Data;
 using System.Data.Linq.Mapping;
-using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
-using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
@@ -59,8 +56,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
           .Expect (mock => mock.GetValue (2))
           .Return (21);
       _reverseMappingResolverMock
-          .Expect (mock => mock.GetMetaDataMembers (typeof (Person)))
-          .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (Person)).RowType.DataMembers));
+          .Expect (mock => mock.GetMetaDataMembers (typeof (PersonTestClass)))
+          .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers));
 
       ColumnID[] columnIDs = new[]
                              {
@@ -70,10 +67,10 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
 
-      var instance = rowWrapper.GetEntity<Person> (columnIDs);
+      var instance = rowWrapper.GetEntity<PersonTestClass> (columnIDs);
       Assert.AreEqual (
           instance,
-          new Person ("Peter", 21));
+          new PersonTestClass ("Peter", 21));
     }
 
     [TearDown]
@@ -82,44 +79,4 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       _readerMock.VerifyAllExpectations();
     }
   }
-
-  [Table (Name = "Person")]
-  class Person
-  {
-    public Person ()
-    {
-    }
-
-    public Person (string first, int age)
-    {
-      First = first;
-      Age = age;
-    }
-
-    [Column (Name = "FirstName", IsPrimaryKey = true)]
-    public string First { get; set; }
-
-    [Column (Name = "Age")]
-    public int Age { get; set; }
-
-    public override bool Equals (object obj)
-    {
-      if (obj == null || GetType () != obj.GetType ())
-      {
-        return false;
-      }
-
-      if (!((Person) obj).First.Equals (First))
-        return false;
-      if (!((Person) obj).Age.Equals (Age))
-        return false;
-      return true;
-    }
-
-    public override int GetHashCode ()
-    {
-      throw new NotImplementedException ();
-    }
-  }
-
 }
