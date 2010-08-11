@@ -16,6 +16,8 @@
 // 
 using System.IO;
 using System.Reflection;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
@@ -33,6 +35,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
 
       var result = TestResultChecker.Check (referenceResult, actualResult);
       // TODO: Assert??
+      Assert.That (result.IsEqual, Is.EqualTo (true));
     }
 
     private string GetActualResult (object queryResult)

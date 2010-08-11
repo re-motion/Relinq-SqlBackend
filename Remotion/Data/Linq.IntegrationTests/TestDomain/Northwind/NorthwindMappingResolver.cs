@@ -45,7 +45,10 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
       MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
 
-      return new ResolvedSimpleTableInfo (tableInfo.ItemType, table.TableName, generator.GetUniqueIdentifier ("t"));
+      // TODO: check for db-schema
+      var tableName = table.TableName.StartsWith ("dbo.") ? table.TableName.Substring (4) : table.TableName;
+
+      return new ResolvedSimpleTableInfo (tableInfo.ItemType, tableName, generator.GetUniqueIdentifier ("t"));
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
