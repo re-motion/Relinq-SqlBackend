@@ -24,12 +24,12 @@ using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class EqualMethodCallTransformerTest
+  public class EqualsMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (EqualMethodCallTransformer.SupportedMethodNames.Contains ("Equals"));
+      Assert.IsTrue (EqualsMethodCallTransformer.SupportedMethodNames.Contains ("Equals"));
     }
 
     [Test]
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var parameter = Expression.Constant(new object());
       var expression = Expression.Call (argument, method, parameter);
 
-      var transformer = new EqualMethodCallTransformer ();
+      var transformer = new EqualsMethodCallTransformer ();
       var result = transformer.Transform (expression);
 
       var expectedResult = Expression.Equal (argument, parameter);
@@ -56,12 +56,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var parameter2 = Expression.Constant (new object ());
       var expression = Expression.Call (method, parameter1, parameter2);
 
-      var transformer = new EqualMethodCallTransformer ();
+      var transformer = new EqualsMethodCallTransformer ();
       var result = transformer.Transform (expression);
 
       var expectedResult = Expression.Equal (parameter1, parameter2);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ToString function with 0 arguments is not supported.")]
+    public void Transform_WrongNumberOfArguments ()
+    {
+      var method = typeof (object).GetMethod ("ToString", new Type[0]);
+      var expression = Expression.Call (Expression.Constant("test"), method);
+
+      var transformer = new EqualsMethodCallTransformer ();
+      transformer.Transform (expression);
     }
   }
 }
