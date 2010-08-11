@@ -418,6 +418,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
+      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
     }
 
@@ -446,7 +447,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
+      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
     }
 
     [Test]
@@ -467,7 +469,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
+      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (true), result);
     }
 
     [Test]
@@ -488,7 +491,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
+      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
     }
 
     [Test]
@@ -516,8 +520,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
+      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (true), result);
     }
+
+    // TODO Review 3031: Since you're using the same implementation for left and right side, you don't need to repeat all the tests; one or two should be enough
 
     [Test]
     [ExpectedException (typeof (NotSupportedException),

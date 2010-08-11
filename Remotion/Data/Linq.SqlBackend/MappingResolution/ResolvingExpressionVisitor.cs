@@ -120,9 +120,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       var newBinaryExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
 
+      // NewExpressions are compared by comparing them member-wise
       var leftExpressionAsNewExpression = newBinaryExpression.Left as NewExpression;
       var rightExpressionAsNewExpression = newBinaryExpression.Right as NewExpression;
 
+      // TODO Review 3031: The BinaryExpression might have a conversion lambda, null lifting, and MethodInfo associated with it. Those should not be removed by the following three calls. Write tests showing that these items are retained. (Take a look at the tests for ExpressionTreeVisitor to see how to construct such expressions.)
       if (leftExpressionAsNewExpression != null && rightExpressionAsNewExpression != null)
         return GetBinaryExpressionForNewExpressionComparison (expression.NodeType, leftExpressionAsNewExpression, rightExpressionAsNewExpression);
 
@@ -168,8 +170,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     }
 
     private Expression GetBinaryExpressionForNewExpressionComparison (
-        ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)
+        ExpressionType expressionType, 
+        NewExpression leftNewExpression, 
+        NewExpression rightNewExpression)
     {
+      // TODO Review 3031: Use Equals to compare ConstructorInfos
       if (leftNewExpression.Constructor != rightNewExpression.Constructor)
         throw new NotSupportedException ("The results of constructor invocations can only be compared if the same ctors are used.");
 
@@ -188,7 +193,9 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     }
 
     private Expression GetBinaryExpressionForMemberAccessComparison (
-        ExpressionType expressionType, NewExpression newExpression, Expression memberAccessExpression)
+        ExpressionType expressionType, 
+        NewExpression newExpression, 
+        Expression memberAccessExpression)
     {
       if (newExpression.Members == null || newExpression.Members.Count == 0)
       {
