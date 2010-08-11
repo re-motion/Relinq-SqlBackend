@@ -21,8 +21,11 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
+  // TODO Review 3081: Rename to EqualsMethodCallTransformer (incl. test)
   /// <summary>
-  /// <see cref="EqualMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the Equal method.
+  /// <see cref="EqualMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for different Equals methods. The transformer
+  /// is registered by name, not by method, so it will handle all methods named "Equals" unless a specific <see cref="MethodInfo"/>-based transformer
+  /// has been registered.
   /// </summary>
   public class EqualMethodCallTransformer : IMethodCallTransformer
   {
@@ -45,9 +48,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         return Expression.Equal (methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
       }
 
-      throw new NotSupportedException (
-            string.Format (
-                "{0} function with {1} arguments is not supported.", methodCallExpression.Method.Name, methodCallExpression.Arguments.Count));
+      // TODO Review 3081: Test missing for this error case
+      var message = string.Format (
+          "{0} function with {1} arguments is not supported.",
+          methodCallExpression.Method.Name,
+          methodCallExpression.Arguments.Count);
+      throw new NotSupportedException (message);
     }
   }
 }

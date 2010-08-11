@@ -317,11 +317,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void Equal ()
+    public void Equals ()
     {
+      // TODO Review 3081: Please also add an integration test for object.Equals (eg, by using c.Equals (c.Substituation)))
       CheckQuery (from c in Cooks where c.Name.Equals ("abc") select c.Name, 
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
         new CommandParameter("@1", "abc"));
+
+      // TODO Review 3081: Please also add an integration test for the static object.Equals and string.Equals methods
     }
+
+    // TODO Review 3081: Please also add an integration test for Equals in conjunction with null - should become IS NULL
   }
 }
