@@ -65,7 +65,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ToString function with 0 arguments is not supported.")]
+    [ExpectedException (typeof (NotSupportedException), 
+      ExpectedMessage = "ToString function with 0 arguments is not supported. Expression: \"test\".ToString()")]
     public void Transform_WrongNumberOfArguments ()
     {
       var method = typeof (object).GetMethod ("ToString", new Type[0]);

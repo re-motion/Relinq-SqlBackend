@@ -118,10 +118,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
-      
-      var selectProjectionAsSqlGroupingSelectExpression = ((NamedExpression)sqlStatement.SelectProjection).Expression as SqlGroupingSelectExpression;
-      if (selectProjectionAsSqlGroupingSelectExpression!=null && selectProjectionAsSqlGroupingSelectExpression.ElementExpression.Type == typeof (bool))
-        throw new NotSupportedException ("It is not currently supported to use boolean values as a query source, eg., in the from clause of a query.");
+
+      var selectProjectionAsSqlGroupingSelectExpression = ((NamedExpression) sqlStatement.SelectProjection).Expression as SqlGroupingSelectExpression;
+      if (selectProjectionAsSqlGroupingSelectExpression != null
+          && selectProjectionAsSqlGroupingSelectExpression.ElementExpression.Type == typeof (bool))
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. Expression: {0}",
+                FormattingExpressionTreeVisitor.Format (expression)));
+      }
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, _context, _generator);
       _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
@@ -137,7 +143,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
       _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
-      
+
       return expression;
     }
 
@@ -147,11 +153,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (groupJoinClause != null)
       {
         var fromExpressionInfo = AnalyzeFromExpression (
-            groupJoinClause.JoinClause.InnerSequence, 
-            Stage, 
-            _generator, 
-            Registry, 
-            _context, 
+            groupJoinClause.JoinClause.InnerSequence,
+            Stage,
+            _generator,
+            Registry,
+            _context,
             _tableGenerator);
 
         _context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);
@@ -169,7 +175,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             fromExpressionInfo.ItemSelector,
             whereCondition);
 
-        return new SqlTableReferenceExpression(fromExpressionInfo.SqlTable);
+        return new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
       }
 
       return base.VisitQuerySourceReferenceExpression (expression);

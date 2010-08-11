@@ -17,7 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
@@ -31,10 +31,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof(int)),
-           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof(int), typeof(int))
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof (int)),
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof (int), typeof (int))
         };
-    
+
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
 
       var startIndexExpression = Expression.Add (methodCallExpression.Arguments[0], new SqlLiteralExpression (1));
-      
+
       if (methodCallExpression.Arguments.Count == 1)
       {
         return new SqlFunctionExpression (
@@ -65,7 +65,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       else
       {
         throw new NotSupportedException (
-            string.Format ("Substring function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
+            string.Format (
+                "Substring function with {0} arguments is not supported. Expression: {1}",
+                methodCallExpression.Arguments.Count,
+                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
       }
     }
   }

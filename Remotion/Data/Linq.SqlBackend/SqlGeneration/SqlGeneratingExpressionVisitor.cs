@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      _commandBuilder.AppendSeparated (",", expression.Columns, (cb, column) => AppendColumnForEntity(expression, column));
+      _commandBuilder.AppendSeparated (",", expression.Columns, (cb, column) => AppendColumnForEntity (expression, column));
       return expression;
     }
 
@@ -279,7 +279,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         case ExpressionType.ConvertChecked:
           break;
         default:
-          throw new NotSupportedException();
+          throw new NotSupportedException(string.Format ("Expression: '{0}'", FormattingExpressionTreeVisitor.Format(expression)));
       }
 
       VisitExpression (expression.Operand);
@@ -328,7 +328,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.Expression);
-      
+
       return expression;
     }
 
@@ -336,13 +336,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.AggregationModifier == AggregationModifier.Count) {
+      if (expression.AggregationModifier == AggregationModifier.Count)
+      {
         _commandBuilder.Append ("COUNT(*)");
         return expression;
       }
 
       if (expression.AggregationModifier == AggregationModifier.Average)
-        _commandBuilder.Append("AVG");
+        _commandBuilder.Append ("AVG");
       else if (expression.AggregationModifier == AggregationModifier.Max)
         _commandBuilder.Append ("MAX");
       else if (expression.AggregationModifier == AggregationModifier.Min)
@@ -350,7 +351,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       else if (expression.AggregationModifier == AggregationModifier.Sum)
         _commandBuilder.Append ("SUM");
       else
-        throw new NotSupportedException (string.Format ("AggregationModifier '{0}' is not supported.", expression.AggregationModifier));
+      {
+        throw new NotSupportedException (
+            string.Format ("AggregationModifier '{0}' is not supported. Expression: '{1}'", expression.AggregationModifier, FormattingExpressionTreeVisitor.Format(expression)));
+      }
 
       _commandBuilder.Append ("(");
 

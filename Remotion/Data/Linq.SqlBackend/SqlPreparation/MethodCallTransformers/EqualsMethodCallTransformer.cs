@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -48,9 +49,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       }
 
       var message = string.Format (
-          "{0} function with {1} arguments is not supported.",
+          "{0} function with {1} arguments is not supported. Expression: {2}",
           methodCallExpression.Method.Name,
-          methodCallExpression.Arguments.Count);
+          methodCallExpression.Arguments.Count,
+          FormattingExpressionTreeVisitor.Format(methodCallExpression));
       throw new NotSupportedException (message);
     }
   }

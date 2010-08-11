@@ -184,7 +184,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot convert an expression of type 'System.String' to a boolean expression.")]
+        "Cannot convert an expression of type 'System.String' to a boolean expression. Expression: 'CustomExpression'")]
     public void VisitExpression_ThrowsOnNonConvertible_ToPredicate ()
     {
       var expression = new CustomExpression (typeof (string));

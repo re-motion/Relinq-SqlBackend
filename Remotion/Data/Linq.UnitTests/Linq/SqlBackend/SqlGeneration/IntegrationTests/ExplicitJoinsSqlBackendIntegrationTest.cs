@@ -230,7 +230,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression.")]
+        "The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression. Expression: [cooks]")]
     public void ExplicitJoinWithInto_PropagatedFromSubStatement ()
     {
       // To enable this test, see RM-3037

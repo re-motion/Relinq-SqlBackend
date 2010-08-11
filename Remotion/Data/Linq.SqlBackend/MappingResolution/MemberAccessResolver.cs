@@ -133,9 +133,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (typeof (IEnumerable).IsAssignableFrom (type) && type != typeof (string))
       {
         var message = string.Format (
-            "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed.",
+            "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed. Expression: '{2}'",
             _memberInfo.DeclaringType.Name,
-            _memberInfo.Name);
+            _memberInfo.Name,
+            FormattingExpressionTreeVisitor.Format(expression));
         throw new NotSupportedException (message);
       }
 

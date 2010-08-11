@@ -17,7 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -30,12 +30,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof(int)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof(int)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof(int), typeof(int)),
-          MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof(int), typeof(int))
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string)),
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char)),
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof (int)),
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof (int)),
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof (int), typeof (int)),
+            MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof (int), typeof (int))
         };
 
     public Expression Transform (MethodCallExpression methodCallExpression)
@@ -46,12 +46,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       if (methodCallExpression.Arguments.Count == 1)
       {
         var lenExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Arguments[0]);
-        var testPredicate = Expression.Equal (lenExpression, new SqlLiteralExpression(0));
+        var testPredicate = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
         var charIndexExpression = new SqlFunctionExpression (
             methodCallExpression.Type, "CHARINDEX", methodCallExpression.Arguments[0], methodCallExpression.Object);
-        var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression(1));
+        var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-        return Expression.Condition(testPredicate, new SqlLiteralExpression(0) , elseValue);
+        return Expression.Condition (testPredicate, new SqlLiteralExpression (0), elseValue);
       }
       else if (methodCallExpression.Arguments.Count == 2)
       {
@@ -63,13 +63,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Object);
         var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
         var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
-        
+
         var charIndexExpression = new SqlFunctionExpression (
             methodCallExpression.Type, "CHARINDEX", methodCallExpression.Arguments[0], methodCallExpression.Object, startIndexExpression);
-        
+
         var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-        return Expression.Condition(testPredicate, methodCallExpression.Arguments[1], elseValue);
+        return Expression.Condition (testPredicate, methodCallExpression.Arguments[1], elseValue);
       }
       else if (methodCallExpression.Arguments.Count == 3)
       {
@@ -83,17 +83,24 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
 
         var startAddCountExpression = Expression.Add (methodCallExpression.Arguments[1], methodCallExpression.Arguments[2]);
-        var substringExpression = new SqlFunctionExpression (typeof (string), "SUBSTRING", methodCallExpression.Object, new SqlLiteralExpression (1), startAddCountExpression);
-        
+        var substringExpression = new SqlFunctionExpression (
+            typeof (string), "SUBSTRING", methodCallExpression.Object, new SqlLiteralExpression (1), startAddCountExpression);
+
         var charIndexExpression = new SqlFunctionExpression (
             methodCallExpression.Type, "CHARINDEX", methodCallExpression.Arguments[0], substringExpression, startIndexExpression);
 
         var elseValue = Expression.Subtract (charIndexExpression, new SqlLiteralExpression (1));
 
-        return Expression.Condition(testPredicate, methodCallExpression.Arguments[1], elseValue);
+        return Expression.Condition (testPredicate, methodCallExpression.Arguments[1], elseValue);
       }
       else
-        throw new NotSupportedException (string.Format ("IndexOf function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "IndexOf function with {0} arguments is not supported. Expression: {1}",
+                methodCallExpression.Arguments.Count,
+                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
+      }
     }
   }
 }

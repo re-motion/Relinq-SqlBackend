@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The member 'Cook.Courses' describes a collection and can only be used in places where collections are allowed.")]
+        "The member 'Cook.Courses' describes a collection and can only be used in places where collections are allowed. Expression: '[c]'")]
     public void VisitMemberExpression_OnEntity_WithCollectionMember ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Courses");

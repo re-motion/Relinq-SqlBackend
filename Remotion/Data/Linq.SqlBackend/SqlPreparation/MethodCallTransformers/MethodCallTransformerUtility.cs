@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -74,14 +75,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       if (!methodCallExpression.Method.IsStatic)
       {
         throw new NotSupportedException (
-            string.Format ("{0} is not supported by this transformer.", methodCallExpression.Method.Name));
+            string.Format (
+                "{0} is not supported by this transformer. Expression: {1}",
+                methodCallExpression.Method.Name,
+                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
       }
     }
 
     public static void CheckInstanceMethod (MethodCallExpression methodCallExpression)
     {
       if (methodCallExpression.Method.IsStatic)
-        throw new NotSupportedException (string.Format ("{0} is not supported by this transformer.", methodCallExpression.Method.Name));
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "{0} is not supported by this transformer. Expression: {1}",
+                methodCallExpression.Method.Name,
+                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
+      }
     }
   }
 }

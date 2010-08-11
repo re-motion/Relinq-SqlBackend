@@ -79,7 +79,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), 
-      ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query.")]
+      ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. "
+       + "Expression: (SELECT GROUPING (KEY: TABLE-REF(UnresolvedTableInfo(Cook)).Name AS key, "
+       + "ELEMENT: TABLE-REF(UnresolvedTableInfo(Cook)).IsFullTimeCook AS element, AGGREGATIONS: ()) AS value "
+       + "FROM TABLE(Cook) GROUP BY TABLE-REF(UnresolvedTableInfo(Cook)).Name)")]
     public void AdditionalFromClause_WithBooleanItems ()
     {
       CheckQuery (

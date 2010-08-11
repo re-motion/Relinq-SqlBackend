@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -31,7 +32,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     public static readonly MethodInfo[] SupportedMethods = new[]
                                                            {
                                                                MethodCallTransformerUtility.GetStaticMethod (
-                                                                   typeof (StringExtensions), "SqlContainsFreetext", typeof (string), typeof (string)),
+                                                                   typeof (StringExtensions), "SqlContainsFreetext", typeof (string), typeof (string))
+                                                               ,
                                                                MethodCallTransformerUtility.GetStaticMethod (
                                                                    typeof (StringExtensions),
                                                                    "SqlContainsFreetext",
@@ -46,7 +48,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         return new SqlFunctionExpression (typeof (bool), "FREETEXT", methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
       else if (methodCallExpression.Arguments.Count == 3)
       {
-        MethodCallTransformerUtility.CheckConstantExpression (methodCallExpression.Method.Name, methodCallExpression.Arguments[2], "language parameter");
+        MethodCallTransformerUtility.CheckConstantExpression (
+            methodCallExpression.Method.Name, methodCallExpression.Arguments[2], "language parameter");
 
         var compositeExpression = new SqlCompositeCustomTextGeneratorExpression (
             typeof (string), new SqlCustomTextExpression ("LANGUAGE ", typeof (string)), methodCallExpression.Arguments[2]);
@@ -57,7 +60,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       else
       {
         throw new NotSupportedException (
-            string.Format ("IndexOf function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
+            string.Format (
+                "IndexOf function with {0} arguments is not supported. Expression: {1}",
+                methodCallExpression.Arguments.Count,
+                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
       }
     }
   }

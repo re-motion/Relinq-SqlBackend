@@ -116,8 +116,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed. Expression: '[t0]'")]
     public void Collection_ThrowsNotSupportedException ()
     {
       CheckQuery (
