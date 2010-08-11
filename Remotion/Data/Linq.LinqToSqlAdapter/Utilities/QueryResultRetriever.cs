@@ -1,16 +1,13 @@
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
+﻿// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
   public class QueryResultRetriever : IQueryResultRetriever
   {

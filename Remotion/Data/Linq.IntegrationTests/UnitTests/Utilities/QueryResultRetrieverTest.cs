@@ -2,11 +2,11 @@
 // All rights reserved.
 //
 using System;
-using System.Collections;
 using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;

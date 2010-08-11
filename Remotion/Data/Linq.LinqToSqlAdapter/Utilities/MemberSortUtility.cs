@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
-  internal static class MemberSortUtility
+  public static class MemberSortUtility
   {
-    internal static MetaDataMember[] SortDataMembers (ICollection<MetaDataMember> unsortedMembers)
+    public static MetaDataMember[] SortDataMembers (ICollection<MetaDataMember> unsortedMembers)
     {
       MetaDataMember[] sortedMembers = new MetaDataMember[unsortedMembers.Count];
       unsortedMembers.CopyTo (sortedMembers, 0);

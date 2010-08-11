@@ -21,16 +21,15 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.Utilities;
-using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
-  public class RelinqQueryExecutor:IQueryExecutor
+  public class QueryExecutor:IQueryExecutor
   {
     private readonly IQueryResultRetriever _resultRetriever;
     private readonly IMappingResolver _mappingResolver;
 
-    public RelinqQueryExecutor (IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver)
+    public QueryExecutor (IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver)
     {
       ArgumentUtility.CheckNotNull ("resultRetriever", resultRetriever);
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);

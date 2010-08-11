@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
@@ -93,8 +94,6 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     {
       First = first;
       Age = age;
-      //this.p_3 = p_3;
-      //this.p_4 = p_4;
     }
 
     [Column (Name = "FirstName", IsPrimaryKey = true)]

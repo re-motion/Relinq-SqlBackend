@@ -20,20 +20,19 @@ using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
-  public class NorthwindMappingResolver : IMappingResolver, IReverseMappingResolver
+  public class MappingResolver : IMappingResolver, IReverseMappingResolver
   {
     private readonly MetaModel _metaModel;
 
 
-    public NorthwindMappingResolver (MetaModel metaModel)
+    public MappingResolver (MetaModel metaModel)
     {
       _metaModel = metaModel;
     }

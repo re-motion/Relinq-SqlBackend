@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
-  class QueryableAdapter<T> : QueryableBase<T>
+  public class QueryableAdapter<T> : QueryableBase<T>
   {
     public QueryableAdapter (IQueryExecutor executor)
         : base(executor)
@@ -15,7 +14,5 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
         : base(provider, expression)
     {
     }
-
-
   }
 }

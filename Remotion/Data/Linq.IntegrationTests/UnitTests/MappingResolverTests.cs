@@ -23,6 +23,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -41,7 +42,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
     public void SetUp()
     {
       _generator=new UniqueIdentifierGenerator();
-      _mappingResolver = new NorthwindMappingResolver (new AttributeMappingSource ().GetModel (typeof (Northwind)));
+      _mappingResolver = new MappingResolver (new AttributeMappingSource ().GetModel (typeof (Northwind)));
       _reverseMappingResolver = (IReverseMappingResolver) _mappingResolver;
     }
 

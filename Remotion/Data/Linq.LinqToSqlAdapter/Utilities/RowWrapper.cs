@@ -4,9 +4,9 @@ using System.Diagnostics;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
-  class RowWrapper: IDatabaseResultRow
+  public class RowWrapper: IDatabaseResultRow
   {
     private readonly IDataReader _dataReader;
     private readonly IReverseMappingResolver _resolver;
@@ -21,6 +21,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     {
       return (T) _dataReader.GetValue (id.Position);
     }
+
 
     public T GetEntity<T> (ColumnID[] columnIDs)
     {

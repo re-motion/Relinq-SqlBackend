@@ -5,7 +5,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {

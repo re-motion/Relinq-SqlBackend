@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 {
   public interface IQueryResultRetriever
   {

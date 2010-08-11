@@ -65,21 +65,13 @@
     <Compile Include="UnitTests\NorthwindConnectionManagerTest.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
-    <Compile Include="TestDomain\Northwind\NorthwindMappingResolver.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
-    <Compile Include="TestDomain\Northwind\RowWrapper.cs" />
     <Compile Include="UnitTests\MappingResolverTests.cs" />
     <Compile Include="UnitTests\RowWrapperTests.cs" />
     <Compile Include="UnitTests\Utilities\QueryResultRetrieverTest.cs" />
     <Compile Include="UnitTests\Utilities\RelinqQueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
-    <Compile Include="Utilities\IConnectionManager.cs" />
     <Compile Include="Utilities\ExpressionTreeComparer.cs" />
-    <Compile Include="Utilities\IQueryResultRetriever.cs" />
-    <Compile Include="Utilities\MemberSortUtility.cs" />
-    <Compile Include="Utilities\QueryableAdapter.cs" />
-    <Compile Include="Utilities\QueryResultRetriever.cs" />
-    <Compile Include="Utilities\RelinqQueryExecutor.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
@@ -100,6 +92,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj">
+      <Project>{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}</Project>
+      <Name>Data.Linq.LinqToSqlAdapter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
       <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
       <Name>Data.Linq.SqlBackend</Name>

@@ -3,22 +3,23 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   public class RelinqNorthwindDataProvider : INorthwindDataProvider
   {
     private readonly IConnectionManager manager;
-    private readonly NorthwindMappingResolver resolver;
+    private readonly MappingResolver resolver;
     private readonly IQueryResultRetriever retriever;
     private readonly IQueryExecutor executor;
 
     public RelinqNorthwindDataProvider ()
     {
       manager = new NorthwindConnectionManager ();
-      resolver = new NorthwindMappingResolver (new AttributeMappingSource().GetModel (typeof (Northwind)));
+      resolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (Northwind)));
       retriever = new QueryResultRetriever (manager, resolver);
-      executor = new RelinqQueryExecutor (retriever, resolver);
+      executor = new QueryExecutor (retriever, resolver);
     }
 
     public IQueryable<Product> Products
