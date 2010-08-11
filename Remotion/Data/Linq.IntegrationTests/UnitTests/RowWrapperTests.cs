@@ -6,6 +6,7 @@ using System.Data.Linq.Mapping;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
