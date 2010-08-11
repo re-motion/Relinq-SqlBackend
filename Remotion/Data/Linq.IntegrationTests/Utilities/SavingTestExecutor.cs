@@ -36,11 +36,12 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     public void Execute (object queryResult, MethodBase executingMethod)
     {
       var resourceName = executingMethod.DeclaringType.Name + "." + executingMethod.Name + ".result";
-
+      // TODO: find a way to handle VB-resources correctly
+      if (executingMethod.DeclaringType.Module.Name.Contains ("VisualBasic"))
+        resourceName = "LinqSamples101.Resources." + resourceName;
+      
       if (!Directory.Exists (_directory))
-      {
         Directory.CreateDirectory (_directory);
-      }
 
       var fileName = Path.Combine (_directory, resourceName);
       using (var writer = File.CreateText(fileName))
