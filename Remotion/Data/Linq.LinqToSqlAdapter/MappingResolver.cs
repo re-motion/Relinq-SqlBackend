@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -190,7 +192,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
       ArgumentUtility.CheckNotNull ("entityType", entityType);
-      return MemberSortUtility.SortDataMembers (_metaModel.GetTable (entityType).RowType.DataMembers);
+
+      ReadOnlyCollection<MetaDataMember> dataMembers = _metaModel.GetTable (entityType).RowType.DataMembers;
+      var filteredMembers = dataMembers.Where (dataMember => !dataMember.IsAssociation);
+
+      return filteredMembers.ToArray ();
     }
 
     #region privateMethods

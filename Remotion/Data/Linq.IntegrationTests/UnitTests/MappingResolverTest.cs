@@ -92,11 +92,9 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression(typeof(int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression descriptionColumn = new SqlColumnDefinitionExpression (
           typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
-      SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression (
-          typeof (EntitySet<Territory>), simpleTableInfo.TableAlias, "Region_Territory", false);
 
       SqlEntityDefinitionExpression expectedExpr = new SqlEntityDefinitionExpression (
-          simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, primaryColumn, descriptionColumn, territoriesColumn);
+          simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, primaryColumn, primaryColumn, descriptionColumn);
 
       SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
 
@@ -169,7 +167,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       Assert.AreEqual (metaDataMembers[0].MappedName, resolvedExpr.PrimaryKeyColumn.ColumnName);
 
       for (int i = 1; i < metaDataMembers.Length; i++)
-        Assert.AreEqual (metaDataMembers[i].MappedName, resolvedExpr.Columns[i - 1].ColumnName);
+        Assert.AreEqual (metaDataMembers[i].MappedName, resolvedExpr.Columns[i].ColumnName);
     }
 
     [Test]

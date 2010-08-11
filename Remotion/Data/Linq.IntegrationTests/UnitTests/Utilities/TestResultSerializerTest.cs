@@ -232,7 +232,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 
       _serializer.Serialize (instance);
 
-      var expected = instance.GetType().Name + Environment.NewLine
+      var expected = "AnonymousType1" + Environment.NewLine
                     + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine
@@ -278,7 +278,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       TestResultSerializer serializer = new TestResultSerializer (_writer, memberInfo => !memberInfo.Name.Equals("PublicField2"));
 
       serializer.Serialize (instance);
-      var expected = instance.GetType ().Name + Environment.NewLine
+      var expected = "AnonymousType1" + Environment.NewLine
                     + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine

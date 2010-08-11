@@ -3,6 +3,7 @@
 //
 using System.Data;
 using System.Data.Linq.Mapping;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.LinqToSqlAdapter;
@@ -58,7 +59,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
           .Return (21);
       _reverseMappingResolverMock
           .Expect (mock => mock.GetMetaDataMembers (typeof (PersonTestClass)))
-          .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers));
+          .Return (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray());
 
       ColumnID[] columnIDs = new[]
                              {
