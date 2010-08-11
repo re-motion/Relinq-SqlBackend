@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
@@ -68,7 +69,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (
+          tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -90,7 +92,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (
+          tableReferenceExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -162,7 +165,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock.Replay();
 
       var result =
-          (SqlSubStatementExpression) ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+          (SqlSubStatementExpression)
+          ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result.SqlStatement, Is.EqualTo (expression.SqlStatement));
       _stageMock.VerifyAllExpectations();
@@ -184,7 +188,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolveSqlStatement (unresolvedSqlStatement, _mappingResolutionContext))
           .Return (simplifiableResolvedSqlStatement);
       _stageMock
-          .Expect (mock => mock.ResolveAggregationExpression(Arg<Expression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
+          .Expect (mock => mock.ResolveAggregationExpression (Arg<Expression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
           .Return (new SqlColumnDefinitionExpression (typeof (string), "q0", "element", false));
       _stageMock.Replay();
 
@@ -210,7 +214,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (sqlFunctionExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (
+          sqlFunctionExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
       Assert.That (((SqlFunctionExpression) result).Args[0], Is.SameAs (resolvedExpression));
@@ -231,7 +236,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Return (resolvedExpression);
       _resolverMock.Replay();
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (sqlConvertExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (
+          sqlConvertExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlConvertExpression)));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
@@ -267,7 +273,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var entityRefmemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (entityRefmemberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (
+          entityRefmemberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.SameAs (entityRefmemberExpression));
     }
@@ -277,7 +284,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlEntityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), "test", "key");
 
-      var result = ResolvingExpressionVisitor.ResolveExpression (sqlEntityConstantExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+      var result = ResolvingExpressionVisitor.ResolveExpression (
+          sqlEntityConstantExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.SameAs (sqlEntityConstantExpression));
     }
@@ -407,19 +415,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
       var leftExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
-      var expression = Expression.Equal (leftExpression, newConstantExpression);
+      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
+      var expression = Expression.Equal (leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
           .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(false), result);
+      var expectedResult = Expression.Equal (leftArgumentExpression, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("A")));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -434,21 +440,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new[] { leftArgumentExpression1, leftArgumentExpression2 },
           leftArgumentMemberInfo1,
           leftArgumentMemberInfo2);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0, 1));
-      var expression = Expression.Equal (leftExpression, newConstantExpression);
+      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
+      var expression = Expression.Equal (leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
           .Return (leftArgumentExpression1);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
           .Return (leftArgumentExpression2);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
+      var expectedResult =
+          Expression.AndAlso (
+              Expression.Equal (
+                  leftArgumentExpression1, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("A"))),
+              Expression.Equal (
+                  leftArgumentExpression2, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("B"))));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -458,19 +468,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetField ("C");
       var leftExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1));
-      var expression = Expression.Equal (leftExpression, newConstantExpression);
+      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
+      var expression = Expression.Equal (leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
           .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (true), result);
+      var expectedResult = Expression.Equal (
+          leftArgumentExpression, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetField ("C")));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -480,19 +489,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetMethod ("get_A");
       var leftExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
-      var expression = Expression.Equal (leftExpression, newConstantExpression);
+      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
+      var expression = Expression.Equal (leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
           .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
+      var expectedResult = Expression.Equal (
+          leftArgumentExpression, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A")));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -507,24 +515,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new[] { leftArgumentExpression1, leftArgumentExpression2 },
           leftArgumentMemberInfo1,
           leftArgumentMemberInfo2);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1, 2));
-      var expression = Expression.Equal (leftExpression, newConstantExpression);
+      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
+      var expression = Expression.Equal (leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
           .Return (leftArgumentExpression1);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
           .Return (leftArgumentExpression2);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      // TODO Review 3031: The partial evaluator was able to reduce the whole expression. Use a different expression for the right side of the Equal expression (eg. a CustomExpression) to avoid this.
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (true), result);
+      var expectedResult = Expression.AndAlso (
+          Expression.Equal (
+              leftArgumentExpression1, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A"))),
+          Expression.Equal (leftArgumentExpression2, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_B"))));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
-
-    // TODO Review 3031: Since you're using the same implementation for left and right side, you don't need to repeat all the tests; one or two should be enough
 
     [Test]
     [ExpectedException (typeof (NotSupportedException),
@@ -553,60 +560,41 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
       var rightExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { rightArgumentExpression }, rightArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1));
-      var expression = Expression.Equal (newConstantExpression, rightExpression);
+      var leftExpression = new CustomExpression (typeof (TypeForNewExpression));
+      var expression = Expression.Equal (leftExpression, rightExpression);
 
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
           .Return (rightArgumentExpression);
       _resolverMock.Replay();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
+      var expectedResult = Expression.Equal (rightArgumentExpression, Expression.MakeMemberAccess (leftExpression, typeof (TypeForNewExpression).GetProperty ("A")));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
-    public void VisitBinaryExpression_NewExpressionOnRightSideWithOneFieldInfoMember ()
+    public void VisitBinaryExpression_MethodIsRemoved ()
     {
-      var rightArgumentExpression = Expression.Constant (1);
-      var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetField ("C");
-      var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { rightArgumentExpression }, rightArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (1));
-      var expression = Expression.Equal (newConstantExpression, rightExpression);
+      MethodInfo method = ((Func<int?, int?, bool>) ((i1, i2) => i1 == i2)).Method;
+      var leftArgumentExpression = Expression.Constant (1, typeof (int));
+      var rightArgumentExpression = Expression.Constant (1, typeof (int));
+      var leftExpression = Expression.New (typeof (Nullable<>).MakeGenericType (typeof (int)).GetConstructors ()[0], leftArgumentExpression);
+      var rightExpression = Expression.New (typeof (Nullable<>).MakeGenericType (typeof (int)).GetConstructors ()[0], rightArgumentExpression);
+      BinaryExpression expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression, true, method);
 
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
+      Assert.That (expression.Method, Is.Not.Null);
+
+      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
+          .Return (leftArgumentExpression);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
           .Return (rightArgumentExpression);
-      _resolverMock.Replay();
+      _resolverMock.Replay ();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant(true), result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnRightSideWithOneMethodInfoMember ()
-    {
-      var rightArgumentExpression = Expression.Constant (1);
-      var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetMethod ("get_A");
-      var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { rightArgumentExpression }, rightArgumentMemberInfo);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
-      var expression = Expression.Equal (newConstantExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
-          .Return (rightArgumentExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (((BinaryExpression) result).Method, Is.Null);
     }
 
     private SqlStatement CreateSimplifiableResolvedSqlStatement ()

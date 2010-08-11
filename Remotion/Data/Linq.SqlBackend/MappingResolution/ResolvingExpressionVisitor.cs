@@ -75,7 +75,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       get { return _generator; }
     }
 
-    protected ResolvingExpressionVisitor (IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context, UniqueIdentifierGenerator generator)
+    protected ResolvingExpressionVisitor (
+        IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -124,9 +125,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var leftExpressionAsNewExpression = newBinaryExpression.Left as NewExpression;
       var rightExpressionAsNewExpression = newBinaryExpression.Right as NewExpression;
 
-      // TODO Review 3031: The BinaryExpression might have a conversion lambda, null lifting, and MethodInfo associated with it. Those should not be removed by the following three calls. Write tests showing that these items are retained. (Take a look at the tests for ExpressionTreeVisitor to see how to construct such expressions.)
       if (leftExpressionAsNewExpression != null && rightExpressionAsNewExpression != null)
-        return GetBinaryExpressionForNewExpressionComparison (expression.NodeType, leftExpressionAsNewExpression, rightExpressionAsNewExpression);
+      {
+        return GetBinaryExpressionForNewExpressionComparison (
+            expression.NodeType, leftExpressionAsNewExpression, rightExpressionAsNewExpression);
+      }
 
       if (leftExpressionAsNewExpression != null)
         return GetBinaryExpressionForMemberAccessComparison (expression.NodeType, leftExpressionAsNewExpression, newBinaryExpression.Right);
@@ -169,20 +172,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return base.VisitUnknownExpression (expression);
     }
 
-    private Expression GetBinaryExpressionForNewExpressionComparison (
-        ExpressionType expressionType, 
-        NewExpression leftNewExpression, 
-        NewExpression rightNewExpression)
+    private Expression GetBinaryExpressionForNewExpressionComparison (ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)
     {
-      // TODO Review 3031: Use Equals to compare ConstructorInfos
-      if (leftNewExpression.Constructor != rightNewExpression.Constructor)
+      if (!leftNewExpression.Constructor.Equals (rightNewExpression.Constructor))
         throw new NotSupportedException ("The results of constructor invocations can only be compared if the same ctors are used.");
 
       Expression binaryExpression = null;
       for (int i = 0; i < leftNewExpression.Arguments.Count; i++)
       {
-        var argumentComparisonExpression = Expression.MakeBinary (
-            expressionType, leftNewExpression.Arguments[i], rightNewExpression.Arguments[i]);
+        var argumentComparisonExpression = Expression.MakeBinary (expressionType, leftNewExpression.Arguments[i], rightNewExpression.Arguments[i]);
 
         if (binaryExpression == null)
           binaryExpression = argumentComparisonExpression;
@@ -192,10 +190,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       return binaryExpression;
     }
 
-    private Expression GetBinaryExpressionForMemberAccessComparison (
-        ExpressionType expressionType, 
-        NewExpression newExpression, 
-        Expression memberAccessExpression)
+    private Expression GetBinaryExpressionForMemberAccessComparison (ExpressionType expressionType, NewExpression newExpression, Expression memberAccessExpression)
     {
       if (newExpression.Members == null || newExpression.Members.Count == 0)
       {
@@ -211,7 +206,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           memberExpression = Expression.Call (memberAccessExpression, (MethodInfo) newExpression.Members[i]);
         else
           memberExpression = Expression.MakeMemberAccess (memberAccessExpression, newExpression.Members[i]);
-        var argumentComparisonExpression = Expression.MakeBinary (expressionType, newExpression.Arguments[i], memberExpression);
+        var argumentComparisonExpression = Expression.MakeBinary (
+            expressionType,
+            newExpression.Arguments[i],
+            memberExpression);
 
         if (binaryExpression == null)
           binaryExpression = argumentComparisonExpression;
