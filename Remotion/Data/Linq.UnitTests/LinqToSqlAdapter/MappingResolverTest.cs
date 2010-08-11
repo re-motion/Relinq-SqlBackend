@@ -16,18 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using ExpressionTreeComparer = Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities.ExpressionTreeComparer;
+using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
@@ -92,11 +90,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       SqlColumnExpression primaryColumn = new SqlColumnDefinitionExpression(typeof(int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression descriptionColumn = new SqlColumnDefinitionExpression (
           typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
-      SqlColumnExpression territoriesColumn = new SqlColumnDefinitionExpression (
-          typeof (EntitySet<DataContextTestClass.Territory>), simpleTableInfo.TableAlias, "Region_Territory", false);
 
       SqlEntityDefinitionExpression expectedExpr = new SqlEntityDefinitionExpression (
-          simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, primaryColumn, descriptionColumn, territoriesColumn);
+          simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, primaryColumn, primaryColumn, descriptionColumn);
 
       SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
 
@@ -169,7 +165,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.AreEqual (metaDataMembers[0].MappedName, resolvedExpr.PrimaryKeyColumn.ColumnName);
 
       for (int i = 1; i < metaDataMembers.Length; i++)
-        Assert.AreEqual (metaDataMembers[i].MappedName, resolvedExpr.Columns[i - 1].ColumnName);
+        Assert.AreEqual (metaDataMembers[i].MappedName, resolvedExpr.Columns[i].ColumnName);
     }
 
     [Test]

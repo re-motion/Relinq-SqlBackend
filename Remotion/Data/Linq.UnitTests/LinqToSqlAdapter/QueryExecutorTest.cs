@@ -20,7 +20,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -42,14 +41,14 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     public void SetUp ()
     {
       // var query = from c in Customers select null
-      _mainFromClause = new MainFromClause ("c", typeof (Customer), Expression.Constant (new Customer[0]));
-      _selectClause = new SelectClause (Expression.Constant (null, typeof (Customer)));
+      _mainFromClause = new MainFromClause ("c", typeof (DataContextTestClass.Customer), Expression.Constant (new DataContextTestClass.Customer[0]));
+      _selectClause = new SelectClause (Expression.Constant (null, typeof (DataContextTestClass.Customer)));
       _queryModel = new QueryModel (_mainFromClause, _selectClause);
 
       _resolverStub = MockRepository.GenerateStub<IMappingResolver> ();
       _resolverStub
           .Stub (stub => stub.ResolveTableInfo (Arg<UnresolvedTableInfo>.Is.Anything, Arg<UniqueIdentifierGenerator>.Is.Anything))
-          .Return (new ResolvedSimpleTableInfo (typeof (Customer), "CustomerTable", "t0"));
+          .Return (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
       _resolverStub
           .Stub (stub => stub.ResolveConstantExpression ((ConstantExpression) _selectClause.Selector))
           .Return (_selectClause.Selector);
@@ -58,15 +57,15 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test] 
     public void ExecuteScalar()
     {
-      var mainFromClause= new MainFromClause ("c", typeof (Customer), Expression.Constant (new Customer[0]));
-      var selectClause = new SelectClause (Expression.Constant (null, typeof (Customer)));
+      var mainFromClause= new MainFromClause ("c", typeof (DataContextTestClass.Customer), Expression.Constant (new DataContextTestClass.Customer[0]));
+      var selectClause = new SelectClause (Expression.Constant (null, typeof (DataContextTestClass.Customer)));
       var queryModel = new QueryModel (mainFromClause, selectClause);
       queryModel.ResultOperators.Add (new CountResultOperator());
 
       var resolverStub = MockRepository.GenerateStub<IMappingResolver> ();
       resolverStub
           .Stub (stub => stub.ResolveTableInfo (Arg<UnresolvedTableInfo>.Is.Anything, Arg<UniqueIdentifierGenerator>.Is.Anything))
-          .Return (new ResolvedSimpleTableInfo (typeof (Customer), "CustomerTable", "t0"));
+          .Return (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
       resolverStub
           .Stub (stub => stub.ResolveConstantExpression ((ConstantExpression) selectClause.Selector))
           .Return (selectClause.Selector);
@@ -85,12 +84,12 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ExecuteSingle ()
     {
-      var fakeResult = new[] { new Customer () };
+      var fakeResult = new[] { new DataContextTestClass.Customer () };
 
       var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
-      var result = executor.ExecuteSingle<Customer> (_queryModel, true);
+      var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
       retrieverMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult[0]));
@@ -99,50 +98,50 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ExecuteSingle_Empty_ShouldGetDefault ()
     {
-      Customer[] fakeResult = new Customer[0];
+      DataContextTestClass.Customer[] fakeResult = new DataContextTestClass.Customer[0];
 
       var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
-      var result = executor.ExecuteSingle<Customer> (_queryModel, true);
+      var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
       retrieverMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (default(Customer)));
+      Assert.That (result, Is.SameAs (default(DataContextTestClass.Customer)));
     }
 
     [Test]
     [ExpectedException(ExceptionType = typeof(System.InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
     public void ExecuteSingle_Empty_ShouldThrowException ()
     {
-      Customer[] fakeResult = new Customer[0];
+      DataContextTestClass.Customer[] fakeResult = new DataContextTestClass.Customer[0];
 
       var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
-      executor.ExecuteSingle<Customer> (_queryModel, false);
+      executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false);
     }
 
     [Test]
     [ExpectedException (ExceptionType = typeof (System.InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
     public void ExecuteSingle_Many_ShouldThrowException ()
     {
-      Customer[] fakeResult = new[] {new Customer(),new Customer()};
+      DataContextTestClass.Customer[] fakeResult = new[] {new DataContextTestClass.Customer(),new DataContextTestClass.Customer()};
 
       var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
-      executor.ExecuteSingle<Customer> (_queryModel, false);
+      executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false);
     }
 
     [Test]
     public void ExecuteCollection ()
     {
-      var fakeResult = new[] { new Customer(), new Customer() };
+      var fakeResult = new[] { new DataContextTestClass.Customer(), new DataContextTestClass.Customer() };
 
       var retrieverMock = QueryExecutorTest.GetRetrieverMockStrict (fakeResult);
 
       var executor = new QueryExecutor (retrieverMock, _resolverStub);
-      var result = executor.ExecuteCollection<Customer> (_queryModel);
+      var result = executor.ExecuteCollection<DataContextTestClass.Customer> (_queryModel);
 
       retrieverMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResult));
@@ -150,12 +149,12 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
 
     #region staticMethods
-    private static IQueryResultRetriever GetRetrieverMockStrict(Customer[] fakeResult)
+    private static IQueryResultRetriever GetRetrieverMockStrict(DataContextTestClass.Customer[] fakeResult)
     {
       var retrieverMock = MockRepository.GenerateStrictMock<IQueryResultRetriever> ();
       retrieverMock
           .Expect (stub => stub.GetResults (
-              Arg<Func<IDatabaseResultRow, Customer>>.Is.Anything,
+              Arg<Func<IDatabaseResultRow, DataContextTestClass.Customer>>.Is.Anything,
               Arg.Is ("SELECT NULL AS [value] FROM [CustomerTable] AS [t0]"),
               Arg<CommandParameter[]>.List.Equal (new CommandParameter[0])))
           .Return (fakeResult);

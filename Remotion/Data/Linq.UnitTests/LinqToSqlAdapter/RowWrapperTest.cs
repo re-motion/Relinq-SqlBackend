@@ -1,24 +1,19 @@
 ﻿// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-using System;
 using System.Data;
 using System.Data.Linq.Mapping;
-using System.Data.SqlClient;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
-using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
-using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.IntegrationTests.UnitTests
+namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
-  public class RowWrapperTests
+  public class RowWrapperTest
   {
     private IDataReader _readerMock;
     private IReverseMappingResolver _reverseMappingResolverMock;
@@ -30,7 +25,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       _readerMock = MockRepository.GenerateMock<IDataReader> ();
       _reverseMappingResolverMock = MockRepository.GenerateMock<IReverseMappingResolver> ();
 
-      _metaModel = new AttributeMappingSource ().GetModel (typeof (Northwind));
+      _metaModel = new AttributeMappingSource ().GetModel (typeof (DataContextTestClass));
     }
 
     /// <summary>
@@ -62,7 +57,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
           .Return (21);
       _reverseMappingResolverMock
           .Expect (mock => mock.GetMetaDataMembers (typeof (PersonTestClass)))
-          .Return (MemberSortUtility.SortDataMembers (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers));
+          .Return (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray());
 
       ColumnID[] columnIDs = new[]
                              {
@@ -73,7 +68,9 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
 
       var instance = rowWrapper.GetEntity<PersonTestClass> (columnIDs);
-      Assert.AreEqual (instance, new PersonTestClass ("Peter", 21));
+      Assert.AreEqual (
+          instance,
+          new PersonTestClass ("Peter", 21));
     }
 
     [TearDown]
