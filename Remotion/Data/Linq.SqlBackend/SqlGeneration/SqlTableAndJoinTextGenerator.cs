@@ -20,6 +20,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
@@ -115,8 +116,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
+      string[] identifiers = tableInfo.TableName.Split ('.');
+      var newTableName = string.Join(".", identifiers.Select (idf => "[" + idf + "]").ToArray());
       
-      _commandBuilder.AppendIdentifier (tableInfo.TableName);
+      _commandBuilder.Append (newTableName);
       _commandBuilder.Append (" AS ");
       _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
 

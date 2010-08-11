@@ -48,6 +48,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void EntityWithFullQualifiedName ()
+    {
+      CheckQuery (
+          from c in Chefs select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [dbo].[ChefTable] AS [t0]",
+          row => (object)row.GetValue<string>(new ColumnID("value", 0)));
+    }
+
+    [Test]
     public void Constant ()
     {
       CheckQuery (

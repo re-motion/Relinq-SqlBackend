@@ -35,8 +35,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         case "Kitchen":
         case "Restaurant":
         case "Compyany":
-        case "Chef":
           return CreateResolvedTableInfo (tableInfo.ItemType, generator);
+        case "Chef":
+          return new ResolvedSimpleTableInfo (tableInfo.ItemType, "dbo."+tableInfo.ItemType.Name + "Table", generator.GetUniqueIdentifier ("t"));
       }
 
       throw new UnmappedItemException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");

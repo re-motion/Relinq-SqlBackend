@@ -258,6 +258,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitSimpleTableInfo_FullQualifiedTableNameGetsSplit ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "TestDomain.dbo.CookTable", "c");
+
+      _generator.VisitSimpleTableInfo (simpleTableInfo);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[TestDomain].[dbo].[CookTable] AS [c]"));
+    }
+
+    [Test]
     public void VisitSubStatementTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
