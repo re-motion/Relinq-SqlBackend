@@ -52,6 +52,8 @@ Namespace LinqSamples101
         'in class SqlStatementResolver 
         'at sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context)
         'the WhereCondition differes from the VB WhereCondition
+        '
+        'Example
         '     In C#            |       in VB
         '[234920384234].City   |       cust.City
         'Propably the alias cust from the VB Statement must be resolved to [Customer].City. [Tablename].Property
