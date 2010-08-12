@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT and WHERE to return a sequence of invoices where shipping city is London.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.ArgumentNullException : Value cannot be null. Parameter name: primaryKeyColumn")] 
+    [Ignore ("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")] 
     public void LinqToSqlView01 ()
     {
       var q =
@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT to query QuarterlyOrders.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.ArgumentNullException : Value cannot be null. Parameter name: primaryKeyColumn")]
+    [Ignore ("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")] 
     public void LinqToSqlView02 ()
     {
       var q =
