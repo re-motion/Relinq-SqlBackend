@@ -94,7 +94,6 @@
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced03.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced04.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced06.result" />
-    <None Include="App.config" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount03.result" />
@@ -213,6 +212,9 @@
     <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere06.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere07.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere08.result" />
+    <None Include="..\Linq.IntegrationTests\App.config">
+      <Link>App.config</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />

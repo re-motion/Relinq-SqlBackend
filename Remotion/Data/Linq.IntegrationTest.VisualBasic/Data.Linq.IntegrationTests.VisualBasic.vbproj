@@ -150,7 +150,6 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="app.config" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced03.result" />
@@ -268,6 +267,9 @@
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.WhereTests.LinqToSqlWhere06.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.WhereTests.LinqToSqlWhere07.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.WhereTests.LinqToSqlWhere08.result" />
+    <None Include="..\Linq.IntegrationTests\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
