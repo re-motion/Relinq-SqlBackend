@@ -70,7 +70,6 @@
     <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
     <Compile Include="UnitTests\Utilities\QueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
-    <Compile Include="Utilities\ExpressionTreeComparer.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
     <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
