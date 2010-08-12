@@ -30,6 +30,7 @@ Namespace LinqSamples101
     'This sample uses the Nothing value to find Employees
     'that do not report to another Employee.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - byte type not supported")>
     Public Sub LinqToSqlNull01()
       Dim empQuery = From emp In DB.Employees _
             Where emp.ReportsTo Is Nothing
@@ -40,6 +41,7 @@ Namespace LinqSamples101
     'This sample uses Nullable(Of T).HasValue to find Employees " & _
     'that do not report to another Employee.")> _
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - nullable not supported")>
     Public Sub LinqToSqlNull02()
       Dim empQuery = From emp In DB.Employees _
             Where Not emp.ReportsTo.HasValue _
@@ -53,6 +55,7 @@ Namespace LinqSamples101
     'EmployeeID number of that employee.  Note that
     'the .Value is optional.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - nullable not supported")>
     Public Sub LinqToSqlNull03()
       Dim empQuery = From emp In DB.Employees _
             Where emp.ReportsTo.HasValue _

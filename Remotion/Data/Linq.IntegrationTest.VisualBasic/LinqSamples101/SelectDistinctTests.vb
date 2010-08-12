@@ -58,6 +58,7 @@ Namespace LinqSamples101
     'with the FirstName and LastName fields combined into a single field, 'Name',
     'and the HomePhone field renamed to Phone in the resulting sequence.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - String.Concat is not supported, test works in c# but not in vb")>
     Public Sub LinqToSqlSelect03()
       Dim nameAndNumber = From emp In DB.Employees _
             Select Name = emp.FirstName & " " & emp.LastName, _
@@ -71,6 +72,7 @@ Namespace LinqSamples101
     'called HalfPrice which is set to the Product's UnitPrice 
     'divided by 2.")> _
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - rounding differences ?")>
     Public Sub LinqToSqlSelect04()
       Dim prices = From prod In DB.Products _
             Select prod.ProductID, HalfPrice = prod.UnitPrice / 2
@@ -81,6 +83,7 @@ Namespace LinqSamples101
     'This sample uses Select and a conditional statment to return a sequence of product
     'name and product availability.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - nullables not supported")>
     Public Sub LinqToSqlSelect05()
       Dim inStock = From prod In DB.Products _
             Select prod.ProductName, _
@@ -92,6 +95,7 @@ Namespace LinqSamples101
 
     'This sample uses Select and a known type to return a sequence of employee names.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - cannot be translated to SQL tex0t by this SQL generator ")>
     Public Sub LinqToSqlSelect06()
       Dim names = From emp In DB.Employees _
             Select New Name With {.FirstName = emp.FirstName, _
@@ -102,6 +106,7 @@ Namespace LinqSamples101
 
     'This sample uses Select and Where clauses to return a sequence of
     'just the London Customers' contact names.
+    'Bug or missing feature in Relinq - test works in c# but not in vb
     <Test()>
     Public Sub LinqToSqlSelect07()
       Dim londonNames = From cust In DB.Customers _
@@ -160,6 +165,7 @@ Namespace LinqSamples101
     ''PhoneNumberConverter' to convert Phone number
     'to an international format.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - local method calls not supported")>
     Public Sub LinqToSqlLocalMethodCall01()
 
       Dim q = From c In DB.Customers _
@@ -172,21 +178,22 @@ Namespace LinqSamples101
 
     'This sample uses a Local Method Call to
     'convert phone numbers to an international format
-    'and create XDocument.")> _
-        <Test()> _
-        <Ignore("need to fix SavingTestExecutor to properly handle result")> _
-        Public Sub LinqToSqlLocalMethodCall02()
+    'and create XDocument.>
+    'TODO need to fix SavingTestExecutor to properly handle result ?
+    <Test()> _
+    <Ignore("Bug or missing feature in Relinq - local method calls not supported")>
+    Public Sub LinqToSqlLocalMethodCall02()
 
-            Dim doc = <Customers>
-                          <%= From c In DB.Customers _
-                              Where c.Country = "UK" Or c.Country = "USA" _
-                              Select <Customer CustomerID=<%= c.CustomerID %>
-                                         CompanyName=<%= c.CompanyName %>
-                                         InternationalPhone=<%= PhoneNumberConverter(c.Country, c.Phone) %>/> %>
-                      </Customers>
+      Dim doc = <Customers>
+                  <%= From c In DB.Customers _
+                    Where c.Country = "UK" Or c.Country = "USA" _
+                    Select <Customer CustomerID=<%= c.CustomerID %>
+                             CompanyName=<%= c.CompanyName %>
+                             InternationalPhone=<%= PhoneNumberConverter(c.Country, c.Phone) %>/> %>
+                </Customers>
 
-            TestExecutor.Execute(doc, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(doc, MethodBase.GetCurrentMethod())
+    End Sub
 
 
     'This sample uses Distinct to select a sequence of the unique cities

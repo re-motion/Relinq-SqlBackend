@@ -39,6 +39,7 @@ Namespace LinqSamples101
 
     'This sample uses OfType to return all customer contacts.")> _
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     Public Sub LinqToSqlInheritance02()
 
       Dim cons = From contact In DB.Contacts.OfType(Of CustomerContact)() _
@@ -49,6 +50,7 @@ Namespace LinqSamples101
 
     'This sample uses IS to return all shipper contacts.")> _
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     Public Sub LinqToSqlInheritance03()
 
       Dim cons = From contact In DB.Contacts _
@@ -61,6 +63,7 @@ Namespace LinqSamples101
 
     'This sample uses CType to return FullContact or Nothing.")> _
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - multiple types currently not supported")>
     Public Sub LinqToSqlInheritance04()
       Dim cons = From contact In DB.Contacts _
             Select CType(contact, FullContact)

@@ -39,7 +39,6 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Skip to select all but the 10 most expensive Products.
-    '<Ignore("Bug or missing feature in Relinq - ")>
     <Test()>
     Public Sub LinqToSqlTop02()
       Dim expensiveProducts = From prod In DB.Products _

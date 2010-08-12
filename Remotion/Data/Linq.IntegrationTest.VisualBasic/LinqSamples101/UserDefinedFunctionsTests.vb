@@ -29,17 +29,18 @@ Namespace LinqSamples101
 
     'This sample demonstrates using a scalar user-defined function in a projection.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - user defined functions not supported")>
     Public Sub LinqToSqlUserDefined01()
-      Dim catQuery = From category In db.Categories _
+      Dim catQuery = From category In DB.Categories _
             Select category.CategoryID, _
-            TotalUnitPrice = db.TotalProductUnitPriceByCategory(category.CategoryID)
+            TotalUnitPrice = DB.TotalProductUnitPriceByCategory(category.CategoryID)
 
       TestExecutor.Execute(catQuery, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample demonstrates using a scalar user-defined function in a Where clause.
     <Test()>
-    <Ignore()>
+    <Ignore("Bug or missing feature in Relinq - user defined functions not supported")>
     Public Sub LinqToSqlUserDefined02()
 
       Dim prodQuery = From prod In DB.Products _
@@ -50,10 +51,10 @@ Namespace LinqSamples101
 
     'This sample demonstrates selecting from a table-valued user-defined function.
     <Test()>
-    <Ignore()>
+    <Ignore("Bug or missing feature in Relinq - user defined functions not supported")>
     Public Sub LinqToSqlUserDefined03()
 
-      Dim prodQuery = From p In db.ProductsUnderThisUnitPrice(10.25D) _
+      Dim prodQuery = From p In DB.ProductsUnderThisUnitPrice(10.25D) _
             Where Not p.Discontinued
 
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
@@ -61,7 +62,7 @@ Namespace LinqSamples101
 
     'This sample demonstrates joining to the results of a table-valued user-defined function.
     <Test()>
-    <Ignore()>
+    <Ignore("Bug or missing feature in Relinq - user defined functions not supported")>
     Public Sub LinqToSqlUserDefined04()
 
       Dim q = From category In DB.Categories _

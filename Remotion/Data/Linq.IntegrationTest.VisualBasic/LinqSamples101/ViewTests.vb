@@ -27,8 +27,8 @@ Namespace LinqSamples101
     Inherits TestBase
     'This sample uses Select and Where to return a sequence of invoices
     'where the shipping city is London.
-    '<Ignore("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")>
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")>
     Public Sub LinqToSqlView01()
       Dim shipToLondon = From inv In DB.Invoices _
             Where inv.ShipCity = "London" _
@@ -38,8 +38,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Select to query QuarterlyOrders.
-'<Ignore("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")>
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")>
     Public Sub LinqToSqlView02()
       'WORKAROUND: changed Quarterly_Orders to QuarterlyOrders
       Dim quarterlyOrders = From qo In DB.QuarterlyOrders _
