@@ -29,7 +29,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT to return a sequence of just the Customers' contact names.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - PhoneNumberConverter is not supported by this code generator")]
     public void LinqToSqlSelect01 ()
     {
       var q =
@@ -187,6 +186,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a Local Method Call to 'PhoneNumberConverter' to convert Phone number to an international format.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - PhoneNumberConverter is not supported by this code generator")]
     public void LinqToSqlLocalMethodCall01 ()
     {
       var q = from c in DB.Customers

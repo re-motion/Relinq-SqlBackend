@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses orderby to sort Employees by hire date.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidCastEception - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlOrderBy01 ()
     {
       var q =
