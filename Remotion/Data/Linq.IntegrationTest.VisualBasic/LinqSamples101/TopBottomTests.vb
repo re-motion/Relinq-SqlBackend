@@ -28,6 +28,7 @@ Namespace LinqSamples101
     Inherits TestBase
 
     'This sample uses Take to select the first 5 Employees hired.
+    '<Ignore("Bug or missing feature in Relinq - relinq doesn't support byte types yet")>
     <Test()>
     Public Sub LinqToSqlTop01()
       Dim first5Employees = From emp In DB.Employees _
@@ -38,6 +39,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Skip to select all but the 10 most expensive Products.
+    '<Ignore("Bug or missing feature in Relinq - ")>
     <Test()>
     Public Sub LinqToSqlTop02()
       Dim expensiveProducts = From prod In DB.Products _
