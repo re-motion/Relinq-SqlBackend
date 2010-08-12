@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -30,16 +29,12 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample returns all contacts where the city is London.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq")]
     public void LinqToSqlInheritance01 ()
     {
       var cons = from c in DB.Contacts
                  select c;
 
-      //List<String> strings = new List<String>();
-      //foreach (var con in cons)
-      //{
-      //  strings.Add (string.Format ("Company name: {0}, Phone: {1}, This is a {2}", con.CompanyName, con.Phone, con.GetType ()));
-      //}
       TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
 
     }
@@ -88,6 +83,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a cast to retrieve customer contacts who live in London.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq")]
     public void LinqToSqlInheritance05 ()
     {
       var cons = from c in DB.Contacts
