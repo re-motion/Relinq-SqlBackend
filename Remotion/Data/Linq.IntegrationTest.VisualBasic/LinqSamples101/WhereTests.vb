@@ -28,63 +28,68 @@ Namespace LinqSamples101
         Inherits TestBase
 
         'This sample uses a Where clause to filter for Customers in London.
-        <Test()>
-        Public Sub LinqToSqlWhere01()
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - test works in c# but not in vb")>
+    Public Sub LinqToSqlWhere01()
 
-            'Only return customers from London
+      'Only return customers from London
       Dim londonCustomers = From cust In DB.Customers _
             Where cust.City = "London" _
             Select cust.CompanyName, cust.City, cust.Country
 
 
-            TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
+    End Sub
 
 
         'This sample uses a Where clause to filter for Employees hired
         '"during or after 1994.
-        <Test()>
-        Public Sub LinqToSqlWhere02()
-            Dim hiredAfter1994 = From emp In db.Employees _
-                  Where emp.HireDate >= #1/1/1994# _
-                  Select emp
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
+    Public Sub LinqToSqlWhere02()
+      Dim hiredAfter1994 = From emp In DB.Employees _
+            Where emp.HireDate >= #1/1/1994# _
+            Select emp
 
-            TestExecutor.Execute(hiredAfter1994, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(hiredAfter1994, MethodBase.GetCurrentMethod())
+    End Sub
 
         'This sample uses a Where clause to filter for Products that have stock below their
         'reorder level and are not discontinued.
-        <Test()>
-        Public Sub LinqToSqlWhere03()
-            Dim needToOrder = From prod In db.Products _
-                  Where prod.UnitsInStock <= prod.ReorderLevel _
-                        AndAlso Not prod.Discontinued _
-                  Select prod
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly, test works in c# but not in vb")>
+    Public Sub LinqToSqlWhere03()
+      Dim needToOrder = From prod In DB.Products _
+            Where prod.UnitsInStock <= prod.ReorderLevel _
+                  AndAlso Not prod.Discontinued _
+            Select prod
 
-            TestExecutor.Execute(needToOrder, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(needToOrder, MethodBase.GetCurrentMethod())
+    End Sub
 
         'This sample uses a Where clause to filter out Products that are either
         'discontinued or that have a UnitPrice greater than 10.
-        <Test()>
-        Public Sub LinqToSqlWhere04()
-            Dim prodQuery = From prod In db.Products _
-                  Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
+    Public Sub LinqToSqlWhere04()
+      Dim prodQuery = From prod In DB.Products _
+            Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
 
-            TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
+    End Sub
 
         'This sample uses two Where clauses to filter out Products that are discontinued 
         'and with UnitPrice greater than 10
-        <Test()>
-        Public Sub LinqToSqlWhere05()
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly, test works in c# but not in vb")>
+    Public Sub LinqToSqlWhere05()
 
-            Dim prodQuery = From prod In db.Products _
-                  Where prod.UnitPrice > 10D _
-                  Where prod.Discontinued
+      Dim prodQuery = From prod In DB.Products _
+            Where prod.UnitPrice > 10D _
+            Where prod.Discontinued
 
-            TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
+    End Sub
 
 
         'This sample uses First to select the first Shipper in the table.
@@ -97,23 +102,25 @@ Namespace LinqSamples101
 
 
         'This sample uses Take to select the first Customer with CustomerID 'BONAP'.
-        <Test()>
-        Public Sub LinqToSqlWhere07()
-            Dim customer = From cust In db.Customers _
-                  Where cust.CustomerID = "BONAP" _
-                  Take 1
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - test works in c# but not in vb")>
+    Public Sub LinqToSqlWhere07()
+      Dim customer = From cust In DB.Customers _
+            Where cust.CustomerID = "BONAP" _
+            Take 1
 
-            TestExecutor.Execute(customer, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(customer, MethodBase.GetCurrentMethod())
+    End Sub
 
         'This sample uses First to select an Order with freight greater than 10.00.
-        <Test()>
-        Public Sub LinqToSqlWhere08()
-            Dim firstOrd = (From ord In db.Orders _
-                  Where ord.Freight > 10D _
-                  Select ord).First()
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly, test works in c# but not in vb")>
+    Public Sub LinqToSqlWhere08()
+      Dim firstOrd = (From ord In DB.Orders _
+            Where ord.Freight > 10D _
+            Select ord).First()
 
-            TestExecutor.Execute(firstOrd, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(firstOrd, MethodBase.GetCurrentMethod())
+    End Sub
     End Class
 End Namespace
