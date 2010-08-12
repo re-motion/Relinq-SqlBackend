@@ -32,9 +32,10 @@ Namespace LinqSamples101
         Public Sub LinqToSqlWhere01()
 
             'Only return customers from London
-            Dim londonCustomers = From cust In DB.Customers _
-                  Where cust.City = "London" _
-                  Select cust.CompanyName, cust.City, cust.Country
+      Dim londonCustomers = From cust In DB.Customers _
+            Where cust.City = "London" _
+            Select cust.CompanyName, cust.City, cust.Country
+
 
             TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
         End Sub

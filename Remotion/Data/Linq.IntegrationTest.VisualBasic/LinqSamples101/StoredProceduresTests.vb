@@ -30,6 +30,7 @@ Namespace LinqSamples101
 
     'This sample uses a stored procedure to return the number of Customers in the 'WA' Region.
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlStoredProc01()
       'WORKAROUND: Customers_Count_By_Region not available => changed to  CustomersCountByRegion
       Dim count = DB.CustomersCountByRegion("WA")
@@ -43,6 +44,7 @@ Namespace LinqSamples101
     'Explorer onto the O/R Designer which can be accessed by double-clicking
     'on .DBML file in the Solution Explorer.
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlStoredProc02()
       'WORKAROUND: Customers_By_City not available => changed to  CustomersByCity
       Dim custQuery = DB.CustomersByCity("London")
@@ -52,6 +54,7 @@ Namespace LinqSamples101
 
     'This sample uses a stored procedure to return the Customer 'SEVES' and all it's Orders.
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlStoredProc04()
 
       'WORKAROUND: Get_Customer_And_Orders not available => changed to  GetCustomerAndOrders
@@ -70,6 +73,7 @@ Namespace LinqSamples101
 
     'This sample uses a stored procedure that returns an out parameter.")> _
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlStoredProc05()
       Dim totalSales? = 0@
 

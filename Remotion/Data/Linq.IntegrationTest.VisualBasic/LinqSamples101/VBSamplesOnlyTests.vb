@@ -45,8 +45,9 @@ Namespace LinqSamples101
     'Explorer onto the O/R Designer which can be accessed by double-clicking
     'on the .DBML file in the Solution Explorer.")> _
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlStoredProc06()
-      Dim cheapProducts = db.ProductsUnderThisUnitPrice(10D)
+      Dim cheapProducts = DB.ProductsUnderThisUnitPrice(10D)
 
       TestExecutor.Execute(cheapProducts, MethodBase.GetCurrentMethod())
     End Sub
@@ -55,8 +56,9 @@ Namespace LinqSamples101
     ''ProductsUnderThisUnitPrice' method. The method was created from the database
     'function 'ProductsUnderThisUnitPrice' in Northwind database.
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlStoredProc07()
-      Dim cheapProducts = From prod In db.ProductsUnderThisUnitPrice(10D) _
+      Dim cheapProducts = From prod In DB.ProductsUnderThisUnitPrice(10D) _
                           Where prod.Discontinued = True
 
       TestExecutor.Execute(cheapProducts, MethodBase.GetCurrentMethod())

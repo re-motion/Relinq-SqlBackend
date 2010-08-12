@@ -38,17 +38,19 @@ Namespace LinqSamples101
     End Sub
 
     'This sample demonstrates using a scalar user-defined function in a Where clause.
-        <Test(), Ignore()>
-        Public Sub LinqToSqlUserDefined02()
+    <Test()>
+    <Ignore()>
+    Public Sub LinqToSqlUserDefined02()
 
-            Dim prodQuery = From prod In DB.Products _
-                  Where prod.UnitPrice = DB.MinUnitPriceByCategory(prod.CategoryID)
+      Dim prodQuery = From prod In DB.Products _
+            Where prod.UnitPrice = DB.MinUnitPriceByCategory(prod.CategoryID)
 
-            TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
+    End Sub
 
     'This sample demonstrates selecting from a table-valued user-defined function.
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlUserDefined03()
 
       Dim prodQuery = From p In db.ProductsUnderThisUnitPrice(10.25D) _
@@ -59,10 +61,11 @@ Namespace LinqSamples101
 
     'This sample demonstrates joining to the results of a table-valued user-defined function.
     <Test()>
+    <Ignore()>
     Public Sub LinqToSqlUserDefined04()
 
-      Dim q = From category In db.Categories _
-            Group Join prod In db.ProductsUnderThisUnitPrice(8.5D) _
+      Dim q = From category In DB.Categories _
+            Group Join prod In DB.ProductsUnderThisUnitPrice(8.5D) _
             On category.CategoryID Equals prod.CategoryID _
             Into prods = Group _
             From prod2 In prods _

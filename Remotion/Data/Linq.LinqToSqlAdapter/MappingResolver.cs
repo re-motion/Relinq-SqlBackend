@@ -128,8 +128,36 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
       //TODO implement if needed by integration tests
-      throw new NotImplementedException ("Implement if needed by integration tests");
+      //throw new NotImplementedException ("Implement if needed by integration tests");
 
+      //Dummy impl 1
+      ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+
+      var dataTable = _metaModel.GetMetaType (memberInfo.DeclaringType);
+
+      if (dataTable == null)
+        throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+
+      var dataMember = dataTable.GetDataMember (memberInfo);
+
+      if (dataMember == null)
+        throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+
+      if (dataMember.IsAssociation)
+      {
+        throw new NotImplementedException ("Implement if needed by integration tests");
+      }
+      else
+      {
+        return new SqlColumnDefinitionExpression (
+            memberType, sqlColumnExpression.OwningTableAlias, dataMember.MappedName, sqlColumnExpression.IsPrimaryKey);
+      }
+
+
+      //Dmmy Impl 2
       //ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
       //ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
@@ -172,7 +200,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     {
       //TODO check if column supports more than one type and if type is one of those types
 
-      throw new NotImplementedException (("Type check currently not supported"));
+      throw new NotImplementedException ("Type check currently not supported");
 
       //ArgumentUtility.CheckNotNull ("expression", expression);
       //ArgumentUtility.CheckNotNull ("desiredType", desiredType);
