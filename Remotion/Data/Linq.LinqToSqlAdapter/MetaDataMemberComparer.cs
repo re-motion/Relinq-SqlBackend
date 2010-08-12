@@ -14,15 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Data;
+using System;
+using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  // TODO: Add unit tests
   /// <summary>
-  /// Provides an interface for classes encapsulating ADO.NET connection handling. Used by <see cref="QueryResultRetriever"/>.
+  /// Compares <see cref="MetaDataMember"/> instances based on their <see cref="MetaDataMember.MappedName"/> properties.
   /// </summary>
-  public interface IConnectionManager
+  public class MetaDataMemberComparer : IEqualityComparer<MetaDataMember>
   {
-    IDbConnection Open ();
+    public bool Equals (MetaDataMember x, MetaDataMember y)
+    {
+      return x.MappedName == y.MappedName;
+    }
+
+    public int GetHashCode (MetaDataMember obj)
+    {
+      return obj.MappedName.GetHashCode();
+    }
   }
 }

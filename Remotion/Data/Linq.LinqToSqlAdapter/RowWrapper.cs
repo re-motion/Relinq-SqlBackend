@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Data;
-using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
+namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
   public class RowWrapper : IDatabaseResultRow
   {
@@ -32,11 +31,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
 
     public T GetEntity<T> (ColumnID[] columnIDs)
     {
-      object instance = (T) Activator.CreateInstance (typeof (T));
       var entityMembers = _resolver.GetMetaDataMembers (typeof (T));
 
-      //TODO: WHY?
-      //Debug.Assert (entityMembers.Length == columnIDs.Length);
+      Debug.Assert (entityMembers.Length == columnIDs.Length);
+
+      object instance = (T) Activator.CreateInstance (typeof (T));
 
       foreach (var columnID in columnIDs)
       {
@@ -47,6 +46,38 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
         var metaMember = metaMemberCollection.First ();
         metaMember.MemberAccessor.SetBoxedValue (ref instance, value);
       }
+
+      // TODO: Use this implementation instead. Before doing so, write a test showing that GetEntity<Contact> will instantiate a Customer
+      // TODO: if the CustomerType discriminator column contains the string "Customer".
+      // TODO: Also write a test showing that if the discriminator column contains null, T (eg. Contact) is instantiated.
+      // TODO: Also write a test showing that types without discriminator column can still be instantiated.
+      // TODO: Also write a test showing that when entityMembers contains members of eg. Supplier, those members do not cause an exception 
+      // TODO: (because they are ignored).
+      // TODO: Also write a test showing that byte[]s can be used.
+      //var entityMembersWithColumnIDs = entityMembers.Select ((member, index) => new { Member = member, ColumnID = columnIDs[index] });
+
+      //Type instanceType = typeof (T);
+      //var discriminatorMember = entityMembersWithColumnIDs.SingleOrDefault (tuple => tuple.Member.IsDiscriminator);
+      //if (discriminatorMember != null)
+      //{
+      //  var discriminatorValue = GetValue<object> (discriminatorMember.ColumnID);
+      //  if (discriminatorValue != null)
+      //    instanceType = discriminatorMember.Member.DeclaringType.GetTypeForInheritanceCode (discriminatorValue).Type;
+      //}
+
+      //object instance = Activator.CreateInstance (instanceType);
+
+      //var relevantMembers =
+      //   entityMembersWithColumnIDs.Where (tuple => tuple.Member.Member.DeclaringType.IsAssignableFrom (instanceType));
+
+      //foreach (var member in relevantMembers)
+      //{
+      //  var value = GetValue<object> (member.ColumnID);
+      //  if (value is byte[])
+      //    value = new Binary ((byte[]) value);
+
+      //  member.Member.MemberAccessor.SetBoxedValue (ref instance, value);
+      //}
 
       return (T) instance;
     }

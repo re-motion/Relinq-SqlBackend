@@ -1,54 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Text;
 
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
-  [System.Data.Linq.Mapping.DatabaseAttribute (Name = "DATACONTEXT")]
-  class DataContextTestClass : System.Data.Linq.DataContext
+  [Database (Name = "DATACONTEXT")]
+  internal class DataContextTestClass : DataContext
   {
-    private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource ();
+    private static readonly MappingSource mappingSource = new AttributeMappingSource();
+
+    // TODO: Remove commented code
+    // TODO: Add inheritance hierarchy Contact/Customer-Supplier with discriminator column
 
     #region constructors
 
     static DataContextTestClass ()
     {
-
     }
 
     public DataContextTestClass (string connection)
-      : base (connection, mappingSource)
+        : base (connection, mappingSource)
     {
-
     }
 
     #endregion
 
     [Table (Name = "dbo.Customers")]
-    public partial class Customer //: INotifyPropertyChanging, INotifyPropertyChanged
+    public class Customer //: INotifyPropertyChanging, INotifyPropertyChanged
     {
       private string _CustomerID;
       private string _CompanyName;
-      private EntitySet<Order> _Orders = new EntitySet<Order>();
+      private readonly EntitySet<Order> _Orders = new EntitySet<Order>();
 
       [Column (Storage = "_CustomerID", DbType = "NChar(5) NOT NULL", CanBeNull = false, IsPrimaryKey = true)]
       public string CustomerID
       {
-        get
-        {
-          return this._CustomerID;
-        }
+        get { return _CustomerID; }
         set
         {
-          if ((this._CustomerID != value))
+          if ((_CustomerID != value))
           {
             //this.OnCustomerIDChanging (value);
             //this.SendPropertyChanging ();
-            this._CustomerID = value;
+            _CustomerID = value;
             //this.SendPropertyChanged ("CustomerID");
             //this.OnCustomerIDChanged ();
           }
@@ -58,17 +69,14 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Column (Storage = "_CompanyName", DbType = "NVarChar(40) NOT NULL", CanBeNull = false)]
       public string CompanyName
       {
-        get
-        {
-          return this._CompanyName;
-        }
+        get { return _CompanyName; }
         set
         {
-          if ((this._CompanyName != value))
+          if ((_CompanyName != value))
           {
             //this.OnCompanyNameChanging (value);
             //this.SendPropertyChanging ();
-            this._CompanyName = value;
+            _CompanyName = value;
             //this.SendPropertyChanged ("CompanyName");
             //this.OnCompanyNameChanged ();
           }
@@ -78,42 +86,32 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Association (Name = "Customer_Order", Storage = "_Orders", OtherKey = "CustomerID")]
       public EntitySet<Order> Orders
       {
-        get
-        {
-          return this._Orders;
-        }
-        set
-        {
-          this._Orders.Assign (value);
-        }
+        get { return _Orders; }
+        set { _Orders.Assign (value); }
       }
-
-
     }
+
     [Table (Name = "dbo.Region")]
-    public partial class Region //: INotifyPropertyChanging, INotifyPropertyChanged
+    public class Region //: INotifyPropertyChanging, INotifyPropertyChanged
     {
       private int _RegionID;
 
       private string _RegionDescription;
 
-      private EntitySet<Territory> _Territories = new EntitySet<Territory> ();
+      private readonly EntitySet<Territory> _Territories = new EntitySet<Territory>();
 
 
       [Column (Storage = "_RegionID", DbType = "Int NOT NULL", IsPrimaryKey = true)]
       public int RegionID
       {
-        get
-        {
-          return this._RegionID;
-        }
+        get { return _RegionID; }
         set
         {
-          if ((this._RegionID != value))
+          if ((_RegionID != value))
           {
             //this.OnRegionIDChanging (value);
             //this.SendPropertyChanging ();
-            this._RegionID = value;
+            _RegionID = value;
             //this.SendPropertyChanged ("RegionID");
             //this.OnRegionIDChanged ();
           }
@@ -123,17 +121,14 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Column (Storage = "_RegionDescription", DbType = "NChar(50) NOT NULL", CanBeNull = false)]
       public string RegionDescription
       {
-        get
-        {
-          return this._RegionDescription;
-        }
+        get { return _RegionDescription; }
         set
         {
-          if ((this._RegionDescription != value))
+          if ((_RegionDescription != value))
           {
             //this.OnRegionDescriptionChanging (value);
             //this.SendPropertyChanging ();
-            this._RegionDescription = value;
+            _RegionDescription = value;
             //this.SendPropertyChanged ("RegionDescription");
             //this.OnRegionDescriptionChanged ();
           }
@@ -143,27 +138,18 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Association (Name = "Region_Territory", Storage = "_Territories", OtherKey = "RegionID")]
       public EntitySet<Territory> Territories
       {
-        get
-        {
-          return this._Territories;
-        }
-        set
-        {
-          this._Territories.Assign (value);
-        }
+        get { return _Territories; }
+        set { _Territories.Assign (value); }
       }
-
     }
 
     [Table (Name = "dbo.Territories")]
-    public partial class Territory //: INotifyPropertyChanging, INotifyPropertyChanged
+    public class Territory //: INotifyPropertyChanging, INotifyPropertyChanged
     {
-
-
     }
 
     [Table (Name = "dbo.Orders")]
-    public partial class Order// : INotifyPropertyChanging, INotifyPropertyChanged
+    public class Order // : INotifyPropertyChanging, INotifyPropertyChanged
     {
       private int _OrderID;
       private string _CustomerID;
@@ -173,17 +159,14 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Column (Storage = "_OrderID", AutoSync = AutoSync.OnInsert, DbType = "Int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
       public int OrderID
       {
-        get
-        {
-          return this._OrderID;
-        }
+        get { return _OrderID; }
         set
         {
-          if ((this._OrderID != value))
+          if ((_OrderID != value))
           {
             //this.OnOrderIDChanging (value);
             //this.SendPropertyChanging ();
-            this._OrderID = value;
+            _OrderID = value;
             //this.SendPropertyChanged ("OrderID");
             //this.OnOrderIDChanged ();
           }
@@ -193,21 +176,18 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Column (Storage = "_CustomerID", DbType = "NChar(5)")]
       public string CustomerID
       {
-        get
-        {
-          return this._CustomerID;
-        }
+        get { return _CustomerID; }
         set
         {
-          if ((this._CustomerID != value))
+          if ((_CustomerID != value))
           {
             //if (this._Customer.HasLoadedOrAssignedValue)
             //{
-              //throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException ();
+            //throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException ();
             //}
             //this.OnCustomerIDChanging (value);
             //this.SendPropertyChanging ();
-            this._CustomerID = value;
+            _CustomerID = value;
             //this.SendPropertyChanged ("CustomerID");
             //this.OnCustomerIDChanged ();
           }
@@ -217,37 +197,33 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       [Association (Name = "Customer_Order", Storage = "_Customer", ThisKey = "CustomerID", IsForeignKey = true)]
       public Customer Customer
       {
-        get
-        {
-          return this._Customer.Entity;
-        }
+        get { return _Customer.Entity; }
         set
         {
-          Customer previousValue = this._Customer.Entity;
+          Customer previousValue = _Customer.Entity;
           if (((previousValue != value)
-                || (this._Customer.HasLoadedOrAssignedValue == false)))
+               || (_Customer.HasLoadedOrAssignedValue == false)))
           {
             //this.SendPropertyChanging ();
             if ((previousValue != null))
             {
-              this._Customer.Entity = null;
+              _Customer.Entity = null;
               previousValue.Orders.Remove (this);
             }
-            this._Customer.Entity = value;
+            _Customer.Entity = value;
             if ((value != null))
             {
               value.Orders.Add (this);
-              this._CustomerID = value.CustomerID;
+              _CustomerID = value.CustomerID;
             }
             else
-            {
-              this._CustomerID = default (string);
-            }
+              _CustomerID = default (string);
             //this.SendPropertyChanged ("Customer");
           }
         }
       }
     }
+  }
 
-  } //DataContextTestClass
+  //DataContextTestClass
 }

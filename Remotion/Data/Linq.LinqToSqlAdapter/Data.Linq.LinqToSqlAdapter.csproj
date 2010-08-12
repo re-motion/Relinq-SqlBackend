@@ -50,6 +50,7 @@
     <Compile Include="IConnectionManager.cs" />
     <Compile Include="IQueryResultRetriever.cs" />
     <Compile Include="MappingResolver.cs" />
+    <Compile Include="MetaDataMemberComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryableAdapter.cs" />
     <Compile Include="QueryExecutor.cs" />

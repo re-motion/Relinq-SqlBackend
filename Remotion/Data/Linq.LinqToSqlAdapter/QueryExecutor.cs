@@ -24,7 +24,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
-  public class QueryExecutor:IQueryExecutor
+  public class QueryExecutor : IQueryExecutor
   {
     private readonly IQueryResultRetriever _resultRetriever;
     private readonly IMappingResolver _mappingResolver;
@@ -82,7 +82,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       var generationStage = new DefaultSqlGenerationStage ();
       generationStage.GenerateTextForOuterSqlStatement (builder, resolvedStatement);
 
-      return builder.GetCommand ();
+      var command = builder.GetCommand ();
+      // TODO: Add a flag to QueryExecutor's ctor allowing to dump the SQL statement.
+      //Console.WriteLine (command.CommandText);
+      //Console.WriteLine (SeparatedStringBuilder.Build (", ", command.Parameters.Select (p => p.Name + "=" + p.Value)));
+      return command;
     }
   }
 }

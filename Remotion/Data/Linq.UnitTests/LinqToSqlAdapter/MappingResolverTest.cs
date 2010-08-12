@@ -45,30 +45,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    public void TestMetaModelMapping()
-    {
-      MappingSource mappingSource = new AttributeMappingSource();
-
-      var table = mappingSource.GetModel (typeof (DataContextTestClass)).GetTable (typeof (DataContextTestClass.Customer));
-      Assert.AreEqual ("dbo.Customers",table.TableName);
-
-      string companyName = "CompanyName";
-
-      string expectedType = "NVarChar(40) NOT NULL";
-      string resolvedType=string.Empty;
-      
-      foreach (var metaDataMember in table.RowType.DataMembers)
-      {
-        if(!metaDataMember.Name.Equals (companyName))
-          continue;
-
-        resolvedType = metaDataMember.DbType;
-      }
-
-      Assert.AreEqual (expectedType, resolvedType);
-    }
-
-    [Test]
     public void TestResolveTableInfo()
     {
       UnresolvedTableInfo unresolvedTableInfo = new UnresolvedTableInfo (typeof(DataContextTestClass.Customer));

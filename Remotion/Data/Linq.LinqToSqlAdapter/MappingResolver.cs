@@ -33,7 +33,6 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
   {
     private readonly MetaModel _metaModel;
 
-
     public MappingResolver (MetaModel metaModel)
     {
       _metaModel = metaModel;
@@ -46,7 +45,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
       MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
 
-      // TODO: check for db-schema
+      // TODO RM-3127: Refactor when re-linq supports schema names
       var tableName = table.TableName.StartsWith ("dbo.") ? table.TableName.Substring (4) : table.TableName;
 
       return new ResolvedSimpleTableInfo (tableInfo.ItemType, tableName, generator.GetUniqueIdentifier ("t"));
@@ -57,16 +56,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
+      var metaAssociation = _metaModel.GetMetaType (joinInfo.OriginatingEntity.Type).GetDataMember (joinInfo.MemberInfo).Association;
+      Debug.Assert (metaAssociation != null);
+
       IResolvedTableInfo resolvedTable = ResolveTableInfo (new UnresolvedTableInfo (joinInfo.ItemType), generator);
-
-      var metaAssociation = _metaModel.GetTable (joinInfo.OriginatingEntity.Type).RowType.GetDataMember (joinInfo.MemberInfo).Association;
-      ArgumentUtility.CheckNotNull ("metaAssociation", metaAssociation);
-
-      return CreateResolvedJoinInfo (
-          joinInfo.OriginatingEntity,
-          metaAssociation,
-          resolvedTable
-          );
+      return CreateResolvedJoinInfo (joinInfo.OriginatingEntity, metaAssociation, resolvedTable);
     }
 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -74,27 +68,16 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      SqlColumnExpression primaryColumn = null;
-      List<SqlColumnExpression> otherColumns = new List<SqlColumnExpression> ();
+      // TODO RM-3110: Refactor when re-linq supports compound keys
+      
+      // TODO: Throw if _metaModel.GetMetaType (tableInfo.ItemType).IdentityMembers.Count != 1
+      var primaryKeyMember = _metaModel.GetMetaType (tableInfo.ItemType).IdentityMembers.Single();
+      var primaryKeyColumn = CreateSqlColumnExpression (tableInfo, primaryKeyMember);
 
-      MetaDataMember[] sortedMembers = GetMetaDataMembers (tableInfo.ItemType);
+      var columnMembers = GetMetaDataMembers (tableInfo.ItemType);
 
-      foreach (var metaDataMember in sortedMembers)
-      {
-        if(metaDataMember.IsAssociation)
-          continue;
-
-        SqlColumnExpression sqlColumnExpression = new SqlColumnDefinitionExpression (
-            metaDataMember.Type, tableInfo.TableAlias, metaDataMember.MappedName, metaDataMember.IsPrimaryKey);
-
-        if (metaDataMember.IsPrimaryKey)
-          primaryColumn = sqlColumnExpression;
-
-        otherColumns.Add (sqlColumnExpression);
-      }
-      //TODO if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression
-      return new SqlEntityDefinitionExpression (
-          tableInfo.ItemType, tableInfo.TableAlias, null, primaryColumn, otherColumns.ToArray ());
+      var columns = columnMembers.Select (metaDataMember => CreateSqlColumnExpression (tableInfo, metaDataMember)).ToArray();
+      return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableInfo.TableAlias, null, primaryKeyColumn, columns);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
@@ -102,13 +85,15 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
-
       var dataTable = _metaModel.GetMetaType (memberInfo.DeclaringType);
 
+      // TODO: Change exception message to include reason (Type ... is not a mapped type)
+      // TODO: Move this check to a method (GetMetaType) and use wherever a meta type is retrieved for a type
       if (dataTable == null)
         throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
 
+      // TODO: Change exception message to include reason (Member ... is not a mapped member)
+      // TODO: Move this check to a method (GetDataMember) and use wherever a data member is retrieved for a MemberInfo
       var dataMember = dataTable.GetDataMember (memberInfo);
 
       if (dataMember == null)
@@ -120,74 +105,34 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       }
       else
       {
+        var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
         return originatingEntity.GetColumn (memberType, dataMember.MappedName, dataMember.IsPrimaryKey);
       }
     }
-
-
+    
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      //TODO implement if needed by integration tests
+      //TODO: Change to UnmappedItemException, changed message to: Cannot resolve member ... applied to column ...
+
       throw new NotImplementedException ("Implement if needed by integration tests");
-
-      //Dummy impl 1
-      //ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
-      //ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-
-      //var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
-
-      //var dataTable = _metaModel.GetMetaType (memberInfo.DeclaringType);
-
-      //if (dataTable == null)
-      //  throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
-
-      //var dataMember = dataTable.GetDataMember (memberInfo);
-
-      //if (dataMember == null)
-      //  throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
-
-      //if (dataMember.IsAssociation)
-      //{
-      //  throw new NotImplementedException ("Implement if needed by integration tests");
-      //}
-      //else
-      //{
-      //  return new SqlColumnDefinitionExpression (
-      //      memberType, sqlColumnExpression.OwningTableAlias, dataMember.MappedName, sqlColumnExpression.IsPrimaryKey);
-      //}
-
-
-      //Dmmy Impl 2
-      //ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
-      //ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-
-      //if (sqlColumnExpression is SqlColumnReferenceExpression)
-      //{
-      //  return new SqlColumnReferenceExpression (
-      //    ReflectionUtility.GetFieldOrPropertyType(memberInfo),
-      //    sqlColumnExpression.OwningTableAlias,
-      //    memberInfo.Name,
-      //    sqlColumnExpression.IsPrimaryKey,
-      //    ((SqlColumnReferenceExpression) sqlColumnExpression).ReferencedEntity);
-      //}
-      //return new SqlColumnDefinitionExpression (
-      //  ReflectionUtility.GetFieldOrPropertyType (memberInfo),
-      //  sqlColumnExpression.OwningTableAlias, 
-      //  memberInfo.Name, 
-      //  sqlColumnExpression.IsPrimaryKey);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
 
+      // TODO: Value can be null. Use constantExpression.Type instead.
       var valueType = constantExpression.Value.GetType ();
+      
       var table = _metaModel.GetTable (valueType);
       if (table != null)
       {
         var dataMembers = table.RowType.DataMembers;
-        var primaryKeys = dataMembers.Where (member => member.IsPrimaryKey).ToList();
+        var primaryKeys = dataMembers.Where (member => member.IsPrimaryKey).ToList(); // TODO: Use IdentityMembers instead?
 
+        // TODO RM-3110: Refactor when re-linq supports compound keys
+
+        // TODO: Throw NotSupportedException if primarykeys.Count != 1;
         if (primaryKeys.Count > 1)
           throw new NotImplementedException ("Multiple primary keys currently not supported");
 
@@ -198,9 +143,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public Expression ResolveTypeCheck (Expression expression, Type desiredType)
     {
-      //TODO check if column supports more than one type and if type is one of those types
-
-      throw new NotImplementedException ("Type check currently not supported");
+      // TODO: Use this implementation. Add a test showing that a check for eg. Contact on a Customer expression always returns Expression.Constant (true).
+      // TODO: Also add tests for desiredTypes whose mapping types have no inheritance code.
+      // TODO: Also add tests for expressions whose mapping types have no discriminator column.
+      // TODO: Add a test showing that a type check for eg. Customer on a Contact expression returns an expression that compares the discriminator 
+      // TODO: member with the inheritance code value.
 
       //ArgumentUtility.CheckNotNull ("expression", expression);
       //ArgumentUtility.CheckNotNull ("desiredType", desiredType);
@@ -208,7 +155,19 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       //if (desiredType.IsAssignableFrom (expression.Type))
       //  return Expression.Constant (true);
 
-      //throw new UnmappedItemException ("Cannot resolve type for checkedExpression: " + expression.Type.Name);
+      //var desiredDiscriminatorValue = _metaModel.GetMetaType (desiredType).InheritanceCode;
+      //if (desiredDiscriminatorValue == null)
+      //  throw new UnmappedItemException ("Cannot perform a type check for type ... - there is no inheritance code for this type.");
+
+      //var discriminatorDataMember = _metaModel.GetMetaType (expression.Type).Discriminator;
+      //if (discriminatorDataMember == null)
+      //  throw new UnmappedItemException ("Cannot perform a type check for type ... - there is no discriminator column.");
+
+      //return Expression.Equal (
+      //    Expression.MakeMemberAccess (expression, discriminatorDataMember.Member), 
+      //    Expression.Constant (desiredDiscriminatorValue));
+
+      throw new NotImplementedException ("Type check currently not supported");
     }
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
@@ -219,13 +178,35 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       var filteredMembers = dataMembers.Where (dataMember => !dataMember.IsAssociation);
 
       return filteredMembers.ToArray ();
+
+      // TODO: Change to use this implementation. Before doing so, write a unit test for GetMetaDataMembers (typeof (Contact)) and expect
+      // TODO: that members of Customer and Supplier are also returned. Members must not be duplicated, ContactID must be Contact.ContactID 
+      // TODO: (not Customer.ContactID or Supplier.ContactID).
+      //var metaType = _metaModel.GetMetaType (entityType).InheritanceRoot;
+      //return GetMetaDataMembersRecursive (metaType);
     }
 
-    #region privateMethods
+    private MetaDataMember[] GetMetaDataMembersRecursive (MetaType metaType)
+    {
+      var members = new HashSet<MetaDataMember> (new MetaDataMemberComparer ());
+      foreach (var metaDataMember in metaType.PersistentDataMembers.Where (m => !m.IsAssociation))
+        members.Add (metaDataMember);
+
+      var derivedMembers = from derivedType in metaType.DerivedTypes
+                           from derivedMember in GetMetaDataMembersRecursive (derivedType)
+                           select derivedMember;
+      foreach (var metaDataMember in derivedMembers)
+        members.Add (metaDataMember);
+
+      return members.ToArray();
+    }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (
         SqlEntityExpression originatingEntity, MetaAssociation metaAssociation, IResolvedTableInfo joinedTableInfo)
     {
+      // TODO RM-3110: Refactor when re-linq supports compound keys
+
+      // TODO: Throw NotSupportedException if _metaModel.GetMetaType (tableInfo.ItemType).IdentityMembers.Count != 1;
       Debug.Assert (metaAssociation.ThisKey.Count == 1);
       Debug.Assert (metaAssociation.OtherKey.Count == 1);
 
@@ -242,6 +223,13 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
     }
 
-    #endregion
+    private SqlColumnExpression CreateSqlColumnExpression (IResolvedTableInfo tableInfo, MetaDataMember metaDataMember)
+    {
+      return new SqlColumnDefinitionExpression (
+          metaDataMember.Type,
+          tableInfo.TableAlias,
+          metaDataMember.MappedName,
+          metaDataMember.IsPrimaryKey);
+    }
   }
 }

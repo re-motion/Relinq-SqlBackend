@@ -57,25 +57,14 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test] 
     public void ExecuteScalar()
     {
-      var mainFromClause= new MainFromClause ("c", typeof (DataContextTestClass.Customer), Expression.Constant (new DataContextTestClass.Customer[0]));
-      var selectClause = new SelectClause (Expression.Constant (null, typeof (DataContextTestClass.Customer)));
-      var queryModel = new QueryModel (mainFromClause, selectClause);
-      queryModel.ResultOperators.Add (new CountResultOperator());
-
-      var resolverStub = MockRepository.GenerateStub<IMappingResolver> ();
-      resolverStub
-          .Stub (stub => stub.ResolveTableInfo (Arg<UnresolvedTableInfo>.Is.Anything, Arg<UniqueIdentifierGenerator>.Is.Anything))
-          .Return (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
-      resolverStub
-          .Stub (stub => stub.ResolveConstantExpression ((ConstantExpression) selectClause.Selector))
-          .Return (selectClause.Selector);
+      _queryModel.ResultOperators.Add (new CountResultOperator());
 
       object fakeResult = 10;
 
       var retrieverMock = QueryExecutorTest.GetRetrieverMockStrictScalar (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, resolverStub);
-      var result = executor.ExecuteScalar<object> (queryModel);
+      var executor = new QueryExecutor (retrieverMock, _resolverStub);
+      var result = executor.ExecuteScalar<object> (_queryModel);
 
       retrieverMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
@@ -147,8 +136,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
-
-    #region staticMethods
     private static IQueryResultRetriever GetRetrieverMockStrict(DataContextTestClass.Customer[] fakeResult)
     {
       var retrieverMock = MockRepository.GenerateStrictMock<IQueryResultRetriever> ();
@@ -173,6 +160,5 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       retrieverMock.Replay ();
       return retrieverMock;
     }
-    #endregion
   }
 }

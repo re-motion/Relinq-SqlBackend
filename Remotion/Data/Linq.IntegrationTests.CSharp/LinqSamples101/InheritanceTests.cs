@@ -24,6 +24,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   public class InheritanceTests:TestBase
   {
+    // TODO: These tests should work when MappingResolver/RowWrapper missing features have been implemented
 
     /// <summary>
     /// This sample returns all contacts where the city is London.

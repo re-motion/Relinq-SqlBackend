@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.Linq.LinqToSqlAdapter.Utilities;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
@@ -28,11 +28,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _metaModel = new AttributeMappingSource ().GetModel (typeof (DataContextTestClass));
     }
 
-    /// <summary>
-    /// Simple GetValue<T> Test
-    /// </summary>
     [Test]
-    public void SimpleGetValueShouldReturnValueTest ()
+    public void SimpleGetValue_ShouldReturnValue ()
     {
       var columnID = new ColumnID("Name", 1);
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
@@ -41,13 +38,12 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           .Return ("Peter");
 
       Assert.AreEqual (rowWrapper.GetValue<string> (columnID), "Peter");
+
+      _readerMock.VerifyAllExpectations ();
     }
 
-    /// <summary>
-    /// Simple GetEntity<T> Test
-    /// </summary>
     [Test]
-    public void SimpleGetEntityShouldReturnEntity ()
+    public void SimpleGetEntity_ShouldReturnEntity ()
     {
       _readerMock
           .Expect (mock => mock.GetValue (1))
@@ -71,12 +67,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.AreEqual (
           instance,
           new PersonTestClass ("Peter", 21));
-    }
 
-    [TearDown]
-    public void TearDown ()
-    {
-      _readerMock.VerifyAllExpectations();
+      _readerMock.VerifyAllExpectations ();
     }
   }
 }

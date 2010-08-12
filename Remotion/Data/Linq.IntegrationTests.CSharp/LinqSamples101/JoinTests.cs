@@ -57,6 +57,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the from clause to filter for employees in Seattle, and also list their territories.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - RM-3110")]
     public void LinqToSqlJoin03 ()
     {
       var q =
@@ -156,6 +157,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows a join with a composite key.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - RM-3110")]
     public void LinqToSqlJoin09 ()
     {
       var q =
