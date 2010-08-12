@@ -92,7 +92,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
         otherColumns.Add (sqlColumnExpression);
       }
-
+      //TODO if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression
       return new SqlEntityDefinitionExpression (
           tableInfo.ItemType, tableInfo.TableAlias, null, primaryColumn, otherColumns.ToArray ());
     }
@@ -128,33 +128,33 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
       //TODO implement if needed by integration tests
-      //throw new NotImplementedException ("Implement if needed by integration tests");
+      throw new NotImplementedException ("Implement if needed by integration tests");
 
       //Dummy impl 1
-      ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      //ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
+      //ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      //var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
 
-      var dataTable = _metaModel.GetMetaType (memberInfo.DeclaringType);
+      //var dataTable = _metaModel.GetMetaType (memberInfo.DeclaringType);
 
-      if (dataTable == null)
-        throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+      //if (dataTable == null)
+      //  throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
 
-      var dataMember = dataTable.GetDataMember (memberInfo);
+      //var dataMember = dataTable.GetDataMember (memberInfo);
 
-      if (dataMember == null)
-        throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
+      //if (dataMember == null)
+      //  throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
 
-      if (dataMember.IsAssociation)
-      {
-        throw new NotImplementedException ("Implement if needed by integration tests");
-      }
-      else
-      {
-        return new SqlColumnDefinitionExpression (
-            memberType, sqlColumnExpression.OwningTableAlias, dataMember.MappedName, sqlColumnExpression.IsPrimaryKey);
-      }
+      //if (dataMember.IsAssociation)
+      //{
+      //  throw new NotImplementedException ("Implement if needed by integration tests");
+      //}
+      //else
+      //{
+      //  return new SqlColumnDefinitionExpression (
+      //      memberType, sqlColumnExpression.OwningTableAlias, dataMember.MappedName, sqlColumnExpression.IsPrimaryKey);
+      //}
 
 
       //Dmmy Impl 2
