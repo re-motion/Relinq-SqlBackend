@@ -41,7 +41,9 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter.Utilities
       foreach (var columnID in columnIDs)
       {
         var value = GetValue<Object> (columnID);
-        var metaMemberCollection = from em in entityMembers where em.MappedName == columnID.ColumnName select em;
+
+        var searchID = columnID; //Access to modified closure problem --> if there is no local variable!
+        var metaMemberCollection = from em in entityMembers where em.MappedName == searchID.ColumnName select em;
         var metaMember = metaMemberCollection.First ();
         metaMember.MemberAccessor.SetBoxedValue (ref instance, value);
       }

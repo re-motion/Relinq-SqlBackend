@@ -158,13 +158,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       if (table != null)
       {
         var dataMembers = table.RowType.DataMembers;
-        var primaryKeys = new List<MetaDataMember> ();
-
-        foreach (var member in dataMembers)
-        {
-          if (member.IsPrimaryKey)
-            primaryKeys.Add (member);
-        }
+        var primaryKeys = dataMembers.Where (member => member.IsPrimaryKey).ToList();
 
         if (primaryKeys.Count > 1)
           throw new NotImplementedException ("Multiple primary keys currently not supported");
