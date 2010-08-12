@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Any to return only Categories that have at least one Discontinued product.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
+    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
     public void LinqToSqlExists02 ()
     {
       var q =

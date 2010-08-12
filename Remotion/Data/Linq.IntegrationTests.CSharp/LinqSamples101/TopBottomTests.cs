@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Take to select the first 5 Employees hired.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.InvalidCastException : Unable to cast object of type 'System.Byte[]' to type 'System.Data.Linq.Binary'")]
+    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlTop01 ()
     {
       var q = (

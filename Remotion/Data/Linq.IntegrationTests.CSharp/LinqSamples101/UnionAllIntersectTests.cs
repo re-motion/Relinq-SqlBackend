@@ -106,7 +106,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Except to return a sequence of all countries that Customers live in but no Employees live in.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException: The handler type ResultOperatorBase is not supported by this registry")]
+    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")]
     public void LinqToSqlUnion05 ()
     {
       var q = (
