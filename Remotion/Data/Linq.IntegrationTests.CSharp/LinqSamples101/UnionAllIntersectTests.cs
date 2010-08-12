@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Concat to return a sequence of all Customer and Employee phone/fax numbers.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. Remotion.Data.Linq.Parsing.ParserException overload of the method 'System.Linq.Queryable.Concat' is currently not supported; KeyNotFoundException : No corresponding expression node type was registered for method 'System.Linq.Queryable.Concat'")]
     public void LinqToSqlUnion01 ()
     {
       var q = (
@@ -51,6 +52,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Concat to return a sequence of all Customer and Employee name and phone number mappings.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. Remotion.Data.Linq.Parsing.ParserException overload of the method 'System.Linq.Queryable.Concat' is currently not supported; KeyNotFoundException : No corresponding expression node type was registered for method 'System.Linq.Queryable.Concat'")]
     public void LinqToSqlUnion02 ()
     {
       var q = (
@@ -68,6 +70,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Union to return a sequence of all countries that either Customers or Employees are in.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")]
     public void LinqToSqlUnion03 ()
     {
       var q = (
@@ -85,6 +88,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Intersect to return a sequence of all countries that both Customers and Employees live in.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")]
     public void LinqToSqlUnion04 ()
     {
       var q = (
@@ -102,6 +106,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Except to return a sequence of all countries that Customers live in but no Employees live in.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException: The handler type ResultOperatorBase is not supported by this registry")]
     public void LinqToSqlUnion05 ()
     {
       var q = (

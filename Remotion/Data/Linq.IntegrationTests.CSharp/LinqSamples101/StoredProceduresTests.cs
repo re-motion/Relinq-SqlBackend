@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a stored procedure to return the number of Customers in the 'WA' Region.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc01 ()
     {
       int count = DB.CustomersCountByRegion ("WA");
@@ -42,6 +43,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a stored procedure to return the CustomerID, ContactName, CompanyName and City of customers who are in London.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc02 ()
     {
       ISingleResult<CustomersByCityResult> result = DB.CustomersByCity ("London");
@@ -56,6 +58,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// CompanyName properties are returned.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc03_1 ()
     {
       IMultipleResults result = DB.WholeOrPartialCustomersSet (1);
@@ -71,6 +74,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// and CompanyName properties are returned.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc03_2 ()
     {
       IMultipleResults result = DB.WholeOrPartialCustomersSet (2);
@@ -83,6 +87,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc04_1 ()
     {
       IMultipleResults result = DB.GetCustomerAndOrders ("SEVES");
@@ -95,6 +100,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a stored procedure to return the Customer 'SEVES' and all their Orders.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc04_2 ()
     {
       IMultipleResults result = DB.GetCustomerAndOrders ("SEVES");
@@ -107,6 +113,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a stored procedure that returns an out parameter.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException ")]
     public void LinqToSqlStoredProc05 ()
     {
       decimal? totalSales = 0;

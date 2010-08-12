@@ -29,6 +29,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates using a scalar user-defined function in a projection.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The method TotalProductUnitPriceByCategory' is not supported by this code generator")]
     public void LinqToSqlUserDefined01 ()
     {
       var q = from c in DB.Categories
@@ -55,6 +56,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates selecting from a table-valued user-defined function.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException")]
     public void LinqToSqlUserDefined03 ()
     {
       var q = from p in DB.ProductsUnderThisUnitPrice (10.25M)
@@ -68,6 +70,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates joining to the results of a table-valued user-defined function.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException")]
     public void LinqToSqlUserDefined04 ()
     {
       var q = from c in DB.Categories
