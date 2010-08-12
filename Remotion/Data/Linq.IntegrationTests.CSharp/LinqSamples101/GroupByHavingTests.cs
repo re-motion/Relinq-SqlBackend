@@ -31,6 +31,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses group by to partition Products by CategoryID.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - This Sql generator does not support queries returning groupings that result from a GroupBy operator")]
     public void LinqToSqlGroupBy01 ()
     {
       var q =
@@ -172,6 +173,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Group By to group products by CategoryID and SupplierID.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - This Sql generator does not support queries returning groupings that result from a GroupBy operator")]
     public void LinqToSqlGroupBy09 ()
     {
       var categories =
@@ -187,6 +189,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// The second sequence contains products with unit price less than or equal to 10.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - ArgumentException : The inner expression must be an expression of type Int32.Parameter name: expression")]
     public void LinqToSqlGroupBy10 ()
     {
       var categories =

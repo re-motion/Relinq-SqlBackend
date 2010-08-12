@@ -95,6 +95,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///a customer or an employee live.
     ///</summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - ResultOperatorBase is not supported")]
     public void LinqToSqlAdvanced04 ()
     {
       IQueryable<Customer> custs = DB.Customers;

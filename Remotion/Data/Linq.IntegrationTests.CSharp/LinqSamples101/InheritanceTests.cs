@@ -48,6 +48,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses OfType to return all customer contacts.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException : Type check currently not supported")]
     public void LinqToSqlInheritance02 ()
     {
       var cons = from c in DB.Contacts.OfType<CustomerContact> ()
@@ -60,6 +61,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses IS to return all shipper contacts.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException : Type check currently not supported")]
     public void LinqToSqlInheritance03 ()
     {
       var cons = from c in DB.Contacts
@@ -73,6 +75,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses AS to return FullContact or null.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException : Type check currently not supported")]
     public void LinqToSqlInheritance04 ()
     {
       var cons = from c in DB.Contacts

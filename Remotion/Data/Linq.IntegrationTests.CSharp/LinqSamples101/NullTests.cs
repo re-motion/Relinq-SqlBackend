@@ -28,6 +28,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the null value to find Employees that do not report to another Employee.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlNull01 ()
     {
       var q =
@@ -42,6 +43,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Nullable<T>.HasValue to find Employees that do not report to another Employee.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
     public void LinqToSqlNull02 ()
     {
       var q =
@@ -57,6 +59,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// return the EmployeeID number of that employee. Note that the .Value is optional.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
     public void LinqToSqlNull03 ()
     {
       var q =

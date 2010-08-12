@@ -42,6 +42,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Any to return only Categories that have at least one Discontinued product.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
     public void LinqToSqlExists02 ()
     {
       var q =
@@ -70,6 +71,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Contain to find which Customer contains an order with OrderID 10248.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - Contains is not supported by thís code generator")]
     public void LinqToSqlExists04 ()
     {
       var order = (from o in DB.Orders

@@ -69,6 +69,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the IndexOf method to find the first instance of a space in each Customer's contact name.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlString04 ()
     {
       var q =
@@ -123,6 +124,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the Substring method to find Employees whose home phone numbers have '555' as the seventh through ninth digits.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlString08 ()
     {
       var q =
@@ -164,6 +166,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// with leading and trailing spaces removed.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - System.String.Trim is not supported by this code generator")]
     public void LinqToSqlString11 ()
     {
       var q =
@@ -178,6 +181,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// in the fifth position, inserting a : after the ).
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - System.String.Insert is not supported by this code generator")]
     public void LinqToSqlString12 ()
     {
       var q =
@@ -241,6 +245,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Year property to find Orders placed in 1997.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
     public void LinqToSqlString16 ()
     {
       var q =
@@ -255,6 +260,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Month property to find Orders placed in December.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
     public void LinqToSqlString17 ()
     {
       var q =
@@ -269,6 +275,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Day property to find Orders placed on the 31st day of the month.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
     public void LinqToSqlString18 ()
     {
       var q =

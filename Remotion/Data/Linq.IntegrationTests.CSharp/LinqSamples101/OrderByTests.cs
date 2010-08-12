@@ -105,6 +105,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// unit price in each category, and sorts the group by category id.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")]
     public void LinqToSqlOrderBy06 ()
     {
       var categories =

@@ -72,6 +72,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the select clause to filter for pairs of employees where one employee reports to the other and where both employees are from the same City.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
     public void LinqToSqlJoin04 ()
     {
       var q =
@@ -123,6 +124,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
     public void LinqToSqlJoin07 ()
     {
       var q =

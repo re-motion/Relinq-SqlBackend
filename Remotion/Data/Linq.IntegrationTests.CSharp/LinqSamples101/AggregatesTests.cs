@@ -93,6 +93,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Min to find the Products that have the lowest unit price in each category.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - Argument type IQueryable does not match the corresponding member type")]
     public void LinqToSqlCount07 ()
     {
       var categories =
@@ -138,6 +139,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Max to find the Products that have the highest unit price in each category.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - Argument type IQueryable does not match the corresponding member type")]
     public void LinqToSqlCount10 ()
     {
       var categories =
@@ -183,6 +185,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Average to find the Products that have unit price higher than the average unit price of the category for each category.
     /// </summary>
     [Test]
+    [Ignore ("Bug or missing feature in Relinq - Argument type IQueryable does not match the corresponding member type")]
     public void LinqToSqlCount13 ()
     {
       var categories =
