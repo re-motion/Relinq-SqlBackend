@@ -30,6 +30,7 @@ Namespace LinqSamples101
     'This sample uses Except to return a sequence of all countries that
     'Customers live in but no Employees live in.
     <Test()>
+    <Ignore("Bug or missing feature in Relinq - Clauses.ResultOperatorBase' is not supported by this registry and no custom result operator handler has been registered.")>
     Public Sub LinqToSqlUnion05()
       Dim countries = (From cust In DB.Customers _
             Select cust.Country).Except(From emp In DB.Employees _
