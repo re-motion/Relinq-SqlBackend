@@ -21,13 +21,13 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -81,7 +81,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var expression = new SqlSubStatementExpression (sqlStatement);
-      
+
       var result = expression.ToString();
 
       Assert.That (result, Is.EqualTo ("(SELECT [t] FROM [Table] [t])"));
@@ -90,15 +90,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void CreateSqlTableForSubStatement ()
     {
-      var selectProjection = Expression.Constant (new Cook ());
+      var selectProjection = Expression.Constant (new Cook());
       var sqlStatement =
-          new SqlStatementBuilder () { DataInfo = new StreamedSingleValueInfo (typeof (Cook), false), SelectProjection = selectProjection }.GetSqlStatement ();
+          new SqlStatementBuilder() { DataInfo = new StreamedSingleValueInfo (typeof (Cook), false), SelectProjection = selectProjection }.
+              GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
       var result = expression.CreateSqlTableForSubStatement (expression, JoinSemantics.Inner, "q0");
 
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-      Assert.That (result.TableInfo.GetResolvedTableInfo ().TableAlias, Is.EqualTo ("q0"));
+      Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));
       Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       var newSubStatement = ((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement;
       Assert.That (newSubStatement.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
@@ -112,15 +113,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void CreateSqlTableForSubStatement_StreamedForceSingleValueInfo ()
     {
-      var selectProjection = Expression.Constant (new Cook ());
+      var selectProjection = Expression.Constant (new Cook());
       var sqlStatement =
-          new SqlStatementBuilder () { DataInfo = new StreamedForcedSingleValueInfo (typeof (Cook), false), SelectProjection = selectProjection }.GetSqlStatement ();
+          new SqlStatementBuilder()
+          {
+              DataInfo = new StreamedForcedSingleValueInfo (typeof (Cook), false),
+              SelectProjection = selectProjection,
+              TopExpression = new SqlLiteralExpression (2)
+          }.GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
       var result = expression.CreateSqlTableForSubStatement (expression, JoinSemantics.Inner, "q0");
 
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-      Assert.That (result.TableInfo.GetResolvedTableInfo ().TableAlias, Is.EqualTo ("q0"));
+      Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));
       Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       var newSubStatement = ((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement;
       Assert.That (newSubStatement.SelectProjection, Is.SameAs (sqlStatement.SelectProjection));
