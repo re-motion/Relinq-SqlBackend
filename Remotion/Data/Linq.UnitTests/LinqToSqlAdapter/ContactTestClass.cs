@@ -78,6 +78,39 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
     public class EmployeeContact : ContactTestClass
     {
+      private byte[] _Password;
+
+      [Column (Storage = "_Password", DbType = "NText", UpdateCheck = UpdateCheck.Never)]
+      public byte[] Password
+      {
+        get
+        {
+          return this._Password;
+        }
+        set
+        {
+          this._Password = value;
+        }
+      }
+
+      public override bool Equals (object obj)
+      {
+        if (obj == null || GetType () != obj.GetType ())
+        {
+          return false;
+        }
+        if (!_Password.Equals (((EmployeeContact) obj).Password))
+        {
+          return false;
+        }
+
+        return base.Equals (obj);
+      }
+
+      public override int GetHashCode ()
+      {
+        throw new NotImplementedException ();
+      }
     }
 
     #endregion

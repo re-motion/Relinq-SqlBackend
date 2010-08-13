@@ -195,58 +195,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       }
     }
 
-    [Table (Name = "dbo.Contacts")]
-    [InheritanceMapping (Code = "Unknown", Type = typeof (Contact), IsDefault = true)]
-    [InheritanceMapping (Code = "Employee", Type = typeof (EmployeeContact))]
-    [InheritanceMapping (Code = "Supplier", Type = typeof (SupplierContact))]
-    [InheritanceMapping (Code = "Customer", Type = typeof (CustomerContact))]
-    [InheritanceMapping (Code = "Shipper", Type = typeof (ShipperContact))]
-    public class Contact
-    {
-      private int _ContactID;
-      private string _ContactType;
-
-      [Column (Storage = "_ContactID", AutoSync = AutoSync.OnInsert, DbType = "Int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
-      public int ContactID
-      {
-        get
-        {
-          return this._ContactID;
-        }
-        set { this._ContactID = value; }
-      }
-
-      [Column (Storage = "_ContactType", DbType = "NVarChar(50)", IsDiscriminator = true)]
-      public string ContactType
-      {
-        get
-        {
-          return this._ContactType;
-        }
-        set { this._ContactType = value; }
-      }
-    }
-
-    public abstract class FullContact : Contact
-    {
-    }
-
-    public class CustomerContact : FullContact
-    {
-    }
-
-    public class ShipperContact : Contact
-    {
-    }
-
-    public class SupplierContact : FullContact
-    {
-    }
-
-    public class EmployeeContact : Contact
-    {
-    }
-
     #endregion
 
 
