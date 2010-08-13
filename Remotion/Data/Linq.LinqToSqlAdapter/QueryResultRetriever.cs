@@ -10,6 +10,9 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  /// <summary>
+  /// Implements IQueryResultRetriever for a certain DBConnection defined by the ConnectionManager
+  /// </summary>
   public class QueryResultRetriever : IQueryResultRetriever
   {
     private readonly IConnectionManager _connectionManager;

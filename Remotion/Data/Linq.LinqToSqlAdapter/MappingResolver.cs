@@ -29,6 +29,10 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  /// <summary>
+  /// Implements <see cref="IMappingResolver"/> to resolve expressions from linq2sql to relinq
+  /// Implements <see cref="IReverseMappingResolver"/> to get all metaDataMembers of a type mapped by linq2sql
+  /// </summary>
   public class MappingResolver : IMappingResolver, IReverseMappingResolver
   {
     private readonly MetaModel _metaModel;
