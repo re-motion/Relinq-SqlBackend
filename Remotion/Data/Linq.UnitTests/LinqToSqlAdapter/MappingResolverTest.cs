@@ -26,6 +26,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 {
@@ -36,8 +37,11 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     private IMappingResolver _mappingResolver;
     private IReverseMappingResolver _reverseMappingResolver;
 
-    private Type _unmappedType = typeof (Type);
+    private readonly Type _unmappedType = typeof (Type);
     private const string _unmappedTypeMsg = "System.Type";
+
+    private PropertyInfo _unmappedInfo;
+    private const string _unmappedInfoMsg = "System.Type.GUID";
 
     [SetUp]
     public void SetUp()
@@ -45,6 +49,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _generator=new UniqueIdentifierGenerator();
       _mappingResolver = new MappingResolver (new AttributeMappingSource ().GetModel (typeof (DataContextTestClass)));
       _reverseMappingResolver = (IReverseMappingResolver) _mappingResolver;
+      _unmappedInfo=_unmappedType.GetProperty ("GUID");
+      
     }
 
     [Test]
@@ -226,7 +232,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
-    public void ResolveJoinInfo_ShouldThrowUnmappedException ()
+    public void ResolveJoinInfo_ShouldThrowUnmappedExceptionForType ()
     {
       ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
 
@@ -241,7 +247,64 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
     }
 
-   
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member: " + _unmappedInfoMsg + " is not a mapped member")]
+    public void ResolveJoinInfo_ShouldThrowUnmappedExceptionForMember ()
+    {
+      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+
+      SqlColumnDefinitionExpression customerPrimaryKey = new SqlColumnDefinitionExpression (
+          typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
+
+      SqlEntityDefinitionExpression customerDefinition = new SqlEntityDefinitionExpression (
+          customerTableInfo.ItemType, customerTableInfo.TableAlias, null, customerPrimaryKey);
+     
+      UnresolvedJoinInfo joinInfo = new UnresolvedJoinInfo (customerDefinition, _unmappedInfo, JoinCardinality.One);
+
+      _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
+    public void TestResolveSimpleTableInfo_ShouldThrowUnmappedExceptionForType ()
+    {
+      ResolvedSimpleTableInfo simpleTableInfo = new ResolvedSimpleTableInfo (_unmappedType, "dbo.Region", "t0");
+
+      _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
+    public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForType ()
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, primaryKeyColumn);
+
+      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      memberInfoStub
+        .Stub (stub => stub.DeclaringType)
+        .Return (_unmappedType);
+
+      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member: Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.PersonTestClass.stub is not a mapped member")]
+    public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForMember ()
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, primaryKeyColumn);
+      
+      var memberInfoStub = MockRepository.GenerateStub<MemberInfo> ();
+      memberInfoStub
+        .Stub (stub => stub.DeclaringType)
+        .Return (typeof (PersonTestClass));
+      memberInfoStub
+          .Stub (stub => stub.Name)
+          .Return ("stub");
+      
+      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
+    }
 
     //A-TEAM
 

@@ -141,6 +141,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       //if (desiredType.IsAssignableFrom (expression.Type))
       //  return Expression.Constant (true);
 
+      // TODO if called, GetMetaType and similar methods must be tested
+
       //var desiredDiscriminatorValue = _metaModel.GetMetaType (desiredType).InheritanceCode;
       //if (desiredDiscriminatorValue == null)
       //  throw new UnmappedItemException ("Cannot perform a type check for type ... - there is no inheritance code for this type.");
@@ -158,6 +160,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
+      // TODO if called, GetMetaType and similar methods must be tested
       ArgumentUtility.CheckNotNull ("entityType", entityType);
 
       ReadOnlyCollection<MetaDataMember> dataMembers = _metaModel.GetTable (entityType).RowType.DataMembers;
@@ -174,11 +177,19 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     private static MetaDataMember GetDataMember (MetaType dataType, MemberInfo member)
     {
-      var dataMember = dataType.GetDataMember (member);
+      MetaDataMember dataMember;
+      try
+      {
+        dataMember = dataType.GetDataMember (member);
+      }
+      catch (InvalidOperationException)
+      {
+        throw new UnmappedItemException ("Cannot resolve member: " + member.DeclaringType.FullName + "." + member.Name + " is not a mapped member");
+      }
 
       if (dataMember == null)
-        throw new UnmappedItemException ("Cannot resolve member: " + member + " is not a mapped member");
-
+         throw new UnmappedItemException ("Cannot resolve member: " + member.DeclaringType.FullName + "." + member.Name + " is not a mapped member");
+    
       return dataMember;
     }
 
