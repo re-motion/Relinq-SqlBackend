@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
@@ -183,14 +184,20 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding ();
       var pw = encoding.GetBytes("passwordtext");
 
+      //var photo = new Binary (encoding.GetBytes ("myPhoto"));
+      var photo = encoding.GetBytes ("myPhoto");
+
       _readerMock
           .Expect (mock => mock.GetValue (1))
           .Return (pw);
       _readerMock
           .Expect (mock => mock.GetValue (2))
-          .Return (1); //return value of discriminator column
+          .Return (photo);
       _readerMock
           .Expect (mock => mock.GetValue (3))
+          .Return (1); //return value of discriminator column
+      _readerMock
+          .Expect (mock => mock.GetValue (4))
           .Return ("Employee");
 
       _reverseMappingResolverMock
@@ -204,9 +211,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       var columnIDs = new[]
                       {
                           new ColumnID ("Password", 1),
-                          new ColumnID ("ContactID", 2),
-                          new ColumnID ("ContactType", 3)
-                          
+                          new ColumnID ("Photo", 2),
+                          new ColumnID ("ContactID", 3),
+                          new ColumnID ("ContactType", 4)
                       };
 
       var contact = rowWrapper.GetEntity<ContactTestClass> (columnIDs);
@@ -215,6 +222,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       expectedContact.ContactID = 1;
       expectedContact.ContactType = "Employee";
       expectedContact.Password = pw;
+      expectedContact.Photo = new Binary(photo);
 
       _readerMock.VerifyAllExpectations ();
       _reverseMappingResolverMock.VerifyAllExpectations ();

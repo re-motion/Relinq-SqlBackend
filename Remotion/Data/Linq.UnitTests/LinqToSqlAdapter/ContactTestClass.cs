@@ -79,6 +79,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     public class EmployeeContact : ContactTestClass
     {
       private byte[] _Password;
+      private System.Data.Linq.Binary _Photo;
 
       [Column (Storage = "_Password", DbType = "NText", UpdateCheck = UpdateCheck.Never)]
       public byte[] Password
@@ -93,16 +94,29 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         }
       }
 
+      [Column (Storage = "_Photo", DbType = "Image", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+      public System.Data.Linq.Binary Photo
+      {
+        get
+        {
+          return this._Photo;
+        }
+        set
+        {
+          this._Photo = value;
+        }
+      }
+
       public override bool Equals (object obj)
       {
         if (obj == null || GetType () != obj.GetType ())
-        {
           return false;
-        }
+
         if (!_Password.Equals (((EmployeeContact) obj).Password))
-        {
           return false;
-        }
+
+        if (!_Photo.Equals (((EmployeeContact) obj).Photo))
+          return false;
 
         return base.Equals (obj);
       }
