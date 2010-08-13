@@ -133,33 +133,25 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public Expression ResolveTypeCheck (Expression expression, Type desiredType)
     {
-      // TODO: Use this implementation. Add a test showing that a check for eg. Contact on a Customer expression always returns Expression.Constant (true).
-      // TODO: Also add tests for desiredTypes whose mapping types have no inheritance code.
-      // TODO: Also add tests for expressions whose mapping types have no discriminator column.
       // TODO: Add a test showing that a type check for eg. Customer on a Contact expression returns an expression that compares the discriminator 
       // TODO: member with the inheritance code value.
 
-      //ArgumentUtility.CheckNotNull ("expression", expression);
-      //ArgumentUtility.CheckNotNull ("desiredType", desiredType);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("desiredType", desiredType);
 
-      //if (desiredType.IsAssignableFrom (expression.Type))
-      //  return Expression.Constant (true);
+      if (desiredType.IsAssignableFrom (expression.Type))
+        return Expression.Constant (true);
 
-      // TODO if called, GetMetaType and similar methods must be tested
+      var desiredDiscriminatorValue = GetMetaType (desiredType).InheritanceCode;
+      if (desiredDiscriminatorValue == null)
+        throw new UnmappedItemException ("Cannot perform a type check for type " + desiredType + " - there is no inheritance code for this type.");
 
-      //var desiredDiscriminatorValue = _metaModel.GetMetaType (desiredType).InheritanceCode;
-      //if (desiredDiscriminatorValue == null)
-      //  throw new UnmappedItemException ("Cannot perform a type check for type ... - there is no inheritance code for this type.");
+      var discriminatorDataMember =  GetMetaType (expression.Type).Discriminator;
+      Debug.Assert (discriminatorDataMember != null);
 
-      //var discriminatorDataMember = _metaModel.GetMetaType (expression.Type).Discriminator;
-      //if (discriminatorDataMember == null)
-      //  throw new UnmappedItemException ("Cannot perform a type check for type ... - there is no discriminator column.");
-
-      //return Expression.Equal (
-      //    Expression.MakeMemberAccess (expression, discriminatorDataMember.Member), 
-      //    Expression.Constant (desiredDiscriminatorValue));
-
-      throw new NotImplementedException ("Type check currently not supported");
+      return Expression.Equal (
+          Expression.MakeMemberAccess (expression, discriminatorDataMember.Member),
+          Expression.Constant (desiredDiscriminatorValue));
     }
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
