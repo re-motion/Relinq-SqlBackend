@@ -156,19 +156,10 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
-      // TODO if called, GetMetaType and similar methods must be tested
       ArgumentUtility.CheckNotNull ("entityType", entityType);
 
-      ReadOnlyCollection<MetaDataMember> dataMembers = _metaModel.GetTable (entityType).RowType.DataMembers;
-      var filteredMembers = dataMembers.Where (dataMember => !dataMember.IsAssociation);
-
-      return filteredMembers.ToArray ();
-
-      // TODO: Change to use this implementation. Before doing so, write a unit test for GetMetaDataMembers (typeof (Contact)) and expect
-      // TODO: that members of Customer and Supplier are also returned. Members must not be duplicated, ContactID must be Contact.ContactID 
-      // TODO: (not Customer.ContactID or Supplier.ContactID).
-      //var metaType = _metaModel.GetMetaType (entityType).InheritanceRoot;
-      //return GetMetaDataMembersRecursive (metaType);
+      var metaType = _metaModel.GetMetaType (entityType).InheritanceRoot;
+      return GetMetaDataMembersRecursive (metaType);
     }
 
     private static MetaDataMember GetDataMember (MetaType dataType, MemberInfo member)

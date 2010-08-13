@@ -184,7 +184,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding ();
       var pw = encoding.GetBytes("passwordtext");
 
-      //var photo = new Binary (encoding.GetBytes ("myPhoto"));
       var photo = encoding.GetBytes ("myPhoto");
 
       _readerMock

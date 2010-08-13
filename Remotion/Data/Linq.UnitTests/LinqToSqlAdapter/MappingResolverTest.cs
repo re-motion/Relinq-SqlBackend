@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -36,6 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     private UniqueIdentifierGenerator _generator;
     private IMappingResolver _mappingResolver;
     private IReverseMappingResolver _reverseMappingResolver;
+    private MetaModel _metaModel;
 
     private readonly Type _unmappedType = typeof (Type);
     private const string _unmappedTypeMsg = "System.Type";
@@ -50,6 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _mappingResolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (DataContextTestClass)));
       _reverseMappingResolver = (IReverseMappingResolver) _mappingResolver;
       _unmappedInfo = _unmappedType.GetProperty ("GUID");
+      _metaModel = new AttributeMappingSource ().GetModel (typeof (DataContextTestClass));
     }
 
     [Test]
@@ -309,8 +312,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ResolveTypeCheck_ShouldReturnConstantExpression ()
     {
-      Expression customerExpression = Expression.Constant (new DataContextTestClass.CustomerContact());
-      Type desiredType = new DataContextTestClass.Contact().GetType();
+      Expression customerExpression = Expression.Constant (new ContactTestClass.CustomerContact());
+      Type desiredType = new ContactTestClass().GetType();
 
       Expression result = _mappingResolver.ResolveTypeCheck (customerExpression, desiredType);
       Expression excpectedExpression = Expression.Constant (true);
@@ -325,7 +328,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         )]
     public void ResolveTypeCheck_ShouldThrowUnmappedItemExceptionForInheritanceCode ()
     {
-      Expression contactExpression = Expression.Constant (new DataContextTestClass.Contact());
+      Expression contactExpression = Expression.Constant (new ContactTestClass ());
       Type desiredTypeNotAssignable = new DataContextTestClass.Customer().GetType();
 
       _mappingResolver.ResolveTypeCheck (contactExpression, desiredTypeNotAssignable);
@@ -334,8 +337,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ResolveTypeCheck_ShouldReturnBinaryExpression ()
     {
-      Expression contactExpression = Expression.Constant (new DataContextTestClass.Contact());
-      Type desiredType = new DataContextTestClass.CustomerContact().GetType();
+      Expression contactExpression = Expression.Constant (new ContactTestClass ());
+      Type desiredType = new ContactTestClass.CustomerContact().GetType();
 
       var discriminatorDataMember = contactExpression.Type.GetProperty ("ContactType");
 
@@ -420,6 +423,39 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       var expectedExpr = constantExpr;
 
       Assert.AreEqual (expectedExpr, result);
+    }
+
+
+    // TODO: that members of Customer and Supplier are also returned. Members must not be duplicated, ContactID must be Contact.ContactID 
+    // TODO: (not Customer.ContactID or Supplier.ContactID).
+    [Test]
+    public void GetMetaMembers()
+    {
+      var members = _reverseMappingResolver.GetMetaDataMembers (typeof (ContactTestClass));
+
+      var suppMembers = _metaModel.GetMetaType (typeof (ContactTestClass.SupplierContact)).DataMembers.ToDictionary(member => member.MappedName);
+      var empMembers = _metaModel.GetMetaType (typeof (ContactTestClass.EmployeeContact)).DataMembers.ToDictionary (member => member.MappedName);
+
+      var mergedDictionary = suppMembers.ToDictionary (suppMember => suppMember.Key, suppMember => suppMember.Value);
+
+      foreach (var empMember in empMembers)
+      {
+        if (!mergedDictionary.ContainsKey (empMember.Key))
+          mergedDictionary.Add (empMember.Key, empMember.Value);
+      }
+
+      foreach (var member in members)
+      { 
+        if (member.MappedName == "ContactID")
+        {
+          Assert.IsTrue (member.DeclaringType.Type == typeof (ContactTestClass));
+        }
+        if (member.MappedName == "HomePage")
+        {
+          Assert.IsTrue (member.DeclaringType.Type == typeof (ContactTestClass.SupplierContact));
+        }
+        Assert.IsTrue (mergedDictionary.ContainsKey (member.MappedName));
+      }
     }
   }
 }

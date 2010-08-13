@@ -8,6 +8,11 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  /// <summary>
+  /// Represents a row in the database result for an executed SQL command.
+  /// Reads values and entities from a row.
+  /// Implementation for Linq2Sql 
+  /// </summary>
   public class RowWrapper : IDatabaseResultRow
   {
     private readonly IDataReader _dataReader;
@@ -61,7 +66,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
         if (value is byte[])
         {
-          if (member.Member.Type.FullName.Equals("System.Data.Linq.Binary")) //TODO improve type check
+          if (member.Member.Type == typeof(Binary))
           {
             value = new Binary ((byte[]) value);
           }

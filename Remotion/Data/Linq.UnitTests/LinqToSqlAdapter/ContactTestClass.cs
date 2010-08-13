@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         {
           return false;
         }
-        if(!_HomePage.Equals(((SupplierContact)obj).HomePage))
+        if(_HomePage != ((SupplierContact)obj).HomePage)
         {
           return false;
         }
@@ -103,7 +103,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         }
         set
         {
-          this._Photo = value;
+          _Photo = value;
         }
       }
 
@@ -112,10 +112,10 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         if (obj == null || GetType () != obj.GetType ())
           return false;
 
-        if (!_Password.Equals (((EmployeeContact) obj).Password))
+        if (_Password != ((EmployeeContact) obj).Password)
           return false;
 
-        if (!_Photo.Equals (((EmployeeContact) obj).Photo))
+        if (_Photo != ((EmployeeContact) obj).Photo)
           return false;
 
         return base.Equals (obj);
@@ -144,7 +144,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         return false;
       }
 
-      if (!_ContactType.Equals(((ContactTestClass) obj)._ContactType))
+
+      if (_ContactType != ((ContactTestClass) obj)._ContactType)
       {
         return false;
       }
