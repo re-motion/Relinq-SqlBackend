@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
   [Database (Name = "DATACONTEXT")]
   internal class DataContextTestClass : DataContext
   {
-    private static readonly MappingSource mappingSource = new AttributeMappingSource();
+    private static readonly MappingSource mappingSource = new AttributeMappingSource ();
 
     // TODO: Remove commented code
     // TODO: Add inheritance hierarchy Contact/Customer-Supplier with discriminator column
@@ -36,18 +36,20 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     public DataContextTestClass (string connection)
-        : base (connection, mappingSource)
+      : base (connection, mappingSource)
     {
     }
 
     #endregion
 
+    #region inner classes
+    
     [Table (Name = "dbo.Customers")]
-    public class Customer //: INotifyPropertyChanging, INotifyPropertyChanged
+    public class Customer
     {
       private string _CustomerID;
       private string _CompanyName;
-      private readonly EntitySet<Order> _Orders = new EntitySet<Order>();
+      private readonly EntitySet<Order> _Orders = new EntitySet<Order> ();
 
       [Column (Storage = "_CustomerID", DbType = "NChar(5) NOT NULL", CanBeNull = false, IsPrimaryKey = true)]
       public string CustomerID
@@ -55,14 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         get { return _CustomerID; }
         set
         {
-          if ((_CustomerID != value))
-          {
-            //this.OnCustomerIDChanging (value);
-            //this.SendPropertyChanging ();
-            _CustomerID = value;
-            //this.SendPropertyChanged ("CustomerID");
-            //this.OnCustomerIDChanged ();
-          }
+          _CustomerID = value;
         }
       }
 
@@ -70,17 +65,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       public string CompanyName
       {
         get { return _CompanyName; }
-        set
-        {
-          if ((_CompanyName != value))
-          {
-            //this.OnCompanyNameChanging (value);
-            //this.SendPropertyChanging ();
-            _CompanyName = value;
-            //this.SendPropertyChanged ("CompanyName");
-            //this.OnCompanyNameChanged ();
-          }
-        }
+        set { _CompanyName = value; }
       }
 
       [Association (Name = "Customer_Order", Storage = "_Orders", OtherKey = "CustomerID")]
@@ -92,13 +77,13 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Table (Name = "dbo.Region")]
-    public class Region //: INotifyPropertyChanging, INotifyPropertyChanged
+    public class Region
     {
       private int _RegionID;
 
       private string _RegionDescription;
 
-      private readonly EntitySet<Territory> _Territories = new EntitySet<Territory>();
+      private readonly EntitySet<Territory> _Territories = new EntitySet<Territory> ();
 
 
       [Column (Storage = "_RegionID", DbType = "Int NOT NULL", IsPrimaryKey = true)]
@@ -107,14 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         get { return _RegionID; }
         set
         {
-          if ((_RegionID != value))
-          {
-            //this.OnRegionIDChanging (value);
-            //this.SendPropertyChanging ();
-            _RegionID = value;
-            //this.SendPropertyChanged ("RegionID");
-            //this.OnRegionIDChanged ();
-          }
+          _RegionID = value;
         }
       }
 
@@ -124,14 +102,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         get { return _RegionDescription; }
         set
         {
-          if ((_RegionDescription != value))
-          {
-            //this.OnRegionDescriptionChanging (value);
-            //this.SendPropertyChanging ();
-            _RegionDescription = value;
-            //this.SendPropertyChanged ("RegionDescription");
-            //this.OnRegionDescriptionChanged ();
-          }
+          _RegionDescription = value;
         }
       }
 
@@ -144,12 +115,12 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Table (Name = "dbo.Territories")]
-    public class Territory //: INotifyPropertyChanging, INotifyPropertyChanged
+    public class Territory
     {
     }
 
     [Table (Name = "dbo.Orders")]
-    public class Order // : INotifyPropertyChanging, INotifyPropertyChanged
+    public class Order
     {
       private int _OrderID;
       private string _CustomerID;
@@ -223,7 +194,61 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         }
       }
     }
-  }
 
-  //DataContextTestClass
+    [Table (Name = "dbo.Contacts")]
+    [InheritanceMapping (Code = "Unknown", Type = typeof (Contact), IsDefault = true)]
+    [InheritanceMapping (Code = "Employee", Type = typeof (EmployeeContact))]
+    [InheritanceMapping (Code = "Supplier", Type = typeof (SupplierContact))]
+    [InheritanceMapping (Code = "Customer", Type = typeof (CustomerContact))]
+    [InheritanceMapping (Code = "Shipper", Type = typeof (ShipperContact))]
+    public class Contact
+    {
+      private int _ContactID;
+      private string _ContactType;
+
+      [Column (Storage = "_ContactID", AutoSync = AutoSync.OnInsert, DbType = "Int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+      public int ContactID
+      {
+        get
+        {
+          return this._ContactID;
+        }
+        set { this._ContactID = value; }
+      }
+
+      [Column (Storage = "_ContactType", DbType = "NVarChar(50)", IsDiscriminator = true)]
+      public string ContactType
+      {
+        get
+        {
+          return this._ContactType;
+        }
+        set { this._ContactType = value; }
+      }
+    }
+
+    public abstract class FullContact : Contact
+    {
+    }
+
+    public class CustomerContact : FullContact
+    {
+    }
+
+    public class ShipperContact : Contact
+    {
+    }
+
+    public class SupplierContact : FullContact
+    {
+    }
+
+    public class EmployeeContact : Contact
+    {
+    }
+
+    #endregion
+
+
+  }//DataContextTestClass
 }
