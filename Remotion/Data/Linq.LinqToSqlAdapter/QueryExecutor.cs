@@ -24,18 +24,28 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  /// <summary>
+  /// Constitutes the bridge between re-linq and a Linq2Sql.
+  /// </summary>
   public class QueryExecutor : IQueryExecutor
   {
     private readonly IQueryResultRetriever _resultRetriever;
     private readonly IMappingResolver _mappingResolver;
+    private readonly bool _showQuery;
 
-    public QueryExecutor (IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver)
+    public QueryExecutor (IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver, bool showQuery)
     {
       ArgumentUtility.CheckNotNull ("resultRetriever", resultRetriever);
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
 
+      _showQuery = showQuery;
       _resultRetriever = resultRetriever;
       _mappingResolver = mappingResolver;
+    }
+
+    public QueryExecutor(IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver) : this(resultRetriever, mappingResolver, false)
+    {
+      
     }
 
     public T ExecuteScalar<T> (QueryModel queryModel)
@@ -83,9 +93,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       generationStage.GenerateTextForOuterSqlStatement (builder, resolvedStatement);
 
       var command = builder.GetCommand ();
-      // TODO: Add a flag to QueryExecutor's ctor allowing to dump the SQL statement.
-      //Console.WriteLine (command.CommandText);
-      //Console.WriteLine (SeparatedStringBuilder.Build (", ", command.Parameters.Select (p => p.Name + "=" + p.Value)));
+      if (_showQuery)
+      {
+        Console.WriteLine (command.CommandText);
+        Console.WriteLine (SeparatedStringBuilder.Build (", ", command.Parameters.Select (p => p.Name + "=" + p.Value)));
+      }
       return command;
     }
   }

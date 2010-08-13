@@ -36,6 +36,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     private IMappingResolver _mappingResolver;
     private IReverseMappingResolver _reverseMappingResolver;
 
+    private Type _unmappedType = typeof (Type);
+    private const string _unmappedTypeMsg = "System.Type";
+
     [SetUp]
     public void SetUp()
     {
@@ -214,10 +217,36 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve table: " + _unmappedTypeMsg + " is not a mapped table")]
+    public void ResolveTableInfo_ShouldThrowUnmappedException()
+    {
+      _mappingResolver.ResolveTableInfo (new UnresolvedTableInfo (_unmappedType), _generator);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
+    public void ResolveJoinInfo_ShouldThrowUnmappedException ()
+    {
+      ResolvedSimpleTableInfo customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+
+      SqlColumnDefinitionExpression customerPrimaryKey = new SqlColumnDefinitionExpression (
+          typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
+
+      SqlEntityDefinitionExpression customerDefinition = new SqlEntityDefinitionExpression (
+          _unmappedType, customerTableInfo.TableAlias, null, customerPrimaryKey);
+      PropertyInfo customerOrders = customerTableInfo.ItemType.GetProperty ("Orders");
+      UnresolvedJoinInfo joinInfo = new UnresolvedJoinInfo (customerDefinition, customerOrders, JoinCardinality.One);
+
+      _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
+    }
+
+   
+
     //A-TEAM
 
     [Test]
-    [ExpectedException (typeof (NotImplementedException))]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member CustomerID appplied to column CustomerID")]
     public void ResolveMemberExpressionGivingSqlColumnDefinitionExpression ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
@@ -231,7 +260,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (typeof (NotImplementedException))]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member CustomerID appplied to column CustomerID")]
     public void ResolveMemberExpressionGivingSqlColumnReferenceExpression ()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "s", "CustomerID", true);
