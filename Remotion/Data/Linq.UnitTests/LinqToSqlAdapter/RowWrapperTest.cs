@@ -2,12 +2,10 @@
 // All rights reserved.
 //
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -46,9 +44,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _readerMock.VerifyAllExpectations ();
     }
 
-    //TODO: Also write a test showing that types without discriminator column can still be instantiated.
     [Test]
-    public void SimpleGetEntity_ShouldReturnEntity ()
+    public void GetEntity_TypeWithoutDiscriminator ()
     {
       _readerMock
           .Expect (mock => mock.GetValue (1))
@@ -77,10 +74,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           new PersonTestClass ("Peter", 21));
     }
 
-    //TODO Use this implementation instead. Before doing so, write a test showing that GetEntity<Contact> will instantiate a Customer
-    // TODO: if the CustomerType discriminator column contains the string "Customer".
     [Test]
-    public void GetEntityMindingInheritance_Simple ()
+    public void GetEntity_CreatesInstanceAccordingToDiscriminatorColumn ()
     {
       _readerMock
           .Expect (mock => mock.GetValue (2))
@@ -106,9 +101,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.IsInstanceOfType (typeof (ContactTestClass.CustomerContact), customer);
     }
 
-    // TODO: Also write a test showing that if the discriminator column contains null, T (eg. Contact) is instantiated.
     [Test]
-    public void GetEntityMindingInheritance_DiscriminatorColumnIsNull ()
+    public void GetEntity_CreateDefaultInstanceIfDiscriminatorIsNull ()
     {
       _readerMock
           .Expect (mock => mock.GetValue (2))
@@ -134,9 +128,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.IsInstanceOfType (typeof (ContactTestClass), contact);
     }
 
-    //TODO: Also write a test showing that when entityMembers contains members of eg. Supplier, those members do not cause an exception 
     [Test]
-    public void GetEntityMindingInheritance_AdditionalMappedMembersInSubTypes()
+    public void GetEntity_AdditionalMappedMembersInSubTypesDontCauseException()
     {
       _readerMock
           .Expect (mock => mock.GetValue (2))
@@ -177,9 +170,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.IsTrue (contact.Equals(expectedContact));
     }
 
-    // TODO: Also write a test showing that byte[]s can be used.
     [Test]
-    public void GetEntityMindingInheritance_ByteArraysCanBeUsed ()
+    public void GetEntity_ByteArraysCanBeUsed ()
     {
       System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding ();
       var pw = encoding.GetBytes("passwordtext");
