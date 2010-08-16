@@ -38,7 +38,6 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses OfType to return all customer contacts.")> _
-    '<Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     <Test()>
     Public Sub LinqToSqlInheritance02()
 
@@ -49,8 +48,6 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses IS to return all shipper contacts.")> _
-
-    '<Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     <Test()>
     Public Sub LinqToSqlInheritance03()
 
