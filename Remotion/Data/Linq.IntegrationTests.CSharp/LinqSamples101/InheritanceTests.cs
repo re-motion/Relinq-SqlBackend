@@ -24,13 +24,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   public class InheritanceTests:TestBase
   {
-    // TODO: These tests should work when MappingResolver/RowWrapper missing features have been implemented
-
     /// <summary>
     /// This sample returns all contacts where the city is London.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq")]
     public void LinqToSqlInheritance01 ()
     {
       var cons = from c in DB.Contacts
@@ -84,7 +81,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a cast to retrieve customer contacts who live in London.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq")]
     public void LinqToSqlInheritance05 ()
     {
       var cons = from c in DB.Contacts

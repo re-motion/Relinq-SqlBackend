@@ -426,8 +426,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
 
-    // TODO: that members of Customer and Supplier are also returned. Members must not be duplicated, ContactID must be Contact.ContactID 
-    // TODO: (not Customer.ContactID or Supplier.ContactID).
     [Test]
     public void GetMetaMembers()
     {

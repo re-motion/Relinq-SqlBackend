@@ -133,9 +133,6 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public Expression ResolveTypeCheck (Expression expression, Type desiredType)
     {
-      // TODO: Add a test showing that a type check for eg. Customer on a Contact expression returns an expression that compares the discriminator 
-      // TODO: member with the inheritance code value.
-
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("desiredType", desiredType);
 
@@ -220,7 +217,6 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     {
       // TODO RM-3110: Refactor when re-linq supports compound keys
 
-      // TODO: Throw NotSupportedException if _metaModel.GetMetaType (tableInfo.ItemType).IdentityMembers.Count != 1;
       Debug.Assert (metaAssociation.ThisKey.Count == 1);
       Debug.Assert (metaAssociation.OtherKey.Count == 1);
 

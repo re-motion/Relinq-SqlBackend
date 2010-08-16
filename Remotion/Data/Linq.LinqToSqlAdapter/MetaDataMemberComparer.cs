@@ -20,7 +20,6 @@ using System.Data.Linq.Mapping;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
-  // TODO: Add unit tests
   /// <summary>
   /// Compares <see cref="MetaDataMember"/> instances based on their <see cref="MetaDataMember.MappedName"/> properties.
   /// </summary>

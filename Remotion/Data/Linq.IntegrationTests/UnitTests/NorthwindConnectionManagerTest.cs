@@ -16,8 +16,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests
       NorthwindConnectionManager manager = new NorthwindConnectionManager();
       IDbConnection connection = manager.Open();
 
-      // TODO better solution?
       Assert.AreEqual (connection.ConnectionString, "Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;");
+      Assert.IsTrue (connection.State==ConnectionState.Open);
     }
   }
 }

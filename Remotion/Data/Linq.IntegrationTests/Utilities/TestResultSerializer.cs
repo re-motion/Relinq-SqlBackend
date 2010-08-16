@@ -191,7 +191,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       _textWriter.Write (IsAnonymousType (value) ? MakeAnonym (value) : value.GetType().Name);
     }
 
-    //WORKAROUND: May not working with all compiler version
+    //WORKAROUND: May not working with all compiler versions
     private bool IsAnonymousType(object value)
     {
       return value.GetType().Name.Contains ("`");
