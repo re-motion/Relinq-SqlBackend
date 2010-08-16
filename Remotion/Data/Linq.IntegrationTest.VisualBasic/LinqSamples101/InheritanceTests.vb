@@ -38,8 +38,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses OfType to return all customer contacts.")> _
+    '<Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     Public Sub LinqToSqlInheritance02()
 
       Dim cons = From contact In DB.Contacts.OfType(Of CustomerContact)() _
@@ -49,8 +49,9 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses IS to return all shipper contacts.")> _
+
+    '<Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - multiple types and type check currently not supported")>
     Public Sub LinqToSqlInheritance03()
 
       Dim cons = From contact In DB.Contacts _
@@ -63,7 +64,7 @@ Namespace LinqSamples101
 
     'This sample uses CType to return FullContact or Nothing.")> _
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - multiple types currently not supported")>
+    <Ignore("Bug or missing feature in Relinq - System.InvalidCastException : Unable to cast object of type 'Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.ShipperContact' to type 'Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.FullContact'.")>
     Public Sub LinqToSqlInheritance04()
       Dim cons = From contact In DB.Contacts _
             Select CType(contact, FullContact)
@@ -73,6 +74,7 @@ Namespace LinqSamples101
 
     'This sample uses a cast to retrieve customer contacts who live in London.")> _
     <Test()>
+    <Ignore("System.NotSupportedException : Cannot resolve member 'ContactType' applied to expression 'contact'; the expression type 'ParameterExpression' is not supported in member expressions.")>
     Public Sub LinqToSqlInheritance05()
       Dim cons = From contact In DB.Contacts _
             Where contact.ContactType = "Customer" _
