@@ -42,20 +42,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         }
       }
 
-      //TODO remove if still unneeded
-      //[Column (Storage = "_ShipperContact", DbType = "NText", UpdateCheck = UpdateCheck.Never)]
-      //public ShipperContact ShipperContact
-      //{
-      //  get
-      //  {
-      //    return this._ShipperContact;
-      //  }
-      //  set
-      //  {
-      //    this._ShipperContact = value;
-      //  }
-      //}
-
       public override bool Equals (object obj)
       {
         if (obj == null || GetType() != obj.GetType())

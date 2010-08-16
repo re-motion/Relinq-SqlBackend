@@ -425,9 +425,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       Assert.AreEqual (expectedExpr, result);
     }
 
-
     [Test]
-    public void GetMetaMembers()
+    public void GetMetaMembersMindingInheritance_shouldReturnMembersOfSubclasses()
     {
       var members = _reverseMappingResolver.GetMetaDataMembers (typeof (ContactTestClass));
 
@@ -442,6 +441,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           mergedDictionary.Add (empMember.Key, empMember.Value);
       }
 
+
+      Assert.IsTrue (members.Length == mergedDictionary.Count);
       foreach (var member in members)
       { 
         if (member.MappedName == "ContactID")

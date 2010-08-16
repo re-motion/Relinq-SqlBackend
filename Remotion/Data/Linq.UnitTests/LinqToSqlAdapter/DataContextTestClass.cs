@@ -26,9 +26,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
   {
     private static readonly MappingSource mappingSource = new AttributeMappingSource ();
 
-    // TODO: Remove commented code
-    // TODO: Add inheritance hierarchy Contact/Customer-Supplier with discriminator column
-
     #region constructors
 
     static DataContextTestClass ()
@@ -196,7 +193,5 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     #endregion
-
-
-  }//DataContextTestClass
+  }
 }
