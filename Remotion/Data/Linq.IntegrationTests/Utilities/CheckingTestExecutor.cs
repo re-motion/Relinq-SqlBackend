@@ -30,17 +30,19 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     public void Execute (object queryResult, MethodBase executingMethod)
     {
       ArgumentUtility.CheckNotNull ("executingMethod", executingMethod);
+      
       var referenceResult = GetReferenceResult (executingMethod);
       var actualResult = GetActualResult (queryResult);
 
       var result = TestResultChecker.Check (referenceResult, actualResult);
-      // TODO: Assert??
-      Assert.That (result.IsEqual, Is.EqualTo (true));
+      // TODO Review: use result.GetDiffSet() as the message of the assertion (third parameter)
+      Assert.That (result.IsEqual, Is.True);
     }
 
     private string GetActualResult (object queryResult)
     {
       var stringWriter = new StringWriter();
+      // Ignore bidirectional associations - we are only interested in the foreign key properties of associations (eg., CategoryID rather than Category)
       var serializer = new TestResultSerializer (stringWriter, info => !info.IsDefined (typeof (System.Data.Linq.Mapping.AssociationAttribute), false));
       serializer.Serialize (queryResult);
       return stringWriter.ToString();

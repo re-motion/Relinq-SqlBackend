@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums.cs" />
+    <Compile Include="TestMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="TestDomain\Northwind\INorthwindDataProvider.cs" />
@@ -64,7 +64,6 @@
     <Compile Include="TestDomain\Northwind\NorthwindConnectionManager.cs" />
     <Compile Include="UnitTests\NorthwindConnectionManagerTest.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
-    <Compile Include="TestDomain\Northwind\NorthwindMapped.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
     <Compile Include="UnitTests\PersonTestClass.cs" />
     <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
@@ -86,7 +85,6 @@
       <Link>remotion.snk</Link>
     </None>
     <None Include="App.config" />
-    <None Include="TestDomain\Northwind\NorthwindMapped.map" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

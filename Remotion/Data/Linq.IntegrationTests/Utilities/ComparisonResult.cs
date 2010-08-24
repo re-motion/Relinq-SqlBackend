@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Text;
+using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
@@ -25,10 +26,14 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     private readonly string _expected;
     private readonly string _actual;
 
+    // TODO Review: Coding guidelines: public static fields should start with capital letters (ColumnLength); 
+    // TODO Review: Coding guidelines: All static members (static fields, class constructors, static properties, static methods) should be at the top of the class
     public static readonly int columnLength = 70; // line length: pipe in the middle + 4 numbers + braces + space: 148
-    public static readonly int numberWidth = 4;
-    public static readonly int placeHolderWidth = 3; // braces + space
-    public static readonly char paddingChar = ' ';
+    public static readonly int numberWidth = 4; // TODO Review: Remove when NumberFormatString is used instead
+    public static readonly int placeHolderWidth = 3; // braces + space // TODO Review: Remove this, it's not used by this class
+    public static readonly char paddingChar = ' '; // TODO Review: ' ' is the default for the PadRight method, remove the constant and use the default overload
+
+    public static readonly string NumberFormatString = new string ('0', numberWidth);
 
     public ComparisonResult (bool isEqual, string expected, string actual)
     {
@@ -81,38 +86,39 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       return output.ToString();
     }
 
-    private static string GetNumberString (int number)
-    {
-      return number.ToString().PadLeft (numberWidth, '0');
-    }
-
     private string[] SplitString (string stringToSplit)
     {
       return stringToSplit.Split (new[] { Environment.NewLine }, StringSplitOptions.None);
     }
 
-
+    // TODO Review: ref is not needed
+    // TODO Review: PadAndCutString sounds like a a method returning a (padded and cut) string, which this method does not do. Therefore, rename to "AppendRow" ("Append" is usually used in conjunction with string builders; "Row" because the method acts on a full diff set row, not a single string).
     private void PadAndCutString (ref StringBuilder output, int lineNumber, string leftColumn, string rightColumn)
     {
-      string numberString = GetNumberString (lineNumber);
-      leftColumn = PadAndCutColumn (leftColumn);
-      rightColumn = PadAndCutColumn (rightColumn);
+      string lineNumberString = GetNumberString (lineNumber);
+      output.AppendLine ("(" + lineNumberString + ") " + PadAndCutColumn (leftColumn) + "|" + PadAndCutColumn (rightColumn));
+    }
 
-      output.AppendLine ("(" + numberString + ") " + leftColumn + "|" + rightColumn);
+    private string GetNumberString (int number)
+    {
+      // TODO Review: Replace with:  number.ToString (NumberFormatString);
+      // TODO Review: Then, inline this method
+      return number.ToString ().PadLeft (numberWidth, '0');
     }
 
     private string PadAndCutColumn (string stringToPad)
     {
       string paddedString = stringToPad.PadRight (columnLength, paddingChar);
 
-      int actualLength = paddedString.Length;
-      int maxLength = ComparisonResult.columnLength;
-      return actualLength > maxLength ? paddedString.Substring (0, maxLength) : paddedString;
+      // TODO Review: The check is not necessary, simply return "paddedString.Substring (0, columnLength)"
+      return paddedString.Length > columnLength ? paddedString.Substring (0, columnLength) : paddedString;
     }
 
+    // TODO Review: Make private and non-static - this is not really part of the public API of this class. The tests that use is can be adapted to use a helper method defined in the test fixture that returns "(lines) expected     | actual     "
     public static string GetTableHead ()
     {
       string tableHead = "(lines)";
+      // TODO: Why not use PadAndCutColumn?
       tableHead += " expected".PadRight (columnLength, paddingChar) + "|";
       tableHead += " actual".PadRight (columnLength, paddingChar);
       return tableHead;

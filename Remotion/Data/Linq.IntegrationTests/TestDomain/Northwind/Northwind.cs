@@ -23,6 +23,8 @@ using System;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
+  // TODO Review: Rename to NorthwindDataContext
+  // TODO Review: Include the Northwind database you're using into the project
   [System.Data.Linq.Mapping.DatabaseAttribute (Name = "NORTHWND")]
   public partial class Northwind : System.Data.Linq.DataContext
   {

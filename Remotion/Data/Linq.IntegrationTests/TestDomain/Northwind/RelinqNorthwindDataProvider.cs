@@ -2,13 +2,13 @@
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   public class RelinqNorthwindDataProvider : INorthwindDataProvider
   {
+    // TODO Review: Coding guidelines: Private instance members should start with _
     private readonly IConnectionManager manager;
     private readonly MappingResolver resolver;
     private readonly IQueryResultRetriever retriever;
@@ -77,6 +77,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       get { return CreateQueryable<Supplier> (); }
     }
 
+    // TODO Review: Add messages to the NotImplementedExceptions: "Stored procedures are not relevant for the re-linq SQL backend integration tests."
+
     public decimal? TotalProductUnitPriceByCategory (int categoryID)
     {
       throw new NotImplementedException();
@@ -117,13 +119,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       throw new NotImplementedException();
     }
 
-    #region private methods
-
     private IQueryable<T> CreateQueryable<T> ()
     {
       return new QueryableAdapter<T> (executor);
     }
-
-    #endregion
   }
 }

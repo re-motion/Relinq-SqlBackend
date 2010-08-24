@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
+  // TODO Review: This class seems not to be used?
   [Table (Name = "Person")]
   class PersonTestClass
   {

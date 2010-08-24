@@ -14,6 +14,7 @@ using System;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
+  // TODO Review: This class can probably be removed, its members seem not to be used.
   public partial class Northwind {
 
 

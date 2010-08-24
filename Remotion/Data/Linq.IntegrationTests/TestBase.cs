@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests
@@ -14,6 +10,7 @@ namespace Remotion.Data.Linq.IntegrationTests
   public class TestBase 
   {
     public TestMode Mode = TestMode.CheckActualResults;
+
     private INorthwindDataProvider _db;
     private ITestExecutor _testExecutor;
 
@@ -26,7 +23,6 @@ namespace Remotion.Data.Linq.IntegrationTests
     {
       get { return _testExecutor; }
     }
-   
 
     [SetUp]
     public virtual void SetUp ()

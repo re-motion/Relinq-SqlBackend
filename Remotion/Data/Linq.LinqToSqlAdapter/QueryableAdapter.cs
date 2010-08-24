@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  // TODO Review: Rename this class to RelinqQueryable
   /// <summary>
   /// Default implementation of <see cref="QueryableBase{T}"/> 
   /// </summary>
