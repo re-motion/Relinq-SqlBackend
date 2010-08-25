@@ -23,6 +23,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
   /// </summary>
   public class TestResultChecker
   {
+    // TODO Review: Since all the logic is now implemented in ComparisonResult, this method can be inlined and the class be deleted.
     public static ComparisonResult Check (string expected, string actual)
     {
       var isEqual = expected.Equals(actual);

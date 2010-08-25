@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -27,6 +28,14 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
   /// </summary>
   public class CheckingTestExecutor : ITestExecutor
   {
+    private readonly Func<MethodBase, string> _resourceNameGenerator;
+
+    public CheckingTestExecutor (Func<MethodBase, string> resourceNameGenerator)
+    {
+      ArgumentUtility.CheckNotNull ("resourceNameGenerator", resourceNameGenerator);
+      _resourceNameGenerator = resourceNameGenerator;
+    }
+
     public void Execute (object queryResult, MethodBase executingMethod)
     {
       ArgumentUtility.CheckNotNull ("executingMethod", executingMethod);
@@ -50,8 +59,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
 
     private string GetReferenceResult (MethodBase executingMethod)
     {
-      var resourceName = executingMethod.DeclaringType.Namespace + ".Resources." + executingMethod.DeclaringType.Name 
-        + "." + executingMethod.Name + ".result";
+      var resourceName = _resourceNameGenerator (executingMethod);
       using (var resourceStream = executingMethod.DeclaringType.Assembly.GetManifestResourceStream (resourceName))
       {
         using (var streamReader = new StreamReader (resourceStream))

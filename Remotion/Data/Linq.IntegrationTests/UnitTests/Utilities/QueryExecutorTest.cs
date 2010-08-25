@@ -21,7 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -31,6 +30,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 {
+  // TODO Review: This test seems to exist twice, once here and once in the unit tests for LinqToSqlAdapter. Remove this one. If it contains important test code not duplicated in the other unit test file, migrate that code to the other test file first.
   [TestFixture]
   public class QueryExecutorTest
   {

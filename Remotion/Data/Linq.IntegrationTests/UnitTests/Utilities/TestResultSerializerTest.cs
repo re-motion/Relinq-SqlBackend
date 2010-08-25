@@ -166,6 +166,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
 
+    // TODO Review: Add a separate test for anonymous types with different numbers of properties
+
     [Test]
     public void Serialize_SimpleEnumerables ()
     {
@@ -199,7 +201,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     }
 
     [Test]
-    public void Serialize_ComplexEnumberable ()
+    public void Serialize_ComplexEnumerable ()
     {
       var instance0 = new SerializerTestClassWithFields { PublicField1 = 11, PublicField2 = "test 0" };
       var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };

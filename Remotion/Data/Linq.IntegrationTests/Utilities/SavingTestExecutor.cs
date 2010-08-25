@@ -21,25 +21,23 @@ using System.Reflection;
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
   /// <summary>
-  /// saves <see cref="TestResultSerializer"/> output to a file with correct naming and extension into a specified directory -
-  /// as a resource for later use with <see cref="CheckingTestExecutor"/>
+  /// Saves <see cref="TestResultSerializer"/> output to a file with correct naming and extension into a specified directory -
+  /// as a resource for later use with <see cref="CheckingTestExecutor"/>.
   /// </summary>
   public class SavingTestExecutor : ITestExecutor
   {
     private readonly string _directory;
+    private readonly Func<MethodBase, string> _resourceFileNameGenerator;
 
-    public SavingTestExecutor (string directory)
+    public SavingTestExecutor (string directory, Func<MethodBase, string> resourceFileNameGenerator)
     {
-      this._directory = directory;
+      _directory = directory;
+      _resourceFileNameGenerator = resourceFileNameGenerator;
     }
 
     public void Execute (object queryResult, MethodBase executingMethod)
     {
-      var resourceName = executingMethod.DeclaringType.Name + "." + executingMethod.Name + ".result";
-      // TODO: find a way to handle VB-resources correctly
-      if (executingMethod.DeclaringType.Module.Name.Contains ("VisualBasic"))
-        resourceName = "LinqSamples101.Resources." + resourceName;
-      
+      var resourceName = _resourceFileNameGenerator (executingMethod);
       if (!Directory.Exists (_directory))
         Directory.CreateDirectory (_directory);
 

@@ -16,11 +16,14 @@
 // 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 {
+  // TODO Review: Move to "TestDomain" subfolder
   public class SerializerTestClassWithProperties
   {
     public static int PublicStaticProperty { get; set; }
     public int PublicProperty1 { get; set; }
     public string PublicProperty2 { get; set; }
+// ReSharper disable UnusedMember.Local
     private int PrivateProperty { get; set; }
+// ReSharper restore UnusedMember.Local
   }
 }

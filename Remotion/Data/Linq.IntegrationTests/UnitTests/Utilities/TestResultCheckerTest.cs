@@ -23,6 +23,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
   [TestFixture]
   public class TestResultCheckerTest
   {
+    // TODO Review: This test class can be removed when the TestResultChecker is inlined.
     // TODO: fix UnitTests to use ComparisonResult
     //[Test]
     //public void Check_OneLineValue ()

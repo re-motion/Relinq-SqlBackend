@@ -16,6 +16,7 @@
 // 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 {
+  // TODO Review: Move to "TestDomain" subfolder
   public class SerializerTestClassWithFields
   {
     public static int PublicStaticField;

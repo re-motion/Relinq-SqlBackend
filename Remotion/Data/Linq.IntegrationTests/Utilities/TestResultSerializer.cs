@@ -186,17 +186,21 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
         _textWriter.Write (_spacer);
     }
 
+    // TODO Review: Change this method (and the IsAnonymousType and MakeAnonym method) to take a Type instead of an object - the callers of WriteTypeName should perform the value.GetType() call
     private void WriteTypeName (object value)
     {
       _textWriter.Write (IsAnonymousType (value) ? MakeAnonym (value) : value.GetType().Name);
     }
 
     //WORKAROUND: May not working with all compiler versions
-    private bool IsAnonymousType(object value)
+    // TODO Review: Check for the CompilerGeneratedAttribute (value.GetType().IsDefined (..., false)) - this should work for all compilers
+    private bool IsAnonymousType (object value)
     {
       return value.GetType().Name.Contains ("`");
     }
 
+    // TODO Review: Don't include the numbering of the anonymous type, include the number of public properties instead. (This should be more stable.)
+    // TODO Review: Rename to MakeAnonymousTypeID or something like that
     private string MakeAnonym(object value)
     {
       int index = value.GetType().Name.IndexOf ("`");

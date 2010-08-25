@@ -5,6 +5,7 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
+// TODO Review: The unit test namespace should mimic the original namespace - put this test into a subfolder called Northwind
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests
 {
   [TestFixture]

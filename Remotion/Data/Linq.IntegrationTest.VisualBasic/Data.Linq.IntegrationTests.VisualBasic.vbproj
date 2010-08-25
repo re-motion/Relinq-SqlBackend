@@ -116,6 +116,7 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.vb" />
     <Compile Include="LinqSamples101\StoredProceduresTests.vb" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.vb" />
+    <Compile Include="LinqSamples101\TestBase.vb" />
     <Compile Include="LinqSamples101\TopBottomTests.vb" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.vb" />
     <Compile Include="LinqSamples101\UserDefinedFunctionsTests.vb" />
