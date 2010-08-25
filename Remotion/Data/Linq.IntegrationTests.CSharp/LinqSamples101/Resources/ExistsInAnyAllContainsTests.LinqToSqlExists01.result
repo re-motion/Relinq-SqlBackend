@@ -1,4 +1,4 @@
-AnonymousType1 {
+Enumerable {
   Customer
     Address: 'C/ Moralzarzal, 86'
     City: 'Madrid'

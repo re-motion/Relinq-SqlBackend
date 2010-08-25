@@ -1,4 +1,4 @@
-AnonymousType1 {
+Enumerable {
   ShipperContact
     CompanyName: 'Speedy Express'
     ContactID: 130

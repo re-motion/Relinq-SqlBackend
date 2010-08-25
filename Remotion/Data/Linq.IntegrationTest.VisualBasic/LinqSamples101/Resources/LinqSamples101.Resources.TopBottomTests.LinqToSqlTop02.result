@@ -1,4 +1,4 @@
-AnonymousType1 {
+Enumerable {
   Product
     CategoryID: 3
     Discontinued: False

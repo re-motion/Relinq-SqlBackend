@@ -1,4 +1,4 @@
-AnonymousType1 {
+Enumerable {
   Order
     CustomerID: 'RANCH'
     EmployeeID: 1

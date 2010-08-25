@@ -135,7 +135,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
     {
       Debug.Assert (value != null, "should be handled by caller");
 
-      WriteTypeName (value);
+      _textWriter.Write ("Enumerable");
       _textWriter.WriteLine (" {");
       TestResultSerializer elementSerializer = CreateIndentedSerializer();
       

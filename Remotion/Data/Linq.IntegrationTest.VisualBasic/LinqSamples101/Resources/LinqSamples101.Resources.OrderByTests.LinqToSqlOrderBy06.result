@@ -1,6 +1,6 @@
-AnonymousType1 {
-  AnonymousType2
-    Group: AnonymousType1 {
+Enumerable {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 1
         Discontinued: False
@@ -134,7 +134,7 @@ AnonymousType1 {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 1
         Discontinued: False
@@ -147,8 +147,8 @@ AnonymousType1 {
         UnitsInStock: 17
         UnitsOnOrder: 0
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 2
         Discontinued: False
@@ -282,7 +282,7 @@ AnonymousType1 {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 2
         Discontinued: False
@@ -295,8 +295,8 @@ AnonymousType1 {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 3
         Discontinued: False
@@ -441,7 +441,7 @@ AnonymousType1 {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 3
         Discontinued: False
@@ -454,8 +454,8 @@ AnonymousType1 {
         UnitsInStock: 40
         UnitsOnOrder: 0
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 4
         Discontinued: False
@@ -567,7 +567,7 @@ AnonymousType1 {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 4
         Discontinued: False
@@ -580,8 +580,8 @@ AnonymousType1 {
         UnitsInStock: 79
         UnitsOnOrder: 0
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 5
         Discontinued: False
@@ -660,7 +660,7 @@ AnonymousType1 {
         UnitsInStock: 22
         UnitsOnOrder: 80
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 5
         Discontinued: False
@@ -673,8 +673,8 @@ AnonymousType1 {
         UnitsInStock: 21
         UnitsOnOrder: 10
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 6
         Discontinued: True
@@ -742,7 +742,7 @@ AnonymousType1 {
         UnitsInStock: 115
         UnitsOnOrder: 0
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 6
         Discontinued: True
@@ -755,8 +755,8 @@ AnonymousType1 {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 7
         Discontinued: False
@@ -813,7 +813,7 @@ AnonymousType1 {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 7
         Discontinued: False
@@ -826,8 +826,8 @@ AnonymousType1 {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-  AnonymousType2
-    Group: AnonymousType1 {
+  AnonymousType0
+    Group: Enumerable {
       Product
         CategoryID: 8
         Discontinued: False
@@ -961,7 +961,7 @@ AnonymousType1 {
         UnitsInStock: 101
         UnitsOnOrder: 0
     }
-    MostExpensiveProducts: AnonymousType1 {
+    MostExpensiveProducts: Enumerable {
       Product
         CategoryID: 8
         Discontinued: False

@@ -110,11 +110,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities
           }
         }
       }
-      else if(value1 is MetaDataMember)
-      {
-        var metaDataComparer = new MetaDataMemberComparer ();
-        Assert.IsTrue (metaDataComparer.Equals ((MetaDataMember) value1, (MetaDataMember) value2), GetMessage (e1, e2, "Property " + property.Name));
-      }
       else
       {
         Assert.AreEqual (value1, value2, GetMessage (e1, e2, "Property " + property.Name));

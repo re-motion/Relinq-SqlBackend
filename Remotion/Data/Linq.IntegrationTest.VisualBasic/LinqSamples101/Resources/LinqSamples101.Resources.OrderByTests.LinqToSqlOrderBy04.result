@@ -1,4 +1,4 @@
-AnonymousType1 {
+Enumerable {
   Customer
     Address: 'Walserweg 21'
     City: 'Aachen'
