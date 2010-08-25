@@ -71,6 +71,30 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
         get { return _Orders; }
         set { _Orders.Assign (value); }
       }
+
+      public override bool Equals (object obj)
+      {
+        if (!(obj is Customer))
+          return false;
+
+        return Equals ((Customer) obj);
+      }
+
+      private bool Equals(Customer customer)
+      {
+        return customer.CompanyName == CompanyName && customer.Orders == Orders && customer.CustomerID == CustomerID;
+      }
+
+      public override int GetHashCode ()
+      {
+        unchecked
+        {
+          int result = (_CustomerID != null ? _CustomerID.GetHashCode() : 0);
+          result = (result * 397) ^ (_CompanyName != null ? _CompanyName.GetHashCode() : 0);
+          result = (result * 397) ^ (_Orders != null ? _Orders.GetHashCode() : 0);
+          return result;
+        }
+      }
     }
 
     [Table (Name = "dbo.Region")]

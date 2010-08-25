@@ -23,7 +23,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
   /// <summary>
   /// Compares <see cref="MetaDataMember"/> instances based on their <see cref="MetaDataMember.MappedName"/> properties.
   /// </summary>
-  public class MetaDataMemberComparer : IEqualityComparer<MetaDataMember>
+public class MetaDataMemberComparer : IEqualityComparer<MetaDataMember>
   {
     public bool Equals (MetaDataMember x, MetaDataMember y)
     {

@@ -404,13 +404,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, primaryKeys[0]);
 
-      Assert.AreEqual (result.NodeType, expectedExpr.NodeType);
-      Assert.IsTrue (result is SqlEntityConstantExpression);
-      Assert.AreEqual (((SqlEntityConstantExpression) result).PrimaryKeyValue.ToString(), expectedExpr.PrimaryKeyValue.ToString());
-      Assert.AreEqual (((SqlEntityConstantExpression) result).Type, result.Type);
-      //TODO implement better checking than above, see below
-      //WORKAROUND: CheckAreEqualTrees doesn't work
-      //ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
     }
 
     [Test]

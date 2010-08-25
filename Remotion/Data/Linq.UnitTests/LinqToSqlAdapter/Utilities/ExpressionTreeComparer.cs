@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections;
+using System.Data.Linq.Mapping;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities
@@ -96,20 +98,27 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities
             var elementType1 = list1[i] != null ? list1[i].GetType () : typeof (object);
             var elementType2 = list2[i] != null ? list2[i].GetType () : typeof (object);
             Assert.AreSame (
-                elementType1, 
-                elementType2, 
+                elementType1,
+                elementType2,
                 string.Format (
-                    "The item types of the items in the lists in {0} differ: One is '{1}', the other is '{2}'.", 
-                    property.Name, 
-                    elementType1, 
+                    "The item types of the items in the lists in {0} differ: One is '{1}', the other is '{2}'.",
+                    property.Name,
+                    elementType1,
                     elementType2));
 
             CheckAreEqualProperties (property, elementType1, list1[i], list2[i], e1, e2);
           }
         }
       }
+      else if(value1 is MetaDataMember)
+      {
+        var metaDataComparer = new MetaDataMemberComparer ();
+        Assert.IsTrue (metaDataComparer.Equals ((MetaDataMember) value1, (MetaDataMember) value2), GetMessage (e1, e2, "Property " + property.Name));
+      }
       else
+      {
         Assert.AreEqual (value1, value2, GetMessage (e1, e2, "Property " + property.Name));
+      }
     }
 
     private string GetMessage (object e1, object e2, string context)

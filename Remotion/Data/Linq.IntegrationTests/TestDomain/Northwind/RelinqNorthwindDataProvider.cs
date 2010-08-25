@@ -121,7 +121,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     private IQueryable<T> CreateQueryable<T> ()
     {
-      return new QueryableAdapter<T> (_executor);
+      return new RelinqQueryable<T> (_executor);
     }
   }
 }
