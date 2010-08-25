@@ -13,6 +13,21 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,12 +75,10 @@
     <Compile Include="AbstractTestBase.cs" />
     <Compile Include="TestDomain\Northwind\INorthwindDataProvider.cs" />
     <Compile Include="TestDomain\Northwind\LinqToSqlNorthwindDataProvider.cs" />
-    <Compile Include="TestDomain\Northwind\Northwind.cs" />
+    <Compile Include="TestDomain\Northwind\NorthwindDataContext.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindConnectionManager.cs" />
-    <Compile Include="UnitTests\NorthwindConnectionManagerTest.cs" />
-    <Compile Include="TestDomain\Northwind\NorthwindExtended.cs" />
+    <Compile Include="UnitTests\Northwind\NorthwindConnectionManagerTest.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
-    <Compile Include="UnitTests\PersonTestClass.cs" />
     <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
     <Compile Include="UnitTests\Utilities\QueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
@@ -86,7 +99,11 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TestDomain\Northwind\NORTHWND.MDF">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj">
       <Project>{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}</Project>
@@ -100,6 +117,28 @@
       <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
       <Name>Data.Linq</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Sql.Server.Express.9.2">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2005 Express Edition SP2 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

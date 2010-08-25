@@ -23,10 +23,9 @@ using System;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
-  // TODO Review: Rename to NorthwindDataContext
   // TODO Review: Include the Northwind database you're using into the project
   [System.Data.Linq.Mapping.DatabaseAttribute (Name = "NORTHWND")]
-  public partial class Northwind : System.Data.Linq.DataContext
+  public partial class NorthwindDataContext : System.Data.Linq.DataContext
   {
 
     private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource ();
@@ -98,29 +97,29 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     partial void DeleteTerritory (Territory instance);
     #endregion
 
-    static Northwind ()
+    static NorthwindDataContext ()
     {
     }
 
-    public Northwind (string connection) :
+    public NorthwindDataContext (string connection) :
       base (connection, mappingSource)
     {
       OnCreated ();
     }
 
-    public Northwind (System.Data.IDbConnection connection) :
+    public NorthwindDataContext (System.Data.IDbConnection connection) :
       base (connection, mappingSource)
     {
       OnCreated ();
     }
 
-    public Northwind (string connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
+    public NorthwindDataContext (string connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
       base (connection, mappingSource)
     {
       OnCreated ();
     }
 
-    public Northwind (System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
+    public NorthwindDataContext (System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
       base (connection, mappingSource)
     {
       OnCreated ();

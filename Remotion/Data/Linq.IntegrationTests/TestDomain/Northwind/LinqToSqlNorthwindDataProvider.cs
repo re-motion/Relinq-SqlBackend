@@ -21,7 +21,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
   internal class LinqToSqlNorthwindDataProvider : INorthwindDataProvider
   {
-    private readonly Northwind _dataContext = new Northwind ("Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;");
+    private readonly NorthwindDataContext _dataContext = new NorthwindDataContext ("Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;");
 
     public IQueryable<Product> Products
     {

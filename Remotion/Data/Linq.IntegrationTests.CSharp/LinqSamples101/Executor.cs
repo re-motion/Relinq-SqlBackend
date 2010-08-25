@@ -28,7 +28,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
   {
     protected static readonly string connString = "Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;";
 
-    protected static Northwind db;
+    protected static NorthwindDataContext db;
     protected static TestResultSerializer serializer;
 
     public static void Main ()
@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       else
         oldLog = db.Log;
 
-      db = new Northwind (connString) { Log = oldLog };
+      db = new NorthwindDataContext (connString) { Log = oldLog };
       serializer = new TestResultSerializer (new StreamWriter ("C:\\csharpTestOut.txt"), memberInfo => !memberInfo.IsDefined (typeof (AssociationAttribute), false));
     }
 

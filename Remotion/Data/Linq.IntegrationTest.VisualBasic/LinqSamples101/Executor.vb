@@ -27,7 +27,7 @@ Namespace LinqSamples101
     Protected Shared ReadOnly _
       connString As String = "Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;"
 
-    Protected Shared db As Northwind
+    Protected Shared db As NorthwindDataContext
     Protected Shared serializer As TestResultSerializer
 
     Public Shared Sub Main()
@@ -53,7 +53,7 @@ Namespace LinqSamples101
         oldLog = db.Log
       End If
 
-      db = New Northwind(connString) With { _
+      db = New NorthwindDataContext(connString) With { _
         .Log = oldLog _
         }
       serializer = _
