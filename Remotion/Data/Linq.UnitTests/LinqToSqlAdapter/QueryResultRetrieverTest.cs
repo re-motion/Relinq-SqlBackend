@@ -22,6 +22,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     private IConnectionManager _connectionManagerStub;
     private IReverseMappingResolver _resolverStub;
     private IDbDataParameter _dataParameter;
+    private Func<IDatabaseResultRow, string> _projection;
 
     [SetUp]
     public void SetUp ()
@@ -40,6 +41,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _connectionManagerStub = MockRepository.GenerateStub<IConnectionManager> ();
       _connectionManagerStub.Stub (stub => stub.Open ()).Return (_connectionMock);
       _resolverStub = MockRepository.GenerateMock<IReverseMappingResolver> ();
+
+      _projection = row => row.GetValue<string> (new ColumnID ("test", 0));
     }
 
     [Test]
@@ -51,10 +54,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _dataReaderMock.Stub (stub => stub.GetValue (0)).Return ("testColumnValue2").Repeat.Once ();
       _dataReaderMock.Stub (stub => stub.Read ()).Return (false);
       
-      Func<IDatabaseResultRow, string> projection = row => row.GetValue<string> (new ColumnID ("test", 0));
       var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
 
-      var result = retriever.GetResults (projection, "Text", new CommandParameter[0]).ToArray ();
+      var result = retriever.GetResults (_projection, "Text", new CommandParameter[0]).ToArray ();
 
       Assert.That (result, Is.EqualTo(new[] { "testColumnValue1", "testColumnValue2" }));
     }
@@ -64,10 +66,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     {
       _dataReaderMock.Stub (stub => stub.Read()).Return (false);
       
-      Func<IDatabaseResultRow, string> projection = row => row.GetValue<string> (new ColumnID ("test", 0));
       var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
 
-      var result = retriever.GetResults (projection, "Text", new CommandParameter[0]).ToArray ();
+      var result = retriever.GetResults (_projection, "Text", new CommandParameter[0]).ToArray ();
 
       Assert.That (result, Is.Empty);
 
@@ -88,11 +89,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       dataParameterCollectionMock.Replay();
       _commandMock.Stub (stub => stub.Parameters).Return (dataParameterCollectionMock);
 
-      Func<IDatabaseResultRow, string> projection = row => row.GetValue<string> (new ColumnID ("test", 0));
       var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub); 
-
-
-      var result = retriever.GetResults (projection, "Text", new[] { new CommandParameter ("p1", "value1") }).ToArray();
+      
+      var result = retriever.GetResults (_projection, "Text", new[] { new CommandParameter ("p1", "value1") }).ToArray();
 
       Assert.That (result, Is.Empty);
 
@@ -122,5 +121,10 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       Assert.That (result, Is.EqualTo (fakeResult));
     }
+
+    // TODO Review: Tests for GetScalar are not complete - there is no tests for the Dispose calls, none that checks that the projection is used, and 
+    // TODO Review: none that checks that the parameters and command text are correctly set
+    // TODO Review: It would be best to just copy the tests for GetResults and change them to call GetScalar instead. Don't forget to stub the 
+    // TODO Review: command mock's ExecuteScalar method.
   }
 }

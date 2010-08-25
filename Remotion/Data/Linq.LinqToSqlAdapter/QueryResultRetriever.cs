@@ -29,13 +29,17 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public IEnumerable<T> GetResults<T> (Func<IDatabaseResultRow, T> projection, string commandText, CommandParameter[] parameters)
     {
+      ArgumentUtility.CheckNotNull ("projection", projection);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
+
       using (var connection = _connectionManager.Open ())
       using (var command = connection.CreateCommand ())
       {
         command.CommandText = commandText;
         foreach (var commandParameter in parameters)
         {
-          IDbDataParameter dataParameter = command.CreateParameter ();
+          var dataParameter = command.CreateParameter ();
           dataParameter.ParameterName = commandParameter.Name;
           dataParameter.Value = commandParameter.Value;
 
@@ -59,6 +63,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       {
         command.CommandText = commandText;
 
+        // TODO Review: This is not correct - CommandParameters cannot be added directly to an IDbCommand; extract the code used above (in GetResults) 
+        // TODO Review: into a reusable method, then call that method to initialize the IDbCommand from here
         Array.ForEach (parameters, p => command.Parameters.Add (p));
 
         return (T) command.ExecuteScalar ();

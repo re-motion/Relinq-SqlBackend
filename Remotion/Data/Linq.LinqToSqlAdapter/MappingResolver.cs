@@ -60,8 +60,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var metaTable = GetMetaType (joinInfo.OriginatingEntity.Type);
-      var metaAssociation=GetDataMember (metaTable, joinInfo.MemberInfo).Association;
+      var metaType = GetMetaType (joinInfo.OriginatingEntity.Type);
+      var metaAssociation = GetDataMember (metaType, joinInfo.MemberInfo).Association;
       Debug.Assert (metaAssociation != null);
 
       IResolvedTableInfo resolvedTable = ResolveTableInfo (new UnresolvedTableInfo (joinInfo.ItemType), generator);
@@ -76,7 +76,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       // TODO RM-3110: Refactor when re-linq supports compound keys
       
       var identityMembers = GetMetaType (tableInfo.ItemType).IdentityMembers;
-      if(identityMembers.Count!=1)
+      if (identityMembers.Count != 1)
         throw new ArgumentException("The table may not contain more or less than 1 identity member!");
 
       var primaryKeyMember = identityMembers.Single();

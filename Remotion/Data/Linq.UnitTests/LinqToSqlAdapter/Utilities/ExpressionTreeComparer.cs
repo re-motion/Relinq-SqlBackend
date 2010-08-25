@@ -25,6 +25,7 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities
 {
+  // TODO Review: Remove this class and use ExpressionTreeComparer from Remotion.Data.Linq.UnitTests.Linq.Core.Parsing
   public class ExpressionTreeComparer
   {
     public static void CheckAreEqualTrees (Expression expectedTree, Expression actualTree)

@@ -43,14 +43,16 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       _mappingResolver = mappingResolver;
     }
 
-    public QueryExecutor(IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver) : this(resultRetriever, mappingResolver, false)
-    {
-      
-    }
-
     public T ExecuteScalar<T> (QueryModel queryModel)
     {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
       SqlCommandData commandData = GenerateSqlCommand (queryModel);
+      // TODO Review: The in-memory projection delegate must be used with scalar queries the same way as with collection queries - otherwise, in-memory conversions might not work correctly. 
+      // TODO Review: Therefore, refactor GetScalar to take a projection (Func<IDatabaseResultRow, T>) and create a ScalarRowWrapper that implements 
+      // TODO Review: the IDatabaseResultRow interface for a single scalar value. (Only ColumnIDs with a Position value of 0 are allowed.)
+      // TODO Review: Then, pass in the compiled in-memory projection returned by commandData.GetInMemoryProjection<T>.
+      // TODO Review: Then, use that projection in the implementation by wrapping the scalar result into a ScalarRowWrapper.
       return _resultRetriever.GetScalar<T> (commandData.CommandText, commandData.Parameters);
     }
 
@@ -68,6 +70,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public IEnumerable<T> ExecuteCollection<T> (QueryModel queryModel)
     {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
       SqlCommandData commandData = GenerateSqlCommand (queryModel);
       Func<IDatabaseResultRow, T> projection = commandData.GetInMemoryProjection<T> ().Compile ();
       return _resultRetriever.GetResults (projection, commandData.CommandText, commandData.Parameters);

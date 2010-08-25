@@ -57,8 +57,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
       object instance = Activator.CreateInstance (instanceType);
 
-      var relevantMembers =
-         entityMembersWithColumnIDs.Where (tuple => tuple.Member.Member.DeclaringType.IsAssignableFrom (instanceType));
+      var relevantMembers = entityMembersWithColumnIDs.Where (tuple => tuple.Member.Member.DeclaringType.IsAssignableFrom (instanceType));
 
       foreach (var member in relevantMembers)
       {
@@ -72,7 +71,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
           }
         }
           
-        if(value != null)
+        if (value != null)
           member.Member.MemberAccessor.SetBoxedValue (ref instance, value);
       }
 

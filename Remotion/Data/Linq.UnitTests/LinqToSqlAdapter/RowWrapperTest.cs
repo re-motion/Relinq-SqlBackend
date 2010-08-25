@@ -1,7 +1,6 @@
 ﻿// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
-using System;
 using System.Data;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -39,9 +38,10 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           .Expect (mock => mock.GetValue(columnID.Position))
           .Return ("Peter");
 
-      Assert.AreEqual (rowWrapper.GetValue<string> (columnID), "Peter");
+      var value = rowWrapper.GetValue<string> (columnID);
 
       _readerMock.VerifyAllExpectations ();
+      Assert.AreEqual (value, "Peter");
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void GetEntity_ByteArraysCanBeUsed ()
     {
-      System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding ();
+      var encoding = new System.Text.UTF8Encoding ();
       var pw = encoding.GetBytes("passwordtext");
 
       var photo = encoding.GetBytes ("myPhoto");
