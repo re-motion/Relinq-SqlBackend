@@ -14,20 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
-{ 
-  /// <summary>
-  /// Supports better comparability for the output of two results from <see cref="TestResultSerializer"/>
-  /// </summary>
-  public class TestResultChecker
+namespace Remotion.Data.Linq.IntegrationTests.TestDomain
+{
+  public class SerializerTestClassWithReferenceTypes
   {
-    // TODO Review: Since all the logic is now implemented in ComparisonResult, this method can be inlined and the class be deleted.
-    public static ComparisonResult Check (string expected, string actual)
-    {
-      var isEqual = expected.Equals(actual);
-      return new ComparisonResult (isEqual, expected, actual);
-    }
+    public SerializerTestClassWithProperties PropertyWithProperties { get; set; }
+    public SerializerTestClassWithFields PropertyWithFields { get; set; }
+    public SerializerTestClassWithFields FieldWithFields;
+    public SerializerTestClassWithProperties FieldWithProperties;
   }
 }

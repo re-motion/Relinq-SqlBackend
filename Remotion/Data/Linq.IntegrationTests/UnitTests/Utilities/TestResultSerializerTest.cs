@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.IntegrationTests.TestDomain;
 using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
@@ -205,7 +206,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     {
       var instance0 = new SerializerTestClassWithFields { PublicField1 = 11, PublicField2 = "test 0" };
       var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };
-      var enumerable = new SerializerTestClassWithFields[] { instance0, instance1 };
+      var enumerable = new[] { instance0, instance1 };
 
       _serializer.Serialize (enumerable);
 
@@ -229,12 +230,12 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };
       var instance = new
                      {
-                       EnumerableProperty = new SerializerTestClassWithFields[] { instance0, instance1 }
+                       EnumerableProperty = new[] { instance0, instance1 }
                      };
 
       _serializer.Serialize (instance);
 
-      var expected = "AnonymousType1" + Environment.NewLine
+      var expected = "AnonymousType0" + Environment.NewLine
                     + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine
@@ -275,12 +276,12 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       var instance1 = new SerializerTestClassWithFields { PublicField1 = 12, PublicField2 = "test 1" };
       var instance = new
       {
-        EnumerableProperty = new SerializerTestClassWithFields[] { instance0, instance1 }
+        EnumerableProperty = new[] { instance0, instance1 }
       };
       TestResultSerializer serializer = new TestResultSerializer (_writer, memberInfo => !memberInfo.Name.Equals("PublicField2"));
 
       serializer.Serialize (instance);
-      var expected = "AnonymousType1" + Environment.NewLine
+      var expected = "AnonymousType0" + Environment.NewLine
                     + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine

@@ -19,9 +19,9 @@ using System.Linq;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
-  // TODO Review: Please add summary comments to each class or interface that is not a test fixture or a test domain class 
-  // TODO Review: (eg., INorthwindDataProvider, LinqToSqlNorthwindDataProvider, NorthwindConnectionManager, RelinqNorthwindDataProvider, etc.)
-  // TODO Review: The summary comments should explain what the class/interface is used for (and maybe by whom).
+  /// <summary>
+  /// Defines all Properties and Methods needed by the 101 LinqSamples to access the Northwind Database
+  /// </summary>
   public interface INorthwindDataProvider
   {
     IQueryable<Product> Products { get;  }

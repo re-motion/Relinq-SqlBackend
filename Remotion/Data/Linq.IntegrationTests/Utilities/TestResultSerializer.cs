@@ -19,6 +19,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
@@ -164,7 +165,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       }
     }
 
-    private bool TryGetValue (object instance, MemberInfo memberInfo, out object value)
+    private static bool TryGetValue (object instance, MemberInfo memberInfo, out object value)
     {
       switch (memberInfo.MemberType)
       {
@@ -186,25 +187,19 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
         _textWriter.Write (_spacer);
     }
 
-    // TODO Review: Change this method (and the IsAnonymousType and MakeAnonym method) to take a Type instead of an object - the callers of WriteTypeName should perform the value.GetType() call
     private void WriteTypeName (object value)
     {
-      _textWriter.Write (IsAnonymousType (value) ? MakeAnonym (value) : value.GetType().Name);
+      _textWriter.Write (IsAnonymousType (value.GetType()) ? MakeAnonymousTypeID (value.GetType()) : value.GetType().Name);
     }
 
-    //WORKAROUND: May not working with all compiler versions
-    // TODO Review: Check for the CompilerGeneratedAttribute (value.GetType().IsDefined (..., false)) - this should work for all compilers
-    private bool IsAnonymousType (object value)
+    private static bool IsAnonymousType (Type type)
     {
-      return value.GetType().Name.Contains ("`");
+      return type.IsDefined (typeof (CompilerGeneratedAttribute), false);
     }
 
-    // TODO Review: Don't include the numbering of the anonymous type, include the number of public properties instead. (This should be more stable.)
-    // TODO Review: Rename to MakeAnonymousTypeID or something like that
-    private string MakeAnonym(object value)
+    private static string MakeAnonymousTypeID (Type type)
     {
-      int index = value.GetType().Name.IndexOf ("`");
-      return "AnonymousType" + value.GetType().Name.Substring (index + 1);
+      return "AnonymousType" + type.GetProperties (BindingFlags.Public).Length;
     }
 
     private TestResultSerializer CreateIndentedSerializer ()

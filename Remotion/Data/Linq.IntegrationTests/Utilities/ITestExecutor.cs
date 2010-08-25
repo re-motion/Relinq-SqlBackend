@@ -19,6 +19,9 @@ using System.Reflection;
 
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
+  /// <summary>
+  /// Defines functionality to execute a test - used by the LinqSamples (CheckingTestExecutor, SavingTestExecutor)
+  /// </summary>
   public interface ITestExecutor
   {
     void Execute (object queryResult, MethodBase executingMethod);

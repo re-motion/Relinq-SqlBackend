@@ -7,10 +7,26 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
   [TestFixture]
   public class ComparisonResultTest
   {
-    // TODO Review: Then remove these static members. In tests, it's often better to inline constants rather than to use the constants defined by the classes being tested. That way, mistakes are found more easily.
-    private static readonly int _leftColumnPadding = ComparisonResult.columnLength + ComparisonResult.numberWidth + ComparisonResult.placeHolderWidth;
-    private static readonly int _rightColumnPadding = ComparisonResult.columnLength;
-    private static readonly char _paddingChar = ComparisonResult.paddingChar;
+    private static string MakeDiffSet (params string[][] lines)
+    {
+      var result = GetTableHead () + Environment.NewLine;
+      foreach (var line in lines)
+      {
+        result += line[0].PadRight (77);
+        result += "|";
+        result += line[1].PadRight (70);
+        result += Environment.NewLine;
+      }
+      return result;
+    }
+
+    private static string GetTableHead ()
+    {
+      string tableHead = "(lines)";
+      tableHead += " expected".PadRight (70) + "|";
+      tableHead += " actual".PadRight (70);
+      return tableHead;
+    }
 
     [Test]
     public void GetDiffSet_OneLineNotEqual()
@@ -20,7 +36,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       string actual = "line is same" + Environment.NewLine
                       + "line is not the same";
 
-      var comparisonResult = new ComparisonResult (false, expected, actual);
+      var comparisonResult = new ComparisonResult (expected, actual);
 
       string expectedDiffSet = MakeDiffSet (new[] { "(0002) line not same", "line is not the same" });
 
@@ -34,7 +50,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       string actual = "line is not the same" + Environment.NewLine
                       + "there is one line more here";
 
-      ComparisonResult comparisonResult = new ComparisonResult (false, expected, actual);
+      ComparisonResult comparisonResult = new ComparisonResult (expected, actual);
 
       string expectedDiffSet = MakeDiffSet (
           new[] { "(0001) line is not same", "line is not the same" }
@@ -51,7 +67,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       string expected = "line is not the same" + Environment.NewLine
                         + "there is one line more here";
 
-      ComparisonResult comparisonResult = new ComparisonResult (false, expected, actual);
+      ComparisonResult comparisonResult = new ComparisonResult (expected, actual);
 
       string expectedDiffSet =  MakeDiffSet (
           new[] { "(0001) line is not the same",  "line is not same" }
@@ -65,26 +81,13 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
     public void GetDiffSet_BreakLongLines()
     {
       string actual = "long line test";
-      string expected = "long line test".PadRight (_rightColumnPadding, _paddingChar) + "test";
+      string expected = "long line test".PadRight (70) + "test";
 
-      ComparisonResult comparisonResult = new ComparisonResult (false, expected, actual);
+      ComparisonResult comparisonResult = new ComparisonResult (expected, actual);
 
       string expectedDiffSet = MakeDiffSet (new[]{"(0001) long line test","long line test"});
 
       Assert.AreEqual (expectedDiffSet, comparisonResult.GetDiffSet());
-    }
-
-    private static string MakeDiffSet (params string[][] lines)
-    {
-      var result = ComparisonResult.GetTableHead () + Environment.NewLine;
-      foreach (var line in lines)
-      {
-        result += line[0].PadRight (_leftColumnPadding, _paddingChar);
-        result += "|";
-        result += line[1].PadRight (_rightColumnPadding, _paddingChar);
-        result += Environment.NewLine;
-      }
-      return result;
     }
   }
 }

@@ -24,7 +24,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.IntegrationTests.Utilities
 {
   /// <summary>
-  /// checkes the queryResult against a previously created resource
+  /// Checks the queryResult against a previously created resource
   /// </summary>
   public class CheckingTestExecutor : ITestExecutor
   {
@@ -43,12 +43,11 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       var referenceResult = GetReferenceResult (executingMethod);
       var actualResult = GetActualResult (queryResult);
 
-      var result = TestResultChecker.Check (referenceResult, actualResult);
-      // TODO Review: use result.GetDiffSet() as the message of the assertion (third parameter)
-      Assert.That (result.IsEqual, Is.True);
+      var result = new ComparisonResult (referenceResult, actualResult);
+      Assert.That (result.IsEqual, Is.True,result.GetDiffSet());
     }
 
-    private string GetActualResult (object queryResult)
+    private static string GetActualResult (object queryResult)
     {
       var stringWriter = new StringWriter();
       // Ignore bidirectional associations - we are only interested in the foreign key properties of associations (eg., CategoryID rather than Category)

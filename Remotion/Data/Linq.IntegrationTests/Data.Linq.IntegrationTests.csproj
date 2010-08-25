@@ -80,17 +80,14 @@
     <Compile Include="UnitTests\Northwind\NorthwindConnectionManagerTest.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
     <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
-    <Compile Include="UnitTests\Utilities\QueryExecutorTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />
-    <Compile Include="UnitTests\Utilities\SerializerTestClassWithFields.cs" />
-    <Compile Include="UnitTests\Utilities\SerializerTestClassWithProperties.cs" />
-    <Compile Include="UnitTests\Utilities\SerializerTestClassWithReferenceTypes.cs" />
-    <Compile Include="UnitTests\Utilities\TestResultCheckerTest.cs" />
+    <Compile Include="TestDomain\SerializerTestClassWithFields.cs" />
+    <Compile Include="TestDomain\SerializerTestClassWithProperties.cs" />
+    <Compile Include="TestDomain\SerializerTestClassWithReferenceTypes.cs" />
     <Compile Include="UnitTests\Utilities\TestResultSerializerTest.cs" />
     <Compile Include="Utilities\ComparisonResult.cs" />
     <Compile Include="Utilities\ITestExecutor.cs" />
-    <Compile Include="Utilities\TestResultChecker.cs" />
     <Compile Include="Utilities\TestResultSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
