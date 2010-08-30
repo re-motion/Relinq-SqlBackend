@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Linq.Mapping;
 
-// TODO Review: Move the test classes (ContactTestClass, PersonTestClass, DataContextTestClass) to a TestDomain namespace
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
 {
   [Table (Name = "dbo.Contacts")]

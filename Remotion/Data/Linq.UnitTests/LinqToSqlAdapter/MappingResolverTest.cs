@@ -25,8 +25,8 @@ using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
-using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
@@ -204,11 +204,10 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
     }
 
-    // TODO Review: This seems to be the same as the ResolveMemberExpression test above
     [Test]
     public void ResolveMemberExpression_NonPrimaryKey()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", false);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
 
       var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CompanyName");

@@ -37,14 +37,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       using (var command = connection.CreateCommand ())
       {
         command.CommandText = commandText;
-        foreach (var commandParameter in parameters)
-        {
-          var dataParameter = command.CreateParameter ();
-          dataParameter.ParameterName = commandParameter.Name;
-          dataParameter.Value = commandParameter.Value;
-
-          command.Parameters.Add (dataParameter);
-        }
+        AddParametersToCommand (command, parameters);
 
         using (var reader = command.ExecuteReader ())
         {
@@ -65,9 +58,21 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
         // TODO Review: This is not correct - CommandParameters cannot be added directly to an IDbCommand; extract the code used above (in GetResults) 
         // TODO Review: into a reusable method, then call that method to initialize the IDbCommand from here
-        Array.ForEach (parameters, p => command.Parameters.Add (p));
+        AddParametersToCommand (command, parameters);
 
         return (T) command.ExecuteScalar ();
+      }
+    }
+
+    private static void AddParametersToCommand(IDbCommand command, CommandParameter[] parameters)
+    {
+      foreach (var commandParameter in parameters)
+      {
+        var dataParameter = command.CreateParameter ();
+        dataParameter.ParameterName = commandParameter.Name;
+        dataParameter.Value = commandParameter.Value;
+
+        command.Parameters.Add (dataParameter);
       }
     }
   }
