@@ -7,8 +7,6 @@ using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests
 {
-  // TODO Review: I've refactored the resource file name generation both for the saving and loading of resources. 
-  // TODO Review: Please test that this still works correctly when saving resources and when checking them.
   public abstract class AbstractTestBase 
   {
     public TestMode Mode = TestMode.CheckActualResults;

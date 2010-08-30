@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Linq.Expressions;
@@ -26,6 +25,7 @@ using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.Utilities;
 using Rhino.Mocks;
 
@@ -36,7 +36,6 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
   {
     private UniqueIdentifierGenerator _generator;
     private MappingResolver _mappingResolver;
-    private MetaModel _metaModel;
 
     private readonly Type _unmappedType = typeof (Type);
     private const string _unmappedTypeMsg = "System.Type";
@@ -50,13 +49,11 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _generator = new UniqueIdentifierGenerator();
       _mappingResolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (DataContextTestClass)));
       _unmappedInfo = _unmappedType.GetProperty ("GUID");
-      _metaModel = new AttributeMappingSource().GetModel (typeof (DataContextTestClass));
+      new AttributeMappingSource().GetModel (typeof (DataContextTestClass));
     }
 
-    // TODO Review: Do not call all the tests "Test..." - the [Test] attribute already tells us the method is a test. Call the method like the method it tests, optionally followed by "_" + a short description of what the test checks
-
     [Test]
-    public void TestResolveTableInfo()
+    public void ResolveTableInfo()
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (DataContextTestClass.Customer));
 
@@ -75,7 +72,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
     
     [Test]
-    public void TestResolveJoinInfo_ForeignKeyOnTheRight()
+    public void ResolveJoinInfo_ForeignKeyOnTheRight()
     {
       var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
       var customerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
@@ -98,7 +95,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    public void TestResolveJoinInfo_ForeignKeyOnTheLeft()
+    public void ResolveJoinInfo_ForeignKeyOnTheLeft()
     {
       var orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
       var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
@@ -157,7 +154,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    public void TestResolveSimpleTableInfo ()
+    public void ResolveSimpleTableInfo ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Region), "dbo.Region", "t0");
 
@@ -174,7 +171,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
-    public void TestResolveSimpleTableInfo_ShouldThrowUnmappedException ()
+    public void ResolveSimpleTableInfo_ShouldThrowUnmappedException ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (_unmappedType, "dbo.Region", "t0");
 
@@ -254,7 +251,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "Cannot resolve member: Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.PersonTestClass.stub is not a mapped member")]
+        ExpectedMessage = "Cannot resolve member: Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain.PersonTestClass.stub is not a mapped member")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForMember()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
@@ -286,7 +283,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
         ExpectedMessage =
-            "Cannot perform a type check for type Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.DataContextTestClass+Customer - there is no inheritance code for this type."
+            "Cannot perform a type check for type Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+Customer - there is no inheritance code for this type."
         )]
     public void ResolveTypeCheck_ShouldThrowUnmappedItemException_WhenNoInheritanceCode()
     {
@@ -351,13 +348,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       var metamodel = new AttributeMappingSource().GetModel (typeof (DataContextTestClass));
       var table = metamodel.GetTable (typeof (DataContextTestClass.Customer));
       var dataMembers = table.RowType.DataMembers;
-      var primaryKeys = new List<MetaDataMember>();
 
-      foreach (var member in dataMembers)
-      {
-        if (member.IsPrimaryKey)
-          primaryKeys.Add (member);
-      }
+      var primaryKeys = dataMembers.Where (member => member.IsPrimaryKey).ToList();
 
       var customer = new DataContextTestClass.Customer();
       var constantExpr = Expression.Constant (customer);
