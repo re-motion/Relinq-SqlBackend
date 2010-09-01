@@ -163,10 +163,21 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       SqlColumnExpression expectedPrimaryColumn = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression expectedDescriptionColumn =
           new SqlColumnDefinitionExpression (typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
-
       var expectedExpr = new SqlEntityDefinitionExpression (
           simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, expectedPrimaryColumn, expectedPrimaryColumn, expectedDescriptionColumn);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, resolvedExpr);
+    }
+
+    [Test]
+    public void ResolveSimpleTableInfo_WithInheritanceHierarchy ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (ContactWithInheritanceHierarchy), "dbo.Contact", "t0");
+
+      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      var actualColumnNames = resolvedExpr.Columns.Select (c => c.ColumnName).ToArray ();
+
+      var expectedMembersAndDeclaringTypes = new[] {  "ContactID", "ContactType", "Password", "PhotoColumn", "HomePage"};
+      Assert.That (actualColumnNames, Is.EquivalentTo (expectedMembersAndDeclaringTypes));
     }
 
     [Test]
@@ -268,52 +279,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    public void ResolveTypeCheck_ShouldReturnConstantExpression()
-    {
-      Expression customerExpression = Expression.Constant (new ContactTestClass.CustomerContact());
-      Type desiredType = new ContactTestClass().GetType();
-
-      Expression result = _mappingResolver.ResolveTypeCheck (customerExpression, desiredType);
-      
-      Expression expectedExpression = Expression.Constant (true);
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
-    }
-
-    [Test]
-    [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage =
-            "Cannot perform a type check for type Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+Customer - there is no inheritance code for this type."
-        )]
-    public void ResolveTypeCheck_ShouldThrowUnmappedItemException_WhenNoInheritanceCode()
-    {
-      Expression contactExpression = Expression.Constant (new ContactTestClass());
-      Type desiredTypeNotAssignable = new DataContextTestClass.Customer().GetType();
-
-      _mappingResolver.ResolveTypeCheck (contactExpression, desiredTypeNotAssignable);
-    }
-
-    [Test]
-    public void ResolveTypeCheck_ShouldReturnBinaryExpression_WhenInheritanceCode()
-    {
-      Expression contactExpression = Expression.Constant (new ContactTestClass());
-      Type desiredType = new ContactTestClass.CustomerContact().GetType();
-
-      var discriminatorDataMember = contactExpression.Type.GetProperty ("ContactType");
-
-      Expression result = _mappingResolver.ResolveTypeCheck (contactExpression, desiredType);
-      
-      Expression expectedExpression = Expression.Equal (
-          Expression.MakeMemberAccess (contactExpression, discriminatorDataMember),
-          Expression.Constant ("Customer")
-          );
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
-    }
-
-    //A-TEAM
-
-    [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member CustomerID appplied to column CustomerID")]
-    public void ResolveMemberExpressionGivingSqlColumnDefinitionExpression()
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
+        "Cannot resolve members appplied to expressions representing columns. (Member: CustomerID, Column: [c].[CustomerID])")]
+    public void ResolveMemberExpression_WithSqlColumnExpression ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
 
@@ -326,50 +294,99 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member CustomerID appplied to column CustomerID")]
-    public void ResolveMemberExpressionGivingSqlColumnReferenceExpression()
+    public void ResolveConstantExpression ()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "s", "CustomerID", true);
-      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
-      var columnRefExpression = new SqlColumnReferenceExpression (typeof (string), "c", "CustomerID", true, referencedSqlExpression);
-
-      var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
-      var result = _mappingResolver.ResolveMemberExpression (columnRefExpression, memberInfo);
-
-      var expectedExpression = columnRefExpression;
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-
-    [Test]
-    public void ResolveConstantExpression()
-    {
-      var metamodel = new AttributeMappingSource().GetModel (typeof (DataContextTestClass));
-      var table = metamodel.GetTable (typeof (DataContextTestClass.Customer));
-      var dataMembers = table.RowType.DataMembers;
-
-      var primaryKeys = dataMembers.Where (member => member.IsPrimaryKey).ToList();
-
-      var customer = new DataContextTestClass.Customer();
+      var customer = new DataContextTestClass.Customer { CustomerID = "abc" };
       var constantExpr = Expression.Constant (customer);
 
       var result = _mappingResolver.ResolveConstantExpression (constantExpr);
 
-      var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, primaryKeys[0]);
-
+      var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, customer.CustomerID);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
     }
 
     [Test]
-    public void ResolveConstantExpressionShouldReturnSameQuery()
+    public void ResolveConstantExpression_Null ()
+    {
+      var constantExpr = Expression.Constant (null, typeof (DataContextTestClass.Customer));
+
+      var result = _mappingResolver.ResolveConstantExpression (constantExpr);
+
+      Assert.That (result, Is.SameAs (constantExpr));
+    }
+
+    [Test]
+    public void ResolveConstantExpression_UnmappedType_ShouldReturnSameExpression ()
     {
       var constantExpr = Expression.Constant (0);
 
       var result = _mappingResolver.ResolveConstantExpression (constantExpr);
 
-      var expectedExpr = constantExpr;
+      Assert.That (result, Is.SameAs (constantExpr));
+    }
 
-      Assert.AreEqual (expectedExpr, result);
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Entities without identity members are not supported by re-linq.")]
+    public void ResolveConstantExpression_NoPrimaryKey ()
+    {
+      var customer = new DataContextTestClass.FakeClassWithoutPrimaryKey { Name = "abc" };
+      var constantExpr = Expression.Constant (customer);
+
+      _mappingResolver.ResolveConstantExpression (constantExpr);
+    }
+
+    [Test]
+    public void ResolveTypeCheck_ForObviouslyTrueCheck_ShouldReturnConstantExpression()
+    {
+      Expression customerExpression = Expression.Constant (new ContactWithInheritanceHierarchy.CustomerContact());
+      Type desiredType = typeof (ContactWithInheritanceHierarchy);
+
+      Expression result = _mappingResolver.ResolveTypeCheck (customerExpression, desiredType);
+      
+      Expression expectedExpression = Expression.Constant (true);
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+    }
+
+    [Test]
+    public void ResolveTypeCheck_ForObviouslyFalseCheck_ShouldReturnConstantExpression ()
+    {
+      Expression customerExpression = Expression.Constant (new ContactWithInheritanceHierarchy.CustomerContact ());
+      Type desiredType = typeof (PersonTestClass);
+
+      Expression result = _mappingResolver.ResolveTypeCheck (customerExpression, desiredType);
+
+      Expression expectedExpression = Expression.Constant (false);
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "Cannot perform a type check for type "
+        + "Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
+        + "code for this type.")]
+    public void ResolveTypeCheck_ShouldThrowUnmappedItemException_WhenNoInheritanceCode()
+    {
+      Expression contactExpression = Expression.Constant (new DataContextTestClass.FakeClassWithoutInheritanceCodeBase());
+      Type desiredType = typeof (DataContextTestClass.FakeClassWithoutInheritanceCode);
+
+      _mappingResolver.ResolveTypeCheck (contactExpression, desiredType);
+    }
+
+    [Test]
+    public void ResolveTypeCheck_ShouldReturnBinaryExpression_WhenInheritanceCode()
+    {
+      Expression contactExpression = Expression.Constant (new ContactWithInheritanceHierarchy());
+      Type desiredType = new ContactWithInheritanceHierarchy.CustomerContact().GetType();
+
+      var discriminatorDataMember = contactExpression.Type.GetProperty ("ContactType");
+
+      Expression result = _mappingResolver.ResolveTypeCheck (contactExpression, desiredType);
+      
+      Expression expectedExpression = Expression.Equal (
+          Expression.MakeMemberAccess (contactExpression, discriminatorDataMember),
+          Expression.Constant ("Customer")
+          );
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -379,25 +396,26 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       MetaDataMember[] metaDataMembers = _mappingResolver.GetMetaDataMembers (simpleTableInfo.ItemType);
 
-      SqlEntityDefinitionExpression expectedMatchingExpression = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
-      for (int i = 0; i < metaDataMembers.Length; i++)
-        Assert.AreEqual (expectedMatchingExpression.Columns[i].ColumnName, metaDataMembers[i].MappedName);
+      var actualColumnNames = metaDataMembers.Select (m => m.MappedName).ToArray();
+
+      var expectedMatchingEntity = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      var expectedColumnNames = expectedMatchingEntity.Columns.Select (c => c.ColumnName).ToArray();
+      Assert.That (actualColumnNames, Is.EqualTo (expectedColumnNames));
     }
 
     [Test]
-    public void GetMetaDataMembers_MindingInheritance_ShouldReturnMembersOfSubclasses ()
+    public void GetMetaDataMembers_WithInheritance_ShouldReturnMembersOfSubclasses ()
     {
-      var members = _mappingResolver.GetMetaDataMembers (typeof (ContactTestClass));
-
+      var members = _mappingResolver.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy));
       var actualMembersAndDeclaringTypes = members.Select (m => new { m.DeclaringType.Type, Member = m.Member.Name }).ToArray();
-      var expectedMembersAndDeclaringTypes = new[] { 
-          new { Type = typeof (ContactTestClass), Member = "ContactID"},
-          new { Type = typeof (ContactTestClass), Member = "ContactType"},
-          new { Type = typeof (ContactTestClass.EmployeeContact), Member = "Password"},
-          new { Type = typeof (ContactTestClass.EmployeeContact), Member = "Photo"},
-          new { Type = typeof (ContactTestClass.SupplierContact), Member = "HomePage"}
-      };
 
+      var expectedMembersAndDeclaringTypes = new[] { 
+          new { Type = typeof (ContactWithInheritanceHierarchy), Member = "ContactID"},
+          new { Type = typeof (ContactWithInheritanceHierarchy), Member = "ContactType"},
+          new { Type = typeof (ContactWithInheritanceHierarchy.EmployeeContact), Member = "Password"},
+          new { Type = typeof (ContactWithInheritanceHierarchy.EmployeeContact), Member = "Photo"},
+          new { Type = typeof (ContactWithInheritanceHierarchy.SupplierContact), Member = "HomePage"}
+      };
       Assert.That (actualMembersAndDeclaringTypes, Is.EquivalentTo (expectedMembersAndDeclaringTypes));
     }
   }

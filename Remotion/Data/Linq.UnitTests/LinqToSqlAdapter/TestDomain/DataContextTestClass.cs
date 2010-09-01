@@ -214,6 +214,45 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
       }
     }
 
+    [Table (Name = "dbo.FakeClassWithoutPrimaryKey")]
+    public class FakeClassWithoutPrimaryKey
+    {
+      private string _Name;
+
+      [Column (Storage = "_Name", DbType = "NVarChar(40) NOT NULL", CanBeNull = false, IsPrimaryKey = false)]
+      public string Name
+      {
+        get { return _Name; }
+        set { _Name = value; }
+      }
+    }
+
+    [Table (Name = "dbo.FakeClassWithoutInheritanceCodeBase")]
+    public class FakeClassWithoutInheritanceCodeBase
+    {
+      private string _BaseName;
+
+      [Column (Storage = "_BaseName", DbType = "NVarChar(40) NOT NULL", CanBeNull = false, IsPrimaryKey = false)]
+      public string BaseName
+      {
+        get { return _BaseName; }
+        set { _BaseName = value; }
+      }
+    }
+
+    [Table (Name = "dbo.FakeClassWithoutInheritanceCode")]
+    public class FakeClassWithoutInheritanceCode : FakeClassWithoutInheritanceCodeBase
+    {
+      private string _Name;
+
+      [Column (Storage = "_Name", DbType = "NVarChar(40) NOT NULL", CanBeNull = false, IsPrimaryKey = false)]
+      public string Name
+      {
+        get { return _Name; }
+        set { _Name = value; }
+      }
+    }
+
     #endregion
   }
 }

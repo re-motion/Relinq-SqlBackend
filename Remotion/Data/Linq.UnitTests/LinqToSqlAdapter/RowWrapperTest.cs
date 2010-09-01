@@ -82,9 +82,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           .Expect (mock => mock.GetValue (2))
           .Return ("Customer"); //return value of discriminator column
       _reverseMappingResolverMock
-          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactTestClass)))
+          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
           .Return (
-              _metaModel.GetTable (typeof (ContactTestClass)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray(
+              _metaModel.GetTable (typeof (ContactWithInheritanceHierarchy)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray(
                   ));
 
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
@@ -95,11 +95,11 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
                           new ColumnID ("ContactType", 2)
                       };
 
-      var customer = rowWrapper.GetEntity<ContactTestClass> (columnIDs);
+      var customer = rowWrapper.GetEntity<ContactWithInheritanceHierarchy> (columnIDs);
 
       _readerMock.VerifyAllExpectations();
       _reverseMappingResolverMock.VerifyAllExpectations();
-      Assert.IsInstanceOfType (typeof (ContactTestClass.CustomerContact), customer);
+      Assert.IsInstanceOfType (typeof (ContactWithInheritanceHierarchy.CustomerContact), customer);
     }
 
     [Test]
@@ -109,9 +109,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           .Expect (mock => mock.GetValue (2))
           .Return (null); //return value of discriminator column
       _reverseMappingResolverMock
-          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactTestClass)))
+          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
           .Return (
-              _metaModel.GetTable (typeof (ContactTestClass)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray()
+              _metaModel.GetTable (typeof (ContactWithInheritanceHierarchy)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray()
               );
 
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
@@ -122,11 +122,11 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
                           new ColumnID ("ContactType", 2)
                       };
 
-      var contact = rowWrapper.GetEntity<ContactTestClass> (columnIDs);
+      var contact = rowWrapper.GetEntity<ContactWithInheritanceHierarchy> (columnIDs);
 
       _readerMock.VerifyAllExpectations ();
       _reverseMappingResolverMock.VerifyAllExpectations ();
-      Assert.IsInstanceOfType (typeof (ContactTestClass), contact);
+      Assert.IsInstanceOfType (typeof (ContactWithInheritanceHierarchy), contact);
     }
 
     [Test]
@@ -143,9 +143,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           .Return ("www.homepage.com");
 
       _reverseMappingResolverMock
-          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactTestClass)))
+          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
           .Return (
-              _metaModel.GetMetaType (typeof (ContactTestClass.SupplierContact)).DataMembers.ToArray()
+              _metaModel.GetMetaType (typeof (ContactWithInheritanceHierarchy.SupplierContact)).DataMembers.ToArray()
               );
 
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
@@ -158,9 +158,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
                           
                       };
 
-      var contact = rowWrapper.GetEntity<ContactTestClass> (columnIDs);
+      var contact = rowWrapper.GetEntity<ContactWithInheritanceHierarchy> (columnIDs);
 
-      var expectedContact = new ContactTestClass.SupplierContact();
+      var expectedContact = new ContactWithInheritanceHierarchy.SupplierContact();
       expectedContact.ContactID = 1;
       expectedContact.ContactType = "Supplier";
       expectedContact.HomePage = "www.homepage.com";
@@ -193,9 +193,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
           .Return ("Employee");
 
       _reverseMappingResolverMock
-          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactTestClass)))
+          .Expect (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
           .Return (
-              _metaModel.GetMetaType (typeof (ContactTestClass.EmployeeContact)).DataMembers.ToArray ()
+              _metaModel.GetMetaType (typeof (ContactWithInheritanceHierarchy.EmployeeContact)).DataMembers.ToArray ()
               );
 
       var rowWrapper = new RowWrapper (_readerMock, _reverseMappingResolverMock);
@@ -208,9 +208,9 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
                           new ColumnID ("ContactType", 4)
                       };
 
-      var contact = rowWrapper.GetEntity<ContactTestClass> (columnIDs);
+      var contact = rowWrapper.GetEntity<ContactWithInheritanceHierarchy> (columnIDs);
 
-      var expectedContact = new ContactTestClass.EmployeeContact ();
+      var expectedContact = new ContactWithInheritanceHierarchy.EmployeeContact ();
       expectedContact.ContactID = 1;
       expectedContact.ContactType = "Employee";
       expectedContact.Password = pw;

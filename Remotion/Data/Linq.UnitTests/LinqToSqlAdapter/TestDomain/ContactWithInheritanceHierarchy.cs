@@ -4,15 +4,15 @@ using System.Data.Linq.Mapping;
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
 {
   [Table (Name = "dbo.Contacts")]
-  [InheritanceMapping (Code = "Unknown", Type = typeof (ContactTestClass), IsDefault = true)]
+  [InheritanceMapping (Code = "Unknown", Type = typeof (ContactWithInheritanceHierarchy), IsDefault = true)]
   [InheritanceMapping (Code = "Employee", Type = typeof (EmployeeContact))]
   [InheritanceMapping (Code = "Supplier", Type = typeof (SupplierContact))]
   [InheritanceMapping (Code = "Customer", Type = typeof (CustomerContact))]
   [InheritanceMapping (Code = "Shipper", Type = typeof (ShipperContact))]
-  public class ContactTestClass
+  public class ContactWithInheritanceHierarchy
   {
     #region inner classes
-    public abstract class FullContact : ContactTestClass
+    public abstract class FullContact : ContactWithInheritanceHierarchy
     {
     }
 
@@ -20,7 +20,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
     {
     }
 
-    public class ShipperContact : ContactTestClass
+    public class ShipperContact : ContactWithInheritanceHierarchy
     {
     }
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
       }
     }
 
-    public class EmployeeContact : ContactTestClass
+    public class EmployeeContact : ContactWithInheritanceHierarchy
     {
       private byte[] _Password;
       private System.Data.Linq.Binary _Photo;
@@ -80,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
         }
       }
 
-      [Column (Storage = "_Photo", DbType = "Image", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+      [Column (Storage = "_Photo", DbType = "Image", CanBeNull = true, UpdateCheck = UpdateCheck.Never, Name = "PhotoColumn")]
       public System.Data.Linq.Binary Photo
       {
         get
@@ -125,13 +125,13 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
         return false;
       }
 
-      if (_ContactID != ((ContactTestClass) obj)._ContactID)
+      if (_ContactID != ((ContactWithInheritanceHierarchy) obj)._ContactID)
       {
         return false;
       }
 
 
-      if (_ContactType != ((ContactTestClass) obj)._ContactType)
+      if (_ContactType != ((ContactWithInheritanceHierarchy) obj)._ContactType)
       {
         return false;
       }

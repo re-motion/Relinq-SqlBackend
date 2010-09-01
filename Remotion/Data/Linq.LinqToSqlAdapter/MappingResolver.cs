@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq;
@@ -73,13 +72,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      // TODO RM-3110: Refactor when re-linq supports compound keys
-      
-      var identityMembers = GetMetaType (tableInfo.ItemType).IdentityMembers;
-      if (identityMembers.Count != 1)
-        throw new ArgumentException("The table may not contain more or less than 1 identity member!");
-
-      var primaryKeyMember = identityMembers.Single();
+      Type type = tableInfo.ItemType;
+      var primaryKeyMember = GetPrimaryKeyMember(GetMetaType (type));
       var primaryKeyColumn = CreateSqlColumnExpression (tableInfo, primaryKeyMember);
 
       var columnMembers = GetMetaDataMembers (tableInfo.ItemType);
@@ -105,27 +99,26 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      throw new UnmappedItemException ("Cannot resolve member " + memberInfo.Name + " appplied to column " + sqlColumnExpression.ColumnName);
+      var message = string.Format (
+          "Cannot resolve members appplied to expressions representing columns. (Member: {0}, Column: {1})", 
+          memberInfo.Name, 
+          sqlColumnExpression);
+      throw new UnmappedItemException (message);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
 
-      var valueType = constantExpression.Type;
-
-      var table = _metaModel.GetTable (valueType);
-      if (table != null)
+      if (constantExpression.Value == null)
+        return constantExpression;
+      
+      var metaType = _metaModel.GetMetaType (constantExpression.Type);
+      if (metaType.Table != null)
       {
-        var primaryKeys = table.RowType.IdentityMembers;
-        if (primaryKeys.Count != 1)
-          throw new NotSupportedException ("Multiple primary keys or less than 1 currently not supported");
-
-        var primaryKey = primaryKeys.Single();
-
-        // TODO RM-3110: Refactor when re-linq supports compound keys
-
-        return new SqlEntityConstantExpression (valueType, constantExpression.Value, primaryKey);
+        var primaryKey = GetPrimaryKeyMember (metaType);
+        var primaryKeyValue = primaryKey.MemberAccessor.GetBoxedValue (constantExpression.Value);
+        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, primaryKeyValue);
       }
 
       return constantExpression;
@@ -139,6 +132,9 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       if (desiredType.IsAssignableFrom (expression.Type))
         return Expression.Constant (true);
 
+      if (!expression.Type.IsAssignableFrom (desiredType))
+        return Expression.Constant (false);
+
       var desiredDiscriminatorValue = GetMetaType (desiredType).InheritanceCode;
       if (desiredDiscriminatorValue == null)
         throw new UnmappedItemException ("Cannot perform a type check for type " + desiredType + " - there is no inheritance code for this type.");
@@ -146,9 +142,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       var discriminatorDataMember =  GetMetaType (expression.Type).Discriminator;
       Debug.Assert (discriminatorDataMember != null);
 
+      // ReSharper disable PossibleNullReferenceException
       return Expression.Equal (
           Expression.MakeMemberAccess (expression, discriminatorDataMember.Member),
           Expression.Constant (desiredDiscriminatorValue));
+      // ReSharper restore PossibleNullReferenceException
     }
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
@@ -195,6 +193,20 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
         throw new UnmappedItemException ("Cannot resolve type: " + typeToRetrieve + " is not a mapped type");
 
       return metaType;
+    }
+
+    private MetaDataMember GetPrimaryKeyMember (MetaType metaType)
+    {
+      var identityMembers = metaType.IdentityMembers;
+
+      // TODO RM-3110: Refactor when re-linq supports compound keys
+      if (identityMembers.Count > 1)
+        throw new NotSupportedException ("Entities with more than one identity member are currently not supported by re-linq.");
+
+      if (identityMembers.Count == 0)
+        throw new NotSupportedException ("Entities without identity members are not supported by re-linq.");
+
+      return identityMembers.Single ();
     }
 
     private MetaDataMember[] GetMetaDataMembersRecursive (MetaType metaType)

@@ -175,8 +175,8 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       IEnumerable enumerable = new[] { 1, 2, 3 };
 
       _serializer.Serialize (enumerable);
-      
-      var expected =   "Int32[] {" + Environment.NewLine
+
+      var expected = "Enumerable {" + Environment.NewLine
                      + "  1" + Environment.NewLine
                      + "  2" + Environment.NewLine
                      + "  3" + Environment.NewLine
@@ -192,7 +192,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 
       _serializerWithLevel1.Serialize (enumerable);
 
-      var expected = "..Int32[] {" + Environment.NewLine
+      var expected = "..Enumerable {" + Environment.NewLine
                      + "....1" + Environment.NewLine
                      + "....2" + Environment.NewLine
                      + "....3" + Environment.NewLine
@@ -210,7 +210,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 
       _serializer.Serialize (enumerable);
 
-      var expected = "SerializerTestClassWithFields[] {" + Environment.NewLine
+      var expected = "Enumerable {" + Environment.NewLine
                      + "  SerializerTestClassWithFields" + Environment.NewLine
                      + "    PublicField1: 11" + Environment.NewLine
                      + "    PublicField2: 'test 0'" + Environment.NewLine
@@ -236,7 +236,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       _serializer.Serialize (instance);
 
       var expected = "AnonymousType0" + Environment.NewLine
-                    + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
+                    + "  EnumerableProperty: Enumerable {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine
                     + "      PublicField2: 'test 0'" + Environment.NewLine
@@ -282,7 +282,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
 
       serializer.Serialize (instance);
       var expected = "AnonymousType0" + Environment.NewLine
-                    + "  EnumerableProperty: SerializerTestClassWithFields[] {" + Environment.NewLine
+                    + "  EnumerableProperty: Enumerable {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine
                     //+ "      PublicField2: 'test 0'" + Environment.NewLine
