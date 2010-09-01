@@ -27,6 +27,7 @@ Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 Imports System.Data.Linq
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class ObjectLoadingTests
     Inherits TestBase
 

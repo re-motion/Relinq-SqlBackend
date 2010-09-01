@@ -23,6 +23,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class ObjectIdentityTests
     Inherits TestBase
 

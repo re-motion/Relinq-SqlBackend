@@ -3,7 +3,6 @@ Imports System.Reflection
 Imports NUnit.Framework
 
 ' TODO Review: Move this attribute down to each of the concrete test classes
-<TestFixture()>
 Public Class TestBase
   Inherits AbstractTestBase
 

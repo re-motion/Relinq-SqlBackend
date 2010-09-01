@@ -25,6 +25,7 @@ Imports System.Reflection
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class AggregatesTests
     Inherits TestBase
 
@@ -66,14 +67,14 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Sum to find the total number of units on order over all Products.")> _
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests - works in c# but not in vb")>
-        Public Sub LinqToSqlCount04()
-            Dim totalUnits = (From prod In DB.Products _
-                    Select CInt(prod.UnitsOnOrder.Value)).Sum()
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests - works in c# but not in vb")>
+    Public Sub LinqToSqlCount04()
+      Dim totalUnits = (From prod In DB.Products _
+              Select CInt(prod.UnitsOnOrder.Value)).Sum()
 
-            TestExecutor.Execute(totalUnits, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(totalUnits, MethodBase.GetCurrentMethod())
+    End Sub
 
     'This sample uses Min to find the lowest unit price of any Product.")> _
     <Test()>
@@ -95,19 +96,19 @@ Namespace LinqSamples101
 
     'This sample uses Min to find the Products that have the lowest unit price " & _
     'in each category.")> _
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
-        Public Sub LinqToSqlCount07()
-            Dim categories = From prod In DB.Products _
-                  Group prod By prod.CategoryID Into g = Group _
-                  Select CategoryID, _
-                  CheapestProducts = _
-                  From p2 In g _
-                  Where p2.UnitPrice = g.Min(Function(p3) p3.UnitPrice) _
-                  Select p2
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
+    Public Sub LinqToSqlCount07()
+      Dim categories = From prod In DB.Products _
+            Group prod By prod.CategoryID Into g = Group _
+            Select CategoryID, _
+            CheapestProducts = _
+            From p2 In g _
+            Where p2.UnitPrice = g.Min(Function(p3) p3.UnitPrice) _
+            Select p2
 
-            TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
+    End Sub
 
 
     'This sample uses Max to find the latest hire date of any Employee.")> _
@@ -130,18 +131,18 @@ Namespace LinqSamples101
 
     'This sample uses Max to find the Products that have the highest unit price " & _
     'in each category.")> _
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
-        Public Sub LinqToSqlCount10()
-            Dim categories = From prod In DB.Products _
-                  Group prod By prod.CategoryID Into g = Group _
-                  Select CategoryGroup = g, _
-                  MostExpensiveProducts = _
-                  From p2 In g _
-                  Where p2.UnitPrice = g.Max(Function(p3) p3.UnitPrice)
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
+    Public Sub LinqToSqlCount10()
+      Dim categories = From prod In DB.Products _
+            Group prod By prod.CategoryID Into g = Group _
+            Select CategoryGroup = g, _
+            MostExpensiveProducts = _
+            From p2 In g _
+            Where p2.UnitPrice = g.Max(Function(p3) p3.UnitPrice)
 
-            TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
+    End Sub
 
 
     'This sample uses Average to find the average freight of all Orders.")> _
@@ -164,19 +165,19 @@ Namespace LinqSamples101
 
     'This sample uses Average to find the Products that have unit price higher than " & _
     'the average unit price of the category for each category.")> _
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
-        Public Sub LinqToSqlCount13()
-            Dim categories = From prod In DB.Products _
-                  Group prod By prod.CategoryID Into g = Group _
-                  Select g, _
-                  ExpensiveProducts = _
-                  From prod2 In g _
-                  Where (prod2.UnitPrice > g.Average(Function(p3) p3.UnitPrice))
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
+    Public Sub LinqToSqlCount13()
+      Dim categories = From prod In DB.Products _
+            Group prod By prod.CategoryID Into g = Group _
+            Select g, _
+            ExpensiveProducts = _
+            From prod2 In g _
+            Where (prod2.UnitPrice > g.Average(Function(p3) p3.UnitPrice))
 
-            TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
-        End Sub
-    End Class
+      TestExecutor.Execute(categories, MethodBase.GetCurrentMethod())
+    End Sub
+  End Class
 End Namespace
 
 

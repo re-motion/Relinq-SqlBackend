@@ -24,10 +24,11 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
-    Public Class WhereTests
-        Inherits TestBase
+  <TestFixture()>
+  Public Class WhereTests
+    Inherits TestBase
 
-        'This sample uses a Where clause to filter for Customers in London.
+    'This sample uses a Where clause to filter for Customers in London.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - test works in c# but not in vb")>
     Public Sub LinqToSqlWhere01()
@@ -42,8 +43,8 @@ Namespace LinqSamples101
     End Sub
 
 
-        'This sample uses a Where clause to filter for Employees hired
-        '"during or after 1994.
+    'This sample uses a Where clause to filter for Employees hired
+    '"during or after 1994.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
     Public Sub LinqToSqlWhere02()
@@ -54,8 +55,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(hiredAfter1994, MethodBase.GetCurrentMethod())
     End Sub
 
-        'This sample uses a Where clause to filter for Products that have stock below their
-        'reorder level and are not discontinued.
+    'This sample uses a Where clause to filter for Products that have stock below their
+    'reorder level and are not discontinued.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly, test works in c# but not in vb")>
     Public Sub LinqToSqlWhere03()
@@ -67,8 +68,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(needToOrder, MethodBase.GetCurrentMethod())
     End Sub
 
-        'This sample uses a Where clause to filter out Products that are either
-        'discontinued or that have a UnitPrice greater than 10.
+    'This sample uses a Where clause to filter out Products that are either
+    'discontinued or that have a UnitPrice greater than 10.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
     Public Sub LinqToSqlWhere04()
@@ -78,8 +79,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-        'This sample uses two Where clauses to filter out Products that are discontinued 
-        'and with UnitPrice greater than 10
+    'This sample uses two Where clauses to filter out Products that are discontinued 
+    'and with UnitPrice greater than 10
     <Test()>
     <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly, test works in c# but not in vb")>
     Public Sub LinqToSqlWhere05()
@@ -92,16 +93,16 @@ Namespace LinqSamples101
     End Sub
 
 
-        'This sample uses First to select the first Shipper in the table.
-        <Test()>
-        Public Sub LinqToSqlWhere06()
-            Dim shipper = db.Shippers.First()
+    'This sample uses First to select the first Shipper in the table.
+    <Test()>
+    Public Sub LinqToSqlWhere06()
+      Dim shipper = db.Shippers.First()
 
-            TestExecutor.Execute(shipper, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(shipper, MethodBase.GetCurrentMethod())
+    End Sub
 
 
-        'This sample uses Take to select the first Customer with CustomerID 'BONAP'.
+    'This sample uses Take to select the first Customer with CustomerID 'BONAP'.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - test works in c# but not in vb")>
     Public Sub LinqToSqlWhere07()
@@ -112,7 +113,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(customer, MethodBase.GetCurrentMethod())
     End Sub
 
-        'This sample uses First to select an Order with freight greater than 10.00.
+    'This sample uses First to select an Order with freight greater than 10.00.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly, test works in c# but not in vb")>
     Public Sub LinqToSqlWhere08()
@@ -122,5 +123,5 @@ Namespace LinqSamples101
 
       TestExecutor.Execute(firstOrd, MethodBase.GetCurrentMethod())
     End Sub
-    End Class
+  End Class
 End Namespace

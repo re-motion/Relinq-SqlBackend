@@ -24,6 +24,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class ExistsInAnyAllContainsTests
     Inherits TestBase
     'This sample uses the Any operator to return only Customers that have no Orders.
@@ -38,7 +39,7 @@ Namespace LinqSamples101
     'This sample uses Any to return only Categories that have
     'at least one Discontinued product.")> _
     <Test()>
-    <Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")>
+    <Ignore("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")>
     Public Sub LinqToSqlExists02()
       Dim prodQuery = From cust In db.Categories _
             Where (From prod In cust.Products Where prod.Discontinued).Any()
@@ -48,44 +49,44 @@ Namespace LinqSamples101
 
     'This sample uses All to return Customers whom all of their orders " & _
     'have been shipped to their own city or whom have no orders.")> _
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - Cannot resolve member applied to an expression - works in c# but not in vb")>
-        Public Sub LinqToSqlExists03()
-            Dim ordQuery = From cust In DB.Customers _
-                    Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - Cannot resolve member applied to an expression - works in c# but not in vb")>
+    Public Sub LinqToSqlExists03()
+      Dim ordQuery = From cust In DB.Customers _
+              Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
 
-            TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
+    End Sub
 
     'This sample uses Contain to find which Customer contains an order with OrderID 10248.")> _
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - Contains is not supported by thís code generator")>
-        Public Sub LinqToSqlExists04()
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - Contains is not supported by thís code generator")>
+    Public Sub LinqToSqlExists04()
 
-            Dim order = (From o In DB.Orders _
-                  Where o.OrderID = 10248).First()
+      Dim order = (From o In DB.Orders _
+            Where o.OrderID = 10248).First()
 
-            Dim q = DB.Customers.Where(Function(p) p.Orders.Contains(order)).ToList()
+      Dim q = DB.Customers.Where(Function(p) p.Orders.Contains(order)).ToList()
 
-            TestExecutor.Execute(New With {order, q}, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(New With {order, q}, MethodBase.GetCurrentMethod())
+    End Sub
 
-        'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
+    'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
 
-        'TODO: Resolve NullPointerException in MappingResolver
-        'Class: MappingResolver.cs
-        'Method: public IResolvedTableInfo ResolveTableInfo
-        'Satement: MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
-        'Problem: tableInfo = {TABLE(String)} results in GetTable to a null results
+    'TODO: Resolve NullPointerException in MappingResolver
+    'Class: MappingResolver.cs
+    'Method: public IResolvedTableInfo ResolveTableInfo
+    'Satement: MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
+    'Problem: tableInfo = {TABLE(String)} results in GetTable to a null results
 
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - Object reference not set to an instance of an object - works in c# but not in vb")>
-        Public Sub LinqToSqlExists05()
-            Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - Object reference not set to an instance of an object - works in c# but not in vb")>
+    Public Sub LinqToSqlExists05()
+      Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
 
-            Dim q = DB.Customers.Where(Function(p) cities.Contains(p.City)).ToList()
+      Dim q = DB.Customers.Where(Function(p) cities.Contains(p.City)).ToList()
 
-            TestExecutor.Execute(q, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(q, MethodBase.GetCurrentMethod())
+    End Sub
   End Class
 End Namespace

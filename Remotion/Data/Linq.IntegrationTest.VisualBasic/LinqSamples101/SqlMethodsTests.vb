@@ -26,6 +26,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 Imports System.Data.Linq.SqlClient
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class SqlMethodsTests
     Inherits TestBase
 

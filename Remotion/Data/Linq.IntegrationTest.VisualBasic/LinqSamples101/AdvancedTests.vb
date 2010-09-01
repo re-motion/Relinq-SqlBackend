@@ -25,6 +25,7 @@ Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 Imports System.Reflection
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class AdvancedTests
     Inherits TestBase
 
@@ -95,36 +96,36 @@ Namespace LinqSamples101
     End Sub
 
     'This sample dynamically builds a Union to return a sequence of all countries where either a customer or an employee live.
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")>
-        Public Sub LinqToSqlAdvanced04()
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")>
+    Public Sub LinqToSqlAdvanced04()
 
-            Dim custs = DB.Customers
-            Dim param1 = Expression.Parameter(GetType(Customer), "c")
-            Dim left1 = Expression.Property(param1, GetType(Customer).GetProperty("City"))
-            Dim pred1 = Expression.Lambda(left1, param1)
+      Dim custs = DB.Customers
+      Dim param1 = Expression.Parameter(GetType(Customer), "c")
+      Dim left1 = Expression.Property(param1, GetType(Customer).GetProperty("City"))
+      Dim pred1 = Expression.Lambda(left1, param1)
 
-            Dim employees = DB.Employees
-            Dim param2 = Expression.Parameter(GetType(Employee), "e")
-            Dim left2 = Expression.Property(param2, GetType(Employee).GetProperty("City"))
-            Dim pred2 = Expression.Lambda(left2, param2)
+      Dim employees = DB.Employees
+      Dim param2 = Expression.Parameter(GetType(Employee), "e")
+      Dim left2 = Expression.Property(param2, GetType(Employee).GetProperty("City"))
+      Dim pred2 = Expression.Lambda(left2, param2)
 
-            Dim _
-              expr1 = _
-                Expression.Call(GetType(Queryable), "Select", New Type() {GetType(Customer), GetType(String)}, _
-                                 Expression.Constant(custs), pred1)
-            Dim _
-              expr2 = _
-                Expression.Call(GetType(Queryable), "Select", New Type() {GetType(Employee), GetType(String)}, _
-                                 Expression.Constant(employees), pred2)
+      Dim _
+        expr1 = _
+          Expression.Call(GetType(Queryable), "Select", New Type() {GetType(Customer), GetType(String)}, _
+                           Expression.Constant(custs), pred1)
+      Dim _
+        expr2 = _
+          Expression.Call(GetType(Queryable), "Select", New Type() {GetType(Employee), GetType(String)}, _
+                           Expression.Constant(employees), pred2)
 
-            Dim custQuery1 = DB.Customers.AsQueryable().Provider.CreateQuery(Of String)(expr1)
-            Dim empQuery1 = DB.Employees.AsQueryable().Provider.CreateQuery(Of String)(expr2)
+      Dim custQuery1 = DB.Customers.AsQueryable().Provider.CreateQuery(Of String)(expr1)
+      Dim empQuery1 = DB.Employees.AsQueryable().Provider.CreateQuery(Of String)(expr2)
 
-            Dim finalQuery = custQuery1.Union(empQuery1)
+      Dim finalQuery = custQuery1.Union(empQuery1)
 
-            TestExecutor.Execute(finalQuery, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(finalQuery, MethodBase.GetCurrentMethod())
+    End Sub
 
     'This sample uses OrderByDescending and Take to return the discontinued products of the top 10 most expensive products.
     <Test()>

@@ -22,6 +22,7 @@ Imports NUnit.Framework
 Imports Remotion.Data.Linq.IntegrationTests
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class CompiledQueryTests
     Inherits TestBase
 

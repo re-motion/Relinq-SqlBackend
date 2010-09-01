@@ -23,6 +23,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class ViewTests
     Inherits TestBase
     'This sample uses Select and Where to return a sequence of invoices

@@ -25,6 +25,7 @@ Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class StoredProceduresTests
     Inherits TestBase
 

@@ -24,9 +24,10 @@ Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class ConversionOperatorsTests
     Inherits TestBase
-    
+
     'This sample uses ToArray so that the client-side IEnumerable(Of T) implementation of Where is used, instead of the default Query(Of T) 
     'implementation which would be converted to SQL and executed " & _
     'on the server.  This is necessary because the where clause " & _
@@ -44,67 +45,67 @@ Namespace LinqSamples101
       Return (prod.ProductName.LastIndexOf("C") = 0)
     End Function
 
-        'This sample uses ToArray to immediately evaluate a query into an array " & _
-        'and get the 3rd element.")> _
+    'This sample uses ToArray to immediately evaluate a query into an array " & _
+    'and get the 3rd element.")> _
 
-        'TODO: Wrong VB resolving from Relinq?
-        '
-        'in class SqlStatementResolver 
-        'at sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context)
-        'the WhereCondition differes from the VB WhereCondition
-        '
-        'Example
-        '     In C#            |       in VB
-        '[234920384234].City   |       cust.City
-        'Propably the alias cust from the VB Statement must be resolved to [Customer].City. [Tablename].Property
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - works in c# but not in vb")>
-        Public Sub LinqToSqlConversions02()
-            Dim londonCustomers = From cust In DB.Customers _
-                  Where cust.City = "London"
+    'TODO: Wrong VB resolving from Relinq?
+    '
+    'in class SqlStatementResolver 
+    'at sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context)
+    'the WhereCondition differes from the VB WhereCondition
+    '
+    'Example
+    '     In C#            |       in VB
+    '[234920384234].City   |       cust.City
+    'Propably the alias cust from the VB Statement must be resolved to [Customer].City. [Tablename].Property
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - works in c# but not in vb")>
+    Public Sub LinqToSqlConversions02()
+      Dim londonCustomers = From cust In DB.Customers _
+            Where cust.City = "London"
 
-            Dim custArray = londonCustomers.ToArray()
-            TestExecutor.Execute(custArray(3), MethodBase.GetCurrentMethod())
-        End Sub
+      Dim custArray = londonCustomers.ToArray()
+      TestExecutor.Execute(custArray(3), MethodBase.GetCurrentMethod())
+    End Sub
 
-        'This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
+    'This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
 
-        'TODO: Wrong created Where Expression in VB?
-        '
-        'Example:
-        '     In VB                                      |            how it should be
-        'WHERE (COALESCE (([t0].[Freight] > @1), @2))    |     WHERE (COALESCE ([t0].[Freight], @2)> @1)
+    'TODO: Wrong created Where Expression in VB?
+    '
+    'Example:
+    '     In VB                                      |            how it should be
+    'WHERE (COALESCE (([t0].[Freight] > @1), @2))    |     WHERE (COALESCE ([t0].[Freight], @2)> @1)
 
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
-        Public Sub LinqToSqlConversions03()
-            Dim hiredAfter1994 = From emp In DB.Employees _
-                  Where emp.HireDate >= #1/1/1994#
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
+    Public Sub LinqToSqlConversions03()
+      Dim hiredAfter1994 = From emp In DB.Employees _
+            Where emp.HireDate >= #1/1/1994#
 
-            Dim qList = hiredAfter1994.ToList()
-            TestExecutor.Execute(qList, MethodBase.GetCurrentMethod())
-        End Sub
+      Dim qList = hiredAfter1994.ToList()
+      TestExecutor.Execute(qList, MethodBase.GetCurrentMethod())
+    End Sub
 
-        'This sample uses ToDictionary to immediately evaluate a query and " & _
-        'a key expression into an Dictionary(Of K, T).")> _
+    'This sample uses ToDictionary to immediately evaluate a query and " & _
+    'a key expression into an Dictionary(Of K, T).")> _
 
-        'TODO: Wrong created Where Expression in VB?
-        '
-        'Example:
-        '     In VB                                      |            how it should be
-        'WHERE (COALESCE (([t0].[Freight] > @1), @2))    |     WHERE (COALESCE ([t0].[Freight], @2)> @1)
+    'TODO: Wrong created Where Expression in VB?
+    '
+    'Example:
+    '     In VB                                      |            how it should be
+    'WHERE (COALESCE (([t0].[Freight] > @1), @2))    |     WHERE (COALESCE ([t0].[Freight], @2)> @1)
 
-        <Test()>
-        <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly  - works in c# but not in vb")>
-        Public Sub LinqToSqlConversion04()
-            Dim prodQuery = From prod In DB.Products _
-                  Where prod.UnitsInStock <= prod.ReorderLevel _
-                        AndAlso Not prod.Discontinued
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly  - works in c# but not in vb")>
+    Public Sub LinqToSqlConversion04()
+      Dim prodQuery = From prod In DB.Products _
+            Where prod.UnitsInStock <= prod.ReorderLevel _
+                  AndAlso Not prod.Discontinued
 
-            Dim qDictionary = prodQuery.ToDictionary(Function(prod) prod.ProductID)
+      Dim qDictionary = prodQuery.ToDictionary(Function(prod) prod.ProductID)
 
-            TestExecutor.Execute(qDictionary, MethodBase.GetCurrentMethod())
-        End Sub
+      TestExecutor.Execute(qDictionary, MethodBase.GetCurrentMethod())
+    End Sub
   End Class
 End Namespace
 

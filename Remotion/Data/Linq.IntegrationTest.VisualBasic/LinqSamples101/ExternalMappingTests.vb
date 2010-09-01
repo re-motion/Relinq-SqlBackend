@@ -23,6 +23,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class ExternalMappingTests
     Inherits TestBase
     'TODO: OutOfMemoryException due to circular dependency (Circular Dependency (Order -> Customer -> Order -> Customer...)

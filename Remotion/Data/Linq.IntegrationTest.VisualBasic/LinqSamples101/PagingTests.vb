@@ -24,6 +24,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class PagingTests
     Inherits TestBase
     'This sample uses the Skip and Take operators to do paging by

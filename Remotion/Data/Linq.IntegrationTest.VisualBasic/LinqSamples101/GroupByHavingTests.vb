@@ -24,6 +24,7 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 
 Namespace LinqSamples101
+  <TestFixture()>
   Public Class GroupByHavingTests
     Inherits TestBase
 
