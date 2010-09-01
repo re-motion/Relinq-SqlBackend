@@ -108,6 +108,7 @@ Namespace LinqSamples101
     'just the London Customers' contact names.
     'Bug or missing feature in Relinq - test works in c# but not in vb
     <Test()>
+    <Ignore("TODO RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlSelect07()
       Dim londonNames = From cust In DB.Customers _
             Where cust.City = "London" _
@@ -136,6 +137,7 @@ Namespace LinqSamples101
     'saved if shipping is not included.")> _
     'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
     <Test()>
+    <Ignore("Bug or missing feature in re-linq: Argument type 'System.Linq.IQueryable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.OrderDetail]' does not match the corresponding member type 'System.Collections.Generic.IEnumerable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.OrderDetail]'")>
     Public Sub LinqToSqlSelect09()
       Dim orders = From ord In DB.Orders _
             Select ord.OrderID, DiscountedProducts = (From od In ord.OrderDetails _

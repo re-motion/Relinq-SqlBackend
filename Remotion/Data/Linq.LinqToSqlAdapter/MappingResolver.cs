@@ -201,10 +201,10 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
       // TODO RM-3110: Refactor when re-linq supports compound keys
       if (identityMembers.Count > 1)
-        throw new NotSupportedException ("Entities with more than one identity member are currently not supported by re-linq.");
+        throw new NotSupportedException ("Entities with more than one identity member are currently not supported by re-linq. (" + metaType.Name + ")");
 
       if (identityMembers.Count == 0)
-        throw new NotSupportedException ("Entities without identity members are not supported by re-linq.");
+        throw new NotSupportedException ("Entities without identity members are not supported by re-linq. (" + metaType.Name + ")");
 
       return identityMembers.Single ();
     }

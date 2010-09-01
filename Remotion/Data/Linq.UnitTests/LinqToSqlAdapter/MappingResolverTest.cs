@@ -326,7 +326,8 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Entities without identity members are not supported by re-linq.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "Entities without identity members are not supported by re-linq. (FakeClassWithoutPrimaryKey)")]
     public void ResolveConstantExpression_NoPrimaryKey ()
     {
       var customer = new DataContextTestClass.FakeClassWithoutPrimaryKey { Name = "abc" };

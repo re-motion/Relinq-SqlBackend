@@ -77,7 +77,6 @@
     <Compile Include="TestDomain\Northwind\LinqToSqlNorthwindDataProvider.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindDataContext.cs" />
     <Compile Include="TestDomain\Northwind\NorthwindConnectionManager.cs" />
-    <Compile Include="UnitTests\Northwind\NorthwindConnectionManagerTest.cs" />
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
     <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
@@ -100,6 +99,7 @@
     <Content Include="TestDomain\Northwind\NORTHWND.MDF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestDomain\Northwind\Northwnd.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj">

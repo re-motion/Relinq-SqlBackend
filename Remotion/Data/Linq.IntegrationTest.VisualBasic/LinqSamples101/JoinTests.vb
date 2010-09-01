@@ -68,8 +68,9 @@ Namespace LinqSamples101
     'one employee reports to the other and where
     'both employees are from the same City.
     <Test()>
+    <Ignore("TODO RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlJoin04()
-      Dim empQuery = From emp1 In db.Employees, emp2 In emp1.Employees _
+      Dim empQuery = From emp1 In DB.Employees, emp2 In emp1.Employees _
             Where emp1.City = emp2.City _
             Select FirstName1 = emp1.FirstName, LastName1 = emp1.LastName, _
             FirstName2 = emp2.FirstName, LastName2 = emp2.LastName, emp1.City
@@ -103,10 +104,11 @@ Namespace LinqSamples101
 
     'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty().
     'The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.
+    <Ignore("TODO RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")>
     <Test()>
     Public Sub LinqToSqlJoin07()
-      Dim empQuery = From emp In db.Employees _
-            Group Join ord In db.Orders On emp Equals ord.Employee _
+      Dim empQuery = From emp In DB.Employees _
+            Group Join ord In DB.Orders On emp Equals ord.Employee _
             Into ords = Group _
             From ord2 In ords.DefaultIfEmpty _
             Select emp.FirstName, emp.LastName, Order = ord2
@@ -130,14 +132,15 @@ Namespace LinqSamples101
 
     'This sample shows a join with a composite key.
     <Test()>
+    <Ignore("TODO RM-3110: Support complex columns for entities")>
     Public Sub LinqToSqlJoin09()
 
       'The Key keyword means that when the anonymous types are tested for equality,
       'only the OrderID field will be compared
       'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
-      Dim ordQuery = From ord In db.Orders _
-            From prod In db.Products _
-            Group Join details In db.OrderDetails _
+      Dim ordQuery = From ord In DB.Orders _
+            From prod In DB.Products _
+            Group Join details In DB.OrderDetails _
             On New With {Key ord.OrderID, prod.ProductID} _
             Equals New With {Key details.OrderID, details.ProductID} _
             Into details = Group _
