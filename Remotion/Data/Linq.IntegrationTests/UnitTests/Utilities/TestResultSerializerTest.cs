@@ -254,6 +254,7 @@ namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
       _serializer.Serialize (12, MethodBase.GetCurrentMethod());
 
       var expected = "Serialize_WithTestMethod:" + Environment.NewLine + "  12";
+      // TODO Review: Missing assertion
     }
 
     [Test]
