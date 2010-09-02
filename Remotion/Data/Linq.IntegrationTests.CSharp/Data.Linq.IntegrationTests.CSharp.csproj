@@ -118,7 +118,6 @@
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount04.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount05.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount06.result" />
-    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount08.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount09.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount10.result" />
@@ -127,7 +126,6 @@
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount13.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion02.result" />
-    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion03.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion04.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists02.result" />
@@ -218,9 +216,9 @@
     <EmbeddedResource Include="LinqSamples101\Resources\UserDefinedFunctionsTests.LinqToSqlUserDefined04.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ViewTests.LinqToSqlView01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ViewTests.LinqToSqlView02.result" />
-    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion03.result" />
-    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result" />
     <None Include="LinqSamples101\Original\2008c#.zip" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion03.result" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Linq.IntegrationTests\TestDomain\Northwind\NORTHWND.MDF">
