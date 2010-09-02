@@ -64,5 +64,34 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       
       scalarRowWrapper.GetEntity<PersonTestClass> (null);
     }
+
+    [Test]
+    public void GetEntity_WithSingleColumn ()
+    {
+      var columnID = new ColumnID ("Name", 0);
+      _readerMock
+          .Expect (mock => mock.GetValue (columnID.Position))
+          .Return ("Peter");
+
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock, _reverseMappingResolverMock);
+
+      var value=scalarRowWrapper.GetEntity<string> (columnID);
+      Assert.AreEqual (value, "Peter");
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (ArgumentException))]
+    public void GetEntity_WithMultipleColumns ()
+    {
+      var columnIDs = new[]
+                             {
+                                 new ColumnID ("FirstName", 1),
+                                 new ColumnID ("Age", 2)
+                             };
+
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock, _reverseMappingResolverMock);
+
+      scalarRowWrapper.GetEntity<PersonTestClass> (columnIDs);
+    }
   }
 }

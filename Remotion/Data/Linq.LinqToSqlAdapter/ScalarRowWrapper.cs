@@ -35,7 +35,13 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     public T GetEntity<T> (params ColumnID[] columnIDs)
     {
-      throw new ArgumentException ("Only Scalar values are alowed!");
+      if (columnIDs == null)
+        throw new ArgumentException ("You must provide 1 ColumnID!");
+
+      if(columnIDs.Length!=1)
+        throw new ArgumentException ("Only Scalar values are alowed!");
+
+      return (T) GetValue<T>(columnIDs[0]);
     }
   }
 }
