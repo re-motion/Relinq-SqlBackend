@@ -50,8 +50,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
 
     ///<summary>
-    ///This sample uses AsEnumerable so that the client-side IEnumerable<T> implementation of Where is used, 
-    ///instead of the default IQueryable<T> implementation which would be converted to SQL and executed on the server.
+    ///This sample uses AsEnumerable so that the client-side IEnumerable{T} implementation of Where is used, 
+    ///instead of the default IQueryablee{T} implementation which would be converted to SQL and executed on the server.
     ///This is necessary because the where clause references a user-defined client-side method, isValidProduct, 
     ///which cannot be converted to SQL.
     ///</summary>
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
     ///<summary>
-    ///This sample uses ToList to immediately evaluate a query into a List<T>.
+    ///This sample uses ToList to immediately evaluate a query into a List{T}.
     ///</summary>
     [Test]
     public void LinqToSqlConversion03 ()
@@ -97,7 +97,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
     ///<summary>
-    ///This sample uses ToDictionary to immediately evaluate a query and a key expression into an Dictionary<K, T>.
+    ///This sample uses ToDictionary to immediately evaluate a query and a key expression into an Dictionary{K, T}.
     ///</summary>
     [Test]
     public void LinqToSqlConversion04 ()

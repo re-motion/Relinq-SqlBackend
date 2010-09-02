@@ -31,7 +31,6 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -54,7 +53,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       Expression pred = Expression.Lambda (selector, param);
 
       IQueryable<Customer> custs = DB.Customers;
-      Expression expr = Expression.Call (typeof (Queryable), "Select", new Type[] { typeof (Customer), typeof (string) }, Expression.Constant (custs), pred);
+      Expression expr = Expression.Call (typeof (Queryable), "Select", new[] { typeof (Customer), typeof (string) }, Expression.Constant (custs), pred);
       IQueryable<string> query = DB.Customers.AsQueryable ().Provider.CreateQuery<string> (expr);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
@@ -73,12 +72,14 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       Expression filter = Expression.Equal (left, right);
       Expression pred = Expression.Lambda (filter, param);
 
-      Expression expr = Expression.Call (typeof (Queryable), "Where", new Type[] { typeof (Customer) }, Expression.Constant (custs), pred);
+      Expression expr = Expression.Call (typeof (Queryable), "Where", new[] { typeof (Customer) }, Expression.Constant (custs), pred);
       IQueryable<Customer> query = DB.Customers.AsQueryable ().Provider.CreateQuery<Customer> (expr);
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    
+
+    // NOTE: This query contains a bug - the first value assigned to expr is never used. However, this bug stems from the original samples.
+    // NOTE: The query therefore does _not_ filter by London.
     /// <summary>
     /// This sample builds a query dynamically to filter for Customers in London
     /// and order them by ContactName.
@@ -96,10 +97,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       IQueryable custs = DB.Customers;
 
       Expression expr = Expression.Call (typeof (Queryable), "Where",
-          new Type[] { typeof (Customer) }, Expression.Constant (custs), pred);
+          new[] { typeof (Customer) }, Expression.Constant (custs), pred);
 
       expr = Expression.Call (typeof (Queryable), "OrderBy",
-          new Type[] { typeof (Customer), typeof (string) }, custs.Expression, Expression.Lambda (Expression.Property (param, "ContactName"), param));
+          new[] { typeof (Customer), typeof (string) }, custs.Expression, Expression.Lambda (Expression.Property (param, "ContactName"), param));
 
 
       IQueryable<Customer> query = DB.Customers.AsQueryable ().Provider.CreateQuery<Customer> (expr);
@@ -125,8 +126,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       Expression left2 = Expression.Property (param2, typeof (Employee).GetProperty ("City"));
       Expression pred2 = Expression.Lambda (left2, param2);
 
-      Expression expr1 = Expression.Call (typeof (Queryable), "Select", new Type[] { typeof (Customer), typeof (string) }, Expression.Constant (custs), pred1);
-      Expression expr2 = Expression.Call (typeof (Queryable), "Select", new Type[] { typeof (Employee), typeof (string) }, Expression.Constant (employees), pred2);
+      Expression expr1 = Expression.Call (typeof (Queryable), "Select", new[] { typeof (Customer), typeof (string) }, Expression.Constant (custs), pred1);
+      Expression expr2 = Expression.Call (typeof (Queryable), "Select", new[] { typeof (Employee), typeof (string) }, Expression.Constant (employees), pred2);
 
       IQueryable<string> q1 = DB.Customers.AsQueryable ().Provider.CreateQuery<string> (expr1);
       IQueryable<string> q2 = DB.Employees.AsQueryable ().Provider.CreateQuery<string> (expr2);

@@ -31,7 +31,6 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -60,8 +59,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       var q = DB.Products.Count (p => !p.Discontinued);
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
-
-
+    
     /// <summary>
     /// This sample uses Sum to find the total freight over all Orders.
     /// </summary>
@@ -81,8 +79,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       var q = DB.Products.Sum (p => p.UnitsOnOrder);
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
-
-
+    
     /// <summary>
     /// This sample uses Min to find the lowest unit price of any Product.
     /// </summary>
@@ -92,8 +89,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       var q = DB.Products.Select (p => p.UnitPrice).Min();
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
-
-
+    
     /// <summary>
     /// This sample uses Min to find the lowest freight of any Order.
     /// </summary>
@@ -104,12 +100,12 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-
     /// <summary>
     /// This sample uses Min to find the Products that have the lowest unit price in each category.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")]
+    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+        + "TargetInvocationException) is thrown")]
     public void LinqToSqlCount07 ()
     {
       var categories =
@@ -128,7 +124,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (categories, MethodBase.GetCurrentMethod());
     }
 
-
     /// <summary>
     /// This sample uses Max to find the latest hire date of any Employee.
     /// </summary>
@@ -139,7 +134,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
 
-
     /// <summary>
     /// This sample uses Max to find the most units in stock of any Product.
     /// </summary>
@@ -149,13 +143,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       var q = DB.Products.Max (p => p.UnitsInStock);
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
-
-
+    
     /// <summary>
     /// This sample uses Max to find the Products that have the highest unit price in each category.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")]
+    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+        + "TargetInvocationException) is thrown")]
     public void LinqToSqlCount10 ()
     {
       var categories =
@@ -201,7 +195,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Average to find the Products that have unit price higher than the average unit price of the category for each category.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")]
+    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+        + "TargetInvocationException) is thrown")]
     public void LinqToSqlCount13 ()
     {
       var categories =
