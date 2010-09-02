@@ -50,8 +50,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       var q = DB.Customers.Count();
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
-
-
+    
     ///<summary>
     ///This sample uses Count to find the number of Products in the database that are not discontinued.
     ///</summary>

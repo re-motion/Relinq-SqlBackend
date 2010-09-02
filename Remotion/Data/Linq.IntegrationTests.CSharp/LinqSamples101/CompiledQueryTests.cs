@@ -30,15 +30,14 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
-using System;
 using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
+  [Ignore ("Compiled queries are not a feature of the re-linq SQL backend")]
   public class CompiledQueryTests : TestBase
   {
-    //TODO: Won't compile since INorthwindDataProvider is no subtype of DataContext, which is necessary for using CompiledQuery.Compile(..) - Check if tests are necessary
     ////This sample create a compiled query and then use it to retrieve customers of the input city")]
     //public void LinqToSqlCompileQuery01_1 ()
     //{
@@ -66,6 +65,5 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     //  var SeaCusts = fn (DB, "Seattle");
     //  TestExecutor.Execute (SeaCusts, MethodBase.GetCurrentMethod ());
     //}
-
   }
 }

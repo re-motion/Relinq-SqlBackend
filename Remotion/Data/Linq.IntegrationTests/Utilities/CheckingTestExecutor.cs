@@ -45,6 +45,16 @@ namespace Remotion.Data.Linq.IntegrationTests.Utilities
       var resourceName = _resourceNameGenerator (executingMethod);
       using (var resourceStream = executingMethod.DeclaringType.Assembly.GetManifestResourceStream (resourceName))
       {
+        if (resourceStream == null)
+        {
+          var message = string.Format (
+              "No reference result exists for method: '{0}.{1}': Resource '{2}' could not be found.", 
+              executingMethod.DeclaringType,
+              executingMethod.Name,
+              resourceName);
+          throw new InvalidOperationException (message);
+        }
+
         using (var streamReader = new StreamReader (resourceStream))
         {
           return streamReader.ReadToEnd();

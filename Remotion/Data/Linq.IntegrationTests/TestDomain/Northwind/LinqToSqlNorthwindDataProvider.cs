@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Configuration;
 using System.Data.Linq;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
   /// </summary>
   internal class LinqToSqlNorthwindDataProvider : INorthwindDataProvider
   {
-    private readonly NorthwindDataContext _dataContext = new NorthwindDataContext ("Data Source=localhost;Initial Catalog=Northwind; Integrated Security=SSPI;");
+    private readonly NorthwindDataContext _dataContext = new NorthwindDataContext (ConfigurationManager.ConnectionStrings["Northwind"].ConnectionString);
 
     public IQueryable<Product> Products
     {

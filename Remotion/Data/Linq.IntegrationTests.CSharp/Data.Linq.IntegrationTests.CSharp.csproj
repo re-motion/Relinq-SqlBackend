@@ -164,6 +164,7 @@
     <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect08.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect10.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\TopBottomTests.LinqToSqlTop02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced04.result" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Linq.IntegrationTests\TestDomain\Northwind\NORTHWND.MDF">
