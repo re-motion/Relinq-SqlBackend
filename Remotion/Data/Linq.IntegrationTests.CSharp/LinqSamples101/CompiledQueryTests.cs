@@ -38,32 +38,29 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
   [Ignore ("Compiled queries are not a feature of the re-linq SQL backend")]
   public class CompiledQueryTests : TestBase
   {
-    ////This sample create a compiled query and then use it to retrieve customers of the input city")]
-    //public void LinqToSqlCompileQuery01_1 ()
-    //{
-    //  //Create compiled query
-    //  var fn = CompiledQuery.Compile (
-    //      (INorthwindDataProvider db2, string city) =>
-    //      from c in db2.Customers
-    //      where c.City == city
-    //      select c);
 
-    //  var LonCusts = fn (DB, "London");
-    //  TestExecutor.Execute (LonCusts, MethodBase.GetCurrentMethod());
-    //}
+    /// <summary>
+    /// This sample create a compiled query and then use it to retrieve customers of the input city
+    /// </summary>
+    [Test]
+    [Ignore("Not supported: Compiled queries")]
+    public void LinqToSqlCompileQuery01_1 ()
+    {
+      //Create compiled query
+      //var fn = CompiledQuery.Compile (
+      //    (Northwind db2, string city) =>
+      //    from c in db2.Customers
+      //    where c.City == city
+      //    select c);
 
-    ////This sample create a compiled query and then use it to retrieve customers of the input city")]
-    //public void LinqToSqlCompileQuery01_2 ()
-    //{
-    //  //Create compiled query
-    //  var fn = CompiledQuery.Compile (
-    //      (Northwind db2, string city) =>
-    //      from c in db2.Customers
-    //      where c.City == city
-    //      select c);
+      //Console.WriteLine ("****** Call compiled query to retrieve customers from London ******");
+      //var LonCusts = fn (db, "London");
+      //ObjectDumper.Write (LonCusts);
 
-    //  var SeaCusts = fn (DB, "Seattle");
-    //  TestExecutor.Execute (SeaCusts, MethodBase.GetCurrentMethod ());
-    //}
+      //Console.WriteLine();
+      //Console.WriteLine ("****** Call compiled query to retrieve customers from Seattle ******");
+      //var SeaCusts = fn (db, "Seattle");
+      //ObjectDumper.Write (SeaCusts);
+    }
   }
 }

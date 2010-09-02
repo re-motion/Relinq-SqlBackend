@@ -104,5 +104,68 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
       TestExecutor.Execute (cons, MethodBase.GetCurrentMethod ());
     }
+
+    /// <summary>
+    /// This sample demonstrates that an unknown contact type will be automatically converted to the default contact type.
+    /// </summary>
+    [Test]
+    [Ignore ("Not supported: Submit")]
+    public void LinqToSqlInheritance06 ()
+    {
+      //Console.WriteLine("***** INSERT Unknown Contact using normal mapping *****");
+      //Contact contact = new Contact() { ContactType = null, CompanyName = "Unknown Company", Phone = "333-444-5555" };
+      //db.Contacts.InsertOnSubmit(contact);
+      //db.SubmitChanges();
+
+      //Console.WriteLine();
+      //Console.WriteLine("***** Query Unknown Contact using inheritance mapping *****");
+      //var con = (from c in db.Contacts
+      //           where c.CompanyName == "Unknown Company" && c.Phone == "333-444-5555"
+      //           select c).First();
+
+      //Console.WriteLine("The base class nwind.BaseContact had been used as default fallback type");
+      //Console.WriteLine("The discriminator value for con is unknown. So, its type should be {0}", con.GetType().ToString());
+
+      //cleanup140(contact.ContactID);
+    }
+
+    //void cleanup140(int contactID) {
+    //    SetLogging(false);
+    //    Contact con = db.Contacts.Where(c=>c.ContactID == contactID).First();
+    //    db.Contacts.DeleteOnSubmit(con);
+    //    db.SubmitChanges();
+    //}
+
+    /// <summary>
+    /// This sample demonstrates how to create a new shipper contact.
+    /// </summary>
+    [Test]
+    [Ignore ("Not supported: Submit")]
+    public void LinqToSqlInheritance07 ()
+    {
+      //Console.WriteLine("****** Before Insert Record ******");
+      //var ShipperContacts = from sc in db.Contacts.OfType<ShipperContact>()
+      //                         where sc.CompanyName == "Northwind Shipper"
+      //                         select sc;
+
+      //Console.WriteLine();
+      //Console.WriteLine("There is {0} Shipper Contact matched our requirement", ShipperContacts.Count());
+
+      //ShipperContact nsc = new ShipperContact() { CompanyName = "Northwind Shipper", Phone = "(123)-456-7890" };
+      //db.Contacts.InsertOnSubmit(nsc);
+      //db.SubmitChanges();
+
+      //Console.WriteLine();
+      //Console.WriteLine("****** After Insert Record ******");
+      //ShipperContacts = from sc in db.Contacts.OfType<ShipperContact>()
+      //                   where sc.CompanyName == "Northwind Shipper"
+      //                   select sc;
+
+      //Console.WriteLine();
+      //Console.WriteLine("There is {0} Shipper Contact matched our requirement", ShipperContacts.Count());
+      //db.Contacts.DeleteOnSubmit(nsc);
+      //db.SubmitChanges();
+
+    }
   }
 }

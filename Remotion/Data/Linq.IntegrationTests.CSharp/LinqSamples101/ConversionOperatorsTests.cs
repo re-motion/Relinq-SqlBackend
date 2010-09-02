@@ -48,7 +48,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       return p.ProductName.LastIndexOf ('C') == 0;
     }
 
-
     ///<summary>
     ///This sample uses AsEnumerable so that the client-side IEnumerable{T} implementation of Where is used, 
     ///instead of the default IQueryablee{T} implementation which would be converted to SQL and executed on the server.
@@ -106,7 +105,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
           from p in DB.Products
           where p.UnitsInStock <= p.ReorderLevel && !p.Discontinued
           select p;
-
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }

@@ -181,6 +181,20 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     }
 
     /// <summary>
+    /// This sample uses Distinct to select a sequence of the unique cities that have Customers.
+    /// </summary>
+    [Test]
+    public void LinqToSqlSelect10 ()
+    {
+      var q = (
+          from c in DB.Customers
+          select c.City)
+          .Distinct ();
+
+      TestExecutor.Execute (q, MethodBase.GetCurrentMethod ());
+    }
+
+    /// <summary>
     ///  Phone converter that converts a phone number to an international format based on its country. 
     ///  This sample only supports USA and UK formats, for phone numbers from the Northwind database.
     /// </summary>
@@ -230,21 +244,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
                                          ))));
 
       TestExecutor.Execute (doc, MethodBase.GetCurrentMethod());
-    }
-
-
-    /// <summary>
-    /// This sample uses Distinct to select a sequence of the unique cities that have Customers.
-    /// </summary>
-    [Test]
-    public void LinqToSqlSelect10 ()
-    {
-      var q = (
-          from c in DB.Customers
-          select c.City)
-          .Distinct ();
-
-      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
   }
 }

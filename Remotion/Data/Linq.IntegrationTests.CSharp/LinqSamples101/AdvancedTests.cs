@@ -85,10 +85,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// and order them by ContactName.
     /// </summary>
     [Test]
+    [Ignore]
     public void LinqToSqlAdvanced03 ()
     {
       ParameterExpression param = Expression.Parameter (typeof (Customer), "c");
-
       Expression left = Expression.Property (param, typeof (Customer).GetProperty ("City"));
       Expression right = Expression.Constant ("London");
       Expression filter = Expression.Equal (left, right);
@@ -136,6 +136,35 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 
       TestExecutor.Execute (q3, MethodBase.GetCurrentMethod ());
     }
+
+
+    /// <summary>
+    /// This sample demonstrates how we insert a new Contact and retrieve the
+    /// newly assigned ContactID from the database.
+    /// </summary>
+    [Test]
+    [Ignore ("Not supported: Submit")]
+    public void LinqToSqlAdvanced05 ()
+    {
+      //Console.WriteLine ("ContactID is marked as an identity column");
+      //Contact con = new Contact () { CompanyName = "New Era", Phone = "(123)-456-7890" };
+
+      //db.Contacts.InsertOnSubmit (con);
+      //db.SubmitChanges ();
+
+      //Console.WriteLine ();
+      //Console.WriteLine ("The ContactID of the new record is {0}", con.ContactID);
+
+      //cleanup130 (con.ContactID);
+
+    }
+    //void cleanup130 (int contactID)
+    //{
+    //  SetLogging (false);
+    //  Contact con = DB.Contacts.Where (c => c.ContactID == contactID).First ();
+    //  DB.Contacts.DeleteOnSubmit (con);
+    //  DB.SubmitChanges ();
+    //}
 
     ///<summary>
     ///This sample uses orderbyDescending and Take to return the 
