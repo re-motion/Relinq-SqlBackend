@@ -48,7 +48,7 @@ Namespace LinqSamples101
     'This sample uses Concat to return a sequence of all Customer and Employee
     'phone/fax numbers
     <Test()>
-    <Ignore("Bug or missing feature in Relinq.")>
+    <Ignore("Bug or missing feature in Relinq. Remotion.Data.Linq.Parsing.ParserException overload of the method 'System.Linq.Queryable.Concat' is currently not supported; KeyNotFoundException : No corresponding expression node type was registered for method 'System.Linq.Queryable.Concat'")>
     Public Sub LinqToSqlUnion01()
       Dim phoneNumbers = (From cust In DB.Customers Select cust.Phone).Concat( _
                           From cust In DB.Customers Select cust.Fax).Concat( _
@@ -61,7 +61,7 @@ Namespace LinqSamples101
     'This sample uses Concat to return a sequence of all Customer and Employee
     'name and phone number mappings.
     <Test()>
-    <Ignore()>
+    <Ignore("Bug or missing feature in Relinq. Remotion.Data.Linq.Parsing.ParserException overload of the method 'System.Linq.Queryable.Concat' is currently not supported; KeyNotFoundException : No corresponding expression node type was registered for method 'System.Linq.Queryable.Concat'")>
     Public Sub LinqToSqlUnion02()
       Dim custPhones = From cust In db.Customers _
                        Select Name = cust.CompanyName, _
@@ -77,7 +77,7 @@ Namespace LinqSamples101
     'This sample uses Union to return a sequence of all countries that either 
     'Customers or Employees live in.
     <Test()>
-    <Ignore()>
+    <Ignore("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")>
     Public Sub LinqToSqlUnion03()
       Dim countries = (From cust In DB.Customers _
                        Select cust.Country).Union(From emp In DB.Employees _
@@ -89,7 +89,7 @@ Namespace LinqSamples101
     'This sample uses Intersect to return a sequence of all countries that both
     'Customers and Employees live in.
     <Test()>
-    <Ignore()>
+    <Ignore("Bug or missing feature in Relinq. System.NotSupportedException : The handler type ResultOperatorBase is not supported by this registry")>
     Public Sub LinqToSqlUnion04()
       Dim countries = (From cust In DB.Customers _
                        Select cust.Country).Intersect(From emp In DB.Employees _
