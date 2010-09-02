@@ -186,7 +186,6 @@
     <EmbeddedResource Include="LinqSamples101\Resources\PagingTests.LinqToSqlPaging01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\PagingTests.LinqToSqlPaging02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlLocalMethodCall01.result" />
-    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlLocalMethodCall02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect03.result" />
