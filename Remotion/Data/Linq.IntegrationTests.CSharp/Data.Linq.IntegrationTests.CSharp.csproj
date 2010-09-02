@@ -167,6 +167,7 @@
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced04.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion03.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result" />
+    <None Include="LinqSamples101\Original\2008c#.zip" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Linq.IntegrationTests\TestDomain\Northwind\NORTHWND.MDF">

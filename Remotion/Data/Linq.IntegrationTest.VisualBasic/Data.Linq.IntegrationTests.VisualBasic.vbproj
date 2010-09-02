@@ -200,6 +200,7 @@
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.TopBottomTests.LinqToSqlTop02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlFirst01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.WhereTests.LinqToSqlWhere06.result" />
+    <None Include="LinqSamples101\Original\VS 2008 SP1 VBSamples.zip" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
