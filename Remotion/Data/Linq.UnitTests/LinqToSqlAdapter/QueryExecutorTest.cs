@@ -155,7 +155,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     {
       var retrieverMock = MockRepository.GenerateStrictMock<IQueryResultRetriever> ();
       retrieverMock
-          .Expect (stub => stub.GetScalar<object> (
+          .Expect (stub => stub.GetScalar (Arg< Func<IDatabaseResultRow, object>>.Is.Anything, 
               Arg.Is ("SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]"),
               Arg<CommandParameter[]>.List.Equal (new CommandParameter[0])))
           .Return (fakeResult);

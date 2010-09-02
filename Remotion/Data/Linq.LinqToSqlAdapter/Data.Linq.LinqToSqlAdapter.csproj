@@ -88,6 +88,7 @@
     <Compile Include="QueryExecutor.cs" />
     <Compile Include="QueryResultRetriever.cs" />
     <Compile Include="RowWrapper.cs" />
+    <Compile Include="ScalarRowWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">

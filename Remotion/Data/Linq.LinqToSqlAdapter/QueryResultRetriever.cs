@@ -49,19 +49,25 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       }
     }
 
-    public T GetScalar<T> (string commandText, CommandParameter[] parameters)
+    public T GetScalar<T> (Func<IDatabaseResultRow, T> projection, string commandText, CommandParameter[] parameters)
     {
       using (var connection = _connectionManager.Open ())
       using (var command = connection.CreateCommand ())
       {
         command.CommandText = commandText;
-
-        // TODO Review: This is not correct - CommandParameters cannot be added directly to an IDbCommand; extract the code used above (in GetResults) 
-        // TODO Review: into a reusable method, then call that method to initialize the IDbCommand from here
         AddParametersToCommand (command, parameters);
 
-        return (T) command.ExecuteScalar ();
+
+        using (var reader = command.ExecuteReader ())
+        {
+          while (reader.Read ())
+          {
+            return (T) projection (new ScalarRowWrapper (reader, _resolver));
+          }
+        }
       }
+
+      return default (T);
     }
 
     private static void AddParametersToCommand(IDbCommand command, CommandParameter[] parameters)

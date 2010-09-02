@@ -23,6 +23,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     private IReverseMappingResolver _resolverStub;
     private IDbDataParameter _dataParameter;
     private Func<IDatabaseResultRow, string> _projection;
+    private Func<IDatabaseResultRow, int> _scalarProjection;
 
     [SetUp]
     public void SetUp ()
@@ -43,6 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
       _resolverStub = MockRepository.GenerateMock<IReverseMappingResolver> ();
 
       _projection = row => row.GetValue<string> (new ColumnID ("test", 0));
+      _scalarProjection = row => row.GetValue<int> (new ColumnID ("test", 0));
     }
 
     [Test]
@@ -122,19 +124,12 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     public void GetScalar ()
     {
       var fakeResult = 10;
+      _dataReaderMock.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
+      _dataReaderMock.Stub (stub => stub.GetValue (0)).Return (fakeResult).Repeat.Once ();
+      
+      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
 
-      var commandMock = MockRepository.GenerateMock<IDbCommand> ();
-      commandMock.Stub (stub => stub.ExecuteScalar ()).Return (fakeResult);
-
-      var connectionMock = MockRepository.GenerateMock<IDbConnection> ();
-      connectionMock.Stub (stub => stub.CreateCommand ()).Return (commandMock);
-
-      var connectionManagerStub = MockRepository.GenerateStub<IConnectionManager> ();
-      connectionManagerStub.Stub (stub => stub.Open ()).Return (connectionMock);
-
-      var retriever = new QueryResultRetriever (connectionManagerStub, _resolverStub);
-
-      var result = retriever.GetScalar<int> ("Text", new CommandParameter[0]);
+      var result = retriever.GetScalar (_scalarProjection, "Text", new CommandParameter[0]);
 
       Assert.That (result, Is.EqualTo (fakeResult));
     }
@@ -142,54 +137,40 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void GetScalar_DisposesAllObjects ()
     {
-      var fakeResult = 10;
+      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
 
-      var commandMock = MockRepository.GenerateMock<IDbCommand> ();
-      commandMock.Stub (stub => stub.ExecuteScalar ()).Return (fakeResult);
+      retriever.GetScalar (_scalarProjection, "Text", new CommandParameter[0]);
 
-      var connectionMock = MockRepository.GenerateMock<IDbConnection> ();
-      connectionMock.Stub (stub => stub.CreateCommand ()).Return (commandMock);
-
-      var connectionManagerStub = MockRepository.GenerateStub<IConnectionManager> ();
-      connectionManagerStub.Stub (stub => stub.Open ()).Return (connectionMock);
-
-      var retriever = new QueryResultRetriever (connectionManagerStub, _resolverStub);
-
-      retriever.GetScalar<int> ("Text", new CommandParameter[0]);
-
-      commandMock.AssertWasCalled (mock => mock.Dispose ());
-      connectionMock.AssertWasCalled (mock => mock.Dispose ());
+      _commandMock.AssertWasCalled (mock => mock.Dispose ());
+      _connectionMock.AssertWasCalled (mock => mock.Dispose ());
+      _dataReaderMock.AssertWasCalled (mock => mock.Dispose ());
     }
 
     [Test]
     public void GetScalar_SetsCommandData ()
     {
-      var fakeResult = 10;
-
       var dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
       dataParameterCollectionMock
           .Stub (mock => mock.Add (Arg<IDbDataParameter>.Is.Equal (_dataParameter)))
           .Return (0);
       dataParameterCollectionMock.Replay ();
 
-      var commandMock = MockRepository.GenerateMock<IDbCommand> ();
-      commandMock.Stub (stub => stub.ExecuteScalar ()).Return (fakeResult);
-      commandMock.Stub (stub => stub.Parameters).Return (dataParameterCollectionMock);
-      commandMock.Stub (stub => stub.CreateParameter ()).Return (_dataParameter);
+      _commandMock.Stub (stub => stub.Parameters).Return (dataParameterCollectionMock);
+      _commandMock.Stub (stub => stub.CreateParameter ()).Return (_dataParameter);
 
       var connectionMock = MockRepository.GenerateMock<IDbConnection> ();
-      connectionMock.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+      connectionMock.Stub (stub => stub.CreateCommand ()).Return (_commandMock);
 
       var connectionManagerStub = MockRepository.GenerateStub<IConnectionManager> ();
       connectionManagerStub.Stub (stub => stub.Open ()).Return (connectionMock);
 
       var retriever = new QueryResultRetriever (connectionManagerStub, _resolverStub);
 
-      retriever.GetScalar<int> ("Text",new[] { new CommandParameter ("p1", "value1") });
+      retriever.GetScalar (_scalarProjection, "Text", new[] { new CommandParameter ("p1", "value1") });
 
       _dataParameter.AssertWasCalled (mock => mock.ParameterName = "p1");
       _dataParameter.AssertWasCalled (mock => mock.Value = "value1");
-      commandMock.AssertWasCalled (mock => mock.CommandText = "Text");
+      _commandMock.AssertWasCalled (mock => mock.CommandText = "Text");
       dataParameterCollectionMock.VerifyAllExpectations ();
     }
   }

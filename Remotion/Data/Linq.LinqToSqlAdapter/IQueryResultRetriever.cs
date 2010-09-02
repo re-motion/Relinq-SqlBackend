@@ -10,6 +10,6 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
   public interface IQueryResultRetriever
   {
     IEnumerable<T> GetResults<T> (Func<IDatabaseResultRow, T> projection, string commandText, CommandParameter[] parameters);
-    T GetScalar<T> (string commandText, CommandParameter[] parameters);
+    T GetScalar<T> (Func<IDatabaseResultRow, T> projection, string commandText, CommandParameter[] parameters);
   }
 }
