@@ -9,8 +9,6 @@ namespace Remotion.Data.Linq.IntegrationTests
 {
   public abstract class AbstractTestBase 
   {
-    public TestMode Mode = TestMode.CheckActualResults;
-
     private INorthwindDataProvider _db;
     private ITestExecutor _testExecutor;
 
@@ -25,6 +23,11 @@ namespace Remotion.Data.Linq.IntegrationTests
     protected ITestExecutor TestExecutor 
     {
       get { return _testExecutor; }
+    }
+
+    public virtual TestMode Mode
+    {
+      get { return TestMode.CheckActualResults; }
     }
 
     [SetUp]

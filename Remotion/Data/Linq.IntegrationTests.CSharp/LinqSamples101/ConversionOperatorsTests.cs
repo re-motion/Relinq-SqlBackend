@@ -85,7 +85,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///This sample uses ToList to immediately evaluate a query into a List<T>.
     ///</summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlConversion03 ()
     {
       var q =
