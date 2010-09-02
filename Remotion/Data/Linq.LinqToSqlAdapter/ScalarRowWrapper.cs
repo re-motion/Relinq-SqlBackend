@@ -5,6 +5,11 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
+  /// <summary>
+  /// Represents a scalar row in the database result for an executed SQL command.
+  /// Reads the value from a row.
+  /// Implementation for Linq2Sql 
+  /// </summary>
   public class ScalarRowWrapper:IDatabaseResultRow
   {
     private readonly IDataReader _dataReader;
