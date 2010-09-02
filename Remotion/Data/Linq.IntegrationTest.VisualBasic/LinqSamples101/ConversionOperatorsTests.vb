@@ -46,10 +46,10 @@ Namespace LinqSamples101
     Inherits TestBase
 
     'This sample uses ToArray so that the client-side IEnumerable(Of T) implementation of Where is used, instead of the default Query(Of T) 
-    'implementation which would be converted to SQL and executed " & _
-    'on the server.  This is necessary because the where clause " & _
-    'references a user-defined client-side method, isValidProduct, " & _
-    'which cannot be converted to SQL.")> _
+    'implementation which would be converted to SQL and executed
+    'on the server.  This is necessary because the where clause
+    'references a user-defined client-side method, isValidProduct,
+    'which cannot be converted to SQL.
     <Test()>
     Public Sub LinqToSqlConversions01()
       Dim prodQuery = From prod In DB.Products.AsEnumerable() _
@@ -62,8 +62,8 @@ Namespace LinqSamples101
       Return (prod.ProductName.LastIndexOf("C") = 0)
     End Function
 
-    'This sample uses ToArray to immediately evaluate a query into an array " & _
-    'and get the 3rd element.")> _
+    'This sample uses ToArray to immediately evaluate a query into an array
+    'and get the 3rd element.
 
     'TODO: Wrong VB resolving from Relinq?
     '
@@ -85,7 +85,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(custArray(3), MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses ToList to immediately evaluate a query into a List(Of T).")> _
+    'This sample uses ToList to immediately evaluate a query into a List(Of T).
 
     'TODO: Wrong created Where Expression in VB?
     '
@@ -103,8 +103,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(qList, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses ToDictionary to immediately evaluate a query and " & _
-    'a key expression into an Dictionary(Of K, T).")> _
+    'This sample uses ToDictionary to immediately evaluate a query and
+    'a key expression into an Dictionary(Of K, T).
 
     'TODO: Wrong created Where Expression in VB?
     '

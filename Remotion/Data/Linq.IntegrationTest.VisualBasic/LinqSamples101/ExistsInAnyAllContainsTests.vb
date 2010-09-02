@@ -54,7 +54,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Any to return only Categories that have
-    'at least one Discontinued product.")> _
+    'at least one Discontinued product.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")>
     Public Sub LinqToSqlExists02()
@@ -64,8 +64,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses All to return Customers whom all of their orders " & _
-    'have been shipped to their own city or whom have no orders.")> _
+    'This sample uses All to return Customers whom all of their orders
+    'have been shipped to their own city or whom have no orders.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - Cannot resolve member applied to an expression - works in c# but not in vb")>
     Public Sub LinqToSqlExists03()
@@ -75,7 +75,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(ordQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Contain to find which Customer contains an order with OrderID 10248.")> _
+    'This sample uses Contain to find which Customer contains an order with OrderID 10248.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - Contains is not supported by thís code generator")>
     Public Sub LinqToSqlExists04()
@@ -88,7 +88,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(New With {order, q}, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.")> _
+    'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.
 
     'TODO: Resolve NullPointerException in MappingResolver
     'Class: MappingResolver.cs

@@ -89,7 +89,7 @@ Namespace LinqSamples101
       '      TestExecutor.Execute(orders);
     End Sub
 
-    'This sample uses a stored procedure that returns an out parameter.")> _
+    'This sample uses a stored procedure that returns an out parameter.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc05()
@@ -106,27 +106,30 @@ Namespace LinqSamples101
       TestExecutor.Execute(totalSales, MethodBase.GetCurrentMethod())
     End Sub
 
-    'WORKAROUND: in c# but not in vb
+    'This sample uses a method mapped to the 'ProductsUnderThisUnitPrice' function
+    'in Northwind database to return products with unit price less than $10.00.
+    'Methods can be created by dragging database functions from the Server
+    'Explorer onto the O/R Designer which can be accessed by double-clicking
+    'on the .DBML file in the Solution Explorer.
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
+    Public Sub LinqToSqlStoredProc06()
+      Dim cheapProducts = DB.ProductsUnderThisUnitPrice(10D)
 
-    '[Category("Stored Procedures")]
-    '   [Title("Single Result-Set - Multiple Possible Shapes")]
-    '   [Description("This sample uses a stored procedure to return a set of " +
-    'Customers in the 'WA' Region.  The result set-shape returned depends on the parameter passed in. " +
-    'If the parameter equals 1, all Customer properties are returned. " +
-    'If the parameter equals 2, the CustomerID, ContactName and CompanyName properties are returned.")]
-    '   public void LinqToSqlStoredProc03() {
-    '       TestExecutor.Execute("********** Whole Customer Result-set ***********");
-    '       IMultipleResults result = db.WholeOrPartialCustomersSet(1);
-    '       IEnumerable<WholeCustomersSetResult> shape1 = result.GetResult<WholeCustomersSetResult>();
+      TestExecutor.Execute(cheapProducts, MethodBase.GetCurrentMethod())
+    End Sub
 
-    '      TestExecutor.Execute(shape1);
+    'This sample queries against a collection of products returned by
+    'ProductsUnderThisUnitPrice' method. The method was created from the database
+    'function 'ProductsUnderThisUnitPrice' in Northwind database.
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
+    Public Sub LinqToSqlStoredProc07()
+      Dim cheapProducts = From prod In DB.ProductsUnderThisUnitPrice(10D) _
+                          Where prod.Discontinued = True
 
-    '       TestExecutor.Execute();
-    '       TestExecutor.Execute("********** Partial Customer Result-set ***********");
-    '       result = db.WholeOrPartialCustomersSet(2);
-    '       IEnumerable<PartialCustomersSetResult> shape2 = result.GetResult<PartialCustomersSetResult>();
+      TestExecutor.Execute(cheapProducts, MethodBase.GetCurrentMethod())
+    End Sub
 
-    '      TestExecutor.Execute(shape2);
-    '   }
   End Class
 End Namespace

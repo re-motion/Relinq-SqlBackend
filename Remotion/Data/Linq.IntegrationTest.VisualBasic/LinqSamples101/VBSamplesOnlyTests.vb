@@ -45,7 +45,7 @@ Namespace LinqSamples101
   Public Class VBSamplesOnlyTests
     Inherits TestBase
 
-    'This sample selects 2 columns and returns the data from the database.")> _
+    'This sample selects 2 columns and returns the data from the database.
     <Test()>
     Public Sub LinqToSqlFirst01()
 
@@ -57,11 +57,25 @@ Namespace LinqSamples101
       TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
     End Sub
 
+    'This sample uses a Where clause to filter for Customers in London.
+    <Test()>
+    <Ignore("Bug or missing feature in Relinq - test works in c# but not in vb")>
+    Public Sub LinqToSqlFirst02()
+
+      'Only return customers from London
+      Dim londonCustomers = From cust In DB.Customers _
+            Where cust.City = "London" _
+            Select cust.CompanyName, cust.City, cust.Country
+
+
+      TestExecutor.Execute(londonCustomers, MethodBase.GetCurrentMethod())
+    End Sub
+
     'This sample uses a method mapped to the 'ProductsUnderThisUnitPrice' function
     'in Northwind database to return products with unit price less than $10.00.
     'Methods can be created by dragging database functions from the Server
     'Explorer onto the O/R Designer which can be accessed by double-clicking
-    'on the .DBML file in the Solution Explorer.")> _
+    'on the .DBML file in the Solution Explorer.
     <Test()>
     <Ignore()>
     Public Sub LinqToSqlStoredProc06()
@@ -71,7 +85,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample queries against a collection of products returned by
-    ''ProductsUnderThisUnitPrice' method. The method was created from the database
+    'ProductsUnderThisUnitPrice' method. The method was created from the database
     'function 'ProductsUnderThisUnitPrice' in Northwind database.
     <Test()>
     <Ignore()>

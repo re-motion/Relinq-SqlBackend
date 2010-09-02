@@ -46,7 +46,7 @@ Namespace LinqSamples101
   Public Class AggregatesTests
     Inherits TestBase
 
-    'This sample uses Count to find the number of Customers in the database.")> _
+    'This sample uses Count to find the number of Customers in the database.
     <Test()>
     Public Sub LinqToSqlCount01()
       Dim custCount = db.Customers.Count()
@@ -54,8 +54,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(custCount, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Count to find the number of Products in the database " & _
-    'that are not discontinued.")> _
+    'This sample uses Count to find the number of Products in the database
+    'that are not discontinued.
     <Test()>
     Public Sub LinqToSqlCount02()
       Dim activeProducts = Aggregate prod In db.Products _
@@ -69,7 +69,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(activeProducts, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Sum to find the total freight over all Orders.")> _
+    'This sample uses Sum to find the total freight over all Orders.
     <Test()>
     Public Sub LinqToSqlCount03()
 
@@ -83,7 +83,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(totalFreight, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Sum to find the total number of units on order over all Products.")> _
+    'This sample uses Sum to find the total number of units on order over all Products.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests - works in c# but not in vb")>
     Public Sub LinqToSqlCount04()
@@ -93,7 +93,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(totalUnits, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Min to find the lowest unit price of any Product.")> _
+    'This sample uses Min to find the lowest unit price of any Product.
     <Test()>
     Public Sub LinqToSqlCount05()
       Dim lowestPrice = Aggregate prod In db.Products _
@@ -102,7 +102,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(lowestPrice, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Min to find the lowest freight of any Order.")> _
+    'This sample uses Min to find the lowest freight of any Order.
     <Test()>
     Public Sub LinqToSqlCount06()
       Dim lowestFreight = Aggregate ord In db.Orders _
@@ -111,8 +111,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(lowestFreight, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Min to find the Products that have the lowest unit price " & _
-    'in each category.")> _
+    'This sample uses Min to find the Products that have the lowest unit price
+    'in each category.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlCount07()
@@ -128,7 +128,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    'This sample uses Max to find the latest hire date of any Employee.")> _
+    'This sample uses Max to find the latest hire date of any Employee.
     <Test()>
     Public Sub LinqToSqlCount08()
       Dim latestHire = Aggregate emp In db.Employees _
@@ -137,7 +137,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(latestHire, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Max to find the most units in stock of any Product.")> _
+    'This sample uses Max to find the most units in stock of any Product.
     <Test()>
     Public Sub LinqToSqlCount09()
       Dim mostInStock = Aggregate prod In db.Products _
@@ -146,8 +146,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(mostInStock, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Max to find the Products that have the highest unit price " & _
-    'in each category.")> _
+    'This sample uses Max to find the Products that have the highest unit price
+    'in each category.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlCount10()
@@ -162,7 +162,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    'This sample uses Average to find the average freight of all Orders.")> _
+    'This sample uses Average to find the average freight of all Orders.
     <Test()>
     Public Sub LinqToSqlCount11()
       Dim avgFreight = Aggregate ord In db.Orders _
@@ -171,7 +171,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(avgFreight, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Average to find the average unit price of all Products.")> _
+    'This sample uses Average to find the average unit price of all Products.
     <Test()>
     Public Sub LinqToSqlCount12()
       Dim avgPrice = Aggregate prod In db.Products _
@@ -180,8 +180,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(avgPrice, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Average to find the Products that have unit price higher than " & _
-    'the average unit price of the category for each category.")> _
+    'This sample uses Average to find the Products that have unit price higher than
+    'the average unit price of the category for each category.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlCount13()

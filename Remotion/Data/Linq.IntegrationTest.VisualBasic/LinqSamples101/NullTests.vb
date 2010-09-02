@@ -56,8 +56,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Nullable(Of T).HasValue to find Employees " & _
-    'that do not report to another Employee.")> _
+    'This sample uses Nullable(Of T).HasValue to find Employees
+    'that do not report to another Employee.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - nullable not supported")>
     Public Sub LinqToSqlNull02()

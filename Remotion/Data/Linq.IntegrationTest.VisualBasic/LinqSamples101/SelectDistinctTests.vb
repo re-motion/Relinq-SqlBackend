@@ -88,7 +88,7 @@ Namespace LinqSamples101
     'This sample uses Select and anonymous types to return
     'a sequence of all Products' IDs and a calculated value 
     'called HalfPrice which is set to the Product's UnitPrice 
-    'divided by 2.")> _
+    'divided by 2.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - rounding differences ?")>
     Public Sub LinqToSqlSelect04()
@@ -152,7 +152,7 @@ Namespace LinqSamples101
     'This sample uses nested queries to return a sequence of
     'all orders containing their OrderID, a subsequence of the
     'items in the order where there is a discount, and the money 
-    'saved if shipping is not included.")> _
+    'saved if shipping is not included.
     'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
     <Test()>
     <Ignore("Bug or missing feature in re-linq: Argument type 'System.Linq.IQueryable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.OrderDetail]' does not match the corresponding member type 'System.Collections.Generic.IEnumerable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.OrderDetail]'")>
@@ -165,10 +165,21 @@ Namespace LinqSamples101
       TestExecutor.Execute(orders, MethodBase.GetCurrentMethod())
     End Sub
 
-    '' Phone converter that converts a phone number to 
-    '' an international format based on its country.
-    '' This sample only supports USA and UK formats, for 
-    '' phone numbers from the Northwind database.
+    'This sample uses Distinct to select a sequence of the unique cities
+    'that have Customers.
+    <Test()>
+    Public Sub LinqToSqlSelect10()
+      Dim cities = From cust In DB.Customers _
+            Select cust.City _
+            Distinct
+
+      TestExecutor.Execute(cities, MethodBase.GetCurrentMethod())
+    End Sub
+
+    'Phone converter that converts a phone number to 
+    'an international format based on its country.
+    'This sample only supports USA and UK formats, for 
+    'phone numbers from the Northwind database.
     Public Function PhoneNumberConverter(ByVal Country As String, ByVal Phone As String) As String
       Phone = Phone.Replace(" ", "").Replace(")", ")-")
       Select Case Country
@@ -182,7 +193,7 @@ Namespace LinqSamples101
     End Function
 
     'This sample uses a Local Method Call to
-    ''PhoneNumberConverter' to convert Phone number
+    'PhoneNumberConverter' to convert Phone number
     'to an international format.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - local method calls not supported")>
@@ -213,18 +224,6 @@ Namespace LinqSamples101
                 </Customers>
 
       TestExecutor.Execute(doc, MethodBase.GetCurrentMethod())
-    End Sub
-
-
-    'This sample uses Distinct to select a sequence of the unique cities
-    'that have Customers.
-    <Test()>
-    Public Sub LinqToSqlSelect10()
-      Dim cities = From cust In DB.Customers _
-            Select cust.City _
-            Distinct
-
-      TestExecutor.Execute(cities, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace

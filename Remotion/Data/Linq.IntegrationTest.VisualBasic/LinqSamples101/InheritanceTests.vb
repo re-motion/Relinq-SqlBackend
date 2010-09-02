@@ -55,7 +55,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses OfType to return all customer contacts.")> _
+    'This sample uses OfType to return all customer contacts.
     <Test()>
     Public Sub LinqToSqlInheritance02()
 
@@ -65,7 +65,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses IS to return all shipper contacts.")> _
+    'This sample uses IS to return all shipper contacts.
     <Test()>
     Public Sub LinqToSqlInheritance03()
 
@@ -77,7 +77,7 @@ Namespace LinqSamples101
     End Sub
 
 
-    'This sample uses CType to return FullContact or Nothing.")> _
+    'This sample uses CType to return FullContact or Nothing.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - System.InvalidCastException : Unable to cast object of type 'Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.ShipperContact' to type 'Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.FullContact'.")>
     Public Sub LinqToSqlInheritance04()
@@ -87,7 +87,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(cons, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a cast to retrieve customer contacts who live in London.")> _
+    'This sample uses a cast to retrieve customer contacts who live in London.
     <Test()>
     <Ignore("System.NotSupportedException : Cannot resolve member 'ContactType' applied to expression 'contact'; the expression type 'ParameterExpression' is not supported in member expressions.")>
     Public Sub LinqToSqlInheritance05()

@@ -56,7 +56,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(categorizedProducts, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Max to find the maximum unit price for each CategoryID.")> _
+    'This sample uses Group By and Max to find the maximum unit price for each CategoryID.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy02()
@@ -68,7 +68,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(maxPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Min to find the minimum unit price for each CategoryID.")> _
+    'This sample uses Group By and Min to find the minimum unit price for each CategoryID.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy03()
@@ -79,7 +79,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(minPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Average to find the average UnitPrice for each CategoryID.")> _
+    'This sample uses Group By and Average to find the average UnitPrice for each CategoryID.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy04()
@@ -90,7 +90,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(avgPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Sum to find the total UnitPrice for each CategoryID.")> _
+    'This sample uses Group By and Sum to find the total UnitPrice for each CategoryID.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy05()
@@ -101,7 +101,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(totalPrices, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Count to find the number of Products in each CategoryID.")> _
+    'This sample uses Group By and Count to find the number of Products in each CategoryID.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy06()
@@ -113,7 +113,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By and Count to find the number of Products in each CategoryID that are discontinued.")> _
+    'This sample uses Group By and Count to find the number of Products in each CategoryID that are discontinued.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy07()
@@ -125,7 +125,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses a Where clause after a Group By clause to find all categories that have at least 10 products.")> _
+    'This sample uses a Where clause after a Group By clause to find all categories that have at least 10 products.
     <Test()>
     <Ignore("Working in C# but not in VB - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy08()
@@ -138,7 +138,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(bigCategories, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses Group By to group products by CategoryID and SupplierID.")> _
+    'This sample uses Group By to group products by CategoryID and SupplierID.
     <Test()>
     <Ignore("Ignored in C# - ArgumentException : Argument type IGrouping does not match the corresponding member type IEnumerable")>
     Public Sub LinqToSqlGroupBy09()

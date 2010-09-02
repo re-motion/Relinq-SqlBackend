@@ -144,6 +144,32 @@ Namespace LinqSamples101
       TestExecutor.Execute(finalQuery, MethodBase.GetCurrentMethod())
     End Sub
 
+
+    'This sample demonstrates how we insert a new Contact and retrieve the newly assigned ContactID from the database.
+    <Test()>
+    <Ignore("Not supported: Submit")>
+    Public Sub LinqToSqlAdvanced05()
+
+      'Console.WriteLine("ContactID is marked as an identity column")
+      'Dim con = New Contact() With {.CompanyName = "New Era", .Phone = "(123)-456-7890"}
+
+      'db.Contacts.InsertOnSubmit(con)
+      'db.SubmitChanges()
+
+      'Console.WriteLine()
+      'Console.WriteLine("The ContactID of the new record is " & con.ContactID)
+
+      'cleanup130(con.ContactID)
+
+    End Sub
+    'Sub cleanup130(ByVal contactID As Integer)
+    '  setLogging(False)
+    '  Dim con = db.Contacts.Where(Function(c) c.ContactID = contactID).First()
+    '  db.Contacts.DeleteOnSubmit(con)
+    '  db.SubmitChanges()
+    'End Sub
+
+
     'This sample uses OrderByDescending and Take to return the discontinued products of the top 10 most expensive products.
     <Test()>
     Public Sub LinqToSqlAdvanced06()
@@ -152,6 +178,62 @@ Namespace LinqSamples101
             Where prod.Discontinued
 
       TestExecutor.Execute(prods, MethodBase.GetCurrentMethod())
+    End Sub
+
+    'Mutable/Immutable Anonymous Types
+    <Test()>
+    <Ignore("Not necessary: Mutable/Immutable Anonymous Types")>
+    Public Sub LinqToSqlAdvanced07()
+
+      ''Generates an immutable anonymous type (FirstName and LastName will be ReadOnly)
+      'Dim empQuery1 = From emp In DB.Employees _
+      '                Where emp.City = "Seattle" _
+      '                Select emp.FirstName, emp.LastName
+
+      'For Each row In empQuery1
+      '  'These lines would be compile errors because the projected type is immutable
+      '  'row.FirstName = "John"
+      '  'row.LastName = "Doe"
+      'Next
+
+      ''Generates a mutable anonymous type (FirstName and LastName are Read/Write)
+      'Dim empQuery2 = From emp In DB.Employees _
+      '                Where emp.City = "Seattle" _
+      '                Select New With {emp.FirstName, emp.LastName}
+
+      'For Each row In empQuery2
+      '  'These lines work because the projected type is mutable
+      '  row.FirstName = "John"
+      '  row.LastName = "Doe"
+      'Next
+
+      ''Generates a partially mutable anonymous type (FirstName is ReadOnly, LastName is Read/Write)
+      'Dim empQuery3 = From emp In DB.Employees _
+      '                Where emp.City = "Seattle" _
+      '                Select New With {Key emp.FirstName, emp.LastName}
+
+      'For Each row In empQuery3
+      '  'Only the second line works because the type is partially mutable; you can
+      '  'only write to the LastName field
+      '  'row.FirstName = "John"
+      '  row.LastName = "Doe"
+      'Next
+
+      ''Generates an immutable anonymous type (FirstName and LastName will be ReadOnly)
+      'Dim empQuery4 = From emp In DB.Employees _
+      '                Where emp.City = "Seattle" _
+      '                Select New With {Key emp.FirstName, Key emp.LastName}
+
+      'For Each row In empQuery4
+      '  'These lines would be compile errors because the projected type is immutable
+      '  'row.FirstName = "John"
+      '  'row.LastName = "Doe"
+      'Next
+
+      'Console.WriteLine("By default the Select keyword generates types that are
+      '                  "immutable, however you can use the New With {...} syntax
+      '                  "to generate a mutable anonymous type.  To make individual
+      '                  "fields ReadOnly, use the Key modifier.")
     End Sub
   End Class
 End Namespace

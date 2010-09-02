@@ -44,6 +44,8 @@ Namespace LinqSamples101
   <TestFixture()>
   Public Class WhereTests
     Inherits TestBase
+    'VB 101LinqSamples starts with different samples.
+    'Samples were renamed according to the C# samples
 
     'This sample uses a Where clause to filter for Customers in London.
     <Test()>
@@ -61,7 +63,7 @@ Namespace LinqSamples101
 
 
     'This sample uses a Where clause to filter for Employees hired
-    '"during or after 1994.
+    'during or after 1994.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
     Public Sub LinqToSqlWhere02()

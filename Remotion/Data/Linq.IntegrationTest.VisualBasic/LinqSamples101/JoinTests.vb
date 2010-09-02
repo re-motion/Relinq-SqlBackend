@@ -96,7 +96,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample explictly joins two tables and projects results from both tables.")> _
+    'This sample explictly joins two tables and projects results from both tables.
     <Test()>
     Public Sub LinqToSqlJoin05()
       Dim ordCount = From cust In db.Customers _
@@ -107,7 +107,7 @@ Namespace LinqSamples101
       TestExecutor.Execute(ordCount, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample explictly joins three tables and projects results from each of them.")> _
+    'This sample explictly joins three tables and projects results from each of them.
     <Test()>
     Public Sub LinqToSqlJoin06()
       Dim joinQuery = From cust In db.Customers _

@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates how to create a data context that uses an external XML mapping source.
     /// </summary>
     [Test]
-    [Ignore ("Circular Dependency (Order -> Customer -> Order -> Customer...)")]
+    [Ignore ("OutOfMemoryException due to circular dependency (Circular Dependency (Order -> Customer -> Order -> Customer...)")]
     public void LinqToSqlExternal01 ()
     {
       ////load the mapping source

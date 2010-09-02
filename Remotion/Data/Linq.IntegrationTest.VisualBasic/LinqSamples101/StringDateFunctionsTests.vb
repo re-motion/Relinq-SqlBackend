@@ -98,8 +98,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the StartsWith method to find Customers whose " & _
-    'contact name ends with 'Anders'.")> _
+    'This sample uses the StartsWith method to find Customers whose
+    'contact name ends with 'Anders'.
     <Test()>
     Public Sub LinqToSqlString06()
       Dim custQuery = From cust In db.Customers _
@@ -202,7 +202,7 @@ Namespace LinqSamples101
     'This sample uses the Replace method to return a sequence of
     'Supplier information where the Country field has had
     'UK replaced with United Kingdom and USA replaced with
-    'United States of America.")> _
+    'United States of America.
     <Test()>
     Public Sub LinqToSqlString15()
       Dim supplierQuery = From supplier In db.Suppliers _
@@ -213,8 +213,8 @@ Namespace LinqSamples101
       TestExecutor.Execute(supplierQuery, MethodBase.GetCurrentMethod())
     End Sub
 
-    'This sample uses the DateTime's Year property to " & _
-    'find Orders placed in 1997.")> _
+    'This sample uses the DateTime's Year property to
+    'find Orders placed in 1997.
     <Test()>
     <Ignore("Bug or missing feature in Relinq - value and year not supported yet")>
     Public Sub LinqToSqlString16()

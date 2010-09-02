@@ -48,176 +48,177 @@ Namespace LinqSamples101
   Public Class ObjectLoadingTests
     Inherits TestBase
 
-    ''WORKAROUND: tests trigger when navigating -> not needed
     'This sample demonstrates how navigating through relationships in
     'retrieved objects can end up triggering new queries to the database
     'if the data was not requested by the original query.
-    '<Test>
-    'Public Sub LinqToSqlObject01()
-    '  Dim custs = From cust In db.Customers _
-    '        Where cust.City = "Sao Paulo" _
-    '        Select cust
+    <Test()>
+    <Ignore("Not supported: Trigger")>
+    Public Sub LinqToSqlObject01()
 
-    '  TestExecutor.Execute(custs, MethodBase.GetCurrentMethod())
-    'End Sub
+      'Dim custs = From cust In db.Customers _
+      '      Where cust.City = "Sao Paulo" _
+      '      Select cust
 
-    'TODO: not needed (?)
-    ''This sample demonstrates how to use LoadWith to request related " & _
-    ''             "data during the original query so that additional roundtrips to the " & _
-    ''             "database are not required later when navigating through " & _
-    ''             "the retrieved objects.")> _
-    '<Test>
-    'Public Sub LinqToSqlObject02()
+      'TestExecutor.Execute(custs, MethodBase.GetCurrentMethod())
+    End Sub
 
-    '  Dim db2 = New Northwind(connString)
-    '  'db2.Log = Me.OutputStreamWriter
+    'This sample demonstrates how to use LoadWith to request related
+    '             "data during the original query so that additional roundtrips to the
+    '             "database are not required later when navigating through
+    '             "the retrieved objects.
+    <Test()>
+    <Ignore("Not necessary: LoadOptions")>
+    Public Sub LinqToSqlObject02()
 
-    '  Dim ds = New DataLoadOptions()
-    '  ds.LoadWith(Of Customer)(Function(cust) cust.Orders)
+      'Dim db2 = New Northwind(connString)
+      ''db2.Log = Me.OutputStreamWriter
 
-    '  db2.LoadOptions = ds
+      'Dim ds = New DataLoadOptions()
+      'ds.LoadWith(Of Customer)(Function(cust) cust.Orders)
 
-    '  Dim custs = From cust In DB.Customers _
-    '        Where cust.City = "Sao Paulo"
+      'db2.LoadOptions = ds
 
-    '  For Each cust In custs
-    '    For Each ord In cust.Orders
-    '      TestExecutor.Execute("CustomerID " & cust.CustomerID & " has an OrderID " & ord.OrderID)
-    '    Next
-    '  Next
+      'Dim custs = From cust In DB.Customers _
+      '      Where cust.City = "Sao Paulo"
 
-
-    'End Sub
-
-    'TODO: not needed
-    ''This sample demonstrates how navigating through relationships in
-    ''retrieved objects can end up triggering new queries to the database
-    ''if the data was not requested by the original query. Also this sample shows relationship
-    ''objects can be filtered using AssoicateWith when they are deferred loaded.
-    '<Test>
-    'Public Sub LinqToSqlObject03()
-
-    '  Dim db2 As New Northwind(connString)
-    '  'db2.Log = Me.OutputStreamWriter
-
-    '  Dim ds As New DataLoadOptions()
-    '  ds.AssociateWith(Of Customer)(Function(p) p.Orders.Where(Function(o) o.ShipVia.Value > 1))
-
-    '  db2.LoadOptions = ds
-
-    '  Dim custs = From cust In db2.Customers _
-    '        Where cust.City = "London"
+      'For Each cust In custs
+      '  For Each ord In cust.Orders
+      '    TestExecutor.Execute("CustomerID " & cust.CustomerID & " has an OrderID " & ord.OrderID)
+      '  Next
+      'Next
 
 
-    '  For Each cust In custs
-    '    For Each ord In cust.Orders
-    '      For Each orderDetail In ord.OrderDetails
+    End Sub
 
-    '        TestExecutor.Execute( _
-    '                              String.Format( _
-    'CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.", _
-    '                                             cust.CustomerID, ord.OrderID, ord.ShipVia, orderDetail.ProductID, _
-    '                                             orderDetail.Product.ProductName))
-    '      Next
-    '    Next
-    '  Next
-    'End Sub
+    'This sample demonstrates how navigating through relationships in
+    'retrieved objects can end up triggering new queries to the database
+    'if the data was not requested by the original query. Also this sample shows relationship
+    'objects can be filtered using AssoicateWith when they are deferred loaded.
+    <Test()>
+    <Ignore("Not necessary: LoadOptions")>
+    Public Sub LinqToSqlObject03()
 
-    'TODO: not needed
-    ''This sample demonstrates how to use LoadWith to request related " & _
-    ''             "data during the original query so that additional roundtrips to the " & _
-    ''             "database are not required later when navigating through " & _
-    ''             "the retrieved objects. Also this sample shows relationship" & _
-    ''             "objects can be ordered by using Assoicate With when they are eager loaded.")> _
-    '<Test>
-    'Public Sub LinqToSqlObject04()
+      '  Dim db2 As New Northwind(connString)
+      '  'db2.Log = Me.OutputStreamWriter
 
-    '  Dim db2 = New Northwind(connString)
-    '  'db2.Log = Me.OutputStreamWriter
+      '  Dim ds As New DataLoadOptions()
+      '  ds.AssociateWith(Of Customer)(Function(p) p.Orders.Where(Function(o) o.ShipVia.Value > 1))
+
+      '  db2.LoadOptions = ds
+
+      '  Dim custs = From cust In db2.Customers _
+      '        Where cust.City = "London"
 
 
-    '  Dim ds As New DataLoadOptions()
-    '  ds.LoadWith(Of Customer)(Function(cust) cust.Orders)
-    '  ds.LoadWith(Of Order)(Function(ord) ord.OrderDetails)
+      '  For Each cust In custs
+      '    For Each ord In cust.Orders
+      '      For Each orderDetail In ord.OrderDetails
 
-    '  ds.AssociateWith(Of Order)(Function(p) p.OrderDetails.OrderBy(Function(o) o.Quantity))
+      '        TestExecutor.Execute( _
+      '                              String.Format( _
+      'CustomerID {0} has an OrderID {1} that ShipVia is {2} with ProductID {3} that has name {4}.", _
+      '                                             cust.CustomerID, ord.OrderID, ord.ShipVia, orderDetail.ProductID, _
+      '                                             orderDetail.Product.ProductName))
+      '      Next
+      '    Next
+      '  Next
+    End Sub
 
-    '  db2.LoadOptions = ds
+    'This sample demonstrates how to use LoadWith to request related
+    'data during the original query so that additional roundtrips to the
+    'database are not required later when navigating through
+    'the retrieved objects. Also this sample shows relationship" & _
+    'objects can be ordered by using Assoicate With when they are eager loaded.
+    <Test()>
+    <Ignore("Not necessary: LoadOptions")>
+    Public Sub LinqToSqlObject04()
 
-    '  Dim custs = From cust In DB.Customers _
-    '        Where cust.City = "London"
+      '  Dim db2 = New Northwind(connString)
+      '  'db2.Log = Me.OutputStreamWriter
 
-    '  For Each cust In custs
-    '    For Each ord In cust.Orders
-    '      For Each orderDetail In ord.OrderDetails
-    '        TestExecutor.Execute( _
-    '                              String.Format( _
-    'CustomerID {0} has an OrderID {1} with ProductID {2} that has quantity {3}.", _
-    '                                             cust.CustomerID, ord.OrderID, orderDetail.ProductID, _
-    '                                             orderDetail.Quantity))
-    '      Next
-    '    Next
-    '  Next
 
-    'End Sub
+      '  Dim ds As New DataLoadOptions()
+      '  ds.LoadWith(Of Customer)(Function(cust) cust.Orders)
+      '  ds.LoadWith(Of Order)(Function(ord) ord.OrderDetails)
+
+      '  ds.AssociateWith(Of Order)(Function(p) p.OrderDetails.OrderBy(Function(o) o.Quantity))
+
+      '  db2.LoadOptions = ds
+
+      '  Dim custs = From cust In DB.Customers _
+      '        Where cust.City = "London"
+
+      '  For Each cust In custs
+      '    For Each ord In cust.Orders
+      '      For Each orderDetail In ord.OrderDetails
+      '        TestExecutor.Execute( _
+      '                              String.Format( _
+      'CustomerID {0} has an OrderID {1} with ProductID {2} that has quantity {3}.", _
+      '                                             cust.CustomerID, ord.OrderID, orderDetail.ProductID, _
+      '                                             orderDetail.Quantity))
+      '      Next
+      '    Next
+      '  Next
+
+    End Sub
 
 
     'Private Function isValidProduct(ByVal prod As Product) As Boolean
     'Return (prod.ProductName.LastIndexOf("C") = 0)
     'End Sub
 
-    'WORKAROUND: tests trigger when navigating -> not needed
-    ''This sample demonstrates how navigating through relationships in " & _
-    ''             "retrieved objects can result in triggering new queries to the database " & _
-    ''             "if the data was not requested by the original query.")> _
-    '<Test>
-    'Public Sub LinqToSqlObject05()
-    '  Dim emps = DB.Employees
+    'This sample demonstrates how navigating through relationships in
+    'retrieved objects can result in triggering new queries to the database
+    'if the data was not requested by the original query.
+    <Test()>
+    <Ignore("Not supported: Trigger")>
+    Public Sub LinqToSqlObject05()
+      'Dim emps = DB.Employees
 
-    '  For Each emp In emps
-    '    For Each man In emp.Employees
-    '      TestExecutor.Execute("Employee " & emp.FirstName & " reported to Manager " & man.FirstName)
-    '    Next
-    '  Next
-    'End Sub
+      'For Each emp In emps
+      '  For Each man In emp.Employees
+      '    TestExecutor.Execute("Employee " & emp.FirstName & " reported to Manager " & man.FirstName)
+      '  Next
+      'Next
+    End Sub
 
-    'WORKAROUND: tests trigger when navigating -> not needed
-    'This sample demonstrates how navigating through Link in " & _
-    ''             "retrieved objects can end up triggering new queries to the database " & _
-    ''             "if the data type is Link.")> _
-    '<Test>
-    'Public Sub LinqToSqlObject06()
-    '  Dim emps = DB.Employees
+    'This sample demonstrates how navigating through Link in
+    'retrieved objects can end up triggering new queries to the database
+    'if the data type is Link.")
+    <Test()>
+    <Ignore("Not supported: Trigger")>
+    Public Sub LinqToSqlObject06()
+      'Dim emps = DB.Employees
 
-    '  For Each emp In emps
-    '    TestExecutor.Execute(emp.Notes)
-    '  Next
+      'For Each emp In emps
+      '  TestExecutor.Execute(emp.Notes)
+      'Next
 
-    'End Sub
+    End Sub
 
-    'TODO: not needed
-    ''This samples overrides the partial method LoadProducts in Category class. When products of a category are being loaded,
-    ''LoadProducts is being called to load products that are not discontinued in this category.
-    '<Test>
-    'Public Sub LinqToSqlObject07()
+    'This samples overrides the partial method LoadProducts in Category class. When products of a category are being loaded,
+    'LoadProducts is being called to load products that are not discontinued in this category.
+    <Test()>
+    <Ignore("Not necessary: LoadOptions")>
+    Public Sub LinqToSqlObject07()
 
-    '  Dim db2 As New Northwind(connString)
+      'Dim db2 As New Northwind(connString)
 
-    '  Dim ds As New DataLoadOptions()
+      'Dim ds As New DataLoadOptions()
 
-    '  ds.LoadWith(Of Category)(Function(p) p.Products)
-    '  db2.LoadOptions = ds
+      'ds.LoadWith(Of Category)(Function(p) p.Products)
+      'db2.LoadOptions = ds
 
-    '  Dim q = From c In db2.Categories _
-    '        Where c.CategoryID < 3
+      'Dim q = From c In db2.Categories _
+      '      Where c.CategoryID < 3
 
-    '  For Each cat In q
-    '    For Each prod In cat.Products
-    '      TestExecutor.Execute(String.Format("Category {0} has a ProductID {1} that Discontined = {2}.", _
-    '                                           cat.CategoryID, prod.ProductID, prod.Discontinued))
-    '    Next
-    '  Next
+      'For Each cat In q
+      '  For Each prod In cat.Products
+      '    TestExecutor.Execute(String.Format("Category {0} has a ProductID {1} that Discontined = {2}.", _
+      '                                         cat.CategoryID, prod.ProductID, prod.Discontinued))
+      '  Next
+      'Next
 
-    'End Sub
+    End Sub
   End Class
 End Namespace

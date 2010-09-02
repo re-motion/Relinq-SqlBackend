@@ -59,7 +59,7 @@ Namespace LinqSamples101
 
 
     'This sample uses Concat to return a sequence of all Customer and Employee
-    'name and phone number mappings.")
+    'name and phone number mappings.
     <Test()>
     <Ignore()>
     Public Sub LinqToSqlUnion02()
