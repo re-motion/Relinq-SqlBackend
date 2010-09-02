@@ -1,0 +1,26 @@
+Enumerable {
+  AnonymousType0
+    City: 'London'
+    CompanyName: 'Around the Horn'
+    Country: 'UK'
+  AnonymousType0
+    City: 'London'
+    CompanyName: 'B''s Beverages'
+    Country: 'UK'
+  AnonymousType0
+    City: 'London'
+    CompanyName: 'Consolidated Holdings'
+    Country: 'UK'
+  AnonymousType0
+    City: 'London'
+    CompanyName: 'Eastern Connection'
+    Country: 'UK'
+  AnonymousType0
+    City: 'London'
+    CompanyName: 'North/South'
+    Country: 'UK'
+  AnonymousType0
+    City: 'London'
+    CompanyName: 'Seven Seas Imports'
+    Country: 'UK'
+}
