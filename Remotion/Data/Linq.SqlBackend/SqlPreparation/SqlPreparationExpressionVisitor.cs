@@ -115,7 +115,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
     }
 
-
     protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -138,12 +137,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return expression;
     }
 
-    private Expression CreateAndRevisitConditionalExpression (Expression testPredicate, Expression thenValue, Expression elseValue)
-    {
-      var newConditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
-      return VisitExpression (newConditionalExpression);
-    }
-
     protected override Expression VisitMemberExpression (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -153,19 +146,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var innerExpressionAsConditionalExpression = newInnerExpression as ConditionalExpression;
       if (innerExpressionAsConditionalExpression != null)
       {
-        return CreateAndRevisitConditionalExpression (
-            innerExpressionAsConditionalExpression.Test,
-            Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member),
+        var newConditionalExpression = Expression.Condition (
+            innerExpressionAsConditionalExpression.Test, 
+            Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member), 
             Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfFalse, expression.Member));
+        return VisitExpression (newConditionalExpression);
       }
 
       var innerExpressionAsBinaryExpression = newInnerExpression as BinaryExpression;
       if (innerExpressionAsBinaryExpression != null && innerExpressionAsBinaryExpression.NodeType == ExpressionType.Coalesce)
       {
-        return CreateAndRevisitConditionalExpression (
-            new SqlIsNotNullExpression (innerExpressionAsBinaryExpression.Left),
-            Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Left, expression.Member),
+        var newConditionalExpression = Expression.Condition (
+            new SqlIsNotNullExpression (innerExpressionAsBinaryExpression.Left), 
+            Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Left, expression.Member), 
             Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Right, expression.Member));
+        return VisitExpression (newConditionalExpression);
       }
 
       var innerExpressionAsSqlSubStatementExpression = newInnerExpression as SqlSubStatementExpression;
