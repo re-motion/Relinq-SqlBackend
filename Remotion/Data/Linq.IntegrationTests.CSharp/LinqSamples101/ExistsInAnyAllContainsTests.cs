@@ -31,7 +31,6 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -59,7 +58,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Any to return only Categories that have at least one Discontinued product.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
+    [Ignore ("TODO RM-3798: SQL Backend: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlExists02 ()
     {
       var q =
@@ -88,7 +87,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Contain to find which Customer contains an order with OrderID 10248.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - Contains is not supported by thís code generator")]
     public void LinqToSqlExists04 ()
     {
       var order = (from o in DB.Orders
@@ -106,7 +104,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     [Test]
     public void LinqToSqlExists05 ()
     {
-      string[] cities = new string[] { "Seattle", "London", "Vancouver", "Paris" };
+      var cities = new[] { "Seattle", "London", "Vancouver", "Paris" };
       var q = DB.Customers.Where (p => cities.Contains (p.City)).ToList ();
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());

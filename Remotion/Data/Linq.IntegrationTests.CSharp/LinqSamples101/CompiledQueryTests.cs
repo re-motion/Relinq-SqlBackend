@@ -35,15 +35,13 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  [Ignore ("Compiled queries are not a feature of the re-linq SQL backend")]
   public class CompiledQueryTests : TestBase
   {
-
     /// <summary>
     /// This sample create a compiled query and then use it to retrieve customers of the input city
     /// </summary>
     [Test]
-    [Ignore("Not supported: Compiled queries")]
+    [Ignore ("Not tested: Compiled queries")]
     public void LinqToSqlCompileQuery01_1 ()
     {
       //Create compiled query

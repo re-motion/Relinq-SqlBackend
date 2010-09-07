@@ -31,24 +31,20 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  public class GroupByHavingTests:TestBase
+  public class GroupByHavingTests : TestBase
   {
     /// <summary>
     /// This sample uses group by to partition Products by CategoryID.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - This Sql generator does not support queries returning groupings that result from a GroupBy operator")]
+    [Ignore ("TODO RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlGroupBy01 ()
     {
       var q =
@@ -190,7 +186,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Group By to group products by CategoryID and SupplierID.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - This Sql generator does not support queries returning groupings that result from a GroupBy operator")]
+    [Ignore ("TODO RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlGroupBy09 ()
     {
       var categories =

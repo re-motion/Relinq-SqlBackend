@@ -31,23 +31,18 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-using System;
-using System.Data.Linq.Mapping;
-using System.IO;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  public class GroupExternalMapping:TestBase
+  public class GroupExternalMapping : TestBase
   {
- 
     /// <summary>
     /// This sample demonstrates how to create a data context that uses an external XML mapping source.
     /// </summary>
     [Test]
-    [Ignore ("OutOfMemoryException due to circular dependency (Circular Dependency (Order -> Customer -> Order -> Customer...)")]
+    [Ignore ("Not tested: External mapping")]
     public void LinqToSqlExternal01 ()
     {
       ////load the mapping source

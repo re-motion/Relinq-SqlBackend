@@ -3,6 +3,8 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
@@ -15,6 +17,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     private readonly MappingResolver _resolver;
     private readonly IQueryResultRetriever _retriever;
     private readonly IQueryExecutor _executor;
+    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
     public RelinqNorthwindDataProvider ()
     {
@@ -22,6 +25,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       _resolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (NorthwindDataContext)));
       _retriever = new QueryResultRetriever (_manager, _resolver);
       _executor = new QueryExecutor (_retriever, _resolver, false);
+      
+      _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
+      _nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
     }
 
     public IQueryable<Product> Products
@@ -121,7 +127,7 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
     private IQueryable<T> CreateQueryable<T> ()
     {
-      return new RelinqQueryable<T> (_executor);
+      return new RelinqQueryable<T> (_executor, _nodeTypeRegistry);
     }
   }
 }

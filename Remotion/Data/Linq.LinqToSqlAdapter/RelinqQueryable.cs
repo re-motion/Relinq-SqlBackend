@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Parsing.Structure;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
@@ -8,8 +9,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
   /// </summary>
   public class RelinqQueryable<T> : QueryableBase<T>
   {
-    public RelinqQueryable (IQueryExecutor executor)
-        : base(executor)
+    public RelinqQueryable (IQueryExecutor executor, MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
+        : base (new DefaultQueryProvider (typeof (RelinqQueryable<>), executor, nodeTypeRegistry))
     {
     }
 

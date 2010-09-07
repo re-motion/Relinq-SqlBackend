@@ -77,7 +77,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-
     // NOTE: This query contains a bug - the first value assigned to expr is never used. However, this bug stems from the original samples.
     // NOTE: The query therefore does _not_ filter by London.
     /// <summary>
@@ -85,7 +84,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// and order them by ContactName.
     /// </summary>
     [Test]
-    [Ignore]
     public void LinqToSqlAdvanced03 ()
     {
       ParameterExpression param = Expression.Parameter (typeof (Customer), "c");
@@ -113,7 +111,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///a customer or an employee live.
     ///</summary>
     [Test]
-    [Ignore ("TODO 3202: SQL Backend: Support for the Union result operator")]
+    [Ignore ("TODO RM-3202: SQL Backend: Support for the Union result operator")]
     public void LinqToSqlAdvanced04 ()
     {
       IQueryable<Customer> custs = DB.Customers;
@@ -143,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// newly assigned ContactID from the database.
     /// </summary>
     [Test]
-    [Ignore ("Not supported: Submit")]
+    [Ignore ("Not tested: Submit")]
     public void LinqToSqlAdvanced05 ()
     {
       //Console.WriteLine ("ContactID is marked as an identity column");
@@ -158,6 +156,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       //cleanup130 (con.ContactID);
 
     }
+    
     //void cleanup130 (int contactID)
     //{
     //  SetLogging (false);
