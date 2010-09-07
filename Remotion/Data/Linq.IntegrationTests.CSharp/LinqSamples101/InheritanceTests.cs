@@ -31,7 +31,6 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -39,7 +38,8 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  public class InheritanceTests:TestBase
+  [TestFixture]
+  public class InheritanceTests : TestBase
   {
     /// <summary>
     /// This sample returns all contacts where the city is London.
@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses AS to return FullContact or null.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - Selecting as FullContact is not support")]
+    [Ignore ("TODO RM-3267: Support for TypeAs expressions")]
     public void LinqToSqlInheritance04 ()
     {
       var cons = from c in DB.Contacts
@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates that an unknown contact type will be automatically converted to the default contact type.
     /// </summary>
     [Test]
-    [Ignore ("Not supported: Submit")]
+    [Ignore ("Not tested: Submit")]
     public void LinqToSqlInheritance06 ()
     {
       //Console.WriteLine("***** INSERT Unknown Contact using normal mapping *****");
@@ -121,7 +121,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
       //Console.WriteLine("***** Query Unknown Contact using inheritance mapping *****");
       //var con = (from c in db.Contacts
       //           where c.CompanyName == "Unknown Company" && c.Phone == "333-444-5555"
-      //           select c).First();
+      //           select c).First ();
+      //TestExecutor.Execute (con, MethodBase.GetCurrentMethod ());
 
       //Console.WriteLine("The base class nwind.BaseContact had been used as default fallback type");
       //Console.WriteLine("The discriminator value for con is unknown. So, its type should be {0}", con.GetType().ToString());
@@ -140,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates how to create a new shipper contact.
     /// </summary>
     [Test]
-    [Ignore ("Not supported: Submit")]
+    [Ignore ("Not tested: Submit")]
     public void LinqToSqlInheritance07 ()
     {
       //Console.WriteLine("****** Before Insert Record ******");

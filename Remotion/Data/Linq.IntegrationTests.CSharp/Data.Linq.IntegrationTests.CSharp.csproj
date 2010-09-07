@@ -219,6 +219,11 @@
     <None Include="LinqSamples101\Original\2008c#.zip" />
     <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance05.result" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Linq.IntegrationTests\TestDomain\Northwind\NORTHWND.MDF">
