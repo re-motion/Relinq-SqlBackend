@@ -169,7 +169,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     [ExpectedException (typeof (NotSupportedException),
         ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. "
-        +"Expression: (SELECT GROUPING (KEY: \"key\", ELEMENT: True, AGGREGATIONS: ()) AS test FROM TABLE(Cook))")]
+        + "Offending expression: 'GROUPING (KEY: \"key\", ELEMENT: True, AGGREGATIONS: ())'")]
     public void VisitSqlSubStatementExpression_WithBooleanSqlGroupingSelectExpression ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())

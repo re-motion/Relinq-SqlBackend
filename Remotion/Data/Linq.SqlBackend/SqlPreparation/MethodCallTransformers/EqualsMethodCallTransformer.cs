@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       }
 
       var message = string.Format (
-          "{0} function with {1} arguments is not supported. Expression: {2}",
+          "{0} function with {1} arguments is not supported. Expression: '{2}'",
           methodCallExpression.Method.Name,
           methodCallExpression.Arguments.Count,
           FormattingExpressionTreeVisitor.Format(methodCallExpression));

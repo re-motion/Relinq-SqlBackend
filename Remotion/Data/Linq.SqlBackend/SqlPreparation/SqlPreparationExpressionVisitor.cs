@@ -101,16 +101,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (expression.ReferencedQuerySource is GroupJoinClause)
       {
         var message = string.Format (
-            "The results of a GroupJoin ('{0}') can only be used as a query source, for example, in a from expression. Expression: {1}",
-            expression.ReferencedQuerySource.ItemName, FormattingExpressionTreeVisitor.Format(expression));
+            "The results of a GroupJoin ('{0}') can only be used as a query source, for example, in a from expression.",
+            expression.ReferencedQuerySource.ItemName);
         throw new NotSupportedException (message);
       }
       else
       {
         var message = string.Format (
-            "The expression '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' isn't "
-            + "supported yet. Expression: {1}",
-            expression.Type.Name, FormattingExpressionTreeVisitor.Format(expression));
+            "The expression declaring identifier '{0}' could not be found in the list of processed expressions. Probably, the feature declaring '{0}' "
+            + "isn't supported yet.",
+            expression.ReferencedQuerySource.ItemName);
         throw new KeyNotFoundException (message);
       }
     }
@@ -230,7 +230,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       }
 
       string message = string.Format (
-          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered. Expression: {2}",
+          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered. Expression: '{2}'",
           expression.Method.DeclaringType.FullName,
           expression.Method.Name,
           FormattingExpressionTreeVisitor.Format(expression));

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -28,6 +27,11 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="SkipResultOperator"/> by transforming the query analyzed so far into a sub-statement construct including a 
+  /// <see cref="SqlRowNumberExpression"/>. The outer query selects from that sub-statement, orders the result correctly, and filters on the 
+  /// row number.
+  /// </summary>
   public class SkipResultOperatorHandler : ResultOperatorHandler<SkipResultOperator>
   {
     struct SubStatementWithRowNumber

@@ -64,11 +64,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       }
       else
       {
-        throw new NotSupportedException (
-            string.Format (
-                "Substring function with {0} arguments is not supported. Expression: {1}",
-                methodCallExpression.Arguments.Count,
-                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
+        var message = string.Format (
+            "Substring function with {0} arguments is not supported. Expression: '{1}'",
+            methodCallExpression.Arguments.Count,
+            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+        throw new NotSupportedException (message);
       }
     }
   }

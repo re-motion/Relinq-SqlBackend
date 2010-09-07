@@ -30,7 +30,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlGeneratingExpressionVisitor"/> implements <see cref="ThrowingExpressionTreeVisitor"/> and <see cref="IResolvedSqlExpressionVisitor"/>.
+  /// <see cref="SqlGeneratingExpressionVisitor"/> generates SQL text for <see cref="Expression"/> trees that have been prepared and resolved.
   /// </summary>
   public class SqlGeneratingExpressionVisitor
       : ThrowingExpressionTreeVisitor,
@@ -279,7 +279,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         case ExpressionType.ConvertChecked:
           break;
         default:
-          throw new NotSupportedException(string.Format ("Expression: '{0}'", FormattingExpressionTreeVisitor.Format(expression)));
+          var message = string.Format ("Cannot generate SQL for unary expression '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+          throw new NotSupportedException (message);
       }
 
       VisitExpression (expression.Operand);
@@ -289,11 +290,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
     {
-      throw new NotSupportedException (
-          string.Format (
-              "The expression '{0}' cannot be translated to SQL text by this SQL generator. Expression type '{1}' is not supported.",
-              FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
-              unhandledItem.GetType().Name));
+      var message = string.Format (
+          "The expression '{0}' cannot be translated to SQL text by this SQL generator. Expression type '{1}' is not supported.",
+          FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
+          unhandledItem.GetType().Name);
+
+      throw new NotSupportedException (message);
     }
 
     protected override Expression VisitConditionalExpression (ConditionalExpression expression)
@@ -352,8 +354,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         _commandBuilder.Append ("SUM");
       else
       {
-        throw new NotSupportedException (
-            string.Format ("AggregationModifier '{0}' is not supported. Expression: '{1}'", expression.AggregationModifier, FormattingExpressionTreeVisitor.Format(expression)));
+        var message = string.Format (
+            "Cannot generate SQL for aggregation '{0}'. Expression: '{1}'", 
+            expression.AggregationModifier, 
+            FormattingExpressionTreeVisitor.Format (expression));
+        throw new NotSupportedException (message);
       }
 
       _commandBuilder.Append ("(");

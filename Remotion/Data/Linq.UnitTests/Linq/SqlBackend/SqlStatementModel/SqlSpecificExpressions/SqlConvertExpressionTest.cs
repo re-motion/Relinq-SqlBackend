@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
@@ -47,7 +45,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No appropriate sql type for 'Cook' found.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "Cannot obtain a SQL type for type 'Cook'. Expression being converted: '\"1\"'")]
     public void GetSqlTypeName_KeyNotFound_ThrowsException ()
     {
       var convertExpression = new SqlConvertExpression (typeof (Cook), Expression.Constant ("1"));

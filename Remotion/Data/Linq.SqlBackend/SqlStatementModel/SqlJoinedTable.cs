@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         : base (joinInfo.ItemType, joinSemantics)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("joinSemanticd", joinSemantics);
+      ArgumentUtility.CheckNotNull ("joinSemantics", joinSemantics);
 
       _joinInfo = joinInfo;
     }

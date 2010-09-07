@@ -228,7 +228,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "SQL Preparation stage must not change the type of the select projection.")]
+        "The SQL Preparation stage must not change the type of the select projection.")]
     public void CreateSqlTableForSubStatement_WithOrderings_InvalidPreparedExpression ()
     {
       var fakeSelectProjection = Expression.Constant (0);

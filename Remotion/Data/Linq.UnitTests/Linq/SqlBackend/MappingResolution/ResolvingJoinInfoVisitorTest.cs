@@ -184,7 +184,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only entities can be used as the collection source in from expressions, 'Int32' cannot.)")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Only entities can be used as the collection source in from expressions, '1' cannot. Member: 'Int32[] IllnessDays'")]
     public void ResolveJoinInfo_ResolvesCollectionJoinInfo_NoEntity ()
     {
       var memberInfo = typeof (Cook).GetProperty ("IllnessDays");

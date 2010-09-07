@@ -552,7 +552,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.String.Concat' is not supported by this code "
                                                                           + "generator, and no custom transformer has been registered. "
-                                                                          + "Expression: \"Test\".Concat(\"Test\")")]
+                                                                          + "Expression: '\"Test\".Concat(\"Test\")'")]
     public void VisitMethodCallExpression_TransformerNotRegistered_ThrowsException ()
     {
       var method = typeof (string).GetMethod ("Concat", new[] {typeof(string)});

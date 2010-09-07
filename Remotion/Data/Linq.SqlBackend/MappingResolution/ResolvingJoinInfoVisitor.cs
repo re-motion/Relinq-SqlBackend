@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -87,8 +88,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         return unresolvedJoinInfo.Accept (this);
       }
 
-      throw new InvalidOperationException (
-          string.Format ("Only entities can be used as the collection source in from expressions, '{0}' cannot.)", resolvedExpression.Type.Name));
+      var message = string.Format (
+          "Only entities can be used as the collection source in from expressions, '{0}' cannot. Member: '{1}'",
+          FormattingExpressionTreeVisitor.Format (resolvedExpression),
+          joinInfo.MemberInfo);
+      throw new NotSupportedException (message);
     }
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)

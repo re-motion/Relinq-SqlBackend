@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
@@ -47,8 +48,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public void AddGroupReferenceMapping (SqlGroupingSelectExpression groupingSelectExpression, SqlTableBase sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("expression", groupingSelectExpression);
-      ArgumentUtility.CheckNotNull ("table", sqlTable);
+      ArgumentUtility.CheckNotNull ("groupingSelectExpression", groupingSelectExpression);
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
       _groupReferenceMapping[groupingSelectExpression] = sqlTable;
     }
@@ -61,7 +62,8 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (_entityMapping.TryGetValue (entityExpression, out result))
         return result;
 
-      throw new InvalidOperationException (string.Format ("No associated table found for entity '{0}'.", entityExpression.Type.Name));
+      var message = string.Format ("No associated table found for entity '{0}'.", FormattingExpressionTreeVisitor.Format (entityExpression));
+      throw new InvalidOperationException (message);
     }
 
     public SqlTableBase GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression)
@@ -71,8 +73,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (_groupReferenceMapping.TryGetValue (groupingSelectExpression, out result))
         return result;
 
-      throw new InvalidOperationException (
-          string.Format ("No associated table found for grouping select expression '{0}'.", groupingSelectExpression.Type.Name));
+      var message = string.Format (
+          "No associated table found for grouping select expression '{0}'.", 
+          FormattingExpressionTreeVisitor.Format (groupingSelectExpression));
+      throw new InvalidOperationException (message);
     }
 
     public SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName)

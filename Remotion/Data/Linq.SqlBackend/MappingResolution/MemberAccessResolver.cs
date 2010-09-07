@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
     {
       throw new NotSupportedException (
-          String.Format (
+          string.Format (
               "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
               _memberInfo.Name,
               FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
         }
       }
 
-      throw new InvalidOperationException (
+      throw new NotSupportedException (
             string.Format (
                 "The member '{0}.{1}' cannot be translated to SQL. Expression: '{2}'",
                 expression.Type.Name,
@@ -136,7 +136,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
             "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed. Expression: '{2}'",
             _memberInfo.DeclaringType.Name,
             _memberInfo.Name,
-            FormattingExpressionTreeVisitor.Format(expression));
+            FormattingExpressionTreeVisitor.Format (expression));
         throw new NotSupportedException (message);
       }
 

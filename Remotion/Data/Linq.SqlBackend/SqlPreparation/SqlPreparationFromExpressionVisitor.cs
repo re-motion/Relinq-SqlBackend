@@ -123,10 +123,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (selectProjectionAsSqlGroupingSelectExpression != null
           && selectProjectionAsSqlGroupingSelectExpression.ElementExpression.Type == typeof (bool))
       {
-        throw new NotSupportedException (
-            string.Format (
-                "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. Expression: {0}",
-                FormattingExpressionTreeVisitor.Format (expression)));
+        var message = string.Format (
+            "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. Offending expression: '{0}'",
+            FormattingExpressionTreeVisitor.Format (selectProjectionAsSqlGroupingSelectExpression));
+        throw new NotSupportedException (message);
       }
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, _context, _generator);

@@ -35,7 +35,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
         UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("registry", methodCallTransformerRegistry);
+      ArgumentUtility.CheckNotNull ("methodCallTransformerRegistry", methodCallTransformerRegistry);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
       ArgumentUtility.CheckNotNull ("generator", generator);
 

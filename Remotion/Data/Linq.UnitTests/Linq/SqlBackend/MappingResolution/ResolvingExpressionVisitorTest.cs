@@ -310,8 +310,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "The results of constructor invocations can only be compared if the same ctors are used.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The results of constructor invocations can only be compared if the same constructors are used for both invocations. Expressions: "
+        + "'new TypeForNewExpression(1)', 'new TypeForNewExpression(1, 2)'")]
     public void VisitBinaryExpression_NewExpressionsWithDifferentCtors_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
@@ -389,8 +390,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "Compound values can only be compared if the respective new expression has members associated with it.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
+            + "'new TypeForNewExpression(1)', 'value(Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
     public void VisitBinaryExpression_NewExpressionOnLeftSideWithoutMembers_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
@@ -534,8 +536,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "Compound values can only be compared if the respective new expression has members associated with it.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
+        + "'new TypeForNewExpression(1)', 'value(Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
     public void VisitBinaryExpression_NewExpressionOnRightSideWithoutMembers_ThrowsException ()
     {
       var rightArgumentExpression = Expression.Constant (1);

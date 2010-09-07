@@ -302,16 +302,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.A' cannot be translated to SQL. "+
-      "Expression: 'new TypeForNewExpression([t0].[ID] AS m0, [t0].[RoomNumber] AS m1)'")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "The member 'TypeForNewExpression.A' cannot be translated to SQL. "
+        + "Expression: 'new TypeForNewExpression([t0].[ID] AS m0, [t0].[RoomNumber] AS m1)'")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithoutMembers ()
     {
       CheckQuery (from k in Kitchens select new TypeForNewExpression (k.ID, k.RoomNumber).A, "");
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "
-      +"Expression: 'new TypeForNewExpression(A = [t0].[ID] AS A, B = [t0].[RoomNumber] AS B)'")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "The member 'TypeForNewExpression.C' cannot be translated to SQL. "
+        + "Expression: 'new TypeForNewExpression(A = [t0].[ID] AS A, B = [t0].[RoomNumber] AS B)'")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithMemberNotInitialized ()
     {
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (new Core.IntegrationTests.TestQueryable<Kitchen> ("Kitchen")));

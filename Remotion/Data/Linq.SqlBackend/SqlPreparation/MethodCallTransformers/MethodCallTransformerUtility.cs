@@ -33,8 +33,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       var argumentAsConstantExpression = argument as ConstantExpression;
       if (argumentAsConstantExpression == null)
       {
-        throw new NotSupportedException (
-            string.Format ("Only expressions that can be evaluated locally can be used as the argument for {0} ('{1}').", methodName, parameterName));
+        var message = string.Format (
+            "Only expressions that can be evaluated locally can be used as an argument for {0} ('{1}'). Expression: '{2}'", 
+            methodName, 
+            parameterName,
+            FormattingExpressionTreeVisitor.Format (argument));
+        throw new NotSupportedException (message);
       }
       return argumentAsConstantExpression;
     }
@@ -64,9 +68,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       if (!allowedArgumentCounts.Contains (methodCallExpression.Arguments.Count))
       {
+        var message = string.Format (
+            "{0} function with {1} arguments is not supported. Expression: '{2}'", 
+            methodCallExpression.Method.Name, 
+            methodCallExpression.Arguments.Count,
+            FormattingExpressionTreeVisitor.Format (methodCallExpression));
         throw new NotSupportedException (
-            string.Format (
-                "{0} function with {1} arguments is not supported.", methodCallExpression.Method.Name, methodCallExpression.Arguments.Count));
+            message);
       }
     }
 
@@ -74,11 +82,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       if (!methodCallExpression.Method.IsStatic)
       {
-        throw new NotSupportedException (
-            string.Format (
-                "{0} is not supported by this transformer. Expression: {1}",
-                methodCallExpression.Method.Name,
-                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
+        var message = string.Format (
+            "Method {0} is not supported by this transformer. Expression: '{1}'",
+            methodCallExpression.Method.Name,
+            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+        throw new NotSupportedException (message);
       }
     }
 
@@ -86,11 +94,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
     {
       if (methodCallExpression.Method.IsStatic)
       {
-        throw new NotSupportedException (
-            string.Format (
-                "{0} is not supported by this transformer. Expression: {1}",
-                methodCallExpression.Method.Name,
-                FormattingExpressionTreeVisitor.Format (methodCallExpression)));
+        var message = string.Format (
+            "Method {0} is not supported by this transformer. Expression: '{1}'",
+            methodCallExpression.Method.Name,
+            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+        throw new NotSupportedException (message);
       }
     }
   }

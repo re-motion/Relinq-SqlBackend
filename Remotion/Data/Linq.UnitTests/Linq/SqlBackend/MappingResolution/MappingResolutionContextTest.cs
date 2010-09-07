@@ -55,15 +55,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No associated table found for entity 'Cook'.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No associated table found for entity '[c]'.")]
     public void GetSqlTableForEntityExpression_EntityDoesNotExist ()
     {
       _context.GetSqlTableForEntityExpression (_entityExpression);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "No associated table found for grouping select expression 'IGrouping`2'.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "No associated table found for grouping select expression 'GROUPING (KEY: \"key\", ELEMENT: \"element\", AGGREGATIONS: ())'.")]
     public void GetReferencedGroupSource_GroupingSelectExpressionDoesNotExist ()
     {
       _context.GetReferencedGroupSource (_groupingSelectExpression);

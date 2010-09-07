@@ -116,9 +116,10 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var groupSourceSubStatementTableInfo = tableInfo.ReferencedGroupSource.GetResolvedTableInfo() as ResolvedSubStatementTableInfo;
       if (groupSourceSubStatementTableInfo == null)
       {
-        throw new NotSupportedException (
-            "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy "
-            + "operator.");
+        var message = string.Format (
+            "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy operator. "
+            + "Sequence: '{0}'", tableInfo);
+        throw new NotSupportedException (message);
       }
 
       var groupingSelectExpression = groupSourceSubStatementTableInfo.SqlStatement.SelectProjection as SqlGroupingSelectExpression;

@@ -52,10 +52,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       if (currentType != null && typeof (ResultOperatorBase).IsAssignableFrom (currentType))
         return GetItem (currentType);
 
-      string message =
-           string.Format (
-               "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
-               key.FullName);
+      string message = string.Format (
+          "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
+          key.FullName);
       throw new NotSupportedException (message);
     }
 

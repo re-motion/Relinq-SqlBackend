@@ -72,7 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       
       var preparedTupleExpression = _stage.PrepareSelectExpression (tupleExpression, _context);
       if (preparedTupleExpression.Type != tupleExpression.Type)
-        throw new InvalidOperationException ("SQL Preparation stage must not change the type of the select projection.");
+        throw new InvalidOperationException ("The SQL Preparation stage must not change the type of the select projection.");
       
       return preparedTupleExpression;
     }

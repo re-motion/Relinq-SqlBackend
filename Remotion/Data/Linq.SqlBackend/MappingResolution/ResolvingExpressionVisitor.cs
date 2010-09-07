@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
@@ -27,7 +28,8 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="ResolvingExpressionVisitor"/> implements <see cref="IUnresolvedSqlExpressionVisitor"/> and <see cref="ThrowingExpressionTreeVisitor"/>.
+  /// <see cref="ResolvingExpressionVisitor"/> analyzes a prepared <see cref="Expression"/> for things that need to be analyzed by the 
+  /// <see cref="IMappingResolver"/> and resolves member accesses and similar structures. Substatements are recursively resolved.
   /// </summary>
   public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
   {
@@ -175,7 +177,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression GetBinaryExpressionForNewExpressionComparison (ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)
     {
       if (!leftNewExpression.Constructor.Equals (rightNewExpression.Constructor))
-        throw new NotSupportedException ("The results of constructor invocations can only be compared if the same ctors are used.");
+      {
+        var message = string.Format (
+            "The results of constructor invocations can only be compared if the same constructors are used for both invocations. "
+            + "Expressions: '{0}', '{1}'", 
+            FormattingExpressionTreeVisitor.Format (leftNewExpression),
+            FormattingExpressionTreeVisitor.Format (rightNewExpression));
+        throw new NotSupportedException (message);
+      }
 
       Expression binaryExpression = null;
       for (int i = 0; i < leftNewExpression.Arguments.Count; i++)
@@ -192,10 +201,16 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private Expression GetBinaryExpressionForMemberAccessComparison (ExpressionType expressionType, NewExpression newExpression, Expression memberAccessExpression)
     {
+      // The ReSharper warning is wrong - newExpression.Members can be null
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (newExpression.Members == null || newExpression.Members.Count == 0)
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
       {
-        throw new NotSupportedException (
-            "Compound values can only be compared if the respective new expression has members associated with it.");
+        var message = string.Format (
+            "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: '{0}', '{1}'",
+            FormattingExpressionTreeVisitor.Format (newExpression),
+            FormattingExpressionTreeVisitor.Format (memberAccessExpression));
+        throw new NotSupportedException (message);
       }
 
       Expression binaryExpression = null;

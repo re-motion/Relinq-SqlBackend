@@ -234,8 +234,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
           else
             return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKeyColumn;
       }
-      throw new NotSupportedException (
-          string.Format ("Context '{0}' is not allowed for expression '{1}'.", _currentContext, FormattingExpressionTreeVisitor.Format (expression)));
+      
+      var message = string.Format (
+          "Context '{0}' is not allowed for members referencing entities: '{1}'.", 
+          _currentContext, 
+          FormattingExpressionTreeVisitor.Format (expression));
+      throw new NotSupportedException (message);
     }
 
     public Expression VisitNamedExpression (NamedExpression expression)
@@ -383,8 +387,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       if (newExpression.Type != typeof (bool))
       {
-        throw new NotSupportedException (
-            string.Format ("Cannot convert an expression of type '{0}' to a boolean expression. Expression: '{1}'", newExpression.Type, FormattingExpressionTreeVisitor.Format(expression)));
+        var message = string.Format (
+            "Cannot convert an expression of type '{0}' to a boolean expression. Expression: '{1}'", 
+            newExpression.Type, 
+            FormattingExpressionTreeVisitor.Format(expression));
+        throw new NotSupportedException (message);
       }
 
       return newExpression;

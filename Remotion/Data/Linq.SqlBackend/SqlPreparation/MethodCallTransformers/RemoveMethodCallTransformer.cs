@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
@@ -62,10 +63,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             methodCallExpression.Object,
             startIndexExpression,
             methodCallExpression.Arguments[1],
-            new SqlLiteralExpression ("")); 
+            new SqlLiteralExpression (""));
       }
       else
-        throw new NotSupportedException (string.Format ("Remove function with {0} arguments is not supported.", methodCallExpression.Arguments.Count));
+      {
+        var message = string.Format (
+            "Remove function with {0} arguments is not supported. Expression: '{1}'", 
+            methodCallExpression.Arguments.Count, 
+            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+        throw new NotSupportedException (message);
+      }
     }
   }
 }

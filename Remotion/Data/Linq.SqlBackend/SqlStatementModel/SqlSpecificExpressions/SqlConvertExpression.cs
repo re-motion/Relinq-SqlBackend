@@ -63,7 +63,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       if (_sqlTypeMapping.ContainsKey (Type))
         return _sqlTypeMapping[Type];
       else
-        throw new KeyNotFoundException (string.Format ("No appropriate sql type for '{0}' found.", Type.Name));
+      {
+        var message = string.Format (
+            "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'", 
+            Type.Name, 
+            FormattingExpressionTreeVisitor.Format (_source));
+        throw new NotSupportedException (message);
+      }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)

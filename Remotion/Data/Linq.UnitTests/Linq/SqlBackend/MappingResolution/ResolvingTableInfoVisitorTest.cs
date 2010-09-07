@@ -260,8 +260,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy operator.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy operator. "
+        + "Sequence: 'GROUP-REF-TABLE(TABLE-REF(t))'")]
     public void ResolveTableInfo_GroupReferenceTableInfo_NoSubStatement ()
     {
       var groupSource = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (IEnumerable<Cook>));

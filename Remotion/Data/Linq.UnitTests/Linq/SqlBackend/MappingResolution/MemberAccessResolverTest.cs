@@ -282,7 +282,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
       "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'")]
     public void VisitMemberExpression_OnNewExpression_NoMembers ()
     {
