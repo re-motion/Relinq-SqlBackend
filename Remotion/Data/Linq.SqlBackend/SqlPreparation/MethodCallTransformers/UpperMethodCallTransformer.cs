@@ -17,15 +17,13 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using System.Linq;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="UpperMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the string upper method.
+  /// <see cref="UpperMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.ToUpper()"/> method.
   /// </summary>
   public class UpperMethodCallTransformer : IMethodCallTransformer
   {

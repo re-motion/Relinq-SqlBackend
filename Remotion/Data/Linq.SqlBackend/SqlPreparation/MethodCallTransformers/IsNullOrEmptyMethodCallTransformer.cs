@@ -23,7 +23,8 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="IsNullOrEmptyMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the string IsNullOrEmpty method.
+  /// <see cref="IsNullOrEmptyMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.IsNullOrEmpty"/> 
+  /// method.
   /// </summary>
   public class IsNullOrEmptyMethodCallTransformer : IMethodCallTransformer
   {
@@ -44,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       var lenExpression = new SqlFunctionExpression (typeof(int), "LEN", methodCallExpression.Arguments[0]);
       var lenIsZeroExpression = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
 
-      return Expression.OrElse(isNullExpression, lenIsZeroExpression);
+      return Expression.OrElse (isNullExpression, lenIsZeroExpression);
     }
   }
 }

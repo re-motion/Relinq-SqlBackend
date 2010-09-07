@@ -24,8 +24,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// <see cref="EqualsMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for different Equals methods. The transformer
-  /// is registered by name, not by method, so it will handle all methods named "Equals" unless a specific <see cref="MethodInfo"/>-based transformer
-  /// has been registered.
+  /// is registered by name, not by method, so it will handle every method named "Equals" unless a specific <see cref="MethodInfo"/>-based transformer
+  /// has been registered for that method.
   /// </summary>
   public class EqualsMethodCallTransformer : IMethodCallTransformer
   {

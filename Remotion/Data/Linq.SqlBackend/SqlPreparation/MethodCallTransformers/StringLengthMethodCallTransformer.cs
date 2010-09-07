@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="StringLengthMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the string length property.
+  /// <see cref="StringLengthMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.Length"/> property.
   /// </summary>
   public class StringLengthMethodCallTransformer : IMethodCallTransformer
   {

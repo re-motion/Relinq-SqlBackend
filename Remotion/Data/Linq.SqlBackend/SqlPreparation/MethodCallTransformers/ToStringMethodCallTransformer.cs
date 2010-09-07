@@ -17,14 +17,13 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ToStringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the ToString method.
+  /// <see cref="ToStringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="object.ToString"/> method.
   /// </summary>
   public class ToStringMethodCallTransformer : IMethodCallTransformer
   {

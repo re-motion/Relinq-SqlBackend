@@ -15,17 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="LowerMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the string lower method.
+  /// <see cref="LowerMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.ToLower()"/> method.
   /// </summary>
   public class LowerMethodCallTransformer : IMethodCallTransformer
   {

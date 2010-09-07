@@ -25,7 +25,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="RemoveMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the remove method.
+  /// <see cref="RemoveMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="O:string.Remove"/> methods.
   /// </summary>
   public class RemoveMethodCallTransformer : IMethodCallTransformer
   {

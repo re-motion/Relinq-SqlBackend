@@ -18,13 +18,12 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="EndsWithMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the ends-with method.
+  /// <see cref="EndsWithMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.EndsWith(string)"/> method.
   /// </summary>
   public class EndsWithMethodCallTransformer : IMethodCallTransformer
   {

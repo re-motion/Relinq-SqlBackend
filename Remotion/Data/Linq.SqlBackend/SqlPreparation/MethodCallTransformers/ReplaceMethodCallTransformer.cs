@@ -15,24 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ReplaceMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the replace method.
+  /// <see cref="ReplaceMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.Replace(string,string)"/> 
+  /// method.
   /// </summary>
   public class ReplaceMethodCallTransformer : IMethodCallTransformer
   {
     public static readonly MethodInfo[] SupportedMethods =
         new[]
         {
-           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Replace", typeof(string), typeof(string))
+           MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Replace", typeof (string), typeof (string))
          };
 
     public Expression Transform (MethodCallExpression methodCallExpression)

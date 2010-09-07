@@ -23,7 +23,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ContainsMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the contains method.
+  /// <see cref="ContainsMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.Contains"/> method.
   /// </summary>
   public class ContainsMethodCallTransformer : IMethodCallTransformer
   {
