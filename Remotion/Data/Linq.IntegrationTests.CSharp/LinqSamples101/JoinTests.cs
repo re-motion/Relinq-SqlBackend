@@ -30,8 +30,7 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
-using System;
+
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -74,7 +73,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the from clause to filter for employees in Seattle, and also list their territories.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - RM-3110")]
+    [Ignore ("TODO RM-3110: Support complex columns for entities")]
     public void LinqToSqlJoin03 ()
     {
       var q =
@@ -90,7 +89,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the select clause to filter for pairs of employees where one employee reports to the other and where both employees are from the same City.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
+    [Ignore ("TODO RM-3798: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlJoin04 ()
     {
       var q =
@@ -142,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")]
+    [Ignore ("TODO RM-3798: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlJoin07 ()
     {
       var q =
@@ -174,7 +173,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows a join with a composite key.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - RM-3110")]
+    [Ignore ("TODO RM-3110: Support complex columns for entities")]
     public void LinqToSqlJoin09 ()
     {
       var q =
