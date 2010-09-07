@@ -30,27 +30,21 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
-using System;
-using System.Data.Linq;
-using System.Linq;
-using System.Reflection;
+
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
   public class ObjectLoadingTests : TestBase
   {
-
     /// <summary>
     /// This sample demonstrates how navigating through relationships in 
     /// retrieved objects can end up triggering new queries to the database
     /// if the data was not requested by the original query.
     /// </summary>
     [Test]
-    [Ignore ("Not supported: Trigger")]
+    [Ignore ("Not tested: Lazy loading")]
     public void LinqToSqlObject01 ()
     {
       //var custs =
@@ -74,7 +68,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// the retrieved objects.
     /// </summary>
     [Test]
-    [Ignore ("Not necessary: LoadOptions")]
+    [Ignore ("Not tested: Load options")]
     public void LinqToSqlObject02 ()
     {
       //Northwind db2 = new Northwind (connString);
@@ -105,7 +99,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// objects can be filtered using Assoicate With when they are deferred loaded.
     /// </summary>
     [Test]
-    [Ignore ("Not necessary: LoadOptions")]
+    [Ignore ("Not tested: Load options")]
     public void LinqToSqlObject03 ()
     {
       //Northwind db2 = new Northwind (connString);
@@ -147,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// objects can be ordered by using Assoicate With when they are eager loaded.
     /// </summary>
     [Test]
-    [Ignore ("Not necessary: LoadOptions")]
+    [Ignore ("Not tested: Load options")]
     public void LinqToSqlObject04 ()
     {
       //Northwind db2 = new Northwind (connString);
@@ -188,13 +182,19 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// if the data was not requested by the original query.
     /// </summary>
     [Test]
-    [Ignore ("Not supported: Trigger")]
-    public void linqtosqlobject05 ()
+    [Ignore ("Not tested: Lazy loading")]
+    public void LinqToSqlObject05 ()
     {
-      //var emps = from e in db.employees
+      //var emps = from e in db.Employees
       //           select e;
 
-      //testexecutor.execute (emps, methodbase.getcurrentmethod ());
+      //foreach (var emp in emps)
+      //{
+      //  foreach (var man in emp.Employees)
+      //  {
+      //    Console.WriteLine ("Employee {0} reported to Manager {1}.", emp.FirstName, man.FirstName);
+      //  }
+      //}
     }
 
     /// <summary>
@@ -203,13 +203,16 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// if the data type is link.
     /// </summary>
     [Test]
-    [Ignore ("Not supported: Trigger")]
-    public void linqtosqlobject06 ()
+    [Ignore ("Not tested: Lazy loading")]
+    public void LinqToSqlObject06 ()
     {
-      //var emps = from c in db.employees
+      //var emps = from c in db.Employees
       //           select c;
 
-      //testexecutor.execute (emps, methodbase.getcurrentmethod ());
+      //foreach (Employee emp in emps)
+      //{
+      //  Console.WriteLine ("{0}", emp.Notes);
+      //}
     }
 
     /// <summary>
@@ -217,7 +220,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// LoadProducts is being called to load products that are not discontinued in this category.
     /// </summary>
     [Test]
-    [Ignore ("Not necessary: LoadOptions")]
+    [Ignore ("Not tested: Load methods")]
     public void LinqToSqlObject07 ()
     {
       //Northwind db2 = new Northwind (connString);
