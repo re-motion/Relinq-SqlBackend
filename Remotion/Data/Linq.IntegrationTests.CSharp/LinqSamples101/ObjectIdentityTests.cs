@@ -30,8 +30,7 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
-using System;
+
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -47,13 +46,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// receive a reference to the same object in memory each time.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq")]
+    [Ignore ("Not tested: Identity")]
     public void LinqToSqlObjectIdentity01 ()
     {
       Customer cust1 = DB.Customers.First (c => c.CustomerID == "BONAP");
       Customer cust2 = DB.Customers.First (c => c.CustomerID == "BONAP");
 
-      TestExecutor.Execute(Object.ReferenceEquals (cust1, cust2), MethodBase.GetCurrentMethod());
+      TestExecutor.Execute (ReferenceEquals (cust1, cust2), MethodBase.GetCurrentMethod());
     }
 
     /// <summary>
@@ -61,7 +60,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// database, you will receive a reference to the same object in memory each time.")]
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq")]
+    [Ignore ("Not tested: Identity")]
     public void LinqToSqlObjectIdentity02 ()
     {
       Customer cust1 = DB.Customers.First (c => c.CustomerID == "BONAP");
@@ -72,7 +71,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
           .First ()
           .Customer;
 
-      TestExecutor.Execute (Object.ReferenceEquals (cust1, cust2), MethodBase.GetCurrentMethod ());
+      TestExecutor.Execute (ReferenceEquals (cust1, cust2), MethodBase.GetCurrentMethod ());
     }
   }
 }
