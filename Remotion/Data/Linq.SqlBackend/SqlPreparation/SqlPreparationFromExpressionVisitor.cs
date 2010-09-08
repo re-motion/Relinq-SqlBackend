@@ -183,12 +183,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
-      return base.VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
-      return base.VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
   }
 }

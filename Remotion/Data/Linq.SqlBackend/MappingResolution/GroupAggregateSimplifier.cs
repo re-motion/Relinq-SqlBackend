@@ -126,12 +126,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
   }
 }

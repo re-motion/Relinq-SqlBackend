@@ -164,14 +164,14 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return base.VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return base.VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     private Expression GetBinaryExpressionForNewExpressionComparison (ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)

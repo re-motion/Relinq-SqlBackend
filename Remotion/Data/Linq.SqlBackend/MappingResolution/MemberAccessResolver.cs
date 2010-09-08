@@ -159,12 +159,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     

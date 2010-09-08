@@ -387,7 +387,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
-      return VisitUnknownExpression (expression);
+      return VisitExtensionExpression (expression);
     }
 
     protected virtual void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)

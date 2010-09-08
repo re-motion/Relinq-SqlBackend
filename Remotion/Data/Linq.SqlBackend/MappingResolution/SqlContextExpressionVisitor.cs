@@ -327,7 +327,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private Expression VisitChildrenWithSingleValueSemantics (ExtensionExpression expression)
     {
       var visitor = new SqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stage, _context);
-      return visitor.VisitUnknownExpression (expression);
+      return visitor.VisitExtensionExpression (expression);
     }
 
     private SqlExpressionContext GetChildSemanticsForUnaryExpression (Expression expression)
