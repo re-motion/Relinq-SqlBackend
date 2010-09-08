@@ -153,9 +153,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return VisitExpression (newConditionalExpression);
       }
 
-      var innerExpressionAsBinaryExpression = newInnerExpression as BinaryExpression;
-      if (innerExpressionAsBinaryExpression != null && innerExpressionAsBinaryExpression.NodeType == ExpressionType.Coalesce)
+      if (newInnerExpression.NodeType == ExpressionType.Coalesce)
       {
+        var innerExpressionAsBinaryExpression = (BinaryExpression) newInnerExpression;
         var newConditionalExpression = Expression.Condition (
             new SqlIsNotNullExpression (innerExpressionAsBinaryExpression.Left), 
             Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Left, expression.Member), 

@@ -219,8 +219,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void MemberAccessOnCoalesceExpression ()
     {
-      CheckQuery (Cooks.Select (c => (c.FirstName ?? c.Name).ToUpper ()),
-        "SELECT UPPER((COALESCE ([t0].[FirstName], [t0].[Name]))) AS [value] FROM [CookTable] AS [t0]");
+      CheckQuery (Cooks.Select (c => (c.FirstName ?? c.Name).Length),
+        "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN LEN([t0].[FirstName]) ELSE LEN([t0].[Name]) END AS [value] FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -245,7 +245,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks
-          select (c.Substitution!=null ? c.Substitution : c).Name,
+// ReSharper disable ConvertConditionalTernaryToNullCoalescing
+          select (c.Substitution != null ? c.Substitution : c).Name,
+// ReSharper restore ConvertConditionalTernaryToNullCoalescing
           "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
             + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
     }
