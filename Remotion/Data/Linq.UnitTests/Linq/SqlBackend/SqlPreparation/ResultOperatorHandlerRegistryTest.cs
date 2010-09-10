@@ -46,24 +46,37 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void Register ()
+    public void GetItem ()
     {
       var registry = new ResultOperatorHandlerRegistry();
       var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler>();
       registry.Register (typeof (CastResultOperator), handlerMock);
 
-      Assert.That (registry.GetItem(typeof (CastResultOperator)), Is.SameAs(handlerMock));
+      var result = registry.GetItem(typeof (CastResultOperator));
+
+      Assert.That (result, Is.SameAs(handlerMock));
     }
 
     [Test]
-    public void RegisterHandlerForBaseResultOperator ()
+    public void GetItem_ForBaseResultOperator ()
     {
       var registry = new ResultOperatorHandlerRegistry ();
       var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler> ();
-
       registry.Register (typeof (ResultOperatorBase), handlerMock);
 
-      Assert.That (registry.GetItem(typeof (InheritedResultOperator)), Is.SameAs (handlerMock));
+      var result = registry.GetItem (typeof (InheritedResultOperator));
+
+      Assert.That (result, Is.SameAs (handlerMock));
+    }
+
+    [Test]
+    public void GetItem_NotFound ()
+    {
+      var registry = new ResultOperatorHandlerRegistry ();
+
+      var result = registry.GetItem (typeof (InheritedResultOperator));
+
+      Assert.That (result, Is.Null);
     }
 
     class InheritedResultOperator : TestChoiceResultOperator 

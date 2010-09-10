@@ -504,7 +504,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitResultOperator_HandlerResultOperator ()
+    public void VisitResultOperator_HandlesResultOperator ()
     {
       var resultOperator = new TestChoiceResultOperator (false);
 
@@ -528,6 +528,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
       handlerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The result operator 'TestChoiceResultOperator' is not supported and no custom handler has been registered.")]
+    public void VisitResultOperator_NoHandlerFound ()
+    {
+      var resultOperator = new TestChoiceResultOperator (false);
+      var registry = new ResultOperatorHandlerRegistry ();
+      var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
+
+      queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
     }
 
     [Test]

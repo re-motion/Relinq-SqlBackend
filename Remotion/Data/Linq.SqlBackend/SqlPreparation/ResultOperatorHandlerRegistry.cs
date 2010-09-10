@@ -44,18 +44,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
-      IResultOperatorHandler handler = GetItemExact(key);
-      if (handler!=null)
-        return handler;
+      IResultOperatorHandler handler;
 
-      var currentType = key.BaseType;
-      if (currentType != null && typeof (ResultOperatorBase).IsAssignableFrom (currentType))
-        return GetItem (currentType);
+      var currentType = key;
+      do
+      {
+        handler = GetItemExact (currentType);
+        currentType = currentType.BaseType;
+      } while (handler == null && currentType != null);
 
-      string message = string.Format (
-          "The handler type '{0}' is not supported by this registry and no custom result operator handler has been registered.",
-          key.FullName);
-      throw new NotSupportedException (message);
+      return handler;
     }
 
     protected override void RegisterForTypes (IEnumerable<Type> itemTypes)

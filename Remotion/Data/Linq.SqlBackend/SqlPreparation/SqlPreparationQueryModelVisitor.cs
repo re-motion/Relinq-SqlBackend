@@ -193,7 +193,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      var resultOperatorHandler = _resultOperatorHandlerRegistry.GetItem (resultOperator.GetType());
+      var operatorType = resultOperator.GetType();
+      
+      var resultOperatorHandler = _resultOperatorHandlerRegistry.GetItem (operatorType);
+      if (resultOperatorHandler == null)
+      {
+        string message = string.Format (
+            "The result operator '{0}' is not supported and no custom handler has been registered.",
+            operatorType.Name);
+        throw new NotSupportedException (message);
+      }
+
       resultOperatorHandler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
     }
 
