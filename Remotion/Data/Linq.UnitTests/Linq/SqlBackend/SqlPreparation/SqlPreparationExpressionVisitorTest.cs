@@ -374,12 +374,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
 
       _stageMock.VerifyAllExpectations();
+
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
+      // TODO Review 3088: Use an expected expression for the SelectProjection
       Assert.That (((NamedExpression) ((SqlSubStatementExpression) result).SqlStatement.SelectProjection).Expression, Is.TypeOf(typeof(MemberExpression)));
       var resultMemberExpression =
           (MemberExpression) ((NamedExpression) ((SqlSubStatementExpression) result).SqlStatement.SelectProjection).Expression;
       Assert.That (resultMemberExpression.Expression, Is.SameAs (selectProjection));
       Assert.That (resultMemberExpression.Member, Is.SameAs (memberInfo));
+      
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo.DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(string))));
     }

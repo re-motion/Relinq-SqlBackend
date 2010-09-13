@@ -113,6 +113,92 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           row => (object) row.GetValue<string> (new ColumnID ("value", 0))
           );
     }
-    
+
+    [Test]
+    public void MemberAccess_OnSubQuery_WithEntities ()
+    {
+      var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution).First ().Name);
+      CheckQuery (query,
+        "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) " +
+        "[t2].[Name] AS [value] FROM [CookTable] AS [t1] " +
+        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
+    }
+
+    [Test]
+    public void MemberAccess_OnSubQuery_WithColumns ()
+    {
+      var query = Cooks.Select (c => (from a in c.Assistants select a.Name).First ().Length);
+      CheckQuery (query,
+        "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) " +
+        "LEN([t1].[Name]) AS [value] FROM [CookTable] AS [t1] " +
+        "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
+    }
+
+    [Test]
+    public void MemberAccess_OnCoalesce_WithEntities_InSubQuery ()
+    {
+      var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name);
+      CheckQuery (query,
+        "SELECT [q4].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) " +
+        "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] " +
+        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q4]");
+    }
+
+    [Test]
+    public void MemberAccess_OnCoalesce_WithColumns_InSubQuery ()
+    {
+      var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution.Name ?? a.Name).First ().Length);
+      CheckQuery (query,
+        "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] "
+        + "OUTER APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN LEN([t2].[Name]) ELSE LEN([t1].[Name]) END AS [value] "
+        + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
+        + "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
+    }
+
+    [Test]
+    public void MemberAccess_OnCoealesce_WithEntities_InSubQuery_InWhereClause ()
+    {
+      var query = Cooks.Where (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name == "Hugo").Select (c => c.Name);
+      CheckQuery (query, "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT TOP (1) "
+        + "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] "
+        + "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) = @1)",
+        new CommandParameter ("@1", "Hugo"));
+    }
+
+    [Test]
+    public void MemberAccess_OnCoalesce_WithColumns ()
+    {
+      CheckQuery (Cooks.Select (c => (c.FirstName ?? c.Name).Length),
+        "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN LEN([t0].[FirstName]) ELSE LEN([t0].[Name]) END AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void MemberAccess_OnCoalesce_WithEntities ()
+    {
+      CheckQuery (
+          from c in Cooks
+          select (c.Substitution ?? c).Name,
+          "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
+            + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+    }
+
+    [Test]
+    public void MemberAccess_OnConditional_WithColumns ()
+    {
+      CheckQuery (Cooks.Select (c => (c.IsStarredCook ? c.Name : c.SpecificInformation).Length),
+        "SELECT CASE WHEN ([t0].[IsStarredCook] = 1) THEN LEN([t0].[Name]) ELSE LEN([t0].[SpecificInformation]) END AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void MemberAccess_OnConditional_WithEntities ()
+    {
+      CheckQuery (
+          from c in Cooks
+          // ReSharper disable ConvertConditionalTernaryToNullCoalescing
+          select (c.Substitution != null ? c.Substitution : c).Name,
+        // ReSharper restore ConvertConditionalTernaryToNullCoalescing
+          "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
+            + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+    }
   }
 }
