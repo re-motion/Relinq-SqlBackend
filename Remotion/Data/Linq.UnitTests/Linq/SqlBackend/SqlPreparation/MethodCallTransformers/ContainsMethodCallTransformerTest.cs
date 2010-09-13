@@ -54,7 +54,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     }
 
     [Test]
-    public void Transform_ArgumentIsNotNullAndIsNoConstantValue_ ()
+    public void Transform_ArgumentIsNotNullAndIsNoConstantValue ()
     {
       var method = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
       var objectExpression = Expression.Constant ("Test");

@@ -70,9 +70,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void To_String ()
+    public void ToString_Int ()
     {
       Assert.That (_literalExpression.ToString(), Is.EqualTo ("10"));
+    }
+
+    [Test]
+    public void ToString_String ()
+    {
+      var literalExpression = new SqlLiteralExpression ("test");
+      Assert.That (literalExpression.ToString (), Is.EqualTo ("\"test\""));
     }
   }
 }

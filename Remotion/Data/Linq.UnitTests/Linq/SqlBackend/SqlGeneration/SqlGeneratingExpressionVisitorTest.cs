@@ -473,23 +473,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlLikeExpression ()
     {
-      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook ();
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var sqlInExpression = new SqlLikeExpression (Expression.Constant (1), sqlSubStatementExpression, new SqlLiteralExpression (@"\"));
+      var sqlInExpression = new SqlLikeExpression (new SqlLiteralExpression (1), new SqlLiteralExpression (2), new SqlLiteralExpression (@"\"));
 
-      _stageMock
-          .Expect (
-              mock =>
-              mock.GenerateTextForSqlStatement (
-                  Arg.Is (_commandBuilder), Arg<SqlStatement>.Is.Anything))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
-      _stageMock.Replay ();
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          sqlInExpression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (@"@1 LIKE (test) ESCAPE '\'"));
-      _stageMock.VerifyAllExpectations ();
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (@"1 LIKE 2 ESCAPE '\'"));
     }
 
     [Test]

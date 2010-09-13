@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     private readonly Expression _escapeExpression;
 
     public SqlLikeExpression (Expression left, Expression right, Expression escapeExpression)
-        : base(typeof(bool))
+        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("left", left);
       ArgumentUtility.CheckNotNull ("right", right);
@@ -74,15 +74,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlLikeExpression(this);
+        return specificVisitor.VisitSqlLikeExpression (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("{0} LIKE {1}", FormattingExpressionTreeVisitor.Format (_left), FormattingExpressionTreeVisitor.Format (_right));
+      return string.Format (
+          "{0} LIKE {1} ESCAPE {2}",
+          FormattingExpressionTreeVisitor.Format (_left),
+          FormattingExpressionTreeVisitor.Format (_right),
+          FormattingExpressionTreeVisitor.Format (_escapeExpression));
     }
-
   }
 }

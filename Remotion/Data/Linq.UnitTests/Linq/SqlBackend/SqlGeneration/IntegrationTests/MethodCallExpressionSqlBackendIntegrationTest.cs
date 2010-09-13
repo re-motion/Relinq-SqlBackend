@@ -327,15 +327,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "+
         "WHERE ([t0].[ID] = [t1].[ID])");
 
-      CheckQuery (from c in Cooks where object.Equals(c.Name, "abc") select c.Name,
+      CheckQuery (from c in Cooks where Equals(c.Name, "abc") select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
         new CommandParameter ("@1", "abc"));
 
-      CheckQuery (from c in Cooks where object.Equals (c, c.Substitution) select c.Name,
+      CheckQuery (from c in Cooks where Equals (c, c.Substitution) select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "+
         "WHERE ([t0].[ID] = [t1].[ID])");
 
-      CheckQuery (from c in Cooks where object.Equals (c, null) select c.Name,
+      CheckQuery (from c in Cooks where Equals (c, null) select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)");
     }
     

@@ -61,7 +61,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return Value.ToString();
+      if (Value is string)
+        return "\"" + Value + "\"";
+      else
+        return Value.ToString();
     }
   }
 }
