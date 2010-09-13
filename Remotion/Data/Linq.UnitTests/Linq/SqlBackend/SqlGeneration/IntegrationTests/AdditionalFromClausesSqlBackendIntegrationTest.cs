@@ -78,11 +78,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. Offending expression: "
-        + "'GROUPING (KEY: TABLE-REF(UnresolvedTableInfo(Cook)).Name AS key, ELEMENT: TABLE-REF(UnresolvedTableInfo(Cook)).IsFullTimeCook AS "
-        + "element, AGGREGATIONS: ())'")]
+    [Ignore ("TODO 3266")]
     public void AdditionalFromClause_WithBooleanItems ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from isFTC in
+            (from a in c.Assistants select a.IsFullTimeCook).Take (10)
+          where isFTC
+          select isFTC,
+          "SELECT [q0].[value] AS [value] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS APPLY (SELECT TOP (@1) [t2].[IsFullTimeCook] AS [value] FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[AssistedID])) AS [q0] "
+          + "WHERE ([q0].[value] = 1)",
+          new CommandParameter ("@1", 10));
+    }
+
+    [Test]
+    [Ignore ("TODO 3266")]
+    public void AdditionalFromClause_WithBooleanItems_Grouping ()
     {
       CheckQuery (
           from c in Cooks
@@ -90,7 +104,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             into fullTimeCooksByName
             from isFullTime in fullTimeCooksByName
             select new { fullTimeCooksByName.Key, Value = isFullTime },
-          "?");
+          "SELECT [q0].[key] AS [Key],[q2].[element] AS [Value] "
+          + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
+          + "CROSS APPLY (SELECT [t1].[IsFullTimeCook] AS [element] FROM [CookTable] AS [t1] "
+            + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+            + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]");
     }
 
     [Test]

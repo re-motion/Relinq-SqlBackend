@@ -119,16 +119,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       var sqlStatement = expression.SqlStatement;
 
-      var selectProjectionAsSqlGroupingSelectExpression = ((NamedExpression) sqlStatement.SelectProjection).Expression as SqlGroupingSelectExpression;
-      if (selectProjectionAsSqlGroupingSelectExpression != null
-          && selectProjectionAsSqlGroupingSelectExpression.ElementExpression.Type == typeof (bool))
-      {
-        var message = string.Format (
-            "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. Offending expression: '{0}'",
-            FormattingExpressionTreeVisitor.Format (selectProjectionAsSqlGroupingSelectExpression));
-        throw new NotSupportedException (message);
-      }
-
       var factory = new SqlPreparationSubStatementTableFactory (Stage, _context, _generator);
       _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
       Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);

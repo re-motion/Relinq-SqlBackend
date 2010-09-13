@@ -167,31 +167,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "It is not currently supported to use boolean values as a query source, eg., in the from clause of a query. "
-        + "Offending expression: 'GROUPING (KEY: \"key\", ELEMENT: True, AGGREGATIONS: ())'")]
-    public void VisitSqlSubStatementExpression_WithBooleanSqlGroupingSelectExpression ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
-                         {
-                             SelectProjection =
-                                 new NamedExpression (
-                                     "test", new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant (true)))
-                         }.GetSqlStatement();
-
-      var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var stage = new DefaultSqlPreparationStage (_registry, new ResultOperatorHandlerRegistry(), _generator);
-
-      SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          sqlSubStatementExpression,
-          stage,
-          _generator,
-          _registry,
-          _context,
-          info => new SqlTable (info, JoinSemantics.Inner));
-    }
-
-    [Test]
     public void VisitSqlSubStatementExpression_WithOrderingsAndNoTopExpression ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
@@ -375,7 +350,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
 
+      Assert.That (_visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
+
       Assert.That (fromExpressionInfo.WhereCondition, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (fromExpressionInfo.WhereCondition.NodeType, Is.EqualTo(ExpressionType.AndAlso));
       Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Left, Is.TypeOf(typeof(JoinConditionExpression)));
@@ -395,7 +372,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       var selectProjection = new NamedExpression("test", Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("Name")));
       var orderingExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("ID"));
-      var sqlStatement = new SqlStatementBuilder()
+      var sqlStatement = new SqlStatementBuilder
                          {
                              DataInfo = new StreamedSequenceInfo(typeof(string), Expression.Constant('t')),
                              SelectProjection = selectProjection,
@@ -434,7 +411,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations ();
 
+      Assert.That (_visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
+
       Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo(1));
       Assert.That (fromExpressionInfo.ExtractedOrderings[0].Expression, Is.TypeOf(typeof(MemberExpression)));
       Assert.That (((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
