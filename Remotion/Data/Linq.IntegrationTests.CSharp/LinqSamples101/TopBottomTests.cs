@@ -30,7 +30,7 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Take to select the first 5 Employees hired.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
+    [Ignore ("TODO RM-3310: Change TakeResultOperatorHandler to use literals for TOP count")]
     public void LinqToSqlTop01 ()
     {
       var q = (
