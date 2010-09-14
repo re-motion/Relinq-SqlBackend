@@ -31,7 +31,6 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
  
-using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -86,7 +85,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the IndexOf method to find the first instance of a space in each Customer's contact name.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
+    [Ignore ("TODO RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")]
     public void LinqToSqlString04 ()
     {
       var q =
@@ -141,7 +140,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the Substring method to find Employees whose home phone numbers have '555' as the seventh through ninth digits.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - InvalidCastException - Unable to cast System.Byte[] to System.Data.Linq.Binary")]
     public void LinqToSqlString08 ()
     {
       var q =
@@ -183,7 +181,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// with leading and trailing spaces removed.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - System.String.Trim is not supported by this code generator")]
+    [Ignore ("TODO RM-3309: Support for additional string manipulation routines")]
     public void LinqToSqlString11 ()
     {
       var q =
@@ -198,7 +196,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// in the fifth position, inserting a : after the ).
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - NotSupportedException - System.String.Insert is not supported by this code generator")]
+    [Ignore ("TODO RM-3309: Support for additional string manipulation routines")]
     public void LinqToSqlString12 ()
     {
       var q =
@@ -262,7 +260,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Year property to find Orders placed in 1997.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
+    [Ignore ("TODO RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlString16 ()
     {
       var q =
@@ -277,7 +275,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Month property to find Orders placed in December.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
+    [Ignore ("TODO RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlString17 ()
     {
       var q =
@@ -292,7 +290,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Day property to find Orders placed on the 31st day of the month.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests")]
+    [Ignore ("TODO RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlString18 ()
     {
       var q =
