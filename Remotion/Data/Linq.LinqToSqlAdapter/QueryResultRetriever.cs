@@ -78,6 +78,12 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
         dataParameter.ParameterName = commandParameter.Name;
         dataParameter.Value = commandParameter.Value;
 
+        if (commandParameter.Value is decimal || commandParameter.Value is decimal?)
+        {
+          dataParameter.Precision = 33;
+          dataParameter.Scale = 4;
+        }
+
         command.Parameters.Add (dataParameter);
       }
     }

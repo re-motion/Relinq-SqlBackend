@@ -29,18 +29,33 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
   /// </summary>
   public class QueryExecutor : IQueryExecutor
   {
-    private readonly IQueryResultRetriever _resultRetriever;
     private readonly IMappingResolver _mappingResolver;
+    private readonly IQueryResultRetriever _resultRetriever;
+    
+    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
+    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
+
     private readonly bool _showQuery;
 
-    public QueryExecutor (IQueryResultRetriever resultRetriever, IMappingResolver mappingResolver, bool showQuery)
+    public QueryExecutor (
+        IMappingResolver mappingResolver,
+        IQueryResultRetriever resultRetriever,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
+        MethodCallTransformerRegistry methodCallTransformerRegistry,
+        bool showQuery)
     {
-      ArgumentUtility.CheckNotNull ("resultRetriever", resultRetriever);
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
+      ArgumentUtility.CheckNotNull ("resultRetriever", resultRetriever);
+      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull ("methodCallTransformerRegistry", methodCallTransformerRegistry);
+
+      _mappingResolver = mappingResolver;
+      _resultRetriever = resultRetriever;
+
+      _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
+      _methodCallTransformerRegistry = methodCallTransformerRegistry;
 
       _showQuery = showQuery;
-      _resultRetriever = resultRetriever;
-      _mappingResolver = mappingResolver;
     }
 
     public T ExecuteScalar<T> (QueryModel queryModel)
@@ -49,7 +64,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
       SqlCommandData commandData = GenerateSqlCommand (queryModel);
       var projection = commandData.GetInMemoryProjection<T> ().Compile ();
-      return _resultRetriever.GetScalar<T> (projection, commandData.CommandText, commandData.Parameters);
+      return _resultRetriever.GetScalar (projection, commandData.CommandText, commandData.Parameters);
     }
 
     public T ExecuteSingle<T> (QueryModel queryModel, bool returnDefaultWhenEmpty)
@@ -75,14 +90,11 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
 
     private SqlCommandData GenerateSqlCommand(QueryModel queryModel)
     {
-      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
-      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
-
       ISqlPreparationContext preparationContext = new SqlPreparationContext ();
       IMappingResolutionContext mappingResolutionContext = new MappingResolutionContext ();
 
       var generator = new UniqueIdentifierGenerator ();
-      var preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, generator);
+      var preparationStage = new DefaultSqlPreparationStage (_methodCallTransformerRegistry, _resultOperatorHandlerRegistry, generator);
       var preparedStatement = preparationStage.PrepareSqlStatement (queryModel, preparationContext);
 
       var resolutionStage = new DefaultMappingResolutionStage (_mappingResolver, generator);

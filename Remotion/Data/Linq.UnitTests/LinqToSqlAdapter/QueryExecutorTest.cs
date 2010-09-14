@@ -24,6 +24,7 @@ using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
@@ -65,7 +66,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var retrieverMock = GetRetrieverMockStrictScalar (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, _resolverStub, false);
+      var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteScalar<object> (_queryModel);
 
       retrieverMock.VerifyAllExpectations ();
@@ -79,7 +80,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, _resolverStub, false);
+      var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
       retrieverMock.VerifyAllExpectations ();
@@ -93,7 +94,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, _resolverStub, false);
+      var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
       retrieverMock.VerifyAllExpectations ();
@@ -108,7 +109,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, _resolverStub, false);
+      var executor = CreateQueryExecutor (retrieverMock);
       executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false);
     }
 
@@ -120,7 +121,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, _resolverStub, false);
+      var executor = CreateQueryExecutor (retrieverMock);
       executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false);
     }
 
@@ -131,11 +132,16 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
-      var executor = new QueryExecutor (retrieverMock, _resolverStub, false);
+      var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteCollection<DataContextTestClass.Customer> (_queryModel);
 
       retrieverMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    private QueryExecutor CreateQueryExecutor(IQueryResultRetriever retrieverMock)
+    {
+      return new QueryExecutor (_resolverStub, retrieverMock, ResultOperatorHandlerRegistry.CreateDefault (), MethodCallTransformerRegistry.CreateDefault (), false);
     }
 
     private static IQueryResultRetriever GetRetrieverMockStrict(IEnumerable<DataContextTestClass.Customer> fakeResult)

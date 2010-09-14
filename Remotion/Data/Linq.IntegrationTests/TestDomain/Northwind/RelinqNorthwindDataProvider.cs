@@ -5,6 +5,7 @@ using System.Linq;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
@@ -16,18 +17,27 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     private readonly IConnectionManager _manager;
     private readonly MappingResolver _resolver;
     private readonly IQueryResultRetriever _retriever;
-    private readonly IQueryExecutor _executor;
+    
+    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
+    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
     private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
+
+    private readonly IQueryExecutor _executor;
+   
 
     public RelinqNorthwindDataProvider ()
     {
       _manager = new NorthwindConnectionManager ();
       _resolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (NorthwindDataContext)));
       _retriever = new QueryResultRetriever (_manager, _resolver);
-      _executor = new QueryExecutor (_retriever, _resolver, false);
       
+      _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+      _methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
       _nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
+
+      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerRegistry, false);
     }
 
     public IQueryable<Product> Products
