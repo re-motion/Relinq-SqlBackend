@@ -66,13 +66,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var newExpression = base.VisitSqlSubStatementExpression (expression);
       var newExpressionAsSqlSubStatementExpression = newExpression as SqlSubStatementExpression;
 
-      // Substatements returning a single value need to be moved to the FROM part of the SQL statement because they might select more than one value
+      // Substatements returning a single value need to be moved to the FROM part of the SQL statement because they might return more than one column.
+      // Since a SqlSubStatementExpression must return a single row anyway, we can do this.
+      // (However, errors that might arise because the statement does not return exactly one row, will not be found.)
       if (newExpressionAsSqlSubStatementExpression != null
           && newExpressionAsSqlSubStatementExpression.SqlStatement.DataInfo is StreamedSingleValueInfo)
       {
-        // Transform this to a substatement returning a sequence of items; because we don't change the TopExpression/SelectProjection, 
-        // the sequence will still contain exactly one item.
-
         var sqlTable = expression.CreateSqlTableForSubStatement (newExpressionAsSqlSubStatementExpression, JoinSemantics.Left, Generator.GetUniqueIdentifier ("q"));
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 

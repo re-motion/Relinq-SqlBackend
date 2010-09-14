@@ -40,6 +40,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
+      // TODO Review 3091: Add argument check ensuring that sqlStatement has a StreamedSingleValueInfo or StreamedScalarValueInfo. Test.
+
       _sqlStatement = sqlStatement;
     }
 
@@ -71,19 +73,29 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     
     public SqlTable CreateSqlTableForSubStatement (
-        SqlSubStatementExpression subStatementExpression,  // TODO Review 3091: Remove this parameter. Use the "this" object instead. (Careful: The call to this method in ResolvingSelectExpressionVisitor must be adapted!) Rename the method to "CreateWrappingTable".
+        SqlSubStatementExpression subStatementExpression,  // TODO Review 3091: Remove this parameter. Use the "this" object instead. (Careful: The call to this method in ResolvingSelectExpressionVisitor must be adapted!) Rename the method to "ConvertToSqlTable".
         JoinSemantics joinSemantics, 
         string uniqueIdentifier)
     {
       // TODO Review 3091: Argument checks!
 
-      // TODO Review 3091: Check that subStatementExpression has a StreamedSingleValueInfo or StreamedScalarValueInfo before recalculating the DataInfo (and TopExpression). If it has a StreamedSequenceInfo, you can simply return a new ResolvedSubStatementTableInfo without recalculating anything. Test this.
-      var newDataInfo = new StreamedSequenceInfo (
-          typeof (IEnumerable<>).MakeGenericType (subStatementExpression.Type),
-          subStatementExpression.SqlStatement.SelectProjection);
+      // TODO Review 3091: The join semantics should be calculated. If the dataInfo is a StreamedSingleValueInfo with ReturnDefaultWhenEmpty true, it should be Left. Otherwise (ReturnDefaultWhenEmpty false or StreamedScalarValueInfo), it should be Inner. The reason for this is that we can assume that scalar queries and Single/First queries should always return values.
 
-      var adjustedStatementBuilder = new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo };
-      if (subStatementExpression.SqlStatement.DataInfo is StreamedForcedSingleValueInfo)
+      var sqlStatement = ConvertToSequenceStatement(subStatementExpression.SqlStatement);
+      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, sqlStatement);
+      return new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
+    }
+
+    private SqlStatement ConvertToSequenceStatement (SqlStatement sqlStatement) // TODO Review 3091: Remove this parameter when the parameter above is removed. It's no longer needed (it's always this.SqlStatement).
+    {
+      // TODO Review 3091: Add assertion that sqlStatement does not have a StreamedSequenceInfo.
+
+      var newDataInfo = new StreamedSequenceInfo (
+          typeof (IEnumerable<>).MakeGenericType (sqlStatement.DataInfo.DataType),
+          sqlStatement.SelectProjection);
+
+      var adjustedStatementBuilder = new SqlStatementBuilder (sqlStatement) { DataInfo = newDataInfo };
+      if (sqlStatement.DataInfo is StreamedForcedSingleValueInfo)
       {
         Debug.Assert (
             adjustedStatementBuilder.TopExpression is SqlLiteralExpression
@@ -91,8 +103,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
         adjustedStatementBuilder.TopExpression = new SqlLiteralExpression (1);
       }
 
-      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, adjustedStatementBuilder.GetSqlStatement());
-      return new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
+      return adjustedStatementBuilder.GetSqlStatement();
     }
   }
 }
