@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Data.Linq.SqlClient;
 using System.Linq;
+using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.CustomTransformers;
 using Remotion.Data.Linq.LinqToSqlAdapter;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 
 namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 {
@@ -32,12 +35,17 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
       _retriever = new QueryResultRetriever (_manager, _resolver);
       
       _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+      
       _methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+      _methodCallTransformerRegistry.Register (
+          typeof (SqlMethods).GetMethod ("Like", new[] { typeof (string), typeof (string) }), 
+          new LikeMethodCallTransformer());
+      _methodCallTransformerRegistry.Register (DateDiffDayMethodCallTransformer.SupportedMethods, new DateDiffDayMethodCallTransformer());
 
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
       _nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
 
-      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerRegistry, false);
+      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerRegistry, true);
     }
 
     public IQueryable<Product> Products

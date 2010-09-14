@@ -30,8 +30,7 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
-using System;
+
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -46,7 +45,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The method 'System.Data.Linq.SqlClient.SqlMethods.Like' is not supported by this code generator")]
     public void LinqToSqlSqlMethods01 ()
     {
 
@@ -62,17 +60,13 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SqlMethods to find all orders which shipped within 10 days the order created")]
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The method 'System.Data.Linq.SqlClient.SqlMethods.Like' is not supported by this code generator")]
     public void LinqToSqlSqlMethods02 ()
     {
-
       var q = from o in DB.Orders
               where SqlMethods.DateDiffDay (o.OrderDate, o.ShippedDate) < 10
               select o;
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
-
     }
-
   }
 }
