@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation;
@@ -75,6 +76,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
               Expression.Constant (type.IsValueType ? Activator.CreateInstance (type) : null, type)),
           CreateSqlEntityDefinitionExpression (type),
           new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
+    }
+
+    public static SqlStatement CreateSqlStatement_Single ()
+    {
+      var selectProjection = Expression.Constant (0);
+      return new SqlStatementBuilder
+      {
+        DataInfo = new StreamedSingleValueInfo (selectProjection.Type, false),
+        SelectProjection = selectProjection,
+        TopExpression = new SqlLiteralExpression (1)
+      }.GetSqlStatement ();
     }
 
     public static SqlTable CreateSqlTable ()
@@ -229,6 +241,5 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       return new SqlPreparationContext (null, new SqlStatementBuilder());
     }
-
   }
 }

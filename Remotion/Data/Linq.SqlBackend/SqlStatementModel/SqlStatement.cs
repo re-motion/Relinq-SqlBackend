@@ -137,30 +137,33 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       if (statement == null)
         return false;
 
-      return (_dataInfo == statement._dataInfo) &&
-             (_selectProjection == statement._selectProjection) &&
-             (_sqlTables.SequenceEqual (statement._sqlTables)) &&
-             (_orderings.SequenceEqual (statement._orderings)) &&
-             (_whereCondition == statement._whereCondition) &&
-             (_topExpression == statement._topExpression) &&
-             (_isDistinctQuery == statement._isDistinctQuery) &&
-             (_rowNumberSelector == statement._rowNumberSelector) &&
-             (_currentRowNumberOffset == statement._currentRowNumberOffset) &&
-             (_groupByExpression == statement._groupByExpression);
+      // TODO 3303: Compare DataInfo by value when implemented
+      return (_dataInfo.DataType.Equals (statement._dataInfo.DataType))
+              && (_dataInfo.GetType().Equals (statement._dataInfo.GetType()))
+              && (_selectProjection == statement._selectProjection)
+              && (_sqlTables.SequenceEqual (statement._sqlTables))
+              && (_orderings.SequenceEqual (statement._orderings))
+              && (_whereCondition == statement._whereCondition)
+              && (_topExpression == statement._topExpression)
+              && (_isDistinctQuery == statement._isDistinctQuery)
+              && (_rowNumberSelector == statement._rowNumberSelector)
+              && (_currentRowNumberOffset == statement._currentRowNumberOffset)
+              && (_groupByExpression == statement._groupByExpression);
     }
 
     public override int GetHashCode ()
     {
-      return HashCodeUtility.GetHashCodeOrZero (_dataInfo) ^
-             HashCodeUtility.GetHashCodeOrZero (_selectProjection) ^
-             HashCodeUtility.GetHashCodeForSequence (_sqlTables) ^
-             HashCodeUtility.GetHashCodeForSequence (_orderings) ^
-             HashCodeUtility.GetHashCodeOrZero (_whereCondition) ^
-             HashCodeUtility.GetHashCodeOrZero (_topExpression) ^
-             HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery) ^
-             HashCodeUtility.GetHashCodeOrZero (_rowNumberSelector) ^
-             HashCodeUtility.GetHashCodeOrZero (_currentRowNumberOffset) ^
-             HashCodeUtility.GetHashCodeOrZero (_groupByExpression);
+      return HashCodeUtility.GetHashCodeOrZero (_dataInfo.DataType)
+             ^ HashCodeUtility.GetHashCodeOrZero (_dataInfo.GetType())
+             ^ HashCodeUtility.GetHashCodeOrZero (_selectProjection)
+             ^ HashCodeUtility.GetHashCodeForSequence (_sqlTables)
+             ^ HashCodeUtility.GetHashCodeForSequence (_orderings)
+             ^ HashCodeUtility.GetHashCodeOrZero (_whereCondition)
+             ^ HashCodeUtility.GetHashCodeOrZero (_topExpression)
+             ^ HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery)
+             ^ HashCodeUtility.GetHashCodeOrZero (_rowNumberSelector)
+             ^ HashCodeUtility.GetHashCodeOrZero (_currentRowNumberOffset)
+             ^ HashCodeUtility.GetHashCodeOrZero (_groupByExpression);
     }
 
     public override string ToString ()

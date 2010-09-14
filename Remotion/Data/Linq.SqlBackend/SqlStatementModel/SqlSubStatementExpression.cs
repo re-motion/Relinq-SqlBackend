@@ -69,30 +69,30 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return "(" + _sqlStatement + ")";
     }
 
+    
     public SqlTable CreateSqlTableForSubStatement (
-        SqlSubStatementExpression subStatementExpression, JoinSemantics joinSemantic, string uniqueIdentifier)
+        SqlSubStatementExpression subStatementExpression,  // TODO Review 3091: Remove this parameter. Use the "this" object instead. (Careful: The call to this method in ResolvingSelectExpressionVisitor must be adapted!) Rename the method to "CreateWrappingTable".
+        JoinSemantics joinSemantics, 
+        string uniqueIdentifier)
     {
+      // TODO Review 3091: Argument checks!
+
+      // TODO Review 3091: Check that subStatementExpression has a StreamedSingleValueInfo or StreamedScalarValueInfo before recalculating the DataInfo (and TopExpression). If it has a StreamedSequenceInfo, you can simply return a new ResolvedSubStatementTableInfo without recalculating anything. Test this.
       var newDataInfo = new StreamedSequenceInfo (
           typeof (IEnumerable<>).MakeGenericType (subStatementExpression.Type),
           subStatementExpression.SqlStatement.SelectProjection);
 
-      SqlStatement subSqlStatement;
+      var adjustedStatementBuilder = new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo };
       if (subStatementExpression.SqlStatement.DataInfo is StreamedForcedSingleValueInfo)
       {
         Debug.Assert (
-            subStatementExpression.SqlStatement.TopExpression is SqlLiteralExpression
-            && ((SqlLiteralExpression) subStatementExpression.SqlStatement.TopExpression).Value.Equals (2));
-        subSqlStatement =
-            new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo, TopExpression = new SqlLiteralExpression (1) }.
-                GetSqlStatement ();
-      }
-      else
-      {
-        subSqlStatement = new SqlStatementBuilder (subStatementExpression.SqlStatement) { DataInfo = newDataInfo }.GetSqlStatement();
+            adjustedStatementBuilder.TopExpression is SqlLiteralExpression
+            && ((SqlLiteralExpression) adjustedStatementBuilder.TopExpression).Value.Equals (2));
+        adjustedStatementBuilder.TopExpression = new SqlLiteralExpression (1);
       }
 
-      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, subSqlStatement);
-      return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
+      var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, adjustedStatementBuilder.GetSqlStatement());
+      return new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
     }
   }
 }

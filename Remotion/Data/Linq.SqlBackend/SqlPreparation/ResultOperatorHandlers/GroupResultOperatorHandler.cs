@@ -44,32 +44,46 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
 
       var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);
+      preparedKeySelector = HandlePotentialConstantExpression (preparedKeySelector);
+      preparedKeySelector = HandlePotentialSubStatementExpression (preparedKeySelector, sqlStatementBuilder, generator);
+
       var preparedElementSelector = stage.PrepareResultOperatorItemExpression (resultOperator.ElementSelector, context);
 
-      var preparedKeySelectorAsConstantExpression = preparedKeySelector as ConstantExpression;
-      if (preparedKeySelectorAsConstantExpression != null)
-      {
-        var subSqlStatement = new SqlStatementBuilder()
-                              {
-                                  DataInfo = new StreamedSingleValueInfo (preparedKeySelectorAsConstantExpression.Type, false),
-                                  SelectProjection = new NamedExpression ("value", preparedKeySelectorAsConstantExpression)
-                           }.GetSqlStatement ();
-        
-        preparedKeySelector = new SqlSubStatementExpression (subSqlStatement);
-      }
-
-      var preparedKeySelectorasSqlSubStatementExpression = preparedKeySelector as SqlSubStatementExpression;
-      if (preparedKeySelectorasSqlSubStatementExpression != null)
-      {
-        var sqlTable = preparedKeySelectorasSqlSubStatementExpression.CreateSqlTableForSubStatement (
-            preparedKeySelectorasSqlSubStatementExpression, JoinSemantics.Inner, generator.GetUniqueIdentifier ("t"));
-        sqlStatementBuilder.SqlTables.Add (sqlTable);
-        preparedKeySelector = new SqlTableReferenceExpression (sqlTable);
-      }
-      
       sqlStatementBuilder.GroupByExpression = preparedKeySelector;
       sqlStatementBuilder.SelectProjection = SqlGroupingSelectExpression.CreateWithNames (preparedKeySelector, preparedElementSelector);
     }
-    
+
+    private Expression HandlePotentialConstantExpression (Expression preparedKeySelector)
+    {
+      var constantExpression = preparedKeySelector as ConstantExpression;
+      if (constantExpression == null)
+        return preparedKeySelector;
+      
+      var subSqlStatement = new SqlStatementBuilder
+                            {
+                                DataInfo = new StreamedSingleValueInfo (constantExpression.Type, false),
+                                SelectProjection = new NamedExpression (null, constantExpression)
+                            }.GetSqlStatement();
+
+      return new SqlSubStatementExpression (subSqlStatement);
+    }
+
+    private Expression HandlePotentialSubStatementExpression (
+        Expression preparedKeySelector, 
+        SqlStatementBuilder sqlStatementBuilder, 
+        UniqueIdentifierGenerator generator)
+    {
+      var subStatementExpression = preparedKeySelector as SqlSubStatementExpression;
+      if (subStatementExpression == null)
+        return preparedKeySelector;
+
+      var sqlTable = subStatementExpression.CreateSqlTableForSubStatement (
+          subStatementExpression,
+          JoinSemantics.Inner,
+          generator.GetUniqueIdentifier ("t"));
+      sqlStatementBuilder.SqlTables.Add (sqlTable);
+
+      return new SqlTableReferenceExpression (sqlTable);
+    }
   }
 }
