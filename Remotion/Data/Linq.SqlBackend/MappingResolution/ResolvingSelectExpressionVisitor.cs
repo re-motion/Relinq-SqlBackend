@@ -68,15 +68,18 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       // Substatements returning a single value need to be moved to the FROM part of the SQL statement because they might return more than one column.
       // Since a SqlSubStatementExpression must return a single row anyway, we can do this.
-      // (However, errors that might arise because the statement does not return exactly one row, will not be found.)
+      // (However, errors that would have arisen because the statement does not return exactly one row will not be found.)
       if (newExpressionAsSqlSubStatementExpression != null
           && newExpressionAsSqlSubStatementExpression.SqlStatement.DataInfo is StreamedSingleValueInfo)
       {
-        var sqlTable = expression.CreateSqlTableForSubStatement (newExpressionAsSqlSubStatementExpression, JoinSemantics.Left, Generator.GetUniqueIdentifier ("q"));
+        var sqlTable = expression.CreateSqlTableForSubStatement (
+            newExpressionAsSqlSubStatementExpression, 
+            JoinSemantics.Left, 
+            Generator.GetUniqueIdentifier ("q"));
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
         Context.AddSqlTable (sqlTable, _sqlStatementBuilder);
-        return VisitExpression(sqlTableReferenceExpression);
+        return VisitExpression (sqlTableReferenceExpression);
       }
       return newExpression;
     }

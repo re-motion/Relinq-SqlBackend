@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     protected virtual Expression ResolveGroupByExpression (Expression groupByExpression)
     {
-      ArgumentUtility.CheckNotNull ("whereCondition", groupByExpression);
+      ArgumentUtility.CheckNotNull ("groupByExpression", groupByExpression);
 
       return _stage.ResolveGroupByExpression (groupByExpression, _context);
     }

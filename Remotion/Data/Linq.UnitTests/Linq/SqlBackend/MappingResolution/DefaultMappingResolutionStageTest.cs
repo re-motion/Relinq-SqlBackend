@@ -79,6 +79,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
     }
 
+    // TODO Review 3097: Add a test that proves the ResolvingSelectExpressionVisitor is used. For this, resolve a SqlSubStatementExpression with a StreamedSingleValueInfo
+
     [Test]
     public void ResolveWhereExpression ()
     {
