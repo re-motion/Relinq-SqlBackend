@@ -16,13 +16,19 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
   {
     public IDbConnection Open ()
     {
+      string connectionString = GetConnectionString();
+      var conn = new SqlConnection (connectionString);
+      conn.Open();
+      return conn;
+    }
+
+    public string GetConnectionString()
+    {
       ConnectionStringSettings connectionSettings = ConfigurationManager.ConnectionStrings["Northwind"];
       if(connectionSettings == null)
         throw new ArgumentNullException("Connection configuration not found");
 
-      var conn = new SqlConnection (connectionSettings.ConnectionString);
-      conn.Open();
-      return conn;
+      return connectionSettings.ConnectionString;
     }
   }
 }

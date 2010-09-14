@@ -36,6 +36,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     IQueryable<Shipper> Shippers { get;}
     IQueryable<Supplier> Suppliers { get;}
 
+    NorthwindDataContext Functions { get; }
+
     decimal? TotalProductUnitPriceByCategory (int categoryID);
     decimal? MinUnitPriceByCategory (int? nullable);
     IQueryable<ProductsUnderThisUnitPriceResult> ProductsUnderThisUnitPrice (decimal @decimal);

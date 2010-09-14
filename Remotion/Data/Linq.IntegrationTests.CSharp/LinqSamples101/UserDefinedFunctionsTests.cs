@@ -30,12 +30,10 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
-using System;
+
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
@@ -46,11 +44,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates using a scalar user-defined function in a projection.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.NotSupportedException : The method TotalProductUnitPriceByCategory' is not supported by this code generator")]
+    [Ignore ("TODO: RM-3312: The in-memory projection is incorrect if a NamedExpression contains another NamedExpression, entity expression, convert expression, etc.")]
     public void LinqToSqlUserDefined01 ()
     {
       var q = from c in DB.Categories
-              select new { c.CategoryID, TotalUnitPrice = DB.TotalProductUnitPriceByCategory (c.CategoryID) };
+              select new { c.CategoryID, TotalUnitPrice = DB.Functions.TotalProductUnitPriceByCategory (c.CategoryID) };
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
     }
@@ -59,11 +57,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates using a scalar user-defined function in a where clause.
     /// </summary>
     [Test]
-    [Ignore ("User-defined functions not supported when they are not called directly via the DataContext")]
     public void LinqToSqlUserDefined02 ()
     {
       var q = from p in DB.Products
-              where p.UnitPrice == DB.MinUnitPriceByCategory (p.CategoryID)
+              where p.UnitPrice == DB.Functions.MinUnitPriceByCategory (p.CategoryID)
               select p;
 
       TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
@@ -73,10 +70,10 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates selecting from a table-valued user-defined function.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException")]
+    [Ignore ("Not tested: User-defined function in first from clause. This cannot be tested because it will always cause Linq-to-Sql to execute the query.")]
     public void LinqToSqlUserDefined03 ()
     {
-      var q = from p in DB.ProductsUnderThisUnitPrice (10.25M)
+      var q = from p in DB.Functions.ProductsUnderThisUnitPrice (10.25M)
               where !(p.Discontinued ?? false)
               select p;
 
@@ -87,11 +84,11 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates joining to the results of a table-valued user-defined function.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq. System.NotImplementedException")]
+    [Ignore ("TODO: RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")]
     public void LinqToSqlUserDefined04 ()
     {
       var q = from c in DB.Categories
-              join p in DB.ProductsUnderThisUnitPrice (8.50M) on c.CategoryID equals p.CategoryID into prods
+              join p in DB.Functions.ProductsUnderThisUnitPrice (8.50M) on c.CategoryID equals p.CategoryID into prods
               from p in prods
               select new { c.CategoryID, c.CategoryName, p.ProductName, p.UnitPrice };
 

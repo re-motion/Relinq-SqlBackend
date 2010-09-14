@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Configuration;
 using System.Data.Linq;
 using System.Linq;
@@ -80,6 +81,11 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     public IQueryable<Supplier> Suppliers
     {
       get { return _dataContext.Suppliers;  }
+    }
+
+    public NorthwindDataContext Functions
+    {
+      get { return _dataContext; }
     }
 
     public decimal? TotalProductUnitPriceByCategory (int categoryID)

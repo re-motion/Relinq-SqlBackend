@@ -17,7 +17,8 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
   /// </summary>
   public class RelinqNorthwindDataProvider : INorthwindDataProvider
   {
-    private readonly IConnectionManager _manager;
+    private readonly NorthwindConnectionManager _manager;
+    private readonly NorthwindDataContext _context;
     private readonly MappingResolver _resolver;
     private readonly IQueryResultRetriever _retriever;
     
@@ -26,12 +27,12 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
     private readonly IQueryExecutor _executor;
-   
 
     public RelinqNorthwindDataProvider ()
     {
       _manager = new NorthwindConnectionManager ();
-      _resolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (NorthwindDataContext)));
+      _context = new NorthwindDataContext (_manager.GetConnectionString ());
+      _resolver = new MappingResolver (_context.Mapping);
       _retriever = new QueryResultRetriever (_manager, _resolver);
       
       _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
@@ -41,6 +42,9 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
           typeof (SqlMethods).GetMethod ("Like", new[] { typeof (string), typeof (string) }), 
           new LikeMethodCallTransformer());
       _methodCallTransformerRegistry.Register (DateDiffDayMethodCallTransformer.SupportedMethods, new DateDiffDayMethodCallTransformer());
+
+      foreach (var userDefinedFunction in _context.GetType ().GetMethods ().Where (mi => mi.IsDefined (typeof (FunctionAttribute), false)))
+        _methodCallTransformerRegistry.Register (userDefinedFunction, new UserDefinedFunctionTransformer ());
 
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
       _nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
@@ -101,6 +105,11 @@ namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
     public IQueryable<Supplier> Suppliers
     {
       get { return CreateQueryable<Supplier> (); }
+    }
+
+    public NorthwindDataContext Functions
+    {
+      get { return _context; }
     }
 
     public decimal? TotalProductUnitPriceByCategory (int categoryID)
