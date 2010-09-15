@@ -105,7 +105,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// </summary>
     [Test]
     [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
-        + "TargetInvocationException) is thrown")]
+        + "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlCount07 ()
     {
       var categories =
@@ -149,7 +149,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// </summary>
     [Test]
     [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
-        + "TargetInvocationException) is thrown")]
+        + "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlCount10 ()
     {
       var categories =
@@ -196,7 +196,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// </summary>
     [Test]
     [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
-        + "TargetInvocationException) is thrown")]
+        + "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlCount13 ()
     {
       var categories =
