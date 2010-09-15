@@ -30,8 +30,7 @@
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
- 
-using System;
+
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -45,7 +44,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT and WHERE to return a sequence of invoices where shipping city is London.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")] 
+    [Ignore ("TODO RM-3314: Support for entities without foreign keys")] 
     public void LinqToSqlView01 ()
     {
       var q =
@@ -61,7 +60,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT to query QuarterlyOrders.
     /// </summary>
     [Test]
-    [Ignore ("Bug or missing feature in Relinq - see MappingResolver.ResolveSimpleTableInfo(...): if sortedMembers don't contain any primary key => primaryColumn == null => null pointer thrown by SqlEntityDefinitionExpression")] 
+    [Ignore ("TODO RM-3314: Support for entities without foreign keys")] 
     public void LinqToSqlView02 ()
     {
       var q =
