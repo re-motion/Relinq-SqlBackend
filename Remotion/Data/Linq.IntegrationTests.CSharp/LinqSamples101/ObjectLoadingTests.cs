@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// if the data was not requested by the original query.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Lazy loading")]
+    [Explicit ("Not tested: Lazy loading")]
     public void LinqToSqlObject01 ()
     {
       //var custs =
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// the retrieved objects.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Load options")]
+    [Explicit ("Not tested: Load options")]
     public void LinqToSqlObject02 ()
     {
       //Northwind db2 = new Northwind (connString);
@@ -99,7 +99,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// objects can be filtered using Assoicate With when they are deferred loaded.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Load options")]
+    [Explicit ("Not tested: Load options")]
     public void LinqToSqlObject03 ()
     {
       //Northwind db2 = new Northwind (connString);
@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// objects can be ordered by using Assoicate With when they are eager loaded.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Load options")]
+    [Explicit ("Not tested: Load options")]
     public void LinqToSqlObject04 ()
     {
       //Northwind db2 = new Northwind (connString);
@@ -182,7 +182,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// if the data was not requested by the original query.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Lazy loading")]
+    [Explicit ("Not tested: Lazy loading")]
     public void LinqToSqlObject05 ()
     {
       //var emps = from e in db.Employees
@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// if the data type is link.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Lazy loading")]
+    [Explicit ("Not tested: Lazy loading")]
     public void LinqToSqlObject06 ()
     {
       //var emps = from c in db.Employees
@@ -220,7 +220,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// LoadProducts is being called to load products that are not discontinued in this category.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Load methods")]
+    [Explicit ("Not tested: Load methods")]
     public void LinqToSqlObject07 ()
     {
       //Northwind db2 = new Northwind (connString);

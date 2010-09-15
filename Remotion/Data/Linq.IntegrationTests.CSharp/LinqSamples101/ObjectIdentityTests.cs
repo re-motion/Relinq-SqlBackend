@@ -46,7 +46,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// receive a reference to the same object in memory each time.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Identity")]
+    [Explicit ("Not tested: Identity")]
     public void LinqToSqlObjectIdentity01 ()
     {
       Customer cust1 = DB.Customers.First (c => c.CustomerID == "BONAP");
@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// database, you will receive a reference to the same object in memory each time.")]
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Identity")]
+    [Explicit ("Not tested: Identity")]
     public void LinqToSqlObjectIdentity02 ()
     {
       Customer cust1 = DB.Customers.First (c => c.CustomerID == "BONAP");

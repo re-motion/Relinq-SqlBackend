@@ -70,7 +70,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates selecting from a table-valued user-defined function.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: User-defined function in first from clause. This cannot be tested because it will always cause Linq-to-Sql to execute the query.")]
+    [Explicit ("Not tested: User-defined function in first from clause. This cannot be tested because it will always cause Linq-to-Sql to execute the query.")]
     public void LinqToSqlUserDefined03 ()
     {
       var q = from p in DB.Functions.ProductsUnderThisUnitPrice (10.25M)

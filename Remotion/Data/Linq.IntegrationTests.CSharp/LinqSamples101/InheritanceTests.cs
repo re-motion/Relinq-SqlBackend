@@ -109,7 +109,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates that an unknown contact type will be automatically converted to the default contact type.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Submit")]
+    [Explicit ("Not tested: Submit")]
     public void LinqToSqlInheritance06 ()
     {
       //Console.WriteLine("***** INSERT Unknown Contact using normal mapping *****");
@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates how to create a new shipper contact.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Submit")]
+    [Explicit ("Not tested: Submit")]
     public void LinqToSqlInheritance07 ()
     {
       //Console.WriteLine("****** Before Insert Record ******");

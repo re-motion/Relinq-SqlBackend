@@ -40,7 +40,7 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  [Ignore ("Not tested: Stored procedures")]
+  [Explicit ("Not tested: Stored procedures")]
   public class StoredProceduresTests:TestBase
   {
     /// <summary>

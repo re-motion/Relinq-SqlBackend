@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// newly assigned ContactID from the database.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Submit")]
+    [Explicit ("Not tested: Submit")]
     public void LinqToSqlAdvanced05 ()
     {
       //Console.WriteLine ("ContactID is marked as an identity column");

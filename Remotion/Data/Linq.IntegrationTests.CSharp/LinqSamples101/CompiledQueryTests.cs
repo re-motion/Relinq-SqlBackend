@@ -41,7 +41,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample create a compiled query and then use it to retrieve customers of the input city
     /// </summary>
     [Test]
-    [Ignore ("Not tested: Compiled queries")]
+    [Explicit ("Not tested: Compiled queries")]
     public void LinqToSqlCompileQuery01_1 ()
     {
       //Create compiled query

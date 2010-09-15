@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates how to create a data context that uses an external XML mapping source.
     /// </summary>
     [Test]
-    [Ignore ("Not tested: External mapping")]
+    [Explicit ("Not tested: External mapping")]
     public void LinqToSqlExternal01 ()
     {
       ////load the mapping source
