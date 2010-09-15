@@ -293,5 +293,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
     }
+
+    [Test]
+    [Ignore ("TODO 3207")]
+    public void InNewExpression ()
+    {
+      CheckQuery (
+          from c in Restaurants select new { Substituted = from c2 in c.Cooks select c.ID },
+          "?");
+    }
   }
 }
