@@ -162,9 +162,22 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var right = ApplySqlExpressionContext (expression.Right, childContext, _stage, _context);
 
       if (left != expression.Left || right != expression.Right)
-        expression = Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
+        expression = MakeBinaryAndConvert(expression, left, right);
 
       return expression;
+    }
+
+    private BinaryExpression MakeBinaryAndConvert (BinaryExpression expression, Expression left, Expression right)
+    {
+      if (left.Type != right.Type)
+      {
+        if (left.Type.IsAssignableFrom (right.Type))
+          right = Expression.Convert (right, left.Type);
+        else if (right.Type.IsAssignableFrom (left.Type))
+          left = Expression.Convert (left, right.Type);
+      }
+
+      return Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)

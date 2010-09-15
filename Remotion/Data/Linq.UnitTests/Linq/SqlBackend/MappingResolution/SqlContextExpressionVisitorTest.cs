@@ -494,6 +494,45 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitBinaryExpression_NonBoolBinaryExpression_OperandsGetSingleValueSemantics_LeftOperandLiftedToTypeOfRight ()
+    {
+      var left = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t0", typeof (int));
+      var right = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t0", typeof (int?));
+      var binary = BinaryExpression.Equal (left, right);
+
+      var result = _predicateRequiredVisitor.VisitBinaryExpression (binary);
+
+      var expectedExpression = BinaryExpression.Equal (Expression.Convert (left.PrimaryKeyColumn, typeof (int?)), right.PrimaryKeyColumn);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NonBoolBinaryExpression_OperandsGetSingleValueSemantics_RightOperandLiftedToTypeOfLeft ()
+    {
+      var left = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t0", typeof (int?));
+      var right = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t0", typeof (int));
+      var binary = BinaryExpression.Equal (left, right);
+
+      var result = _predicateRequiredVisitor.VisitBinaryExpression (binary);
+
+      var expectedExpression = BinaryExpression.Equal (left.PrimaryKeyColumn, Expression.Convert (right.PrimaryKeyColumn, typeof (int?)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void VisitBinaryExpression_NonBoolBinaryExpression_OperandsGetSingleValueSemantics_NoLiftingIfNotRequired()
+    {
+      var left = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t0", typeof (int?));
+      var right = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t0", typeof (int?));
+      var binary = BinaryExpression.Equal (left, right);
+
+      var result = _predicateRequiredVisitor.VisitBinaryExpression (binary);
+
+      var expectedExpression = BinaryExpression.Equal (left.PrimaryKeyColumn, right.PrimaryKeyColumn);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
     public void VisitUnaryExpression_UnaryBoolExpression_OperandConvertedToPredicate ()
     {
       var unaryExpression = Expression.Not (Expression.Constant (true));

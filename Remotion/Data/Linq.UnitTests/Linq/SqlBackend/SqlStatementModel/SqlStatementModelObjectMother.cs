@@ -199,12 +199,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name)
     {
-      return CreateSqlEntityDefinitionExpression(type, name, "t");
+      return CreateSqlEntityDefinitionExpression(type, name, "t", typeof (int));
     }
 
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias)
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias, Type primaryKeyType)
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "ID", true);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (primaryKeyType, owningTableAlias, "ID", true);
       return new SqlEntityDefinitionExpression (
           type,
           owningTableAlias, 

@@ -202,7 +202,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3198")]
     public void EntityAccess_WithNullableForeignKey ()
     {
       var myCompany = new Company { ID = 10 };
