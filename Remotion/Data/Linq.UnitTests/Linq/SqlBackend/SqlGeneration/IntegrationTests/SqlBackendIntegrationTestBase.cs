@@ -35,6 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     private IQueryable<Cook> _cooks;
     private IQueryable<Kitchen> _kitchens;
     private IQueryable<Restaurant> _restaurants;
+    private IQueryable<Company> _companies;
     private UniqueIdentifierGenerator _generator;
     private IQueryable<Chef> _chefs;
 
@@ -53,6 +54,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       get { return _restaurants; }
     }
 
+    public IQueryable<Company> Companies
+    {
+      get { return _companies; }
+    }
+
     public IQueryable<Chef> Chefs
     {
       get { return _chefs; }
@@ -65,6 +71,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       _kitchens = ExpressionHelper.CreateKitchenQueryable();
       _restaurants = ExpressionHelper.CreateRestaurantQueryable();
       _chefs = ExpressionHelper.CreateChefQueryable();
+      _companies = ExpressionHelper.CreateCompanyQueryable ();
 
       _generator = new UniqueIdentifierGenerator();
     }

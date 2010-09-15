@@ -200,5 +200,46 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
             + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
     }
+
+    [Test]
+    [Ignore ("TODO 3198")]
+    public void EntityAccess_WithNullableForeignKey ()
+    {
+      var myCompany = new Company { ID = 10 };
+      CheckQuery (
+          from r in Restaurants where r.CompanyIfAny == myCompany select r.ID,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [RestaurantTable] AS [t0] "
+          + "WHERE ([t0].[CompanyID] = @1)",
+          new CommandParameter ("@1", 10));
+    }
+
+
+    [Test]
+    [Ignore ("TODO 3198")]
+    public void EntityAccess_WithNullableForeignKey_Collection ()
+    {
+      CheckQuery (
+          from c in Companies
+          from r in c.AllRestaurants
+          select r.ID,
+          "SELECT [t1].[ID] AS [value] "
+          + "FROM [CompanyTable] AS [t0] "
+          + "CROSS JOIN [RestaurantTable] AS [t1] "
+          + "WHERE ([t0].[ID] = [t1].[CompanyID])");
+    }
+
+    [Test]
+    [Ignore ("TODO 3315")]
+    public void EntityAccess_NoLeftJoin_OnIDAccess ()
+    {
+      CheckQuery (
+          from k in Kitchens where k.Restaurant.ID == 10 select k.Restaurant.ID,
+          "SELECT [t0].[RestaurantID] AS [value] "
+          + "FROM [KitchenTable] AS [t0]  "
+          + "WHERE ([t0].[RestaurantID] = @1)",
+          new CommandParameter ("@1", 10));
+    }
+
   }
 }

@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
         case "Cook":
         case "Kitchen":
         case "Restaurant":
-        case "Compyany":
+        case "Company":
           return CreateResolvedTableInfo (tableInfo.ItemType, generator);
         case "Chef":
           return new ResolvedSimpleTableInfo (tableInfo.ItemType, "dbo."+tableInfo.ItemType.Name + "Table", generator.GetUniqueIdentifier ("t"));
@@ -53,14 +53,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
                 "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "SubstitutedID");
+                typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "SubstitutedID", typeof (int), false);
           case "Assistants":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
                 "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "AssistedID");
+                typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "AssistedID", typeof (int), false);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -70,15 +68,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "Cook":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
-                "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "KitchenID");
+                "ID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "KitchenID", typeof (int), false);
           case "Restaurant":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
-                "RestaurantID",
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "ID");
+                "RestaurantID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "ID", typeof (int), false);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Restaurant))
@@ -88,15 +82,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "SubKitchen":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
-                "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "RestaurantID");
+                "ID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "RestaurantID", typeof (int), false);
           case "Cooks":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
+                "ID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "RestaurantID", typeof (int), false);
+          case "CompanyIfAny":
+            return CreateResolvedJoinInfo (
+                joinInfo.OriginatingEntity,
+                "CompanyID",
+                typeof (int?), 
+                false, 
+                CreateResolvedTableInfo (joinInfo.ItemType, generator), 
+                "ID", 
+                typeof (int), 
+                true);
+
+        }
+      }
+      else if (joinInfo.MemberInfo.DeclaringType == typeof (Company))
+      {
+        switch (joinInfo.MemberInfo.Name)
+        {
+          case "AllRestaurants":
+            return CreateResolvedJoinInfo (
+                joinInfo.OriginatingEntity,
                 "ID",
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "RestaurantID");
+                typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "CompanyID", typeof (int?), false);
         }
       }
 
@@ -174,6 +186,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
             });
       }
+      else if (type == typeof (Company))
+      {
+        var primaryKeyColumn = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            primaryKeyColumn,
+            new[]
+            {
+                primaryKeyColumn
+            });
+      }
       throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
     }
 
@@ -196,7 +220,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Substitution":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-          
         }
       }
       else if (memberInfo.DeclaringType == typeof (ISpecificCook))
@@ -236,7 +259,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
           case "ID":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
           case "SubKitchen":
+          case "CompanyIfAny":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+        }
+      }
+      else if (memberInfo.DeclaringType == typeof (Company))
+      {
+        switch (memberInfo.Name)
+        {
+          case "ID":
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
         }
       }
 
@@ -281,13 +313,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
       return new ResolvedSimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier ("t"));
     }
 
-    private ResolvedJoinInfo CreateResolvedJoinInfo (
-        SqlEntityExpression originatingEntity, string leftColumnName, ResolvedSimpleTableInfo joinedTableInfo, string rightColumnName)
+    private ResolvedJoinInfo CreateResolvedJoinInfo (SqlEntityExpression originatingEntity, string leftColumnName, Type leftColumnType, bool leftColumnIsPrimaryKey, IResolvedTableInfo joinedTableInfo, string rightColumnName, Type rightColumnType, bool rightColumnIsPrimaryKey)
     {
-      var primaryColumn = originatingEntity.GetColumn (typeof (int), leftColumnName, true);
-      var foreignColumn = CreateColumn (typeof (int), joinedTableInfo.TableAlias, rightColumnName, false);
+      var leftColumn = originatingEntity.GetColumn (leftColumnType, leftColumnName, leftColumnIsPrimaryKey);
+      var rightColumn = CreateColumn (rightColumnType, joinedTableInfo.TableAlias, rightColumnName, rightColumnIsPrimaryKey);
 
-      return new ResolvedJoinInfo (joinedTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
     }
   }
 }
