@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT and WHERE to return a sequence of invoices where shipping city is London.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3314: Support for entities without foreign keys")] 
+    [Ignore ("RM-3314: Support for entities without foreign keys")] 
     public void LinqToSqlView01 ()
     {
       var q =
@@ -60,7 +60,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT to query QuarterlyOrders.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3314: Support for entities without foreign keys")] 
+    [Ignore ("RM-3314: Support for entities without foreign keys")] 
     public void LinqToSqlView02 ()
     {
       var q =

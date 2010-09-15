@@ -85,7 +85,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the IndexOf method to find the first instance of a space in each Customer's contact name.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")]
+    [Ignore ("RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")]
     public void LinqToSqlString04 ()
     {
       var q =
@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// with leading and trailing spaces removed.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3309: Support for additional string manipulation routines")]
+    [Ignore ("RM-3309: Support for additional string manipulation routines")]
     public void LinqToSqlString11 ()
     {
       var q =
@@ -196,7 +196,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// in the fifth position, inserting a : after the ).
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3309: Support for additional string manipulation routines")]
+    [Ignore ("RM-3309: Support for additional string manipulation routines")]
     public void LinqToSqlString12 ()
     {
       var q =
@@ -260,7 +260,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Year property to find Orders placed in 1997.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
+    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlString16 ()
     {
       var q =
@@ -275,7 +275,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Month property to find Orders placed in December.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
+    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlString17 ()
     {
       var q =
@@ -290,7 +290,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Day property to find Orders placed on the 31st day of the month.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
+    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlString18 ()
     {
       var q =

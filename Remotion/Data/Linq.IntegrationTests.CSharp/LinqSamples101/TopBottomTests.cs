@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Take to select the first 5 Employees hired.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3310: Change TakeResultOperatorHandler to use literals for TOP count")]
+    [Ignore ("RM-3310: Change TakeResultOperatorHandler to use literals for TOP count")]
     public void LinqToSqlTop01 ()
     {
       var q = (

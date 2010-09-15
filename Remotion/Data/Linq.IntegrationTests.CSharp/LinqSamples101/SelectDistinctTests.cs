@@ -99,7 +99,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT and a conditional statement to return a sequence of product name and product availability.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3269: Invalid in-memory projection generated when a binary (or other) expression contains a conversion")]
+    [Ignore ("RM-3269: Invalid in-memory projection generated when a binary (or other) expression contains a conversion")]
     public void LinqToSqlSelect05 ()
     {
       var q =
@@ -113,7 +113,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT and a known type to return a sequence of employees' names.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3306: Support for MemberInitExpressions")]
+    [Ignore ("RM-3306: Support for MemberInitExpressions")]
     public void LinqToSqlSelect06 ()
     {
       var q =
@@ -160,7 +160,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// a subsequence of the items in the order where there is a discount, and the money saved if shipping is not included.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
             + "TargetInvocationException) is thrown")]
     public void LinqToSqlSelect09 ()
     {
@@ -215,7 +215,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a Local Method Call to 'PhoneNumberConverter' to convert Phone number to an international format.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3307: Support for local method calls")]
+    [Ignore ("RM-3307: Support for local method calls")]
     public void LinqToSqlLocalMethodCall01 ()
     {
       var q = from c in DB.Customers
@@ -228,8 +228,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// <summary>
     /// This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
     /// </summary>
-    [Test,
-    Ignore]
+    [Test]
+    [Ignore ("RM-3307: Support for local method calls")]
     public void LinqToSqlLocalMethodCall02 ()
     {
       var doc = new XDocument (

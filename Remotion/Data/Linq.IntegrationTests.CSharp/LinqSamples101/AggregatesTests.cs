@@ -104,7 +104,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Min to find the Products that have the lowest unit price in each category.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
         + "TargetInvocationException) is thrown")]
     public void LinqToSqlCount07 ()
     {
@@ -148,7 +148,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Max to find the Products that have the highest unit price in each category.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
         + "TargetInvocationException) is thrown")]
     public void LinqToSqlCount10 ()
     {
@@ -195,7 +195,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Average to find the Products that have unit price higher than the average unit price of the category for each category.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
         + "TargetInvocationException) is thrown")]
     public void LinqToSqlCount13 ()
     {

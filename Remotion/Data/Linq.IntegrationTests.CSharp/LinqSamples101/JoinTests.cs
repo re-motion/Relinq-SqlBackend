@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the from clause to filter for employees in Seattle, and also list their territories.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3110: Support complex columns for entities")]
+    [Ignore ("RM-3110: Support complex columns for entities")]
     public void LinqToSqlJoin03 ()
     {
       var q =
@@ -89,7 +89,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the select clause to filter for pairs of employees where one employee reports to the other and where both employees are from the same City.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3798: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
+    [Ignore ("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlJoin04 ()
     {
       var q =
@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3798: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
+    [Ignore ("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlJoin07 ()
     {
       var q =
@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows a join with a composite key.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3110: Support complex columns for entities")]
+    [Ignore ("RM-3110: Support complex columns for entities")]
     public void LinqToSqlJoin09 ()
     {
       var q =

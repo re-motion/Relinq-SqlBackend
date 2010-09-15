@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates using a scalar user-defined function in a projection.
     /// </summary>
     [Test]
-    [Ignore ("TODO: RM-3312: The in-memory projection is incorrect if a NamedExpression contains another NamedExpression, entity expression, convert expression, etc.")]
+    [Ignore ("RM-3312: The in-memory projection is incorrect if a NamedExpression contains another NamedExpression, entity expression, convert expression, etc.")]
     public void LinqToSqlUserDefined01 ()
     {
       var q = from c in DB.Categories
@@ -84,7 +84,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample demonstrates joining to the results of a table-valued user-defined function.
     /// </summary>
     [Test]
-    [Ignore ("TODO: RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")]
+    [Ignore ("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")]
     public void LinqToSqlUserDefined04 ()
     {
       var q = from c in DB.Categories

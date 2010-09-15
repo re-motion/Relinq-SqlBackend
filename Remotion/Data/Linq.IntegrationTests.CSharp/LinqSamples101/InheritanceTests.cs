@@ -83,7 +83,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses AS to return FullContact or null.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3267: Support for TypeAs expressions")]
+    [Ignore ("RM-3267: Support for TypeAs expressions")]
     public void LinqToSqlInheritance04 ()
     {
       var cons = from c in DB.Contacts

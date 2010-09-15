@@ -84,7 +84,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// unit price in each category, and sorts the group by category id.
     /// </summary>
     [Test]
-    [Ignore ("TODO RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
+    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
         + "TargetInvocationException) is thrown")]
     public void LinqToSqlOrderBy06()
     {
