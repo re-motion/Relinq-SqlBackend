@@ -32,7 +32,6 @@
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
  
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -40,7 +39,8 @@ using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
-  public class WhereTests:TestBase
+  [TestFixture]
+  public class WhereTests : TestBase
   {
     /// <summary>
     /// This sample uses WHERE to filter for Customers in London.
@@ -59,8 +59,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// <summary>
     /// This sample uses WHERE to filter for Employees hired during or after 1994.
     /// </summary>
-    [Test,
-    Ignore("Relinq doesn't know how to handle byte arrays")]
+    [Test]
     public void LinqToSqlWhere02 ()
     {
       var q =

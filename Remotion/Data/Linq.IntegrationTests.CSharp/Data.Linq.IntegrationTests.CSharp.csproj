@@ -224,6 +224,14 @@
     <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance03.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance04.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere08.result" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Linq.IntegrationTests\TestDomain\Northwind\NORTHWND.MDF">
