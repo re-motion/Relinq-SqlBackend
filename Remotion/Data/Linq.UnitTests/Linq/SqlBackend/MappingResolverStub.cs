@@ -289,6 +289,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
     {
       if (constantExpression.Value is Cook)
         return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, ((Cook) constantExpression.Value).ID);
+      else if (constantExpression.Value is Company)
+        return new SqlEntityConstantExpression (typeof (Company), constantExpression.Value, ((Company) constantExpression.Value).ID);
       else
         return constantExpression;
     }
