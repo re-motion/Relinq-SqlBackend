@@ -433,22 +433,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitJoinConditionExpression ()
-    {
-      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var primaryColumn = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
-      var foreignColumn = new SqlColumnDefinitionExpression (typeof (Cook), "a", "FK", false);
-      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, primaryColumn, foreignColumn);
-      var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-      var joinConditionExpression = new JoinConditionExpression (sqlTable);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          joinConditionExpression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("([c].[ID] = [a].[FK])"));
-    }
-
-    [Test]
     public void VisitSqlBinaryOperatorExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();

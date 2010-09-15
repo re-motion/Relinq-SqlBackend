@@ -600,6 +600,64 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((BinaryExpression) result).Method, Is.Null);
     }
 
+    [Test]
+    public void VisitJoinConditionExpression ()
+    {
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var leftKey = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
+      var rightKey = new SqlColumnDefinitionExpression (typeof (Cook), "a", "FK", false);
+      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, leftKey, rightKey);
+      var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
+      var joinConditionExpression = new JoinConditionExpression (sqlTable);
+
+      var result = 
+          ResolvingExpressionVisitor.ResolveExpression (joinConditionExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+
+      var expectedExpression = Expression.Equal (joinInfo.LeftKey, joinInfo.RightKey);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void VisitJoinConditionExpression_AndVisitsResultBinary ()
+    {
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+
+      var leftArgument = new SqlLiteralExpression (0);
+      var rightArgument = new SqlLiteralExpression (1);
+      var leftKey = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), leftArgument);
+      var rightKey = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), rightArgument);
+      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, leftKey, rightKey);
+
+      var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
+      var joinConditionExpression = new JoinConditionExpression (sqlTable);
+
+      var result =
+          ResolvingExpressionVisitor.ResolveExpression (joinConditionExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      var expectedExpression = Expression.Equal (leftArgument, rightArgument);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void VisitJoinConditionExpression_LiftsOperandsIfNecessary ()
+    {
+      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
+      var leftKey = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
+      var rightKey = new SqlColumnDefinitionExpression (typeof (int?), "a", "FK", false);
+      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, leftKey, rightKey);
+
+      var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
+      var joinConditionExpression = new JoinConditionExpression (sqlTable);
+
+      var result =
+          ResolvingExpressionVisitor.ResolveExpression (joinConditionExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
+
+      var expectedExpression = Expression.Equal (Expression.Convert (leftKey, typeof (int?)), rightKey);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
     private SqlStatement CreateSimplifiableResolvedSqlStatement ()
     {
       var dataInfo = new StreamedScalarValueInfo (typeof (int));

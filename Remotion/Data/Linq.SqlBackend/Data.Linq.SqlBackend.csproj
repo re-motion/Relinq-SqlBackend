@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MappingResolution\ConversionUtility.cs" />
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\GroupAggregateSimplifier.cs" />
     <Compile Include="MappingResolution\IMappingResolutionContext.cs" />

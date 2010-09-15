@@ -213,9 +213,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 10));
     }
 
-
     [Test]
-    [Ignore ("TODO 3198")]
     public void EntityAccess_WithNullableForeignKey_Collection ()
     {
       CheckQuery (

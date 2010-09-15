@@ -37,7 +37,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
         IResolvedSqlExpressionVisitor,
         ISqlSpecificExpressionVisitor,
         ISqlSubStatementVisitor,
-        IJoinConditionExpressionVisitor,
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
@@ -104,16 +103,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       AppendColumn (expression.ColumnName, expression.OwningTableAlias, referencedEntityName);
 
       return expression;
-    }
-
-    public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var whereExpression = Expression.Equal (
-          expression.JoinedTable.JoinInfo.GetResolvedLeftJoinInfo().LeftKey,
-          expression.JoinedTable.JoinInfo.GetResolvedLeftJoinInfo().RightKey);
-      return VisitExpression (whereExpression);
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)

@@ -31,7 +31,11 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
   /// <see cref="ResolvingExpressionVisitor"/> analyzes a prepared <see cref="Expression"/> for things that need to be analyzed by the 
   /// <see cref="IMappingResolver"/> and resolves member accesses and similar structures. Substatements are recursively resolved.
   /// </summary>
-  public class ResolvingExpressionVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, ISqlSubStatementVisitor
+  public class ResolvingExpressionVisitor : 
+      ExpressionTreeVisitor, 
+      IUnresolvedSqlExpressionVisitor, 
+      ISqlSubStatementVisitor, 
+      IJoinConditionExpressionVisitor
   {
     private readonly IMappingResolver _resolver;
     private readonly IMappingResolutionStage _stage;
@@ -158,6 +162,20 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       var resolvedSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
 
       return GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, expression.SqlStatement.SelectProjection, _stage, _context);
+    }
+
+    public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var resolvedLeftJoinInfo = expression.JoinedTable.JoinInfo.GetResolvedLeftJoinInfo();
+      var whereExpression = ConversionUtility.MakeBinaryWithOperandConversion (
+          ExpressionType.Equal,
+          resolvedLeftJoinInfo.LeftKey,
+          resolvedLeftJoinInfo.RightKey,
+          false,
+          null);
+      return VisitExpression (whereExpression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
