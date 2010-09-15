@@ -100,7 +100,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         );
     }
 
-
     [Test]
     public void EndsWith ()
     {
@@ -337,6 +336,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (from c in Cooks where Equals (c, null) select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] IS NULL)");
+
+      CheckQuery (from c in Cooks where c.ID.Equals (10) select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+        new CommandParameter ("@1", 10));
+    }
+
+    [Test]
+    [Ignore ("TODO 3316")]
+    public void Equals_WithNonMatchingTypes ()
+    {
+      CheckQuery (from c in Cooks where c.ID.Equals ((int?) 10) select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+        new CommandParameter ("@1", (int?) 10));
+
+      CheckQuery (from c in Cooks where c.ID.Equals ("10") select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+        new CommandParameter ("@1", "10"));
+
+      CheckQuery (from c in Cooks where Equals (c.ID, "10") select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+        new CommandParameter ("@1", "10"));
+
+      CheckQuery (from c in Cooks where Equals (c.ID, (int?)10) select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
+        new CommandParameter ("@1", (int?) 10));
     }
     
   }
