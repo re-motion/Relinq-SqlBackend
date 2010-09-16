@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -126,6 +127,30 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    public void VisitQueryModel_AdjustsDataInfo_IfRequired ()
+    {
+      _visitorPartialMock.Stub (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel));
+      _visitorPartialMock
+          .Stub (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
+          .WhenCalled (mi =>
+          {
+            _visitorPartialMock.SqlStatementBuilder.SelectProjection = Expression.Constant (0);
+            _visitorPartialMock.SqlStatementBuilder.DataInfo =
+                new StreamedSequenceInfo (typeof (IEnumerable<Cook>), Expression.Constant (null, typeof (Cook)));
+          });
+      _visitorPartialMock.Replay ();
+
+      _queryModel.ResultTypeOverride = typeof (List<>);
+
+      _visitorPartialMock.VisitQueryModel (_queryModel);
+
+      _visitorPartialMock.VerifyAllExpectations ();
+
+      Assert.That (_visitorPartialMock.SqlStatementBuilder.DataInfo, Is.Not.Null);
+      Assert.That (_visitorPartialMock.SqlStatementBuilder.DataInfo.DataType, Is.SameAs (typeof (List<Cook>)));
+    }
+
+    [Test]
     public void VisitQueryModel_ConstantExpression_Collection ()
     {
       var constantExpression = Expression.Constant (new[] { "t1", "t2" });
@@ -142,6 +167,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo();
       Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
+    }
+
+    [Test]
+    public void VisitQueryModel_ConstantExpression_Collection_AdjustsDataInfo_IfRequired ()
+    {
+      var constantExpression = Expression.Constant (new[] { "t1", "t2" });
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+      _queryModel.MainFromClause.ItemType = typeof (string);
+      _queryModel.SelectClause.Selector = new QuerySourceReferenceExpression (_queryModel.MainFromClause);
+
+      _queryModel.ResultTypeOverride = typeof (string[]);
+
+      _visitor.VisitQueryModel (_queryModel);
+
+      Assert.That (_visitor.SqlStatementBuilder.DataInfo.DataType, Is.SameAs (typeof (string[])));
     }
 
     [Test]

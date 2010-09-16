@@ -295,7 +295,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3207")]
+    [Ignore ("TODO 3265")]
     public void InNewExpression ()
     {
       CheckQuery (

@@ -114,6 +114,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       // The name is required to be able to access the result from the executed SQL afterwards. The resolution stage will consolidate names around
       // NewExpressions, entities, etc.
       SqlStatementBuilder.SelectProjection = new NamedExpression (null, SqlStatementBuilder.SelectProjection);
+
+      // We get the DataInfo incrementally when we handle the SelectClause and ResultOperators, so we need to manually adjust the data type if 
+      // required. (We can't simply call queryModel.GetOutputDataInfo() because some of the result operator handlers might have changed the 
+      // SqlStatementBuilder.DataInfo.)
+      if (queryModel.ResultTypeOverride != null)
+        SqlStatementBuilder.DataInfo = SqlStatementBuilder.DataInfo.AdjustDataType (queryModel.ResultTypeOverride);
     }
 
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
