@@ -40,8 +40,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      // TODO Review 3091: Add argument check ensuring that sqlStatement has a StreamedSingleValueInfo or StreamedScalarValueInfo. Test.
-
       _sqlStatement = sqlStatement;
     }
 
@@ -79,7 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       // TODO Review 3091: Argument checks!
 
-      // TODO Review 3091: The join semantics should be calculated. If the dataInfo is a StreamedSingleValueInfo with ReturnDefaultWhenEmpty true, it should be Left. Otherwise (ReturnDefaultWhenEmpty false or StreamedScalarValueInfo), it should be Inner. The reason for this is that we can assume that scalar queries and Single/First queries should always return values.
+      // TODO Review 3091: The join semantics should be calculated. If the dataInfo is a StreamedSingleValueInfo with ReturnDefaultWhenEmpty true, it should be Left. Otherwise (ReturnDefaultWhenEmpty false, other value infos), it should be Inner. The reason for this is that we can assume that scalar queries and Single/First queries (without OrDefault) should always return values.
 
       var sqlStatement = ConvertToSequenceStatement(subStatementExpression.SqlStatement);
       var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, sqlStatement);
@@ -88,7 +86,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     private SqlStatement ConvertToSequenceStatement (SqlStatement sqlStatement) // TODO Review 3091: Remove this parameter when the parameter above is removed. It's no longer needed (it's always this.SqlStatement).
     {
-      // TODO Review 3091: Add assertion that sqlStatement does not have a StreamedSequenceInfo.
+      // TODO Review 3091: Check whether the sqlStatement already has sequence semantics. If so, nothing needs to be done here.
 
       var newDataInfo = new StreamedSequenceInfo (
           typeof (IEnumerable<>).MakeGenericType (sqlStatement.DataInfo.DataType),
