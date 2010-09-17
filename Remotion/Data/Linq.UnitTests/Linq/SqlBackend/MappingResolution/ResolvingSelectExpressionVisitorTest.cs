@@ -15,16 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
@@ -36,75 +35,54 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   {
     private IMappingResolutionStage _stageMock;
     private IMappingResolver _resolverMock;
-    private IMappingResolutionContext _mappingResolutionContextMock;
+    private IMappingResolutionContext _mappingResolutionContext;
     private UniqueIdentifierGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage> ();
-      _resolverMock = MockRepository.GenerateMock<IMappingResolver> ();
-      // TODO Review 3097: Use an ordinary context for this, not a mock.
-      _mappingResolutionContextMock = MockRepository.GenerateMock<IMappingResolutionContext>();
+      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage>();
+      _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
+      _mappingResolutionContext = new MappingResolutionContext();
       _generator = new UniqueIdentifierGenerator();
     }
 
     [Test]
     public void VisitSqlSubStatementExpression_LeavesSqlSubStatementExpression_ForStreamedSequenceInfo ()
     {
-      // TODO Review 3097: Use SqlStatementObjectMother to create this
-      var sqlStatement = new SqlStatement (
-          new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ())),
-          Expression.Constant ("select"),
-          new SqlTable[0],
-          null,
-          null,
-          new Ordering[0],
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (Expression.Constant (new Cook()));
       var expression = new SqlSubStatementExpression (sqlStatement);
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContextMock))
+          .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
           .Return (sqlStatement);
       _stageMock.Replay();
 
       var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      var result = ResolvingSelectExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContextMock, _generator, sqlStatementBuilder);
+      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
+          expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.TypeOf(typeof(SqlSubStatementExpression)));
+      Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
     }
 
     [Test]
     public void VisitSqlSubStatementExpression_LeavesSqlSubStatementExpression_ForStreamedScalarInfo ()
     {
-      // TODO Review 3097: Use SqlStatementObjectMother to create this. (Add a CreateSqlStatement_Scalar method.)
-      var sqlStatement = new SqlStatement (
-         new StreamedScalarValueInfo (typeof (int)),
-         Expression.Constant (1),
-         new SqlTable[0],
-         null,
-         null,
-         new Ordering[0],
-         null,
-         false,
-         null,
-         null);
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Scalar();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContextMock))
+          .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
           .Return (sqlStatement);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      var result = ResolvingSelectExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContextMock, _generator, sqlStatementBuilder);
+      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
+          expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
     }
@@ -112,52 +90,50 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlSubStatementExpression_ConvertsToSqlTable_ForStreamedSingleValueInfo ()
     {
-      // TODO Review 3097: Use SqlStatementObjectMother to create this. (CreateSqlStatement_Single)
-      var sqlStatement = new SqlStatement (
-          new StreamedSingleValueInfo (typeof (int), false),
-          Expression.Constant (1),
-          new[] { SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)) },
-          null,
-          null,
-          new Ordering[0],
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Single();
+      var fakeResolvedSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Single();
       var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
       var expression = new SqlSubStatementExpression (sqlStatement);
 
       var resolvedReference = Expression.Constant ("fake");
-
-      _mappingResolutionContextMock
-          .Expect (mock => mock.AddSqlTable (Arg<SqlTable>.Is.Anything, Arg<SqlStatementBuilder>.Is.Anything));
-      _mappingResolutionContextMock.Replay ();
+      SqlTable sqlTable = null;
 
       _stageMock
-          .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContextMock))
-          .Return (sqlStatement); // TODO Review 3097: Return a separate "resolvedSqlStatement" and make sure that resolved statement is used below
+          .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
+          .Return (fakeResolvedSqlStatement);
       _stageMock
-          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_mappingResolutionContextMock))) // TODO Review 3097: Use WhenCalled to ensure that the reference is to the newly added table which contains the "resolvedSqlStatement": var expectedStatement = new SqlStatementBuilder (resolvedSqlStatement) { DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<int>), resolvedSqlStatement.SelectProjection) }.GetSqlStatement(); Assert.That (..., Is.EqualTo (expectedStatement));
+          .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
+          .WhenCalled (
+              mi =>
+              {
+                var expectedStatement =
+                    new SqlStatementBuilder (fakeResolvedSqlStatement)
+                    { DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<int>), fakeResolvedSqlStatement.SelectProjection) }.GetSqlStatement();
+                sqlTable = (SqlTable) ((SqlTableReferenceExpression) mi.Arguments[0]).SqlTable;
+                Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (expectedStatement));
+              })
           .Return (resolvedReference);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (resolvedReference)).Return (resolvedReference);
       _resolverMock.Replay();
 
+      Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
+      
       var result = ResolvingSelectExpressionVisitor.ResolveExpression (
           expression,
           _resolverMock,
           _stageMock,
-          _mappingResolutionContextMock,
+          _mappingResolutionContext,
           _generator,
           sqlStatementBuilder);
 
-      _mappingResolutionContextMock.VerifyAllExpectations ();
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (resolvedReference));
-      // TODO Review 3097: When _mappingResolutionContextMock is changed to an ordinary context, assert that the table was added.
+      Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (sqlStatementBuilder.SqlTables[0], Is.EqualTo (sqlTable));
     }
   }
 }

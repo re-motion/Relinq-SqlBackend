@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -79,7 +80,28 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
     }
 
-    // TODO Review 3097: Add a test that proves the ResolvingSelectExpressionVisitor is used. For this, resolve a SqlSubStatementExpression with a StreamedSingleValueInfo
+    [Test]
+    public void ResolveSelectExpression_SqlSubStatementExpressionWithStreamedSingleValueInfo ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Single();
+      var expression = new SqlSubStatementExpression (sqlStatement);
+      var sqlStatementBuilder = new SqlStatementBuilder ();
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (((ConstantExpression) sqlStatement.SelectProjection)))
+          .Return (sqlStatement.SelectProjection);
+      _resolverMock.Replay ();
+
+      var result = _stage.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+      var expectedDataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (sqlStatement.DataInfo.DataType), sqlStatement.SelectProjection);
+      var expectedSqlStatement = new SqlStatementBuilder (sqlStatement) { DataInfo = expectedDataInfo }.GetSqlStatement ();
+
+      Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (((ResolvedSubStatementTableInfo) ((SqlTable) sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement, Is.EqualTo (expectedSqlStatement));
+      Assert.That (result, Is.SameAs (sqlStatement.SelectProjection));
+    }
 
     [Test]
     public void ResolveWhereExpression ()

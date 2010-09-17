@@ -89,6 +89,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       }.GetSqlStatement ();
     }
 
+    public static SqlStatement CreateSqlStatement_Scalar ()
+    {
+      return CreateSqlStatement_Scalar(Expression.Constant (0));
+    }
+
+    public static SqlStatement CreateSqlStatement_Scalar (Expression selectProjection)
+    {
+      return new SqlStatementBuilder
+      {
+        DataInfo = new StreamedScalarValueInfo (selectProjection.Type),
+        SelectProjection = selectProjection,
+        TopExpression = new SqlLiteralExpression (1)
+      }.GetSqlStatement ();
+    }
+
     public static SqlTable CreateSqlTable ()
     {
       return CreateSqlTable (typeof (Cook));
