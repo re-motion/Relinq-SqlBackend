@@ -68,18 +68,18 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       return "(" + _sqlStatement + ")";
     }
-
     
-    public SqlTable CreateSqlTableForSubStatement (
-        SqlSubStatementExpression subStatementExpression,  // TODO Review 3091: Remove this parameter. Use the "this" object instead. (Careful: The call to this method in ResolvingSelectExpressionVisitor must be adapted!) Rename the method to "ConvertToSqlTable".
+    public SqlTable ConvertToSqlTable (
         JoinSemantics joinSemantics, 
         string uniqueIdentifier)
     {
-      // TODO Review 3091: Argument checks!
+      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
+      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
+      
+      // TODO Review 3091: The join semantics should be calculated. If the dataInfo is a StreamedSingleValueInfo with ReturnDefaultWhenEmpty true, it should be Left. 
+      // Otherwise (ReturnDefaultWhenEmpty false, other value infos), it should be Inner. The reason for this is that we can assume that scalar queries and Single/First queries (without OrDefault) should always return values.
 
-      // TODO Review 3091: The join semantics should be calculated. If the dataInfo is a StreamedSingleValueInfo with ReturnDefaultWhenEmpty true, it should be Left. Otherwise (ReturnDefaultWhenEmpty false, other value infos), it should be Inner. The reason for this is that we can assume that scalar queries and Single/First queries (without OrDefault) should always return values.
-
-      var sqlStatement = ConvertToSequenceStatement(subStatementExpression.SqlStatement);
+      var sqlStatement = ConvertToSequenceStatement(this.SqlStatement);
       var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, sqlStatement);
       return new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
     }

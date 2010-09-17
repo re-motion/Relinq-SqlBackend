@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
               GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = expression.CreateSqlTableForSubStatement (expression, JoinSemantics.Inner, "q0");
+      var result = expression.ConvertToSqlTable (JoinSemantics.Inner, "q0");
 
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
       Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));
@@ -124,7 +124,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           }.GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = expression.CreateSqlTableForSubStatement (expression, JoinSemantics.Inner, "q0");
+      var result = expression.ConvertToSqlTable (JoinSemantics.Inner, "q0");
 
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
       Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));

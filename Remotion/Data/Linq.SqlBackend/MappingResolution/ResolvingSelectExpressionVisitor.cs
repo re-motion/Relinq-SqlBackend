@@ -72,10 +72,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
       if (newExpressionAsSqlSubStatementExpression != null
           && newExpressionAsSqlSubStatementExpression.SqlStatement.DataInfo is StreamedSingleValueInfo)
       {
-        var sqlTable = expression.CreateSqlTableForSubStatement (
-            newExpressionAsSqlSubStatementExpression, 
-            JoinSemantics.Left, 
-            Generator.GetUniqueIdentifier ("q"));
+        var sqlTable = newExpressionAsSqlSubStatementExpression.ConvertToSqlTable (JoinSemantics.Left, Generator.GetUniqueIdentifier ("q"));
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
         Context.AddSqlTable (sqlTable, _sqlStatementBuilder);
