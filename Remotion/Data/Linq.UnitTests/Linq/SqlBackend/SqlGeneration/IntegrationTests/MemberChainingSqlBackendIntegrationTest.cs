@@ -119,7 +119,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution).First ().Name);
       CheckQuery (query,
-        "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) " +
+        "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "[t2].[Name] AS [value] FROM [CookTable] AS [t1] " +
         "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Name).First ().Length);
       CheckQuery (query,
-        "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) " +
+        "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "LEN([t1].[Name]) AS [value] FROM [CookTable] AS [t1] " +
         "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
     }
@@ -139,7 +139,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name);
       CheckQuery (query,
-        "SELECT [q4].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) " +
+        "SELECT [q4].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] " +
         "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q4]");
     }
@@ -150,7 +150,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution.Name ?? a.Name).First ().Length);
       CheckQuery (query,
         "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] "
-        + "OUTER APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN LEN([t2].[Name]) ELSE LEN([t1].[Name]) END AS [value] "
+        + "CROSS APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN LEN([t2].[Name]) ELSE LEN([t1].[Name]) END AS [value] "
         + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
         + "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }

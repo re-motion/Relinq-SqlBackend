@@ -69,31 +69,36 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       return "(" + _sqlStatement + ")";
     }
     
-    public SqlTable ConvertToSqlTable (
-        JoinSemantics joinSemantics, 
-        string uniqueIdentifier)
+    public SqlTable ConvertToSqlTable (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
       
-      // TODO Review 3091: The join semantics should be calculated. If the dataInfo is a StreamedSingleValueInfo with ReturnDefaultWhenEmpty true, it should be Left. 
-      // Otherwise (ReturnDefaultWhenEmpty false, other value infos), it should be Inner. The reason for this is that we can assume that scalar queries and Single/First queries (without OrDefault) should always return values.
+      var joinSemantic = CalculateJoinSemantic();
 
-      var sqlStatement = ConvertToSequenceStatement(this.SqlStatement);
+      var sqlStatement = ConvertToSequenceStatement();
       var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, sqlStatement);
-      return new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
+      return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
     }
 
-    private SqlStatement ConvertToSequenceStatement (SqlStatement sqlStatement) // TODO Review 3091: Remove this parameter when the parameter above is removed. It's no longer needed (it's always this.SqlStatement).
+    private JoinSemantics CalculateJoinSemantic ()
     {
-      // TODO Review 3091: Check whether the sqlStatement already has sequence semantics. If so, nothing needs to be done here.
+      var dataInfoAsStreamedSingleValueInfo = SqlStatement.DataInfo as StreamedSingleValueInfo;
+      if (dataInfoAsStreamedSingleValueInfo != null && dataInfoAsStreamedSingleValueInfo.ReturnDefaultWhenEmpty)
+        return JoinSemantics.Left;
+      else
+        return JoinSemantics.Inner;
+    }
 
-      var newDataInfo = new StreamedSequenceInfo (
-          typeof (IEnumerable<>).MakeGenericType (sqlStatement.DataInfo.DataType),
-          sqlStatement.SelectProjection);
+    private SqlStatement ConvertToSequenceStatement ()
+    {
+      if (SqlStatement.DataInfo is StreamedSequenceInfo)
+        return SqlStatement;
 
-      var adjustedStatementBuilder = new SqlStatementBuilder (sqlStatement) { DataInfo = newDataInfo };
-      if (sqlStatement.DataInfo is StreamedForcedSingleValueInfo)
+      var newDataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (SqlStatement.DataInfo.DataType), SqlStatement.SelectProjection);
+
+      var adjustedStatementBuilder = new SqlStatementBuilder (SqlStatement) { DataInfo = newDataInfo };
+      if (SqlStatement.DataInfo is StreamedForcedSingleValueInfo)
       {
         Debug.Assert (
             adjustedStatementBuilder.TopExpression is SqlLiteralExpression

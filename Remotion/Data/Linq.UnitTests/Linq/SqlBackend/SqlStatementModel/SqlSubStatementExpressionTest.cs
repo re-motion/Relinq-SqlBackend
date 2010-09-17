@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement ()
+    public void ConvertToSqlTable ()
     {
       var selectProjection = Expression.Constant (new Cook());
       var sqlStatement =
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
               GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = expression.ConvertToSqlTable (JoinSemantics.Inner, "q0");
+      var result = expression.ConvertToSqlTable ("q0");
 
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
       Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));
@@ -112,7 +112,24 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement_StreamedForceSingleValueInfo ()
+    public void ConvertToSqlTable_StreamedSequenceInfo ()
+    {
+      var selectProjection = Expression.Constant (new Cook ());
+      var sqlStatement =
+          new SqlStatementBuilder { DataInfo = new StreamedSequenceInfo(typeof (Cook[]), Expression.Constant(new Cook())), SelectProjection = selectProjection }.
+              GetSqlStatement ();
+      var expression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = expression.ConvertToSqlTable ("q0");
+
+      Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.TableInfo.GetResolvedTableInfo ().TableAlias, Is.EqualTo ("q0"));
+      Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement, Is.EqualTo(sqlStatement));
+    }
+
+    [Test]
+    public void ConvertToSqlTable_StreamedForceSingleValueInfo ()
     {
       var selectProjection = Expression.Constant (new Cook());
       var sqlStatement =
@@ -124,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
           }.GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = expression.ConvertToSqlTable (JoinSemantics.Inner, "q0");
+      var result = expression.ConvertToSqlTable ("q0");
 
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
       Assert.That (result.TableInfo.GetResolvedTableInfo().TableAlias, Is.EqualTo ("q0"));
@@ -136,6 +153,36 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
         DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<Cook>), sqlStatement.SelectProjection), 
         TopExpression = newSubStatement.TopExpression
       }.GetSqlStatement();
+
+      ExpressionTreeComparer.CheckAreEqualTrees (new SqlLiteralExpression (1), newSubStatement.TopExpression);
+      Assert.That (newSubStatement, Is.EqualTo (expectedSubStatement));
+    }
+
+    [Test]
+    public void ConvertToSqlTable_StreamedForceSingleValueInfoWithReturnsTrueIfEmpty_JoinSemanticIsChanged ()
+    {
+      var selectProjection = Expression.Constant (new Cook ());
+      var sqlStatement =
+          new SqlStatementBuilder
+          {
+            DataInfo = new StreamedForcedSingleValueInfo (typeof (Cook), true),
+            SelectProjection = selectProjection,
+            TopExpression = new SqlLiteralExpression (2)
+          }.GetSqlStatement ();
+      var expression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = expression.ConvertToSqlTable ("q0");
+
+      Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+      Assert.That (result.TableInfo.GetResolvedTableInfo ().TableAlias, Is.EqualTo ("q0"));
+      Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+
+      var newSubStatement = ((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement;
+      var expectedSubStatement = new SqlStatementBuilder (sqlStatement)
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<Cook>), sqlStatement.SelectProjection),
+        TopExpression = newSubStatement.TopExpression
+      }.GetSqlStatement ();
 
       ExpressionTreeComparer.CheckAreEqualTrees (new SqlLiteralExpression (1), newSubStatement.TopExpression);
       Assert.That (newSubStatement, Is.EqualTo (expectedSubStatement));

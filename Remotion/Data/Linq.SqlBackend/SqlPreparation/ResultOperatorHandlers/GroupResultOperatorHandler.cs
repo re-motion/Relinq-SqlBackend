@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       if (subStatementExpression == null)
         return preparedKeySelector;
 
-      var sqlTable = subStatementExpression.ConvertToSqlTable (JoinSemantics.Inner, generator.GetUniqueIdentifier ("t"));
+      var sqlTable = subStatementExpression.ConvertToSqlTable (generator.GetUniqueIdentifier ("t"));
       sqlStatementBuilder.SqlTables.Add (sqlTable);
 
       return new SqlTableReferenceExpression (sqlTable);

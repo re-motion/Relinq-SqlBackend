@@ -42,15 +42,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    public void SingleInSubQuery_Top1IsUsedInsteadOfTop2 ()
-    {
-      CheckQuery (from c in Cooks select c.Assistants.Single (), 
-        "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] "+
-        "FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
-        +"[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
-    }
-
-    [Test]
     public void InWhereCondition_Count ()
     {
       CheckQuery (
@@ -241,7 +232,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (from c in Cooks select (from c2 in Cooks select c2).First (),
         "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] " +
-        "FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook]," +
+        "FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook]," +
         "[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q2]",
         row => (object) row.GetEntity<Cook> (
             new ColumnID ("ID", 0),
@@ -254,7 +245,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (from c in Cooks select (from c2 in Cooks select c2).Single (),
         "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] " +
-        "FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook]," +
+        "FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook]," +
         "[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q2]",
         row => (object) row.GetEntity<Cook> (
             new ColumnID ("ID", 0),
@@ -271,12 +262,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name).First(),
-          "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) AS [q2]",
+          "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
 
       CheckQuery (
           from c in Cooks select (from k in Kitchens select k.Name).Single (),
-          "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) AS [q2]",
+          "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[Name] AS [value] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
@@ -285,13 +276,31 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens select new { k.Name }).First (),
-          "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
+          "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
 
       CheckQuery (
         from c in Cooks select (from k in Kitchens select new { k.Name }).Single (),
-        "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
+        "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
           row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
+    }
+
+    [Test]
+    public void InSelectProjection_Single_Top1IsUsedInsteadOfTop2 ()
+    {
+      CheckQuery (from c in Cooks select c.Assistants.Single (),
+        "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] " +
+        "FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
+        + "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
+    }
+
+    [Test]
+    public void InSelectProjection_SingleOrDefault ()
+    {
+      CheckQuery (from c in Cooks select c.Assistants.SingleOrDefault (),
+        "SELECT [q2].[ID],[q2].[FirstName],[q2].[Name],[q2].[IsStarredCook],[q2].[IsFullTimeCook],[q2].[SubstitutedID],[q2].[KitchenID] " +
+        "FROM [CookTable] AS [t0] OUTER APPLY (SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
+        + "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
     }
 
     [Test]
