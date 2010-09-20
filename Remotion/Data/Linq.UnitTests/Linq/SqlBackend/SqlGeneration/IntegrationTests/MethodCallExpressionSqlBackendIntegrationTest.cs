@@ -316,6 +316,25 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void Trim ()
+    {
+      CheckQuery (
+          from c in Cooks select c.FirstName.Trim(),
+          "SELECT LTRIM(RTRIM([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]"
+          );
+    }
+
+    [Test]
+    public void Insert ()
+    {
+      CheckQuery (
+          from c in Cooks select c.FirstName.Insert (3, "Test"),
+          "SELECT STUFF([t0].[FirstName], @1, 0, @2) AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter("@1", 3),
+          new CommandParameter("@2", "Test"));
+    }
+
+    [Test]
     public void Equals ()
     {
       CheckQuery (from c in Cooks where c.Name.Equals ("abc") select c.Name, 

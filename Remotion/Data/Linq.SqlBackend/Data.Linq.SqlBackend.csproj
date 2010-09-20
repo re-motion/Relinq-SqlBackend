@@ -101,6 +101,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\ConvertMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EqualsMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\InsertMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\IsNullOrEmptyMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\IndexOfMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsMethodCallTransformer.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\StringLengthMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\SubstringMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\TrimMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodInfoBasedMethodCallTransformerRegistry.cs" />
     <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistry.cs" />
