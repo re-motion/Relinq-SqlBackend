@@ -75,9 +75,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => (from c in Cooks select c.FirstName).Take (5),
-          "SELECT TOP (@1) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
-          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
-          new CommandParameter ("@1", 5));
+          "SELECT TOP (5) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -480,11 +479,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           () => Kitchens.OrderBy (k => k.Name).Take (5).Sum (k => k.RoomNumber),
-          "SELECT SUM([q0].[Key_RoomNumber]) AS [value] FROM (SELECT TOP (@1) [t1].[ID] AS [Key_ID],[t1].[CookID] AS [Key_CookID]," +
+          "SELECT SUM([q0].[Key_RoomNumber]) AS [value] FROM (SELECT TOP (5) [t1].[ID] AS [Key_ID],[t1].[CookID] AS [Key_CookID]," +
           "[t1].[Name] AS [Key_Name],[t1].[RestaurantID] AS [Key_RestaurantID],[t1].[SubKitchenID] AS [Key_SubKitchenID],"+
-          "[t1].[Name] AS [Value] FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]",
-          new CommandParameter("@1", 5)
-          );
+          "[t1].[Name] AS [Value] FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]");
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -48,7 +49,12 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       }
       else
       {
-        sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
+        var preparedTopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
+        var topExpressionAsConstantExpression = preparedTopExpression as ConstantExpression;
+        if (topExpressionAsConstantExpression != null)
+          sqlStatementBuilder.TopExpression = new SqlLiteralExpression (topExpressionAsConstantExpression.Value);
+        else
+          sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
       }
     }
   }

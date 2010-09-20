@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -55,14 +56,27 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     }
 
     [Test]
-    public void HandleResultOperator ()
+    public void HandleResultOperator_ConstantExpression ()
     {
       var takeExpression = Expression.Constant (2);
       var resultOperator = new TakeResultOperator (takeExpression);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.TopExpression, Is.SameAs (takeExpression));
+      Assert.That (((SqlLiteralExpression) _sqlStatementBuilder.TopExpression).Value, Is.SameAs (takeExpression.Value));
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
+    }
+
+    [Test]
+    public void HandleResultOperator_NoConstantExpression ()
+    {
+      var takeExpression = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true);
+      var resultOperator = new TakeResultOperator (takeExpression);
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+
+      Assert.That ( _sqlStatementBuilder.TopExpression, Is.SameAs (takeExpression));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
     }

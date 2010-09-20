@@ -57,9 +57,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID] "
           + "FROM "
           +
-          "(SELECT TOP (@1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
-          + "FROM [CookTable] AS [t1]) AS [q0]",
-          new CommandParameter ("@1", 1));
+          "(SELECT TOP (1) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
+          + "FROM [CookTable] AS [t1]) AS [q0]");
     }
 
     [Test]
@@ -113,8 +112,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in (from s2 in Cooks select s2.FirstName).Take (1) select s,
-          "SELECT [q0].[value] AS [value] FROM (SELECT TOP (@1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]",
-          new CommandParameter ("@1", 1));
+          "SELECT [q0].[value] AS [value] FROM (SELECT TOP (1) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
     }
 
     [Test]
@@ -122,8 +120,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from s in (from s2 in Cooks select s2.ID + s2.ID).Take (1) select s,
-          "SELECT [q0].[value] AS [value] FROM (SELECT TOP (@1) ([t1].[ID] + [t1].[ID]) AS [value] FROM [CookTable] AS [t1]) AS [q0]",
-          new CommandParameter ("@1", 1));
+          "SELECT [q0].[value] AS [value] FROM (SELECT TOP (1) ([t1].[ID] + [t1].[ID]) AS [value] FROM [CookTable] AS [t1]) AS [q0]");
     }
 
     [Test]
@@ -212,10 +209,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
         from s in Cooks from s2 in (from s2 in Cooks orderby s2.Name select s2.ID).Take (10) select s2,
           "SELECT [q0].[Key] AS [value] FROM [CookTable] AS [t1] CROSS APPLY ("
-          + "SELECT TOP (@1) [t2].[ID] AS [Key],[t2].[Name] AS [Value] FROM [CookTable] AS [t2] "
+          + "SELECT TOP (10) [t2].[ID] AS [Key],[t2].[Name] AS [Value] FROM [CookTable] AS [t2] "
           + "ORDER BY [t2].[Name] ASC) AS [q0] "
-          + "ORDER BY [q0].[Value] ASC",
-          new CommandParameter ("@1", 10));
+          + "ORDER BY [q0].[Value] ASC");
     }
 
     [Test]
