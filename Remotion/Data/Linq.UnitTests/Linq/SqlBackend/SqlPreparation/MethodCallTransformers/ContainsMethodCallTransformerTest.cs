@@ -70,10 +70,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           new SqlFunctionExpression (
               typeof (string),
               "REPLACE",
-              new SqlFunctionExpression (
-                  typeof (string),
-                  "REPLACE",
-                  new SqlFunctionExpression (
+                 new SqlFunctionExpression (
                       typeof (string),
                       "REPLACE",
                       new SqlFunctionExpression (
@@ -87,9 +84,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
                   new SqlLiteralExpression (@"_"),
                   new SqlLiteralExpression (@"\_")),
               new SqlLiteralExpression (@"["),
-              new SqlLiteralExpression (@"\[")),
-          new SqlLiteralExpression (@"]"),
-          new SqlLiteralExpression (@"\]"));
+              new SqlLiteralExpression (@"\["));
       rightExpression = Expression.Add (
           new SqlLiteralExpression ("%"), rightExpression, typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
       rightExpression = Expression.Add (

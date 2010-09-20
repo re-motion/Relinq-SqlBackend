@@ -21,6 +21,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -37,6 +39,60 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       var rightExpression = Expression.Constant ("right");
       var escapeExpression = new SqlLiteralExpression (@"\");
       _likeExpression = new SqlLikeExpression (leftExpression, rightExpression, escapeExpression);
+    }
+
+    [Test]
+    public void Create_ArgumentIsNotNull ()
+    {
+      var objectExpression = Expression.Constant ("Test");
+      var argument1 = Expression.Constant ("test");
+      
+      var result = SqlLikeExpression.Create (objectExpression, argument1, "%", "%");
+      
+      var rightExpression = Expression.Constant (string.Format ("%{0}%", argument1.Value));
+      var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void Create_ArgumentIsNotNullAndNoConstantExpression ()
+    {
+      var method = typeof (string).GetMethod ("Contains", new[] { typeof (string) });
+      var objectExpression = Expression.Constant ("Test");
+      var argument1 = Expression.MakeMemberAccess (Expression.Constant (new Cook ()), typeof (Cook).GetProperty ("Name"));
+      var expression = Expression.Call (objectExpression, method, argument1);
+      
+      var result = SqlLikeExpression.Create(expression.Object, expression.Arguments[0], "%", "%");
+
+      Expression rightExpression = new SqlFunctionExpression (
+          typeof (string),
+          "REPLACE",
+          new SqlFunctionExpression (
+              typeof (string),
+              "REPLACE",
+                 new SqlFunctionExpression (
+                      typeof (string),
+                      "REPLACE",
+                      new SqlFunctionExpression (
+                          typeof (string),
+                          "REPLACE",
+                          argument1,
+                          new SqlLiteralExpression (@"\"),
+                          new SqlLiteralExpression (@"\\")),
+                      new SqlLiteralExpression (@"%"),
+                      new SqlLiteralExpression (@"\%")),
+                  new SqlLiteralExpression (@"_"),
+                  new SqlLiteralExpression (@"\_")),
+              new SqlLiteralExpression (@"["),
+              new SqlLiteralExpression (@"\["));
+      rightExpression = Expression.Add (
+          new SqlLiteralExpression ("%"), rightExpression, typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
+      rightExpression = Expression.Add (
+          rightExpression, new SqlLiteralExpression ("%"), typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
+      var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);  
     }
 
     [Test]
@@ -61,10 +117,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       Assert.That (result, Is.SameAs (_likeExpression));
     }
 
-    // TODO Review 3090: Tests for different left and escape expressions are missing
-
     [Test]
-    public void VisitChildren_ReturnsDifferentRight ()
+    public void VisitChildren_ReturnsDifferentRightExpression ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
       var newRightExpression = Expression.Constant (3);
@@ -86,6 +140,59 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
       Assert.That (result, Is.Not.SameAs (_likeExpression));
       Assert.That (((SqlLikeExpression) result).Left, Is.SameAs (_likeExpression.Left));
       Assert.That (((SqlLikeExpression) result).Right, Is.SameAs (newRightExpression));
+      Assert.That (((SqlLikeExpression) result).EscapeExpression, Is.SameAs (_likeExpression.EscapeExpression));
+    }
+
+    [Test]
+    public void VisitChildren_ReturnsDifferentLeftExpression ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var newLeftExpression = Expression.Constant (3);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.Left))
+          .Return (newLeftExpression);
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.Right))
+          .Return (_likeExpression.Right);
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.EscapeExpression))
+          .Return (_likeExpression.EscapeExpression);
+      visitorMock.Replay ();
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Not.SameAs (_likeExpression));
+      Assert.That (((SqlLikeExpression) result).Left, Is.SameAs (newLeftExpression));
+      Assert.That (((SqlLikeExpression) result).Right, Is.SameAs (_likeExpression.Right));
+      Assert.That (((SqlLikeExpression) result).EscapeExpression, Is.SameAs (_likeExpression.EscapeExpression));
+    }
+
+    [Test]
+    public void VisitChildren_ReturnsDifferentEscapeExpression ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var newEscapeExpression = Expression.Constant (3);
+
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.Left))
+          .Return (_likeExpression.Left);
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.Right))
+          .Return (_likeExpression.Right);
+      visitorMock
+          .Expect (mock => mock.VisitExpression (_likeExpression.EscapeExpression))
+          .Return (newEscapeExpression);
+      visitorMock.Replay ();
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Not.SameAs (_likeExpression));
+      Assert.That (((SqlLikeExpression) result).Left, Is.SameAs (_likeExpression.Left));
+      Assert.That (((SqlLikeExpression) result).Right, Is.SameAs (_likeExpression.Right));
+      Assert.That (((SqlLikeExpression) result).EscapeExpression, Is.SameAs (newEscapeExpression));
     }
 
     [Test]

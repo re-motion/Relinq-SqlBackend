@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -48,6 +51,32 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       Assert.That (result, Is.EqualTo (@"test\_test"));
     }
 
-    // TODO Review 3090: Test missing for the escaping of the escape sequence itself
+    [Test]
+    public void Escape_EscapeSequence ()
+    {
+      var result = LikeEscapeUtility.Escape (@"test\test", @"\");
+
+      Assert.That (result, Is.EqualTo (@"test\\test"));
+    }
+
+    [Test]
+    public void Escape_Expression ()
+    {
+      var expression = Expression.Constant ("test[test");
+
+      var result = LikeEscapeUtility.Escape (expression, @"\");
+
+      var expectedResult = 
+        new SqlFunctionExpression(typeof(string), "REPLACE",
+          new SqlFunctionExpression(typeof(string), "REPLACE",
+            new SqlFunctionExpression(typeof(string), "REPLACE",
+              new SqlFunctionExpression (typeof (string), "REPLACE", expression, 
+                new SqlLiteralExpression (@"\"), new SqlLiteralExpression (@"\\")), 
+                  new SqlLiteralExpression("%"), new SqlLiteralExpression(@"\%")),
+                    new SqlLiteralExpression("_"), new SqlLiteralExpression(@"\_")),
+                      new SqlLiteralExpression("["), new SqlLiteralExpression(@"\["));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
   }
 }

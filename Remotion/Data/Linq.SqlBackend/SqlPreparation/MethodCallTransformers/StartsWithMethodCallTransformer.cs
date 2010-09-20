@@ -40,26 +40,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
-      
-      Expression rightExpression;
-      var argumentAsConstantExpression = methodCallExpression.Arguments[0] as ConstantExpression;
-      if (argumentAsConstantExpression != null)
-      {
-        if (argumentAsConstantExpression.Value == null)
-          return Expression.Constant (false);
 
-        rightExpression = Expression.Constant (string.Format ("{0}%", LikeEscapeUtility.Escape ((string) argumentAsConstantExpression.Value, @"\")));
-      }
-      else
-      {
-        rightExpression = LikeEscapeUtility.Escape (methodCallExpression.Arguments[0], @"\");
-        rightExpression = Expression.Add (
-          rightExpression,
-           new SqlLiteralExpression ("%"),
-           typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
-      }
-
-      return new SqlLikeExpression (methodCallExpression.Object, rightExpression, new SqlLiteralExpression (@"\"));
+      return SqlLikeExpression.Create (methodCallExpression.Object, methodCallExpression.Arguments[0], "", "%");
     }
   }
 }

@@ -67,7 +67,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.Contains (c.Name) select c.ID,
-          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE (('%' + REPLACE(REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\['), ']', '\]')) + '%') ESCAPE '\'"
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE (('%' + REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\[')) + '%') ESCAPE '\'"
         );
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.StartsWith (c.Name) select c.ID,
-          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE (REPLACE(REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\['), ']', '\]') + '%') ESCAPE '\'"
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE (REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\[') + '%') ESCAPE '\'"
         );
     }
 
@@ -125,7 +125,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName.EndsWith(c.Name) select c.ID,
-          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE ('%' + REPLACE(REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\['), ']', '\]')) ESCAPE '\'"
+          @"SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] LIKE ('%' + REPLACE(REPLACE(REPLACE(REPLACE([t0].[Name], '\', '\\'), '%', '\%'), '_', '\_'), '[', '\[')) ESCAPE '\'"
         );
     }
 

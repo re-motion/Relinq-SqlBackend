@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -26,10 +27,11 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
   /// </summary>
   public static class LikeEscapeUtility // TODO Review 3090: Move to SqlLikeExpression and remove this class.
   {
-    // TODO Review 3090: Argument checks!
-
     public static string Escape (string text, string escapeSequence)
     {
+      ArgumentUtility.CheckNotNull ("text", text);
+      ArgumentUtility.CheckNotNull ("escapeSequence", escapeSequence);
+
       var escapedString = new StringBuilder (text);
       escapedString.Replace (escapeSequence, escapeSequence + escapeSequence);
       escapedString.Replace ("%", string.Format (@"{0}%", escapeSequence));
@@ -38,15 +40,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       return escapedString.ToString ();
     }
 
-    // TODO Review 3090: There is no test for this method overload
     public static Expression Escape (Expression expression, string escapeSequence)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("escapeSequence", escapeSequence);
+
       SqlFunctionExpression result = Escape (expression, escapeSequence, escapeSequence);
       result = Escape (result, "%", escapeSequence);
       result = Escape (result, "_", escapeSequence);
       result = Escape (result, "[", escapeSequence);
-      // TODO Review 3090: Closing bracket (']') is not really necessary (and we don't escape it in the other overload either)
-      result = Escape (result, "]", escapeSequence);
+      
       return result;
     }
 
