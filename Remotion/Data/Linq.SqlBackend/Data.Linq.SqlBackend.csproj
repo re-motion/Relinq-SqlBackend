@@ -102,7 +102,6 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EqualsMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\IsNullOrEmptyMethodCallTransformer.cs" />
-    <Compile Include="SqlPreparation\MethodCallTransformers\LikeEscapeUtility.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\IndexOfMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\LikeMethodCallTransformer.cs" />

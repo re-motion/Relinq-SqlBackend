@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Text;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Parsing;
@@ -42,6 +43,42 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       return new SqlLikeExpression (searchedText, rightExpression, new SqlLiteralExpression (@"\"));
     }
 
+    public static string Escape (string text, string escapeSequence)
+    {
+      ArgumentUtility.CheckNotNull ("text", text);
+      ArgumentUtility.CheckNotNull ("escapeSequence", escapeSequence);
+
+      var escapedString = new StringBuilder (text);
+      escapedString.Replace (escapeSequence, escapeSequence + escapeSequence);
+      escapedString.Replace ("%", string.Format (@"{0}%", escapeSequence));
+      escapedString.Replace ("_", string.Format (@"{0}_", escapeSequence));
+      escapedString.Replace ("[", string.Format (@"{0}[", escapeSequence));
+      return escapedString.ToString ();
+    }
+
+    public static Expression Escape (Expression expression, string escapeSequence)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("escapeSequence", escapeSequence);
+
+      SqlFunctionExpression result = Escape (expression, escapeSequence, escapeSequence);
+      result = Escape (result, "%", escapeSequence);
+      result = Escape (result, "_", escapeSequence);
+      result = Escape (result, "[", escapeSequence);
+
+      return result;
+    }
+
+    private static SqlFunctionExpression Escape (Expression expression, string replacedSequence, string escapeSequence)
+    {
+      return new SqlFunctionExpression (
+          typeof (string),
+          "REPLACE",
+          expression,
+          new SqlLiteralExpression (replacedSequence),
+          new SqlLiteralExpression (escapeSequence + replacedSequence));
+    }
+
     private static Expression BuildRightExpression (Expression unescapedSearchText, string likePrefix, string likePostfix)
     {
       Expression rightExpression;
@@ -52,13 +89,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
           rightExpression = null;
         else
         {
-          var escapedSearchText = LikeEscapeUtility.Escape ((string) argumentAsConstantExpression.Value, @"\");
+          var escapedSearchText = SqlLikeExpression.Escape ((string) argumentAsConstantExpression.Value, @"\");
           rightExpression = Expression.Constant (string.Format ("{0}{1}{2}", likePrefix, escapedSearchText, likePostfix));
         }
       }
       else
       {
-        var escapedSearchExpression = LikeEscapeUtility.Escape (unescapedSearchText, @"\");
+        var escapedSearchExpression = SqlLikeExpression.Escape (unescapedSearchText, @"\");
         var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
         var patternWithPrefix =
             !string.IsNullOrEmpty (likePrefix)

@@ -96,6 +96,58 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
+    public void Escape_Bracket ()
+    {
+      var result = SqlLikeExpression.Escape ("test[test", @"\");
+
+      Assert.That (result, Is.EqualTo (@"test\[test"));
+    }
+
+    [Test]
+    public void Escape_Percent ()
+    {
+      var result = SqlLikeExpression.Escape ("test%test", @"\");
+
+      Assert.That (result, Is.EqualTo (@"test\%test"));
+    }
+
+    [Test]
+    public void Escape_Underline ()
+    {
+      var result = SqlLikeExpression.Escape ("test_test", @"\");
+
+      Assert.That (result, Is.EqualTo (@"test\_test"));
+    }
+
+    [Test]
+    public void Escape_EscapeSequence ()
+    {
+      var result = SqlLikeExpression.Escape (@"test\test", @"\");
+
+      Assert.That (result, Is.EqualTo (@"test\\test"));
+    }
+
+    [Test]
+    public void Escape_Expression ()
+    {
+      var expression = Expression.Constant ("test[test");
+
+      var result = SqlLikeExpression.Escape (expression, @"\");
+
+      var expectedResult =
+        new SqlFunctionExpression (typeof (string), "REPLACE",
+          new SqlFunctionExpression (typeof (string), "REPLACE",
+            new SqlFunctionExpression (typeof (string), "REPLACE",
+              new SqlFunctionExpression (typeof (string), "REPLACE", expression,
+                new SqlLiteralExpression (@"\"), new SqlLiteralExpression (@"\\")),
+                  new SqlLiteralExpression ("%"), new SqlLiteralExpression (@"\%")),
+                    new SqlLiteralExpression ("_"), new SqlLiteralExpression (@"\_")),
+                      new SqlLiteralExpression ("["), new SqlLiteralExpression (@"\["));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
     public void VisitChildren_ReturnsSame ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
