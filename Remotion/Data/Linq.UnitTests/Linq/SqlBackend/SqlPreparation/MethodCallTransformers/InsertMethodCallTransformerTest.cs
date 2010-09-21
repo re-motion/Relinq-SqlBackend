@@ -47,6 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var result = transformer.Transform (expression);
 
+      // TODO Review 3309: Index calculation is wrong, should be argument1 + 1. CASE WHEN is missing: STUFF doesn't work when the insertion index is at the end of the string. See JIRA comment for RM-3309.
       var expectedResult = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, argument1, new SqlLiteralExpression(0), argument2);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
