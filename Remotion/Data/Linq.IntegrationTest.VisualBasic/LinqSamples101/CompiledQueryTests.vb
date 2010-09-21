@@ -40,14 +40,12 @@ Imports Remotion.Data.Linq.IntegrationTests
 
 Namespace LinqSamples101
   <TestFixture()>
-  <Ignore("Compiled queries are not a feature of the re-linq SQL backend")>
+  <Explicit("Not tested: Compiled queries")>
   Public Class CompiledQueryTests
     Inherits TestBase
 
     'This sample create a compiled query and then use it to retrieve customers of the input city
-    ' TODO: Won't compile since INorthwindDataProvider is no subtype of DataContext, which is necessary for using CompiledQuery.Compile(..) - Check if tests are necessary
     <Test()>
-    <Ignore("Not supported: Compiled queries")>
     Public Sub LinqToSqlCompileQuery01()
 
       '' Create compiled query

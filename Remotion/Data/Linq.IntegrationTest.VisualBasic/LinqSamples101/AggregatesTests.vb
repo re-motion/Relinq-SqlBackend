@@ -35,8 +35,6 @@ Option Infer On
 Option Strict On
 
 Imports NUnit.Framework
-
-
 Imports Remotion.Data.Linq.IntegrationTests
 Imports System.Reflection
 
@@ -85,7 +83,7 @@ Namespace LinqSamples101
 
     'This sample uses Sum to find the total number of units on order over all Products.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - System.NotImplementedException - Implement if needed by integration tests - works in c# but not in vb")>
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
     Public Sub LinqToSqlCount04()
       Dim totalUnits = (From prod In DB.Products _
               Select CInt(prod.UnitsOnOrder.Value)).Sum()
@@ -114,7 +112,8 @@ Namespace LinqSamples101
     'This sample uses Min to find the Products that have the lowest unit price
     'in each category.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
+    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
+        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlCount07()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into g = Group _
@@ -149,7 +148,8 @@ Namespace LinqSamples101
     'This sample uses Max to find the Products that have the highest unit price
     'in each category.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
+    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
+            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlCount10()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into g = Group _
@@ -183,7 +183,8 @@ Namespace LinqSamples101
     'This sample uses Average to find the Products that have unit price higher than
     'the average unit price of the category for each category.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - ArgumentException - Argument type IQueryable does not match the corresponding member type IEnumerable")>
+    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
+        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlCount13()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into g = Group _

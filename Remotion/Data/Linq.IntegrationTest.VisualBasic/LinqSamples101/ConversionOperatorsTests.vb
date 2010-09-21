@@ -35,7 +35,6 @@ Option Infer On
 Option Strict On
 
 Imports NUnit.Framework
-
 Imports System.Reflection
 Imports Remotion.Data.Linq.IntegrationTests
 Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
@@ -64,19 +63,8 @@ Namespace LinqSamples101
 
     'This sample uses ToArray to immediately evaluate a query into an array
     'and get the 3rd element.
-
-    'TODO: Wrong VB resolving from Relinq?
-    '
-    'in class SqlStatementResolver 
-    'at sqlStatementBuilder.WhereCondition = _stage.ResolveWhereExpression (sqlStatementBuilder.WhereCondition, _context)
-    'the WhereCondition differes from the VB WhereCondition
-    '
-    'Example
-    '     In C#            |       in VB
-    '[234920384234].City   |       cust.City
-    'Propably the alias cust from the VB Statement must be resolved to [Customer].City. [Tablename].Property
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - works in c# but not in vb")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlConversions02()
       Dim londonCustomers = From cust In DB.Customers _
             Where cust.City = "London"
@@ -86,15 +74,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses ToList to immediately evaluate a query into a List(Of T).
-
-    'TODO: Wrong created Where Expression in VB?
-    '
-    'Example:
-    '     In VB                                      |            how it should be
-    'WHERE (COALESCE (([t0].[Freight] > @1), @2))    |     WHERE (COALESCE ([t0].[Freight], @2)> @1)
-
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly")>
+    <Ignore("RM-3335: Support nullable booleans")>
     Public Sub LinqToSqlConversions03()
       Dim hiredAfter1994 = From emp In DB.Employees _
             Where emp.HireDate >= #1/1/1994#
@@ -105,15 +86,8 @@ Namespace LinqSamples101
 
     'This sample uses ToDictionary to immediately evaluate a query and
     'a key expression into an Dictionary(Of K, T).
-
-    'TODO: Wrong created Where Expression in VB?
-    '
-    'Example:
-    '     In VB                                      |            how it should be
-    'WHERE (COALESCE (([t0].[Freight] > @1), @2))    |     WHERE (COALESCE ([t0].[Freight], @2)> @1)
-
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - expression could not be resolved correctly  - works in c# but not in vb")>
+    <Ignore("RM-3335: Support nullable booleans")>
     Public Sub LinqToSqlConversion04()
       Dim prodQuery = From prod In DB.Products _
             Where prod.UnitsInStock <= prod.ReorderLevel _
