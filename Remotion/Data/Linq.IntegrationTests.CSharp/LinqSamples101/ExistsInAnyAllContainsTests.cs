@@ -58,7 +58,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Any to return only Categories that have at least one Discontinued product.
     /// </summary>
     [Test]
-    // [Ignore ("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
+    [Ignore ("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlExists02 ()
     {
       var q =
