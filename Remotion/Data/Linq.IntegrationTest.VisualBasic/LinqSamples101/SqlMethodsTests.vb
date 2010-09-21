@@ -49,7 +49,6 @@ Namespace LinqSamples101
 
     'This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - SqlMethods not supported")>
     Public Sub LinqToSqlSqlMethods01()
       Dim q = From c In DB.Customers _
             Where SqlMethods.Like(c.CustomerID, "C%") _
@@ -60,9 +59,8 @@ Namespace LinqSamples101
 
     'This sample uses SqlMethods to find all orders which shipped within 10 days the order created
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - SqlMethods not supported")>
+    <Ignore("RM-3335: Support nullable booleans")>
     Public Sub LinqToSqlSqlMethods02()
-
       Dim orderQuery = From o In DB.Orders _
             Where SqlMethods.DateDiffDay(o.OrderDate, o.ShippedDate) < 10
 

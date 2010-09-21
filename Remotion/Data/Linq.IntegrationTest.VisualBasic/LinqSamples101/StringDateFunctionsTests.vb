@@ -49,7 +49,7 @@ Namespace LinqSamples101
     'and string literals in forming the Customers' calculated
     'Location value.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - System.NotSupportedException : The method 'System.String.Concat' is not supported by this code generator, and no custom transformer has been registered.")>
+    <Ignore("RM-3337: Support for additional string manipulation routine: Concat")>
     Public Sub LinqToSqlString01()
       Dim custQuery = From cust In DB.Customers _
             Select cust.CustomerID, _
@@ -81,7 +81,7 @@ Namespace LinqSamples101
     'This sample uses the IndexOf method to find the first instance of
     'a space in each Customer's contact name.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - IndexOff not supported")>
+    <Ignore("RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")>
     Public Sub LinqToSqlString04()
       Dim custQuery = From cust In DB.Customers _
             Select cust.ContactName, SpacePos = cust.ContactName.IndexOf(" ")
@@ -120,7 +120,7 @@ Namespace LinqSamples101
     'This sample uses the Substring method to find Employees whose
     'home phone numbers have '555' as the seventh through ninth digits.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - Substring() is not supported")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlString08()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(6, 3) = "555"
@@ -152,7 +152,7 @@ Namespace LinqSamples101
     'digits of Employee home phone numbers, with leading and
     'trailing spaces removed.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - Substring() is not supported")>
+    <Ignore("RM-3309: Support for additional string manipulation routines: Trim, Insert")>
     Public Sub LinqToSqlString11()
       Dim empQuery = From emp In DB.Employees _
             Select emp.HomePhone.Substring(0, 5).Trim()
@@ -164,7 +164,7 @@ Namespace LinqSamples101
     'employee phone numbers that have a ) in the fifth position, 
     'inserting a : after the ).
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - The method 'System.String.Insert' is not supported by this code generator, and no custom transformer has been registered.")>
+    <Ignore("RM-3309: Support for additional string manipulation routines: Trim, Insert")>
     Public Sub LinqToSqlString12()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -177,7 +177,7 @@ Namespace LinqSamples101
     'employee phone numbers that have a ) in the fifth position,
     'removing all characters starting from the tenth character.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - Cannot resolve member 'HomePhone' applied to expression 'emp'; the expression type 'ParameterExpression' is not supported in member expressions.")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlString13()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -190,7 +190,7 @@ Namespace LinqSamples101
     'employee phone numbers that have a ) in the fifth position,
     'removing the first six characters.
     <Test()>
-    <Ignore("Cannot resolve member 'HomePhone' applied to expression 'emp'; the expression type 'ParameterExpression' is not supported in member expressions.")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlString14()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -216,7 +216,7 @@ Namespace LinqSamples101
     'This sample uses the DateTime's Year property to
     'find Orders placed in 1997.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - value and year not supported yet")>
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
     Public Sub LinqToSqlString16()
       Dim ordersIn97 = From ord In DB.Orders _
             Where ord.OrderDate.Value.Year = 1997
@@ -227,7 +227,7 @@ Namespace LinqSamples101
     'This sample uses the DateTime's Month property to
     'find Orders placed in December.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - value and month not supported yet")>
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
     Public Sub LinqToSqlString17()
       Dim decemberOrders = From ord In DB.Orders _
             Where ord.OrderDate.Value.Month = 12
@@ -238,7 +238,7 @@ Namespace LinqSamples101
     'This sample uses the DateTime's Day property to
     'find Orders placed on the 31st day of the month.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - value and day not supported yet")>
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
     Public Sub LinqToSqlString18()
       Dim ordQuery = From ord In DB.Orders _
             Where ord.OrderDate.Value.Day = 31

@@ -43,12 +43,12 @@ Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
 
 Namespace LinqSamples101
   <TestFixture()>
+  <Explicit("Not tested: Stored procedures")>
   Public Class StoredProceduresTests
     Inherits TestBase
 
     'This sample uses a stored procedure to return the number of Customers in the 'WA' Region.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc01()
       'WORKAROUND: Customers_Count_By_Region not available => changed to  CustomersCountByRegion
       Dim count = DB.CustomersCountByRegion("WA")
@@ -62,7 +62,6 @@ Namespace LinqSamples101
     'Explorer onto the O/R Designer which can be accessed by double-clicking
     'on .DBML file in the Solution Explorer.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc02()
       'WORKAROUND: Customers_By_City not available => changed to  CustomersByCity
       Dim custQuery = DB.CustomersByCity("London")
@@ -72,7 +71,6 @@ Namespace LinqSamples101
 
     'This sample uses a stored procedure to return the Customer 'SEVES' and all it's Orders.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc04()
 
       'WORKAROUND: Get_Customer_And_Orders not available => changed to  GetCustomerAndOrders
@@ -91,7 +89,6 @@ Namespace LinqSamples101
 
     'This sample uses a stored procedure that returns an out parameter.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc05()
       Dim totalSales? = 0@
 
@@ -112,7 +109,6 @@ Namespace LinqSamples101
     'Explorer onto the O/R Designer which can be accessed by double-clicking
     'on the .DBML file in the Solution Explorer.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc06()
       Dim cheapProducts = DB.ProductsUnderThisUnitPrice(10D)
 
@@ -123,7 +119,6 @@ Namespace LinqSamples101
     'ProductsUnderThisUnitPrice' method. The method was created from the database
     'function 'ProductsUnderThisUnitPrice' in Northwind database.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - stored procedures not supported")>
     Public Sub LinqToSqlStoredProc07()
       Dim cheapProducts = From prod In DB.ProductsUnderThisUnitPrice(10D) _
                           Where prod.Discontinued = True
