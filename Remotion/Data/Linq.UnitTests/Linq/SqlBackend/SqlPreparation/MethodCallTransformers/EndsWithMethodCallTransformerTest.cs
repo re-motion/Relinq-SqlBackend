@@ -32,9 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          EndsWithMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "EndsWith", typeof (string))));
+      Assert.IsTrue (EndsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("EndsWith", new[] { typeof (string)})));
     }
 
     [Test]

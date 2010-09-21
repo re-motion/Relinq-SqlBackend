@@ -30,8 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          UpperMethodCallTransformer.SupportedMethods.Contains (MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "ToUpper")));
+      Assert.IsTrue (UpperMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("ToUpper", new Type[0])));
     }
 
     [Test]

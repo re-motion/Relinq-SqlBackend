@@ -35,17 +35,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       Assert.IsTrue (
           ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions), "SqlContainsFreetext", typeof (string), typeof (string))));
+              typeof (StringExtensions).GetMethod("SqlContainsFreetext", new[] { typeof (string), typeof (string)})));
 
       Assert.IsTrue (
           ContainsFreetextMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions),
-                  "SqlContainsFreetext",
-                  typeof (string),
-                  typeof (string),
-                  typeof (string))));
+              typeof (StringExtensions).GetMethod("SqlContainsFreetext", new[] { typeof (string), typeof (string), typeof (string) })));
     }
 
     [Test]

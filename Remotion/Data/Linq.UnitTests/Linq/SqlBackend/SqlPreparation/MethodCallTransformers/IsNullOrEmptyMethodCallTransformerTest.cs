@@ -30,9 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.That (
-          IsNullOrEmptyMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod (typeof (string), "IsNullOrEmpty", new[]{typeof(string)})));
+      Assert.That (IsNullOrEmptyMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IsNullOrEmpty", new[]{typeof(string)})));
     }
 
     [Test]

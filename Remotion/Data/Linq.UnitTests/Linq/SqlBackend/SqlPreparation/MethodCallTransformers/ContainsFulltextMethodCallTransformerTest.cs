@@ -35,16 +35,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       Assert.IsTrue (
           ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions), "SqlContainsFulltext", typeof (string), typeof (string))));
+              typeof (StringExtensions).GetMethod("SqlContainsFulltext", new[] { typeof (string), typeof (string)})));
       Assert.IsTrue (
           ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions),
-                  "SqlContainsFulltext",
-                  typeof (string),
-                  typeof (string),
-                  typeof (string))));
+              typeof (StringExtensions).GetMethod("SqlContainsFulltext", new[] { typeof (string), typeof (string), typeof (string)})));
     }
 
     [Test]

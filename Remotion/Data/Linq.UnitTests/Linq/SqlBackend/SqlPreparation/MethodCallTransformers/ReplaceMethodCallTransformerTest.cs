@@ -30,9 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          ReplaceMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Replace", typeof (string), typeof (string))));
+      Assert.IsTrue (ReplaceMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Replace", new[]  { typeof (string), typeof (string)})));
     }
 
     [Test]

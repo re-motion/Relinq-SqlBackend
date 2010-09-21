@@ -31,12 +31,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          SubstringMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof (int))));
-      Assert.IsTrue (
-          SubstringMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "Substring", typeof (int), typeof (int))));
+      Assert.IsTrue (SubstringMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Substring", new[] { typeof (int) })));
+      Assert.IsTrue (SubstringMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Substring", new[] { typeof (int), typeof (int)})));
     }
 
     [Test]

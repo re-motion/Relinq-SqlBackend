@@ -31,24 +31,12 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          IndexOfMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string))));
-      Assert.IsTrue (
-          IndexOfMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char))));
-      Assert.IsTrue (
-          IndexOfMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof (int))));
-      Assert.IsTrue (
-          IndexOfMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof (int))));
-      Assert.IsTrue (
-          IndexOfMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (string), typeof (int), typeof (int))));
-      Assert.IsTrue (
-          IndexOfMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "IndexOf", typeof (char), typeof (int), typeof (int))));
+      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string) })));
+      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IndexOf", new[] { typeof (char)})));
+      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string), typeof (int)})));
+      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IndexOf", new[] { typeof (char), typeof (int)})));
+      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string), typeof (int), typeof (int)})));
+      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (char), typeof (int), typeof (int)})));
     }
 
     [Test]

@@ -17,12 +17,10 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 
@@ -34,10 +32,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          LikeMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetStaticMethod (
-                  typeof (StringExtensions), "SqlLike", typeof (string), typeof (string))));
+      Assert.IsTrue (LikeMethodCallTransformer.SupportedMethods.Contains (typeof (StringExtensions).GetMethod("SqlLike", new[] { typeof (string), typeof (string)})));
     }
 
     [Test]

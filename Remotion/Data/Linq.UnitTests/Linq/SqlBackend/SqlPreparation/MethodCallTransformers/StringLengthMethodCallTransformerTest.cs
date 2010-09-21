@@ -31,9 +31,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [Test]
     public void SupportedMethods ()
     {
-      Assert.That(
-          StringLengthMethodCallTransformer.SupportedMethods.Contains (
-              MethodCallTransformerUtility.GetInstanceMethod (typeof (string), "get_Length")));
+      Assert.That(StringLengthMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("get_Length")));
     }
 
     [Test]
