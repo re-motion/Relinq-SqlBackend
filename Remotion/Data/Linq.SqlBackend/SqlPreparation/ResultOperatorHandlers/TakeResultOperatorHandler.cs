@@ -39,22 +39,21 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
-      var countExpression = stage.PrepareResultOperatorItemExpression (resultOperator.Count, context);
+      var preparedTopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
       if (sqlStatementBuilder.RowNumberSelector != null)
       {
         var whereCondition = Expression.LessThanOrEqual (
-            sqlStatementBuilder.RowNumberSelector, 
-            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, countExpression));
+            sqlStatementBuilder.RowNumberSelector,
+            Expression.Add (sqlStatementBuilder.CurrentRowNumberOffset, preparedTopExpression));
         sqlStatementBuilder.AddWhereCondition (whereCondition);
       }
       else
       {
-        var preparedTopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
         var topExpressionAsConstantExpression = preparedTopExpression as ConstantExpression;
         if (topExpressionAsConstantExpression != null)
           sqlStatementBuilder.TopExpression = new SqlLiteralExpression (topExpressionAsConstantExpression.Value);
         else
-          sqlStatementBuilder.TopExpression = stage.PrepareTopExpression (resultOperator.Count, context);
+          sqlStatementBuilder.TopExpression = preparedTopExpression;
       }
     }
   }
