@@ -56,9 +56,9 @@ Namespace LinqSamples101
     'This sample uses Any to return only Categories that have
     'at least one Discontinued product.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - InvalidOperationException - The operator Equal is not defined for System.Int32 and System.Nullable[System.Int32]")>
+    <Ignore("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")>
     Public Sub LinqToSqlExists02()
-      Dim prodQuery = From cust In db.Categories _
+      Dim prodQuery = From cust In DB.Categories _
             Where (From prod In cust.Products Where prod.Discontinued).Any()
 
       TestExecutor.Execute(prodQuery, MethodBase.GetCurrentMethod())
@@ -67,7 +67,7 @@ Namespace LinqSamples101
     'This sample uses All to return Customers whom all of their orders
     'have been shipped to their own city or whom have no orders.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - Cannot resolve member applied to an expression - works in c# but not in vb")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlExists03()
       Dim ordQuery = From cust In DB.Customers _
               Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
@@ -77,7 +77,6 @@ Namespace LinqSamples101
 
     'This sample uses Contain to find which Customer contains an order with OrderID 10248.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - Contains is not supported by thís code generator")>
     Public Sub LinqToSqlExists04()
 
       Dim order = (From o In DB.Orders _
@@ -89,15 +88,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.
-
-    'TODO: Resolve NullPointerException in MappingResolver
-    'Class: MappingResolver.cs
-    'Method: public IResolvedTableInfo ResolveTableInfo
-    'Satement: MetaTable table = _metaModel.GetTable (tableInfo.ItemType);
-    'Problem: tableInfo = {TABLE(String)} results in GetTable to a null results
-
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - Object reference not set to an instance of an object - works in c# but not in vb")>
+    <Ignore("RM-3336: Contains with a constant collection does not work if the expression on which Contains is called has type IEnumerable<T>")>
     Public Sub LinqToSqlExists05()
       Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
 

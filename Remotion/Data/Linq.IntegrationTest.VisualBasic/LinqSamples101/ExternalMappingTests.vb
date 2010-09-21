@@ -43,10 +43,9 @@ Namespace LinqSamples101
   <TestFixture()>
   Public Class ExternalMappingTests
     Inherits TestBase
-    'TODO: 
     'This sample demonstrates how to create a data context that uses an external XML mapping source.
     <Test()>
-    <Ignore("OutOfMemoryException due to circular dependency (Circular Dependency (Order -> Customer -> Order -> Customer...)")>
+    <Ignore("Not tested: External mapping")>
     Public Sub LinqToSqlExternal01()
       '' load the mapping source
       'Dim path2 = Path.Combine(Application.StartupPath, "..\..\..\Linq.IntegrationTests\TestDomain\Northwind\NorthwindMapped.map")
