@@ -251,6 +251,22 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void GroupBy_UseGroupInFromExpression_BooleanElement ()
+    {
+      CheckQuery (
+          from c in Cooks
+          group c.IsFullTimeCook by c.Name
+            into fullTimeCooksByName
+            from isFullTime in fullTimeCooksByName
+            select new { fullTimeCooksByName.Key, Value = isFullTime },
+          "SELECT [q0].[key] AS [Key],[q2].[element] AS [Value] "
+          + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
+          + "CROSS APPLY (SELECT [t1].[IsFullTimeCook] AS [element] FROM [CookTable] AS [t1] "
+            + "WHERE ((([t1].[Name] IS NULL) AND ([q0].[key] IS NULL)) "
+            + "OR ((([t1].[Name] IS NOT NULL) AND ([q0].[key] IS NOT NULL)) AND ([t1].[Name] = [q0].[key])))) AS [q2]");
+    }
+
+    [Test]
     public void GroupBy_UseGroupInFromExpression_UseGroupFromSubQuery ()
     {
       CheckQuery (

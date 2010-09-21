@@ -271,9 +271,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void InSelectProjection_NewExpression ()
     {
       CheckQuery (
-          from c in Cooks select (from k in Kitchens select new { k.Name }).First (),
-          "SELECT [q2].[Name] AS [Name] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) [t1].[Name] AS [Name] FROM [KitchenTable] AS [t1]) AS [q2]",
-          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)) });
+          from c in Cooks select (from k in Kitchens select new { k.Name, N2 = k.Name }).First (),
+          "SELECT [q2].[Name] AS [Name],[q2].[N2] AS [N2] FROM [CookTable] AS [t0] "
+          + "CROSS APPLY (SELECT TOP (1) [t1].[Name] AS [Name],[t1].[Name] AS [N2] FROM [KitchenTable] AS [t1]) AS [q2]",
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)), N2 = row.GetValue<string> (new ColumnID ("N2", 1)) });
 
       CheckQuery (
         from c in Cooks select (from k in Kitchens select new { k.Name }).Single (),
@@ -306,6 +307,36 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           from c in Restaurants select new { Substituted = from c2 in c.Cooks select c.ID },
           "?");
+    }
+
+    [Test]
+    public void InFromClause_WithBooleanItems ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from isFTC in
+            (from a in c.Assistants select a.IsFullTimeCook).Take (10)
+          where isFTC
+          select isFTC,
+          "SELECT [q0].[value] AS [value] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS APPLY (SELECT TOP (10) [t2].[IsFullTimeCook] AS [value] FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[AssistedID])) AS [q0] "
+          + "WHERE ([q0].[value] = 1)");
+    }
+
+    [Test]
+    public void InFromClause_WithConversion ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from chefsAssistant in
+            (from a in c.Assistants select (Chef) a).Take (10)
+          where chefsAssistant.LetterOfRecommendation != null
+          select chefsAssistant.ID,
+          "SELECT [q0].[ID] AS [value] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS APPLY (SELECT TOP (10) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[AssistedID])) AS [q0] "
+          + "WHERE ([q0].[LetterOfRecommendation] IS NOT NULL)");
     }
   }
 }

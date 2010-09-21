@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_NamedExpression ()
+    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
@@ -85,71 +85,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
       Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
-    }
-
-    [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_UnaryExpression_RevisitsResult ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                         {
-                             SelectProjection = Expression.Convert (new NamedExpression ("test", Expression.Constant (5)), typeof (object)),
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-
-      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
-      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
-      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (tableInfo.TableAlias));
-      Assert.That (result.Type, Is.EqualTo (typeof (object)));
-    }
-
-    [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_SqlEntityExpression ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                         {
-                             SelectProjection =
-                                 new SqlEntityDefinitionExpression (
-                                     typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false)),
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
-          "q0", tableInfo.SqlStatement.SelectProjection.Type);
-
-      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
-
-      Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
-      Assert.That (_mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void ResolveSqlTableReferenceExpression_WithResolvedSubStatementTableInfo_ReturnsNewExpression ()
-    {
-      var newExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { Expression.Constant (1) },
-          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
-
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                         {
-                             SelectProjection = newExpression,
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
-      var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-
-      var result = SqlTableReferenceResolver.ResolveTableReference (expression, _resolverMock, _generator, _mappingResolutionContext);
-
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
     }
 
     [Test]

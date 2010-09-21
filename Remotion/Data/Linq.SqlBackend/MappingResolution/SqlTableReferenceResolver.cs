@@ -80,8 +80,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
       var selectProjection = subStatementTableInfo.SqlStatement.SelectProjection;
 
-      _result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
-          selectProjection, subStatementTableInfo, _sqlTable, selectProjection.Type, _context);
+      _result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (selectProjection, subStatementTableInfo, _sqlTable, _context);
       
       return subStatementTableInfo;
     }

@@ -112,7 +112,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 
       // Always name the select projection - null indicates the default name that will later be removed if the inner expression already has a name.
       // The name is required to be able to access the result from the executed SQL afterwards. The resolution stage will consolidate names around
-      // NewExpressions, entities, etc.
+      // NewExpressions, entities, more than one name, etc.
       SqlStatementBuilder.SelectProjection = new NamedExpression (null, SqlStatementBuilder.SelectProjection);
 
       // We get the DataInfo incrementally when we handle the SelectClause and ResultOperators, so we need to manually adjust the data type if 

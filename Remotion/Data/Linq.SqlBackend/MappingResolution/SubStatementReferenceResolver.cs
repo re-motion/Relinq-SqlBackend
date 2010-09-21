@@ -24,24 +24,26 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
+  /// <summary>
+  /// Creates a reference to the given expression stemming from a <see cref="ResolvedSubStatementTableInfo"/>. References can only be made to 
+  /// expressions with names. Expressions without names will be copied (but their child expressions resolved). For example, a 
+  /// <see cref="NamedExpression"/> is referenced via a <see cref="SqlColumnExpression"/>; but a <see cref="NewExpression"/> is referenced by an
+  /// equivalent <see cref="NewExpression"/> (whose arguments reference the arguments of the original <see cref="NewExpression"/>).
+  /// </summary>
   public class SubStatementReferenceResolver : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor, INamedExpressionVisitor, ISqlGroupingSelectExpressionVisitor
   {
     public static Expression ResolveSubStatementReferenceExpression (
         Expression referencedExpression,
         ResolvedSubStatementTableInfo containingSubStatementTableInfo,
         SqlTableBase containingSqlTable,
-        Type type,
         IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("referencedExpression", referencedExpression);
       ArgumentUtility.CheckNotNull ("containingSubStatementTableInfo", containingSubStatementTableInfo);
-      ArgumentUtility.CheckNotNull ("sqlTable", containingSqlTable);
+      ArgumentUtility.CheckNotNull ("containingSqlTable", containingSqlTable);
       
-      var visitor = new SubStatementReferenceResolver (containingSubStatementTableInfo, containingSqlTable, type, context);
+      var visitor = new SubStatementReferenceResolver (containingSubStatementTableInfo, containingSqlTable, context);
       var result = visitor.VisitExpression (referencedExpression);
-
-      if (result is SqlEntityExpression)
-        context.AddSqlEntityMapping ((SqlEntityExpression) result, containingSqlTable);
 
       return result;
     }
@@ -49,18 +51,15 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     private readonly ResolvedSubStatementTableInfo _tableInfo;
     private readonly SqlTableBase _sqlTable;
     private readonly IMappingResolutionContext _context;
-    private Type _type;
-    
-    protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTableBase sqlTable, Type type, IMappingResolutionContext context)
+
+    protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTableBase sqlTable, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
-      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("context", context);
 
       _tableInfo = tableInfo;
       _sqlTable = sqlTable;
-      _type = type;
       _context = context;
     }
     
@@ -68,30 +67,26 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return expression.CreateReference (_tableInfo.TableAlias, _type);
+      var reference = expression.CreateReference (_tableInfo.TableAlias, expression.Type);
+      _context.AddSqlEntityMapping (reference, _sqlTable);
+      return reference;
     }
     
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlColumnDefinitionExpression (_type, _tableInfo.TableAlias, expression.Name ?? "value", false);
+      return new SqlColumnDefinitionExpression (expression.Type, _tableInfo.TableAlias, expression.Name ?? "value", false);
     }
 
+    // NewExpressions are referenced by creating a new NewExpression holding references to the original arguments. We need to explicitly name each 
+    // argument reference, otherwise all of them would be called "value"...
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedArguments = expression.Arguments.Select (expr => ResolveChildExpression (expr));
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
-    }
-
-    protected override Expression VisitUnaryExpression (UnaryExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      _type = expression.Type;
-      return VisitExpression (expression.Operand);
     }
 
     public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
@@ -113,14 +108,12 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     private Expression ResolveChildExpression (Expression childExpression)
     {
-      return ResolveSubStatementReferenceExpression (childExpression, _tableInfo, _sqlTable, childExpression.Type, _context);
+      return ResolveSubStatementReferenceExpression (childExpression, _tableInfo, _sqlTable, _context);
     }
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
       throw new InvalidOperationException ("SqlColumnExpression is not valid at this point.");
     }
-
-    
   }
 }
