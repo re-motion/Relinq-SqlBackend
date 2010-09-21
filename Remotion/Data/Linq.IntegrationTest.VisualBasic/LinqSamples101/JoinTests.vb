@@ -86,7 +86,7 @@ Namespace LinqSamples101
     'one employee reports to the other and where
     'both employees are from the same City.
     <Test()>
-    <Ignore("TODO RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlJoin04()
       Dim empQuery = From emp1 In DB.Employees, emp2 In emp1.Employees _
             Where emp1.City = emp2.City _
@@ -122,7 +122,7 @@ Namespace LinqSamples101
 
     'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty().
     'The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.
-    <Ignore("TODO RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")>
+    <Ignore("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")>
     <Test()>
     Public Sub LinqToSqlJoin07()
       Dim empQuery = From emp In DB.Employees _
@@ -150,7 +150,7 @@ Namespace LinqSamples101
 
     'This sample shows a join with a composite key.
     <Test()>
-    <Ignore("TODO RM-3110: Support complex columns for entities")>
+    <Ignore("RM-3110: Support complex columns for entities")>
     Public Sub LinqToSqlJoin09()
 
       'The Key keyword means that when the anonymous types are tested for equality,

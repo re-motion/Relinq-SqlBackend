@@ -47,7 +47,6 @@ Namespace LinqSamples101
 
     'This sample uses Order By to sort Employees by hire date.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - bytes not supported in relinq")>
     Public Sub LinqToSqlOrderBy01()
       Dim empQuery = From emp In DB.Employees _
             Order By emp.HireDate
@@ -57,7 +56,7 @@ Namespace LinqSamples101
 
     'This sample uses Where and Order By to sort Orders shipped to London by freight.
     <Test()>
-    <Ignore("TODO RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlOrderBy02()
       Dim londonOrders = From ord In DB.Orders _
             Where ord.ShipCity = "London" _
@@ -90,7 +89,7 @@ Namespace LinqSamples101
     'This sample uses Order By to sort Orders from EmployeeID 1
     'by ship-to country, and then by freight from highest to lowest.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - doesn't support '=' in where ? ")>
+    <Ignore("RM-3335: Support nullable booleans")>
     Public Sub LinqToSqlOrderBy05()
       Dim ordQuery = From ord In DB.Orders _
             Where ord.EmployeeID = 1 _
@@ -102,7 +101,8 @@ Namespace LinqSamples101
     'This sample uses Order By, Max and Group By to find the Products that have
     'the highest unit price in each category, and sorts the group by category id.
     <Test()>
-    <Ignore("Bug or missing feature in re-linq: Argument type 'System.Linq.IGrouping`2[System.Nullable`1[System.Int32],Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.Product]' does not match the corresponding member type 'System.Collections.Generic.IEnumerable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.Product]'")>
+    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
+        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlOrderBy06()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into Group _

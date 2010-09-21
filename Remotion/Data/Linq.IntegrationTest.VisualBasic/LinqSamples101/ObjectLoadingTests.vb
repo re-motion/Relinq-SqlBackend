@@ -52,7 +52,7 @@ Namespace LinqSamples101
     'retrieved objects can end up triggering new queries to the database
     'if the data was not requested by the original query.
     <Test()>
-    <Ignore("Not supported: Trigger")>
+    <Explicit("Not tested: Lazy loading")>
     Public Sub LinqToSqlObject01()
 
       'Dim custs = From cust In db.Customers _
@@ -67,7 +67,7 @@ Namespace LinqSamples101
     '             "database are not required later when navigating through
     '             "the retrieved objects.
     <Test()>
-    <Ignore("Not necessary: LoadOptions")>
+    <Explicit("Not tested: Load options")>
     Public Sub LinqToSqlObject02()
 
       'Dim db2 = New Northwind(connString)
@@ -95,7 +95,7 @@ Namespace LinqSamples101
     'if the data was not requested by the original query. Also this sample shows relationship
     'objects can be filtered using AssoicateWith when they are deferred loaded.
     <Test()>
-    <Ignore("Not necessary: LoadOptions")>
+    <Explicit("Not tested: Load options")>
     Public Sub LinqToSqlObject03()
 
       '  Dim db2 As New Northwind(connString)
@@ -130,7 +130,7 @@ Namespace LinqSamples101
     'the retrieved objects. Also this sample shows relationship" & _
     'objects can be ordered by using Assoicate With when they are eager loaded.
     <Test()>
-    <Ignore("Not necessary: LoadOptions")>
+    <Explicit("Not tested: Load options")>
     Public Sub LinqToSqlObject04()
 
       '  Dim db2 = New Northwind(connString)
@@ -171,7 +171,7 @@ Namespace LinqSamples101
     'retrieved objects can result in triggering new queries to the database
     'if the data was not requested by the original query.
     <Test()>
-    <Ignore("Not supported: Trigger")>
+    <Explicit("Not tested: Lazy loading")>
     Public Sub LinqToSqlObject05()
       'Dim emps = DB.Employees
 
@@ -186,7 +186,7 @@ Namespace LinqSamples101
     'retrieved objects can end up triggering new queries to the database
     'if the data type is Link.")
     <Test()>
-    <Ignore("Not supported: Trigger")>
+    <Explicit("Not tested: Lazy loading")>
     Public Sub LinqToSqlObject06()
       'Dim emps = DB.Employees
 
@@ -199,7 +199,7 @@ Namespace LinqSamples101
     'This samples overrides the partial method LoadProducts in Category class. When products of a category are being loaded,
     'LoadProducts is being called to load products that are not discontinued in this category.
     <Test()>
-    <Ignore("Not necessary: LoadOptions")>
+    <Explicit("Not tested: Load methods")>
     Public Sub LinqToSqlObject07()
 
       'Dim db2 As New Northwind(connString)

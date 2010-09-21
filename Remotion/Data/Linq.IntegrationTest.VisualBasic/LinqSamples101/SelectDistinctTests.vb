@@ -76,7 +76,7 @@ Namespace LinqSamples101
     'with the FirstName and LastName fields combined into a single field, 'Name',
     'and the HomePhone field renamed to Phone in the resulting sequence.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - String.Concat is not supported, test works in c# but not in vb")>
+    <Ignore("RM-3337: Support for additional string manipulation routine: Concat")>
     Public Sub LinqToSqlSelect03()
       Dim nameAndNumber = From emp In DB.Employees _
             Select Name = emp.FirstName & " " & emp.LastName, _
@@ -90,7 +90,6 @@ Namespace LinqSamples101
     'called HalfPrice which is set to the Product's UnitPrice 
     'divided by 2.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - rounding differences ?")>
     Public Sub LinqToSqlSelect04()
       Dim prices = From prod In DB.Products _
             Select prod.ProductID, HalfPrice = prod.UnitPrice / 2
@@ -101,7 +100,7 @@ Namespace LinqSamples101
     'This sample uses Select and a conditional statment to return a sequence of product
     'name and product availability.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - nullables not supported")>
+    <Ignore("RM-3269: Invalid in-memory projection generated when a binary (or other) expression contains a conversion")>
     Public Sub LinqToSqlSelect05()
       Dim inStock = From prod In DB.Products _
             Select prod.ProductName, _
@@ -113,7 +112,7 @@ Namespace LinqSamples101
 
     'This sample uses Select and a known type to return a sequence of employee names.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - cannot be translated to SQL tex0t by this SQL generator ")>
+    <Ignore("RM-3306: Support for MemberInitExpressions")>
     Public Sub LinqToSqlSelect06()
       Dim names = From emp In DB.Employees _
             Select New Name With {.FirstName = emp.FirstName, _
@@ -126,7 +125,7 @@ Namespace LinqSamples101
     'just the London Customers' contact names.
     'Bug or missing feature in Relinq - test works in c# but not in vb
     <Test()>
-    <Ignore("TODO RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlSelect07()
       Dim londonNames = From cust In DB.Customers _
             Where cust.City = "London" _
@@ -155,7 +154,8 @@ Namespace LinqSamples101
     'saved if shipping is not included.
     'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
     <Test()>
-    <Ignore("Bug or missing feature in re-linq: Argument type 'System.Linq.IQueryable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.OrderDetail]' does not match the corresponding member type 'System.Collections.Generic.IEnumerable`1[Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.OrderDetail]'")>
+    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
+            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlSelect09()
       Dim orders = From ord In DB.Orders _
             Select ord.OrderID, DiscountedProducts = (From od In ord.OrderDetails _
@@ -196,7 +196,7 @@ Namespace LinqSamples101
     'PhoneNumberConverter' to convert Phone number
     'to an international format.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - local method calls not supported")>
+    <Ignore("RM-3307: Support for local method calls")>
     Public Sub LinqToSqlLocalMethodCall01()
 
       Dim q = From c In DB.Customers _
@@ -212,7 +212,7 @@ Namespace LinqSamples101
     'and create XDocument.>
     'TODO need to fix SavingTestExecutor to properly handle result ?
     <Test()> _
-    <Ignore("Bug or missing feature in Relinq - local method calls not supported")>
+    <Ignore("RM-3307: Support for local method calls")>
     Public Sub LinqToSqlLocalMethodCall02()
 
       Dim doc = <Customers>
