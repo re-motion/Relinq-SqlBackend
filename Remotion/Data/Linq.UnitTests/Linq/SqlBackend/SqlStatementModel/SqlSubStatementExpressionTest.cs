@@ -129,15 +129,16 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void ConvertToSqlTable_StreamedForceSingleValueInfo ()
+    public void ConvertToSqlTable_StreamedSingleValueInfo ()
     {
       var selectProjection = Expression.Constant (new Cook());
       var sqlStatement =
           new SqlStatementBuilder
           {
-              DataInfo = new StreamedForcedSingleValueInfo (typeof (Cook), false),
+              DataInfo = new StreamedSingleValueInfo (typeof (Cook), false),
               SelectProjection = selectProjection,
-              TopExpression = new SqlLiteralExpression (2)
+              TopExpression = new SqlLiteralExpression (2),
+              SqlTables = { new SqlTable(new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"),JoinSemantics.Inner) }
           }.GetSqlStatement();
       var expression = new SqlSubStatementExpression (sqlStatement);
 
@@ -159,15 +160,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void ConvertToSqlTable_StreamedForceSingleValueInfoWithReturnsTrueIfEmpty_JoinSemanticIsChanged ()
+    public void ConvertToSqlTable_StreamedSingleValueInfo_NoSqlTables ()
+    {
+      var selectProjection = Expression.Constant (new Cook ());
+      var topExpression = new SqlLiteralExpression (2);
+      var sqlStatement =
+          new SqlStatementBuilder
+          {
+            DataInfo = new StreamedSingleValueInfo (typeof (Cook), false),
+            SelectProjection = selectProjection,
+            TopExpression = topExpression
+          }.GetSqlStatement ();
+      var expression = new SqlSubStatementExpression (sqlStatement);
+
+      var result = expression.ConvertToSqlTable ("q0");
+
+      Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.TableInfo.GetResolvedTableInfo ().TableAlias, Is.EqualTo ("q0"));
+      Assert.That (result.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+
+      var newSubStatement = ((ResolvedSubStatementTableInfo) result.TableInfo).SqlStatement;
+      Assert.That (newSubStatement.TopExpression, Is.SameAs (topExpression));
+    }
+
+    [Test]
+    public void ConvertToSqlTable_StreamedSingleValueInfoWithReturnsTrueIfEmpty_JoinSemanticIsChanged ()
     {
       var selectProjection = Expression.Constant (new Cook ());
       var sqlStatement =
           new SqlStatementBuilder
           {
-            DataInfo = new StreamedForcedSingleValueInfo (typeof (Cook), true),
+            DataInfo = new StreamedSingleValueInfo (typeof (Cook), true),
             SelectProjection = selectProjection,
-            TopExpression = new SqlLiteralExpression (2)
+            TopExpression = new SqlLiteralExpression (2),
+            SqlTables = { new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner) }
           }.GetSqlStatement ();
       var expression = new SqlSubStatementExpression (sqlStatement);
 

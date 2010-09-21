@@ -34,9 +34,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var equivalentTakeOperator = new TakeResultOperator (new SqlLiteralExpression (2)); 
       var takeHandler = new TakeResultOperatorHandler();
       takeHandler.HandleResultOperator (equivalentTakeOperator, sqlStatementBuilder, generator, stage, context);
-      //UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-      sqlStatementBuilder.DataInfo = new StreamedForcedSingleValueInfo (
-          resultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo).DataType, resultOperator.ReturnDefaultWhenEmpty);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
     }
   }
 }

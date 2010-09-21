@@ -100,14 +100,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
       var newDataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (SqlStatement.DataInfo.DataType), SqlStatement.SelectProjection);
 
       var adjustedStatementBuilder = new SqlStatementBuilder (SqlStatement) { DataInfo = newDataInfo };
-      // TODO Review 3100: I don't really like the StreamedForcedSingleValueInfo approach, it was a solution, but not really the best solution.
-      // TODO Review 3100: Change as follows: Check for StreamedSingleValueInfo instead; always set the TopExpression to new SqlLiteralExpression (1). We can do this because we know that the sequence was expected to return a single value anyway.
-      // TODO Review 3100: All tests (esp. integration tests) should still work. Then, remove StreamedForcedSingleValueInfo. In SingleResultOperatorHandler, use UpdateDataInfo instead.
-      if (SqlStatement.DataInfo is StreamedForcedSingleValueInfo)
+      if (SqlStatement.DataInfo is StreamedSingleValueInfo && SqlStatement.SqlTables.Count!=0)
       {
-        Debug.Assert (
-            adjustedStatementBuilder.TopExpression is SqlLiteralExpression
-            && ((SqlLiteralExpression) adjustedStatementBuilder.TopExpression).Value.Equals (2));
         // A sub-statement might use a different TopExpression than 1 (or none at all) in order to provoke a SQL error when more than one item is 
         // returned. When we convert the statement to a sequence statement, however, we must ensure that the exact "only 1 value is returned" 
         // semantics is ensured because we can't provoke a SQL error (but instead would return strange result sets).
