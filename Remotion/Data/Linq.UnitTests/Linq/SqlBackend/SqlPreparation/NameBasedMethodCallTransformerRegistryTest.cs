@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -76,16 +75,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
       _methodCallTransformerRegistry.Register (_methodName, transformerStub);
 
-      var expectedTransformer = _methodCallTransformerRegistry.GetItem (_methodName);
-      Assert.That (_transformerStub, Is.Not.SameAs(expectedTransformer));
-      Assert.That (transformerStub, Is.SameAs(expectedTransformer));
+      var actualTransformer = _methodCallTransformerRegistry.GetItem (_methodName);
+      // TODO Review 3102: Expected and Actual are the wrong way around
+      Assert.That (_transformerStub, Is.Not.SameAs(actualTransformer));
+      Assert.That (transformerStub, Is.SameAs(actualTransformer));
     }
 
     [Test]
     public void Register_SeveralMethodNames ()
     {
       var methodName = "EndsWith";
-      IEnumerable<string > methodInfos = new List<string> { _methodName, methodName };
+      var methodInfos = new List<string> { _methodName, methodName };
       _methodCallTransformerRegistry.Register (methodInfos, _transformerStub);
 
       var expectedGenerator = _methodCallTransformerRegistry.GetItem (_methodName);
@@ -128,7 +128,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private void AssertAllMethodsRegistered (NameBasedMethodCallTransformerRegistry registry, Type type)
     {
       var field = type.GetField ("SupportedMethodNames");
-      if (field != null)
+      if (field != null) // TODO Review 3102: Remove this test. Instead, only call this method for transformers with a SupportedMethodNames field. (Otherwise, the test might not even work without anyone noticing!)
       {
         var methodNames = (string[]) type.GetField ("SupportedMethodNames").GetValue (null);
         Assert.That (methodNames.Length, Is.GreaterThan (0));

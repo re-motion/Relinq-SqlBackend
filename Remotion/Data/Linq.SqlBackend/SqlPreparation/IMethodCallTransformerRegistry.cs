@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// <see cref="IMethodCallTransformerRegistry"/> defines common methods for all method calls transformer registries.
+  /// Defines a common interface for all method call transformer registries.
   /// </summary>
   public interface IMethodCallTransformerRegistry
   {
