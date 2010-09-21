@@ -74,6 +74,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
+      // TODO Review 3050: Use either string.Format or '+', but not both.
       return string.Format ("{0} JOIN ", JoinSemantics.ToString ().ToUpper ()) + JoinInfo + JoinedTables.Aggregate ("", (s, t) => s + " " + t);
     }
   }
