@@ -59,7 +59,7 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause to filter for Customers in London.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - test works in c# but not in vb")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlFirst02()
 
       'Only return customers from London
@@ -77,7 +77,7 @@ Namespace LinqSamples101
     'Explorer onto the O/R Designer which can be accessed by double-clicking
     'on the .DBML file in the Solution Explorer.
     <Test()>
-    <Ignore()>
+    <Explicit("Not tested: Stored procedures")>
     Public Sub LinqToSqlStoredProc06()
       Dim cheapProducts = DB.ProductsUnderThisUnitPrice(10D)
 
@@ -88,7 +88,7 @@ Namespace LinqSamples101
     'ProductsUnderThisUnitPrice' method. The method was created from the database
     'function 'ProductsUnderThisUnitPrice' in Northwind database.
     <Test()>
-    <Ignore()>
+    <Ignore("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")>
     Public Sub LinqToSqlStoredProc07()
       Dim cheapProducts = From prod In DB.ProductsUnderThisUnitPrice(10D) _
                           Where prod.Discontinued = True

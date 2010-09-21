@@ -276,6 +276,7 @@
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion03.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlFirst02.result" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
