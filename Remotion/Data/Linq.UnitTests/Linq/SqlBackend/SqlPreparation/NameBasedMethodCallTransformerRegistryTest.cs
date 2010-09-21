@@ -47,15 +47,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       registry.Register ("Test", new TestNameBasedMethodCallTransformer());
 
       AssertAllMethodsRegistered (registry, typeof (TestNameBasedMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (ContainsMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (EndsWithMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (IndexOfMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (LowerMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (RemoveMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (ReplaceMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (StartsWithMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (SubstringMethodCallTransformer));
-      AssertAllMethodsRegistered (registry, typeof (UpperMethodCallTransformer));
     }
 
     [Test]
@@ -76,9 +67,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _methodCallTransformerRegistry.Register (_methodName, transformerStub);
 
       var actualTransformer = _methodCallTransformerRegistry.GetItem (_methodName);
-      // TODO Review 3102: Expected and Actual are the wrong way around
-      Assert.That (_transformerStub, Is.Not.SameAs(actualTransformer));
-      Assert.That (transformerStub, Is.SameAs(actualTransformer));
+      
+      Assert.That (actualTransformer, Is.Not.SameAs (_transformerStub));
+      Assert.That (actualTransformer, Is.SameAs (transformerStub));
     }
 
     [Test]
@@ -127,15 +118,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
     private void AssertAllMethodsRegistered (NameBasedMethodCallTransformerRegistry registry, Type type)
     {
-      var field = type.GetField ("SupportedMethodNames");
-      if (field != null) // TODO Review 3102: Remove this test. Instead, only call this method for transformers with a SupportedMethodNames field. (Otherwise, the test might not even work without anyone noticing!)
-      {
-        var methodNames = (string[]) type.GetField ("SupportedMethodNames").GetValue (null);
-        Assert.That (methodNames.Length, Is.GreaterThan (0));
+      var methodNames = (string[]) type.GetField ("SupportedMethodNames").GetValue (null);
+      Assert.That (methodNames.Length, Is.GreaterThan (0));
 
-        foreach (var methodName in methodNames)
-          Assert.That (registry.GetItem(methodName), Is.TypeOf (type));
-      }
+      foreach (var methodName in methodNames)
+         Assert.That (registry.GetItem(methodName), Is.TypeOf (type));
     }
   }
 
