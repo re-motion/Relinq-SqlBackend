@@ -79,7 +79,7 @@ Namespace LinqSamples101
 
     'This sample uses CType to return FullContact or Nothing.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - System.InvalidCastException : Unable to cast object of type 'Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.ShipperContact' to type 'Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.FullContact'.")>
+    <Ignore("RM-3267: Support for TypeAs expressions")>
     Public Sub LinqToSqlInheritance04()
       Dim cons = From contact In DB.Contacts _
             Select CType(contact, FullContact)
@@ -89,7 +89,7 @@ Namespace LinqSamples101
 
     'This sample uses a cast to retrieve customer contacts who live in London.
     <Test()>
-    <Ignore("System.NotSupportedException : Cannot resolve member 'ContactType' applied to expression 'contact'; the expression type 'ParameterExpression' is not supported in member expressions.")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlInheritance05()
       Dim cons = From contact In DB.Contacts _
             Where contact.ContactType = "Customer" _

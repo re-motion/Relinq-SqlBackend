@@ -48,7 +48,7 @@ Namespace LinqSamples101
     'This sample uses foreign key navigation in the 
     'From clause to select all orders for customers in London.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - works in c# but not in vb")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlJoin01()
       Dim ordersInLondon = From cust In DB.Customers, ord In cust.Orders _
             Where cust.City = "London"
@@ -60,7 +60,7 @@ Namespace LinqSamples101
     'Where clause to filter for Products whose Supplier is in the USA
     'that are out of stock.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - works in c# but not in vb")>
+    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlJoin02()
       Dim outOfStock = From prod In DB.Products _
             Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0
@@ -72,7 +72,7 @@ Namespace LinqSamples101
     'from clause to filter for employees in Seattle,
     'and also list their territories.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - works in c# but not in vb")>
+    <Ignore("RM-3110: Support complex columns for entities")>
     Public Sub LinqToSqlJoin03()
       Dim seattleEmployees = From emp In DB.Employees, et In emp.EmployeeTerritories _
             Where emp.City = "Seattle" _
@@ -136,7 +136,7 @@ Namespace LinqSamples101
 
     'This sample projects a 'Let' expression resulting from a join.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - String.Concat not supported")>
+    <Ignore("RM-3337: Support for additional string manipulation routine: Concat")>
     Public Sub LinqToSqlJoin08()
       Dim ordQuery = From cust In DB.Customers _
             Group Join ord In DB.Orders On cust.CustomerID Equals ord.CustomerID _
