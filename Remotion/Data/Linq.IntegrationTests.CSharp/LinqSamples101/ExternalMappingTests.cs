@@ -36,7 +36,7 @@ using NUnit.Framework;
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
-  public class GroupExternalMapping : TestBase
+  public class ExternalMappingTests : TestBase
   {
     /// <summary>
     /// This sample demonstrates how to create a data context that uses an external XML mapping source.
