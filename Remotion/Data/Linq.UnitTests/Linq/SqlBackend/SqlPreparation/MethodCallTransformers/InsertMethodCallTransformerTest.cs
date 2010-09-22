@@ -38,15 +38,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     {
       var method = typeof (string).GetMethod ("Insert", new[] { typeof(int), typeof(string) });
       var objectExpression = Expression.Constant ("Test");
-      var argument1 = new SqlLiteralExpression(3);
+      var argument1 = Expression.Constant(3);
       var argument2 = Expression.Constant("what");
       var expression = Expression.Call (objectExpression, method, argument1, argument2);
       var transformer = new InsertMethodCallTransformer ();
 
       var result = transformer.Transform (expression);
 
-      // TODO Review 3309: Index calculation is wrong, should be argument1 + 1. CASE WHEN is missing: STUFF doesn't work when the insertion index is at the end of the string. See JIRA comment for RM-3309.
-      var expectedResult = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, argument1, new SqlLiteralExpression(0), argument2);
+      var expectedTestExpression = Expression.Equal (new SqlFunctionExpression (typeof (int), "LEN", objectExpression), new SqlLiteralExpression (4));
+      var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
+      var expectedThenExpression = Expression.Add (objectExpression, argument2, concatMethod);
+      var expectedElseExpression = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, new SqlLiteralExpression(4), new SqlLiteralExpression(0), argument2);
+      var expectedResult = Expression.Condition (expectedTestExpression, expectedThenExpression, expectedElseExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

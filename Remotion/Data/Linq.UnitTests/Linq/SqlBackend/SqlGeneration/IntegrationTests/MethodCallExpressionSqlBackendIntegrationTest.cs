@@ -325,15 +325,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO Review 3309: SQL is not correct")]
     public void Insert ()
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Insert (3, "Test"),
-          "SELECT CASE WHEN LEN ([t0].[FirstName] = @1) "
-          + "THEN [t0].[FirstName] + @2 "
-          + "ELSE STUFF([t0].[FirstName], @1 + 1, 0, @2) AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter("@1", 3),
+          "SELECT CASE WHEN (LEN([t0].[FirstName]) = 4) "
+          + "THEN ([t0].[FirstName] + @1) "
+          + "ELSE STUFF([t0].[FirstName], 4, 0, @2) END AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter("@1", "Test"),
           new CommandParameter("@2", "Test"));
     }
 
