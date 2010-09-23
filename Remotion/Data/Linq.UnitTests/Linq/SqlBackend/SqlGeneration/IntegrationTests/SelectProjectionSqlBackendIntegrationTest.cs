@@ -360,5 +360,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           new CommandParameter ("@1", 1));
     }
 
+    [Test]
+    public void NestedSelectProjection_WithCastInsideNamedExpression ()
+    {
+      CheckQuery (
+          from c in Cooks select new { Name = c.Name, ConvertedID = (double) c.ID },
+          "SELECT [t0].[Name] AS [Name],[t0].[ID] AS [ConvertedID] FROM [CookTable] AS [t0]",
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)), ConvertedID = (double) row.GetValue<int> (new ColumnID ("ConvertedID", 1)) });
+
+      CheckQuery (
+        from c in Cooks select new { Name = c.Name, History = (double) c.ID < 100 ? "Long-time cook" : "New cook" },
+          "SELECT [t0].[Name] AS [Name],CASE WHEN ([t0].[ID] < @1) THEN @2 ELSE @3 END AS [History] FROM [CookTable] AS [t0]",
+          row => (object) new { Name = row.GetValue<string> (new ColumnID ("Name", 0)), History = row.GetValue<string> (new ColumnID ("History", 1)) },
+        new CommandParameter ("@1", 100.0),
+        new CommandParameter ("@2", "Long-time cook"),
+        new CommandParameter ("@3", "New cook"));
+    }
   }
 }

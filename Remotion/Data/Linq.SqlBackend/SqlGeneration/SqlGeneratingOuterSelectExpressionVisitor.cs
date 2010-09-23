@@ -49,25 +49,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       visitor.VisitExpression (expression);
     }
 
-    private int _columnPosition;
-
     protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
         : base (commandBuilder, stage)
     {
     }
 
+    protected int ColumnPosition { get; set; }
+
     public override Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      var result = base.VisitNamedExpression (expression);
+
       var newInMemoryProjectionBody = Expression.Call (
-          CommandBuilder.InMemoryProjectionRowParameter, 
-          s_getValueMethod.MakeGenericMethod (expression.Type), 
+          CommandBuilder.InMemoryProjectionRowParameter,
+          s_getValueMethod.MakeGenericMethod (expression.Type),
           Expression.Constant (GetNextColumnID (expression.Name ?? "value")));
 
       CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
 
-      return base.VisitNamedExpression (expression);
+      return result;
     }
 
     public override Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -104,26 +106,27 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public override Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
     {
-      base.VisitConvertedBooleanExpression (expression);
+      var result = base.VisitConvertedBooleanExpression (expression);
 
-      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody ();
+      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
       if (oldInMemoryProjectionBody != null)
       {
         Debug.Assert (oldInMemoryProjectionBody.Type == typeof (int));
-        
+
         var newInMemoryProjectionBody = Expression.Call (s_toBooleanMethod, oldInMemoryProjectionBody);
         CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
       }
 
-      return expression;
+      return result;
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)
     {
       var result = base.VisitUnaryExpression (expression);
 
-      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody ();
-      if (oldInMemoryProjectionBody != null && (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked))
+      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
+      if (oldInMemoryProjectionBody != null
+          && (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked))
       {
         var newInMemoryProjectionBody = Expression.MakeUnary (expression.NodeType, oldInMemoryProjectionBody, expression.Type, expression.Method);
         CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
@@ -153,7 +156,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     protected ColumnID GetNextColumnID (string columnName)
     {
-      return new ColumnID (columnName, _columnPosition++);
+      return new ColumnID (columnName, ColumnPosition++);
     }
 
     private Expression VisitArgumentExpression (Expression argumentExpression)

@@ -29,9 +29,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
     }
 
-    public int ColumnPosition
+    public new int ColumnPosition
     {
-      get { return (int) PrivateInvoke.GetNonPublicField (this, typeof (SqlGeneratingOuterSelectExpressionVisitor), "_columnPosition"); }
+      get { return base.ColumnPosition; }
     }
 
     public new Expression VisitNewExpression (NewExpression expression)

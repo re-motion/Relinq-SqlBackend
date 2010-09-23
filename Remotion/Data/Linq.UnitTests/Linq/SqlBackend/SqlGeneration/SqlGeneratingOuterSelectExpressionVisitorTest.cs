@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
        SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0);
+      var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjectionBody());
     }
 
@@ -86,10 +86,26 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
-      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0);
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 AS [test]"));
+    }
+
+    [Test]
+    public void VisitNamedExpression_OverridesChildProjection ()
+    {
+      _commandBuilder.SetInMemoryProjectionBody (Expression.Constant (0));
+      var nestedNamedExpression = new NamedExpression ("outer", Expression.Convert (Expression.Constant (0), typeof (double)));
+
+      _visitor.VisitNamedExpression (nestedNamedExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "outer", 0, typeof (double));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 AS [outer]"));
     }
 
     [Test]
@@ -120,7 +136,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (4));
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
       
       var expectedProjectionForNewExpression = Expression.New (
@@ -146,7 +162,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _visitor.VisitNewExpression (newExpression);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
       
       var expectedProjectionForNewExpression = Expression.New (
@@ -173,12 +189,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       _visitor.VisitConvertedBooleanExpression (expression);
 
-      var expectedProjection = Expression.Call (typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }), GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      var expectedProjection = Expression.Call (
+          typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }),
+          GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
     }
 
     [Test]
-    public void VisitConvertExpression_ProjectionExpressonIsNull ()
+    public void VisitUnaryExpression_Convert_ProjectionExpressonIsNull ()
     {
       var expression = Expression.Convert (Expression.Constant (1), typeof (double));
 
@@ -188,7 +206,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConvertExpression_ProjectionExpressonIsNotNull ()
+    public void VisitUnaryExpression_Convert_ProjectionExpressonIsNotNull ()
     {
       var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
       var expression = Expression.Convert (_namedExpression, typeof (double), methodInfo);
@@ -196,14 +214,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _visitor.VisitUnaryExpression (expression);
 
       var expectedProjection = Expression.Convert (
-          GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0),
+          GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)),
           typeof (double),
           methodInfo);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
-    public void VisitConvertCheckedExpression_ProjectionExpressonIsNull ()
+    public void VisitUnaryExpression_ConvertChecked_ProjectionExpressonIsNull ()
     {
       var expression = Expression.ConvertChecked (Expression.Constant (1), typeof (double));
 
@@ -213,7 +231,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConvertCheckedExpression_ProjectionExpressonIsNotNull ()
+    public void VisitUnaryExpression_ConvertChecked_ProjectionExpressonIsNotNull ()
     {
       var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
       var expression = Expression.ConvertChecked (_namedExpression, typeof (double), methodInfo);
@@ -221,7 +239,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _visitor.VisitUnaryExpression (expression);
 
       var expectedProjection = Expression.ConvertChecked (
-          GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0),
+          GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)),
           typeof (double),
           methodInfo);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
@@ -249,11 +267,15 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
               new ColumnID ("test_FirstName", columnPositionStart + 2) }));
     }
 
-    private MethodCallExpression GetExpectedProjectionForNamedExpression (ParameterExpression expectedRowParameter, string name, int columnPosoitionStart)
+    private MethodCallExpression GetExpectedProjectionForNamedExpression (
+        ParameterExpression rowParameter,
+        string name,
+        int columnPosoitionStart,
+        Type expressionType)
     {
       return Expression.Call (
-          expectedRowParameter,
-          typeof (IDatabaseResultRow).GetMethod ("GetValue").MakeGenericMethod (typeof (int)),
+          rowParameter,
+          typeof (IDatabaseResultRow).GetMethod ("GetValue").MakeGenericMethod (expressionType),
           Expression.Constant (new ColumnID (name ?? "value", columnPosoitionStart)));
     }
   }
