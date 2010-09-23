@@ -79,14 +79,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       var columnIds = expression.Columns
           .Select (e => GetNextColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName))
           .ToArray();
-      
+
+      var result = base.VisitSqlEntityExpression (expression);
+
       var newInMemoryProjectionBody = Expression.Call (
           CommandBuilder.InMemoryProjectionRowParameter,
           s_getEntityMethod.MakeGenericMethod (expression.Type),
           Expression.Constant (columnIds));
       CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
 
-      return base.VisitSqlEntityExpression (expression);
+      return result;
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
