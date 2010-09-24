@@ -80,11 +80,11 @@ Namespace LinqSamples101
 
     'This sample demonstrates joining to the results of a table-valued user-defined function.
     <Test()>
-    <Ignore("Bug or missing feature in Relinq - user defined functions not supported")>
+    <Ignore("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")>
     Public Sub LinqToSqlUserDefined04()
 
       Dim q = From category In DB.Categories _
-            Group Join prod In DB.ProductsUnderThisUnitPrice(8.5D) _
+            Group Join prod In DB.Functions.ProductsUnderThisUnitPrice(8.5D) _
             On category.CategoryID Equals prod.CategoryID _
             Into prods = Group _
             From prod2 In prods _
