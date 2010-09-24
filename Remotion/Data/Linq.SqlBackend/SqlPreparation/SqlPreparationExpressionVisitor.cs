@@ -251,7 +251,6 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (e => VisitExpression (e)));
     }
 
-
     private bool IsNullConstant (Expression expression)
     {
       var constantExpression = expression as ConstantExpression;

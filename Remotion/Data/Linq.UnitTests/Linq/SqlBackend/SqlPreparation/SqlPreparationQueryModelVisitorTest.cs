@@ -170,6 +170,35 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Data sources cannot be null.")]
+    public void VisitQueryModel_ConstantExpression_NullCollection ()
+    {
+      var constantExpression = Expression.Constant (null, typeof (int[]));
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      _visitor.VisitQueryModel (_queryModel);
+    }
+
+    [Test]
+    public void VisitQueryModel_ConstantExpression_Collection_TypeIsEnumerable_ButValueIsCollection ()
+    {
+      var constantExpression = Expression.Constant (new[] { "t1", "t2" }, typeof (IEnumerable<string>));
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      _visitor.VisitQueryModel (_queryModel);
+
+      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.TypeOf (typeof (ConstantExpression)));
+
+      var constantExpressionInSelectProjection = ((ConstantExpression) ((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression);
+      Assert.That (constantExpressionInSelectProjection.Value, Is.EqualTo (constantExpression.Value));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
+
+      var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
+    }
+
+    [Test]
     public void VisitQueryModel_ConstantExpression_Collection_AdjustsDataInfo_IfRequired ()
     {
       var constantExpression = Expression.Constant (new[] { "t1", "t2" });

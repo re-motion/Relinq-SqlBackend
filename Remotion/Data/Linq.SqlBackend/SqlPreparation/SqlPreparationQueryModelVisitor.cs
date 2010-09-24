@@ -241,10 +241,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     private ICollection GetConstantCollectionValue (QueryModel queryModel)
     {
       var fromExpressionAsConstant = (queryModel.MainFromClause.FromExpression) as ConstantExpression;
-      if (queryModel.IsIdentityQuery() && fromExpressionAsConstant != null && typeof (ICollection).IsAssignableFrom (fromExpressionAsConstant.Type))
-        return (ICollection) fromExpressionAsConstant.Value;
-      else
-        return null;
+      if (queryModel.IsIdentityQuery () && fromExpressionAsConstant != null)
+      {
+        if (fromExpressionAsConstant.Value is ICollection)
+          return (ICollection) fromExpressionAsConstant.Value;
+        
+        if (fromExpressionAsConstant.Value == null)
+          throw new NotSupportedException ("Data sources cannot be null.");
+      }
+
+      return null;
     }
   }
 }
