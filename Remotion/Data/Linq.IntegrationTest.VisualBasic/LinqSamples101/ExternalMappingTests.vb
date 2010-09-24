@@ -45,7 +45,7 @@ Namespace LinqSamples101
     Inherits TestBase
     'This sample demonstrates how to create a data context that uses an external XML mapping source.
     <Test()>
-    <Ignore("Not tested: External mapping")>
+    <Explicit("Not tested: External mapping")>
     Public Sub LinqToSqlExternal01()
       '' load the mapping source
       'Dim path2 = Path.Combine(Application.StartupPath, "..\..\..\Linq.IntegrationTests\TestDomain\Northwind\NorthwindMapped.map")

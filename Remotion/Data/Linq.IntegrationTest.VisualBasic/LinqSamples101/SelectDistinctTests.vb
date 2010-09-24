@@ -123,7 +123,6 @@ Namespace LinqSamples101
 
     'This sample uses Select and Where clauses to return a sequence of
     'just the London Customers' contact names.
-    'Bug or missing feature in Relinq - test works in c# but not in vb
     <Test()>
     <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlSelect07()
