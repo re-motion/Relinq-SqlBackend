@@ -1,4 +1,37 @@
-﻿USE [master]
+﻿-- Microsoft Public License (Ms-PL)
+
+-- This license governs use of the accompanying software. If you use the software, you
+-- accept this license. If you do not accept the license, do not use the software.
+
+-- 1. Definitions
+-- The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
+-- same meaning here as under U.S. copyright law.
+-- A "contribution" is the original software, or any additions or changes to the software.
+-- A "contributor" is any person that distributes its contribution under this license.
+-- "Licensed patents" are a contributor's patent claims that read directly on its contribution.
+
+-- 2. Grant of Rights
+-- (A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, 
+-- each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, 
+-- prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+-- (B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, 
+-- each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, 
+-- sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+
+-- 3. Conditions and Limitations
+-- (A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+-- (B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from 
+-- such contributor to the software ends automatically.
+-- (C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present 
+-- in the software.
+-- (D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of 
+-- this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a 
+-- license that complies with this license.
+-- (E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
+-- You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
+-- the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+USE [master]
 GO
 /****** Object:  Database [Northwind]    Script Date: 09/01/2010 11:16:50 ******/
 CREATE DATABASE [Northwind] ON  PRIMARY 
@@ -78,12 +111,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Shippers](
-	[ShipperID] [int] IDENTITY(1,1) NOT NULL,
-	[CompanyName] [nvarchar](40) NOT NULL,
-	[Phone] [nvarchar](24) NULL,
+    [ShipperID] [int] IDENTITY(1,1) NOT NULL,
+    [CompanyName] [nvarchar](40) NOT NULL,
+    [Phone] [nvarchar](24) NULL,
  CONSTRAINT [PK_Shippers] PRIMARY KEY CLUSTERED 
 (
-	[ShipperID] ASC
+    [ShipperID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -98,11 +131,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Region](
-	[RegionID] [int] NOT NULL,
-	[RegionDescription] [nchar](50) NOT NULL,
+    [RegionID] [int] NOT NULL,
+    [RegionDescription] [nchar](50) NOT NULL,
  CONSTRAINT [PK_Region] PRIMARY KEY NONCLUSTERED 
 (
-	[RegionID] ASC
+    [RegionID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -116,32 +149,32 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Suppliers](
-	[SupplierID] [int] IDENTITY(1,1) NOT NULL,
-	[CompanyName] [nvarchar](40) NOT NULL,
-	[ContactName] [nvarchar](30) NULL,
-	[ContactTitle] [nvarchar](30) NULL,
-	[Address] [nvarchar](60) NULL,
-	[City] [nvarchar](15) NULL,
-	[Region] [nvarchar](15) NULL,
-	[PostalCode] [nvarchar](10) NULL,
-	[Country] [nvarchar](15) NULL,
-	[Phone] [nvarchar](24) NULL,
-	[Fax] [nvarchar](24) NULL,
-	[HomePage] [ntext] NULL,
+    [SupplierID] [int] IDENTITY(1,1) NOT NULL,
+    [CompanyName] [nvarchar](40) NOT NULL,
+    [ContactName] [nvarchar](30) NULL,
+    [ContactTitle] [nvarchar](30) NULL,
+    [Address] [nvarchar](60) NULL,
+    [City] [nvarchar](15) NULL,
+    [Region] [nvarchar](15) NULL,
+    [PostalCode] [nvarchar](10) NULL,
+    [Country] [nvarchar](15) NULL,
+    [Phone] [nvarchar](24) NULL,
+    [Fax] [nvarchar](24) NULL,
+    [HomePage] [ntext] NULL,
  CONSTRAINT [PK_Suppliers] PRIMARY KEY CLUSTERED 
 (
-	[SupplierID] ASC
+    [SupplierID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CompanyName] ON [dbo].[Suppliers] 
 (
-	[CompanyName] ASC
+    [CompanyName] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [PostalCode] ON [dbo].[Suppliers] 
 (
-	[PostalCode] ASC
+    [PostalCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[Suppliers] ON
@@ -181,12 +214,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[EmployeeSplit](
-	[ID] [int] NOT NULL,
-	[Extension] [nvarchar](4) NULL,
-	[PhotoPath] [nvarchar](255) NULL,
+    [ID] [int] NOT NULL,
+    [Extension] [nvarchar](4) NULL,
+    [PhotoPath] [nvarchar](255) NULL,
  CONSTRAINT [PK_EmployeeSplit] PRIMARY KEY CLUSTERED 
 (
-	[ID] ASC
+    [ID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -331,38 +364,38 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Employees](
-	[EmployeeID] [int] IDENTITY(1,1) NOT NULL,
-	[LastName] [nvarchar](20) NOT NULL,
-	[FirstName] [nvarchar](10) NOT NULL,
-	[Title] [nvarchar](30) NULL,
-	[TitleOfCourtesy] [nvarchar](25) NULL,
-	[BirthDate] [datetime] NULL,
-	[HireDate] [datetime] NULL,
-	[Address] [nvarchar](60) NULL,
-	[City] [nvarchar](15) NULL,
-	[Region] [nvarchar](15) NULL,
-	[PostalCode] [nvarchar](10) NULL,
-	[Country] [nvarchar](15) NULL,
-	[HomePhone] [nvarchar](24) NULL,
-	[Extension] [nvarchar](4) NULL,
-	[Photo] [image] NULL,
-	[Notes] [ntext] NULL,
-	[ReportsTo] [int] NULL,
-	[PhotoPath] [nvarchar](255) NULL,
+    [EmployeeID] [int] IDENTITY(1,1) NOT NULL,
+    [LastName] [nvarchar](20) NOT NULL,
+    [FirstName] [nvarchar](10) NOT NULL,
+    [Title] [nvarchar](30) NULL,
+    [TitleOfCourtesy] [nvarchar](25) NULL,
+    [BirthDate] [datetime] NULL,
+    [HireDate] [datetime] NULL,
+    [Address] [nvarchar](60) NULL,
+    [City] [nvarchar](15) NULL,
+    [Region] [nvarchar](15) NULL,
+    [PostalCode] [nvarchar](10) NULL,
+    [Country] [nvarchar](15) NULL,
+    [HomePhone] [nvarchar](24) NULL,
+    [Extension] [nvarchar](4) NULL,
+    [Photo] [image] NULL,
+    [Notes] [ntext] NULL,
+    [ReportsTo] [int] NULL,
+    [PhotoPath] [nvarchar](255) NULL,
  CONSTRAINT [PK_Employees] PRIMARY KEY CLUSTERED 
 (
-	[EmployeeID] ASC
+    [EmployeeID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [LastName] ON [dbo].[Employees] 
 (
-	[LastName] ASC
+    [LastName] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [PostalCode] ON [dbo].[Employees] 
 (
-	[PostalCode] ASC
+    [PostalCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[Employees] ON
@@ -385,11 +418,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[DiscontinuedProductsFedarated](
-	[ProductID] [int] NOT NULL,
-	[ProductName] [nvarchar](40) NOT NULL,
+    [ProductID] [int] NOT NULL,
+    [ProductName] [nvarchar](40) NOT NULL,
  CONSTRAINT [PK_DiscontinuedProductsFedarated] PRIMARY KEY CLUSTERED 
 (
-	[ProductID] ASC
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -407,41 +440,41 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Customers](
-	[CustomerID] [nchar](5) NOT NULL,
-	[CompanyName] [nvarchar](40) NOT NULL,
-	[ContactName] [nvarchar](30) NULL,
-	[ContactTitle] [nvarchar](30) NULL,
-	[Address] [nvarchar](60) NULL,
-	[City] [nvarchar](15) NULL,
-	[Region] [nvarchar](15) NULL,
-	[PostalCode] [nvarchar](10) NULL,
-	[Country] [nvarchar](15) NULL,
-	[Phone] [nvarchar](24) NULL,
-	[Fax] [nvarchar](24) NULL,
+    [CustomerID] [nchar](5) NOT NULL,
+    [CompanyName] [nvarchar](40) NOT NULL,
+    [ContactName] [nvarchar](30) NULL,
+    [ContactTitle] [nvarchar](30) NULL,
+    [Address] [nvarchar](60) NULL,
+    [City] [nvarchar](15) NULL,
+    [Region] [nvarchar](15) NULL,
+    [PostalCode] [nvarchar](10) NULL,
+    [Country] [nvarchar](15) NULL,
+    [Phone] [nvarchar](24) NULL,
+    [Fax] [nvarchar](24) NULL,
  CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED 
 (
-	[CustomerID] ASC
+    [CustomerID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [City] ON [dbo].[Customers] 
 (
-	[City] ASC
+    [City] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CompanyName] ON [dbo].[Customers] 
 (
-	[CompanyName] ASC
+    [CompanyName] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [PostalCode] ON [dbo].[Customers] 
 (
-	[PostalCode] ASC
+    [PostalCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [Region] ON [dbo].[Customers] 
 (
-	[Region] ASC
+    [Region] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 INSERT [dbo].[Customers] ([CustomerID], [CompanyName], [ContactName], [ContactTitle], [Address], [City], [Region], [PostalCode], [Country], [Phone], [Fax]) VALUES (N'ALFKI', N'Alfreds Futterkiste', N'Maria Anders', N'Sales Representative', N'Obere Str. 57', N'Berlin', NULL, N'12209', N'Germany', N'030-0074321', N'030-0076545')
@@ -541,11 +574,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[CustomerDemographics](
-	[CustomerTypeID] [nchar](10) NOT NULL,
-	[CustomerDesc] [ntext] NULL,
+    [CustomerTypeID] [nchar](10) NOT NULL,
+    [CustomerDesc] [ntext] NULL,
  CONSTRAINT [PK_CustomerDemographics] PRIMARY KEY NONCLUSTERED 
 (
-	[CustomerTypeID] ASC
+    [CustomerTypeID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -555,19 +588,19 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Categories](
-	[CategoryID] [int] IDENTITY(1,1) NOT NULL,
-	[CategoryName] [nvarchar](15) NOT NULL,
-	[Description] [ntext] NULL,
-	[Picture] [image] NULL,
+    [CategoryID] [int] IDENTITY(1,1) NOT NULL,
+    [CategoryName] [nvarchar](15) NOT NULL,
+    [Description] [ntext] NULL,
+    [Picture] [image] NULL,
  CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED 
 (
-	[CategoryID] ASC
+    [CategoryID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CategoryName] ON [dbo].[Categories] 
 (
-	[CategoryName] ASC
+    [CategoryName] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[Categories] ON
@@ -596,11 +629,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BaseProductsFedarated](
-	[ProductID] [int] NOT NULL,
-	[ProductName] [nvarchar](40) NOT NULL,
+    [ProductID] [int] NOT NULL,
+    [ProductName] [nvarchar](40) NOT NULL,
  CONSTRAINT [PK_BaseProductsFedarated] PRIMARY KEY CLUSTERED 
 (
-	[ProductID] ASC
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -610,14 +643,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BaseContactSplit](
-	[ID] [int] NOT NULL,
-	[CompanyName] [nvarchar](40) NOT NULL,
-	[ContactName] [nvarchar](30) NULL,
-	[Phone] [nvarchar](24) NULL,
-	[ContactType] [nvarchar](50) NULL,
+    [ID] [int] NOT NULL,
+    [CompanyName] [nvarchar](40) NOT NULL,
+    [ContactName] [nvarchar](30) NULL,
+    [Phone] [nvarchar](24) NULL,
+    [ContactType] [nvarchar](50) NULL,
  CONSTRAINT [PK_BaseContact] PRIMARY KEY CLUSTERED 
 (
-	[ID] ASC
+    [ID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -762,16 +795,16 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[AddressSplit](
-	[ID] [int] NOT NULL,
-	[Address] [nvarchar](60) NULL,
-	[City] [nvarchar](15) NULL,
-	[Region] [nvarchar](15) NULL,
-	[PostalCode] [nvarchar](50) NULL,
-	[Country] [nvarchar](15) NULL,
-	[ContactType] [nvarchar](50) NULL,
+    [ID] [int] NOT NULL,
+    [Address] [nvarchar](60) NULL,
+    [City] [nvarchar](15) NULL,
+    [Region] [nvarchar](15) NULL,
+    [PostalCode] [nvarchar](50) NULL,
+    [Country] [nvarchar](15) NULL,
+    [ContactType] [nvarchar](50) NULL,
  CONSTRAINT [PK_ContactAddress] PRIMARY KEY CLUSTERED 
 (
-	[ID] ASC
+    [ID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -918,11 +951,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ActiveProductsFedarated](
-	[ProductID] [int] IDENTITY(1,1) NOT NULL,
-	[ProductName] [nvarchar](40) NOT NULL,
+    [ProductID] [int] IDENTITY(1,1) NOT NULL,
+    [ProductName] [nvarchar](40) NOT NULL,
  CONSTRAINT [PK_ActiveProductsFedarated] PRIMARY KEY CLUSTERED 
 (
-	[ProductID] ASC
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1003,25 +1036,25 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Contacts](
-	[ContactID] [int] IDENTITY(1,1) NOT NULL,
-	[ContactType] [nvarchar](50) NULL,
-	[CompanyName] [nvarchar](40) NOT NULL,
-	[ContactName] [nvarchar](30) NULL,
-	[ContactTitle] [nvarchar](30) NULL,
-	[Address] [nvarchar](60) NULL,
-	[City] [nvarchar](15) NULL,
-	[Region] [nvarchar](15) NULL,
-	[PostalCode] [nvarchar](10) NULL,
-	[Country] [nvarchar](15) NULL,
-	[Phone] [nvarchar](24) NULL,
-	[Extension] [nvarchar](4) NULL,
-	[Fax] [nvarchar](24) NULL,
-	[HomePage] [ntext] NULL,
-	[PhotoPath] [nvarchar](255) NULL,
-	[Photo] [image] NULL,
+    [ContactID] [int] IDENTITY(1,1) NOT NULL,
+    [ContactType] [nvarchar](50) NULL,
+    [CompanyName] [nvarchar](40) NOT NULL,
+    [ContactName] [nvarchar](30) NULL,
+    [ContactTitle] [nvarchar](30) NULL,
+    [Address] [nvarchar](60) NULL,
+    [City] [nvarchar](15) NULL,
+    [Region] [nvarchar](15) NULL,
+    [PostalCode] [nvarchar](10) NULL,
+    [Country] [nvarchar](15) NULL,
+    [Phone] [nvarchar](24) NULL,
+    [Extension] [nvarchar](4) NULL,
+    [Fax] [nvarchar](24) NULL,
+    [HomePage] [ntext] NULL,
+    [PhotoPath] [nvarchar](255) NULL,
+    [Photo] [image] NULL,
  CONSTRAINT [PK_Contact] PRIMARY KEY CLUSTERED 
 (
-	[ContactID] ASC
+    [ContactID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -1171,14 +1204,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ContactNameSplit](
-	[ID] [int] NOT NULL,
-	[Name] [nvarchar](30) NULL,
-	[Title] [nvarchar](30) NULL,
-	[Fax] [nvarchar](24) NULL,
-	[ContactType] [nvarchar](50) NULL,
+    [ID] [int] NOT NULL,
+    [Name] [nvarchar](30) NULL,
+    [Title] [nvarchar](30) NULL,
+    [Fax] [nvarchar](24) NULL,
+    [ContactType] [nvarchar](50) NULL,
  CONSTRAINT [PK_ContactNameSplit] PRIMARY KEY CLUSTERED 
 (
-	[ID] ASC
+    [ID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1323,16 +1356,16 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[Customers Count By Region]
-	-- Add the parameters for the stored procedure here
-	(@param1 NVARCHAR(15))
+    -- Add the parameters for the stored procedure here
+    (@param1 NVARCHAR(15))
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-	DECLARE @count int
-	SELECT @count = COUNT(*)FROM Customers WHERE Customers.Region = @Param1
-	RETURN @count
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+    DECLARE @count int
+    SELECT @count = COUNT(*)FROM Customers WHERE Customers.Region = @Param1
+    RETURN @count
 END
 GO
 /****** Object:  StoredProcedure [dbo].[Customers By City]    Script Date: 09/01/2010 11:26:41 ******/
@@ -1341,14 +1374,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[Customers By City]
-	-- Add the parameters for the stored procedure here
-	(@param1 NVARCHAR(20))
+    -- Add the parameters for the stored procedure here
+    (@param1 NVARCHAR(20))
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-	SELECT CustomerID, ContactName, CompanyName, City from Customers as c where c.City=@param1
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+    SELECT CustomerID, ContactName, CompanyName, City from Customers as c where c.City=@param1
 END
 GO
 /****** Object:  Table [dbo].[CustomerCustomerDemo]    Script Date: 09/01/2010 11:26:23 ******/
@@ -1357,12 +1390,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[CustomerCustomerDemo](
-	[CustomerID] [nchar](5) NOT NULL,
-	[CustomerTypeID] [nchar](10) NOT NULL,
+    [CustomerID] [nchar](5) NOT NULL,
+    [CustomerTypeID] [nchar](10) NOT NULL,
  CONSTRAINT [PK_CustomerCustomerDemo] PRIMARY KEY NONCLUSTERED 
 (
-	[CustomerID] ASC,
-	[CustomerTypeID] ASC
+    [CustomerID] ASC,
+    [CustomerTypeID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1384,64 +1417,64 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Orders](
-	[OrderID] [int] IDENTITY(1,1) NOT NULL,
-	[CustomerID] [nchar](5) NULL,
-	[EmployeeID] [int] NULL,
-	[OrderDate] [datetime] NULL,
-	[RequiredDate] [datetime] NULL,
-	[ShippedDate] [datetime] NULL,
-	[ShipVia] [int] NULL,
-	[Freight] [money] NULL,
-	[ShipName] [nvarchar](40) NULL,
-	[ShipAddress] [nvarchar](60) NULL,
-	[ShipCity] [nvarchar](15) NULL,
-	[ShipRegion] [nvarchar](15) NULL,
-	[ShipPostalCode] [nvarchar](10) NULL,
-	[ShipCountry] [nvarchar](15) NULL,
+    [OrderID] [int] IDENTITY(1,1) NOT NULL,
+    [CustomerID] [nchar](5) NULL,
+    [EmployeeID] [int] NULL,
+    [OrderDate] [datetime] NULL,
+    [RequiredDate] [datetime] NULL,
+    [ShippedDate] [datetime] NULL,
+    [ShipVia] [int] NULL,
+    [Freight] [money] NULL,
+    [ShipName] [nvarchar](40) NULL,
+    [ShipAddress] [nvarchar](60) NULL,
+    [ShipCity] [nvarchar](15) NULL,
+    [ShipRegion] [nvarchar](15) NULL,
+    [ShipPostalCode] [nvarchar](10) NULL,
+    [ShipCountry] [nvarchar](15) NULL,
  CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED 
 (
-	[OrderID] ASC
+    [OrderID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CustomerID] ON [dbo].[Orders] 
 (
-	[CustomerID] ASC
+    [CustomerID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CustomersOrders] ON [dbo].[Orders] 
 (
-	[CustomerID] ASC
+    [CustomerID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [EmployeeID] ON [dbo].[Orders] 
 (
-	[EmployeeID] ASC
+    [EmployeeID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [EmployeesOrders] ON [dbo].[Orders] 
 (
-	[EmployeeID] ASC
+    [EmployeeID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [OrderDate] ON [dbo].[Orders] 
 (
-	[OrderDate] ASC
+    [OrderDate] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [ShippedDate] ON [dbo].[Orders] 
 (
-	[ShippedDate] ASC
+    [ShippedDate] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [ShippersOrders] ON [dbo].[Orders] 
 (
-	[ShipVia] ASC
+    [ShipVia] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [ShipPostalCode] ON [dbo].[Orders] 
 (
-	[ShipPostalCode] ASC
+    [ShipPostalCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[Orders] ON
@@ -2298,45 +2331,45 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Products](
-	[ProductID] [int] IDENTITY(1,1) NOT NULL,
-	[ProductName] [nvarchar](40) NOT NULL,
-	[SupplierID] [int] NULL,
-	[CategoryID] [int] NULL,
-	[QuantityPerUnit] [nvarchar](20) NULL,
-	[UnitPrice] [money] NULL,
-	[UnitsInStock] [smallint] NULL,
-	[UnitsOnOrder] [smallint] NULL,
-	[ReorderLevel] [smallint] NULL,
-	[Discontinued] [bit] NOT NULL,
+    [ProductID] [int] IDENTITY(1,1) NOT NULL,
+    [ProductName] [nvarchar](40) NOT NULL,
+    [SupplierID] [int] NULL,
+    [CategoryID] [int] NULL,
+    [QuantityPerUnit] [nvarchar](20) NULL,
+    [UnitPrice] [money] NULL,
+    [UnitsInStock] [smallint] NULL,
+    [UnitsOnOrder] [smallint] NULL,
+    [ReorderLevel] [smallint] NULL,
+    [Discontinued] [bit] NOT NULL,
  CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED 
 (
-	[ProductID] ASC
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CategoriesProducts] ON [dbo].[Products] 
 (
-	[CategoryID] ASC
+    [CategoryID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [CategoryID] ON [dbo].[Products] 
 (
-	[CategoryID] ASC
+    [CategoryID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [ProductName] ON [dbo].[Products] 
 (
-	[ProductName] ASC
+    [ProductName] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [SupplierID] ON [dbo].[Products] 
 (
-	[SupplierID] ASC
+    [SupplierID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [SuppliersProducts] ON [dbo].[Products] 
 (
-	[SupplierID] ASC
+    [SupplierID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[Products] ON
@@ -2424,12 +2457,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Territories](
-	[TerritoryID] [nvarchar](20) NOT NULL,
-	[TerritoryDescription] [nchar](50) NOT NULL,
-	[RegionID] [int] NOT NULL,
+    [TerritoryID] [nvarchar](20) NOT NULL,
+    [TerritoryDescription] [nchar](50) NOT NULL,
+    [RegionID] [int] NOT NULL,
  CONSTRAINT [PK_Territories] PRIMARY KEY NONCLUSTERED 
 (
-	[TerritoryID] ASC
+    [TerritoryID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -2492,17 +2525,17 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[Whole Or Partial Customers Set]
-	-- Add the parameters for the stored procedure here
-	(@param1 int )
+    -- Add the parameters for the stored procedure here
+    (@param1 int )
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-	if(@param1 = 1)
-	SELECT * from Customers as c where c.Region = 'WA'
-	else if (@param1 = 2)
-	SELECT CustomerID, ContactName, CompanyName from Customers as c where c.Region = 'WA'
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+    if(@param1 = 1)
+    SELECT * from Customers as c where c.Region = 'WA'
+    else if (@param1 = 2)
+    SELECT CustomerID, ContactName, CompanyName from Customers as c where c.Region = 'WA'
 END
 GO
 /****** Object:  View [dbo].[Orders Qry]    Script Date: 09/01/2010 11:26:26 ******/
@@ -2512,9 +2545,9 @@ SET QUOTED_IDENTIFIER ON
 GO
 create view [dbo].[Orders Qry] AS
 SELECT Orders.OrderID, Orders.CustomerID, Orders.EmployeeID, Orders.OrderDate, Orders.RequiredDate, 
-	Orders.ShippedDate, Orders.ShipVia, Orders.Freight, Orders.ShipName, Orders.ShipAddress, Orders.ShipCity, 
-	Orders.ShipRegion, Orders.ShipPostalCode, Orders.ShipCountry, 
-	Customers.CompanyName, Customers.Address, Customers.City, Customers.Region, Customers.PostalCode, Customers.Country
+    Orders.ShippedDate, Orders.ShipVia, Orders.Freight, Orders.ShipName, Orders.ShipAddress, Orders.ShipCity, 
+    Orders.ShipRegion, Orders.ShipPostalCode, Orders.ShipCountry, 
+    Customers.CompanyName, Customers.Address, Customers.City, Customers.Region, Customers.PostalCode, Customers.Country
 FROM Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
 GO
 /****** Object:  UserDefinedFunction [dbo].[TotalProductUnitPriceByCategory]    Script Date: 09/01/2010 11:26:52 ******/
@@ -2527,16 +2560,16 @@ CREATE FUNCTION [dbo].[TotalProductUnitPriceByCategory]
 RETURNS Money
 AS
 BEGIN
-	-- Declare the return variable here
-	DECLARE @ResultVar Money
+    -- Declare the return variable here
+    DECLARE @ResultVar Money
 
-	-- Add the T-SQL statements to compute the return value here
-	SELECT @ResultVar = (Select SUM(UnitPrice) 
-						from Products 
-						where CategoryID = @categoryID) 
+    -- Add the T-SQL statements to compute the return value here
+    SELECT @ResultVar = (Select SUM(UnitPrice) 
+                        from Products 
+                        where CategoryID = @categoryID) 
 
-	-- Return the result of the function
-	RETURN @ResultVar
+    -- Return the result of the function
+    RETURN @ResultVar
 
 END
 GO
@@ -2572,9 +2605,9 @@ CREATE FUNCTION [dbo].[ProductsUnderThisUnitPrice]
 RETURNS TABLE
 AS
 RETURN
-	SELECT *
-	FROM Products as P
-	Where p.UnitPrice < @price
+    SELECT *
+    FROM Products as P
+    Where p.UnitPrice < @price
 GO
 /****** Object:  View [dbo].[Products by Category]    Script Date: 09/01/2010 11:26:26 ******/
 SET ANSI_NULLS ON
@@ -2604,14 +2637,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[Get Customer And Orders](@CustomerID nchar(5))
-	-- Add the parameters for the stored procedure here
+    -- Add the parameters for the stored procedure here
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-	SELECT * FROM Customers AS c WHERE c.CustomerID = @CustomerID  
-	SELECT * FROM Orders AS o WHERE o.CustomerID = @CustomerID
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+    SELECT * FROM Customers AS c WHERE c.CustomerID = @CustomerID  
+    SELECT * FROM Orders AS o WHERE o.CustomerID = @CustomerID
 END
 GO
 /****** Object:  Table [dbo].[EmployeeTerritories]    Script Date: 09/01/2010 11:26:23 ******/
@@ -2620,12 +2653,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[EmployeeTerritories](
-	[EmployeeID] [int] NOT NULL,
-	[TerritoryID] [nvarchar](20) NOT NULL,
+    [EmployeeID] [int] NOT NULL,
+    [TerritoryID] [nvarchar](20) NOT NULL,
  CONSTRAINT [PK_EmployeeTerritories] PRIMARY KEY NONCLUSTERED 
 (
-	[EmployeeID] ASC,
-	[TerritoryID] ASC
+    [EmployeeID] ASC,
+    [TerritoryID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -2684,36 +2717,36 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Order Details](
-	[OrderID] [int] NOT NULL,
-	[ProductID] [int] NOT NULL,
-	[UnitPrice] [money] NOT NULL,
-	[Quantity] [smallint] NOT NULL,
-	[Discount] [real] NOT NULL,
+    [OrderID] [int] NOT NULL,
+    [ProductID] [int] NOT NULL,
+    [UnitPrice] [money] NOT NULL,
+    [Quantity] [smallint] NOT NULL,
+    [Discount] [real] NOT NULL,
  CONSTRAINT [PK_Order_Details] PRIMARY KEY CLUSTERED 
 (
-	[OrderID] ASC,
-	[ProductID] ASC
+    [OrderID] ASC,
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [OrderID] ON [dbo].[Order Details] 
 (
-	[OrderID] ASC
+    [OrderID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [OrdersOrder_Details] ON [dbo].[Order Details] 
 (
-	[OrderID] ASC
+    [OrderID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [ProductID] ON [dbo].[Order Details] 
 (
-	[ProductID] ASC
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [ProductsOrder_Details] ON [dbo].[Order Details] 
 (
-	[ProductID] ASC
+    [ProductID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
 INSERT [dbo].[Order Details] ([OrderID], [ProductID], [UnitPrice], [Quantity], [Discount]) VALUES (10248, 11, 14.0000, 12, 0)
@@ -4924,14 +4957,14 @@ CREATE FUNCTION [dbo].[MinUnitPriceByCategory]
 RETURNS Money
 AS
 BEGIN
-	-- Declare the return variable here
-	DECLARE @ResultVar Money
+    -- Declare the return variable here
+    DECLARE @ResultVar Money
 
-	-- Add the T-SQL statements to compute the return value here
-	SELECT @ResultVar = MIN(p.UnitPrice) FROM Products as p WHERE p.CategoryID = @categoryID
+    -- Add the T-SQL statements to compute the return value here
+    SELECT @ResultVar = MIN(p.UnitPrice) FROM Products as p WHERE p.CategoryID = @categoryID
 
-	-- Return the result of the function
-	RETURN @ResultVar
+    -- Return the result of the function
+    RETURN @ResultVar
 
 END
 GO
@@ -4964,9 +4997,9 @@ GO
 CREATE PROCEDURE [dbo].[CustOrdersOrders] @CustomerID nchar(5)
 AS
 SELECT OrderID, 
-	OrderDate,
-	RequiredDate,
-	ShippedDate
+    OrderDate,
+    RequiredDate,
+    ShippedDate
 FROM Orders
 WHERE CustomerID = @CustomerID
 ORDER BY OrderID
@@ -5016,8 +5049,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 create view [dbo].[Order Details Extended] AS
 SELECT "Order Details".OrderID, "Order Details".ProductID, Products.ProductName, 
-	"Order Details".UnitPrice, "Order Details".Quantity, "Order Details".Discount, 
-	(CONVERT(money,("Order Details".UnitPrice*Quantity*(1-Discount)/100))*100) AS ExtendedPrice
+    "Order Details".UnitPrice, "Order Details".Quantity, "Order Details".Discount, 
+    (CONVERT(money,("Order Details".UnitPrice*Quantity*(1-Discount)/100))*100) AS ExtendedPrice
 FROM Products INNER JOIN "Order Details" ON Products.ProductID = "Order Details".ProductID
 --ORDER BY "Order Details".OrderID
 GO
@@ -5028,22 +5061,22 @@ SET QUOTED_IDENTIFIER ON
 GO
 create view [dbo].[Invoices] AS
 SELECT Orders.ShipName, Orders.ShipAddress, Orders.ShipCity, Orders.ShipRegion, Orders.ShipPostalCode, 
-	Orders.ShipCountry, Orders.CustomerID, Customers.CompanyName AS CustomerName, Customers.Address, Customers.City, 
-	Customers.Region, Customers.PostalCode, Customers.Country, 
-	(FirstName + ' ' + LastName) AS Salesperson, 
-	Orders.OrderID, Orders.OrderDate, Orders.RequiredDate, Orders.ShippedDate, Shippers.CompanyName As ShipperName, 
-	"Order Details".ProductID, Products.ProductName, "Order Details".UnitPrice, "Order Details".Quantity, 
-	"Order Details".Discount, 
-	(CONVERT(money,("Order Details".UnitPrice*Quantity*(1-Discount)/100))*100) AS ExtendedPrice, Orders.Freight
+    Orders.ShipCountry, Orders.CustomerID, Customers.CompanyName AS CustomerName, Customers.Address, Customers.City, 
+    Customers.Region, Customers.PostalCode, Customers.Country, 
+    (FirstName + ' ' + LastName) AS Salesperson, 
+    Orders.OrderID, Orders.OrderDate, Orders.RequiredDate, Orders.ShippedDate, Shippers.CompanyName As ShipperName, 
+    "Order Details".ProductID, Products.ProductName, "Order Details".UnitPrice, "Order Details".Quantity, 
+    "Order Details".Discount, 
+    (CONVERT(money,("Order Details".UnitPrice*Quantity*(1-Discount)/100))*100) AS ExtendedPrice, Orders.Freight
 FROM 	Shippers INNER JOIN 
-		(Products INNER JOIN 
-			(
-				(Employees INNER JOIN 
-					(Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID) 
-				ON Employees.EmployeeID = Orders.EmployeeID) 
-			INNER JOIN "Order Details" ON Orders.OrderID = "Order Details".OrderID) 
-		ON Products.ProductID = "Order Details".ProductID) 
-	ON Shippers.ShipperID = Orders.ShipVia
+        (Products INNER JOIN 
+            (
+                (Employees INNER JOIN 
+                    (Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID) 
+                ON Employees.EmployeeID = Orders.EmployeeID) 
+            INNER JOIN "Order Details" ON Orders.OrderID = "Order Details".OrderID) 
+        ON Products.ProductID = "Order Details".ProductID) 
+    ON Shippers.ShipperID = Orders.ShipVia
 GO
 /****** Object:  StoredProcedure [dbo].[CustOrderTotal]    Script Date: 09/01/2010 11:26:41 ******/
 SET ANSI_NULLS ON
@@ -5067,9 +5100,9 @@ create view [dbo].[Product Sales for 1997] AS
 SELECT Categories.CategoryName, Products.ProductName, 
 Sum(CONVERT(money,("Order Details".UnitPrice*Quantity*(1-Discount)/100))*100) AS ProductSales
 FROM (Categories INNER JOIN Products ON Categories.CategoryID = Products.CategoryID) 
-	INNER JOIN (Orders 
-		INNER JOIN "Order Details" ON Orders.OrderID = "Order Details".OrderID) 
-	ON Products.ProductID = "Order Details".ProductID
+    INNER JOIN (Orders 
+        INNER JOIN "Order Details" ON Orders.OrderID = "Order Details".OrderID) 
+    ON Products.ProductID = "Order Details".ProductID
 WHERE (((Orders.ShippedDate) Between '19970101' And '19971231'))
 GROUP BY Categories.CategoryName, Products.ProductName
 GO
@@ -5083,17 +5116,17 @@ CREATE PROCEDURE [dbo].[SalesByCategory]
 AS
 IF @OrdYear != '1996' AND @OrdYear != '1997' AND @OrdYear != '1998' 
 BEGIN
-	SELECT @OrdYear = '1998'
+    SELECT @OrdYear = '1998'
 END
 
 SELECT ProductName,
-	TotalPurchase=ROUND(SUM(CONVERT(decimal(14,2), OD.Quantity * (1-OD.Discount) * OD.UnitPrice)), 0)
+    TotalPurchase=ROUND(SUM(CONVERT(decimal(14,2), OD.Quantity * (1-OD.Discount) * OD.UnitPrice)), 0)
 FROM [Order Details] OD, Orders O, Products P, Categories C
 WHERE OD.OrderID = O.OrderID 
-	AND OD.ProductID = P.ProductID 
-	AND P.CategoryID = C.CategoryID
-	AND C.CategoryName = @CategoryName
-	AND SUBSTRING(CONVERT(nvarchar(22), O.OrderDate, 111), 1, 4) = @OrdYear
+    AND OD.ProductID = P.ProductID 
+    AND P.CategoryID = C.CategoryID
+    AND C.CategoryName = @CategoryName
+    AND SUBSTRING(CONVERT(nvarchar(22), O.OrderDate, 111), 1, 4) = @OrdYear
 GROUP BY ProductName
 ORDER BY ProductName
 GO
@@ -5127,8 +5160,8 @@ GO
 create view [dbo].[Sales Totals by Amount] AS
 SELECT "Order Subtotals".Subtotal AS SaleAmount, Orders.OrderID, Customers.CompanyName, Orders.ShippedDate
 FROM 	Customers INNER JOIN 
-		(Orders INNER JOIN "Order Subtotals" ON Orders.OrderID = "Order Subtotals".OrderID) 
-	ON Customers.CustomerID = Orders.CustomerID
+        (Orders INNER JOIN "Order Subtotals" ON Orders.OrderID = "Order Subtotals".OrderID) 
+    ON Customers.CustomerID = Orders.CustomerID
 WHERE ("Order Subtotals".Subtotal >2500) AND (Orders.ShippedDate BETWEEN '19970101' And '19971231')
 GO
 /****** Object:  StoredProcedure [dbo].[Sales by Year]    Script Date: 09/01/2010 11:26:41 ******/
@@ -5137,7 +5170,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 create procedure [dbo].[Sales by Year] 
-	@Beginning_Date DateTime, @Ending_Date DateTime AS
+    @Beginning_Date DateTime, @Ending_Date DateTime AS
 SELECT Orders.ShippedDate, Orders.OrderID, "Order Subtotals".Subtotal, DATENAME(yy,ShippedDate) AS Year
 FROM Orders INNER JOIN "Order Subtotals" ON Orders.OrderID = "Order Subtotals".OrderID
 WHERE Orders.ShippedDate Between @Beginning_Date And @Ending_Date
@@ -5149,12 +5182,12 @@ SET QUOTED_IDENTIFIER ON
 GO
 create view [dbo].[Sales by Category] AS
 SELECT Categories.CategoryID, Categories.CategoryName, Products.ProductName, 
-	Sum("Order Details Extended".ExtendedPrice) AS ProductSales
+    Sum("Order Details Extended".ExtendedPrice) AS ProductSales
 FROM 	Categories INNER JOIN 
-		(Products INNER JOIN 
-			(Orders INNER JOIN "Order Details Extended" ON Orders.OrderID = "Order Details Extended".OrderID) 
-		ON Products.ProductID = "Order Details Extended".ProductID) 
-	ON Categories.CategoryID = Products.CategoryID
+        (Products INNER JOIN 
+            (Orders INNER JOIN "Order Details Extended" ON Orders.OrderID = "Order Details Extended".OrderID) 
+        ON Products.ProductID = "Order Details Extended".ProductID) 
+    ON Categories.CategoryID = Products.CategoryID
 WHERE Orders.OrderDate BETWEEN '19970101' And '19971231'
 GROUP BY Categories.CategoryID, Categories.CategoryName, Products.ProductName
 --ORDER BY Products.ProductName
@@ -5168,8 +5201,8 @@ create procedure [dbo].[Employee Sales by Country]
 @Beginning_Date DateTime, @Ending_Date DateTime AS
 SELECT Employees.Country, Employees.LastName, Employees.FirstName, Orders.ShippedDate, Orders.OrderID, "Order Subtotals".Subtotal AS SaleAmount
 FROM Employees INNER JOIN 
-	(Orders INNER JOIN "Order Subtotals" ON Orders.OrderID = "Order Subtotals".OrderID) 
-	ON Employees.EmployeeID = Orders.EmployeeID
+    (Orders INNER JOIN "Order Subtotals" ON Orders.OrderID = "Order Subtotals".OrderID) 
+    ON Employees.EmployeeID = Orders.EmployeeID
 WHERE Orders.ShippedDate Between @Beginning_Date And @Ending_Date
 GO
 /****** Object:  View [dbo].[Category Sales for 1997]    Script Date: 09/01/2010 11:26:26 ******/

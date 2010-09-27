@@ -288,9 +288,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Linq.IntegrationTests\TestDomain\Northwind\NORTHWND.MDF">
+    <Content Include="..\Linq.IntegrationTests\Database\NORTHWND.MDF">
       <Link>NORTHWND.MDF</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="License.txt" />
   </ItemGroup>

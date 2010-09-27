@@ -98,10 +98,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestDomain\Northwind\NORTHWND.MDF">
+    <Content Include="Database\Northwnd License.txt" />
+    <Content Include="Database\NORTHWND.MDF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestDomain\Northwind\Northwnd.sql" />
+    <Content Include="Database\Northwnd.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj">
