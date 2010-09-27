@@ -1,7 +1,6 @@
 ﻿The Northwnd database used in this project stems from the Microsoft 101 Linq Samples. The use of the files following files is 
 thus governed by the Microsoft Public License:
 
-NORTHWND.MDF
 Northwnd.sql 
 
 Microsoft Public License (Ms-PL)

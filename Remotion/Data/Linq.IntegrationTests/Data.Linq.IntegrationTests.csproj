@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\NorthwindSetup.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\DateDiffDayMethodCallTransformer.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\UserDefinedFunctionTransformer.cs" />
     <Compile Include="TestMode.cs" />
@@ -100,9 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\Northwnd License.txt" />
-    <Content Include="Database\NORTHWND.MDF">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Database\Northwnd.sql" />
   </ItemGroup>
   <ItemGroup>

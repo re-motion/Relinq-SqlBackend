@@ -288,11 +288,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Linq.IntegrationTests\Database\NORTHWND.MDF">
-      <Link>NORTHWND.MDF</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="..\Linq.IntegrationTests\Database\Northwnd.sql">
+      <Link>Database\Northwnd.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="License.txt" />
+    <Compile Include="SetupFixture.vb" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.csproj">
