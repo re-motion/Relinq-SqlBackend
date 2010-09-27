@@ -82,6 +82,7 @@
     <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
     <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
     <Compile Include="Utilities\CheckingTestExecutor.cs" />
+    <Compile Include="Utilities\DatabaseAgent.cs" />
     <Compile Include="Utilities\SavingTestExecutor.cs" />
     <Compile Include="TestDomain\SerializerTestClassWithFields.cs" />
     <Compile Include="TestDomain\SerializerTestClassWithProperties.cs" />
