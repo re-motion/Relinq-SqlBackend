@@ -548,14 +548,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.String.Concat' is not supported by this code "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.Object.GetHashCode' is not supported by this code "
                                                                           + "generator, and no custom transformer has been registered. "
-                                                                          + "Expression: '\"Test\".Concat(\"Test\")'")]
+                                                                          + "Expression: '\"Test\".GetHashCode()'")]
     public void VisitMethodCallExpression_TransformerNotRegistered_ThrowsException ()
     {
-      var method = typeof (string).GetMethod ("Concat", new[] {typeof(string)});
+      var method = typeof (object).GetMethod ("GetHashCode");
       var constantExpression = Expression.Constant ("Test");
-      var methodCallExpression = Expression.Call (constantExpression, method, constantExpression);
+      var methodCallExpression = Expression.Call (constantExpression, method);
 
       SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
     }

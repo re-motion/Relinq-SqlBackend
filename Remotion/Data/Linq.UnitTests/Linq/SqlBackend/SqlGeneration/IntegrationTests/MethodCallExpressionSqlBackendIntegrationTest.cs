@@ -72,56 +72,55 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3337")]
     public void String_Concat ()
     {
       // object overloads
       CheckQuery (
           from c in Cooks select string.Concat (c.ID),
-          "SELECT CONVERT(nvarchar,[t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID),
-          "SELECT CONVERT(nvarchar,[t0].[ID]) + CONVERT(nvarchar,[t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (CONVERT(NVARCHAR, [t0].[ID]) + CONVERT(NVARCHAR, [t0].[ID])) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID, c.FirstName),
-          "SELECT CONVERT(nvarchar,[t0].[ID]) + CONVERT(nvarchar,[t0].[ID]) + [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT ((CONVERT(NVARCHAR, [t0].[ID]) + CONVERT(NVARCHAR, [t0].[ID])) + [t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID, c.FirstName, c.Name),
-          "SELECT CONVERT(nvarchar,[t0].[ID]) + CONVERT(nvarchar,[t0].[ID]) + [t0].[FirstName] + [t0].[Name] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (((CONVERT(NVARCHAR, [t0].[ID]) + CONVERT(NVARCHAR, [t0].[ID])) + [t0].[FirstName]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       // string overloads
       CheckQuery (
           from c in Cooks select string.Concat (c.FirstName, c.Name),
-          "SELECT [t0].[FirstName] + [t0].[Name] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT ([t0].[FirstName] + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.FirstName, c.Name, c.FirstName),
-          "SELECT [t0].[FirstName] + [t0].[Name] + [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (([t0].[FirstName] + [t0].[Name]) + [t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.FirstName, c.Name, c.FirstName, c.Name),
-          "SELECT [t0].[FirstName] + [t0].[Name] + [t0].[FirstName] + [t0].[Name] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT ((([t0].[FirstName] + [t0].[Name]) + [t0].[FirstName]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       // string[] overload
       CheckQuery (
           from c in Cooks select string.Concat (new[] { c.FirstName, c.Name }),
-          "SELECT [t0].[FirstName] + [t0].[Name] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT ([t0].[FirstName] + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       // object[] overload
       CheckQuery (
           from c in Cooks select string.Concat (new object[] { c.ID, c.Name }),
-          "SELECT CONVERT(nvarchar,[t0].[ID]) + [t0].[Name] AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (CONVERT(NVARCHAR, [t0].[ID]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
