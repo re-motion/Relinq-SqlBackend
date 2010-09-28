@@ -316,7 +316,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         + "Expression: 'new TypeForNewExpression(A = [t0].[ID] AS A, B = [t0].[RoomNumber] AS B)'")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithMemberNotInitialized ()
     {
-      var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (new Core.IntegrationTests.TestQueryable<Kitchen> ("Kitchen")));
+      var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (Kitchens));
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
       var newExpression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }),
