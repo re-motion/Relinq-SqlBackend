@@ -923,6 +923,17 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitSqlLengthExpression ()
+    {
+      var expression = new SqlLengthExpression (Expression.Constant (true));
+      var expectedResult = new SqlLengthExpression (new ConvertedBooleanExpression (Expression.Constant (1)));
+
+      var result = _predicateRequiredVisitor.VisitSqlLengthExpression (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
     public void VisitSqlRowNumberExpression ()
     {
       var expression = new SqlRowNumberExpression (new[] { new Ordering (Expression.Constant (true), OrderingDirection.Asc) });

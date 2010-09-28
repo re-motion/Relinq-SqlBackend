@@ -316,7 +316,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
     {
-      throw new NotImplementedException();
+      return VisitChildrenWithSingleValueSemantics (expression);
     }
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
