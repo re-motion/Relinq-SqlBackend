@@ -73,10 +73,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IConnectionManager.cs" />
@@ -85,6 +82,7 @@
     <Compile Include="MappingResolver.cs" />
     <Compile Include="MetaDataMemberComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="RelinqQueryable.cs" />
     <Compile Include="QueryExecutor.cs" />
     <Compile Include="QueryResultRetriever.cs" />
@@ -104,6 +102,9 @@
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
+    </None>
+    <None Include="Data.Linq.LinqToSqlAdapter.build">
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup />
