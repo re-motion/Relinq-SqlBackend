@@ -65,12 +65,15 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\NorthwindSetup.cs" />
+    <None Include="Data.Linq.IntegrationTests.Common.build">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\DateDiffDayMethodCallTransformer.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\UserDefinedFunctionTransformer.cs" />
     <Compile Include="TestMode.cs" />

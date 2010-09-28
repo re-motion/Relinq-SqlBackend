@@ -87,6 +87,10 @@
     <Compile Include="LinqSamples101\WhereTests.cs" />
     <Compile Include="LinqSamples101\Name.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Data.Linq.IntegrationTests.CSharp.build">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="SetupFixture.cs" />
   </ItemGroup>
   <ItemGroup>

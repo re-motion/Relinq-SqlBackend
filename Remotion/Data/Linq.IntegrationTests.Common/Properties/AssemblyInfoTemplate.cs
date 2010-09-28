@@ -24,12 +24,12 @@ using System.Security;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Common functionality for integration tests for the Remotion Data Linq library")]
-[assembly: AssemblyDescription ("Contains the common database and utility classes used by integration tests for re-linq.")]
-[assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: debug")]
-[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
-[assembly: AssemblyCopyright("(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu")]
+[assembly: AssemblyTitle("Common functionality for integration tests for the Remotion Data Linq library")]
+[assembly: AssemblyDescription("Contains the common database and utility classes used by integration tests for re-linq.")]
+[assembly: AssemblyConfiguration("@buildinfo@")]
+[assembly: AssemblyCompany("@company@")]
+[assembly: AssemblyProduct("@productname@")]
+[assembly: AssemblyCopyright("@copyright@")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
@@ -46,4 +46,4 @@ using System.Security;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.13.60.2")]
+[assembly: AssemblyVersion("@versionnumber@")]
