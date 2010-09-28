@@ -90,7 +90,7 @@
     <Compile Include="SetupFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.Common.csproj">
+    <ProjectReference Include="..\Linq.IntegrationTests.Common\Data.Linq.IntegrationTests.Common.csproj">
       <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
       <Name>Data.Linq.IntegrationTests.Common</Name>
     </ProjectReference>
@@ -103,7 +103,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="..\Linq.IntegrationTests\App.config">
+    <None Include="..\Linq.IntegrationTests.Common\App.config">
       <Link>App.config</Link>
     </None>
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result" />
@@ -233,7 +233,7 @@
     <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere08.result" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Linq.IntegrationTests\Database\Northwnd.sql">
+    <Content Include="..\Linq.IntegrationTests.Common\Database\Northwnd.sql">
       <Link>Database\Northwnd.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

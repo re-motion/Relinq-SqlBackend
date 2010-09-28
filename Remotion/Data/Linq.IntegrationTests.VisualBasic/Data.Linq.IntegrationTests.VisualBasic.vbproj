@@ -9,8 +9,8 @@
     </SchemaVersion>
     <ProjectGuid>{9A0EDD9F-DA8E-48EA-8D91-D194E97CFD67}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Remotion.Data.Linq.IntegrationTest.VisualBasic</RootNamespace>
-    <AssemblyName>Remotion.Data.Linq.IntegrationTest.VisualBasic</AssemblyName>
+    <RootNamespace>Remotion.Data.Linq.IntegrationTests.VisualBasic</RootNamespace>
+    <AssemblyName>Remotion.Data.Linq.IntegrationTests.VisualBasic</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -37,7 +37,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Remotion.Data.Linq.IntegrationTest.VisualBasic.xml</DocumentationFile>
+    <DocumentationFile>Remotion.Data.Linq.IntegrationTests.VisualBasic.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -46,7 +46,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Remotion.Data.Linq.IntegrationTest.VisualBasic.xml</DocumentationFile>
+    <DocumentationFile>Remotion.Data.Linq.IntegrationTests.VisualBasic.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -150,7 +150,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="..\Linq.IntegrationTests\App.config">
+    <None Include="..\Linq.IntegrationTests.Common\App.config">
       <Link>App.config</Link>
     </None>
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced01.result" />
@@ -288,7 +288,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Linq.IntegrationTests\Database\Northwnd.sql">
+    <Content Include="..\Linq.IntegrationTests.Common\Database\Northwnd.sql">
       <Link>Database\Northwnd.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -296,7 +296,7 @@
     <Compile Include="SetupFixture.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.Common.csproj">
+    <ProjectReference Include="..\Linq.IntegrationTests.Common\Data.Linq.IntegrationTests.Common.csproj">
       <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
       <Name>Data.Linq.IntegrationTests.Common</Name>
     </ProjectReference>
