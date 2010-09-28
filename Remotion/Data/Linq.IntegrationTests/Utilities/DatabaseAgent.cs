@@ -21,7 +21,7 @@ using System.IO;
 using System.Text;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
 {
   // Copied from Remotion.Development.UnitTesting.Data.SqlClient
 

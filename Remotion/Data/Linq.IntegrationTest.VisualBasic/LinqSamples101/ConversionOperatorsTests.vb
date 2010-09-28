@@ -36,8 +36,8 @@ Option Strict On
 
 Imports NUnit.Framework
 Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests
-Imports Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
+Imports Remotion.Data.Linq.IntegrationTests.Common
+Imports Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 
 Namespace LinqSamples101
   <TestFixture()>

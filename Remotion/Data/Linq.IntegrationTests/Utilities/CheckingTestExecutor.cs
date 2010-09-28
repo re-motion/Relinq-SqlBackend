@@ -21,7 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
 {
   /// <summary>
   /// Checks the queryResult against a previously created resource

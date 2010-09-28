@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
@@ -24,7 +23,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind.CustomTransformers
+namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
 {
   /// <summary>
   /// Transforms the <see cref="SqlMethods.DateDiffDay(System.Nullable{System.DateTime},System.Nullable{System.DateTime})"/> method to SQL.

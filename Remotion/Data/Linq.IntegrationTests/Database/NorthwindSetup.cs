@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Configuration;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.IntegrationTests.Common.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Database
+namespace Remotion.Data.Linq.IntegrationTests.Common.Database
 {
   /// <summary>
   /// Sets up the northwind database.

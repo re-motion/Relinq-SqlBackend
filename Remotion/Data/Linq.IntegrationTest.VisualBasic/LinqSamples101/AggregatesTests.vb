@@ -35,7 +35,7 @@ Option Infer On
 Option Strict On
 
 Imports NUnit.Framework
-Imports Remotion.Data.Linq.IntegrationTests
+Imports Remotion.Data.Linq.IntegrationTests.Common
 Imports System.Reflection
 
 

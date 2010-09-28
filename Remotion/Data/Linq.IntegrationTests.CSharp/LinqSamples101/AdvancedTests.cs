@@ -35,7 +35,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind;
+using Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {

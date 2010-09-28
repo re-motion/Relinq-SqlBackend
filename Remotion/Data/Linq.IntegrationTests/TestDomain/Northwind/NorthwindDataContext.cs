@@ -13,15 +13,12 @@
 
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using System.Linq.Expressions;
 using System.ComponentModel;
 using System;
 
-namespace Remotion.Data.Linq.IntegrationTests.TestDomain.Northwind
+namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
   [System.Data.Linq.Mapping.DatabaseAttribute (Name = "NORTHWND")]
   public partial class NorthwindDataContext : System.Data.Linq.DataContext

@@ -37,7 +37,7 @@ Option Strict On
 Imports NUnit.Framework
 
 Imports System.Reflection
-Imports Remotion.Data.Linq.IntegrationTests
+Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101

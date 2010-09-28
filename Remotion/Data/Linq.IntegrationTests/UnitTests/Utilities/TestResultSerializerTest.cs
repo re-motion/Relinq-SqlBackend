@@ -20,10 +20,10 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.IntegrationTests.TestDomain;
-using Remotion.Data.Linq.IntegrationTests.Utilities;
+using Remotion.Data.Linq.IntegrationTests.Common.TestDomain;
+using Remotion.Data.Linq.IntegrationTests.Common.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.UnitTests.Utilities
+namespace Remotion.Data.Linq.IntegrationTests.Common.UnitTests.Utilities
 {
   [TestFixture]
   public class TestResultSerializerTest

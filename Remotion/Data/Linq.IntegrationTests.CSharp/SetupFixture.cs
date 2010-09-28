@@ -32,7 +32,7 @@
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 using System;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.Database;
+using Remotion.Data.Linq.IntegrationTests.Common.Database;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp
 {

@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace Remotion.Data.Linq.IntegrationTests.Utilities
+namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
 {
   /// <summary>
   /// Saves <see cref="TestResultSerializer"/> output to a file with correct naming and extension into a specified directory -

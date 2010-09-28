@@ -296,9 +296,9 @@
     <Compile Include="SetupFixture.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.csproj">
+    <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.Common.csproj">
       <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
-      <Name>Data.Linq.IntegrationTests</Name>
+      <Name>Data.Linq.IntegrationTests.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
