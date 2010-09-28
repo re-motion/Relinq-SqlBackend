@@ -1,0 +1,1187 @@
+Enumerable {
+  Order
+    CustomerID: 'SPLIR'
+    EmployeeID: 8
+    Freight: 195,6800
+    OrderDate: 02.12.1996 00:00:00
+    OrderID: 10369
+    RequiredDate: 30.12.1996 00:00:00
+    ShipAddress: 'P.O. Box 555'
+    ShipCity: 'Lander'
+    ShipCountry: 'USA'
+    ShipName: 'Split Rail Beer & Ale'
+    ShippedDate: 09.12.1996 00:00:00
+    ShipPostalCode: '82520'
+    ShipRegion: 'WY'
+    ShipVia: 2
+  Order
+    CustomerID: 'CHOPS'
+    EmployeeID: 6
+    Freight: 1,1700
+    OrderDate: 03.12.1996 00:00:00
+    OrderID: 10370
+    RequiredDate: 31.12.1996 00:00:00
+    ShipAddress: 'Hauptstr. 31'
+    ShipCity: 'Bern'
+    ShipCountry: 'Switzerland'
+    ShipName: 'Chop-suey Chinese'
+    ShippedDate: 27.12.1996 00:00:00
+    ShipPostalCode: '3012'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'LAMAI'
+    EmployeeID: 1
+    Freight: 0,4500
+    OrderDate: 03.12.1996 00:00:00
+    OrderID: 10371
+    RequiredDate: 31.12.1996 00:00:00
+    ShipAddress: '1 rue Alsace-Lorraine'
+    ShipCity: 'Toulouse'
+    ShipCountry: 'France'
+    ShipName: 'La maison d''Asie'
+    ShippedDate: 24.12.1996 00:00:00
+    ShipPostalCode: '31000'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 5
+    Freight: 890,7800
+    OrderDate: 04.12.1996 00:00:00
+    OrderID: 10372
+    RequiredDate: 01.01.1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 09.12.1996 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'HUNGO'
+    EmployeeID: 4
+    Freight: 124,1200
+    OrderDate: 05.12.1996 00:00:00
+    OrderID: 10373
+    RequiredDate: 02.01.1997 00:00:00
+    ShipAddress: '8 Johnstown Road'
+    ShipCity: 'Cork'
+    ShipCountry: 'Ireland'
+    ShipName: 'Hungry Owl All-Night Grocers'
+    ShippedDate: 11.12.1996 00:00:00
+    ShipPostalCode: null
+    ShipRegion: 'Co. Cork'
+    ShipVia: 3
+  Order
+    CustomerID: 'WOLZA'
+    EmployeeID: 1
+    Freight: 3,9400
+    OrderDate: 05.12.1996 00:00:00
+    OrderID: 10374
+    RequiredDate: 02.01.1997 00:00:00
+    ShipAddress: 'ul. Filtrowa 68'
+    ShipCity: 'Warszawa'
+    ShipCountry: 'Poland'
+    ShipName: 'Wolski Zajazd'
+    ShippedDate: 09.12.1996 00:00:00
+    ShipPostalCode: '01-012'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'HUNGC'
+    EmployeeID: 3
+    Freight: 20,1200
+    OrderDate: 06.12.1996 00:00:00
+    OrderID: 10375
+    RequiredDate: 03.01.1997 00:00:00
+    ShipAddress: 'City Center Plaza 516 Main St.'
+    ShipCity: 'Elgin'
+    ShipCountry: 'USA'
+    ShipName: 'Hungry Coyote Import Store'
+    ShippedDate: 09.12.1996 00:00:00
+    ShipPostalCode: '97827'
+    ShipRegion: 'OR'
+    ShipVia: 2
+  Order
+    CustomerID: 'MEREP'
+    EmployeeID: 1
+    Freight: 20,3900
+    OrderDate: 09.12.1996 00:00:00
+    OrderID: 10376
+    RequiredDate: 06.01.1997 00:00:00
+    ShipAddress: '43 rue St. Laurent'
+    ShipCity: 'Montréal'
+    ShipCountry: 'Canada'
+    ShipName: 'Mère Paillarde'
+    ShippedDate: 13.12.1996 00:00:00
+    ShipPostalCode: 'H1J 1C3'
+    ShipRegion: 'Québec'
+    ShipVia: 2
+  Order
+    CustomerID: 'SEVES'
+    EmployeeID: 1
+    Freight: 22,2100
+    OrderDate: 09.12.1996 00:00:00
+    OrderID: 10377
+    RequiredDate: 06.01.1997 00:00:00
+    ShipAddress: '90 Wadhurst Rd.'
+    ShipCity: 'London'
+    ShipCountry: 'UK'
+    ShipName: 'Seven Seas Imports'
+    ShippedDate: 13.12.1996 00:00:00
+    ShipPostalCode: 'OX15 4NB'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'FOLKO'
+    EmployeeID: 5
+    Freight: 5,4400
+    OrderDate: 10.12.1996 00:00:00
+    OrderID: 10378
+    RequiredDate: 07.01.1997 00:00:00
+    ShipAddress: 'Åkergatan 24'
+    ShipCity: 'Bräcke'
+    ShipCountry: 'Sweden'
+    ShipName: 'Folk och fä HB'
+    ShippedDate: 19.12.1996 00:00:00
+    ShipPostalCode: 'S-844 67'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'QUEDE'
+    EmployeeID: 2
+    Freight: 45,0300
+    OrderDate: 11.12.1996 00:00:00
+    OrderID: 10379
+    RequiredDate: 08.01.1997 00:00:00
+    ShipAddress: 'Rua da Panificadora, 12'
+    ShipCity: 'Rio de Janeiro'
+    ShipCountry: 'Brazil'
+    ShipName: 'Que Delícia'
+    ShippedDate: 13.12.1996 00:00:00
+    ShipPostalCode: '02389-673'
+    ShipRegion: 'RJ'
+    ShipVia: 1
+  Order
+    CustomerID: 'HUNGO'
+    EmployeeID: 8
+    Freight: 35,0300
+    OrderDate: 12.12.1996 00:00:00
+    OrderID: 10380
+    RequiredDate: 09.01.1997 00:00:00
+    ShipAddress: '8 Johnstown Road'
+    ShipCity: 'Cork'
+    ShipCountry: 'Ireland'
+    ShipName: 'Hungry Owl All-Night Grocers'
+    ShippedDate: 16.01.1997 00:00:00
+    ShipPostalCode: null
+    ShipRegion: 'Co. Cork'
+    ShipVia: 3
+  Order
+    CustomerID: 'LILAS'
+    EmployeeID: 3
+    Freight: 7,9900
+    OrderDate: 12.12.1996 00:00:00
+    OrderID: 10381
+    RequiredDate: 09.01.1997 00:00:00
+    ShipAddress: 'Carrera 52 con Ave. Bolívar #65-98 Llano Largo'
+    ShipCity: 'Barquisimeto'
+    ShipCountry: 'Venezuela'
+    ShipName: 'LILA-Supermercado'
+    ShippedDate: 13.12.1996 00:00:00
+    ShipPostalCode: '3508'
+    ShipRegion: 'Lara'
+    ShipVia: 3
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 4
+    Freight: 94,7700
+    OrderDate: 13.12.1996 00:00:00
+    OrderID: 10382
+    RequiredDate: 10.01.1997 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 16.12.1996 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'AROUT'
+    EmployeeID: 8
+    Freight: 34,2400
+    OrderDate: 16.12.1996 00:00:00
+    OrderID: 10383
+    RequiredDate: 13.01.1997 00:00:00
+    ShipAddress: 'Brook Farm Stratford St. Mary'
+    ShipCity: 'Colchester'
+    ShipCountry: 'UK'
+    ShipName: 'Around the Horn'
+    ShippedDate: 18.12.1996 00:00:00
+    ShipPostalCode: 'CO7 6JX'
+    ShipRegion: 'Essex'
+    ShipVia: 3
+  Order
+    CustomerID: 'BERGS'
+    EmployeeID: 3
+    Freight: 168,6400
+    OrderDate: 16.12.1996 00:00:00
+    OrderID: 10384
+    RequiredDate: 13.01.1997 00:00:00
+    ShipAddress: 'Berguvsvägen  8'
+    ShipCity: 'Luleå'
+    ShipCountry: 'Sweden'
+    ShipName: 'Berglunds snabbköp'
+    ShippedDate: 20.12.1996 00:00:00
+    ShipPostalCode: 'S-958 22'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'SPLIR'
+    EmployeeID: 1
+    Freight: 30,9600
+    OrderDate: 17.12.1996 00:00:00
+    OrderID: 10385
+    RequiredDate: 14.01.1997 00:00:00
+    ShipAddress: 'P.O. Box 555'
+    ShipCity: 'Lander'
+    ShipCountry: 'USA'
+    ShipName: 'Split Rail Beer & Ale'
+    ShippedDate: 23.12.1996 00:00:00
+    ShipPostalCode: '82520'
+    ShipRegion: 'WY'
+    ShipVia: 2
+  Order
+    CustomerID: 'FAMIA'
+    EmployeeID: 9
+    Freight: 13,9900
+    OrderDate: 18.12.1996 00:00:00
+    OrderID: 10386
+    RequiredDate: 01.01.1997 00:00:00
+    ShipAddress: 'Rua Orós, 92'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Familia Arquibaldo'
+    ShippedDate: 25.12.1996 00:00:00
+    ShipPostalCode: '05442-030'
+    ShipRegion: 'SP'
+    ShipVia: 3
+  Order
+    CustomerID: 'SANTG'
+    EmployeeID: 1
+    Freight: 93,6300
+    OrderDate: 18.12.1996 00:00:00
+    OrderID: 10387
+    RequiredDate: 15.01.1997 00:00:00
+    ShipAddress: 'Erling Skakkes gate 78'
+    ShipCity: 'Stavern'
+    ShipCountry: 'Norway'
+    ShipName: 'Santé Gourmet'
+    ShippedDate: 20.12.1996 00:00:00
+    ShipPostalCode: '4110'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'SEVES'
+    EmployeeID: 2
+    Freight: 34,8600
+    OrderDate: 19.12.1996 00:00:00
+    OrderID: 10388
+    RequiredDate: 16.01.1997 00:00:00
+    ShipAddress: '90 Wadhurst Rd.'
+    ShipCity: 'London'
+    ShipCountry: 'UK'
+    ShipName: 'Seven Seas Imports'
+    ShippedDate: 20.12.1996 00:00:00
+    ShipPostalCode: 'OX15 4NB'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'BOTTM'
+    EmployeeID: 4
+    Freight: 47,4200
+    OrderDate: 20.12.1996 00:00:00
+    OrderID: 10389
+    RequiredDate: 17.01.1997 00:00:00
+    ShipAddress: '23 Tsawassen Blvd.'
+    ShipCity: 'Tsawassen'
+    ShipCountry: 'Canada'
+    ShipName: 'Bottom-Dollar Markets'
+    ShippedDate: 24.12.1996 00:00:00
+    ShipPostalCode: 'T2F 8M4'
+    ShipRegion: 'BC'
+    ShipVia: 2
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 6
+    Freight: 126,3800
+    OrderDate: 23.12.1996 00:00:00
+    OrderID: 10390
+    RequiredDate: 20.01.1997 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 26.12.1996 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'DRACD'
+    EmployeeID: 3
+    Freight: 5,4500
+    OrderDate: 23.12.1996 00:00:00
+    OrderID: 10391
+    RequiredDate: 20.01.1997 00:00:00
+    ShipAddress: 'Walserweg 21'
+    ShipCity: 'Aachen'
+    ShipCountry: 'Germany'
+    ShipName: 'Drachenblut Delikatessen'
+    ShippedDate: 31.12.1996 00:00:00
+    ShipPostalCode: '52066'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'PICCO'
+    EmployeeID: 2
+    Freight: 122,4600
+    OrderDate: 24.12.1996 00:00:00
+    OrderID: 10392
+    RequiredDate: 21.01.1997 00:00:00
+    ShipAddress: 'Geislweg 14'
+    ShipCity: 'Salzburg'
+    ShipCountry: 'Austria'
+    ShipName: 'Piccolo und mehr'
+    ShippedDate: 01.01.1997 00:00:00
+    ShipPostalCode: '5020'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'SAVEA'
+    EmployeeID: 1
+    Freight: 126,5600
+    OrderDate: 25.12.1996 00:00:00
+    OrderID: 10393
+    RequiredDate: 22.01.1997 00:00:00
+    ShipAddress: '187 Suffolk Ln.'
+    ShipCity: 'Boise'
+    ShipCountry: 'USA'
+    ShipName: 'Save-a-lot Markets'
+    ShippedDate: 03.01.1997 00:00:00
+    ShipPostalCode: '83720'
+    ShipRegion: 'ID'
+    ShipVia: 3
+  Order
+    CustomerID: 'HUNGC'
+    EmployeeID: 1
+    Freight: 30,3400
+    OrderDate: 25.12.1996 00:00:00
+    OrderID: 10394
+    RequiredDate: 22.01.1997 00:00:00
+    ShipAddress: 'City Center Plaza 516 Main St.'
+    ShipCity: 'Elgin'
+    ShipCountry: 'USA'
+    ShipName: 'Hungry Coyote Import Store'
+    ShippedDate: 03.01.1997 00:00:00
+    ShipPostalCode: '97827'
+    ShipRegion: 'OR'
+    ShipVia: 3
+  Order
+    CustomerID: 'HILAA'
+    EmployeeID: 6
+    Freight: 184,4100
+    OrderDate: 26.12.1996 00:00:00
+    OrderID: 10395
+    RequiredDate: 23.01.1997 00:00:00
+    ShipAddress: 'Carrera 22 con Ave. Carlos Soublette #8-35'
+    ShipCity: 'San Cristóbal'
+    ShipCountry: 'Venezuela'
+    ShipName: 'HILARION-Abastos'
+    ShippedDate: 03.01.1997 00:00:00
+    ShipPostalCode: '5022'
+    ShipRegion: 'Táchira'
+    ShipVia: 1
+  Order
+    CustomerID: 'FRANK'
+    EmployeeID: 1
+    Freight: 135,3500
+    OrderDate: 27.12.1996 00:00:00
+    OrderID: 10396
+    RequiredDate: 10.01.1997 00:00:00
+    ShipAddress: 'Berliner Platz 43'
+    ShipCity: 'München'
+    ShipCountry: 'Germany'
+    ShipName: 'Frankenversand'
+    ShippedDate: 06.01.1997 00:00:00
+    ShipPostalCode: '80805'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'PRINI'
+    EmployeeID: 5
+    Freight: 60,2600
+    OrderDate: 27.12.1996 00:00:00
+    OrderID: 10397
+    RequiredDate: 24.01.1997 00:00:00
+    ShipAddress: 'Estrada da saúde n. 58'
+    ShipCity: 'Lisboa'
+    ShipCountry: 'Portugal'
+    ShipName: 'Princesa Isabel Vinhos'
+    ShippedDate: 02.01.1997 00:00:00
+    ShipPostalCode: '1756'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'SAVEA'
+    EmployeeID: 2
+    Freight: 89,1600
+    OrderDate: 30.12.1996 00:00:00
+    OrderID: 10398
+    RequiredDate: 27.01.1997 00:00:00
+    ShipAddress: '187 Suffolk Ln.'
+    ShipCity: 'Boise'
+    ShipCountry: 'USA'
+    ShipName: 'Save-a-lot Markets'
+    ShippedDate: 09.01.1997 00:00:00
+    ShipPostalCode: '83720'
+    ShipRegion: 'ID'
+    ShipVia: 3
+  Order
+    CustomerID: 'VAFFE'
+    EmployeeID: 8
+    Freight: 27,3600
+    OrderDate: 31.12.1996 00:00:00
+    OrderID: 10399
+    RequiredDate: 14.01.1997 00:00:00
+    ShipAddress: 'Smagsloget 45'
+    ShipCity: 'Århus'
+    ShipCountry: 'Denmark'
+    ShipName: 'Vaffeljernet'
+    ShippedDate: 08.01.1997 00:00:00
+    ShipPostalCode: '8200'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'MAISD'
+    EmployeeID: 4
+    Freight: 155,6400
+    OrderDate: 01.12.1997 00:00:00
+    OrderID: 10760
+    RequiredDate: 29.12.1997 00:00:00
+    ShipAddress: 'Rue Joseph-Bens 532'
+    ShipCity: 'Bruxelles'
+    ShipCountry: 'Belgium'
+    ShipName: 'Maison Dewey'
+    ShippedDate: 10.12.1997 00:00:00
+    ShipPostalCode: 'B-1180'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'RATTC'
+    EmployeeID: 5
+    Freight: 18,6600
+    OrderDate: 02.12.1997 00:00:00
+    OrderID: 10761
+    RequiredDate: 30.12.1997 00:00:00
+    ShipAddress: '2817 Milton Dr.'
+    ShipCity: 'Albuquerque'
+    ShipCountry: 'USA'
+    ShipName: 'Rattlesnake Canyon Grocery'
+    ShippedDate: 08.12.1997 00:00:00
+    ShipPostalCode: '87110'
+    ShipRegion: 'NM'
+    ShipVia: 2
+  Order
+    CustomerID: 'FOLKO'
+    EmployeeID: 3
+    Freight: 328,7400
+    OrderDate: 02.12.1997 00:00:00
+    OrderID: 10762
+    RequiredDate: 30.12.1997 00:00:00
+    ShipAddress: 'Åkergatan 24'
+    ShipCity: 'Bräcke'
+    ShipCountry: 'Sweden'
+    ShipName: 'Folk och fä HB'
+    ShippedDate: 09.12.1997 00:00:00
+    ShipPostalCode: 'S-844 67'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'FOLIG'
+    EmployeeID: 3
+    Freight: 37,3500
+    OrderDate: 03.12.1997 00:00:00
+    OrderID: 10763
+    RequiredDate: 31.12.1997 00:00:00
+    ShipAddress: '184, chaussée de Tournai'
+    ShipCity: 'Lille'
+    ShipCountry: 'France'
+    ShipName: 'Folies gourmandes'
+    ShippedDate: 08.12.1997 00:00:00
+    ShipPostalCode: '59000'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 6
+    Freight: 145,4500
+    OrderDate: 03.12.1997 00:00:00
+    OrderID: 10764
+    RequiredDate: 31.12.1997 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 08.12.1997 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'QUICK'
+    EmployeeID: 3
+    Freight: 42,7400
+    OrderDate: 04.12.1997 00:00:00
+    OrderID: 10765
+    RequiredDate: 01.01.1998 00:00:00
+    ShipAddress: 'Taucherstraße 10'
+    ShipCity: 'Cunewalde'
+    ShipCountry: 'Germany'
+    ShipName: 'QUICK-Stop'
+    ShippedDate: 09.12.1997 00:00:00
+    ShipPostalCode: '01307'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'OTTIK'
+    EmployeeID: 4
+    Freight: 157,5500
+    OrderDate: 05.12.1997 00:00:00
+    OrderID: 10766
+    RequiredDate: 02.01.1998 00:00:00
+    ShipAddress: 'Mehrheimerstr. 369'
+    ShipCity: 'Köln'
+    ShipCountry: 'Germany'
+    ShipName: 'Ottilies Käseladen'
+    ShippedDate: 09.12.1997 00:00:00
+    ShipPostalCode: '50739'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'SUPRD'
+    EmployeeID: 4
+    Freight: 1,5900
+    OrderDate: 05.12.1997 00:00:00
+    OrderID: 10767
+    RequiredDate: 02.01.1998 00:00:00
+    ShipAddress: 'Boulevard Tirou, 255'
+    ShipCity: 'Charleroi'
+    ShipCountry: 'Belgium'
+    ShipName: 'Suprêmes délices'
+    ShippedDate: 15.12.1997 00:00:00
+    ShipPostalCode: 'B-6000'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'AROUT'
+    EmployeeID: 3
+    Freight: 146,3200
+    OrderDate: 08.12.1997 00:00:00
+    OrderID: 10768
+    RequiredDate: 05.01.1998 00:00:00
+    ShipAddress: 'Brook Farm Stratford St. Mary'
+    ShipCity: 'Colchester'
+    ShipCountry: 'UK'
+    ShipName: 'Around the Horn'
+    ShippedDate: 15.12.1997 00:00:00
+    ShipPostalCode: 'CO7 6JX'
+    ShipRegion: 'Essex'
+    ShipVia: 2
+  Order
+    CustomerID: 'VAFFE'
+    EmployeeID: 3
+    Freight: 65,0600
+    OrderDate: 08.12.1997 00:00:00
+    OrderID: 10769
+    RequiredDate: 05.01.1998 00:00:00
+    ShipAddress: 'Smagsloget 45'
+    ShipCity: 'Århus'
+    ShipCountry: 'Denmark'
+    ShipName: 'Vaffeljernet'
+    ShippedDate: 12.12.1997 00:00:00
+    ShipPostalCode: '8200'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'HANAR'
+    EmployeeID: 8
+    Freight: 5,3200
+    OrderDate: 09.12.1997 00:00:00
+    OrderID: 10770
+    RequiredDate: 06.01.1998 00:00:00
+    ShipAddress: 'Rua do Paço, 67'
+    ShipCity: 'Rio de Janeiro'
+    ShipCountry: 'Brazil'
+    ShipName: 'Hanari Carnes'
+    ShippedDate: 17.12.1997 00:00:00
+    ShipPostalCode: '05454-876'
+    ShipRegion: 'RJ'
+    ShipVia: 3
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 9
+    Freight: 11,1900
+    OrderDate: 10.12.1997 00:00:00
+    OrderID: 10771
+    RequiredDate: 07.01.1998 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 02.01.1998 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'LEHMS'
+    EmployeeID: 3
+    Freight: 91,2800
+    OrderDate: 10.12.1997 00:00:00
+    OrderID: 10772
+    RequiredDate: 07.01.1998 00:00:00
+    ShipAddress: 'Magazinweg 7'
+    ShipCity: 'Frankfurt a.M.'
+    ShipCountry: 'Germany'
+    ShipName: 'Lehmanns Marktstand'
+    ShippedDate: 19.12.1997 00:00:00
+    ShipPostalCode: '60528'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 1
+    Freight: 96,4300
+    OrderDate: 11.12.1997 00:00:00
+    OrderID: 10773
+    RequiredDate: 08.01.1998 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 16.12.1997 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'FOLKO'
+    EmployeeID: 4
+    Freight: 48,2000
+    OrderDate: 11.12.1997 00:00:00
+    OrderID: 10774
+    RequiredDate: 25.12.1997 00:00:00
+    ShipAddress: 'Åkergatan 24'
+    ShipCity: 'Bräcke'
+    ShipCountry: 'Sweden'
+    ShipName: 'Folk och fä HB'
+    ShippedDate: 12.12.1997 00:00:00
+    ShipPostalCode: 'S-844 67'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'THECR'
+    EmployeeID: 7
+    Freight: 20,2500
+    OrderDate: 12.12.1997 00:00:00
+    OrderID: 10775
+    RequiredDate: 09.01.1998 00:00:00
+    ShipAddress: '55 Grizzly Peak Rd.'
+    ShipCity: 'Butte'
+    ShipCountry: 'USA'
+    ShipName: 'The Cracker Box'
+    ShippedDate: 26.12.1997 00:00:00
+    ShipPostalCode: '59801'
+    ShipRegion: 'MT'
+    ShipVia: 1
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 1
+    Freight: 351,5300
+    OrderDate: 15.12.1997 00:00:00
+    OrderID: 10776
+    RequiredDate: 12.01.1998 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 18.12.1997 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'GOURL'
+    EmployeeID: 7
+    Freight: 3,0100
+    OrderDate: 15.12.1997 00:00:00
+    OrderID: 10777
+    RequiredDate: 29.12.1997 00:00:00
+    ShipAddress: 'Av. Brasil, 442'
+    ShipCity: 'Campinas'
+    ShipCountry: 'Brazil'
+    ShipName: 'Gourmet Lanchonetes'
+    ShippedDate: 21.01.1998 00:00:00
+    ShipPostalCode: '04876-786'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'BERGS'
+    EmployeeID: 3
+    Freight: 6,7900
+    OrderDate: 16.12.1997 00:00:00
+    OrderID: 10778
+    RequiredDate: 13.01.1998 00:00:00
+    ShipAddress: 'Berguvsvägen  8'
+    ShipCity: 'Luleå'
+    ShipCountry: 'Sweden'
+    ShipName: 'Berglunds snabbköp'
+    ShippedDate: 24.12.1997 00:00:00
+    ShipPostalCode: 'S-958 22'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'MORGK'
+    EmployeeID: 3
+    Freight: 58,1300
+    OrderDate: 16.12.1997 00:00:00
+    OrderID: 10779
+    RequiredDate: 13.01.1998 00:00:00
+    ShipAddress: 'Heerstr. 22'
+    ShipCity: 'Leipzig'
+    ShipCountry: 'Germany'
+    ShipName: 'Morgenstern Gesundkost'
+    ShippedDate: 14.01.1998 00:00:00
+    ShipPostalCode: '04179'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'LILAS'
+    EmployeeID: 2
+    Freight: 42,1300
+    OrderDate: 16.12.1997 00:00:00
+    OrderID: 10780
+    RequiredDate: 30.12.1997 00:00:00
+    ShipAddress: 'Carrera 52 con Ave. Bolívar #65-98 Llano Largo'
+    ShipCity: 'Barquisimeto'
+    ShipCountry: 'Venezuela'
+    ShipName: 'LILA-Supermercado'
+    ShippedDate: 25.12.1997 00:00:00
+    ShipPostalCode: '3508'
+    ShipRegion: 'Lara'
+    ShipVia: 1
+  Order
+    CustomerID: 'WARTH'
+    EmployeeID: 2
+    Freight: 73,1600
+    OrderDate: 17.12.1997 00:00:00
+    OrderID: 10781
+    RequiredDate: 14.01.1998 00:00:00
+    ShipAddress: 'Torikatu 38'
+    ShipCity: 'Oulu'
+    ShipCountry: 'Finland'
+    ShipName: 'Wartian Herkku'
+    ShippedDate: 19.12.1997 00:00:00
+    ShipPostalCode: '90110'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'CACTU'
+    EmployeeID: 9
+    Freight: 1,1000
+    OrderDate: 17.12.1997 00:00:00
+    OrderID: 10782
+    RequiredDate: 14.01.1998 00:00:00
+    ShipAddress: 'Cerrito 333'
+    ShipCity: 'Buenos Aires'
+    ShipCountry: 'Argentina'
+    ShipName: 'Cactus Comidas para llevar'
+    ShippedDate: 22.12.1997 00:00:00
+    ShipPostalCode: '1010'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'HANAR'
+    EmployeeID: 4
+    Freight: 124,9800
+    OrderDate: 18.12.1997 00:00:00
+    OrderID: 10783
+    RequiredDate: 15.01.1998 00:00:00
+    ShipAddress: 'Rua do Paço, 67'
+    ShipCity: 'Rio de Janeiro'
+    ShipCountry: 'Brazil'
+    ShipName: 'Hanari Carnes'
+    ShippedDate: 19.12.1997 00:00:00
+    ShipPostalCode: '05454-876'
+    ShipRegion: 'RJ'
+    ShipVia: 2
+  Order
+    CustomerID: 'MAGAA'
+    EmployeeID: 4
+    Freight: 70,0900
+    OrderDate: 18.12.1997 00:00:00
+    OrderID: 10784
+    RequiredDate: 15.01.1998 00:00:00
+    ShipAddress: 'Via Ludovico il Moro 22'
+    ShipCity: 'Bergamo'
+    ShipCountry: 'Italy'
+    ShipName: 'Magazzini Alimentari Riuniti'
+    ShippedDate: 22.12.1997 00:00:00
+    ShipPostalCode: '24100'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'GROSR'
+    EmployeeID: 1
+    Freight: 1,5100
+    OrderDate: 18.12.1997 00:00:00
+    OrderID: 10785
+    RequiredDate: 15.01.1998 00:00:00
+    ShipAddress: '5ª Ave. Los Palos Grandes'
+    ShipCity: 'Caracas'
+    ShipCountry: 'Venezuela'
+    ShipName: 'GROSELLA-Restaurante'
+    ShippedDate: 24.12.1997 00:00:00
+    ShipPostalCode: '1081'
+    ShipRegion: 'DF'
+    ShipVia: 3
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 8
+    Freight: 110,8700
+    OrderDate: 19.12.1997 00:00:00
+    OrderID: 10786
+    RequiredDate: 16.01.1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 23.12.1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'LAMAI'
+    EmployeeID: 2
+    Freight: 249,9300
+    OrderDate: 19.12.1997 00:00:00
+    OrderID: 10787
+    RequiredDate: 02.01.1998 00:00:00
+    ShipAddress: '1 rue Alsace-Lorraine'
+    ShipCity: 'Toulouse'
+    ShipCountry: 'France'
+    ShipName: 'La maison d''Asie'
+    ShippedDate: 26.12.1997 00:00:00
+    ShipPostalCode: '31000'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'QUICK'
+    EmployeeID: 1
+    Freight: 42,7000
+    OrderDate: 22.12.1997 00:00:00
+    OrderID: 10788
+    RequiredDate: 19.01.1998 00:00:00
+    ShipAddress: 'Taucherstraße 10'
+    ShipCity: 'Cunewalde'
+    ShipCountry: 'Germany'
+    ShipName: 'QUICK-Stop'
+    ShippedDate: 19.01.1998 00:00:00
+    ShipPostalCode: '01307'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'FOLIG'
+    EmployeeID: 1
+    Freight: 100,6000
+    OrderDate: 22.12.1997 00:00:00
+    OrderID: 10789
+    RequiredDate: 19.01.1998 00:00:00
+    ShipAddress: '184, chaussée de Tournai'
+    ShipCity: 'Lille'
+    ShipCountry: 'France'
+    ShipName: 'Folies gourmandes'
+    ShippedDate: 31.12.1997 00:00:00
+    ShipPostalCode: '59000'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'GOURL'
+    EmployeeID: 6
+    Freight: 28,2300
+    OrderDate: 22.12.1997 00:00:00
+    OrderID: 10790
+    RequiredDate: 19.01.1998 00:00:00
+    ShipAddress: 'Av. Brasil, 442'
+    ShipCity: 'Campinas'
+    ShipCountry: 'Brazil'
+    ShipName: 'Gourmet Lanchonetes'
+    ShippedDate: 26.12.1997 00:00:00
+    ShipPostalCode: '04876-786'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'FRANK'
+    EmployeeID: 6
+    Freight: 16,8500
+    OrderDate: 23.12.1997 00:00:00
+    OrderID: 10791
+    RequiredDate: 20.01.1998 00:00:00
+    ShipAddress: 'Berliner Platz 43'
+    ShipCity: 'München'
+    ShipCountry: 'Germany'
+    ShipName: 'Frankenversand'
+    ShippedDate: 01.01.1998 00:00:00
+    ShipPostalCode: '80805'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'WOLZA'
+    EmployeeID: 1
+    Freight: 23,7900
+    OrderDate: 23.12.1997 00:00:00
+    OrderID: 10792
+    RequiredDate: 20.01.1998 00:00:00
+    ShipAddress: 'ul. Filtrowa 68'
+    ShipCity: 'Warszawa'
+    ShipCountry: 'Poland'
+    ShipName: 'Wolski Zajazd'
+    ShippedDate: 31.12.1997 00:00:00
+    ShipPostalCode: '01-012'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'AROUT'
+    EmployeeID: 3
+    Freight: 4,5200
+    OrderDate: 24.12.1997 00:00:00
+    OrderID: 10793
+    RequiredDate: 21.01.1998 00:00:00
+    ShipAddress: 'Brook Farm Stratford St. Mary'
+    ShipCity: 'Colchester'
+    ShipCountry: 'UK'
+    ShipName: 'Around the Horn'
+    ShippedDate: 08.01.1998 00:00:00
+    ShipPostalCode: 'CO7 6JX'
+    ShipRegion: 'Essex'
+    ShipVia: 3
+  Order
+    CustomerID: 'QUEDE'
+    EmployeeID: 6
+    Freight: 21,4900
+    OrderDate: 24.12.1997 00:00:00
+    OrderID: 10794
+    RequiredDate: 21.01.1998 00:00:00
+    ShipAddress: 'Rua da Panificadora, 12'
+    ShipCity: 'Rio de Janeiro'
+    ShipCountry: 'Brazil'
+    ShipName: 'Que Delícia'
+    ShippedDate: 02.01.1998 00:00:00
+    ShipPostalCode: '02389-673'
+    ShipRegion: 'RJ'
+    ShipVia: 1
+  Order
+    CustomerID: 'ERNSH'
+    EmployeeID: 8
+    Freight: 126,6600
+    OrderDate: 24.12.1997 00:00:00
+    OrderID: 10795
+    RequiredDate: 21.01.1998 00:00:00
+    ShipAddress: 'Kirchgasse 6'
+    ShipCity: 'Graz'
+    ShipCountry: 'Austria'
+    ShipName: 'Ernst Handel'
+    ShippedDate: 20.01.1998 00:00:00
+    ShipPostalCode: '8010'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'HILAA'
+    EmployeeID: 3
+    Freight: 26,5200
+    OrderDate: 25.12.1997 00:00:00
+    OrderID: 10796
+    RequiredDate: 22.01.1998 00:00:00
+    ShipAddress: 'Carrera 22 con Ave. Carlos Soublette #8-35'
+    ShipCity: 'San Cristóbal'
+    ShipCountry: 'Venezuela'
+    ShipName: 'HILARION-Abastos'
+    ShippedDate: 14.01.1998 00:00:00
+    ShipPostalCode: '5022'
+    ShipRegion: 'Táchira'
+    ShipVia: 1
+  Order
+    CustomerID: 'DRACD'
+    EmployeeID: 7
+    Freight: 33,3500
+    OrderDate: 25.12.1997 00:00:00
+    OrderID: 10797
+    RequiredDate: 22.01.1998 00:00:00
+    ShipAddress: 'Walserweg 21'
+    ShipCity: 'Aachen'
+    ShipCountry: 'Germany'
+    ShipName: 'Drachenblut Delikatessen'
+    ShippedDate: 05.01.1998 00:00:00
+    ShipPostalCode: '52066'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'ISLAT'
+    EmployeeID: 2
+    Freight: 2,3300
+    OrderDate: 26.12.1997 00:00:00
+    OrderID: 10798
+    RequiredDate: 23.01.1998 00:00:00
+    ShipAddress: 'Garden House Crowther Way'
+    ShipCity: 'Cowes'
+    ShipCountry: 'UK'
+    ShipName: 'Island Trading'
+    ShippedDate: 05.01.1998 00:00:00
+    ShipPostalCode: 'PO31 7PJ'
+    ShipRegion: 'Isle of Wight'
+    ShipVia: 1
+  Order
+    CustomerID: 'KOENE'
+    EmployeeID: 9
+    Freight: 30,7600
+    OrderDate: 26.12.1997 00:00:00
+    OrderID: 10799
+    RequiredDate: 06.02.1998 00:00:00
+    ShipAddress: 'Maubelstr. 90'
+    ShipCity: 'Brandenburg'
+    ShipCountry: 'Germany'
+    ShipName: 'Königlich Essen'
+    ShippedDate: 05.01.1998 00:00:00
+    ShipPostalCode: '14776'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'SEVES'
+    EmployeeID: 1
+    Freight: 137,4400
+    OrderDate: 26.12.1997 00:00:00
+    OrderID: 10800
+    RequiredDate: 23.01.1998 00:00:00
+    ShipAddress: '90 Wadhurst Rd.'
+    ShipCity: 'London'
+    ShipCountry: 'UK'
+    ShipName: 'Seven Seas Imports'
+    ShippedDate: 05.01.1998 00:00:00
+    ShipPostalCode: 'OX15 4NB'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'BOLID'
+    EmployeeID: 4
+    Freight: 97,0900
+    OrderDate: 29.12.1997 00:00:00
+    OrderID: 10801
+    RequiredDate: 26.01.1998 00:00:00
+    ShipAddress: 'C/ Araquil, 67'
+    ShipCity: 'Madrid'
+    ShipCountry: 'Spain'
+    ShipName: 'Bólido Comidas preparadas'
+    ShippedDate: 31.12.1997 00:00:00
+    ShipPostalCode: '28023'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'SIMOB'
+    EmployeeID: 4
+    Freight: 257,2600
+    OrderDate: 29.12.1997 00:00:00
+    OrderID: 10802
+    RequiredDate: 26.01.1998 00:00:00
+    ShipAddress: 'Vinbæltet 34'
+    ShipCity: 'Kobenhavn'
+    ShipCountry: 'Denmark'
+    ShipName: 'Simons bistro'
+    ShippedDate: 02.01.1998 00:00:00
+    ShipPostalCode: '1734'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'WELLI'
+    EmployeeID: 4
+    Freight: 55,2300
+    OrderDate: 30.12.1997 00:00:00
+    OrderID: 10803
+    RequiredDate: 27.01.1998 00:00:00
+    ShipAddress: 'Rua do Mercado, 12'
+    ShipCity: 'Resende'
+    ShipCountry: 'Brazil'
+    ShipName: 'Wellington Importadora'
+    ShippedDate: 06.01.1998 00:00:00
+    ShipPostalCode: '08737-363'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'SEVES'
+    EmployeeID: 6
+    Freight: 27,3300
+    OrderDate: 30.12.1997 00:00:00
+    OrderID: 10804
+    RequiredDate: 27.01.1998 00:00:00
+    ShipAddress: '90 Wadhurst Rd.'
+    ShipCity: 'London'
+    ShipCountry: 'UK'
+    ShipName: 'Seven Seas Imports'
+    ShippedDate: 07.01.1998 00:00:00
+    ShipPostalCode: 'OX15 4NB'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'THEBI'
+    EmployeeID: 2
+    Freight: 237,3400
+    OrderDate: 30.12.1997 00:00:00
+    OrderID: 10805
+    RequiredDate: 27.01.1998 00:00:00
+    ShipAddress: '89 Jefferson Way Suite 2'
+    ShipCity: 'Portland'
+    ShipCountry: 'USA'
+    ShipName: 'The Big Cheese'
+    ShippedDate: 09.01.1998 00:00:00
+    ShipPostalCode: '97201'
+    ShipRegion: 'OR'
+    ShipVia: 3
+  Order
+    CustomerID: 'VICTE'
+    EmployeeID: 3
+    Freight: 22,1100
+    OrderDate: 31.12.1997 00:00:00
+    OrderID: 10806
+    RequiredDate: 28.01.1998 00:00:00
+    ShipAddress: '2, rue du Commerce'
+    ShipCity: 'Lyon'
+    ShipCountry: 'France'
+    ShipName: 'Victuailles en stock'
+    ShippedDate: 05.01.1998 00:00:00
+    ShipPostalCode: '69004'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'FRANS'
+    EmployeeID: 4
+    Freight: 1,3600
+    OrderDate: 31.12.1997 00:00:00
+    OrderID: 10807
+    RequiredDate: 28.01.1998 00:00:00
+    ShipAddress: 'Via Monte Bianco 34'
+    ShipCity: 'Torino'
+    ShipCountry: 'Italy'
+    ShipName: 'Franchi S.p.A.'
+    ShippedDate: 30.01.1998 00:00:00
+    ShipPostalCode: '10100'
+    ShipRegion: null
+    ShipVia: 1
+}

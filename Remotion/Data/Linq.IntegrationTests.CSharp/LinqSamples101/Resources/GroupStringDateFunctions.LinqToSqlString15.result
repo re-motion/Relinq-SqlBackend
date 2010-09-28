@@ -1,0 +1,89 @@
+Enumerable {
+  AnonymousType0
+    CompanyName: 'Exotic Liquids'
+    Country: 'United Kingdom'
+  AnonymousType0
+    CompanyName: 'New Orleans Cajun Delights'
+    Country: 'United States of America'
+  AnonymousType0
+    CompanyName: 'Grandma Kelly''s Homestead'
+    Country: 'United States of America'
+  AnonymousType0
+    CompanyName: 'Tokyo Traders'
+    Country: 'Japan'
+  AnonymousType0
+    CompanyName: 'Cooperativa de Quesos ''Las Cabras'''
+    Country: 'Spain'
+  AnonymousType0
+    CompanyName: 'Mayumi''s'
+    Country: 'Japan'
+  AnonymousType0
+    CompanyName: 'Pavlova, Ltd.'
+    Country: 'Australia'
+  AnonymousType0
+    CompanyName: 'Specialty Biscuits, Ltd.'
+    Country: 'United Kingdom'
+  AnonymousType0
+    CompanyName: 'PB Knäckebröd AB'
+    Country: 'Sweden'
+  AnonymousType0
+    CompanyName: 'Refrescos Americanas LTDA'
+    Country: 'Brazil'
+  AnonymousType0
+    CompanyName: 'Heli Süßwaren GmbH & Co. KG'
+    Country: 'Germany'
+  AnonymousType0
+    CompanyName: 'Plutzer Lebensmittelgroßmärkte AG'
+    Country: 'Germany'
+  AnonymousType0
+    CompanyName: 'Nord-Ost-Fisch Handelsgesellschaft mbH'
+    Country: 'Germany'
+  AnonymousType0
+    CompanyName: 'Formaggi Fortini s.r.l.'
+    Country: 'Italy'
+  AnonymousType0
+    CompanyName: 'Norske Meierier'
+    Country: 'Norway'
+  AnonymousType0
+    CompanyName: 'Bigfoot Breweries'
+    Country: 'United States of America'
+  AnonymousType0
+    CompanyName: 'Svensk Sjöföda AB'
+    Country: 'Sweden'
+  AnonymousType0
+    CompanyName: 'Aux joyeux ecclésiastiques'
+    Country: 'France'
+  AnonymousType0
+    CompanyName: 'New England Seafood Cannery'
+    Country: 'United States of America'
+  AnonymousType0
+    CompanyName: 'Leka Trading'
+    Country: 'Singapore'
+  AnonymousType0
+    CompanyName: 'Lyngbysild'
+    Country: 'Denmark'
+  AnonymousType0
+    CompanyName: 'Zaanse Snoepfabriek'
+    Country: 'Netherlands'
+  AnonymousType0
+    CompanyName: 'Karkki Oy'
+    Country: 'Finland'
+  AnonymousType0
+    CompanyName: 'G''day, Mate'
+    Country: 'Australia'
+  AnonymousType0
+    CompanyName: 'Ma Maison'
+    Country: 'Canada'
+  AnonymousType0
+    CompanyName: 'Pasta Buttini s.r.l.'
+    Country: 'Italy'
+  AnonymousType0
+    CompanyName: 'Escargots Nouveaux'
+    Country: 'France'
+  AnonymousType0
+    CompanyName: 'Gai pâturage'
+    Country: 'France'
+  AnonymousType0
+    CompanyName: 'Forêts d''érables'
+    Country: 'Canada'
+}

@@ -1,0 +1,112 @@
+Enumerable {
+  Product
+    CategoryID: 7
+    Discontinued: False
+    ProductID: 51
+    ProductName: 'Manjimup Dried Apples'
+    QuantityPerUnit: '50 - 300 g pkgs.'
+    ReorderLevel: 10
+    SupplierID: 24
+    UnitPrice: 53,0000
+    UnitsInStock: 20
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 5
+    Discontinued: False
+    ProductID: 52
+    ProductName: 'Filo Mix'
+    QuantityPerUnit: '16 - 2 kg boxes'
+    ReorderLevel: 25
+    SupplierID: 24
+    UnitPrice: 7,0000
+    UnitsInStock: 38
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 6
+    Discontinued: True
+    ProductID: 53
+    ProductName: 'Perth Pasties'
+    QuantityPerUnit: '48 pieces'
+    ReorderLevel: 0
+    SupplierID: 24
+    UnitPrice: 32,8000
+    UnitsInStock: 0
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 6
+    Discontinued: False
+    ProductID: 54
+    ProductName: 'Tourtière'
+    QuantityPerUnit: '16 pies'
+    ReorderLevel: 10
+    SupplierID: 25
+    UnitPrice: 7,4500
+    UnitsInStock: 21
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 6
+    Discontinued: False
+    ProductID: 55
+    ProductName: 'Pâté chinois'
+    QuantityPerUnit: '24 boxes x 2 pies'
+    ReorderLevel: 20
+    SupplierID: 25
+    UnitPrice: 24,0000
+    UnitsInStock: 115
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 5
+    Discontinued: False
+    ProductID: 56
+    ProductName: 'Gnocchi di nonna Alice'
+    QuantityPerUnit: '24 - 250 g pkgs.'
+    ReorderLevel: 30
+    SupplierID: 26
+    UnitPrice: 38,0000
+    UnitsInStock: 21
+    UnitsOnOrder: 10
+  Product
+    CategoryID: 5
+    Discontinued: False
+    ProductID: 57
+    ProductName: 'Ravioli Angelo'
+    QuantityPerUnit: '24 - 250 g pkgs.'
+    ReorderLevel: 20
+    SupplierID: 26
+    UnitPrice: 19,5000
+    UnitsInStock: 36
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 58
+    ProductName: 'Escargots de Bourgogne'
+    QuantityPerUnit: '24 pieces'
+    ReorderLevel: 20
+    SupplierID: 27
+    UnitPrice: 13,2500
+    UnitsInStock: 62
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 4
+    Discontinued: False
+    ProductID: 59
+    ProductName: 'Raclette Courdavault'
+    QuantityPerUnit: '5 kg pkg.'
+    ReorderLevel: 0
+    SupplierID: 28
+    UnitPrice: 55,0000
+    UnitsInStock: 79
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 4
+    Discontinued: False
+    ProductID: 60
+    ProductName: 'Camembert Pierrot'
+    QuantityPerUnit: '15 - 300 g rounds'
+    ReorderLevel: 0
+    SupplierID: 28
+    UnitPrice: 34,0000
+    UnitsInStock: 19
+    UnitsOnOrder: 0
+}

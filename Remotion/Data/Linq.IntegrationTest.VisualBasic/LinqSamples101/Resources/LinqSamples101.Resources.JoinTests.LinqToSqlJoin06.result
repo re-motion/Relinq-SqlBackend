@@ -1,0 +1,366 @@
+Enumerable {
+  AnonymousType0
+    ContactName: 'Maria Anders'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Ana Trujillo'
+    emps: 0
+    ords: 4
+  AnonymousType0
+    ContactName: 'Antonio Moreno'
+    emps: 0
+    ords: 7
+  AnonymousType0
+    ContactName: 'Thomas Hardy'
+    emps: 4
+    ords: 13
+  AnonymousType0
+    ContactName: 'Christina Berglund'
+    emps: 0
+    ords: 18
+  AnonymousType0
+    ContactName: 'Hanna Moos'
+    emps: 0
+    ords: 7
+  AnonymousType0
+    ContactName: 'Frédérique Citeaux'
+    emps: 0
+    ords: 11
+  AnonymousType0
+    ContactName: 'Martín Sommer'
+    emps: 0
+    ords: 3
+  AnonymousType0
+    ContactName: 'Laurence Lebihan'
+    emps: 0
+    ords: 17
+  AnonymousType0
+    ContactName: 'Elizabeth Lincoln'
+    emps: 0
+    ords: 14
+  AnonymousType0
+    ContactName: 'Victoria Ashworth'
+    emps: 4
+    ords: 10
+  AnonymousType0
+    ContactName: 'Patricio Simpson'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Francisco Chang'
+    emps: 0
+    ords: 1
+  AnonymousType0
+    ContactName: 'Yang Wang'
+    emps: 0
+    ords: 8
+  AnonymousType0
+    ContactName: 'Pedro Afonso'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Elizabeth Brown'
+    emps: 4
+    ords: 3
+  AnonymousType0
+    ContactName: 'Sven Ottlieb'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Janine Labrune'
+    emps: 0
+    ords: 4
+  AnonymousType0
+    ContactName: 'Ann Devon'
+    emps: 4
+    ords: 8
+  AnonymousType0
+    ContactName: 'Roland Mendel'
+    emps: 0
+    ords: 30
+  AnonymousType0
+    ContactName: 'Aria Cruz'
+    emps: 0
+    ords: 7
+  AnonymousType0
+    ContactName: 'Diego Roel'
+    emps: 0
+    ords: 0
+  AnonymousType0
+    ContactName: 'Martine Rancé'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Maria Larsson'
+    emps: 0
+    ords: 19
+  AnonymousType0
+    ContactName: 'Peter Franken'
+    emps: 0
+    ords: 15
+  AnonymousType0
+    ContactName: 'Carine Schmitt'
+    emps: 0
+    ords: 3
+  AnonymousType0
+    ContactName: 'Paolo Accorti'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Lino Rodriguez'
+    emps: 0
+    ords: 8
+  AnonymousType0
+    ContactName: 'Eduardo Saavedra'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'José Pedro Freyre'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'André Fonseca'
+    emps: 0
+    ords: 9
+  AnonymousType0
+    ContactName: 'Howard Snyder'
+    emps: 0
+    ords: 11
+  AnonymousType0
+    ContactName: 'Manuel Pereira'
+    emps: 0
+    ords: 2
+  AnonymousType0
+    ContactName: 'Mario Pontes'
+    emps: 0
+    ords: 14
+  AnonymousType0
+    ContactName: 'Carlos Hernández'
+    emps: 0
+    ords: 18
+  AnonymousType0
+    ContactName: 'Yoshi Latimer'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Patricia McKenna'
+    emps: 0
+    ords: 19
+  AnonymousType0
+    ContactName: 'Helen Bennett'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Philip Cramer'
+    emps: 0
+    ords: 14
+  AnonymousType0
+    ContactName: 'Daniel Tonini'
+    emps: 0
+    ords: 4
+  AnonymousType0
+    ContactName: 'Annette Roulet'
+    emps: 0
+    ords: 14
+  AnonymousType0
+    ContactName: 'Yoshi Tannamuri'
+    emps: 0
+    ords: 3
+  AnonymousType0
+    ContactName: 'John Steel'
+    emps: 0
+    ords: 2
+  AnonymousType0
+    ContactName: 'Renate Messner'
+    emps: 0
+    ords: 15
+  AnonymousType0
+    ContactName: 'Jaime Yorres'
+    emps: 0
+    ords: 4
+  AnonymousType0
+    ContactName: 'Carlos González'
+    emps: 0
+    ords: 14
+  AnonymousType0
+    ContactName: 'Felipe Izquierdo'
+    emps: 0
+    ords: 12
+  AnonymousType0
+    ContactName: 'Fran Wilson'
+    emps: 0
+    ords: 8
+  AnonymousType0
+    ContactName: 'Giovanni Rovelli'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Catherine Dewey'
+    emps: 0
+    ords: 7
+  AnonymousType0
+    ContactName: 'Jean Fresnière'
+    emps: 0
+    ords: 13
+  AnonymousType0
+    ContactName: 'Alexander Feuer'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Simon Crowther'
+    emps: 4
+    ords: 3
+  AnonymousType0
+    ContactName: 'Yvonne Moncada'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Rene Phillips'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Henriette Pfalzheim'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Marie Bertrand'
+    emps: 0
+    ords: 0
+  AnonymousType0
+    ContactName: 'Guillermo Fernández'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Georg Pipps'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Isabel de Castro'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Bernardo Batista'
+    emps: 0
+    ords: 9
+  AnonymousType0
+    ContactName: 'Lúcia Carvalho'
+    emps: 0
+    ords: 13
+  AnonymousType0
+    ContactName: 'Horst Kloss'
+    emps: 0
+    ords: 28
+  AnonymousType0
+    ContactName: 'Sergio Gutiérrez'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Paula Wilson'
+    emps: 0
+    ords: 18
+  AnonymousType0
+    ContactName: 'Maurizio Moroni'
+    emps: 0
+    ords: 12
+  AnonymousType0
+    ContactName: 'Janete Limeira'
+    emps: 0
+    ords: 11
+  AnonymousType0
+    ContactName: 'Michael Holz'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Alejandra Camino'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Jonas Bergulfsen'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Jose Pavarotti'
+    emps: 0
+    ords: 31
+  AnonymousType0
+    ContactName: 'Hari Kumar'
+    emps: 4
+    ords: 9
+  AnonymousType0
+    ContactName: 'Jytte Petersen'
+    emps: 0
+    ords: 7
+  AnonymousType0
+    ContactName: 'Dominique Perrier'
+    emps: 0
+    ords: 4
+  AnonymousType0
+    ContactName: 'Art Braunschweiger'
+    emps: 0
+    ords: 9
+  AnonymousType0
+    ContactName: 'Pascale Cartrain'
+    emps: 0
+    ords: 12
+  AnonymousType0
+    ContactName: 'Liz Nixon'
+    emps: 0
+    ords: 4
+  AnonymousType0
+    ContactName: 'Liu Wong'
+    emps: 0
+    ords: 3
+  AnonymousType0
+    ContactName: 'Karin Josephs'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Miguel Angel Paolino'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Anabela Domingues'
+    emps: 0
+    ords: 6
+  AnonymousType0
+    ContactName: 'Helvetius Nagy'
+    emps: 1
+    ords: 3
+  AnonymousType0
+    ContactName: 'Palle Ibsen'
+    emps: 0
+    ords: 11
+  AnonymousType0
+    ContactName: 'Mary Saveley'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Paul Henriot'
+    emps: 0
+    ords: 5
+  AnonymousType0
+    ContactName: 'Rita Müller'
+    emps: 0
+    ords: 10
+  AnonymousType0
+    ContactName: 'Pirkko Koskitalo'
+    emps: 0
+    ords: 15
+  AnonymousType0
+    ContactName: 'Paula Parente'
+    emps: 0
+    ords: 9
+  AnonymousType0
+    ContactName: 'Karl Jablonski'
+    emps: 2
+    ords: 14
+  AnonymousType0
+    ContactName: 'Matti Karttunen'
+    emps: 0
+    ords: 7
+  AnonymousType0
+    ContactName: 'Zbyszek Piestrzeniewicz'
+    emps: 0
+    ords: 7
+}

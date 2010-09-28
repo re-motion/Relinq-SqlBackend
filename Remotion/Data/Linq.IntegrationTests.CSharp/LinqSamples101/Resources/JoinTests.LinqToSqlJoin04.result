@@ -1,0 +1,20 @@
+Enumerable {
+  AnonymousType0
+    City: 'London'
+    FirstName1: 'Steven'
+    FirstName2: 'Michael'
+    LastName1: 'Buchanan'
+    LastName2: 'Suyama'
+  AnonymousType0
+    City: 'London'
+    FirstName1: 'Steven'
+    FirstName2: 'Robert'
+    LastName1: 'Buchanan'
+    LastName2: 'King'
+  AnonymousType0
+    City: 'London'
+    FirstName1: 'Steven'
+    FirstName2: 'Anne'
+    LastName1: 'Buchanan'
+    LastName2: 'Dodsworth'
+}

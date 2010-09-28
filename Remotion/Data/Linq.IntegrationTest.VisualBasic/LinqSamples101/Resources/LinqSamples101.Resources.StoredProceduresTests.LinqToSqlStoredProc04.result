@@ -1,0 +1,14 @@
+Enumerable {
+  CustomerResultSet
+    Address: '90 Wadhurst Rd.'
+    City: 'London'
+    CompanyName: 'Seven Seas Imports'
+    ContactName: 'Hari Kumar'
+    ContactTitle: 'Sales Manager'
+    Country: 'UK'
+    CustomerID: 'SEVES'
+    Fax: '(171) 555-5646'
+    Phone: '(171) 555-1717'
+    PostalCode: 'OX15 4NB'
+    Region: null
+}

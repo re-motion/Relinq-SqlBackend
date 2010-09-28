@@ -1,0 +1,275 @@
+Enumerable {
+  AnonymousType0
+    ContactName: 'Maria Anders'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Ana Trujillo'
+    SpacePos: 3
+  AnonymousType0
+    ContactName: 'Antonio Moreno'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'Thomas Hardy'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Christina Berglund'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Hanna Moos'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Frédérique Citeaux'
+    SpacePos: 10
+  AnonymousType0
+    ContactName: 'Martín Sommer'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Laurence Lebihan'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Elizabeth Lincoln'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Victoria Ashworth'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Patricio Simpson'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Francisco Chang'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Yang Wang'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Pedro Afonso'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Elizabeth Brown'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Sven Ottlieb'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Janine Labrune'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Ann Devon'
+    SpacePos: 3
+  AnonymousType0
+    ContactName: 'Roland Mendel'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Aria Cruz'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Diego Roel'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Martine Rancé'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'Maria Larsson'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Peter Franken'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Carine Schmitt'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Paolo Accorti'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Lino Rodriguez'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Eduardo Saavedra'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'José Pedro Freyre'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'André Fonseca'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Howard Snyder'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Manuel Pereira'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Mario Pontes'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Carlos Hernández'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Yoshi Latimer'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Patricia McKenna'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Helen Bennett'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Philip Cramer'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Daniel Tonini'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Annette Roulet'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'Yoshi Tannamuri'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'John Steel'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Renate Messner'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Jaime Yorres'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Carlos González'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Felipe Izquierdo'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Fran Wilson'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Giovanni Rovelli'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Catherine Dewey'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Jean Fresnière'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Alexander Feuer'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Simon Crowther'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Yvonne Moncada'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Rene Phillips'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Henriette Pfalzheim'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Marie Bertrand'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Guillermo Fernández'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Georg Pipps'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Isabel de Castro'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Bernardo Batista'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Lúcia Carvalho'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Horst Kloss'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Sergio Gutiérrez'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Paula Wilson'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Maurizio Moroni'
+    SpacePos: 8
+  AnonymousType0
+    ContactName: 'Janete Limeira'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Michael Holz'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'Alejandra Camino'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Jonas Bergulfsen'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Jose Pavarotti'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Hari Kumar'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Jytte Petersen'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Dominique Perrier'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Art Braunschweiger'
+    SpacePos: 3
+  AnonymousType0
+    ContactName: 'Pascale Cartrain'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'Liz Nixon'
+    SpacePos: 3
+  AnonymousType0
+    ContactName: 'Liu Wong'
+    SpacePos: 3
+  AnonymousType0
+    ContactName: 'Karin Josephs'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Miguel Angel Paolino'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Anabela Domingues'
+    SpacePos: 7
+  AnonymousType0
+    ContactName: 'Helvetius Nagy'
+    SpacePos: 9
+  AnonymousType0
+    ContactName: 'Palle Ibsen'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Mary Saveley'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Paul Henriot'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Rita Müller'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Pirkko Koskitalo'
+    SpacePos: 6
+  AnonymousType0
+    ContactName: 'Paula Parente'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Karl Jablonski'
+    SpacePos: 4
+  AnonymousType0
+    ContactName: 'Matti Karttunen'
+    SpacePos: 5
+  AnonymousType0
+    ContactName: 'Zbyszek Piestrzeniewicz'
+    SpacePos: 7
+}

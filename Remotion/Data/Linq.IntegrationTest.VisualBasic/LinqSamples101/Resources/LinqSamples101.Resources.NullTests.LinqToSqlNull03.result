@@ -1,0 +1,34 @@
+Enumerable {
+  AnonymousType0
+    FirstName: 'Nancy'
+    LastName: 'Davolio'
+    ReportsTo: 2
+  AnonymousType0
+    FirstName: 'Janet'
+    LastName: 'Leverling'
+    ReportsTo: 2
+  AnonymousType0
+    FirstName: 'Margaret'
+    LastName: 'Peacock'
+    ReportsTo: 2
+  AnonymousType0
+    FirstName: 'Steven'
+    LastName: 'Buchanan'
+    ReportsTo: 2
+  AnonymousType0
+    FirstName: 'Michael'
+    LastName: 'Suyama'
+    ReportsTo: 5
+  AnonymousType0
+    FirstName: 'Robert'
+    LastName: 'King'
+    ReportsTo: 5
+  AnonymousType0
+    FirstName: 'Laura'
+    LastName: 'Callahan'
+    ReportsTo: 2
+  AnonymousType0
+    FirstName: 'Anne'
+    LastName: 'Dodsworth'
+    ReportsTo: 5
+}

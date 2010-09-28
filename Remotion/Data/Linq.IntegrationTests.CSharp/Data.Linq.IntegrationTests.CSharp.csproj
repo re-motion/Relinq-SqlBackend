@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Data.Linq.IntegrationTests.CSharp</RootNamespace>
+    <AssemblyName>Remotion.Data.Linq.IntegrationTests.CSharp</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.4.10098, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LinqSamples101\AdvancedTests.cs" />
+    <Compile Include="LinqSamples101\AggregatesTests.cs" />
+    <Compile Include="LinqSamples101\CompiledQueryTests.cs" />
+    <Compile Include="LinqSamples101\ConversionOperatorsTests.cs" />
+    <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.cs" />
+    <Compile Include="LinqSamples101\ExternalMappingTests.cs" />
+    <Compile Include="LinqSamples101\GroupByHavingTests.cs" />
+    <Compile Include="LinqSamples101\InheritanceTests.cs" />
+    <Compile Include="LinqSamples101\JoinTests.cs" />
+    <Compile Include="LinqSamples101\NullTests.cs" />
+    <Compile Include="LinqSamples101\ObjectIdentityTests.cs" />
+    <Compile Include="LinqSamples101\ObjectLoadingTests.cs" />
+    <Compile Include="LinqSamples101\OrderByTests.cs" />
+    <Compile Include="LinqSamples101\PagingTests.cs" />
+    <Compile Include="LinqSamples101\SelectDistinctTests.cs" />
+    <Compile Include="LinqSamples101\SqlMethodsTests.cs" />
+    <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
+    <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
+    <Compile Include="LinqSamples101\TestBase.cs" />
+    <Compile Include="LinqSamples101\TopBottomTests.cs" />
+    <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />
+    <Compile Include="LinqSamples101\UserDefinedFunctionsTests.cs" />
+    <Compile Include="LinqSamples101\ViewTests.cs" />
+    <Compile Include="LinqSamples101\WhereTests.cs" />
+    <Compile Include="LinqSamples101\Name.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupFixture.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Linq.IntegrationTests\Data.Linq.IntegrationTests.csproj">
+      <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
+      <Name>Data.Linq.IntegrationTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Linq\Data.Linq.csproj">
+      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
+      <Name>Data.Linq</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="..\Linq.IntegrationTests\App.config">
+      <Link>App.config</Link>
+    </None>
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount08.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount09.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount10.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount11.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount12.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount13.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ExistsInAnyAllContainsTests.LinqToSqlExists05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy08.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy09.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupByHavingTests.LinqToSqlGroupBy10.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString08.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString09.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString10.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString11.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString12.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString13.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString14.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString15.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString16.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString17.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\GroupStringDateFunctions.LinqToSqlString18.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin08.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin09.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\JoinTests.LinqToSqlJoin10.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\NullTests.LinqToSqlNull01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\NullTests.LinqToSqlNull02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\NullTests.LinqToSqlNull03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ObjectIdentityTests.LinqToSqlObjectIdentity01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ObjectIdentityTests.LinqToSqlObjectIdentity02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\OrderByTests.LinqToSqlOrderBy01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\OrderByTests.LinqToSqlOrderBy02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\OrderByTests.LinqToSqlOrderBy03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\OrderByTests.LinqToSqlOrderBy04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\OrderByTests.LinqToSqlOrderBy05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\OrderByTests.LinqToSqlOrderBy06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\PagingTests.LinqToSqlPaging01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\PagingTests.LinqToSqlPaging02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlLocalMethodCall01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect08.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect09.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SelectDistinctTests.LinqToSqlSelect10.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SqlMethodsTests.LinqToSqlSqlMethods01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\SqlMethodsTests.LinqToSqlSqlMethods02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc03_1.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc03_2.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc04_1.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc04_2.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\StoredProceduresTests.LinqToSqlStoredProc05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\TopBottomTests.LinqToSqlTop01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\TopBottomTests.LinqToSqlTop02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UnionAllIntersectTests.LinqToSqlUnion01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UnionAllIntersectTests.LinqToSqlUnion02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UnionAllIntersectTests.LinqToSqlUnion03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UnionAllIntersectTests.LinqToSqlUnion04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UnionAllIntersectTests.LinqToSqlUnion05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UserDefinedFunctionsTests.LinqToSqlUserDefined01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UserDefinedFunctionsTests.LinqToSqlUserDefined02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UserDefinedFunctionsTests.LinqToSqlUserDefined03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\UserDefinedFunctionsTests.LinqToSqlUserDefined04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ViewTests.LinqToSqlView01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ViewTests.LinqToSqlView02.result" />
+    <None Include="LinqSamples101\Original\2008c#.zip" />
+    <EmbeddedResource Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\ConversionOperatorsTests.LinqToSqlConversion03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\InheritanceTests.LinqToSqlInheritance05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere01.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere02.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere03.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere04.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere05.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere06.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere07.result" />
+    <EmbeddedResource Include="LinqSamples101\Resources\WhereTests.LinqToSqlWhere08.result" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Linq.IntegrationTests\Database\Northwnd.sql">
+      <Link>Database\Northwnd.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="License.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Sql.Server.Express.10.0">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2008 Express</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
