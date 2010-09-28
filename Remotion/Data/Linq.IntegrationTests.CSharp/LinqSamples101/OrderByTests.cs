@@ -84,9 +84,8 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// unit price in each category, and sorts the group by category id.
     /// </summary>
     [Test]
-    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
-        + "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")]
-    public void LinqToSqlOrderBy06()
+    [Ignore ("RM-3265: Support collections to be selected at the top level of a query")]
+    public void LinqToSqlOrderBy06 ()
     {
       var categories =
           from p in DB.Products

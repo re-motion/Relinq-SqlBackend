@@ -59,7 +59,6 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause to filter for Customers in London.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlFirst02()
 
       'Only return customers from London

@@ -181,7 +181,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// with leading and trailing spaces removed.
     /// </summary>
     [Test]
-    [Ignore ("RM-3309: Support for additional string manipulation routines: Trim, Insert")]
     public void LinqToSqlString11 ()
     {
       var q =
@@ -196,7 +195,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// in the fifth position, inserting a : after the ).
     /// </summary>
     [Test]
-    [Ignore ("RM-3309: Support for additional string manipulation routines: Trim, Insert")]
     public void LinqToSqlString12 ()
     {
       var q =

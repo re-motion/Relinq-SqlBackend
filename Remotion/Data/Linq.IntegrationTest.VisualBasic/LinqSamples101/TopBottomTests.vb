@@ -47,7 +47,6 @@ Namespace LinqSamples101
 
     'This sample uses Take to select the first 5 Employees hired.
     <Test()>
-    <Ignore("RM-3310: Change TakeResultOperatorHandler to use literals for TOP count")>
     Public Sub LinqToSqlTop01()
       Dim first5Employees = From emp In DB.Employees _
             Order By emp.HireDate _

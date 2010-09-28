@@ -56,7 +56,6 @@ Namespace LinqSamples101
     'This sample uses Any to return only Categories that have
     'at least one Discontinued product.
     <Test()>
-    <Ignore("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")>
     Public Sub LinqToSqlExists02()
       Dim prodQuery = From cust In DB.Categories _
             Where (From prod In cust.Products Where prod.Discontinued).Any()
@@ -67,7 +66,6 @@ Namespace LinqSamples101
     'This sample uses All to return Customers whom all of their orders
     'have been shipped to their own city or whom have no orders.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlExists03()
       Dim ordQuery = From cust In DB.Customers _
               Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
@@ -89,7 +87,6 @@ Namespace LinqSamples101
 
     'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.
     <Test()>
-    <Ignore("RM-3336: Contains with a constant collection does not work if the expression on which Contains is called has type IEnumerable<T>")>
     Public Sub LinqToSqlExists05()
       Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
 

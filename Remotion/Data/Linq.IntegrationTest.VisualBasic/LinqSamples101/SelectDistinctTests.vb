@@ -76,7 +76,6 @@ Namespace LinqSamples101
     'with the FirstName and LastName fields combined into a single field, 'Name',
     'and the HomePhone field renamed to Phone in the resulting sequence.
     <Test()>
-    <Ignore("RM-3337: Support for additional string manipulation routine: Concat")>
     Public Sub LinqToSqlSelect03()
       Dim nameAndNumber = From emp In DB.Employees _
             Select Name = emp.FirstName & " " & emp.LastName, _
@@ -100,7 +99,7 @@ Namespace LinqSamples101
     'This sample uses Select and a conditional statment to return a sequence of product
     'name and product availability.
     <Test()>
-    <Ignore("RM-3269: Invalid in-memory projection generated when a binary (or other) expression contains a conversion")>
+    <Ignore("RM-3335: Support nullable booleans")>
     Public Sub LinqToSqlSelect05()
       Dim inStock = From prod In DB.Products _
             Select prod.ProductName, _
@@ -124,7 +123,6 @@ Namespace LinqSamples101
     'This sample uses Select and Where clauses to return a sequence of
     'just the London Customers' contact names.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlSelect07()
       Dim londonNames = From cust In DB.Customers _
             Where cust.City = "London" _
@@ -153,8 +151,7 @@ Namespace LinqSamples101
     'saved if shipping is not included.
     'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlSelect09()
       Dim orders = From ord In DB.Orders _
             Select ord.OrderID, DiscountedProducts = (From od In ord.OrderDetails _

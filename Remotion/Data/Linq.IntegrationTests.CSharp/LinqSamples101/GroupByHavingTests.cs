@@ -202,8 +202,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// The second sequence contains products with unit price less than or equal to 10.
     /// </summary>
     [Test]
-    [Ignore ("RM-3266: SubStatementReferenceResolver creates references of an invalid type when a ConvertedBoolExpression's inner expression is automatically resolved "
-        + "TODO RM-3265: Support collections to be selected at the top level of a query")]
+    [Ignore ("RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlGroupBy10 ()
     {
       var categories =

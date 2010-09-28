@@ -56,7 +56,6 @@ Namespace LinqSamples101
 
     'This sample uses Where and Order By to sort Orders shipped to London by freight.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlOrderBy02()
       Dim londonOrders = From ord In DB.Orders _
             Where ord.ShipCity = "London" _
@@ -101,8 +100,7 @@ Namespace LinqSamples101
     'This sample uses Order By, Max and Group By to find the Products that have
     'the highest unit price in each category, and sorts the group by category id.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlOrderBy06()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into Group _

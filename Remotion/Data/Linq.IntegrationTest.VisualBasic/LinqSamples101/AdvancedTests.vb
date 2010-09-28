@@ -180,7 +180,6 @@ Namespace LinqSamples101
     End Sub
 
     'Mutable/Immutable Anonymous Types
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     <Test()>
     Public Sub LinqToSqlAdvanced07()
 

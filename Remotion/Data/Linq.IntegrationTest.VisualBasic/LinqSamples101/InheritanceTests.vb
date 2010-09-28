@@ -89,7 +89,6 @@ Namespace LinqSamples101
 
     'This sample uses a cast to retrieve customer contacts who live in London.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlInheritance05()
       Dim cons = From contact In DB.Contacts _
             Where contact.ContactType = "Customer" _

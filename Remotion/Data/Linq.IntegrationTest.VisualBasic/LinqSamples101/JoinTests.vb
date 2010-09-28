@@ -48,7 +48,6 @@ Namespace LinqSamples101
     'This sample uses foreign key navigation in the 
     'From clause to select all orders for customers in London.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlJoin01()
       Dim ordersInLondon = From cust In DB.Customers, ord In cust.Orders _
             Where cust.City = "London"
@@ -60,7 +59,7 @@ Namespace LinqSamples101
     'Where clause to filter for Products whose Supplier is in the USA
     'that are out of stock.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
+    <Ignore("RM-3335: Support nullable booleans")>
     Public Sub LinqToSqlJoin02()
       Dim outOfStock = From prod In DB.Products _
             Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0
@@ -86,7 +85,6 @@ Namespace LinqSamples101
     'one employee reports to the other and where
     'both employees are from the same City.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlJoin04()
       Dim empQuery = From emp1 In DB.Employees, emp2 In emp1.Employees _
             Where emp1.City = emp2.City _
@@ -122,7 +120,6 @@ Namespace LinqSamples101
 
     'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty().
     'The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.
-    <Ignore("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")>
     <Test()>
     Public Sub LinqToSqlJoin07()
       Dim empQuery = From emp In DB.Employees _
@@ -136,7 +133,6 @@ Namespace LinqSamples101
 
     'This sample projects a 'Let' expression resulting from a join.
     <Test()>
-    <Ignore("RM-3337: Support for additional string manipulation routine: Concat")>
     Public Sub LinqToSqlJoin08()
       Dim ordQuery = From cust In DB.Customers _
             Group Join ord In DB.Orders On cust.CustomerID Equals ord.CustomerID _

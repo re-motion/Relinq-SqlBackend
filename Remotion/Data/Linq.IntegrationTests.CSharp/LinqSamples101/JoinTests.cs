@@ -89,7 +89,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample uses foreign key navigation in the select clause to filter for pairs of employees where one employee reports to the other and where both employees are from the same City.
     /// </summary>
     [Test]
-    [Ignore ("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlJoin04 ()
     {
       var q =
@@ -141,7 +140,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     ///  This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee.
     /// </summary>
     [Test]
-    [Ignore ("RM-3198: InvalidOperationException is thrown when a comparison or join condition involves a nullable and a non-nullable expression")]
     public void LinqToSqlJoin07 ()
     {
       var q =

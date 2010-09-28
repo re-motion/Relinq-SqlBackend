@@ -49,7 +49,6 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause to filter for Customers in London.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlWhere01()
 
       'Only return customers from London
@@ -123,7 +122,6 @@ Namespace LinqSamples101
 
     'This sample uses Take to select the first Customer with CustomerID 'BONAP'.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlWhere07()
       Dim customer = From cust In DB.Customers _
             Where cust.CustomerID = "BONAP" _

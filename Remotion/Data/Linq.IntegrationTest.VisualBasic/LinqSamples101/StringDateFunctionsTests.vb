@@ -49,7 +49,6 @@ Namespace LinqSamples101
     'and string literals in forming the Customers' calculated
     'Location value.
     <Test()>
-    <Ignore("RM-3337: Support for additional string manipulation routine: Concat")>
     Public Sub LinqToSqlString01()
       Dim custQuery = From cust In DB.Customers _
             Select cust.CustomerID, _
@@ -120,7 +119,6 @@ Namespace LinqSamples101
     'This sample uses the Substring method to find Employees whose
     'home phone numbers have '555' as the seventh through ninth digits.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlString08()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(6, 3) = "555"
@@ -152,7 +150,6 @@ Namespace LinqSamples101
     'digits of Employee home phone numbers, with leading and
     'trailing spaces removed.
     <Test()>
-    <Ignore("RM-3309: Support for additional string manipulation routines: Trim, Insert")>
     Public Sub LinqToSqlString11()
       Dim empQuery = From emp In DB.Employees _
             Select emp.HomePhone.Substring(0, 5).Trim()
@@ -164,7 +161,6 @@ Namespace LinqSamples101
     'employee phone numbers that have a ) in the fifth position, 
     'inserting a : after the ).
     <Test()>
-    <Ignore("RM-3309: Support for additional string manipulation routines: Trim, Insert")>
     Public Sub LinqToSqlString12()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -177,7 +173,6 @@ Namespace LinqSamples101
     'employee phone numbers that have a ) in the fifth position,
     'removing all characters starting from the tenth character.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlString13()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -190,7 +185,6 @@ Namespace LinqSamples101
     'employee phone numbers that have a ) in the fifth position,
     'removing the first six characters.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlString14()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _

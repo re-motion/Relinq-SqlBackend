@@ -99,7 +99,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses SELECT and a conditional statement to return a sequence of product name and product availability.
     /// </summary>
     [Test]
-    [Ignore ("RM-3269: Invalid in-memory projection generated when a binary (or other) expression contains a conversion")]
     public void LinqToSqlSelect05 ()
     {
       var q =
@@ -160,8 +159,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// a subsequence of the items in the order where there is a discount, and the money saved if shipping is not included.
     /// </summary>
     [Test]
-    [Ignore ("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a "
-            + "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")]
+    [Ignore ("RM-3265: Support collections to be selected at the top level of a query")]
     public void LinqToSqlSelect09 ()
     {
       var q =

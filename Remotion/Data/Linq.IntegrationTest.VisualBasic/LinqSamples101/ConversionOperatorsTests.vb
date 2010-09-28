@@ -64,7 +64,6 @@ Namespace LinqSamples101
     'This sample uses ToArray to immediately evaluate a query into an array
     'and get the 3rd element.
     <Test()>
-    <Ignore("RM-3197: Predicate LambdaExpressions are not correctly resolved if the lambda's parameter is used in a VB string comparison")>
     Public Sub LinqToSqlConversions02()
       Dim londonCustomers = From cust In DB.Customers _
             Where cust.City = "London"

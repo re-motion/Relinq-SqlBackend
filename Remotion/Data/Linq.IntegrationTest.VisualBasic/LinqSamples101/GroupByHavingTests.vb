@@ -47,8 +47,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By to partition Products by CategoryID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy01()
       Dim categorizedProducts = From prod In DB.Products _
             Group prod By prod.CategoryID Into prodGroup = Group _
@@ -59,8 +58,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By and Max to find the maximum unit price for each CategoryID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy02()
       Dim maxPrices = From prod In DB.Products _
             Group prod By prod.CategoryID _
@@ -72,8 +70,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By and Min to find the minimum unit price for each CategoryID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy03()
       Dim minPrices = From prod In DB.Products _
             Group prod By prod.CategoryID _
@@ -84,8 +81,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By and Average to find the average UnitPrice for each CategoryID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy04()
       Dim avgPrices = From prod In DB.Products _
             Group prod By prod.CategoryID _
@@ -96,8 +92,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By and Sum to find the total UnitPrice for each CategoryID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-            & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy05()
       Dim totalPrices = From prod In DB.Products _
             Group prod By prod.CategoryID _
@@ -108,8 +103,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By and Count to find the number of Products in each CategoryID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy06()
       Dim prodQuery = From prod In DB.Products _
             Group prod By prod.CategoryID _
@@ -121,8 +115,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By and Count to find the number of Products in each CategoryID that are discontinued.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy07()
 
       Dim prodQuery = From prod In DB.Products _
@@ -134,8 +127,7 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause after a Group By clause to find all categories that have at least 10 products.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy08()
       Dim bigCategories = From prod In DB.Products _
             Group prod By prod.CategoryID _
@@ -148,8 +140,7 @@ Namespace LinqSamples101
 
     'This sample uses Group By to group products by CategoryID and SupplierID.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy09()
       Dim categories = From prod In DB.Products _
             Group By Key = New With {prod.CategoryID, prod.SupplierID} _
@@ -162,8 +153,7 @@ Namespace LinqSamples101
     'This sample uses Group By to return two sequences of products. The first sequence contains products with unit price
     'greater than 10. The second sequence contains products with unit price less than or equal to 10.
     <Test()>
-    <Ignore("RM-3207: When a NewExpression contains a subquery whose original type is IEnumerable<T>, an ArgumentException (wrapped into a " _
-        & "TargetInvocationException) is thrown/RM-3265: Support collections to be selected at the top level of a query")>
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
     Public Sub LinqToSqlGroupBy10()
       Dim categories = From prod In DB.Products _
             Group prod By Key = New With {.Criterion = prod.UnitPrice > 10} _

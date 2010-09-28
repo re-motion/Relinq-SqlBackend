@@ -47,7 +47,6 @@ Namespace LinqSamples101
 
     'This sample demonstrates using a scalar user-defined function in a projection.
     <Test()>
-    <Ignore("RM-3312: The in-memory projection is incorrect if a NamedExpression contains another NamedExpression, entity expression, convert expression, etc.")>
     Public Sub LinqToSqlUserDefined01()
       Dim catQuery = From category In DB.Categories _
             Select category.CategoryID, _
