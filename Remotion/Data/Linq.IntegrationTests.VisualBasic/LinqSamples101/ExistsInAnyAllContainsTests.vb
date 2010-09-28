@@ -41,11 +41,11 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class ExistsInAnyAllContainsTests
     Inherits TestBase
     'This sample uses the Any operator to return only Customers that have no Orders.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlExists01()
       Dim custQuery = From cust In DB.Customers _
             Where Not cust.Orders.Any()
@@ -55,7 +55,7 @@ Namespace LinqSamples101
 
     'This sample uses Any to return only Categories that have
     'at least one Discontinued product.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlExists02()
       Dim prodQuery = From cust In DB.Categories _
             Where (From prod In cust.Products Where prod.Discontinued).Any()
@@ -65,7 +65,7 @@ Namespace LinqSamples101
 
     'This sample uses All to return Customers whom all of their orders
     'have been shipped to their own city or whom have no orders.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlExists03()
       Dim ordQuery = From cust In DB.Customers _
               Where cust.Orders.All(Function(ord) ord.ShipCity = cust.City)
@@ -74,7 +74,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Contain to find which Customer contains an order with OrderID 10248.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlExists04()
 
       Dim order = (From o In DB.Orders _
@@ -86,7 +86,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Contains to find customers whose city is Seattle, London, Paris or Vancouver.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlExists05()
       Dim cities = New String() {"Seattle", "London", "Vancouver", "Paris"}
 

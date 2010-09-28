@@ -43,12 +43,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 Imports System.Data.Linq.SqlClient
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class SqlMethodsTests
     Inherits TestBase
 
     'This sample uses SqlMethods to filter for Customers with CustomerID that starts with 'C'.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSqlMethods01()
       Dim q = From c In DB.Customers _
             Where SqlMethods.Like(c.CustomerID, "C%") _
@@ -58,8 +58,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses SqlMethods to find all orders which shipped within 10 days the order created
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlSqlMethods02()
       Dim orderQuery = From o In DB.Orders _
             Where SqlMethods.DateDiffDay(o.OrderDate, o.ShippedDate) < 10

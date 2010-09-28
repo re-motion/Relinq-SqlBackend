@@ -39,13 +39,13 @@ Imports NUnit.Framework
 Imports Remotion.Data.Linq.IntegrationTests.Common
 
 Namespace LinqSamples101
-  <TestFixture()>
-  <Explicit("Not tested: Compiled queries")>
+  <TestFixture()> _
+  <Explicit("Not tested: Compiled queries")> _
   Public Class CompiledQueryTests
     Inherits TestBase
 
     'This sample create a compiled query and then use it to retrieve customers of the input city
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCompileQuery01()
 
       '' Create compiled query

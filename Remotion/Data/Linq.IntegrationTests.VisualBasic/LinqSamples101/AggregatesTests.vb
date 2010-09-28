@@ -40,12 +40,12 @@ Imports System.Reflection
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class AggregatesTests
     Inherits TestBase
 
     'This sample uses Count to find the number of Customers in the database.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount01()
       Dim custCount = db.Customers.Count()
 
@@ -54,7 +54,7 @@ Namespace LinqSamples101
 
     'This sample uses Count to find the number of Products in the database
     'that are not discontinued.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount02()
       Dim activeProducts = Aggregate prod In db.Products _
             Into Count(Not prod.Discontinued)
@@ -68,7 +68,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Sum to find the total freight over all Orders.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount03()
 
       Dim totalFreight = Aggregate ord In db.Orders _
@@ -82,8 +82,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Sum to find the total number of units on order over all Products.
-    <Test()>
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
+    <Test()> _
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
     Public Sub LinqToSqlCount04()
       Dim totalUnits = (From prod In DB.Products _
               Select CInt(prod.UnitsOnOrder.Value)).Sum()
@@ -92,7 +92,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Min to find the lowest unit price of any Product.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount05()
       Dim lowestPrice = Aggregate prod In db.Products _
             Into Min(prod.UnitPrice)
@@ -101,7 +101,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Min to find the lowest freight of any Order.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount06()
       Dim lowestFreight = Aggregate ord In db.Orders _
             Into Min(ord.Freight)
@@ -111,8 +111,8 @@ Namespace LinqSamples101
 
     'This sample uses Min to find the Products that have the lowest unit price
     'in each category.
-    <Test()>
-    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
+    <Test()> _
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")> _
     Public Sub LinqToSqlCount07()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into g = Group _
@@ -127,7 +127,7 @@ Namespace LinqSamples101
 
 
     'This sample uses Max to find the latest hire date of any Employee.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount08()
       Dim latestHire = Aggregate emp In db.Employees _
             Into Max(emp.HireDate)
@@ -136,7 +136,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Max to find the most units in stock of any Product.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount09()
       Dim mostInStock = Aggregate prod In db.Products _
             Into Max(prod.UnitsInStock)
@@ -146,8 +146,8 @@ Namespace LinqSamples101
 
     'This sample uses Max to find the Products that have the highest unit price
     'in each category.
-    <Test()>
-    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
+    <Test()> _
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")> _
     Public Sub LinqToSqlCount10()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into g = Group _
@@ -161,7 +161,7 @@ Namespace LinqSamples101
 
 
     'This sample uses Average to find the average freight of all Orders.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount11()
       Dim avgFreight = Aggregate ord In db.Orders _
             Into Average(ord.Freight)
@@ -170,7 +170,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Average to find the average unit price of all Products.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlCount12()
       Dim avgPrice = Aggregate prod In db.Products _
             Into Average(prod.UnitPrice)
@@ -180,8 +180,8 @@ Namespace LinqSamples101
 
     'This sample uses Average to find the Products that have unit price higher than
     'the average unit price of the category for each category.
-    <Test()>
-    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
+    <Test()> _
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")> _
     Public Sub LinqToSqlCount13()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into g = Group _

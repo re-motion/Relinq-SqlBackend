@@ -41,14 +41,14 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class StringDateFunctionsTests
     Inherits TestBase
 
     'This sample uses the & operator to concatenate string fields
     'and string literals in forming the Customers' calculated
     'Location value.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString01()
       Dim custQuery = From cust In DB.Customers _
             Select cust.CustomerID, _
@@ -59,7 +59,7 @@ Namespace LinqSamples101
 
     'This sample uses the Length property to find all Products whose
     'name is shorter than 10 characters.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString02()
       Dim shortProducts = From prod In db.Products _
             Where prod.ProductName.Length < 10
@@ -69,7 +69,7 @@ Namespace LinqSamples101
 
     'This sample uses the Contains method to find all Customers whose
     'contact name contains 'Anders'.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString03()
       Dim custQuery = From cust In db.Customers _
             Where cust.ContactName.Contains("Anders")
@@ -79,8 +79,8 @@ Namespace LinqSamples101
 
     'This sample uses the IndexOf method to find the first instance of
     'a space in each Customer's contact name.
-    <Test()>
-    <Ignore("RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")>
+    <Test()> _
+    <Ignore("RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")> _
     Public Sub LinqToSqlString04()
       Dim custQuery = From cust In DB.Customers _
             Select cust.ContactName, SpacePos = cust.ContactName.IndexOf(" ")
@@ -89,7 +89,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses the StartsWith method to find Customers whose contact name starts with 'Maria'.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString05()
       Dim custQuery = From cust In db.Customers _
             Where cust.ContactName.StartsWith("Maria")
@@ -99,7 +99,7 @@ Namespace LinqSamples101
 
     'This sample uses the StartsWith method to find Customers whose
     'contact name ends with 'Anders'.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString06()
       Dim custQuery = From cust In db.Customers _
             Where cust.ContactName.EndsWith("Anders")
@@ -108,7 +108,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses the Substring method to return Product names starting from the fourth letter.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString07()
       Dim prodQuery = From prod In db.Products _
             Select prod.ProductName.Substring(3)
@@ -118,7 +118,7 @@ Namespace LinqSamples101
 
     'This sample uses the Substring method to find Employees whose
     'home phone numbers have '555' as the seventh through ninth digits.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString08()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(6, 3) = "555"
@@ -128,7 +128,7 @@ Namespace LinqSamples101
 
     'This sample uses the ToUpper method to return Employee names
     'where the last name has been converted to uppercase.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString09()
       Dim empQuery = From emp In db.Employees _
             Select LastName = emp.LastName.ToUpper(), emp.FirstName
@@ -138,7 +138,7 @@ Namespace LinqSamples101
 
     'This sample uses the ToLower method to return Category names
     'that have been converted to lowercase.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString10()
       Dim categoryQuery = From category In db.Categories _
             Select category.CategoryName.ToLower()
@@ -149,7 +149,7 @@ Namespace LinqSamples101
     'This sample uses the Trim method to return the first five
     'digits of Employee home phone numbers, with leading and
     'trailing spaces removed.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString11()
       Dim empQuery = From emp In DB.Employees _
             Select emp.HomePhone.Substring(0, 5).Trim()
@@ -160,7 +160,7 @@ Namespace LinqSamples101
     'This sample uses the Insert method to return a sequence of
     'employee phone numbers that have a ) in the fifth position, 
     'inserting a : after the ).
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString12()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -172,7 +172,7 @@ Namespace LinqSamples101
     'This sample uses the Insert method to return a sequence of
     'employee phone numbers that have a ) in the fifth position,
     'removing all characters starting from the tenth character.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString13()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -184,7 +184,7 @@ Namespace LinqSamples101
     'This sample uses the Insert method to return a sequence of
     'employee phone numbers that have a ) in the fifth position,
     'removing the first six characters.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString14()
       Dim empQuery = From emp In DB.Employees _
             Where emp.HomePhone.Substring(4, 1) = ")" _
@@ -197,7 +197,7 @@ Namespace LinqSamples101
     'Supplier information where the Country field has had
     'UK replaced with United Kingdom and USA replaced with
     'United States of America.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlString15()
       Dim supplierQuery = From supplier In db.Suppliers _
             Select supplier.CompanyName, _
@@ -209,8 +209,8 @@ Namespace LinqSamples101
 
     'This sample uses the DateTime's Year property to
     'find Orders placed in 1997.
-    <Test()>
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
+    <Test()> _
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
     Public Sub LinqToSqlString16()
       Dim ordersIn97 = From ord In DB.Orders _
             Where ord.OrderDate.Value.Year = 1997
@@ -220,8 +220,8 @@ Namespace LinqSamples101
 
     'This sample uses the DateTime's Month property to
     'find Orders placed in December.
-    <Test()>
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
+    <Test()> _
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
     Public Sub LinqToSqlString17()
       Dim decemberOrders = From ord In DB.Orders _
             Where ord.OrderDate.Value.Month = 12
@@ -231,8 +231,8 @@ Namespace LinqSamples101
 
     'This sample uses the DateTime's Day property to
     'find Orders placed on the 31st day of the month.
-    <Test()>
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")>
+    <Test()> _
+    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
     Public Sub LinqToSqlString18()
       Dim ordQuery = From ord In DB.Orders _
             Where ord.OrderDate.Value.Day = 31

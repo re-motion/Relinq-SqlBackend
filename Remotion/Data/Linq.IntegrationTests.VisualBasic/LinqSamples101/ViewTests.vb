@@ -40,13 +40,13 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class ViewTests
     Inherits TestBase
     'This sample uses Select and Where to return a sequence of invoices
     'where the shipping city is London.
-    <Test()>
-    <Ignore("RM-3314: Support for entities without foreign keys")>
+    <Test()> _
+    <Ignore("RM-3314: Support for entities without foreign keys")> _
     Public Sub LinqToSqlView01()
       Dim shipToLondon = From inv In DB.Invoices _
             Where inv.ShipCity = "London" _
@@ -56,8 +56,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Select to query QuarterlyOrders.
-    <Test()>
-    <Ignore("RM-3314: Support for entities without foreign keys")>
+    <Test()> _
+    <Ignore("RM-3314: Support for entities without foreign keys")> _
     Public Sub LinqToSqlView02()
       'WORKAROUND: changed Quarterly_Orders to QuarterlyOrders
       Dim quarterlyOrders = From qo In DB.QuarterlyOrders _

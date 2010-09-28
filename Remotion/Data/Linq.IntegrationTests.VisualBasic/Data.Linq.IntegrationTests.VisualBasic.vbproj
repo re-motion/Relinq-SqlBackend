@@ -127,6 +127,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
+    <None Include="Data.Linq.IntegrationTests.VisualBasic.build">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="My Project\AssemblyInfoTemplate.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

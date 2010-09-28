@@ -41,14 +41,14 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class WhereTests
     Inherits TestBase
     'VB 101LinqSamples starts with different samples.
     'Samples were renamed according to the C# samples
 
     'This sample uses a Where clause to filter for Customers in London.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlWhere01()
 
       'Only return customers from London
@@ -63,8 +63,8 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause to filter for Employees hired
     'during or after 1994.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere02()
       Dim hiredAfter1994 = From emp In DB.Employees _
             Where emp.HireDate >= #1/1/1994# _
@@ -75,8 +75,8 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause to filter for Products that have stock below their
     'reorder level and are not discontinued.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere03()
       Dim needToOrder = From prod In DB.Products _
             Where prod.UnitsInStock <= prod.ReorderLevel _
@@ -88,8 +88,8 @@ Namespace LinqSamples101
 
     'This sample uses a Where clause to filter out Products that are either
     'discontinued or that have a UnitPrice greater than 10.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere04()
       Dim prodQuery = From prod In DB.Products _
             Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
@@ -99,8 +99,8 @@ Namespace LinqSamples101
 
     'This sample uses two Where clauses to filter out Products that are discontinued 
     'and with UnitPrice greater than 10
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere05()
 
       Dim prodQuery = From prod In DB.Products _
@@ -112,7 +112,7 @@ Namespace LinqSamples101
 
 
     'This sample uses First to select the first Shipper in the table.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlWhere06()
       Dim shipper = db.Shippers.First()
 
@@ -121,7 +121,7 @@ Namespace LinqSamples101
 
 
     'This sample uses Take to select the first Customer with CustomerID 'BONAP'.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlWhere07()
       Dim customer = From cust In DB.Customers _
             Where cust.CustomerID = "BONAP" _
@@ -131,8 +131,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses First to select an Order with freight greater than 10.00.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere08()
       Dim firstOrd = (From ord In DB.Orders _
             Where ord.Freight > 10D _

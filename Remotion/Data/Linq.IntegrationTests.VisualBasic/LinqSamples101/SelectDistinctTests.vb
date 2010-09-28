@@ -41,7 +41,7 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class SelectDistinctTests
     Inherits TestBase
 
@@ -52,7 +52,7 @@ Namespace LinqSamples101
 
     'This sample uses Select to return a sequence of just the
     'Customers contact names.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect01()
       Dim contactList = From cust In DB.Customers _
             Select cust.ContactName
@@ -62,7 +62,7 @@ Namespace LinqSamples101
 
     'This sample uses Select and anonymous types to return
     'a sequence of just the Customers contact names and phone numbers.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect02()
       Dim nameAndNumber = From cust In DB.Customers _
             Select cust.ContactName, cust.Phone
@@ -75,7 +75,7 @@ Namespace LinqSamples101
     'a sequence of just the Employees' names and phone numbers,
     'with the FirstName and LastName fields combined into a single field, 'Name',
     'and the HomePhone field renamed to Phone in the resulting sequence.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect03()
       Dim nameAndNumber = From emp In DB.Employees _
             Select Name = emp.FirstName & " " & emp.LastName, _
@@ -88,7 +88,7 @@ Namespace LinqSamples101
     'a sequence of all Products' IDs and a calculated value 
     'called HalfPrice which is set to the Product's UnitPrice 
     'divided by 2.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect04()
       Dim prices = From prod In DB.Products _
             Select prod.ProductID, HalfPrice = prod.UnitPrice / 2
@@ -98,8 +98,8 @@ Namespace LinqSamples101
 
     'This sample uses Select and a conditional statment to return a sequence of product
     'name and product availability.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlSelect05()
       Dim inStock = From prod In DB.Products _
             Select prod.ProductName, _
@@ -110,8 +110,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Select and a known type to return a sequence of employee names.
-    <Test()>
-    <Ignore("RM-3306: Support for MemberInitExpressions")>
+    <Test()> _
+    <Ignore("RM-3306: Support for MemberInitExpressions")> _
     Public Sub LinqToSqlSelect06()
       Dim names = From emp In DB.Employees _
             Select New Name With {.FirstName = emp.FirstName, _
@@ -122,7 +122,7 @@ Namespace LinqSamples101
 
     'This sample uses Select and Where clauses to return a sequence of
     'just the London Customers' contact names.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect07()
       Dim londonNames = From cust In DB.Customers _
             Where cust.City = "London" _
@@ -133,7 +133,7 @@ Namespace LinqSamples101
 
     'This sample uses Select and anonymous types to return
     'a shaped subset of the data about Customers.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect08()
       Dim customers = From cust In DB.Customers _
             Select cust.CustomerID, CompanyInfo = New With {cust.CompanyName, _
@@ -150,8 +150,8 @@ Namespace LinqSamples101
     'items in the order where there is a discount, and the money 
     'saved if shipping is not included.
     'WORKAROUND: Northwind doesn't offer OrderDetails - changed to OrderDetails
-    <Test()>
-    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
+    <Test()> _
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")> _
     Public Sub LinqToSqlSelect09()
       Dim orders = From ord In DB.Orders _
             Select ord.OrderID, DiscountedProducts = (From od In ord.OrderDetails _
@@ -163,7 +163,7 @@ Namespace LinqSamples101
 
     'This sample uses Distinct to select a sequence of the unique cities
     'that have Customers.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlSelect10()
       Dim cities = From cust In DB.Customers _
             Select cust.City _
@@ -191,8 +191,8 @@ Namespace LinqSamples101
     'This sample uses a Local Method Call to
     'PhoneNumberConverter' to convert Phone number
     'to an international format.
-    <Test()>
-    <Ignore("RM-3307: Support for local method calls")>
+    <Test()> _
+    <Ignore("RM-3307: Support for local method calls")> _
     Public Sub LinqToSqlLocalMethodCall01()
 
       Dim q = From c In DB.Customers _
@@ -208,7 +208,7 @@ Namespace LinqSamples101
     'and create XDocument.>
     'TODO need to fix SavingTestExecutor to properly handle result ?
     <Test()> _
-    <Ignore("RM-3307: Support for local method calls")>
+    <Ignore("RM-3307: Support for local method calls")> _
     Public Sub LinqToSqlLocalMethodCall02()
 
       Dim doc = <Customers>

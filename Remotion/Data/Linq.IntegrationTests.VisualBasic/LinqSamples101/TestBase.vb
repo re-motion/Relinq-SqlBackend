@@ -42,18 +42,16 @@ Public Class TestBase
   ' This is achieved by putting a file called "LinqSamples101.Resources.TestClass.TestMethod.result" into the LinqSamples101\Resources folder
   Protected Overrides ReadOnly Property SavedResourceFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
     Get
-      Return Function(method As MethodBase)
-               Return "LinqSamples101.Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
-             End Function
+      Return Function(method As MethodBase) _
+               "LinqSamples101.Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
     End Get
   End Property
 
   ' When loading the resource, we must specify the full name as described above
   Protected Overrides ReadOnly Property LoadedResourceNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
     Get
-      Return Function(method As MethodBase)
-               Return method.DeclaringType.Namespace & ".Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
-             End Function
+      Return Function(method As MethodBase) _
+               method.DeclaringType.Namespace & ".Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
     End Get
   End Property
 End Class

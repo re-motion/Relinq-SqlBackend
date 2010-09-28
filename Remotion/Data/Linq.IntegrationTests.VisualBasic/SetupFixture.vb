@@ -36,9 +36,9 @@ Imports Remotion.Data.Linq.IntegrationTests.Common.Database
 ''' <summary>
 ''' Initializes the database before any tests are executed.
 ''' </summary>
-<SetUpFixture()>
+<SetUpFixture()> _
 Public Class SetupFixture
-  <SetUp()>
+  <SetUp()> _
   Public Sub SetUp()
     Console.WriteLine("Setting up database...")
     NorthwindSetup.SetupDatabase()

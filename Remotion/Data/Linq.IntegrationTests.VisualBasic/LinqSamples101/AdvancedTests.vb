@@ -41,18 +41,18 @@ Imports Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 Imports System.Reflection
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class AdvancedTests
     Inherits TestBase
 
     'This sample builds a query dynamically to return the contact name of each customer.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlAdvanced01()
       Dim param = Expression.Parameter(GetType(Customer), "c")
       Dim selector = Expression.Property(param, GetType(Customer).GetProperty("ContactName"))
       Dim pred = Expression.Lambda(selector, param)
 
-      Dim custs = db.Customers
+      Dim custs = DB.Customers
       Dim _
         expr = _
           Expression.Call(GetType(Queryable), "Select", New Type() {GetType(Customer), GetType(String)}, _
@@ -63,10 +63,10 @@ Namespace LinqSamples101
     End Sub
 
     'This sample builds a query dynamically to filter for Customers in London.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlAdvanced02()
 
-      Dim custs = db.Customers
+      Dim custs = DB.Customers
       Dim param = Expression.Parameter(GetType(Customer), "c")
       Dim right = Expression.Constant("London")
       Dim left = Expression.Property(param, GetType(Customer).GetProperty("City"))
@@ -84,7 +84,7 @@ Namespace LinqSamples101
 
 
     'This sample builds a query dynamically to filter for Customers in London and order them by ContactName.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlAdvanced03()
 
       Dim param = Expression.Parameter(GetType(Customer), "c")
@@ -94,7 +94,7 @@ Namespace LinqSamples101
       Dim filter = Expression.Equal(left, right)
       Dim pred = Expression.Lambda(filter, param)
 
-      Dim custs As IQueryable = db.Customers
+      Dim custs As IQueryable = DB.Customers
 
       Dim expr = Expression.Call(GetType(Queryable), "Where", _
                                   New Type() {GetType(Customer)}, _
@@ -106,14 +106,14 @@ Namespace LinqSamples101
                               Expression.Lambda(Expression.Property(param, "ContactName"), param))
 
 
-      Dim query = db.Customers.AsQueryable().Provider.CreateQuery(Of Customer)(expr)
+      Dim query = DB.Customers.AsQueryable().Provider.CreateQuery(Of Customer)(expr)
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample dynamically builds a Union to return a sequence of all countries where either a customer or an employee live.
-    <Test()>
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")>
+    <Test()> _
+    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlAdvanced04()
 
       Dim custs = DB.Customers
@@ -145,8 +145,8 @@ Namespace LinqSamples101
 
 
     'This sample demonstrates how we insert a new Contact and retrieve the newly assigned ContactID from the database.
-    <Test()>
-    <Explicit("Not tested: Submit")>
+    <Test()> _
+    <Explicit("Not tested: Submit")> _
     Public Sub LinqToSqlAdvanced05()
 
       'Console.WriteLine("ContactID is marked as an identity column")
@@ -170,7 +170,7 @@ Namespace LinqSamples101
 
 
     'This sample uses OrderByDescending and Take to return the discontinued products of the top 10 most expensive products.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlAdvanced06()
       Dim prods = From prod In DB.Products.OrderByDescending(Function(p) p.UnitPrice) _
             Take 10 _
@@ -180,7 +180,7 @@ Namespace LinqSamples101
     End Sub
 
     'Mutable/Immutable Anonymous Types
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlAdvanced07()
 
       'Generates an immutable anonymous type (FirstName and LastName will be ReadOnly)

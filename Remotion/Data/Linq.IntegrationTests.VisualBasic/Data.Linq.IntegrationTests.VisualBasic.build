@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file is part of the re-motion Core Framework (www.re-motion.org)
+ ! Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+ ! 
+ ! The re-motion Core Framework is free software; you can redistribute it 
+ ! and/or modify it under the terms of the GNU Lesser General Public License 
+ ! as published by the Free Software Foundation; either version 2.1 of the 
+ ! License, or (at your option) any later version.
+ ! 
+ ! re-motion is distributed in the hope that it will be useful, 
+ ! but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ ! GNU Lesser General Public License for more details.
+ ! 
+ ! You should have received a copy of the GNU Lesser General Public License
+ ! along with re-motion; if not, see http://www.gnu.org/licenses.
+-->
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Data.Linq.IntegrationTests.VisualBasic">
+  
+  <target name="build" description="perform a build">
+    <vbc  target="library"
+          output="${build.test.outputdir}/${project.output}.${project.extension}"
+          debug="${build.debug}"
+          define="${build.vbc.define}"
+          keyfile="${solution.key-file}"
+          warnaserror="true"
+          optionstrict="false"
+          optionexplicit="true"
+          rootnamespace="Remotion.Data.Linq.IntegrationTests.VisualBasic"
+          >
+      <arg value="/optioninfer" />
+      <imports>
+        <import namespace="Microsoft.VisualBasic" />
+        <import namespace="System" />
+        <import namespace="System.Collections" />
+        <import namespace="System.Collections.Generic" />
+        <import namespace="System.Data" />
+        <import namespace="System.Diagnostics" />
+        <import namespace="System.Linq" />
+        <import namespace="System.Xml.Linq" />
+      </imports>
+      <sources failonempty="true">
+        <include name="**/*.vb"/>
+        <exclude name="bin/**" />
+        <exclude name="My Project/AssemblyInfoTemplate.vb" />   
+      </sources>
+      <references failonempty="true">
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.Linq.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.Linq.IntegrationTests.Common.dll"/>
+        <include asis="true" name="${build.test.outputdir}/nunit.framework.dll"/>
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Core.dll"/>
+        <include asis="true" name="System.Data.Linq.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+        <include asis="true" name="System.Xml.Linq.dll"/>
+      </references>
+      <!-- Unfortunately, the Visual Basic compiler crashes when NAnt passes it our resources ("a heap was corrupted"); therefore, we have to
+      pass all resources by name... -->
+      <!--<resources failonempty="true" prefix="Remotion.Data.Linq.IntegrationTests.VisualBasic" dynamicprefix="true">
+        <include name="LinqSamples101/Resources/**/*.*" />
+      </resources>-->
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount08.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount09.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount09.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount10.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount10.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount11.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount11.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount12.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount12.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.AggregatesTests.LinqToSqlCount13.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.AggregatesTests.LinqToSqlCount13.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversion04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversion04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversions01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversions01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversions02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversions02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversions03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ConversionOperatorsTests.LinqToSqlConversions03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ExistsInAnyAllContainsTests.LinqToSqlExists05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy08.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy09.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy09.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy10.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.GroupByHavingTests.LinqToSqlGroupBy10.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.InheritanceTests.LinqToSqlInheritance05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin08.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin09.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin09.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.JoinTests.LinqToSqlJoin10.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.JoinTests.LinqToSqlJoin10.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.NullTests.LinqToSqlNull01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.NullTests.LinqToSqlNull01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.NullTests.LinqToSqlNull02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.NullTests.LinqToSqlNull02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.NullTests.LinqToSqlNull03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.NullTests.LinqToSqlNull03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.OrderByTests.LinqToSqlOrderBy06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.PagingTests.LinqToSqlPaging01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.PagingTests.LinqToSqlPaging01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.PagingTests.LinqToSqlPaging02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.PagingTests.LinqToSqlPaging02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlLocalMethodCall01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlLocalMethodCall01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect08.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect09.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect09.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect10.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SelectDistinctTests.LinqToSqlSelect10.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SqlMethodsTests.LinqToSqlSqlMethods01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SqlMethodsTests.LinqToSqlSqlMethods01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.SqlMethodsTests.LinqToSqlSqlMethods02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.SqlMethodsTests.LinqToSqlSqlMethods02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StoredProceduresTests.LinqToSqlStoredProc05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString08.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString09.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString09.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString10.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString10.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString11.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString11.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString12.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString12.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString13.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString13.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString14.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString14.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString15.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString15.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString16.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString16.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString17.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString17.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString18.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.StringDateFunctionsTests.LinqToSqlString18.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.TopBottomTests.LinqToSqlTop01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TopBottomTests.LinqToSqlTop01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.TopBottomTests.LinqToSqlTop02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TopBottomTests.LinqToSqlTop02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.UserDefinedFunctionsTests.LinqToSqlUserDefined04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlFirst01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlFirst01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlFirst02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlFirst02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlStoredProc06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlStoredProc06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlStoredProc07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.VBSamplesOnlyTests.LinqToSqlStoredProc07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ViewTests.LinqToSqlView01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ViewTests.LinqToSqlView01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.ViewTests.LinqToSqlView02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.ViewTests.LinqToSqlView02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere01.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere01.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere02.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere02.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere03.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere03.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere04.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere04.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere05.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere05.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere06.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere07.result"/>
+      <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere08.result"/>
+
+    </vbc>
+
+    <copy file="../Linq.IntegrationTests.Common/App.config" tofile="${build.test.outputdir}/Remotion.Data.Linq.IntegrationTests.VisualBasic.dll.config" overwrite="true" />
+    <copy file="../Linq.IntegrationTests.Common/Database/Northwnd.sql" tofile="${build.test.outputdir}/Database/Northwnd.sql" overwrite="true" />
+
+    <copy todir="${build.test.outputdir}" overwrite="true">
+      <fileset>
+        <include name="**/*.xml" />
+        <exclude name="bin/**/*.xml" />
+        <exclude name="obj/**/*.xml" />
+      </fileset>
+    </copy>
+
+  </target>
+  
+</project>

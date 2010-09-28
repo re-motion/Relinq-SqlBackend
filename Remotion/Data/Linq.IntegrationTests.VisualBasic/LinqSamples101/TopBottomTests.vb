@@ -41,12 +41,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class TopBottomTests
     Inherits TestBase
 
     'This sample uses Take to select the first 5 Employees hired.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlTop01()
       Dim first5Employees = From emp In DB.Employees _
             Order By emp.HireDate _
@@ -56,7 +56,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Skip to select all but the 10 most expensive Products.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlTop02()
       Dim expensiveProducts = From prod In DB.Products _
             Order By prod.UnitPrice Descending _

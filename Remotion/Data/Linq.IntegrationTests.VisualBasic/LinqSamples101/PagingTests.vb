@@ -41,13 +41,13 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class PagingTests
     Inherits TestBase
     'This sample uses the Skip and Take operators to do paging by
     'skipping the first 50 records and then returning the next 10, thereby
     'providing the data for page 6 of the Products table.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlPaging01()
       Dim productPage = From cust In db.Customers _
             Order By cust.ContactName _
@@ -62,7 +62,7 @@ Namespace LinqSamples101
     'from page 5), then ordering by ProductID, and finally taking the first 10 results,
     'thereby providing the data for page 6 of the Products table.
     'Note that this method only works when ordering by a unique key.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlPaging02()
       Dim productPage = From prod In db.Products _
             Where prod.ProductID > 50 _

@@ -44,15 +44,15 @@ Imports Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 Imports System.Data.Linq
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class ObjectLoadingTests
     Inherits TestBase
 
     'This sample demonstrates how navigating through relationships in
     'retrieved objects can end up triggering new queries to the database
     'if the data was not requested by the original query.
-    <Test()>
-    <Explicit("Not tested: Lazy loading")>
+    <Test()> _
+    <Explicit("Not tested: Lazy loading")> _
     Public Sub LinqToSqlObject01()
 
       'Dim custs = From cust In db.Customers _
@@ -66,8 +66,8 @@ Namespace LinqSamples101
     '             "data during the original query so that additional roundtrips to the
     '             "database are not required later when navigating through
     '             "the retrieved objects.
-    <Test()>
-    <Explicit("Not tested: Load options")>
+    <Test()> _
+    <Explicit("Not tested: Load options")> _
     Public Sub LinqToSqlObject02()
 
       'Dim db2 = New Northwind(connString)
@@ -94,8 +94,8 @@ Namespace LinqSamples101
     'retrieved objects can end up triggering new queries to the database
     'if the data was not requested by the original query. Also this sample shows relationship
     'objects can be filtered using AssoicateWith when they are deferred loaded.
-    <Test()>
-    <Explicit("Not tested: Load options")>
+    <Test()> _
+    <Explicit("Not tested: Load options")> _
     Public Sub LinqToSqlObject03()
 
       '  Dim db2 As New Northwind(connString)
@@ -129,8 +129,8 @@ Namespace LinqSamples101
     'database are not required later when navigating through
     'the retrieved objects. Also this sample shows relationship" & _
     'objects can be ordered by using Assoicate With when they are eager loaded.
-    <Test()>
-    <Explicit("Not tested: Load options")>
+    <Test()> _
+    <Explicit("Not tested: Load options")> _
     Public Sub LinqToSqlObject04()
 
       '  Dim db2 = New Northwind(connString)
@@ -170,8 +170,8 @@ Namespace LinqSamples101
     'This sample demonstrates how navigating through relationships in
     'retrieved objects can result in triggering new queries to the database
     'if the data was not requested by the original query.
-    <Test()>
-    <Explicit("Not tested: Lazy loading")>
+    <Test()> _
+    <Explicit("Not tested: Lazy loading")> _
     Public Sub LinqToSqlObject05()
       'Dim emps = DB.Employees
 
@@ -185,8 +185,8 @@ Namespace LinqSamples101
     'This sample demonstrates how navigating through Link in
     'retrieved objects can end up triggering new queries to the database
     'if the data type is Link.")
-    <Test()>
-    <Explicit("Not tested: Lazy loading")>
+    <Test()> _
+    <Explicit("Not tested: Lazy loading")> _
     Public Sub LinqToSqlObject06()
       'Dim emps = DB.Employees
 
@@ -198,8 +198,8 @@ Namespace LinqSamples101
 
     'This samples overrides the partial method LoadProducts in Category class. When products of a category are being loaded,
     'LoadProducts is being called to load products that are not discontinued in this category.
-    <Test()>
-    <Explicit("Not tested: Load methods")>
+    <Test()> _
+    <Explicit("Not tested: Load methods")> _
     Public Sub LinqToSqlObject07()
 
       'Dim db2 As New Northwind(connString)

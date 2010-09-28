@@ -41,12 +41,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 Imports Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class InheritanceTests
     Inherits TestBase
 
     'This sample returns all contacts where the city is London.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlInheritance01()
 
       Dim cons = From contact In db.Contacts _
@@ -56,7 +56,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses OfType to return all customer contacts.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlInheritance02()
 
       Dim cons = From contact In DB.Contacts.OfType(Of CustomerContact)() _
@@ -66,7 +66,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses IS to return all shipper contacts.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlInheritance03()
 
       Dim cons = From contact In DB.Contacts _
@@ -78,8 +78,8 @@ Namespace LinqSamples101
 
 
     'This sample uses CType to return FullContact or Nothing.
-    <Test()>
-    <Ignore("RM-3267: Support for TypeAs expressions")>
+    <Test()> _
+    <Ignore("RM-3267: Support for TypeAs expressions")> _
     Public Sub LinqToSqlInheritance04()
       Dim cons = From contact In DB.Contacts _
             Select CType(contact, FullContact)
@@ -88,7 +88,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses a cast to retrieve customer contacts who live in London.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlInheritance05()
       Dim cons = From contact In DB.Contacts _
             Where contact.ContactType = "Customer" _

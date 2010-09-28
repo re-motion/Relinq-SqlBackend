@@ -41,13 +41,13 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class JoinTests
     Inherits TestBase
 
     'This sample uses foreign key navigation in the 
     'From clause to select all orders for customers in London.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin01()
       Dim ordersInLondon = From cust In DB.Customers, ord In cust.Orders _
             Where cust.City = "London"
@@ -58,8 +58,8 @@ Namespace LinqSamples101
     'This sample uses foreign key navigation in the
     'Where clause to filter for Products whose Supplier is in the USA
     'that are out of stock.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlJoin02()
       Dim outOfStock = From prod In DB.Products _
             Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0
@@ -70,8 +70,8 @@ Namespace LinqSamples101
     'This sample uses foreign key navigation in the 
     'from clause to filter for employees in Seattle,
     'and also list their territories.
-    <Test()>
-    <Ignore("RM-3110: Support complex columns for entities")>
+    <Test()> _
+    <Ignore("RM-3110: Support complex columns for entities")> _
     Public Sub LinqToSqlJoin03()
       Dim seattleEmployees = From emp In DB.Employees, et In emp.EmployeeTerritories _
             Where emp.City = "Seattle" _
@@ -84,7 +84,7 @@ Namespace LinqSamples101
     'Select clause to filter for pairs of employees where
     'one employee reports to the other and where
     'both employees are from the same City.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin04()
       Dim empQuery = From emp1 In DB.Employees, emp2 In emp1.Employees _
             Where emp1.City = emp2.City _
@@ -95,7 +95,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample explictly joins two tables and projects results from both tables.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin05()
       Dim ordCount = From cust In db.Customers _
             Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -106,7 +106,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample explictly joins three tables and projects results from each of them.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin06()
       Dim joinQuery = From cust In db.Customers _
             Group Join ord In db.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -120,7 +120,7 @@ Namespace LinqSamples101
 
     'This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty().
     'The DefaultIfEmpty() method returns Nothing when there is no Order for the Employee.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin07()
       Dim empQuery = From emp In DB.Employees _
             Group Join ord In DB.Orders On emp Equals ord.Employee _
@@ -132,7 +132,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample projects a 'Let' expression resulting from a join.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin08()
       Dim ordQuery = From cust In DB.Customers _
             Group Join ord In DB.Orders On cust.CustomerID Equals ord.CustomerID _
@@ -145,8 +145,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample shows a join with a composite key.
-    <Test()>
-    <Ignore("RM-3110: Support complex columns for entities")>
+    <Test()> _
+    <Ignore("RM-3110: Support complex columns for entities")> _
     Public Sub LinqToSqlJoin09()
 
       'The Key keyword means that when the anonymous types are tested for equality,
@@ -165,7 +165,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample shows how to construct a join where one side is nullable and the other isn't.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlJoin10()
       Dim ordQuery = From ord In db.Orders _
             Group Join emp In db.Employees _

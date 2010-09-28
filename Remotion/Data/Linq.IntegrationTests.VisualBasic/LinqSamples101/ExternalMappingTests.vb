@@ -40,12 +40,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class ExternalMappingTests
     Inherits TestBase
     'This sample demonstrates how to create a data context that uses an external XML mapping source.
-    <Test()>
-    <Explicit("Not tested: External mapping")>
+    <Test()> _
+    <Explicit("Not tested: External mapping")> _
     Public Sub LinqToSqlExternal01()
       '' load the mapping source
       'Dim path2 = Path.Combine(Application.StartupPath, "..\..\..\Linq.IntegrationTests\TestDomain\Northwind\NorthwindMapped.map")

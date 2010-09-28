@@ -41,12 +41,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class OrderByTests
     Inherits TestBase
 
     'This sample uses Order By to sort Employees by hire date.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlOrderBy01()
       Dim empQuery = From emp In DB.Employees _
             Order By emp.HireDate
@@ -55,7 +55,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses Where and Order By to sort Orders shipped to London by freight.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlOrderBy02()
       Dim londonOrders = From ord In DB.Orders _
             Where ord.ShipCity = "London" _
@@ -66,7 +66,7 @@ Namespace LinqSamples101
 
     'This sample uses Order By to sort Products
     'by unit price from highest to lowest.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlOrderBy03()
       Dim sortedProducts = From prod In DB.Products _
             Order By prod.UnitPrice Descending
@@ -76,7 +76,7 @@ Namespace LinqSamples101
 
     'This sample uses a compound Order By to sort Customers
     'by city and then contact name.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlOrderBy04()
       Dim custQuery = From cust In DB.Customers _
             Select cust _
@@ -87,8 +87,8 @@ Namespace LinqSamples101
 
     'This sample uses Order By to sort Orders from EmployeeID 1
     'by ship-to country, and then by freight from highest to lowest.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlOrderBy05()
       Dim ordQuery = From ord In DB.Orders _
             Where ord.EmployeeID = 1 _
@@ -99,8 +99,8 @@ Namespace LinqSamples101
 
     'This sample uses Order By, Max and Group By to find the Products that have
     'the highest unit price in each category, and sorts the group by category id.
-    <Test()>
-    <Ignore("RM-3265: Support collections to be selected at the top level of a query")>
+    <Test()> _
+    <Ignore("RM-3265: Support collections to be selected at the top level of a query")> _
     Public Sub LinqToSqlOrderBy06()
       Dim categories = From prod In DB.Products _
             Group prod By prod.CategoryID Into Group _

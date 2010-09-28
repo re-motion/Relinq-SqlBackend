@@ -41,12 +41,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class UserDefinedFunctionsTests
     Inherits TestBase
 
     'This sample demonstrates using a scalar user-defined function in a projection.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlUserDefined01()
       Dim catQuery = From category In DB.Categories _
             Select category.CategoryID, _
@@ -56,8 +56,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample demonstrates using a scalar user-defined function in a Where clause.
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlUserDefined02()
 
       Dim prodQuery = From prod In DB.Products _
@@ -67,8 +67,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample demonstrates selecting from a table-valued user-defined function.
-    <Test()>
-    <Explicit("Not tested: User-defined function in first from clause. This cannot be tested because it will always cause Linq-to-Sql to execute the query.")>
+    <Test()> _
+    <Explicit("Not tested: User-defined function in first from clause. This cannot be tested because it will always cause Linq-to-Sql to execute the query.")> _
     Public Sub LinqToSqlUserDefined03()
 
       Dim prodQuery = From p In DB.Functions.ProductsUnderThisUnitPrice(10.25D) _
@@ -78,8 +78,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample demonstrates joining to the results of a table-valued user-defined function.
-    <Test()>
-    <Ignore("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")>
+    <Test()> _
+    <Ignore("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")> _
     Public Sub LinqToSqlUserDefined04()
 
       Dim q = From category In DB.Categories _

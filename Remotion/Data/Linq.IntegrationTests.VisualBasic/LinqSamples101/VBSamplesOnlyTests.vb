@@ -41,12 +41,12 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class VBSamplesOnlyTests
     Inherits TestBase
 
     'This sample selects 2 columns and returns the data from the database.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlFirst01()
 
       'Instead of returning the entire Customers table, just return the
@@ -58,7 +58,7 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses a Where clause to filter for Customers in London.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlFirst02()
 
       'Only return customers from London
@@ -75,8 +75,8 @@ Namespace LinqSamples101
     'Methods can be created by dragging database functions from the Server
     'Explorer onto the O/R Designer which can be accessed by double-clicking
     'on the .DBML file in the Solution Explorer.
-    <Test()>
-    <Explicit("Not tested: Stored procedures")>
+    <Test()> _
+    <Explicit("Not tested: Stored procedures")> _
     Public Sub LinqToSqlStoredProc06()
       Dim cheapProducts = DB.ProductsUnderThisUnitPrice(10D)
 
@@ -86,8 +86,8 @@ Namespace LinqSamples101
     'This sample queries against a collection of products returned by
     'ProductsUnderThisUnitPrice' method. The method was created from the database
     'function 'ProductsUnderThisUnitPrice' in Northwind database.
-    <Test()>
-    <Ignore("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")>
+    <Test()> _
+    <Ignore("RM-3313: Add a TableInfo type allowing user-defined functions to be used as tables")> _
     Public Sub LinqToSqlStoredProc07()
       Dim cheapProducts = From prod In DB.ProductsUnderThisUnitPrice(10D) _
                           Where prod.Discontinued = True

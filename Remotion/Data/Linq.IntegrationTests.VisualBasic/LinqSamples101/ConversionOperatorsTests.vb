@@ -40,7 +40,7 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 Imports Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 
 Namespace LinqSamples101
-  <TestFixture()>
+  <TestFixture()> _
   Public Class ConversionOperatorsTests
     Inherits TestBase
 
@@ -49,7 +49,7 @@ Namespace LinqSamples101
     'on the server.  This is necessary because the where clause
     'references a user-defined client-side method, isValidProduct,
     'which cannot be converted to SQL.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlConversions01()
       Dim prodQuery = From prod In DB.Products.AsEnumerable() _
             Where isValidProduct(prod)
@@ -63,7 +63,7 @@ Namespace LinqSamples101
 
     'This sample uses ToArray to immediately evaluate a query into an array
     'and get the 3rd element.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlConversions02()
       Dim londonCustomers = From cust In DB.Customers _
             Where cust.City = "London"
@@ -73,8 +73,8 @@ Namespace LinqSamples101
     End Sub
 
     'This sample uses ToList to immediately evaluate a query into a List(Of T).
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlConversions03()
       Dim hiredAfter1994 = From emp In DB.Employees _
             Where emp.HireDate >= #1/1/1994#
@@ -85,8 +85,8 @@ Namespace LinqSamples101
 
     'This sample uses ToDictionary to immediately evaluate a query and
     'a key expression into an Dictionary(Of K, T).
-    <Test()>
-    <Ignore("RM-3335: Support nullable booleans")>
+    <Test()> _
+    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlConversion04()
       Dim prodQuery = From prod In DB.Products _
             Where prod.UnitsInStock <= prod.ReorderLevel _

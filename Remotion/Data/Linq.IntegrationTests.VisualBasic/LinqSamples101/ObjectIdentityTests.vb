@@ -40,14 +40,14 @@ Imports Remotion.Data.Linq.IntegrationTests.Common
 
 
 Namespace LinqSamples101
-  <TestFixture()>
-  <Explicit("Not tested: Identity")>
+  <TestFixture()> _
+  <Explicit("Not tested: Identity")> _
   Public Class ObjectIdentityTests
     Inherits TestBase
 
     'This sample demonstrates how, upon executing the same query twice, 
     'you will receive a reference to the same object in memory each time.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlObjectIdentity01()
       'Dim cust1 = db.Customers.First(Function(cust) cust.CustomerID = "BONAP")
       'Dim cust2 = (From cust In db.Customers _
@@ -60,7 +60,7 @@ Namespace LinqSamples101
     'This sample demonstrates how, upon executing different queries that
     '             "return the same row from the database, you will receive a
     '             "reference to the same object in memory each time.
-    <Test()>
+    <Test()> _
     Public Sub LinqToSqlObjectIdentity02()
       'Dim cust1 = db.Customers.First(Function(cust) cust.CustomerID = "BONAP")
       'Dim cust2 = (From ord In db.Orders _
