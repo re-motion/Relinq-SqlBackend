@@ -241,7 +241,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newExpression =
+          Expression.Subtract (
+              new SqlFunctionExpression (
+                  typeof (int),
+                  "LEN",
+                  Expression.Add (
+                      expression.Expression,
+                      new SqlLiteralExpression ("#"),
+                      typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }))),
+              new SqlLiteralExpression (1));
+      return VisitExpression (newExpression);
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
@@ -349,8 +361,8 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
       else
       {
         var message = string.Format (
-            "Cannot generate SQL for aggregation '{0}'. Expression: '{1}'", 
-            expression.AggregationModifier, 
+            "Cannot generate SQL for aggregation '{0}'. Expression: '{1}'",
+            expression.AggregationModifier,
             FormattingExpressionTreeVisitor.Format (expression));
         throw new NotSupportedException (message);
       }
