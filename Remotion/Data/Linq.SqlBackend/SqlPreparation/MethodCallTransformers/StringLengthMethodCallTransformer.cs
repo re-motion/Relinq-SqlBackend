@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 0);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
 
-      return new SqlFunctionExpression (methodCallExpression.Type, "LEN", methodCallExpression.Object);
+      return new SqlLengthExpression (methodCallExpression.Object);
     }
   }
 }

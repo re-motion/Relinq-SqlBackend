@@ -487,7 +487,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlLengthExpression ()
+    public void VisitSqlLengthExpression_String ()
     {
       var innnerExpression = Expression.Constant ("test");
       var expression = new SqlLengthExpression (innnerExpression);
@@ -496,6 +496,18 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(LEN((@1 + '#')) - 1)"));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void VisitSqlLengthExpression_NoString ()
+    {
+      var innnerExpression = Expression.Constant ('t');
+      var expression = new SqlLengthExpression (innnerExpression);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("LEN(@1)"));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo ('t'));
     }
 
     [Test]

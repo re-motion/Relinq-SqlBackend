@@ -30,7 +30,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where c.FirstName != null && c.FirstName.Length > 0 select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NOT NULL) AND (LEN([t0].[FirstName]) > @1))",
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NOT NULL) AND ((LEN(([t0].[FirstName] + '#')) - 1) > @1))",
           new CommandParameter ("@1", 0)
           );
     }
@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks where string.IsNullOrEmpty (c.FirstName) select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NULL) OR (LEN([t0].[FirstName]) = 0))");
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[FirstName] IS NULL) OR ((LEN(([t0].[FirstName] + '#')) - 1) = 0))");
     }
 
     [Test]
@@ -219,7 +219,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Remove (3),
-          "SELECT STUFF([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName]), '') AS [value] FROM [CookTable] AS [t0]",
+          "SELECT STUFF([t0].[FirstName], (@1 + 1), (LEN(([t0].[FirstName] + '#')) - 1), '') AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
@@ -235,7 +235,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Substring (3),
-          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), LEN([t0].[FirstName])) AS [value] FROM [CookTable] AS [t0]",
+          "SELECT SUBSTRING([t0].[FirstName], (@1 + 1), (LEN(([t0].[FirstName] + '#')) - 1)) AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 3)
           );
       CheckQuery (
@@ -251,7 +251,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test"),
-          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
+          "SELECT CASE WHEN ((LEN((@1 + '#')) - 1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", "test")
           );
@@ -265,7 +265,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", 2),
@@ -276,7 +276,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
@@ -287,7 +287,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2, 5),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 "
           + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", 2),
@@ -300,7 +300,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2, 5),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= LEN([t0].[FirstName]))) THEN @3 "
+          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 "
           + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
@@ -382,7 +382,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Insert (3, "Test"),
-          "SELECT CASE WHEN (LEN([t0].[FirstName]) = 4) "
+          "SELECT CASE WHEN ((LEN(([t0].[FirstName] + '#')) - 1) = 4) "
           + "THEN ([t0].[FirstName] + @1) "
           + "ELSE STUFF([t0].[FirstName], 4, 0, @2) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter("@1", "Test"),

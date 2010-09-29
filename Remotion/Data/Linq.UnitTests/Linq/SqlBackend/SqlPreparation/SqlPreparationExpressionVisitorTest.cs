@@ -275,7 +275,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
 
-      var expectedResult = new SqlFunctionExpression (typeof (int), "LEN", stringExpression);
+      var expectedResult = new SqlLengthExpression (stringExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -310,8 +310,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
 
-      var expectedResult = Expression.Condition(
-          testPredicate, new SqlFunctionExpression (typeof (int), "LEN", thenValue), new SqlFunctionExpression (typeof (int), "LEN", elseValue));
+      var expectedResult = Expression.Condition(testPredicate, new SqlLengthExpression (thenValue), new SqlLengthExpression (elseValue));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -347,9 +346,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
 
       var expectedResult = Expression.Condition (
-          new SqlIsNotNullExpression (coalesceExpression.Left),
-          new SqlFunctionExpression(typeof(int), "LEN", coalesceExpression.Left),
-          new SqlFunctionExpression (typeof (int), "LEN", coalesceExpression.Right));
+          new SqlIsNotNullExpression (coalesceExpression.Left), new SqlLengthExpression(coalesceExpression.Left), 
+          new SqlLengthExpression (coalesceExpression.Right));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var result = transformer.Transform (expression);
 
-      var expectedResult = new SqlFunctionExpression (typeof (int), "LEN", objectExpression);
+      var expectedResult = new SqlLengthExpression (objectExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

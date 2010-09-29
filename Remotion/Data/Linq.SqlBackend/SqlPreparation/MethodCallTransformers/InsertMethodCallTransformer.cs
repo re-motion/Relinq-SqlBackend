@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckConstantExpression ("Insert", methodCallExpression.Arguments[0], "insertionIndex");
 
       var insertionIndexExpression = new SqlLiteralExpression (((int) ((ConstantExpression) methodCallExpression.Arguments[0]).Value) + 1);
-      var testExpression = Expression.Equal(new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Object), insertionIndexExpression);
+      var testExpression = Expression.Equal(new SqlLengthExpression (methodCallExpression.Object), insertionIndexExpression);
 
       var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       var thenExpression = Expression.Add (methodCallExpression.Object, methodCallExpression.Arguments[1], concatMethod);

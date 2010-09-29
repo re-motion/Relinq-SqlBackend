@@ -42,7 +42,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
 
       var isNullExpression = new SqlIsNullExpression (methodCallExpression.Arguments[0]);
-      var lenExpression = new SqlFunctionExpression (typeof(int), "LEN", methodCallExpression.Arguments[0]);
+      var lenExpression = new SqlLengthExpression (methodCallExpression.Arguments[0]);
       var lenIsZeroExpression = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
 
       return Expression.OrElse (isNullExpression, lenIsZeroExpression);

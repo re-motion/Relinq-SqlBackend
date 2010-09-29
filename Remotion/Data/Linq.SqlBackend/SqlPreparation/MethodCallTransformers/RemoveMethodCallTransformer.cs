@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             "STUFF",
             methodCallExpression.Object,
             startIndexExpression,
-            new SqlFunctionExpression (methodCallExpression.Object.Type, "LEN", methodCallExpression.Object),
+            new SqlLengthExpression (methodCallExpression.Object),
             new SqlLiteralExpression ("")); 
       }
       else if (methodCallExpression.Arguments.Count == 2)

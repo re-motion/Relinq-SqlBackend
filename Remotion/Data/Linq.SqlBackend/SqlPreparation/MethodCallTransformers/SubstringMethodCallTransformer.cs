@@ -51,7 +51,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             "SUBSTRING",
             methodCallExpression.Object,
             startIndexExpression,
-            new SqlFunctionExpression (methodCallExpression.Object.Type, "LEN", methodCallExpression.Object));
+            new SqlLengthExpression (methodCallExpression.Object));
       }
       else if (methodCallExpression.Arguments.Count == 2)
       {

@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
       if (methodCallExpression.Arguments.Count == 1)
       {
-        var lenExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Arguments[0]);
+        var lenExpression = new SqlLengthExpression (methodCallExpression.Arguments[0]);
         var testPredicate = Expression.Equal (lenExpression, new SqlLiteralExpression (0));
         var charIndexExpression = new SqlFunctionExpression (
             methodCallExpression.Type, "CHARINDEX", methodCallExpression.Arguments[0], methodCallExpression.Object);
@@ -57,10 +57,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       {
         var startIndexExpression = Expression.Add (methodCallExpression.Arguments[1], new SqlLiteralExpression (1));
 
-        var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Arguments[0]);
+        var lenArgExpression = new SqlLengthExpression (methodCallExpression.Arguments[0]);
         var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
 
-        var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Object);
+        var lenObjectExpression = new SqlLengthExpression (methodCallExpression.Object);
         var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
         var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
 
@@ -75,10 +75,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       {
         var startIndexExpression = Expression.Add (methodCallExpression.Arguments[1], new SqlLiteralExpression (1));
 
-        var lenArgExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Arguments[0]);
+        var lenArgExpression = new SqlLengthExpression (methodCallExpression.Arguments[0]);
         var leftTestPredicate = Expression.Equal (lenArgExpression, new SqlLiteralExpression (0));
 
-        var lenObjectExpression = new SqlFunctionExpression (typeof (int), "LEN", methodCallExpression.Object);
+        var lenObjectExpression = new SqlLengthExpression (methodCallExpression.Object);
         var rightTestpredicate = Expression.LessThanOrEqual (startIndexExpression, lenObjectExpression);
         var testPredicate = Expression.AndAlso (leftTestPredicate, rightTestpredicate);
 

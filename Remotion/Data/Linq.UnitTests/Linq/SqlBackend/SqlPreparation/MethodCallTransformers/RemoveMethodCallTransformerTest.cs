@@ -50,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
           "STUFF",
           objectExpression,
           Expression.Add (Expression.Constant (1), new SqlLiteralExpression (1)),
-          new SqlFunctionExpression (objectExpression.Type, "LEN", objectExpression),
+          new SqlLengthExpression (objectExpression),
           new SqlLiteralExpression (""));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);

@@ -130,7 +130,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var query = Cooks.Select (c => (from a in c.Assistants select a.Name).First ().Length);
       CheckQuery (query,
         "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
-        "LEN([t1].[Name]) AS [value] FROM [CookTable] AS [t1] " +
+        "(LEN(([t1].[Name] + '#')) - 1) AS [value] FROM [CookTable] AS [t1] " +
         "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
     }
 
@@ -150,7 +150,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution.Name ?? a.Name).First ().Length);
       CheckQuery (query,
         "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] "
-        + "CROSS APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN LEN([t2].[Name]) ELSE LEN([t1].[Name]) END AS [value] "
+        + "CROSS APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN (LEN(([t2].[Name] + '#')) - 1) "
+        + "ELSE (LEN(([t1].[Name] + '#')) - 1) END AS [value] "
         + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
         + "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
@@ -169,7 +170,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void MemberAccess_OnCoalesce_WithColumns ()
     {
       CheckQuery (Cooks.Select (c => (c.FirstName ?? c.Name).Length),
-        "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN LEN([t0].[FirstName]) ELSE LEN([t0].[Name]) END AS [value] FROM [CookTable] AS [t0]");
+        "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN (LEN(([t0].[FirstName] + '#')) - 1) ELSE (LEN(([t0].[Name] + '#')) - 1) END AS [value] "
+          +"FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -186,7 +188,8 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     public void MemberAccess_OnConditional_WithColumns ()
     {
       CheckQuery (Cooks.Select (c => (c.IsStarredCook ? c.Name : c.SpecificInformation).Length),
-        "SELECT CASE WHEN ([t0].[IsStarredCook] = 1) THEN LEN([t0].[Name]) ELSE LEN([t0].[SpecificInformation]) END AS [value] FROM [CookTable] AS [t0]");
+        "SELECT CASE WHEN ([t0].[IsStarredCook] = 1) THEN (LEN(([t0].[Name] + '#')) - 1) ELSE (LEN(([t0].[SpecificInformation] + '#')) - 1) END AS [value] "+
+        "FROM [CookTable] AS [t0]");
     }
 
     [Test]

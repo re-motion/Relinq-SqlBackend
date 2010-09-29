@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
 
       var result = transformer.Transform (expression);
 
-      var expectedTestExpression = Expression.Equal (new SqlFunctionExpression (typeof (int), "LEN", objectExpression), new SqlLiteralExpression (4));
+      var expectedTestExpression = Expression.Equal (new SqlLengthExpression (objectExpression), new SqlLiteralExpression (4));
       var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       var expectedThenExpression = Expression.Add (objectExpression, argument2, concatMethod);
       var expectedElseExpression = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, new SqlLiteralExpression(4), new SqlLiteralExpression(0), argument2);
