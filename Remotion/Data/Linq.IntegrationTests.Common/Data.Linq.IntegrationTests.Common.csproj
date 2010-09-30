@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\Northwnd License.txt" />
-    <Content Include="Database\Northwnd.sql" />
+    <EmbeddedResource Include="Database\Northwnd.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">

@@ -51,7 +51,6 @@
     </csc>
 
     <copy file="../Linq.IntegrationTests.Common/App.config" tofile="${build.test.outputdir}/Remotion.Data.Linq.IntegrationTests.CSharp.dll.config" overwrite="true" />
-    <copy file="../Linq.IntegrationTests.Common/Database/Northwnd.sql" tofile="${build.test.outputdir}/Database/Northwnd.sql" overwrite="true" />
 
     <copy todir="${build.test.outputdir}" overwrite="true">
       <fileset>

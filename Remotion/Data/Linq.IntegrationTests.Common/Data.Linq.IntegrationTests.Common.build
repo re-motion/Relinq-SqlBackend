@@ -50,6 +50,9 @@
         <include asis="true" name="System.Xml.dll"/>
         <include asis="true" name="System.Xml.Linq.dll"/>
       </references>
+	  <resources failonempty="true" prefix="Remotion.Data.Linq.IntegrationTests.Common" dynamicprefix="true">
+        <include name="Database/**/*.*" />
+      </resources>
     </csc>
 
     <copy todir="${build.test.outputdir}" overwrite="true">
