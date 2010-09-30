@@ -49,7 +49,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       ExecuteCommand (string.Format ("ALTER DATABASE [{0}] SET READ_ONLY WITH ROLLBACK IMMEDIATE", database));
     }
 
-    public int ExecuteBatch (string sqlFileName, bool useTransaction)
+    public int ExecuteBatchFile (string sqlFileName, bool useTransaction)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
@@ -72,6 +72,14 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       }
 
       return count;
+    }
+
+    [Obsolete("Use 'ExecuteBatchFile' instead.")]
+    public int ExecuteBatch (string sqlFileName, bool useTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("sqlFileName", sqlFileName);
+
+      ExecuteBatchFile (sqlFileName, useTransaction);
     }
 
     protected virtual IDbConnection CreateConnection ()
