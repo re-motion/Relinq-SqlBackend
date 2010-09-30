@@ -53,6 +53,19 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
+      if (!Path.IsPathRooted (sqlFileName))
+      {
+        string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
+        Uri uri = new Uri (assemblyUrl);
+        sqlFileName = Path.Combine (Path.GetDirectoryName (uri.LocalPath), sqlFileName);
+      }
+      return ExecuteBatchString (File.ReadAllText (sqlFileName, Encoding.Default), useTransaction);
+    }
+
+    public int ExecuteBatchString (string commandBatch, bool useTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
+
       int count = 0;
       using (IDbConnection connection = CreateConnection ())
       {
@@ -61,13 +74,13 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
         {
           using (IDbTransaction transaction = connection.BeginTransaction ())
           {
-            count = ExecuteBatch (connection, sqlFileName, transaction);
+            count = ExecuteBatchString (connection, commandBatch, transaction);
             transaction.Commit ();
           }
         }
         else
         {
-          count = ExecuteBatch (connection, sqlFileName, null);
+          count = ExecuteBatchString (connection, commandBatch, null);
         }
       }
 
@@ -79,7 +92,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
     {
       ArgumentUtility.CheckNotNull ("sqlFileName", sqlFileName);
 
-      ExecuteBatchFile (sqlFileName, useTransaction);
+      return ExecuteBatchFile (sqlFileName, useTransaction);
     }
 
     protected virtual IDbConnection CreateConnection ()
@@ -118,13 +131,13 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       }
     }
 
-    protected virtual int ExecuteBatch (IDbConnection connection, string sqlFileName, IDbTransaction transaction)
+    protected virtual int ExecuteBatchString (IDbConnection connection, string commandBatch, IDbTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
-      ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
       int count = 0;
-      foreach (string commandText in GetCommandTextBatchesFromFile (sqlFileName))
+      foreach (string commandText in GetCommandTextBatchesFromFile (commandBatch))
         count += ExecuteCommand (connection, commandText, transaction);
       return count;
     }
@@ -145,16 +158,9 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       }
     }
 
-    private string[] GetCommandTextBatchesFromFile (string sqlFileName)
+    private string[] GetCommandTextBatchesFromFile (string commandBatch)
     {
-      if (!Path.IsPathRooted (sqlFileName))
-      {
-        string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
-        Uri uri = new Uri (assemblyUrl);
-        sqlFileName = Path.Combine (Path.GetDirectoryName (uri.LocalPath), sqlFileName);
-      }
-      string fileContent = File.ReadAllText (sqlFileName, Encoding.Default);
-      return fileContent.Split (new string[] { "\r\nGO\r\n", "\nGO\n" }, StringSplitOptions.RemoveEmptyEntries);
+      return commandBatch.Split (new[] { "\r\nGO\r\n", "\nGO\n" }, StringSplitOptions.RemoveEmptyEntries);
     }
   }
 }
