@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -137,7 +138,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
       int count = 0;
-      foreach (string commandText in GetCommandTextBatchesFromFile (commandBatch))
+      foreach (string commandText in GetCommandTextBatches (commandBatch))
         count += ExecuteCommand (connection, commandText, transaction);
       return count;
     }
@@ -158,7 +159,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       }
     }
 
-    private string[] GetCommandTextBatchesFromFile (string commandBatch)
+    private IEnumerable<string> GetCommandTextBatches (string commandBatch)
     {
       return commandBatch.Split (new[] { "\r\nGO\r\n", "\nGO\n" }, StringSplitOptions.RemoveEmptyEntries);
     }
