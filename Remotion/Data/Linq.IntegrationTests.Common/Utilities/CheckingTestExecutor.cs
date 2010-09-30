@@ -20,6 +20,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Utilities;
+using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
 {
@@ -59,22 +60,19 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
     private string GetReferenceResult (MethodBase executingMethod)
     {
       var resourceName = _resourceNameGenerator (executingMethod);
-      using (var resourceStream = executingMethod.DeclaringType.Assembly.GetManifestResourceStream (resourceName))
+
+      try
       {
-        if (resourceStream == null)
-        {
-          var message = string.Format (
-              "No reference result exists for method: '{0}.{1}': Resource '{2}' could not be found.", 
+        return ResourceUtility.GetResourceString (executingMethod.DeclaringType.Assembly, resourceName);
+      }
+      catch (Exception)
+      {
+        var message = string.Format (
+              "No reference result exists for method: '{0}.{1}': Resource '{2}' could not be found.",
               executingMethod.DeclaringType,
               executingMethod.Name,
               resourceName);
-          throw new InvalidOperationException (message);
-        }
-
-        using (var streamReader = new StreamReader (resourceStream))
-        {
-          return streamReader.ReadToEnd();
-        }
+        throw new InvalidOperationException (message);
       }
     }
   }

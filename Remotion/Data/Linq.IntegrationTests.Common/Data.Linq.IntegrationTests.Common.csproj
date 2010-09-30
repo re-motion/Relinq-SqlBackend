@@ -107,6 +107,10 @@
     <Content Include="Database\Northwnd.sql" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj">
       <Project>{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}</Project>
       <Name>Data.Linq.LinqToSqlAdapter</Name>
