@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Remotion.Data.Linq.Utilities;
 
@@ -80,15 +81,13 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
           }
         }
         else
-        {
           count = ExecuteBatchString (connection, commandBatch, null);
-        }
       }
 
       return count;
     }
 
-    [Obsolete("Use 'ExecuteBatchFile' instead.")]
+    [Obsolete ("Use 'ExecuteBatchFile' instead.")]
     public int ExecuteBatch (string sqlFileName, bool useTransaction)
     {
       ArgumentUtility.CheckNotNull ("sqlFileName", sqlFileName);
@@ -137,10 +136,9 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
-      int count = 0;
-      foreach (string commandText in GetCommandTextBatches (commandBatch))
-        count += ExecuteCommand (connection, commandText, transaction);
-      return count;
+      return
+          GetCommandTextBatches (commandBatch).Where (c => !string.IsNullOrEmpty (c)).Sum (
+              commandText => ExecuteCommand (connection, commandText, transaction));
     }
 
     protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
@@ -161,7 +159,20 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
 
     private IEnumerable<string> GetCommandTextBatches (string commandBatch)
     {
-      return commandBatch.Split (new[] { "\r\nGO\r\n", "\nGO\n" }, StringSplitOptions.RemoveEmptyEntries);
+      var sb = new StringBuilder (commandBatch.Length);
+      foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+      {
+        if (line.Trim ().Equals ("GO", StringComparison.CurrentCultureIgnoreCase))
+        {
+          var batch = sb.ToString ().Trim ();
+          sb = new StringBuilder (commandBatch.Length);
+          yield return batch;
+        }
+        else
+          sb.AppendLine (line.Trim ());
+      }
+
+      yield return sb.ToString ().Trim ();
     }
   }
 }
