@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Remotion.Data.Linq.Utilities;
 
@@ -31,6 +30,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
   public class DatabaseAgent
   {
     private readonly string _connectionString;
+    private string _fileName = null;
 
     public DatabaseAgent (string connectionString)
     {
@@ -55,6 +55,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
+      _fileName = sqlFileName;
       if (!Path.IsPathRooted (sqlFileName))
       {
         string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
@@ -68,7 +69,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
     {
       ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
 
-      int count = 0;
+      var count = 0;
       using (IDbConnection connection = CreateConnection ())
       {
         connection.Open ();
@@ -149,9 +150,10 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
           {
             throw new SqlBatchCommandException (
                 string.Format (
-                    "Could not execute batch command from row {0} to row {1}. (Error message: {2})",
+                    "Could not execute batch command from row {0} to row {1}{2}. (Error message: {3})",
                     command.StartRowNumber,
                     command.EndRowNumber,
+                    !string.IsNullOrEmpty(_fileName) ? " in file '"+_fileName+"'" : string.Empty,
                     ex.Message),
                 ex);
           }
