@@ -95,6 +95,7 @@
     <Compile Include="UnitTests\Utilities\TestResultSerializerTest.cs" />
     <Compile Include="Utilities\ComparisonResult.cs" />
     <Compile Include="Utilities\ITestExecutor.cs" />
+    <Compile Include="Utilities\SqlBatchCommandException.cs" />
     <Compile Include="Utilities\TestResultSerializer.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -136,9 +136,28 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
-      return
-          GetCommandTextBatches (commandBatch).Where (c => c.Content != null).Sum (
-              c => ExecuteCommand (connection, c.Content, transaction));
+      var count = 0;
+      foreach (var command in GetCommandTextBatches (commandBatch))
+      {
+        if (command.Content != null)
+        {
+          try
+          {
+            count += ExecuteCommand (connection, command.Content, transaction);
+          }
+          catch (Exception ex)
+          {
+            throw new SqlBatchCommandException (
+                string.Format (
+                    "Could not execute batch command from row {0} to row {1}. (Error message: {2})",
+                    command.StartRowNumber,
+                    command.EndRowNumber,
+                    ex.Message),
+                ex);
+          }
+        }
+      }
+      return count;
     }
 
     protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
