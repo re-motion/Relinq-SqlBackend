@@ -177,9 +177,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       var memberAsPropertyInfo = expression.Member as PropertyInfo;
       if (memberAsPropertyInfo != null)
       {
-        // TODO Review 3005: Use propertyInfo.GetGetMethod() to access the property getter; use that instead of GetMethod ("get_Length")! Add a unit test showing that it works with other properties than string.Length.
-
-        var methodInfo = expression.Member.DeclaringType.GetMethod ("get_Length");
+        var methodInfo = memberAsPropertyInfo.GetGetMethod();
         if (methodInfo != null)
         {
           var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
