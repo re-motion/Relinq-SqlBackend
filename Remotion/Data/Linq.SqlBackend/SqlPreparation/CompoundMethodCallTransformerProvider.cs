@@ -32,8 +32,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public static CompoundMethodCallTransformerProvider CreateDefault ()
     {
       var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
+      var attributeBasedProvider = new AttributeBasedMethodCallTransformerProvider();
       var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
-      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, nameBasedRegistry);
+      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, attributeBasedProvider, nameBasedRegistry);
     }
 
     public IMethodCallTransformerProvider[] Providers

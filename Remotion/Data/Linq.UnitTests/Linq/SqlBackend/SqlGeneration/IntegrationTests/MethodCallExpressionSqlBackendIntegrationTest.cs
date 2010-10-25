@@ -396,9 +396,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
         new CommandParameter("@1", "abc"));
 
-      CheckQuery (from c in Cooks where c.Equals (c.Substitution) select c.Name,
-        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "+
-        "WHERE ([t0].[ID] = [t1].[ID])");
+      CheckQuery (from k in Kitchens where k.Equals (k.Restaurant.SubKitchen) select k.Name,
+        "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
+        + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
+        + "WHERE ([t0].[ID] = [t2].[ID])");
 
       CheckQuery (from c in Cooks where Equals(c.Name, "abc") select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
@@ -436,6 +437,38 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
         new CommandParameter ("@1", (int?) 10));
     }
-    
+
+    [Test]
+    public void AttributeBasedTransformer_OnMethod ()
+    {
+      CheckQuery (
+          from c in Cooks select c.GetFullName(),
+          "SELECT (([t0].[FirstName] + ' ') + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void AttributeBasedTransformer_OnProperty ()
+    {
+      CheckQuery (
+          from c in Cooks select c.WeightInLbs,
+          "SELECT ([t0].[Weight] * 2.20462262) AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void AttributeBasedTransformer_WithSubQuery ()
+    {
+      CheckQuery (
+          from c in Cooks select c.GetAssistantCount(),
+          "SELECT (SELECT COUNT(*) AS [value] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [value] FROM [CookTable] AS [t0]");
+    }
+
+    [Test]
+    public void AttributeBasedTransformer_OverridesName ()
+    {
+      CheckQuery (
+          from c in Cooks where c.Equals (c.Substitution) select c.ID,
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
+          + "WHERE ((([t0].[FirstName] + ' ') + [t0].[Name]) = (([t1].[FirstName] + ' ') + [t1].[Name]))");
+    }
   }
 }

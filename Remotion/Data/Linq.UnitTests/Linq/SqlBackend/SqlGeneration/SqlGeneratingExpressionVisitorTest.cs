@@ -479,11 +479,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlLiteralExpression_Int ()
     {
-      var expression = new SqlLiteralExpression (1);
+      var expression = new SqlLiteralExpression (1000000000);
       SqlGeneratingExpressionVisitor.GenerateSql (
           expression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("1"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("1000000000"));
+    }
+
+    [Test]
+    public void VisitSqlLiteralExpression_Double ()
+    {
+      var expression = new SqlLiteralExpression (1.1);
+      SqlGeneratingExpressionVisitor.GenerateSql (
+          expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("1.1"));
     }
 
     [Test]

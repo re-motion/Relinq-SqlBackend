@@ -87,6 +87,7 @@
     <Compile Include="SqlGeneration\IDatabaseResultRow.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingOuterSelectExpressionVisitor.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingSelectExpressionVisitor.cs" />
+    <Compile Include="SqlPreparation\AttributeBasedMethodCallTransformerProvider.cs" />
     <Compile Include="SqlPreparation\FromExpressionInfo.cs" />
     <Compile Include="SqlPreparation\IMethodCallTransformer.cs" />
     <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="SqlGeneration\SqlCustomTextGeneratorExpressionBase.cs" />
     <Compile Include="SqlPreparation\IMethodCallTransformerProvider.cs" />
     <Compile Include="SqlPreparation\ISqlPreparationContext.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformerAttribute.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ConcatMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFreetextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFulltextMethodCallTransformer.cs" />

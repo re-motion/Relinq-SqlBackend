@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
@@ -136,10 +137,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Type == typeof (int))
-        _commandBuilder.Append (expression.Value.ToString());
-      else
+      if (expression.Type == typeof (string))
         _commandBuilder.AppendStringLiteral ((string) expression.Value);
+      else
+        _commandBuilder.Append (Convert.ToString (expression.Value, CultureInfo.InvariantCulture));
       return expression;
     }
 

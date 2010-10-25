@@ -29,10 +29,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     public SqlLiteralExpression (object value)
         : base (ArgumentUtility.CheckNotNull ("value", value).GetType())
     {
-      if ((Type != typeof (int)) && (Type != typeof (string)))
+      if ((Type != typeof (int)) && (Type != typeof (string)) && Type != typeof (double))
       {
         var message = string.Format ("SqlLiteralExpression does not support values of type '{0}'.", Type);
-        throw new ArgumentTypeException (message, "value", Type, typeof (int));
+        throw new ArgumentTypeException (message, "value", typeof (int), Type);
       }
       else
         _value = value;
