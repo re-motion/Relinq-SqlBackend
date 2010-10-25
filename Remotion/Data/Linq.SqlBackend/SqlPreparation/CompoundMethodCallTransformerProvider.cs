@@ -21,34 +21,38 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
-  public class MethodCallTransformerRegistry : IMethodCallTransformerRegistry
+  /// <summary>
+  /// Aggregates a number of <see cref="IMethodCallTransformerProvider"/> instances, checking each of them when the <see cref="GetTransformer"/>
+  /// is called, until one of them returns a <see cref="IMethodCallTransformer"/>.
+  /// </summary>
+  public class CompoundMethodCallTransformerProvider : IMethodCallTransformerProvider
   {
-    private readonly IMethodCallTransformerRegistry[] _registries;
+    private readonly IMethodCallTransformerProvider[] _providers;
 
-    public static MethodCallTransformerRegistry CreateDefault ()
+    public static CompoundMethodCallTransformerProvider CreateDefault ()
     {
       var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
       var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
-      return new MethodCallTransformerRegistry (methodInfoBasedRegistry, nameBasedRegistry);
+      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, nameBasedRegistry);
     }
 
-    public IMethodCallTransformerRegistry[] Registries
+    public IMethodCallTransformerProvider[] Providers
     {
-      get { return _registries; }
+      get { return _providers; }
     }
 
-    public MethodCallTransformerRegistry (params IMethodCallTransformerRegistry[] registries)
+    public CompoundMethodCallTransformerProvider (params IMethodCallTransformerProvider[] providers)
     {
-      ArgumentUtility.CheckNotNull ("registries", registries);
+      ArgumentUtility.CheckNotNull ("providers", providers);
 
-      _registries = registries;
+      _providers = providers;
     }
 
     public IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      return _registries
+      return _providers
         .Select (methodCallTransformerRegistry => methodCallTransformerRegistry.GetTransformer (methodCallExpression))
         .FirstOrDefault (transformer => transformer != null);
     }

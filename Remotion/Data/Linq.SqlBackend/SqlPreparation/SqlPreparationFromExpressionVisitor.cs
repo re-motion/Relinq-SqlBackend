@@ -38,17 +38,17 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         Expression fromExpression,
         ISqlPreparationStage stage,
         UniqueIdentifierGenerator generator,
-        IMethodCallTransformerRegistry registry,
+        IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, registry, context, tableGenerator);
+      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator);
       visitor.VisitExpression (fromExpression);
       if (visitor._fromExpressionInfo != null)
         return visitor._fromExpressionInfo.Value;
@@ -74,10 +74,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
-        IMethodCallTransformerRegistry registry,
+        IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
-        : base (context, stage, registry)
+        : base (context, stage, provider)
     {
       _generator = generator;
       _context = context;
@@ -101,7 +101,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, Stage, Registry);
+      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, Stage, MethodCallTransformerProvider);
 
       var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
@@ -146,7 +146,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
             groupJoinClause.JoinClause.InnerSequence,
             Stage,
             _generator,
-            Registry,
+            MethodCallTransformerProvider,
             _context,
             _tableGenerator);
 

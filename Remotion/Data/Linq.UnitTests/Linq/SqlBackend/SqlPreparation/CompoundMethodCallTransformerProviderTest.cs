@@ -25,23 +25,23 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   [TestFixture]
-  public class MethodCallTransformerRegistryTest
+  public class CompoundMethodCallTransformerProviderTest
   {
     [Test]
     public void CreateDefault ()
     {
-      var registry = MethodCallTransformerRegistry.CreateDefault();
+      var registry = CompoundMethodCallTransformerProvider.CreateDefault();
 
-      Assert.That (registry.Registries.Length, Is.EqualTo (2));
-      Assert.That (registry.Registries[0], Is.TypeOf (typeof (MethodInfoBasedMethodCallTransformerRegistry)));
-      Assert.That (registry.Registries[1], Is.TypeOf (typeof (NameBasedMethodCallTransformerRegistry)));
+      Assert.That (registry.Providers.Length, Is.EqualTo (2));
+      Assert.That (registry.Providers[0], Is.TypeOf (typeof (MethodInfoBasedMethodCallTransformerRegistry)));
+      Assert.That (registry.Providers[1], Is.TypeOf (typeof (NameBasedMethodCallTransformerRegistry)));
     }
 
     [Test]
     public void GetTransformer ()
     {
-      var registryMock = MockRepository.GenerateStrictMock<IMethodCallTransformerRegistry>();
-      var methodCallTransformerRegistry = new MethodCallTransformerRegistry (registryMock);
+      var registryMock = MockRepository.GenerateStrictMock<IMethodCallTransformerProvider>();
+      var methodCallTransformerRegistry = new CompoundMethodCallTransformerProvider (registryMock);
       var methodCallExpression = Expression.Call (
           Expression.Constant ("test"),
           typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }),

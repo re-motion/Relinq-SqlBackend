@@ -33,7 +33,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     private readonly IMappingResolver _mappingResolver;
     private readonly IQueryResultRetriever _resultRetriever;
     
-    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
+    private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider;
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
     private readonly bool _showQuery;
@@ -42,19 +42,19 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
         IMappingResolver mappingResolver,
         IQueryResultRetriever resultRetriever,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
-        MethodCallTransformerRegistry methodCallTransformerRegistry,
+        CompoundMethodCallTransformerProvider methodCallTransformerProvider,
         bool showQuery)
     {
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
       ArgumentUtility.CheckNotNull ("resultRetriever", resultRetriever);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("methodCallTransformerRegistry", methodCallTransformerRegistry);
+      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
 
       _mappingResolver = mappingResolver;
       _resultRetriever = resultRetriever;
 
       _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
-      _methodCallTransformerRegistry = methodCallTransformerRegistry;
+      _methodCallTransformerProvider = methodCallTransformerProvider;
 
       _showQuery = showQuery;
     }
@@ -95,7 +95,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       IMappingResolutionContext mappingResolutionContext = new MappingResolutionContext ();
 
       var generator = new UniqueIdentifierGenerator ();
-      var preparationStage = new DefaultSqlPreparationStage (_methodCallTransformerRegistry, _resultOperatorHandlerRegistry, generator);
+      var preparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
       var preparedStatement = preparationStage.PrepareSqlStatement (queryModel, preparationContext);
 
       var resolutionStage = new DefaultMappingResolutionStage (_mappingResolver, generator);

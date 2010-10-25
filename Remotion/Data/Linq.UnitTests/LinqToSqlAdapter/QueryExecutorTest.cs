@@ -141,7 +141,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
     private QueryExecutor CreateQueryExecutor(IQueryResultRetriever retrieverMock)
     {
-      return new QueryExecutor (_resolverStub, retrieverMock, ResultOperatorHandlerRegistry.CreateDefault (), MethodCallTransformerRegistry.CreateDefault (), false);
+      return new QueryExecutor (_resolverStub, retrieverMock, ResultOperatorHandlerRegistry.CreateDefault (), CompoundMethodCallTransformerProvider.CreateDefault (), false);
     }
 
     private static IQueryResultRetriever GetRetrieverMockStrict(IEnumerable<DataContextTestClass.Customer> fakeResult)

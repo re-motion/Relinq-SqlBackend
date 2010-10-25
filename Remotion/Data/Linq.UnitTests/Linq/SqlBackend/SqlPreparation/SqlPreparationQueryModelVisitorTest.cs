@@ -57,7 +57,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _generator = new UniqueIdentifierGenerator();
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
       _defaultStage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
+          CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
 
       _mainFromClause = ExpressionHelper.CreateMainFromClause_Cook();
       _selectClause = ExpressionHelper.CreateSelectClause (_mainFromClause);

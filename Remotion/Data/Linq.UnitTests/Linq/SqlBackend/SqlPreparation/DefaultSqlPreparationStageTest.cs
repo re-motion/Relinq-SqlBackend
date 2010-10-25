@@ -52,7 +52,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _querySourceReferenceExpression = new QuerySourceReferenceExpression (querySource);
 
       _stage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), new UniqueIdentifierGenerator());
+          CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), new UniqueIdentifierGenerator());
     }
 
     [Test]

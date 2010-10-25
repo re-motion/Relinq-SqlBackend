@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
     private readonly IQueryResultRetriever _retriever;
     
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
-    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry;
+    private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider;
     private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
     private readonly IQueryExecutor _executor;
@@ -56,7 +56,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       var methodBasedTransformerRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
       var nameBasedTransformerRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
 
-      _methodCallTransformerRegistry = new MethodCallTransformerRegistry (methodBasedTransformerRegistry, nameBasedTransformerRegistry);
+      _methodCallTransformerProvider = new CompoundMethodCallTransformerProvider (methodBasedTransformerRegistry, nameBasedTransformerRegistry);
       methodBasedTransformerRegistry.Register (
           typeof (SqlMethods).GetMethod ("Like", new[] { typeof (string), typeof (string) }), 
           new LikeMethodCallTransformer());
@@ -68,7 +68,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
       _nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
 
-      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerRegistry, true);
+      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, true);
     }
 
     public IQueryable<Product> Products

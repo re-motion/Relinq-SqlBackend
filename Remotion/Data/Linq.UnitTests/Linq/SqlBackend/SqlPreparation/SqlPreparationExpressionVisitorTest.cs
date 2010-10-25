@@ -47,7 +47,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     private QuerySourceReferenceExpression _cookQuerySourceReferenceExpression;
     private SqlTable _sqlTable;
     private ISqlPreparationStage _stageMock;
-    private IMethodCallTransformerRegistry _registry;
+    private IMethodCallTransformerProvider _methodCallTransformerProvider;
 
     [SetUp]
     public void SetUp ()
@@ -59,13 +59,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);
       _sqlTable = new SqlTable (source, JoinSemantics.Inner);
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (_cookMainFromClause), new SqlTableReferenceExpression (_sqlTable));
-      _registry = MethodCallTransformerRegistry.CreateDefault();
+      _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault();
     }
 
     [Test]
     public void VisitExpression ()
     {
-      var visitor = new TestableSqlPreparationExpressionVisitorTest (_context, _stageMock, _registry);
+      var visitor = new TestableSqlPreparationExpressionVisitorTest (_context, _stageMock, _methodCallTransformerProvider);
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
       _context.AddExpressionMapping (_cookQuerySourceReferenceExpression, tableReferenceExpression);
 
@@ -77,7 +77,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitQuerySourceReferenceExpression_CreatesSqlTableReferenceExpression ()
     {
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (_cookQuerySourceReferenceExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (_cookQuerySourceReferenceExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) result).SqlTable, Is.SameAs (_sqlTable));
@@ -88,7 +88,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitNotSupportedExpression_ThrowsNotImplentedException ()
     {
       var expression = new CustomExpression (typeof (int));
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.EqualTo (expression));
     }
@@ -110,7 +110,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.SameAs (fakeSqlStatement.SelectProjection));
     }
@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
@@ -154,7 +154,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
@@ -180,7 +180,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (fakeSqlStatement));
@@ -207,7 +207,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Expect (mock => mock.PrepareSqlStatement (querModel, _context))
           .Return (fakeSqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.EqualTo (expectedStatement));
@@ -222,7 +222,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (subStatementExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (subStatementExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.SameAs (subStatementExpression));
     }
@@ -238,7 +238,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var subStatementExpression = new SqlSubStatementExpression (sqlStatement);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (subStatementExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (subStatementExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.Not.SameAs (subStatementExpression));
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
@@ -251,7 +251,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberExpression = MemberExpression.MakeMemberAccess (
           Expression.Constant (new TypeForNewExpression (5)), typeof (TypeForNewExpression).GetField ("C"));
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.SameAs (memberExpression));
     }
@@ -262,7 +262,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberExpression = MemberExpression.MakeMemberAccess (
           Expression.Constant (new TypeForNewExpression (5)), typeof (TypeForNewExpression).GetProperty ("B"));
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.SameAs (memberExpression));
     }
@@ -273,7 +273,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var stringExpression = Expression.Constant ("test");
       var memberExpression = MemberExpression.MakeMemberAccess (stringExpression, typeof (String).GetProperty ("Length"));
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expectedResult = new SqlLengthExpression (stringExpression);
 
@@ -290,7 +290,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberInfo = typeof (TypeForNewExpression).GetProperty ("A");
       var memberExpression = Expression.MakeMemberAccess (conditionalExpression, memberInfo);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
       
       var expectedResult = Expression.Condition(
           testPredicate, Expression.MakeMemberAccess (thenValue, memberInfo), Expression.MakeMemberAccess (elseValue, memberInfo));
@@ -308,7 +308,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberInfo = typeof (string).GetProperty ("Length");
       var memberExpression = Expression.MakeMemberAccess (conditionalExpression, memberInfo);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expectedResult = Expression.Condition(testPredicate, new SqlLengthExpression (thenValue), new SqlLengthExpression (elseValue));
 
@@ -324,7 +324,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberInfo = typeof (TypeForNewExpression).GetProperty ("A");
       var memberExpression = Expression.MakeMemberAccess (coalesceExpression, memberInfo);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expectedResult = Expression.Condition (
           new SqlIsNotNullExpression (coalesceExpression.Left),
@@ -343,7 +343,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var memberInfo = typeof (string).GetProperty ("Length");
       var memberExpression = Expression.MakeMemberAccess (coalesceExpression, memberInfo);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expectedResult = Expression.Condition (
           new SqlIsNotNullExpression (coalesceExpression.Left), new SqlLengthExpression(coalesceExpression.Left), 
@@ -369,7 +369,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           .Return (fakeStatement);
       _stageMock.Replay();
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       _stageMock.VerifyAllExpectations();
 
@@ -384,7 +384,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitBinaryExpression ()
     {
       var binaryExpression = Expression.And (Expression.Constant (1), Expression.Constant (1));
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.SameAs (binaryExpression));
     }
@@ -393,7 +393,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitBinaryExpression_QuerySourceReferenceExpressionsOnBothSide ()
     {
       var binaryExpression = Expression.Equal (_cookQuerySourceReferenceExpression, _cookQuerySourceReferenceExpression);
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (SqlTableReferenceExpression)));
@@ -406,7 +406,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var leftExpression = Expression.Constant (null);
       var binaryExpression = Expression.Equal (leftExpression, _cookQuerySourceReferenceExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.TypeOf (typeof (SqlTableReferenceExpression)));
@@ -419,7 +419,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var rightExpression = Expression.Constant (null);
       var binaryExpression = Expression.Equal (leftExpression, rightExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNullExpression)));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (leftExpression));
@@ -432,7 +432,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var rightExpression = Expression.Constant ("1");
       var binaryExpression = Expression.NotEqual (leftExpression, rightExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (rightExpression));
@@ -445,7 +445,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var leftExpression = Expression.Constant ("1");
       var binaryExpression = Expression.NotEqual (leftExpression, rightExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlIsNotNullExpression)));
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (leftExpression));
@@ -457,7 +457,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var rightExpression = Expression.Constant (null);
       var binaryExpression = Expression.Coalesce (_cookQuerySourceReferenceExpression, rightExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (SqlTableReferenceExpression)));
@@ -470,7 +470,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var leftExpression = Expression.Constant (null);
       var binaryExpression = Expression.Coalesce (leftExpression, _cookQuerySourceReferenceExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
@@ -485,7 +485,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var ifFalseExpression = Expression.Constant ("false");
       var conditionalExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (ConditionalExpression)));
       Assert.That (((ConditionalExpression) result).Test, Is.EqualTo (testPredicate));
@@ -501,7 +501,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var ifFalseExpression = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
       var conditionalExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (ConditionalExpression)));
       Assert.That (((ConditionalExpression) result).Test, Is.TypeOf (typeof (ConditionalExpression)));
@@ -519,7 +519,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var rightExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
       var binaryExpression = Expression.Equal (leftExpression, rightExpression);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
@@ -537,7 +537,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var constantExpression = Expression.Constant ("Test");
       var methodCallExpression = Expression.Call (constantExpression, method);
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.TypeOf (typeof (SqlFunctionExpression)));
       Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("UPPER"));
@@ -555,7 +555,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var constantExpression = Expression.Constant ("Test");
       var methodCallExpression = Expression.Call (constantExpression, method);
 
-      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _registry);
+      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _methodCallTransformerProvider);
     }
 
     [Test]
@@ -607,7 +607,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
@@ -624,7 +624,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { Expression.Constant (0) });
 
-      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _registry);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));

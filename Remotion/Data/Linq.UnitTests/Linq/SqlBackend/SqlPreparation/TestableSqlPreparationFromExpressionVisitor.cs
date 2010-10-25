@@ -27,10 +27,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public TestableSqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
-        IMethodCallTransformerRegistry registry,
+        IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTableBase> tableGenerator)
-        : base (generator, stage, registry, context, tableGenerator)
+        : base (generator, stage, provider, context, tableGenerator)
     {
     }
 

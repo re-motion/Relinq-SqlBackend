@@ -94,7 +94,7 @@
     <Compile Include="SqlGeneration\SqlCompositeCustomTextGeneratorExpression.cs" />
     <Compile Include="SqlGeneration\SqlCustomTextExpression .cs" />
     <Compile Include="SqlGeneration\SqlCustomTextGeneratorExpressionBase.cs" />
-    <Compile Include="SqlPreparation\IMethodCallTransformerRegistry.cs" />
+    <Compile Include="SqlPreparation\IMethodCallTransformerProvider.cs" />
     <Compile Include="SqlPreparation\ISqlPreparationContext.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ConcatMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFreetextMethodCallTransformer.cs" />
@@ -160,7 +160,7 @@
     <Compile Include="SqlGeneration\CommandParameter.cs" />
     <Compile Include="SqlGeneration\DefaultSqlGenerationStage.cs" />
     <Compile Include="SqlGeneration\ISqlGenerationStage.cs" />
-    <Compile Include="SqlPreparation\MethodCallTransformerRegistry.cs" />
+    <Compile Include="SqlPreparation\CompoundMethodCallTransformerProvider.cs" />
     <Compile Include="SqlGeneration\SqlCommandData.cs" />
     <Compile Include="SqlGeneration\SqlCommandBuilder.cs" />
     <Compile Include="MappingResolution\SqlContextExpressionVisitor.cs" />

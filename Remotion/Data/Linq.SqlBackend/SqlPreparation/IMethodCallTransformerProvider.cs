@@ -20,9 +20,9 @@ using System.Linq.Expressions;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// Defines a common interface for all method call transformer registries.
+  /// Defines a common interface for classes yielding <see cref="IMethodCallTransformer"/> objects for <see cref="MethodCallExpression"/> instances.
   /// </summary>
-  public interface IMethodCallTransformerRegistry
+  public interface IMethodCallTransformerProvider
   {
     IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression);
   }

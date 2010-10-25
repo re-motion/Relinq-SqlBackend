@@ -44,7 +44,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void SetUp ()
     {
       _generator = new UniqueIdentifierGenerator ();
-      _stage = new DefaultSqlPreparationStage (new MethodCallTransformerRegistry (), new ResultOperatorHandlerRegistry (), _generator);
+      _stage = new DefaultSqlPreparationStage (new CompoundMethodCallTransformerProvider (), new ResultOperatorHandlerRegistry (), _generator);
       _handler = new SumResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {

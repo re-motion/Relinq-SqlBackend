@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="NameBasedMethodCallTransformerRegistry"/> is used to register method names and get <see cref="IMethodCallTransformer"/> instances.
   /// </summary>
-  public class NameBasedMethodCallTransformerRegistry : RegistryBase<NameBasedMethodCallTransformerRegistry, string, IMethodCallTransformer>, IMethodCallTransformerRegistry
+  public class NameBasedMethodCallTransformerRegistry : RegistryBase<NameBasedMethodCallTransformerRegistry, string, IMethodCallTransformer>, IMethodCallTransformerProvider
   {
     public IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression)
     {

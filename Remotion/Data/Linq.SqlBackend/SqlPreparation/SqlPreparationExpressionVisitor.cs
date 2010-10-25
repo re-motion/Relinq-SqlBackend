@@ -37,34 +37,34 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
-    private readonly IMethodCallTransformerRegistry _registry;
+    private readonly IMethodCallTransformerProvider _methodCallTransformerProvider;
 
     public static Expression TranslateExpression (
         Expression expression,
         ISqlPreparationContext context,
         ISqlPreparationStage stage,
-        IMethodCallTransformerRegistry registry)
+        IMethodCallTransformerProvider provider)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("provider", provider);
 
-      var visitor = new SqlPreparationExpressionVisitor (context, stage, registry);
+      var visitor = new SqlPreparationExpressionVisitor (context, stage, provider);
       var result = visitor.VisitExpression (expression);
       return result;
     }
 
     protected SqlPreparationExpressionVisitor (
-        ISqlPreparationContext context, ISqlPreparationStage stage, IMethodCallTransformerRegistry registry)
+        ISqlPreparationContext context, ISqlPreparationStage stage, IMethodCallTransformerProvider provider)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("registry", registry);
+      ArgumentUtility.CheckNotNull ("provider", provider);
 
       _context = context;
       _stage = stage;
-      _registry = registry;
+      _methodCallTransformerProvider = provider;
     }
 
     protected ISqlPreparationContext Context
@@ -77,9 +77,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       get { return _stage; }
     }
 
-    protected IMethodCallTransformerRegistry Registry
+    protected IMethodCallTransformerProvider MethodCallTransformerProvider
     {
-      get { return _registry; }
+      get { return _methodCallTransformerProvider; }
     }
 
     public override Expression VisitExpression (Expression expression)
@@ -181,7 +181,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         if (methodInfo != null)
         {
           var methodCallExpression = Expression.Call (expression.Expression, methodInfo);
-          var tranformer = _registry.GetTransformer(methodCallExpression);
+          var tranformer = _methodCallTransformerProvider.GetTransformer(methodCallExpression);
           if (tranformer != null)
           {
             var tranformedExpression = tranformer.Transform (methodCallExpression);
@@ -222,7 +222,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var transformer = _registry.GetTransformer(expression);
+      var transformer = _methodCallTransformerProvider.GetTransformer(expression);
       if (transformer != null)
       {
         var transformedExpression = transformer.Transform (expression);

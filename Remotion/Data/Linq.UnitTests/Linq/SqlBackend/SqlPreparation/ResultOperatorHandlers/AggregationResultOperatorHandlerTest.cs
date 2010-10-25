@@ -43,7 +43,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void SetUp ()
     {
       _generator = new UniqueIdentifierGenerator ();
-      _stageMock = new DefaultSqlPreparationStage(MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
+      _stageMock = new DefaultSqlPreparationStage(CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new TestableAggregationResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
