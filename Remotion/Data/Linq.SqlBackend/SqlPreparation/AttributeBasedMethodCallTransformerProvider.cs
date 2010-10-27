@@ -17,11 +17,12 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// Retrieves <see cref="IMethodCallTransformer"/> instances based on the <see cref="MethodCallTransformerAttribute"/>.
+  /// Retrieves <see cref="IMethodCallTransformer"/> instances based on an attribute implementing <see cref="IMethodCallTransformerAttribute"/>.
   /// </summary>
   public class AttributeBasedMethodCallTransformerProvider : IMethodCallTransformerProvider
   {
@@ -29,24 +30,19 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
 
-      var attribute = 
-          (MethodCallTransformerAttribute) Attribute.GetCustomAttribute (methodCallExpression.Method, typeof (MethodCallTransformerAttribute), true);
-
-      if (attribute == null)
+      var attributes = methodCallExpression.Method.GetCustomAttributes (typeof (IMethodCallTransformerAttribute), true);
+      if (attributes.Length == 0)
         return null;
 
-      try
-      {
-        var transformer = (IMethodCallTransformer) Activator.CreateInstance (attribute.TransformerType);
-        return transformer;
-      }
-      catch (MissingMethodException ex)
-      {
-        var message = string.Format (
-            "The method call transformer '{0}' has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.", 
-            attribute.TransformerType);
-        throw new MissingMethodException (message, ex);
-      }
+      if (attributes.Length == 1)
+        return ((IMethodCallTransformerAttribute) attributes[0]).GetTransformer();
+
+      var message = string.Format (
+          "The method '{0}.{1}' is attributed with more than one IMethodCallTransformerAttribute: {2}. Only one such attribute is allowed.", 
+          methodCallExpression.Method.DeclaringType,
+          methodCallExpression.Method.Name,
+          SeparatedStringBuilder.Build (", ", attributes.Select (a => a.GetType().Name).OrderBy (name => name)));
+      throw new NotSupportedException (message);
     }
   }
 }

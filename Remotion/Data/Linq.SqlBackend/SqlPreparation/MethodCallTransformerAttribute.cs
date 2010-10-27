@@ -26,7 +26,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
   /// by <see cref="MethodInfo"/>, but it is evaluated before a transformer is searched by name.
   /// </summary>
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-  public class MethodCallTransformerAttribute : Attribute
+  public class MethodCallTransformerAttribute : Attribute, IMethodCallTransformerAttribute
   {
     private readonly Type _transformerType;
 
@@ -54,6 +54,25 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public Type TransformerType
     {
       get { return _transformerType; }
+    }
+
+    /// <summary>
+    /// Gets the transformer identified by this <see cref="MethodCallTransformerAttribute"/>.
+    /// </summary>
+    /// <returns>An instance of the <see cref="TransformerType"/>.</returns>
+    public IMethodCallTransformer GetTransformer ()
+    {
+      try
+      {
+        return (IMethodCallTransformer) Activator.CreateInstance (TransformerType);
+      }
+      catch (MissingMethodException ex)
+      {
+        var message = string.Format (
+            "The method call transformer '{0}' has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.", 
+            TransformerType);
+        throw new MissingMethodException (message, ex);
+      }
     }
   }
 }

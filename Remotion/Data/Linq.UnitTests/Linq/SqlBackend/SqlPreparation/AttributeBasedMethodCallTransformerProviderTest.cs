@@ -27,12 +27,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   [TestFixture]
   public class AttributeBasedMethodCallTransformerProviderTest
   {
+    private AttributeBasedMethodCallTransformerProvider _provider;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _provider = new AttributeBasedMethodCallTransformerProvider ();
+    }
+
     [Test]
     public void GetTransformer_NonAttributedMethod ()
     {
       var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression<Cook, string> (c => c.ToString ());
 
-      var result = new AttributeBasedMethodCallTransformerProvider ().GetTransformer (methodCallExpression);
+      var result = _provider.GetTransformer (methodCallExpression);
       
       Assert.That (result, Is.Null);
     }
@@ -42,7 +50,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression<Cook, string> (c => c.GetFullName());
 
-      var result = new AttributeBasedMethodCallTransformerProvider ().GetTransformer (methodCallExpression);
+      var result = _provider.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (Cook.FullNameTransformer)));
@@ -53,42 +61,35 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var methodCallExpression = Expression.Call (Expression.Constant (null, typeof (Chef)), typeof (Chef).GetMethod ("GetFullName"));
 
-      var result = new AttributeBasedMethodCallTransformerProvider ().GetTransformer (methodCallExpression);
+      var result = _provider.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (Cook.FullNameTransformer)));
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = 
-        "The method call transformer "
-        + "'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest+TransformerWithoutPublicDefaultCtor' "
-        + "has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.")]
-    public void GetTransformer_AttributedMethod_NoCtor ()
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "The method 'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.Invalid' is "
+        + "attributed with more than one IMethodCallTransformerAttribute: MethodCallTransformer2Attribute, MethodCallTransformerAttribute. Only one "
+        + "such attribute is allowed.")]
+    public void GetTransformer_TooManyAttributes ()
     {
-      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression (() => Invalid ());
+      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression (() => Invalid());
 
-      var result = new AttributeBasedMethodCallTransformerProvider ().GetTransformer (methodCallExpression);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameTransformer)));
+      _provider.GetTransformer (methodCallExpression);
     }
 
-    [MethodCallTransformer (typeof (TransformerWithoutPublicDefaultCtor))]
+    [MethodCallTransformer (typeof (Cook.FullNameTransformer))]
+    [MethodCallTransformer2 (typeof (Cook.FullNameTransformer))]
     private string Invalid ()
     {
-      return null;
+      throw new NotImplementedException();
     }
 
-    class TransformerWithoutPublicDefaultCtor : IMethodCallTransformer
-    {
-      private TransformerWithoutPublicDefaultCtor ()
+    class MethodCallTransformer2Attribute : MethodCallTransformerAttribute {
+      public MethodCallTransformer2Attribute (Type transformerType)
+          : base(transformerType)
       {
-      }
-
-      public Expression Transform (MethodCallExpression methodCallExpression)
-      {
-        throw new NotImplementedException();
       }
     }
   }
