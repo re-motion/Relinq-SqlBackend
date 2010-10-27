@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
@@ -38,7 +37,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The method call transformer "
         + "'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformerAttributeTest+TransformerWithoutPublicDefaultCtor' "
         + "has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.")]

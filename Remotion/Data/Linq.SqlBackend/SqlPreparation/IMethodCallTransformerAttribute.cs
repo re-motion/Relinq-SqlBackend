@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
@@ -28,6 +30,10 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     /// Gets the transformer identified by this <see cref="IMethodCallTransformerAttribute"/>.
     /// </summary>
     /// <returns>An instance of the <see cref="MethodCallTransformerAttribute.TransformerType"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// There was an error when instantiating the transformer. The exception message describes the problem. The 
+    /// <see cref="AttributeBasedMethodCallTransformerProvider"/> wraps this exception.
+    /// </exception>
     IMethodCallTransformer GetTransformer ();
   }
 }

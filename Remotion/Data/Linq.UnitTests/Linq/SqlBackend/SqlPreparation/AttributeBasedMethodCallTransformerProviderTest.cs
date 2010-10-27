@@ -69,27 +69,52 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The method 'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.Invalid' is "
+        "The method 'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.TooManyAttributes' is "
         + "attributed with more than one IMethodCallTransformerAttribute: MethodCallTransformer2Attribute, MethodCallTransformerAttribute. Only one "
         + "such attribute is allowed.")]
     public void GetTransformer_TooManyAttributes ()
     {
-      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression (() => Invalid());
+      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression (() => TooManyAttributes());
 
+      _provider.GetTransformer (methodCallExpression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The method "
+        + "'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.ThrowingTransformer' "
+        + "cannot be transformed to SQL. Exception thrown in GetTransformer")]
+    public void GetTransformer_ErrorInstantiatingTransformer ()
+    {
+      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression (() => ThrowingTransformer());
       _provider.GetTransformer (methodCallExpression);
     }
 
     [MethodCallTransformer (typeof (Cook.FullNameTransformer))]
     [MethodCallTransformer2 (typeof (Cook.FullNameTransformer))]
-    private string Invalid ()
+    private string TooManyAttributes ()
     {
       throw new NotImplementedException();
     }
 
-    class MethodCallTransformer2Attribute : MethodCallTransformerAttribute {
+    [ThrowingMethodCallTransformer]
+    private string ThrowingTransformer ()
+    {
+      throw new NotImplementedException ();
+    }
+
+    private class MethodCallTransformer2Attribute : MethodCallTransformerAttribute {
       public MethodCallTransformer2Attribute (Type transformerType)
           : base(transformerType)
       {
+      }
+    }
+
+    private class ThrowingMethodCallTransformerAttribute : Attribute, IMethodCallTransformerAttribute
+    {
+      public IMethodCallTransformer GetTransformer ()
+      {
+        throw new InvalidOperationException ("Exception thrown in GetTransformer");
       }
     }
   }

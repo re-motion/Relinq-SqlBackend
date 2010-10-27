@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
 
@@ -35,7 +36,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         return null;
 
       if (attributes.Length == 1)
-        return ((IMethodCallTransformerAttribute) attributes[0]).GetTransformer();
+        return GetTransformer ((IMethodCallTransformerAttribute) attributes[0], methodCallExpression.Method);
 
       var message = string.Format (
           "The method '{0}.{1}' is attributed with more than one IMethodCallTransformerAttribute: {2}. Only one such attribute is allowed.", 
@@ -43,6 +44,23 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
           methodCallExpression.Method.Name,
           SeparatedStringBuilder.Build (", ", attributes.Select (a => a.GetType().Name).OrderBy (name => name)));
       throw new NotSupportedException (message);
+    }
+
+    private IMethodCallTransformer GetTransformer (IMethodCallTransformerAttribute attribute, MethodInfo methodInfo)
+    {
+      try
+      {
+        return attribute.GetTransformer ();
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = string.Format (
+            "The method '{0}.{1}' cannot be transformed to SQL. {2}", 
+            methodInfo.DeclaringType, 
+            methodInfo.Name, 
+            ex.Message);
+        throw new InvalidOperationException (message, ex);
+      }
     }
   }
 }

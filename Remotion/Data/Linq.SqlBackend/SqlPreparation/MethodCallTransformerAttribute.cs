@@ -71,7 +71,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
         var message = string.Format (
             "The method call transformer '{0}' has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.", 
             TransformerType);
-        throw new MissingMethodException (message, ex);
+        throw new InvalidOperationException (message, ex);
       }
     }
   }
