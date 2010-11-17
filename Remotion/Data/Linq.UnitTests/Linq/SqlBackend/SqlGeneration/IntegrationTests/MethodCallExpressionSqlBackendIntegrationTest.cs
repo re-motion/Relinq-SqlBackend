@@ -258,7 +258,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t'),
-          "SELECT CASE WHEN (LEN(@1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
+          "SELECT CASE WHEN ((LEN((@1 + '#')) - 1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 't')
           );
@@ -276,7 +276,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
@@ -300,7 +300,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2, 5),
-          "SELECT CASE WHEN ((LEN(@1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 "
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 "
           + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),

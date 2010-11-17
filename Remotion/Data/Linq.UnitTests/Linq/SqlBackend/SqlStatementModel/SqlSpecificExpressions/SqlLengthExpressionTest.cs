@@ -39,10 +39,33 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpec
     }
 
     [Test]
-    public void Initialization ()
+    public void Initialization_String ()
     {
-      Assert.That (_lengthExpression.Type, Is.EqualTo(typeof (int)));
-      Assert.That (_lengthExpression.Expression, Is.SameAs (_innerExpression));
+      var stringExpression = Expression.Constant ("test");
+      var lengthExpression = new SqlLengthExpression (stringExpression);
+
+      Assert.That (lengthExpression.Expression, Is.SameAs (stringExpression));
+      Assert.That (lengthExpression.Type, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
+    public void Initialization_Char ()
+    {
+      var charExpression = Expression.Constant ('t');
+      var lengthExpression = new SqlLengthExpression (charExpression);
+
+      Assert.That (lengthExpression.Expression, Is.SameAs (charExpression));
+      Assert.That (lengthExpression.Type, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "SqlLengthExpression can only be used on values of type 'System.String' or 'System.Char', not on 'System.Int32'. (Add a conversion if you need "
+        + "to get the string length of a non-string value.)\r\nParameter name: expression")]
+    public void Initialization_OtherType ()
+    {
+      var intExpression = Expression.Constant (0);
+      new SqlLengthExpression (intExpression);
     }
 
     [Test]

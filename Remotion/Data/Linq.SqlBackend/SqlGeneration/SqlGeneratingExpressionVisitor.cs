@@ -244,24 +244,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      Expression newExpression;
-      if (expression.Expression.Type == typeof (string))
-      {
-        newExpression =
-            Expression.Subtract (
-                new SqlFunctionExpression (
-                    typeof (int),
-                    "LEN",
-                    Expression.Add (
-                        expression.Expression,
-                        new SqlLiteralExpression ("#"),
-                        typeof (string).GetMethod ("Concat", new[] { typeof (char), typeof (string) }))),
-                new SqlLiteralExpression (1));
-      }
-      else
-      {
-        newExpression = new SqlFunctionExpression (typeof (int), "LEN", expression.Expression);
-      }
+      // Since the SQL LEN function ignores trailing blanks, we add one character and subtract 1 from the result.
+      // LEN (x + '#') - 1
+
+      var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (object), typeof (object) });
+      var extendedString = Expression.Add (
+          expression.Expression.Type == typeof (char) ? Expression.Convert (expression.Expression, typeof (object)) : expression.Expression,
+          new SqlLiteralExpression ("#"),
+          concatMethod);
+
+      var newExpression = Expression.Subtract (new SqlFunctionExpression (typeof (int), "LEN", extendedString), new SqlLiteralExpression (1));
       return VisitExpression (newExpression);
     }
 

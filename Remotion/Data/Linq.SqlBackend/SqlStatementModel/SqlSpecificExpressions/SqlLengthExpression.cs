@@ -35,6 +35,14 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      if (expression.Type != typeof (string) && expression.Type != typeof (char))
+      {
+        throw new ArgumentException (
+            "SqlLengthExpression can only be used on values of type 'System.String' or 'System.Char', not on '" + expression.Type
+            + "'. (Add a conversion if you need to get the string length of a non-string value.)",
+            "expression");
+      }
+
       _expression = expression;
     }
 

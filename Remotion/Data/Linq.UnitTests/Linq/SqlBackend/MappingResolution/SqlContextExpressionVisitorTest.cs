@@ -925,12 +925,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlLengthExpression ()
     {
-      var expression = new SqlLengthExpression (Expression.Constant (true));
-      var expectedResult = new SqlLengthExpression (new ConvertedBooleanExpression (Expression.Constant (1)));
+      var expression = new SqlLengthExpression (Expression.Constant ("test"));
 
       var result = _predicateRequiredVisitor.VisitSqlLengthExpression (expression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      Assert.That (result, Is.SameAs (expression));
     }
 
     [Test]
