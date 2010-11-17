@@ -153,7 +153,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
                     "Could not execute batch command from row {0} to row {1}{2}. (Error message: {3})",
                     command.StartRowNumber,
                     command.EndRowNumber,
-                    !string.IsNullOrEmpty(_fileName) ? " in file '"+_fileName+"'" : string.Empty,
+                    !string.IsNullOrEmpty (_fileName) ? " in file '" + _fileName + "'" : string.Empty,
                     ex.Message),
                 ex);
           }
