@@ -33,6 +33,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    public void SelectMany_WithoutResultSelector ()
+    {
+      CheckQuery (
+          Cooks.SelectMany (c => Kitchens).Select (k => k.ID),
+          "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1]");
+    }
+
+    [Test]
     public void SimpleAdditionalFromClause_ThreeTables ()
     {
       CheckQuery (
