@@ -44,6 +44,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
       _generator = generator;
     }
 
+    public IMethodCallTransformerProvider MethodCallTransformerProvider
+    {
+      get { return _methodCallTransformerProvider; }
+    }
+
+    public ResultOperatorHandlerRegistry ResultOperatorHandlerRegistry
+    {
+      get { return _resultOperatorHandlerRegistry; }
+    }
+
     public virtual Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context)
     {
       return PrepareExpression (expression, context);
