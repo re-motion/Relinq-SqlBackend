@@ -17,11 +17,10 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.VisualBasic.CompilerServices;
 using NUnit.Framework;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -31,17 +30,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     [Test]
     public void VBCompareStringExpression ()
     {
-      var query = from c in Cooks select c.Name;
-      var queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      var parameterExpression = Expression.Parameter (typeof (Cook), "c");
       var vbCompareStringExpression =
-          new VBStringComparisonExpression (Expression.Equal (Expression.Constant ("string1"), Expression.Constant ("string2")), true);
-      queryModel.BodyClauses.Add (new WhereClause (vbCompareStringExpression));
+          Expression.Equal (
+              Expression.Call (
+                  typeof (Operators).GetMethod ("CompareString"), 
+                  Expression.Constant ("string1"), 
+                  Expression.MakeMemberAccess (parameterExpression, typeof (Cook).GetProperty ("Name")), 
+                  Expression.Constant (true)),
+              Expression.Constant (0));
+      var query = Cooks
+          .Where (Expression.Lambda<Func<Cook, bool>> (vbCompareStringExpression, parameterExpression))
+          .Select (c => c.Name);
 
       CheckQuery (
-          queryModel,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = @2)",
-          new CommandParameter ("@1", "string1"),
-          new CommandParameter ("@2", "string2"));
+          query,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = [t0].[Name])",
+          new CommandParameter ("@1", "string1"));
     }
   }
 }
