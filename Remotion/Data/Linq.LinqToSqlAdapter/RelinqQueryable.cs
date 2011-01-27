@@ -25,8 +25,8 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
   /// </summary>
   public class RelinqQueryable<T> : QueryableBase<T>
   {
-    public RelinqQueryable (IQueryExecutor executor, MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
-        : base (new DefaultQueryProvider (typeof (RelinqQueryable<>), executor, nodeTypeRegistry))
+    public RelinqQueryable (IQueryExecutor executor, IQueryParser queryParser)
+        : base (new DefaultQueryProvider (typeof (RelinqQueryable<>), executor, queryParser))
     {
     }
 

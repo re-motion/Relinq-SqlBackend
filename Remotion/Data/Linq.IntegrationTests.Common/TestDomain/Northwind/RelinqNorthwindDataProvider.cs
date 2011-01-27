@@ -40,8 +40,8 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
     
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
     private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider;
-    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
+    private readonly QueryParser _queryParser;
     private readonly IQueryExecutor _executor;
 
     public RelinqNorthwindDataProvider ()
@@ -65,8 +65,8 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       foreach (var userDefinedFunction in _context.GetType ().GetMethods ().Where (mi => mi.IsDefined (typeof (FunctionAttribute), false)))
         methodBasedTransformerRegistry.Register (userDefinedFunction, new UserDefinedFunctionTransformer ());
 
-      _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
-      _nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
+      _queryParser = QueryParser.CreateDefault();
+      _queryParser.NodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
 
       _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, true);
     }
@@ -173,7 +173,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private IQueryable<T> CreateQueryable<T> ()
     {
-      return new RelinqQueryable<T> (_executor, _nodeTypeRegistry);
+      return new RelinqQueryable<T> (_executor, _queryParser);
     }
   }
 }
