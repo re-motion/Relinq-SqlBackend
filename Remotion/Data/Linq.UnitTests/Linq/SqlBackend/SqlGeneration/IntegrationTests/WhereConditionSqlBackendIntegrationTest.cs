@@ -77,7 +77,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO RM-3656")]
     public void InvocationExpression_WithCustomExpressions ()
     {
       Expression<Func<Cook, bool>> predicate1 = c => c.ID > 100;
@@ -93,7 +92,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           predicate1.Parameters);
       
       CheckQuery (
-          Cooks.Where (combinedPredicate),
+          Cooks.Where (combinedPredicate).Select (c => c.FirstName),
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[ID] > @1) AND ([t0].[Name] IS NOT NULL))",
           new CommandParameter ("@1", 100)
           );
