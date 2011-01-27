@@ -115,13 +115,14 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.vb" />
     <Compile Include="LinqSamples101\StoredProceduresTests.vb" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.vb" />
-    <Compile Include="LinqSamples101\TestBase.vb" />
+    <Compile Include="TestBase.vb" />
     <Compile Include="LinqSamples101\TopBottomTests.vb" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.vb" />
     <Compile Include="LinqSamples101\UserDefinedFunctionsTests.vb" />
     <Compile Include="LinqSamples101\VBSamplesOnlyTests.vb" />
     <Compile Include="LinqSamples101\ViewTests.vb" />
     <Compile Include="LinqSamples101\WhereTests.vb" />
+    <Compile Include="MiscTests\IsNothingTests.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -130,6 +131,8 @@
     <None Include="Data.Linq.IntegrationTests.VisualBasic.build">
       <SubType>Designer</SubType>
     </None>
+    <EmbeddedResource Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingMethod.result" />
+    <EmbeddedResource Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingOperator.result" />
     <None Include="My Project\AssemblyInfoTemplate.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>

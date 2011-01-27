@@ -31,27 +31,35 @@
 'You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 'the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-Imports Remotion.Data.Linq.IntegrationTests.Common
+Option Infer On
+Option Strict On
+
+Imports NUnit.Framework
+
 Imports System.Reflection
+Imports Remotion.Data.Linq.IntegrationTests.Common
 
-Public Class TestBase
-  Inherits AbstractTestBase
 
-  ' VB will not add the folder structure to the resource file name when embedding a resource
-  ' The desired resource name is: Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TestClass.TestMethod.result
-  ' This is achieved by putting a file called "LinqSamples101.Resources.TestClass.TestMethod.result" into the LinqSamples101\Resources folder
-  Protected Overrides ReadOnly Property SavedResourceFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
-    Get
-      Return Function(method As MethodBase) _
-               "LinqSamples101.Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
-    End Get
-  End Property
+Namespace MiscTests
+  <TestFixture()> _
+  Public Class IsNothingTests
+    Inherits TestBase
 
-  ' When loading the resource, we must specify the full name as described above
-  Protected Overrides ReadOnly Property LoadedResourceNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
-    Get
-      Return Function(method As MethodBase) _
-               method.DeclaringType.Namespace & ".Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
-    End Get
-  End Property
-End Class
+    <Test()> _
+    <Ignore("TODO 3573: Provide an automatic transformation for VB's Information.IsNothing handler")> _
+    Public Sub IsNothingMethod()
+      Dim empQuery = From emp In DB.Employees _
+            Where IsNothing(emp.ReportsTo)
+
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test()> _
+    Public Sub IsNothingOperator()
+      Dim empQuery = From emp In DB.Employees _
+            Where emp.ReportsTo Is Nothing
+
+      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
+    End Sub
+  End Class
+End Namespace
