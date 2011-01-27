@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -25,7 +26,7 @@ using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
   [TestFixture]
-  public class VBStringComparisonSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
+  public class VBSpecificSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
     public void VBCompareStringExpression ()
@@ -47,6 +48,23 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           query,
           "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (@1 = [t0].[Name])",
           new CommandParameter ("@1", "string1"));
+    }
+
+    [Test]
+    public void InformationIsNothingCall ()
+    {
+      var parameterExpression = Expression.Parameter (typeof (Cook), "c");
+      var vbCompareStringExpression =
+            Expression.Call (
+                typeof (Information).GetMethod ("IsNothing"),
+                Expression.MakeMemberAccess (parameterExpression, typeof (Cook).GetProperty ("Name")));
+      var query = Cooks
+          .Where (Expression.Lambda<Func<Cook, bool>> (vbCompareStringExpression, parameterExpression))
+          .Select (c => c.Name);
+
+      CheckQuery (
+          query,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NULL)");
     }
   }
 }
