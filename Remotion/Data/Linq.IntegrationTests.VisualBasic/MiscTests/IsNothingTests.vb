@@ -46,7 +46,6 @@ Namespace MiscTests
     Inherits TestBase
 
     <Test()> _
-    <Ignore("TODO 3573: Provide an automatic transformation for VB's Information.IsNothing handler")> _
     Public Sub IsNothingMethod()
       Dim empQuery = From emp In DB.Employees _
             Where IsNothing(emp.ReportsTo)
