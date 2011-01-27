@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -60,6 +62,40 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           from c in Cooks where c.FirstName == "hugo" select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1)",
           new CommandParameter ("@1", "hugo")
+          );
+    }
+
+    [Test]
+    [Ignore ("TODO RM-3656")]
+    public void InvocationExpression_Inline ()
+    {
+      CheckQuery (
+          Cooks.Where (c => ((Func<Cook, bool>) (c1 => c1.Name != null)) (c)).Select (c => c.FirstName),
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
+          new CommandParameter ("@1", "hugo")
+          );
+    }
+
+    [Test]
+    [Ignore ("TODO RM-3656")]
+    public void InvocationExpression_WithCustomExpressions ()
+    {
+      Expression<Func<Cook, bool>> predicate1 = c => c.ID > 100;
+      Expression<Func<Cook, bool>> predicate2 = c => c.Name != null;
+
+      // c => c.ID > 100 && ((c1 => c1.Name != null) (c))
+      var combinedPredicate = 
+          Expression.Lambda<Func<Cook, bool>> (
+              Expression.AndAlso (
+                  predicate1.Body,
+                  Expression.Invoke (predicate2, predicate1.Parameters.Cast<Expression>())
+              ),
+          predicate1.Parameters);
+      
+      CheckQuery (
+          Cooks.Where (combinedPredicate),
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[ID] > @1) AND ([t0].[Name] IS NOT NULL))",
+          new CommandParameter ("@1", 100)
           );
     }
 
