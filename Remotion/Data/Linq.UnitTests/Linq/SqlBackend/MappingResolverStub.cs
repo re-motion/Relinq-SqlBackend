@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
@@ -151,6 +150,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "RestaurantID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubKitchenID", false),
+                CreateColumn (typeof (DateTime?), tableInfo.TableAlias, "LastCleaningDay", false),
             });
       }
       else if (type == typeof (Restaurant))
@@ -246,6 +246,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
             return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
           case "Name":
           case "RoomNumber":
+          case "LastCleaningDay":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Cook":
           case "Restaurant":
