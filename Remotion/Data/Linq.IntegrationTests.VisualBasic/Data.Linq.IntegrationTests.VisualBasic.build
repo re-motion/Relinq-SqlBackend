@@ -183,7 +183,8 @@
       <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere06.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere06.result"/>
       <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere07.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere07.result"/>
       <arg value="/res:LinqSamples101/Resources/LinqSamples101.Resources.WhereTests.LinqToSqlWhere08.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.WhereTests.LinqToSqlWhere08.result"/>
-
+      <arg value="/res:MiscTests/Resources/MiscTests.Resources.IsNothingTests.IsNothingMethod.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.MiscTests.Resources.IsNothingTests.IsNothingMethod.result"/>
+      <arg value="/res:MiscTests/Resources/MiscTests.Resources.IsNothingTests.IsNothingOperator.result,Remotion.Data.Linq.IntegrationTests.VisualBasic.MiscTests.Resources.IsNothingTests.IsNothingOperator.result"/>
     </vbc>
 
     <copy file="../Linq.IntegrationTests.Common/App.config" tofile="${build.test.outputdir}/Remotion.Data.Linq.IntegrationTests.VisualBasic.dll.config" overwrite="true" />
