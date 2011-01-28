@@ -66,14 +66,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO RM-3656")]
     public void InvocationExpression_Inline ()
     {
       CheckQuery (
           Cooks.Where (c => ((Func<Cook, bool>) (c1 => c1.Name != null)) (c)).Select (c => c.FirstName),
-          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
-          new CommandParameter ("@1", "hugo")
-          );
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] IS NOT NULL)");
     }
 
     [Test]
