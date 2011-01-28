@@ -83,7 +83,6 @@ Namespace LinqSamples101
 
     'This sample uses Sum to find the total number of units on order over all Products.
     <Test()> _
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
     Public Sub LinqToSqlCount04()
       Dim totalUnits = (From prod In DB.Products _
               Select CInt(prod.UnitsOnOrder.Value)).Sum()

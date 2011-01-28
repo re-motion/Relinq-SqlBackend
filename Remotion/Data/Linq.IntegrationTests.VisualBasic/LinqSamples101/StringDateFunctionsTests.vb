@@ -210,7 +210,7 @@ Namespace LinqSamples101
     'This sample uses the DateTime's Year property to
     'find Orders placed in 1997.
     <Test()> _
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
+    <Ignore("RM-3702: Support DateTime properties")> _
     Public Sub LinqToSqlString16()
       Dim ordersIn97 = From ord In DB.Orders _
             Where ord.OrderDate.Value.Year = 1997
@@ -221,7 +221,7 @@ Namespace LinqSamples101
     'This sample uses the DateTime's Month property to
     'find Orders placed in December.
     <Test()> _
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
+    <Ignore("RM-3702: Support DateTime properties")> _
     Public Sub LinqToSqlString17()
       Dim decemberOrders = From ord In DB.Orders _
             Where ord.OrderDate.Value.Month = 12
@@ -232,7 +232,7 @@ Namespace LinqSamples101
     'This sample uses the DateTime's Day property to
     'find Orders placed on the 31st day of the month.
     <Test()> _
-    <Ignore("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")> _
+    <Ignore("RM-3702: Support DateTime properties")> _
     Public Sub LinqToSqlString18()
       Dim ordQuery = From ord In DB.Orders _
             Where ord.OrderDate.Value.Day = 31

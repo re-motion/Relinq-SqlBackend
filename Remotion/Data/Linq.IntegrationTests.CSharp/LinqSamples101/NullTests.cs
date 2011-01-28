@@ -26,7 +26,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Nullable{T}.HasValue to find Employees that do not report to another Employee.
     /// </summary>
     [Test]
-    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlNull02()
     {
       var q =
@@ -42,7 +41,6 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// return the EmployeeID number of that employee. Note that the .Value is optional.
     /// </summary>
     [Test]
-    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
     public void LinqToSqlNull03 ()
     {
       var q =

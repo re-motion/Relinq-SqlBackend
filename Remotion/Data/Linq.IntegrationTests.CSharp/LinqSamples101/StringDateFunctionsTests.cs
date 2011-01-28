@@ -258,7 +258,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Year property to find Orders placed in 1997.
     /// </summary>
     [Test]
-    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
+    [Ignore ("RM-3702: Support DateTime properties")]
     public void LinqToSqlString16 ()
     {
       var q =
@@ -273,7 +273,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Month property to find Orders placed in December.
     /// </summary>
     [Test]
-    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
+    [Ignore ("RM-3702: Support DateTime properties")]
     public void LinqToSqlString17 ()
     {
       var q =
@@ -288,7 +288,7 @@ namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses the DateTime's Day property to find Orders placed on the 31st day of the month.
     /// </summary>
     [Test]
-    [Ignore ("RM-3268: Support for Nullable<T>.HasValue and Nullable<T>.Value")]
+    [Ignore ("RM-3702: Support DateTime properties")]
     public void LinqToSqlString18 ()
     {
       var q =
