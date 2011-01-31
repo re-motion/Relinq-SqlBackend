@@ -338,5 +338,21 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
           + "CROSS APPLY (SELECT TOP (10) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID] FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[AssistedID])) AS [q0] "
           + "WHERE ([q0].[LetterOfRecommendation] IS NOT NULL)");
     }
+
+    [Test]
+    [Ignore ("TODO 3474")]
+    public void ConstantReferenceToOtherQuery ()
+    {
+      var query1 = from c in Cooks select c.ID;
+      var query2 = from k in Kitchens where query1.Contains (k.Cook.ID) select k.ID;
+
+      // Handle this as if someone had written: from k in Kitchens where (from c in Cooks select c).Contains (k.Cook) select k.ID;
+
+      CheckQuery (
+          query2,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "WHERE [t0].[CookID] IN (SELECT [t1].[ID] FROM [CookTable] AS [t1]) AS [q2]");
+    }
   }
 }
