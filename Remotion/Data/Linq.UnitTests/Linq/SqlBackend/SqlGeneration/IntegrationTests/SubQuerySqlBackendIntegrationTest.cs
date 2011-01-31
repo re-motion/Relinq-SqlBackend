@@ -340,10 +340,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3474")]
     public void ConstantReferenceToOtherQuery ()
     {
-      var query1 = from c in Cooks select c.ID;
+      var query1 = from c in Cooks where "1" == 1.ToString() select c.ID;
       var query2 = from k in Kitchens where query1.Contains (k.Cook.ID) select k.ID;
 
       // Handle this as if someone had written: from k in Kitchens where (from c in Cooks select c).Contains (k.Cook) select k.ID;
@@ -351,8 +350,9 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       CheckQuery (
           query2,
           "SELECT [t0].[ID] AS [value] "
-          + "FROM [KitchenTable] AS [t0] "
-          + "WHERE [t0].[CookID] IN (SELECT [t1].[ID] FROM [CookTable] AS [t1]) AS [q2]");
+          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
+          + "WHERE [t1].[ID] IN (SELECT [t2].[ID] FROM [CookTable] AS [t2] WHERE (@1 = 1))",
+          new CommandParameter ("@1", 1));
     }
   }
 }
