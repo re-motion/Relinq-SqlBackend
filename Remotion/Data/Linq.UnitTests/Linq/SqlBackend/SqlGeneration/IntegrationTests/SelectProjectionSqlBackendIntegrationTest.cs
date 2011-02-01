@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -149,7 +150,6 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
-    [Ignore ("TODO 3631")]
     public void NestedSubSelectProjection_Member_Tuple ()
     {
       CheckQuery (
@@ -157,6 +157,14 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
             "SELECT [q0].[Item1] AS [value] FROM ("
             + "SELECT DISTINCT [t1].[Name] AS [Item1],[t1].[ID] AS [Item2] FROM [CookTable] AS [t1]) AS [q0] "
             + "WHERE ([q0].[Item2] <> @1)",
+            row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
+            new CommandParameter ("@1", 0)
+          );
+      CheckQuery (
+          from c in (from sc in Cooks select new KeyValuePair<string, int>(sc.Name, sc.ID)).Distinct () where c.Value != 0 select c.Key,
+            "SELECT [q0].[Key] AS [value] FROM ("
+            + "SELECT DISTINCT [t1].[Name] AS [Key],[t1].[ID] AS [Value] FROM [CookTable] AS [t1]) AS [q0] "
+            + "WHERE ([q0].[Value] <> @1)",
             row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
             new CommandParameter ("@1", 0)
           );
