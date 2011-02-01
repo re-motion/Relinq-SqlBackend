@@ -149,6 +149,20 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
     }
 
     [Test]
+    [Ignore ("TODO 3631")]
+    public void NestedSubSelectProjection_Member_Tuple ()
+    {
+      CheckQuery (
+          from c in (from sc in Cooks select new Tuple<string, int> (sc.Name, sc.ID)).Distinct () where c.Item2 != 0 select c.Item1,
+            "SELECT [q0].[Item1] AS [value] FROM ("
+            + "SELECT DISTINCT [t1].[Name] AS [Item1],[t1].[ID] AS [Item2] FROM [CookTable] AS [t1]) AS [q0] "
+            + "WHERE ([q0].[Item2] <> @1)",
+            row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
+            new CommandParameter ("@1", 0)
+          );
+    }
+
+    [Test]
     public void NestedSelectProjection_AccessingEntity ()
     {
       CheckQuery (
