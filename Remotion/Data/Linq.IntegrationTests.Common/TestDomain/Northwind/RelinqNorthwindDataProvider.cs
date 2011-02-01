@@ -21,6 +21,7 @@ using System.Data.Linq.SqlClient;
 using System.Linq;
 using Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers;
 using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -65,8 +66,12 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       foreach (var userDefinedFunction in _context.GetType ().GetMethods ().Where (mi => mi.IsDefined (typeof (FunctionAttribute), false)))
         methodBasedTransformerRegistry.Register (userDefinedFunction, new UserDefinedFunctionTransformer ());
 
-      _queryParser = QueryParser.CreateDefault();
-      _queryParser.NodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
+      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
+      var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
+      var expressionTreeParser = new ExpressionTreeParser (nodeTypeRegistry, processingSteps);
+      _queryParser = new QueryParser (expressionTreeParser);
+      nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
 
       _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, true);
     }
