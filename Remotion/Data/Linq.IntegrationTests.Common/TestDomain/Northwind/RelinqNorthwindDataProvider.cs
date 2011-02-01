@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       foreach (var userDefinedFunction in _context.GetType ().GetMethods ().Where (mi => mi.IsDefined (typeof (FunctionAttribute), false)))
         methodBasedTransformerRegistry.Register (userDefinedFunction, new UserDefinedFunctionTransformer ());
 
-      var nodeTypeRegistry = NodeTypeRegistry.CreateDefault ();
+      var nodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault ();
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
       var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
       var expressionTreeParser = new ExpressionTreeParser (nodeTypeRegistry, processingSteps);
