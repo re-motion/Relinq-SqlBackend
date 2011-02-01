@@ -66,12 +66,16 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       foreach (var userDefinedFunction in _context.GetType ().GetMethods ().Where (mi => mi.IsDefined (typeof (FunctionAttribute), false)))
         methodBasedTransformerRegistry.Register (userDefinedFunction, new UserDefinedFunctionTransformer ());
 
-      var nodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault ();
+      var customNodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault ();
+      customNodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
+      
+      var nodeTypeProvider = CompoundNodeTypeProvider.CreateDefault();
+      nodeTypeProvider.InnerProviders.Add (customNodeTypeRegistry);
+      
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
       var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
-      var expressionTreeParser = new ExpressionTreeParser (nodeTypeRegistry, processingSteps);
+      var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processingSteps);
       _queryParser = new QueryParser (expressionTreeParser);
-      nodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
 
       _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, true);
     }
