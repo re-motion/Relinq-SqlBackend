@@ -93,7 +93,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       if (dataMember.IsAssociation)
         return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
 
-      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      var memberType = ReflectionUtility.GetMemberReturnType (memberInfo);
       return originatingEntity.GetColumn (memberType, dataMember.MappedName, dataMember.IsPrimaryKey);
     }
     

@@ -129,7 +129,7 @@ namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
-      var type = ReflectionUtility.GetFieldOrPropertyType (_memberInfo);
+      var type = ReflectionUtility.GetMemberReturnType (_memberInfo);
       if (typeof (IEnumerable).IsAssignableFrom (type) && type != typeof (string))
       {
         var message = string.Format (

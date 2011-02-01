@@ -40,7 +40,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       _memberInfo = memberInfo;
       _cardinality = cardinality;
 
-      var memberReturnType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      var memberReturnType = ReflectionUtility.GetMemberReturnType (memberInfo);
       if (Cardinality == JoinCardinality.One)
         _itemType = memberReturnType;
       else

@@ -203,7 +203,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend
 
     public virtual Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
-      var memberType = ReflectionUtility.GetFieldOrPropertyType (memberInfo);
+      var memberType = ReflectionUtility.GetMemberReturnType (memberInfo);
       if (memberInfo.DeclaringType == typeof (Cook))
       {
         switch (memberInfo.Name)

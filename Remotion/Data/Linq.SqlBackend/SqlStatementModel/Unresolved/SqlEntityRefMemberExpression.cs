@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly MemberInfo _memberInfo;
     
     public SqlEntityRefMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
-      : base (ReflectionUtility.GetFieldOrPropertyType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
+      : base (ReflectionUtility.GetMemberReturnType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
       ArgumentUtility.CheckNotNull ("entityExpression", originatingEntity);
 
