@@ -66,7 +66,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       foreach (var userDefinedFunction in _context.GetType ().GetMethods ().Where (mi => mi.IsDefined (typeof (FunctionAttribute), false)))
         methodBasedTransformerRegistry.Register (userDefinedFunction, new UserDefinedFunctionTransformer ());
 
-      var customNodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault ();
+      var customNodeTypeRegistry = new MethodInfoBasedNodeTypeRegistry();
       customNodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
       
       var nodeTypeProvider = CompoundNodeTypeProvider.CreateDefault();
