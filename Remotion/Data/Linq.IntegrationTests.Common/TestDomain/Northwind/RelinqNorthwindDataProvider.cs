@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       var customNodeTypeRegistry = new MethodInfoBasedNodeTypeRegistry();
       customNodeTypeRegistry.Register (new[] { typeof (EntitySet<>).GetMethod ("Contains") }, typeof (ContainsExpressionNode));
       
-      var nodeTypeProvider = CompoundNodeTypeProvider.CreateDefault();
+      var nodeTypeProvider = ExpressionTreeParser.CreateDefaultNodeTypeProvider();
       nodeTypeProvider.InnerProviders.Add (customNodeTypeRegistry);
       
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
