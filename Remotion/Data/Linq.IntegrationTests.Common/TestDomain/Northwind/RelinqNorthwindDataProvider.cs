@@ -73,7 +73,7 @@ namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
       nodeTypeProvider.InnerProviders.Add (customNodeTypeRegistry);
       
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
-      var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
+      var processingSteps = ExpressionTreeParser.CreateDefaultProcessingStep (transformerRegistry);
       var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processingSteps);
       _queryParser = new QueryParser (expressionTreeParser);
 
