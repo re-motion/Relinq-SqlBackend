@@ -24,7 +24,7 @@ using System.Security;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle("Remotion Linq LinqToSql Adapter")]
+[assembly: AssemblyTitle("re-linq LinqToSql Adapter")]
 [assembly: AssemblyDescription ("Provides an adapter between re-linq and LinqToSql.")]
 [assembly: AssemblyConfiguration("@buildinfo@")]
 [assembly: AssemblyCompany("@company@")]
