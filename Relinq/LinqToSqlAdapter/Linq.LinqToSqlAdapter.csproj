@@ -8,8 +8,8 @@
     <ProjectGuid>{6A28082C-F2B7-40A3-9E32-0AB28E7DA46E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Data.Linq.LinqToSqlAdapter</RootNamespace>
-    <AssemblyName>Remotion.Data.Linq.LinqToSqlAdapter</AssemblyName>
+    <RootNamespace>Remotion.Linq.LinqToSqlAdapter</RootNamespace>
+    <AssemblyName>Remotion.Linq.LinqToSqlAdapter</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

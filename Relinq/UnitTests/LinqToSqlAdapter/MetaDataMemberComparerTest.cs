@@ -16,7 +16,7 @@
 // 
 using System.Data.Linq.Mapping;
 using NUnit.Framework;
-using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Linq.LinqToSqlAdapter;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter

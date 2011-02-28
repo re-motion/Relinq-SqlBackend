@@ -20,7 +20,7 @@ using System.Data;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Implements IQueryResultRetriever for a certain DBConnection defined by the ConnectionManager

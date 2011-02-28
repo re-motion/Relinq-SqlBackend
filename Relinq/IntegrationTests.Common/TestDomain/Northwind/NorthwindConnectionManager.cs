@@ -18,7 +18,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using Remotion.Data.Linq.LinqToSqlAdapter;
+using Remotion.Linq.LinqToSqlAdapter;
 
 namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 {

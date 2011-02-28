@@ -16,10 +16,9 @@
 // 
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Default implementation of <see cref="QueryableBase{T}"/> 

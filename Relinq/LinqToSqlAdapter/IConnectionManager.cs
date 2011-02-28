@@ -16,7 +16,7 @@
 // 
 using System.Data;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Provides an interface for classes encapsulating ADO.NET connection handling. Used by <see cref="QueryResultRetriever"/>.

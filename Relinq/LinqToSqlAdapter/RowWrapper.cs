@@ -19,9 +19,9 @@ using System.Data;
 using System.Data.Linq;
 using System.Diagnostics;
 using System.Linq;
-using IDatabaseResultRow = Remotion.Linq.SqlBackend.SqlGeneration.IDatabaseResultRow;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Represents a row in the database result for an executed SQL command.

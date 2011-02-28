@@ -17,7 +17,7 @@
 using System;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// provides functionality to get all MetaDataMembers of a certain type

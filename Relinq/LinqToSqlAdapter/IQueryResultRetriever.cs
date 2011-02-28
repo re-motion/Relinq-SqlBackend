@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Provides functionality to get results from a database with a given command

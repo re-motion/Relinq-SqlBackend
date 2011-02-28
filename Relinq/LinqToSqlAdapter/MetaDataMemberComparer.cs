@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Compares <see cref="MetaDataMember"/> instances based on their <see cref="MetaDataMember.MappedName"/> properties.

@@ -18,7 +18,7 @@ using System;
 using System.Data;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter
 {
   /// <summary>
   /// Represents a scalar row in the database result for an executed SQL command.
