@@ -17,7 +17,7 @@
 using System;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   public class TestableSqlPreparationExpressionVisitorTest : SqlPreparationExpressionVisitor
   {

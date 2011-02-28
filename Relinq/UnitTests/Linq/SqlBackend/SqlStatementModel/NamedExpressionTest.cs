@@ -19,15 +19,15 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
   [TestFixture]
   public class NamedExpressionTest

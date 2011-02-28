@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
   [TestFixture]
   public class NullableExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase

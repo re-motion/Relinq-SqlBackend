@@ -18,7 +18,7 @@ using System;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
   public class TestableSqlStatementTextGenerator : SqlStatementTextGenerator
   {

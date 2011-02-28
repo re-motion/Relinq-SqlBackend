@@ -22,7 +22,7 @@ using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   [TestFixture]
   public class CompoundMethodCallTransformerProviderTest

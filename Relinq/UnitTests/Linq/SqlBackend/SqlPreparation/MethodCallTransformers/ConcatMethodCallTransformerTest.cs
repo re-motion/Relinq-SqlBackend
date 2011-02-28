@@ -20,11 +20,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
   public class ConcatMethodCallTransformerTest
@@ -199,7 +199,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "The method call 'Concat(CustomExpression)' is not supported. When the array overloads of String.Concat are used, only constant or new array "
         + "expressions can be translated to SQL; in this usage, the expression has type "
-        + "'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.CustomExpression'.")]
+        + "'Remotion.Linq.UnitTests.Linq.SqlBackend.CustomExpression'.")]
     public void Transform_NonParseableArray ()
     {
       var argument = new CustomExpression (typeof (string[]));

@@ -18,10 +18,10 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   [TestFixture]
   public class MethodCallTransformerAttributeTest
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The method call transformer "
-        + "'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformerAttributeTest+TransformerWithoutPublicDefaultCtor' "
+        + "'Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformerAttributeTest+TransformerWithoutPublicDefaultCtor' "
         + "has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.")]
     public void GetTransformer_AttributedMethod_NoCtor ()
     {

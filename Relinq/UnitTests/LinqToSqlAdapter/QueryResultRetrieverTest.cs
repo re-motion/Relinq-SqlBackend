@@ -23,7 +23,7 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
   public class QueryResultRetrieverTest

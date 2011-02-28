@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
   public class MetaDataMemberComparerTest

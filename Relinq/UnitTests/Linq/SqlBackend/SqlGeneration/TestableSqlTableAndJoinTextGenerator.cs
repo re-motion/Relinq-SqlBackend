@@ -17,7 +17,7 @@
 using System;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
   public class TestableSqlTableAndJoinTextGenerator : SqlTableAndJoinTextGenerator
   {

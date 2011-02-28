@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   public class TestableGroupAggregateSimplifier : GroupAggregateSimplifier
   {

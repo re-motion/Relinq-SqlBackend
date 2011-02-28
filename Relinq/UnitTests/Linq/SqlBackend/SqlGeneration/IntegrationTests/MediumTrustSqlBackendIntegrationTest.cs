@@ -19,9 +19,9 @@ using System.Linq;
 using System.Security.Permissions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Sandboxing;
+using Remotion.Linq.UnitTests.Sandboxing;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
   [TestFixture]
   public class MediumTrustSqlBackendIntegrationTest

@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
   public class TestableSqlCustomTextGeneratorExpression : SqlCustomTextGeneratorExpressionBase
   {

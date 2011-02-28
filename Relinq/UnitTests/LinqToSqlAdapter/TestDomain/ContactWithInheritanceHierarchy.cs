@@ -17,7 +17,7 @@
 using System;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
+namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
 {
   [Table (Name = "dbo.Contacts")]
   [InheritanceMapping (Code = "Unknown", Type = typeof (ContactWithInheritanceHierarchy), IsDefault = true)]

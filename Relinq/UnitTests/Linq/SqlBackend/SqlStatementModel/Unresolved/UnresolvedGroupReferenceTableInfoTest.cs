@@ -23,7 +23,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
   public class UnresolvedGroupReferenceTableInfoTest

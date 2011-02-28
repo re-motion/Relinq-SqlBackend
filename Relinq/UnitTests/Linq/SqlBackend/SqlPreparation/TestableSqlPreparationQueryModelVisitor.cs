@@ -20,7 +20,7 @@ using Remotion.Linq;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   public class TestableSqlPreparationQueryModelVisitor : SqlPreparationQueryModelVisitor
   {

@@ -19,7 +19,7 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   public class TestableAggregationResultOperatorHandler : AggregationResultOperatorHandler<MaxResultOperator>
   {

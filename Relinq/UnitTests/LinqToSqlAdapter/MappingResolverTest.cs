@@ -21,8 +21,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Linq;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -30,7 +30,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
   public class MappingResolverTest
@@ -262,7 +262,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "Cannot resolve member: Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain.PersonTestClass.stub is not a mapped member")]
+        ExpectedMessage = "Cannot resolve member: Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.PersonTestClass.stub is not a mapped member")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForMember()
     {
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
@@ -364,7 +364,7 @@ namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
         "Cannot perform a type check for type "
-        + "Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
+        + "Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
         + "code for this type.")]
     public void ResolveTypeCheck_ShouldThrowUnmappedItemException_WhenNoInheritanceCode()
     {

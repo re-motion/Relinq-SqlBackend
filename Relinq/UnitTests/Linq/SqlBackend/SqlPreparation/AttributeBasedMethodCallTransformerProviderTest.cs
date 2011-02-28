@@ -18,11 +18,11 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Linq.Core;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Linq.UnitTests.Linq.Core;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 {
   [TestFixture]
   public class AttributeBasedMethodCallTransformerProviderTest
@@ -69,7 +69,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The method 'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.TooManyAttributes' is "
+        "The method 'Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.TooManyAttributes' is "
         + "attributed with more than one IMethodCallTransformerAttribute: MethodCallTransformer2Attribute, MethodCallTransformerAttribute. Only one "
         + "such attribute is allowed.")]
     public void GetTransformer_TooManyAttributes ()
@@ -82,7 +82,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "The method "
-        + "'Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.ThrowingTransformer' "
+        + "'Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.AttributeBasedMethodCallTransformerProviderTest.ThrowingTransformer' "
         + "cannot be transformed to SQL. Exception thrown in GetTransformer")]
     public void GetTransformer_ErrorInstantiatingTransformer ()
     {

@@ -17,7 +17,7 @@
 using System.Linq.Expressions;
 using Remotion.Linq.SqlBackend.MappingResolution;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {
   public class TestableSqlContextExpressionVisitor : SqlContextExpressionVisitor
   {

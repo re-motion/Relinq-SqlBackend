@@ -19,10 +19,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
@@ -33,7 +33,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   [TestFixture]
   public class ResolvingExpressionVisitorTest
@@ -393,7 +393,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
-            + "'new TypeForNewExpression(1)', 'value(Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
+            + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
     public void VisitBinaryExpression_NewExpressionOnLeftSideWithoutMembers_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
@@ -539,7 +539,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
-        + "'new TypeForNewExpression(1)', 'value(Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
+        + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
     public void VisitBinaryExpression_NewExpressionOnRightSideWithoutMembers_ThrowsException ()
     {
       var rightArgumentExpression = Expression.Constant (1);

@@ -19,12 +19,12 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
+using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 {
   [TestFixture]
   public class RowWrapperTest

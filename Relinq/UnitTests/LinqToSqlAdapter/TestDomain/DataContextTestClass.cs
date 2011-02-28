@@ -17,7 +17,7 @@
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain
+namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
 {
   [Database (Name = "DATACONTEXT")]
   internal class DataContextTestClass : DataContext
