@@ -16,7 +16,8 @@
 // 
 using System;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {

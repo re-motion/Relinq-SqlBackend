@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {

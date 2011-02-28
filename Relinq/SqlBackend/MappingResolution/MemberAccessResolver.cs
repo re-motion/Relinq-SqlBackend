@@ -20,13 +20,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.Utilities;
-using MemberBinding = Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding;
+using Remotion.Linq;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing;
+using Remotion.Linq.Utilities;
+using MemberBinding = Remotion.Linq.Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {

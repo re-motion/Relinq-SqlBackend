@@ -19,10 +19,10 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.Parsing;
 using Rhino.Mocks;
 using System.Linq;
 

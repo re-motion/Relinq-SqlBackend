@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using System.Reflection;
+using Remotion.Linq;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {

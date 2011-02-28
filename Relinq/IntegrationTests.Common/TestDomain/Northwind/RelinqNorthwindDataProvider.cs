@@ -21,12 +21,13 @@ using System.Data.Linq.SqlClient;
 using System.Linq;
 using Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers;
 using Remotion.Data.Linq.LinqToSqlAdapter;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.Transformation;
-using Remotion.Data.Linq.Parsing.Structure;
-using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
-using Remotion.Data.Linq.Parsing.Structure.NodeTypeProviders;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Linq;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
+using Remotion.Linq.Parsing.Structure;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
+using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
 
 namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
 {

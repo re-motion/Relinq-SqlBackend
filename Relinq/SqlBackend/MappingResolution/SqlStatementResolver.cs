@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Clauses;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {

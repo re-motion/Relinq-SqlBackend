@@ -17,10 +17,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Utilities;
 using System.Linq;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {

@@ -16,7 +16,8 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
 {

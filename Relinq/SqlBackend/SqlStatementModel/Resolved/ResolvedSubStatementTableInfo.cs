@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Clauses.StreamedData;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {

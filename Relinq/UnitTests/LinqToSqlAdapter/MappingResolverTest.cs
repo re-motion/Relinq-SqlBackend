@@ -27,6 +27,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
+using Remotion.Linq;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter

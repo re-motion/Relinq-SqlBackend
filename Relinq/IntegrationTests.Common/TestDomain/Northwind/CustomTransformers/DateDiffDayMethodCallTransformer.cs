@@ -21,7 +21,7 @@ using System.Reflection;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
 {

@@ -21,7 +21,8 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {

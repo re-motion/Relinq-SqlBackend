@@ -17,11 +17,11 @@
 using System;
 using System.Linq.Expressions;
 using System.Text;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Clauses.Expressions;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {

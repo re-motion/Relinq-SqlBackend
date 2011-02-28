@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq;
+using Remotion.Linq.Clauses;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {

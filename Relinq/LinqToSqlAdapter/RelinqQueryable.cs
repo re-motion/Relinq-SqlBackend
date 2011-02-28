@@ -16,7 +16,8 @@
 // 
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Linq;
+using Remotion.Linq.Parsing.Structure;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {

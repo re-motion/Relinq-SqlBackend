@@ -18,8 +18,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq.Utilities;
 using Remotion.Development.UnitTesting.Resources;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
 {
