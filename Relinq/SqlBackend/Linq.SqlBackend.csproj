@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</ProjectGuid>
+    <ProjectGuid>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Data.Linq.SqlBackend</RootNamespace>
@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -225,19 +225,13 @@
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedTableInfo.cs" />
     <Compile Include="StringExtensions.cs" />
-    <None Include="..\..\..\remotion.snk">
+    <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Data.Linq.SqlBackend.build">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Linq\Data.Linq.csproj">
-      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
-      <Name>Data.Linq</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -255,6 +249,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

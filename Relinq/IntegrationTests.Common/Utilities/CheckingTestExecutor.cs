@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Utilities;
 using Remotion.Development.UnitTesting.Resources;
 

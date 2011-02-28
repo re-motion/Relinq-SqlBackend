@@ -7,7 +7,7 @@
     </ProductVersion>
     <SchemaVersion>
     </SchemaVersion>
-    <ProjectGuid>{9A0EDD9F-DA8E-48EA-8D91-D194E97CFD67}</ProjectGuid>
+    <ProjectGuid>{F0DC28F8-34FA-488A-BEF4-3F11398A5339}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Remotion.Data.Linq.IntegrationTests.VisualBasic</RootNamespace>
     <AssemblyName>Remotion.Data.Linq.IntegrationTests.VisualBasic</AssemblyName>
@@ -65,7 +65,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -128,6 +128,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="..\IntegrationTests.Common\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="Data.Linq.IntegrationTests.VisualBasic.build">
       <SubType>Designer</SubType>
     </None>
@@ -154,12 +160,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\remotion.snk">
-      <Link>remotion.snk</Link>
-    </None>
-    <None Include="..\Linq.IntegrationTests.Common\App.config">
-      <Link>App.config</Link>
-    </None>
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\LinqSamples101.Resources.AdvancedTests.LinqToSqlAdvanced03.result" />
@@ -299,12 +299,6 @@
     <Compile Include="SetupFixture.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq.IntegrationTests.Common\Data.Linq.IntegrationTests.Common.csproj">
-      <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
-      <Name>Data.Linq.IntegrationTests.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
@@ -336,7 +330,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
+      <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
+      <Name>Linq.IntegrationTests.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

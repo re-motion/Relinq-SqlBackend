@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}</ProjectGuid>
+    <ProjectGuid>{6A28082C-F2B7-40A3-9E32-0AB28E7DA46E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Data.Linq.LinqToSqlAdapter</RootNamespace>
@@ -35,7 +35,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -82,6 +82,9 @@
     <Compile Include="MappingResolver.cs" />
     <Compile Include="MetaDataMemberComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="RelinqQueryable.cs" />
     <Compile Include="QueryExecutor.cs" />
@@ -90,24 +93,20 @@
     <Compile Include="ScalarRowWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
-      <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
-      <Name>Data.Linq.SqlBackend</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Linq\Data.Linq.csproj">
-      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
-      <Name>Data.Linq</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\remotion.snk">
-      <Link>remotion.snk</Link>
-    </None>
     <None Include="Data.Linq.LinqToSqlAdapter.build">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlBackend\Linq.SqlBackend.csproj">
+      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
+      <Name>Linq.SqlBackend</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

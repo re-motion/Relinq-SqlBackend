@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}</ProjectGuid>
+    <ProjectGuid>{DDB5BD34-5F14-43F5-BC6B-28374737AF23}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Data.Linq.IntegrationTests.CSharp</RootNamespace>
@@ -49,6 +49,12 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.4.10098, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -87,6 +93,12 @@
     <Compile Include="LinqSamples101\WhereTests.cs" />
     <Compile Include="LinqSamples101\Name.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="..\IntegrationTests.Common\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="Data.Linq.IntegrationTests.CSharp.build">
       <SubType>Designer</SubType>
     </None>
@@ -94,22 +106,6 @@
     <Compile Include="SetupFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq.IntegrationTests.Common\Data.Linq.IntegrationTests.Common.csproj">
-      <Project>{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}</Project>
-      <Name>Data.Linq.IntegrationTests.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Linq\Data.Linq.csproj">
-      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
-      <Name>Data.Linq</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\remotion.snk">
-      <Link>remotion.snk</Link>
-    </None>
-    <None Include="..\Linq.IntegrationTests.Common\App.config">
-      <Link>App.config</Link>
-    </None>
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced02.result" />
     <EmbeddedResource Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced03.result" />
@@ -266,7 +262,16 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
+      <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
+      <Name>Linq.IntegrationTests.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
