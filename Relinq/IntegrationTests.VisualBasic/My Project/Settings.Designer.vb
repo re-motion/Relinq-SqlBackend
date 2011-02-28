@@ -63,11 +63,11 @@ Namespace My
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>  _
     Friend Module MySettingsProperty
         
-    <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")> _
-    Friend ReadOnly Property Settings() As Global.Remotion.Data.Linq.IntegrationTests.VisualBasic.My.MySettings
-      Get
-        Return Global.Remotion.Data.Linq.IntegrationTests.VisualBasic.My.MySettings.Default
-      End Get
-    End Property
+        <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
+        Friend ReadOnly Property Settings() As Global.Remotion.Linq.IntegrationTests.VisualBasic.My.MySettings
+            Get
+                Return Global.Remotion.Linq.IntegrationTests.VisualBasic.My.MySettings.Default
+            End Get
+        End Property
     End Module
 End Namespace
