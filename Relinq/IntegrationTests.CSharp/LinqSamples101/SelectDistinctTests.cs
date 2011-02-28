@@ -36,7 +36,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using NUnit.Framework;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
+namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
   public class SelectDistinctTests:TestBase

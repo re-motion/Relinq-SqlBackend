@@ -8,8 +8,8 @@
     <ProjectGuid>{DDB5BD34-5F14-43F5-BC6B-28374737AF23}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Data.Linq.IntegrationTests.CSharp</RootNamespace>
-    <AssemblyName>Remotion.Data.Linq.IntegrationTests.CSharp</AssemblyName>
+    <RootNamespace>Remotion.Linq.IntegrationTests.CSharp</RootNamespace>
+    <AssemblyName>Remotion.Linq.IntegrationTests.CSharp</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -37,7 +37,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
+namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
   public class AdvancedTests:TestBase

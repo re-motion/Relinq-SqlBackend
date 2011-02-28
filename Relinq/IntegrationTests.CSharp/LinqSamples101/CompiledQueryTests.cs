@@ -32,7 +32,7 @@
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 using NUnit.Framework;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
+namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
   public class CompiledQueryTests : TestBase

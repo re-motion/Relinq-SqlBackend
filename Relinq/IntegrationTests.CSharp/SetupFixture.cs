@@ -34,7 +34,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Linq.IntegrationTests.Common.Database;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp
+namespace Remotion.Linq.IntegrationTests.CSharp
 {
   /// <summary>
   /// Initializes the database before any tests are executed.

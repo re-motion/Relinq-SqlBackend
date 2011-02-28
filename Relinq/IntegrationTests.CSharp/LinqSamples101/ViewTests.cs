@@ -35,7 +35,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
+namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   [TestFixture]
   public class ViewTests:TestBase
