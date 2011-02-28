@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// Default implementation of <see cref="ISqlCommandBuilder"/> with SQL Server identifier semantics.

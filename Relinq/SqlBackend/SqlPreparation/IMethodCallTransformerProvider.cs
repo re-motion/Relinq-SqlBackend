@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// Defines a common interface for classes yielding <see cref="IMethodCallTransformer"/> objects for <see cref="MethodCallExpression"/> instances.

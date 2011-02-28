@@ -22,7 +22,7 @@ using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// <see cref="SqlCompositeCustomTextGeneratorExpression"/> holds a list of expressions and generates sql text for each expression.

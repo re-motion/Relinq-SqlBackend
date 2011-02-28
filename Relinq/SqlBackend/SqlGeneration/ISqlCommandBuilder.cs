@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// Used by the classes in the SQL generation stage to build a SQL command. Use <see cref="GetCommand"/> to access the command when the stage

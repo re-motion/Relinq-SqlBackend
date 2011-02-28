@@ -19,7 +19,7 @@ using System.Data;
 using System.Data.Linq;
 using System.Diagnostics;
 using System.Linq;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using IDatabaseResultRow = Remotion.Linq.SqlBackend.SqlGeneration.IDatabaseResultRow;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
       _resolver = resolver;
     }
 
-    public T GetValue<T> (ColumnID id)
+    public T GetValue<T> (Remotion.Linq.SqlBackend.SqlGeneration.ColumnID id)
     {
       if (_dataReader.IsDBNull (id.Position))
         return default (T);
@@ -48,7 +48,7 @@ namespace Remotion.Data.Linq.LinqToSqlAdapter
     }
 
 
-    public T GetEntity<T> (ColumnID[] columnIDs)
+    public T GetEntity<T> (Remotion.Linq.SqlBackend.SqlGeneration.ColumnID[] columnIDs)
     {
       var entityMembers = _resolver.GetMetaDataMembers (typeof (T)); //get metadatamembers of subtypes
 

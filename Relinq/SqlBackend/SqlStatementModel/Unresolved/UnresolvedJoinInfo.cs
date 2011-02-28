@@ -16,11 +16,10 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
   /// <see cref="UnresolvedJoinInfo"/> represents the data source defined by a member access in a LINQ expression.

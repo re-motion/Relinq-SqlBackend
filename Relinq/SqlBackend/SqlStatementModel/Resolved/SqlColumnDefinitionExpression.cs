@@ -18,7 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
   /// Defines a SQL column as an item with a given name coming from a given table alias. The column is represented as [alias].[name].

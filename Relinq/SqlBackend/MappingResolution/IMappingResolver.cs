@@ -16,12 +16,11 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using System.Reflection;
-using Remotion.Linq;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
-namespace Remotion.Data.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
   /// <see cref="IMappingResolver"/> provides methods to resolve expressions with database-specific information delivered by an O/R mapper. This

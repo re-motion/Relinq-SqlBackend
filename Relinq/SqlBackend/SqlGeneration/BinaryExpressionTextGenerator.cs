@@ -17,11 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// Generates SQL text for <see cref="BinaryExpression"/> instances.

@@ -16,11 +16,10 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// Provides a default implementation of <see cref="ISqlPreparationStage"/>.

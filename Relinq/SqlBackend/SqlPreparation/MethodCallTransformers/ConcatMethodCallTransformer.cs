@@ -19,12 +19,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using System.Linq;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
+namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// Implements the <see cref="IMethodCallTransformer"/> interface for the <see cref="O:string.Concat"/> overloads. 

@@ -19,7 +19,7 @@ using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.LinqToSqlAdapter;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 using System.Linq;
 

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.LinqToSqlAdapter
 {

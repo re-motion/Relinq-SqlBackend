@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.MappingResolution;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// Used by re-linq's in-memory projections (see <see cref="SqlCommandData.GetInMemoryProjection{T}"/>) in order to access values and entities from

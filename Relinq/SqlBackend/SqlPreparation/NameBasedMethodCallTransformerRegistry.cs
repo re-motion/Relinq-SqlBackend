@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// <see cref="NameBasedMethodCallTransformerRegistry"/> is used to register method names and get <see cref="IMethodCallTransformer"/> instances.

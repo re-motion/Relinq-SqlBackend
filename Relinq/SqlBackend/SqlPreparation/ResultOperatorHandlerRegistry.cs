@@ -16,12 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// The <see cref="ResultOperatorHandlerRegistry"/> holds the implementations of <see cref="IResultOperatorHandler"/> used by 

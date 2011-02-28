@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
   /// Provides utility services involving type comparisons.

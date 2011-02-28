@@ -14,9 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
   /// Defines the aggregation modifier for a <see cref="SqlStatement"/>.

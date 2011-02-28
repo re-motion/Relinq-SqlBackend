@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// Defines an interface for custom attributes that, when applied to a method (or property get accessor), defines that the SQL backend should use 

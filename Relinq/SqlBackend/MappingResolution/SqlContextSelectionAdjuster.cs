@@ -15,14 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
   /// <see cref="SqlContextSelectionAdjuster"/> applies <see cref="SqlExpressionContext"/> to a <see cref="SqlStatement"/>.

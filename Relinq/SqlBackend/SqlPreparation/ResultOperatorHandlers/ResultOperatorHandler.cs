@@ -17,13 +17,12 @@
 using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
+namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   /// <summary>
   /// Default implementation of <see cref="IResultOperatorHandler"/> providing commonly needed functionality.

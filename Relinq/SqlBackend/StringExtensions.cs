@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.SqlBackend
+namespace Remotion.Linq.SqlBackend
 {
   /// <summary>
   /// <see cref="StringExtensions"/> provides extension methods for strings.

@@ -14,13 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
+namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   /// <summary>
   /// <see cref="AggregationResultOperatorHandler{T}"/> is the base class for all specific aggregation <see cref="ResultOperatorHandler{T}"/>s.

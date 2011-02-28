@@ -20,8 +20,8 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.Linq.LinqToSqlAdapter;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.LinqToSqlAdapter

@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
   /// This interface should be implemented by visitors that handle SQL-specific expressions.

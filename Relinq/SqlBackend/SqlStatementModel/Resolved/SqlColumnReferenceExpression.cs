@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
   /// Defines a SQL column as a reference to a column of a <see cref="SqlEntityExpression"/>. The column is represented as [alias].[entityname_name].

@@ -23,7 +23,7 @@ using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
   /// <see cref="SqlRowNumberExpression"/> represents the Sql ROW_NUMBER() function.

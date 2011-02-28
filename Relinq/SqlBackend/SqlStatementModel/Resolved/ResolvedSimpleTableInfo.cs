@@ -17,7 +17,7 @@
 using System;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
   /// <see cref="ResolvedSimpleTableInfo"/> represents the data source defined by a table in a relational database.

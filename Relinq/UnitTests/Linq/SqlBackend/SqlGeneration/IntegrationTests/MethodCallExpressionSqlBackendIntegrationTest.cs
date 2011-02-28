@@ -17,8 +17,8 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.Linq.SqlBackend;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {

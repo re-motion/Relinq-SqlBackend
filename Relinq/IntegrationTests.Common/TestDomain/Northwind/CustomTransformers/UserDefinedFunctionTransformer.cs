@@ -16,9 +16,9 @@
 // 
 using System.Data.Linq.Mapping;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using System.Linq;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
 {

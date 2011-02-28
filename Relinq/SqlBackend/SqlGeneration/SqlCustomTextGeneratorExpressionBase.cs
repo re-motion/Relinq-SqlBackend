@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// Acts as a base class for expression nodes that need to take part in the SQL generation peformed by <see cref="SqlGeneratingExpressionVisitor"/>.

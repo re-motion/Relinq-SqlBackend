@@ -16,11 +16,10 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
   /// <see cref="ResolvedJoinInfo"/> represents a join between two database tables.

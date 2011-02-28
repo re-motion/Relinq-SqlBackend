@@ -16,10 +16,9 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration
+namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// <see cref="SqlCommandData"/> contains the SQL command text and parameters generated for a LINQ query. In addition, it provides the possibility

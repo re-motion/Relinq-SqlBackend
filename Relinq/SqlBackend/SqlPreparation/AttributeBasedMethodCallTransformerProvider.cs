@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Linq;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// Retrieves <see cref="IMethodCallTransformer"/> instances based on an attribute implementing <see cref="IMethodCallTransformerAttribute"/>.

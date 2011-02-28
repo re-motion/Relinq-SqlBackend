@@ -18,7 +18,7 @@ using System;
 using System.Reflection;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
+namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
   /// When applied to a method (or property get accessor), defines that the SQL backend should use the specified <see cref="IMethodCallTransformer"/>

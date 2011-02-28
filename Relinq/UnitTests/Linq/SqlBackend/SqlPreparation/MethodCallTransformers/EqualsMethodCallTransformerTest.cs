@@ -18,8 +18,8 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {

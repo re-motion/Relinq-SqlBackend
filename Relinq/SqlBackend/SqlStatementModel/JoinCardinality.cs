@@ -1,4 +1,4 @@
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
   /// Defines whether a join represents a "to-n" relation or a "to-1" relation.
