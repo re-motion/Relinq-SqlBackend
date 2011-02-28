@@ -31,7 +31,7 @@
 'You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 'the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 Imports NUnit.Framework
-Imports Remotion.Data.Linq.IntegrationTests.Common.Database
+Imports Remotion.Linq.IntegrationTests.Common.Database
 
 ''' <summary>
 ''' Initializes the database before any tests are executed.

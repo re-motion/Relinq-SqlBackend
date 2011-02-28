@@ -22,7 +22,7 @@ using System.IO;
 using System.Text;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
   // Copied from Remotion.Development.UnitTesting.Data.SqlClient
 

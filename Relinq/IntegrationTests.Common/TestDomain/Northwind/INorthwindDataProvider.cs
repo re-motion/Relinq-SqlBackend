@@ -17,7 +17,7 @@
 using System.Data.Linq;
 using System.Linq;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
+namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
   /// <summary>
   /// Defines all Properties and Methods needed by the 101 LinqSamples to access the Northwind Database

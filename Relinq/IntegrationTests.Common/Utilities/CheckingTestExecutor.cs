@@ -21,7 +21,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting.Resources;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
   /// <summary>
   /// Checks the queryResult against a previously created resource

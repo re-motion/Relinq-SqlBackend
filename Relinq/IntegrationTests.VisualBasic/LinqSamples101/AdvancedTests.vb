@@ -36,8 +36,8 @@ Option Strict On
 
 Imports NUnit.Framework
 Imports System.Linq.Expressions
-Imports Remotion.Data.Linq.IntegrationTests.Common
-Imports Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
+Imports Remotion.Linq.IntegrationTests.Common
+Imports Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 Imports System.Reflection
 
 Namespace LinqSamples101

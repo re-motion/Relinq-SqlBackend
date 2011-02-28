@@ -33,7 +33,7 @@
  
 using System;
 using System.Reflection;
-using Remotion.Data.Linq.IntegrationTests.Common;
+using Remotion.Linq.IntegrationTests.Common;
 
 namespace Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101
 {

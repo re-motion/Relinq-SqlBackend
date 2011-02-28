@@ -16,9 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.Common.Utilities;
+using Remotion.Linq.IntegrationTests.Common.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.UnitTests.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
 {
   [TestFixture]
   public class ComparisonResultTest

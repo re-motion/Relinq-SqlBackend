@@ -20,7 +20,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Remotion.Linq.LinqToSqlAdapter;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
+namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
   /// <summary>
   /// Provides functionality to open a connection to the Northwind Database

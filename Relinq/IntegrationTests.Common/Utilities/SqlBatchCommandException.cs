@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
   [Serializable]
   public class SqlBatchCommandException : Exception

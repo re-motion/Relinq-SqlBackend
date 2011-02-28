@@ -17,7 +17,7 @@
 using System;
 using System.Text;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
   /// <summary>
   /// Provides a visual command line comparison of to results

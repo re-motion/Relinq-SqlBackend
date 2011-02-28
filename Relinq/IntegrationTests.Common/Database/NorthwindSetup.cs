@@ -17,10 +17,10 @@
 using System;
 using System.Configuration;
 using System.Reflection;
-using Remotion.Data.Linq.IntegrationTests.Common.Utilities;
 using Remotion.Development.UnitTesting.Resources;
+using Remotion.Linq.IntegrationTests.Common.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Database
+namespace Remotion.Linq.IntegrationTests.Common.Database
 {
   /// <summary>
   /// Sets up the northwind database.

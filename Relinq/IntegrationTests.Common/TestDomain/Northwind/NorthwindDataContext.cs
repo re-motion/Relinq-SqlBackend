@@ -18,7 +18,7 @@ using System.Linq;
 using System.ComponentModel;
 using System;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind
+namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
   [System.Data.Linq.Mapping.DatabaseAttribute (Name = "NORTHWND")]
   public partial class NorthwindDataContext : System.Data.Linq.DataContext

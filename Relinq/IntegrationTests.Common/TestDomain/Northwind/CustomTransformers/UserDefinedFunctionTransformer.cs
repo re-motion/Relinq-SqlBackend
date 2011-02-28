@@ -20,7 +20,7 @@ using System.Linq;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
+namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
 {
   /// <summary>
   /// Handles user-defined functions defined via the <see cref="FunctionAttribute"/>.

@@ -8,8 +8,8 @@
     <ProjectGuid>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Data.Linq.IntegrationTests.Common</RootNamespace>
-    <AssemblyName>Remotion.Data.Linq.IntegrationTests.Common</AssemblyName>
+    <RootNamespace>Remotion.Linq.IntegrationTests.Common</RootNamespace>
+    <AssemblyName>Remotion.Linq.IntegrationTests.Common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
   /// <summary>
   /// Provides functionality to serialize the result of LINQ tests into a human-readable and machine-readable format for comparison between tests.

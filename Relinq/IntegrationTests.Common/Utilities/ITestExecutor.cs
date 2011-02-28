@@ -16,7 +16,7 @@
 // 
 using System.Reflection;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.Utilities
+namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
   /// <summary>
   /// Defines functionality to execute a test - used by the LinqSamples (CheckingTestExecutor, SavingTestExecutor)

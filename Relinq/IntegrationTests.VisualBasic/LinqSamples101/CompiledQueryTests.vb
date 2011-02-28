@@ -36,7 +36,7 @@ Option Strict On
 
 Imports NUnit.Framework
 
-Imports Remotion.Data.Linq.IntegrationTests.Common
+Imports Remotion.Linq.IntegrationTests.Common
 
 Namespace LinqSamples101
   <TestFixture()> _

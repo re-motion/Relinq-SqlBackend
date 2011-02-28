@@ -23,7 +23,7 @@ using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
+namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers
 {
   /// <summary>
   /// Transforms the <see cref="SqlMethods.DateDiffDay(System.Nullable{System.DateTime},System.Nullable{System.DateTime})"/> method to SQL.

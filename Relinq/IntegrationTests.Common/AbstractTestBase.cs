@@ -18,10 +18,10 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.Linq.IntegrationTests.Common.TestDomain.Northwind;
-using Remotion.Data.Linq.IntegrationTests.Common.Utilities;
+using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
+using Remotion.Linq.IntegrationTests.Common.Utilities;
 
-namespace Remotion.Data.Linq.IntegrationTests.Common
+namespace Remotion.Linq.IntegrationTests.Common
 {
   public abstract class AbstractTestBase 
   {
