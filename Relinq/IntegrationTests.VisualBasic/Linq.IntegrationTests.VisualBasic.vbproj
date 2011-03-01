@@ -139,7 +139,6 @@
     </None>
     <EmbeddedResource Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingMethod.result" />
     <EmbeddedResource Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingOperator.result" />
-    <None Include="My Project\AssemblyInfoTemplate.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -288,6 +287,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
+    <None Include="My Project\AssemblyInfoTemplate.vb" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>

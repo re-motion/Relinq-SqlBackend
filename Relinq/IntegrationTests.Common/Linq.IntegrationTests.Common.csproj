@@ -70,6 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="Database\NorthwindSetup.cs" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
@@ -77,7 +80,6 @@
     <None Include="Data.Linq.IntegrationTests.Common.build">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\DateDiffDayMethodCallTransformer.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\UserDefinedFunctionTransformer.cs" />
     <Compile Include="TestMode.cs" />

@@ -68,6 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="MappingResolution\ConversionUtility.cs" />
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\GroupAggregateSimplifier.cs" />
@@ -231,7 +234,6 @@
     <None Include="Data.Linq.SqlBackend.build">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
