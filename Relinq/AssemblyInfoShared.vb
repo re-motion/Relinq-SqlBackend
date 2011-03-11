@@ -9,18 +9,11 @@ Imports System.Security
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Visual Basic integration tests for the Remotion Data Linq library")> 
-<Assembly: AssemblyDescription("Contains integration tests for re-linq written in Visual Basic.")> 
-<Assembly: AssemblyConfiguration("@buildinfo@")> 
-<Assembly: AssemblyCompany("@company@")> 
-<Assembly: AssemblyProduct("@productname@")> 
-<Assembly: AssemblyCopyright("@copyright@")> 
+<Assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: Debug")> 
+<Assembly: AssemblyCompany("rubicon informationstechnologie gmbh")> 
+<Assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")> 
+<Assembly: AssemblyCopyright("(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")> 
 <Assembly: AssemblyTrademark("")> 
-<Assembly: AssemblyCulture("")> 
-<Assembly: CLSCompliant(True)> 
-<Assembly: AllowPartiallyTrustedCallers()>    ' Required for sandbox tests
-
-<Assembly: ComVisible(False)> 
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,6 +24,6 @@ Imports System.Security
 '
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
-' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("@versionnumber@")> 
+<Assembly: AssemblyVersion("1.13.97.2")> 
+<Assembly: AssemblyFileVersion("1.13.97.2")> 
