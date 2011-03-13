@@ -102,9 +102,6 @@
     <None Include="..\IntegrationTests.Common\App.config">
       <Link>App.config</Link>
     </None>
-    <None Include="Data.Linq.IntegrationTests.CSharp.build">
-      <SubType>Designer</SubType>
-    </None>
     <Compile Include="SetupFixture.cs" />
   </ItemGroup>
   <ItemGroup>

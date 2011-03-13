@@ -77,9 +77,6 @@
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Data.Linq.IntegrationTests.Common.build">
-      <SubType>Designer</SubType>
-    </None>
     <Compile Include="TestDomain\Northwind\CustomTransformers\DateDiffDayMethodCallTransformer.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\UserDefinedFunctionTransformer.cs" />
     <Compile Include="TestMode.cs" />

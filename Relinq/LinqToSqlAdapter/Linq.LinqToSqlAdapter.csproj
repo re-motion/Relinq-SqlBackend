@@ -101,11 +101,6 @@
     <Compile Include="ScalarRowWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data.Linq.LinqToSqlAdapter.build">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Core\Linq.Core.csproj">
       <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
       <Name>Linq.Core</Name>

@@ -139,9 +139,6 @@
     <None Include="..\IntegrationTests.Common\App.config">
       <Link>App.config</Link>
     </None>
-    <None Include="Data.Linq.IntegrationTests.VisualBasic.build">
-      <SubType>Designer</SubType>
-    </None>
     <EmbeddedResource Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingMethod.result" />
     <EmbeddedResource Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingOperator.result" />
     <Compile Include="My Project\Resources.Designer.vb">
