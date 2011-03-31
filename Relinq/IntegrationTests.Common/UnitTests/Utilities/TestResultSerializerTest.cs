@@ -19,7 +19,6 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.IntegrationTests.Common.TestDomain;
 using Remotion.Linq.IntegrationTests.Common.Utilities;
 
