@@ -18,9 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.LinqToSqlAdapter;
@@ -103,7 +101,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException(ExceptionType = typeof(InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
+    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
     public void ExecuteSingle_Empty_ShouldThrowException ()
     {
       var fakeResult = new DataContextTestClass.Customer[0];
@@ -115,7 +113,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
     public void ExecuteSingle_Many_ShouldThrowException ()
     {
       var fakeResult = new[] { new DataContextTestClass.Customer(),new DataContextTestClass.Customer() };

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
@@ -85,7 +84,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) result.SqlTables[0]).TableInfo, Is.InstanceOfType (typeof (UnresolvedTableInfo)));
+      Assert.That (((SqlTable) result.SqlTables[0]).TableInfo, Is.InstanceOf (typeof (UnresolvedTableInfo)));
       Assert.That (result.TopExpression, Is.Null);
       Assert.That (result.IsDistinctQuery, Is.False);
     }

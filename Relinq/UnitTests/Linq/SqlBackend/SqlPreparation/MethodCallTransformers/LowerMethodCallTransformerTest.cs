@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -42,7 +41,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
       var transformer = new LowerMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
+      Assert.That (result, Is.InstanceOf (typeof (SqlFunctionExpression)));
       Assert.That (result.Type, Is.EqualTo (typeof (string)));
       Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("LOWER"));
       Assert.That (((SqlFunctionExpression) result).Args[0], Is.EqualTo (objectExpression));

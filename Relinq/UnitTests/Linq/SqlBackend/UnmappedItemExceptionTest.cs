@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.UnitTests.Linq.Core.TestUtilities;
 using Remotion.Linq;
 
@@ -33,7 +32,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
       var deserializedException = Serializer.SerializeAndDeserialize (exception);
 
       Assert.That (deserializedException.Message, Is.EqualTo ("message"));
-      Assert.That (deserializedException.InnerException, Is.InstanceOfType (typeof (Exception)));
+      Assert.That (deserializedException.InnerException, Is.InstanceOf (typeof (Exception)));
       Assert.That (deserializedException.InnerException.Message, Is.EqualTo ("inner"));
     }
   }

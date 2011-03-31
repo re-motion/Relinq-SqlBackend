@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using System.Linq;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;

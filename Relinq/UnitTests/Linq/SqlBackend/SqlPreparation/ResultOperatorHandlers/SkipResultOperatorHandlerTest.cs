@@ -20,7 +20,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -174,7 +173,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
-      Assert.That (subStatement.DataInfo, Is.InstanceOfType (typeof (StreamedSequenceInfo)));
+      Assert.That (subStatement.DataInfo, Is.InstanceOf (typeof (StreamedSequenceInfo)));
       Assert.That (subStatement.DataInfo.DataType, Is.EqualTo(typeof (IQueryable<KeyValuePair<Cook, int>>)));
     }
 

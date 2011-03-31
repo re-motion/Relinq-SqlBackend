@@ -51,7 +51,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (ArgumentException))]
+    [ExpectedException (typeof (ArgumentException))]
     public void GetValue_ShouldThrowException ()
     {
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
@@ -60,7 +60,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (ArgumentException))]
+    [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_ShouldThrowException ()
     {
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
@@ -83,7 +83,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (ArgumentException))]
+    [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_WithMultipleColumns ()
     {
       var columnIDs = new[]

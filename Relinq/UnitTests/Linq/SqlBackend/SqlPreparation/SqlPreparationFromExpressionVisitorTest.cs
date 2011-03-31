@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -140,7 +139,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           _context,
           info => new SqlTable (info, JoinSemantics.Inner));
 
-      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
     }
 
     [Test]
@@ -164,7 +163,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
           _context,
           info => new SqlTable (info, JoinSemantics.Inner));
 
-      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.InstanceOfType (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
     }
 
     [Test]
