@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Resources;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common.Utilities
@@ -58,20 +57,20 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     private string GetReferenceResult (MethodBase executingMethod)
     {
-      var resourceName = _resourceNameGenerator (executingMethod);
+      var resultFileName = _resourceNameGenerator (executingMethod);
 
       try
       {
-        return ResourceUtility.GetResourceString (executingMethod.DeclaringType.Assembly, resourceName);
+        return File.ReadAllText (resultFileName);
       }
       catch (Exception)
       {
         var message = string.Format (
-              "No reference result exists for method: '{0}.{1}': Resource '{2}' could not be found.",
+              "No reference result exists for method: '{0}.{1}': File '{2}' could not be found.",
               executingMethod.DeclaringType,
               executingMethod.Name,
-              resourceName);
-        throw new InvalidOperationException (message);
+              resultFileName);
+        throw new FileNotFoundException (message);
       }
     }
   }

@@ -40,7 +40,7 @@ Public Class TestBase
   ' VB will not add the folder structure to the resource file name when embedding a resource
   ' The desired resource name is: Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TestClass.TestMethod.result
   ' This is achieved by putting a file called "LinqSamples101.Resources.TestClass.TestMethod.result" into the LinqSamples101\Resources folder
-  Protected Overrides ReadOnly Property SavedResourceFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
+  Protected Overrides ReadOnly Property SavedResultFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
     Get
       Return Function(method As MethodBase) _
                Mid(method.DeclaringType.Namespace, GetType(TestBase).Namespace.Length + 2) & ".Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
@@ -48,10 +48,12 @@ Public Class TestBase
   End Property
 
   ' When loading the resource, we must specify the full name as described above
-  Protected Overrides ReadOnly Property LoadedResourceNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
+  Protected Overrides ReadOnly Property LoadedResultFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
     Get
       Return Function(method As MethodBase) _
-               method.DeclaringType.Namespace & ".Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
+               Mid(method.DeclaringType.Namespace, GetType(TestBase).Namespace.Length + 2) + "/Resources/" +
+               Mid(method.DeclaringType.Namespace, GetType(TestBase).Namespace.Length + 2) + ".Resources." &
+               method.DeclaringType.Name & "." & method.Name + ".result"
     End Get
   End Property
 End Class

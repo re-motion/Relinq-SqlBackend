@@ -28,8 +28,8 @@ namespace Remotion.Linq.IntegrationTests.Common
     private INorthwindDataProvider _db;
     private ITestExecutor _testExecutor;
 
-    protected abstract Func<MethodBase, string> SavedResourceFileNameGenerator { get; }
-    protected abstract Func<MethodBase, string> LoadedResourceNameGenerator { get; }
+    protected abstract Func<MethodBase, string> SavedResultFileNameGenerator { get; }
+    protected abstract Func<MethodBase, string> LoadedResultFileNameGenerator { get; }
 
     protected INorthwindDataProvider DB
     {
@@ -53,12 +53,12 @@ namespace Remotion.Linq.IntegrationTests.Common
       {
         _db = new LinqToSqlNorthwindDataProvider ();
         var directory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "SavedResults");
-        _testExecutor = new SavingTestExecutor (directory, SavedResourceFileNameGenerator);
+        _testExecutor = new SavingTestExecutor (directory, SavedResultFileNameGenerator);
       }
       else
       {
         _db = new RelinqNorthwindDataProvider ();
-        _testExecutor = new CheckingTestExecutor (LoadedResourceNameGenerator);
+        _testExecutor = new CheckingTestExecutor (LoadedResultFileNameGenerator);
       }
     }
 

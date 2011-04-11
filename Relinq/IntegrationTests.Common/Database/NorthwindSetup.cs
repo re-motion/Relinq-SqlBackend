@@ -16,8 +16,7 @@
 // 
 using System;
 using System.Configuration;
-using System.Reflection;
-using Remotion.Development.UnitTesting.Resources;
+using System.IO;
 using Remotion.Linq.IntegrationTests.Common.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common.Database
@@ -36,8 +35,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Database
       var connectionString = connectionSettings.ConnectionString;
       var databaseAgent = new DatabaseAgent (connectionString);
 
-      var resourceID = typeof (NorthwindSetup).Namespace + ".Northwnd.sql";
-      var commandBatch = ResourceUtility.GetResourceString (Assembly.GetExecutingAssembly(), resourceID);
+      var commandBatch = File.ReadAllText ("Database/Northwnd.sql");
 
       databaseAgent.ExecuteBatchString (commandBatch, false);
     }

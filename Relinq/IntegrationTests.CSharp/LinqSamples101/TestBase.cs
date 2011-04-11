@@ -39,7 +39,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
 {
   public class TestBase : AbstractTestBase
   {
-    protected override Func<MethodBase, string> SavedResourceFileNameGenerator
+    protected override Func<MethodBase, string> SavedResultFileNameGenerator
     {
       // C# will automatically add the folder structure to the resource file name when embedding a resource
       // The desired resource name is: Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
@@ -47,10 +47,10 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
       get { return method => method.DeclaringType.Name + "." + method.Name + ".result"; }
     }
 
-    protected override Func<MethodBase, string> LoadedResourceNameGenerator
+    protected override Func<MethodBase, string> LoadedResultFileNameGenerator
     {
       // When loading the resource, we must specify the full name as described above
-      get { return method => method.DeclaringType.Namespace + ".Resources." + method.DeclaringType.Name + "." + method.Name + ".result"; }
+      get { return method => "LinqSamples101/Resources/" + method.DeclaringType.Name + "." + method.Name + ".result"; }
     }
   }
 }

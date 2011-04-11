@@ -106,13 +106,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\Northwnd License.txt" />
-    <EmbeddedResource Include="Database\Northwnd.sql" />
+    <Content Include="Database\Northwnd.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Remotion\Development\Core\Development.Core.csproj">
-      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
-      <Name>Development.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\Linq.Core.csproj">
       <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
       <Name>Linq.Core</Name>
