@@ -133,7 +133,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
-    <None Include="..\..\license-headers\Relinq MSPL.licenseheader">
+    <None Include="..\Relinq MSPL.licenseheader">
       <Link>Relinq MSPL.licenseheader</Link>
     </None>
     <None Include="..\..\remotion.snk">

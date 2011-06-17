@@ -96,7 +96,7 @@
     <Compile Include="LinqSamples101\WhereTests.cs" />
     <Compile Include="LinqSamples101\Name.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="..\..\license-headers\Relinq MSPL.licenseheader">
+    <None Include="..\Relinq MSPL.licenseheader">
       <Link>Relinq MSPL.licenseheader</Link>
     </None>
     <None Include="..\..\remotion.snk">
