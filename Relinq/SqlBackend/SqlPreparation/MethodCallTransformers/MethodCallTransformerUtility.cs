@@ -66,6 +66,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static void CheckArgumentCount (MethodCallExpression methodCallExpression, params int[] allowedArgumentCounts)
     {
+      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull ("allowedArgumentCounts", allowedArgumentCounts);
+
       if (!allowedArgumentCounts.Contains (methodCallExpression.Arguments.Count))
       {
         var message = string.Format (
@@ -80,6 +83,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static void CheckStaticMethod (MethodCallExpression methodCallExpression)
     {
+      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
       if (!methodCallExpression.Method.IsStatic)
       {
         var message = string.Format (
@@ -92,6 +97,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static void CheckInstanceMethod (MethodCallExpression methodCallExpression)
     {
+      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
       if (methodCallExpression.Method.IsStatic)
       {
         var message = string.Format (
