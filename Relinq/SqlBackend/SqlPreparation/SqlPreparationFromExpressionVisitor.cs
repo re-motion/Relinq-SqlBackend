@@ -50,8 +50,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator);
       visitor.VisitExpression (fromExpression);
-      if (visitor._fromExpressionInfo != null)
-        return visitor._fromExpressionInfo.Value;
+      if (visitor.FromExpressionInfo != null)
+        return visitor.FromExpressionInfo.Value;
 
       var message = string.Format (
           "Error parsing expression '{0}'. Expressions of type '{1}' cannot be used as the SqlTables of a from clause.",
@@ -61,15 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     }
 
     private readonly UniqueIdentifierGenerator _generator;
-    private readonly ISqlPreparationContext _context;
-
-    private FromExpressionInfo? _fromExpressionInfo;
     private readonly Func<ITableInfo, SqlTableBase> _tableGenerator;
-
-    protected FromExpressionInfo? FromExpressionInfo
-    {
-      get { return _fromExpressionInfo; }
-    }
 
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
@@ -80,9 +72,20 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         : base (context, stage, provider)
     {
       _generator = generator;
-      _context = context;
-      _fromExpressionInfo = null;
+      FromExpressionInfo = null;
       _tableGenerator = tableGenerator;
+    }
+
+    protected FromExpressionInfo? FromExpressionInfo { get; set; }
+
+    protected UniqueIdentifierGenerator Generator
+    {
+      get { return _generator; }
+    }
+
+    public Func<ITableInfo, SqlTableBase> TableGenerator
+    {
+      get { return _tableGenerator; }
     }
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
@@ -92,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var itemType = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "from expression");
       var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null);
+      FromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null);
 
       return sqlTableReferenceExpression;
     }
@@ -101,13 +104,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, _context, Stage, MethodCallTransformerProvider);
+      var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, Context, Stage, MethodCallTransformerProvider);
 
       var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
       var oldStyleJoinedTable = _tableGenerator (joinedTable);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
-      _fromExpressionInfo = new FromExpressionInfo (
+      FromExpressionInfo = new FromExpressionInfo (
           oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new JoinConditionExpression (joinedTable));
 
       return sqlTableReferenceExpression;
@@ -119,11 +122,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var sqlStatement = expression.SqlStatement;
 
-      var factory = new SqlPreparationSubStatementTableFactory (Stage, _context, _generator);
-      _fromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
-      Debug.Assert (_fromExpressionInfo.Value.WhereCondition == null);
+      var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
+      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
+      Debug.Assert (FromExpressionInfo.Value.WhereCondition == null);
 
-      return new SqlTableReferenceExpression (_fromExpressionInfo.Value.SqlTable);
+      return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
@@ -132,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-      _fromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
+      FromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
 
       return expression;
     }
@@ -147,19 +150,19 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
             Stage,
             _generator,
             MethodCallTransformerProvider,
-            _context,
+            Context,
             _tableGenerator);
 
-        _context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);
+        Context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);
 
         var whereCondition =
             Stage.PrepareWhereExpression (
-                Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), _context);
+                Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), Context);
 
         if (fromExpressionInfo.WhereCondition != null)
           whereCondition = Expression.AndAlso (fromExpressionInfo.WhereCondition, whereCondition);
 
-        _fromExpressionInfo = new FromExpressionInfo (
+        FromExpressionInfo = new FromExpressionInfo (
             fromExpressionInfo.SqlTable,
             fromExpressionInfo.ExtractedOrderings.ToArray(),
             fromExpressionInfo.ItemSelector,

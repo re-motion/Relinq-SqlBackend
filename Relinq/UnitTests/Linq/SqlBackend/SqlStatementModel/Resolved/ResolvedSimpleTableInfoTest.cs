@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -52,6 +53,29 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
       var result = _tableInfo.GetResolvedTableInfo();
 
       Assert.That (result, Is.SameAs (_tableInfo));
+    }
+
+    [Test]
+    public void ResolveReference ()
+    {
+      var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
+      var fakeResult = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      var generator = new UniqueIdentifierGenerator();
+      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver>();
+      var mappingResolutionContext = new MappingResolutionContext();
+
+      resolverMock
+          .Expect (mock => mock.ResolveSimpleTableInfo (_tableInfo, generator))
+          .Return (fakeResult);
+      resolverMock.Replay ();
+
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+
+      resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
     }
 
     [Test]

@@ -26,11 +26,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   public class ResolvedJoinInfoTest
   {
     [Test]
-    public void GetResolvedTableInfo ()
+    public void GetResolvedJoinInfo ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
 
-      var result = joinInfo.GetResolvedLeftJoinInfo().ForeignTableInfo;
+      var result = joinInfo.GetResolvedJoinInfo().ForeignTableInfo;
 
       Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
     }

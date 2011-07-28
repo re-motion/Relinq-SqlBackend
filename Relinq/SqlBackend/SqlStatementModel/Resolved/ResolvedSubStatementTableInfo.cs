@@ -15,7 +15,9 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -51,6 +53,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     public string TableAlias
     {
       get { return _tableAlias;  }
+    }
+
+    public Expression ResolveReference (SqlTableBase sqlTable, IMappingResolver mappingResolver, IMappingResolutionContext context, UniqueIdentifierGenerator generator)
+    {
+      var selectProjection = SqlStatement.SelectProjection;
+      return SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (selectProjection, this, sqlTable, context);
     }
 
     public SqlStatement SqlStatement

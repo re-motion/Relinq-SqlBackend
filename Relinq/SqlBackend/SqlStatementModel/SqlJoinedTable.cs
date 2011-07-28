@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override IResolvedTableInfo GetResolvedTableInfo ()
     {
-      return JoinInfo.GetResolvedLeftJoinInfo().ForeignTableInfo;
+      return JoinInfo.GetResolvedJoinInfo().ForeignTableInfo;
     }
 
     public ITableInfo Accept (ITableInfoVisitor visitor)

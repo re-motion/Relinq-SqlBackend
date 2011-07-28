@@ -42,7 +42,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage>();
       _commandBuilder = new SqlCommandBuilder();
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.FirstTable);
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.TableContextKind.FirstTable);
     }
 
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlTable_InnerJoinSemantic_FirstTable ()
     {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.FirstTable);
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.TableContextKind.FirstTable);
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
       
@@ -150,7 +150,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlTable_InnerJoinSemantic_NonFirstTable_SimpleTableInfo ()
     {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.TableContextKind.NonFirstTable);
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
@@ -162,7 +162,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlTable_InnerJoinSemantic_NonFirstTable_SubstatementTableInfo ()
     {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.TableContextKind.NonFirstTable);
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var tableInfo = new ResolvedSubStatementTableInfo("q0", sqlStatement);
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
@@ -181,7 +181,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlTable_LeftJoinSemantic_FirstTable ()
     {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.FirstTable);
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.TableContextKind.FirstTable);
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
 
@@ -193,7 +193,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlTable_LeftJoinSemantic_NonFirstTable ()
     {
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.Context.NonFirstTable);
+      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock, SqlTableAndJoinTextGenerator.TableContextKind.NonFirstTable);
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
 

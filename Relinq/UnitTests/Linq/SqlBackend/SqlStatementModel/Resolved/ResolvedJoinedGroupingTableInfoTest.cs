@@ -15,9 +15,13 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -25,14 +29,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   [TestFixture]
   public class ResolvedJoinedGroupingTableInfoTest
   {
+    private SqlStatement _sqlStatement;
     private ResolvedJoinedGroupingTableInfo _tableInfo;
 
     [SetUp]
     public void SetUp ()
     {
+      _sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        SelectProjection = new NamedExpression ("test", Expression.Constant (5)),
+        DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (0))
+      }.GetSqlStatement ();
+
       _tableInfo = new ResolvedJoinedGroupingTableInfo (
           "q0",
-          SqlStatementModelObjectMother.CreateSqlStatement(),
+          _sqlStatement,
           SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression(),
           "q1");
     }
@@ -61,6 +72,25 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
       var result = _tableInfo.GetResolvedTableInfo();
 
       Assert.That (result, Is.SameAs (_tableInfo));
+    }
+
+    [Test]
+    public void ResolveReference ()
+    {
+      var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
+      
+      var generator = new UniqueIdentifierGenerator ();
+      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver> ();
+      var mappingResolutionContext = new MappingResolutionContext ();
+
+      resolverMock.Replay ();
+
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
+      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (_tableInfo.TableAlias));
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
   }
 }

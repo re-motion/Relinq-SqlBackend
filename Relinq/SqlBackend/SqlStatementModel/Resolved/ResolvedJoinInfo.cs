@@ -67,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       return visitor.VisitResolvedJoinInfo (this);
     }
 
-    public ResolvedJoinInfo GetResolvedLeftJoinInfo ()
+    public ResolvedJoinInfo GetResolvedJoinInfo ()
     {
       return this;
     }

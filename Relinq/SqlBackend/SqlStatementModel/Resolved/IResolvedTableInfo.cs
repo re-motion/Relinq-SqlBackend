@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq.Expressions;
+using Remotion.Linq.SqlBackend.MappingResolution;
+
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
@@ -22,5 +25,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   public interface IResolvedTableInfo : ITableInfo
   {
     string TableAlias { get; }
+
+    Expression ResolveReference (SqlTableBase sqlTable, IMappingResolver mappingResolver, IMappingResolutionContext context, UniqueIdentifierGenerator generator);
   }
 }

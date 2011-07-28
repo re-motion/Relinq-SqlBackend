@@ -64,8 +64,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       var sqlTableBaseAsSqlTable = _sqlTableBase as SqlTable;
       if (sqlTableBaseAsSqlTable!=null)
       {
-        if (sqlTableBaseAsSqlTable.TableInfo is IResolvedTableInfo)
-          return "TABLE-REF(" + sqlTableBaseAsSqlTable.GetResolvedTableInfo ().TableAlias + ")";
+        var resolvedTableInfo = sqlTableBaseAsSqlTable.TableInfo as IResolvedTableInfo;
+        if (resolvedTableInfo != null)
+          return "TABLE-REF(" + resolvedTableInfo.TableAlias + ")";
         else
           return "TABLE-REF(" + sqlTableBaseAsSqlTable.TableInfo.GetType ().Name + "(" + sqlTableBaseAsSqlTable.TableInfo.ItemType.Name + "))";
       }
@@ -74,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       if (sqlTableBaseAsSqlJoinedTable != null)
       {
         if (sqlTableBaseAsSqlJoinedTable.JoinInfo is ResolvedJoinInfo)
-          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetResolvedLeftJoinInfo ().ForeignTableInfo.TableAlias + ")";
+          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetResolvedJoinInfo ().ForeignTableInfo.TableAlias + ")";
         else
           return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetType().Name + "(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.ItemType.Name + "))";
       }

@@ -84,7 +84,6 @@
     <Compile Include="MappingResolution\SqlContextJoinInfoVisitor.cs" />
     <Compile Include="MappingResolution\SqlContextSelectionAdjuster.cs" />
     <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />
-    <Compile Include="MappingResolution\SqlTableReferenceResolver.cs" />
     <Compile Include="MappingResolution\SubStatementReferenceResolver.cs" />
     <Compile Include="SqlGeneration\ColumnID.cs" />
     <Compile Include="SqlGeneration\IDatabaseResultRow.cs" />

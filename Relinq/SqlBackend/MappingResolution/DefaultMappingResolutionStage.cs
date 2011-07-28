@@ -40,6 +40,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _resolver = resolver;
     }
 
+    public IMappingResolver Resolver
+    {
+      get { return _resolver; }
+    }
+
+    public UniqueIdentifierGenerator UniqueIdentifierGenerator
+    {
+      get { return _uniqueIdentifierGenerator; }
+    }
+
     public virtual Expression ResolveSelectExpression (Expression expression, SqlStatementBuilder sqlStatementBuilder, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -149,7 +159,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      return SqlTableReferenceResolver.ResolveTableReference (expression, _resolver, _uniqueIdentifierGenerator, context);
+      return expression.SqlTable.GetResolvedTableInfo ().ResolveReference (expression.SqlTable, _resolver, context, _uniqueIdentifierGenerator);
     }
 
     public Expression ResolveMemberAccess (Expression resolvedSourceExpression, MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionContext context)

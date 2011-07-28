@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       return visitor.VisitUnresolvedJoinInfo (this);
     }
 
-    public ResolvedJoinInfo GetResolvedLeftJoinInfo ()
+    public ResolvedJoinInfo GetResolvedJoinInfo ()
     {
       throw new InvalidOperationException ("This join has not yet been resolved; call the resolution step first.");
     }

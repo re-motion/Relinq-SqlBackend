@@ -22,7 +22,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   /// <summary>
   /// <see cref="ISqlPreparationContext"/> provides methods to handle a concrete preparation context.
   /// </summary>
-  // TODO Review: Consider removing this interface
+  // TODO: Consider removing this interface and keeping only the implementation
   public interface ISqlPreparationContext
   {
     bool IsOuterMostQuery { get; }

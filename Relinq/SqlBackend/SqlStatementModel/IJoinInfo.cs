@@ -26,6 +26,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     Type ItemType { get; }
     IJoinInfo Accept (IJoinInfoVisitor visitor);
-    ResolvedJoinInfo GetResolvedLeftJoinInfo ();
+    ResolvedJoinInfo GetResolvedJoinInfo ();
   }
 }

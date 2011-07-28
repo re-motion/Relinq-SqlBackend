@@ -18,27 +18,37 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
   public class ResolvedSubStatementTableInfoTest
   {
+    private ResolvedSubStatementTableInfo _tableInfo;
+    private SqlStatement _sqlStatement;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+                         {
+                             SelectProjection = new NamedExpression ("test", Expression.Constant (5)),
+                             DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (0))
+                         }.GetSqlStatement();
+      _tableInfo = new ResolvedSubStatementTableInfo ("c", _sqlStatement);
+    }
+
     [Test]
     public void Initialization_ItemType ()
     {
-      var sqlStatement = new SqlStatementBuilder()
-                    {
-                        SelectProjection = Expression.Constant (new Cook()),
-                        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0))
-                    }.GetSqlStatement();
-      var subStatementInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
-
-      Assert.That (subStatementInfo.ItemType, Is.EqualTo(((StreamedSequenceInfo) sqlStatement.DataInfo).ItemExpression.Type));
+      Assert.That (_tableInfo.ItemType, Is.EqualTo (typeof (int)));
     }
 
     [Test]
@@ -52,6 +62,25 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
       }.GetSqlStatement ();
       
       new ResolvedSubStatementTableInfo ("c", sqlStatement);
+    }
+
+    [Test]
+    public void ResolveReference ()
+    {
+      var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
+
+      var generator = new UniqueIdentifierGenerator ();
+      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver> ();
+      var mappingResolutionContext = new MappingResolutionContext ();
+
+      resolverMock.Replay ();
+
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
+      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (_tableInfo.TableAlias));
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
 
      [Test]

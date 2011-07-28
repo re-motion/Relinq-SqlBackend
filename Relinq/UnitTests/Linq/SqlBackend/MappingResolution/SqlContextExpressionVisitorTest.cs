@@ -87,7 +87,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result1, Is.SameAs (expressionOfCorrectType));
 
       var expectedResult2 = new TestExtensionExpression (
-          Expression.Equal (((ConvertedBooleanExpression) expressionOfIncorrectType.ConstantExpression).Expression, new SqlLiteralExpression (1)));
+          Expression.Equal (((ConvertedBooleanExpression) expressionOfIncorrectType.Expression).Expression, new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult2, result2);
     }
 

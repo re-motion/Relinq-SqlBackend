@@ -58,6 +58,26 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _context = context;
     }
 
+    public IMappingResolver Resolver
+    {
+      get { return _resolver; }
+    }
+
+    public UniqueIdentifierGenerator Generator
+    {
+      get { return _generator; }
+    }
+
+    public IMappingResolutionStage Stage
+    {
+      get { return _stage; }
+    }
+
+    public IMappingResolutionContext Context
+    {
+      get { return _context; }
+    }
+
     public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
