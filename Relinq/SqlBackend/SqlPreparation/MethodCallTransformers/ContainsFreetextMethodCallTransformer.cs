@@ -26,7 +26,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// <see cref="ContainsFreetextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
-  /// <see cref="O:StringExtensions.SqlContainsFreetext"/> extension methods.
+  /// <see cref="StringExtensions.SqlContainsFreetext(string, string)"/> extension methods.
   /// </summary>
   public class ContainsFreetextMethodCallTransformer : IMethodCallTransformer
   {

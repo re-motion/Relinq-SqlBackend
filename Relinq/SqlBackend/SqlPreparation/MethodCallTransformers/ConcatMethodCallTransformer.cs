@@ -26,7 +26,7 @@ using Remotion.Linq.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// Implements the <see cref="IMethodCallTransformer"/> interface for the <see cref="O:string.Concat"/> overloads. 
+  /// Implements the <see cref="IMethodCallTransformer"/> interface for the <see cref="string.Concat(string, string)"/> overloads. 
   /// </summary>
   /// <remarks>
   /// Calls to those methods

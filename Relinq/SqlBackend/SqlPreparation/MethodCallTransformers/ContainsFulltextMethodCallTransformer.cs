@@ -23,7 +23,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// <see cref="ContainsFulltextMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the 
-  /// <see cref="O:StringExtensions.SqlContainsFulltext"/> extension methods.
+  /// <see cref="StringExtensions.SqlContainsFulltext(string, string)"/> extension methods.
   /// </summary>
   public class ContainsFulltextMethodCallTransformer : IMethodCallTransformer
   {

@@ -23,7 +23,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="IndexOfMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="O:string.IndexOf(char)"/> methods.
+  /// <see cref="IndexOfMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.IndexOf(char)"/> methods.
   /// </summary>
   public class IndexOfMethodCallTransformer : IMethodCallTransformer
   {

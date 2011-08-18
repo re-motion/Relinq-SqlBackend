@@ -24,7 +24,7 @@ using Remotion.Linq.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="SubstringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="O:string.Substring"/> methods.
+  /// <see cref="SubstringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.Substring(int)"/> methods.
   /// </summary>
   public class SubstringMethodCallTransformer : IMethodCallTransformer
   {
