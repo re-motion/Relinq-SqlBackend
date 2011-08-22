@@ -22,7 +22,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
-using Remotion.Linq;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -301,7 +300,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var result = _mappingResolver.ResolveConstantExpression (constantExpr);
 
-      var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, customer.CustomerID);
+      var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, Expression.Constant (customer.CustomerID, typeof (string)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
     }
 

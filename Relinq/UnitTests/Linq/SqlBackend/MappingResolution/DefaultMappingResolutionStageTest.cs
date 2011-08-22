@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -69,6 +68,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = _stage.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext);
@@ -111,6 +113,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResult.Expression))
+          .Return (fakeResult.Expression);
       _resolverMock.Replay();
 
       var result = _stage.ResolveWhereExpression (expression, _mappingResolutionContext);
@@ -129,6 +134,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay();
 
@@ -167,6 +175,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = _stage.ResolveOrderingExpression (expression, _mappingResolutionContext);
@@ -186,6 +197,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
       _resolverMock.Replay();
 
       var result = _stage.ResolveTopExpression (expression, _mappingResolutionContext);
@@ -204,6 +218,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
           .Return (fakeResult);
       _resolverMock.Replay ();
 
@@ -401,6 +418,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeResolvedExpressionAgain = Expression.Constant ("Hugo2", typeof (string));
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (fakeResolvedExpression))
+          .Return (fakeResolvedExpressionAgain);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResolvedExpressionAgain))
           .Return (fakeResolvedExpressionAgain);
       _resolverMock.Replay();
 

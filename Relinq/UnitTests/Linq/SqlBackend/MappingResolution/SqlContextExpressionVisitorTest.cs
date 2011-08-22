@@ -616,7 +616,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlEntityConstantExpression_ValueRequired ()
     {
-      var expression = new SqlEntityConstantExpression (typeof (int), 5, 1);
+      var expression = new SqlEntityConstantExpression (typeof (int), 5, Expression.Constant (1));
       var result = _valueRequiredVisitor.VisitSqlEntityConstantExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -625,12 +625,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlEntityConstantExpression_SingleValueRequired ()
     {
-      var expression = new SqlEntityConstantExpression (typeof (int), 5, 1);
+      var primaryKeyExpression = Expression.Constant (1);
+      var expression = new SqlEntityConstantExpression (typeof (int), 5, primaryKeyExpression);
 
       var result = _singleValueRequiredVisitor.VisitSqlEntityConstantExpression (expression);
 
-      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) result).Value, Is.EqualTo (1));
+      Assert.That (result, Is.SameAs (primaryKeyExpression));
     }
 
     [Test]

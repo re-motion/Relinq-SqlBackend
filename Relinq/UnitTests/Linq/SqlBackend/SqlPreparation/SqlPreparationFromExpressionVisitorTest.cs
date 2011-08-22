@@ -19,10 +19,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
+using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
@@ -272,7 +273,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [ExpectedException (typeof (NotSupportedException))]
     public void VisitSqlEntityConstantExpression ()
     {
-      var expression = new SqlEntityConstantExpression (typeof (Cook), "test", "test");
+      var expression = new SqlEntityConstantExpression (typeof (Cook), "test", new SqlLiteralExpression (12));
 
       SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           expression, _stageMock, _generator, _methodCallTransformerProvider, _context, null);

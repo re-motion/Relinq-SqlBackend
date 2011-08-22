@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -290,9 +289,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
       if (constantExpression.Value is Cook)
-        return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, ((Cook) constantExpression.Value).ID);
+        return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, Expression.Constant (((Cook) constantExpression.Value).ID, typeof (int)));
       else if (constantExpression.Value is Company)
-        return new SqlEntityConstantExpression (typeof (Company), constantExpression.Value, ((Company) constantExpression.Value).ID);
+        return new SqlEntityConstantExpression (typeof (Company), constantExpression.Value, Expression.Constant (((Company) constantExpression.Value).ID, typeof (int)));
       else
         return constantExpression;
     }

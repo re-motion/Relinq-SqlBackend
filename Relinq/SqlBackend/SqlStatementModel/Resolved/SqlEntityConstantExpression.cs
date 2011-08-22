@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
@@ -29,16 +30,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   public class SqlEntityConstantExpression : ExtensionExpression
   {
     private readonly object _value;
-    private readonly object _primaryKeyValue;
+    private readonly Expression _primaryKeyExpression;
 
-    public SqlEntityConstantExpression (Type type, object value, object primaryKeyValue)
+    public SqlEntityConstantExpression (Type type, object value, Expression primaryKeyExpression)
         : base(type)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("primaryKeyValue", primaryKeyValue);
+      ArgumentUtility.CheckNotNull ("primaryKeyExpression", primaryKeyExpression);
 
       _value = value;
-      _primaryKeyValue = primaryKeyValue;
+      _primaryKeyExpression = primaryKeyExpression;
     }
 
     public object Value
@@ -46,14 +47,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _value; }
     }
 
-    public object PrimaryKeyValue
+    public Expression PrimaryKeyExpression
     {
-      get { return _primaryKeyValue; }
+      get { return _primaryKeyExpression; }
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      return this;
+      var newPrimaryKeyExpression = visitor.VisitExpression (_primaryKeyExpression);
+      if (newPrimaryKeyExpression != _primaryKeyExpression)
+        return new SqlEntityConstantExpression (Type, _value, newPrimaryKeyExpression);
+      else
+        return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
@@ -67,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return string.Format ("ENTITY({0})", _primaryKeyValue);
+      return string.Format ("ENTITY({0})", FormattingExpressionTreeVisitor.Format (_primaryKeyExpression));
     }
   }
 }

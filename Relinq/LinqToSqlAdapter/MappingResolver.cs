@@ -118,7 +118,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       {
         var primaryKey = GetPrimaryKeyMember (metaType);
         var primaryKeyValue = primaryKey.MemberAccessor.GetBoxedValue (constantExpression.Value);
-        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, primaryKeyValue);
+        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, Expression.Constant (primaryKeyValue, primaryKey.Type));
       }
 
       return constantExpression;

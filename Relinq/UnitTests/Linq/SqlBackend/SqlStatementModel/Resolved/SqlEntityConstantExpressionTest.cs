@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
@@ -28,24 +29,47 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   [TestFixture]
   public class SqlEntityConstantExpressionTest
   {
+    private ConstantExpression _primaryKeyExpression;
     private SqlEntityConstantExpression _expression;
 
     [SetUp]
     public void SetUp ()
     {
-      _expression = new SqlEntityConstantExpression (typeof (Cook), new object(), "5");
+      _primaryKeyExpression = Expression.Constant (5);
+      _expression = new SqlEntityConstantExpression (typeof (Cook), new object(), _primaryKeyExpression);
     }
 
     [Test]
-    public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
+    public void VisitChildren_VisitsPrimaryKeyExpression_Unchanged ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      visitorMock.Expect (mock => mock.VisitExpression (_primaryKeyExpression)).Return (_primaryKeyExpression);
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
 
+      visitorMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (_expression));
-      visitorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void VisitChildren_VisitsPrimaryKeyExpression_Changed ()
+    {
+      var newPrimaryKeyExpression = Expression.Constant (6);
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      visitorMock.Expect (mock => mock.VisitExpression (_primaryKeyExpression)).Return (newPrimaryKeyExpression);
+      visitorMock.Replay ();
+
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Not.SameAs (_expression));
+      Assert.That (result, Is.TypeOf<SqlEntityConstantExpression> ());
+
+      var newSqlEntityConstantExpression = ((SqlEntityConstantExpression) result);
+      Assert.That (newSqlEntityConstantExpression.PrimaryKeyExpression, Is.SameAs (newPrimaryKeyExpression));
+      Assert.That (newSqlEntityConstantExpression.Value, Is.SameAs (_expression.Value));
+      Assert.That (newSqlEntityConstantExpression.Type, Is.SameAs (_expression.Type));
     }
 
     [Test]

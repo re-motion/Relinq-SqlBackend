@@ -107,7 +107,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return _resolver.ResolveConstantExpression (expression);
+      var resolvedExpression = _resolver.ResolveConstantExpression (expression);
+      if (resolvedExpression != expression)
+        return VisitExpression (resolvedExpression);
+      else
+        return expression;
     }
 
     protected override Expression VisitMemberExpression (MemberExpression expression)

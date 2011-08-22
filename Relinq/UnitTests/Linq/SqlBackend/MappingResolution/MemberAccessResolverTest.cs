@@ -329,7 +329,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         + "member expressions.")]
     public void VisitMemberExpression_OnSqlEntityConstantExpression ()
     {
-      var expression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), "14");
+      var expression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (14));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
 
       MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);

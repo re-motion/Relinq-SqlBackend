@@ -203,8 +203,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
-        return Expression.Constant (expression.PrimaryKeyValue, expression.PrimaryKeyValue.GetType());
-      return expression;
+        return expression.PrimaryKeyExpression;
+      else
+        return expression; // rely on VisitExpression to apply correct semantics
     }
 
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
