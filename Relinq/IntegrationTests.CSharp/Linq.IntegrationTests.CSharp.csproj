@@ -88,13 +88,14 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.cs" />
     <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
-    <Compile Include="LinqSamples101\TestBase.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="LinqSamples101\TopBottomTests.cs" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />
     <Compile Include="LinqSamples101\UserDefinedFunctionsTests.cs" />
     <Compile Include="LinqSamples101\ViewTests.cs" />
     <Compile Include="LinqSamples101\WhereTests.cs" />
     <Compile Include="LinqSamples101\Name.cs" />
+    <Compile Include="MiscTests\ConvertTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="..\Relinq MSPL.licenseheader">
       <Link>Relinq MSPL.licenseheader</Link>
@@ -106,6 +107,9 @@
       <Link>App.config</Link>
     </None>
     <Compile Include="SetupFixture.cs" />
+    <Content Include="MiscTests\Resources\ConvertTests.Convert_ToString_MoreThan30Characters.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result">
@@ -522,6 +526,7 @@
       <Name>Linq.IntegrationTests.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
