@@ -137,9 +137,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (statement == null)
         return false;
 
-      // TODO 3303: Compare DataInfo by value when implemented
-      return (_dataInfo.DataType.Equals (statement._dataInfo.DataType))
-              && (_dataInfo.GetType().Equals (statement._dataInfo.GetType()))
+      return (_dataInfo.Equals (statement._dataInfo))
               && (_selectProjection == statement._selectProjection)
               && (_sqlTables.SequenceEqual (statement._sqlTables))
               && (_orderings.SequenceEqual (statement._orderings))
@@ -153,8 +151,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override int GetHashCode ()
     {
-      return HashCodeUtility.GetHashCodeOrZero (_dataInfo.DataType)
-             ^ HashCodeUtility.GetHashCodeOrZero (_dataInfo.GetType())
+      return HashCodeUtility.GetHashCodeOrZero (_dataInfo)
              ^ HashCodeUtility.GetHashCodeOrZero (_selectProjection)
              ^ HashCodeUtility.GetHashCodeForSequence (_sqlTables)
              ^ HashCodeUtility.GetHashCodeForSequence (_orderings)
