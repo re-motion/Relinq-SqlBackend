@@ -41,6 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (short)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (char)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (byte)),
+          MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToString", typeof (string)),
           
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (string)),
           MethodCallTransformerUtility.GetStaticMethod (typeof (Convert), "ToInt64", typeof (bool)),

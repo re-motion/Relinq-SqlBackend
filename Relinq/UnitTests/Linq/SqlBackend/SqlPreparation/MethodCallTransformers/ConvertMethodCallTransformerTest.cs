@@ -40,6 +40,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToString", new[] { typeof (short)})));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToString", new[] { typeof (char)})));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToString", new[] { typeof (byte)})));
+      Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToString", new[] { typeof (string)})));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToInt64", new[] { typeof (string)})));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToInt64", new[] { typeof (bool)})));
       Assert.IsTrue (ConvertMethodCallTransformer.SupportedMethods.Contains (typeof (Convert).GetMethod("ToInt64", new[] { typeof (byte)})));
