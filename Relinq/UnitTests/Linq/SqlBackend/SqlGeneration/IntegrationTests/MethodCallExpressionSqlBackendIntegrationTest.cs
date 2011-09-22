@@ -77,22 +77,22 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       // object overloads
       CheckQuery (
           from c in Cooks select string.Concat (c.ID),
-          "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(NVARCHAR(MAX), [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID),
-          "SELECT (CONVERT(NVARCHAR, [t0].[ID]) + CONVERT(NVARCHAR, [t0].[ID])) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (CONVERT(NVARCHAR(MAX), [t0].[ID]) + CONVERT(NVARCHAR(MAX), [t0].[ID])) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID, c.FirstName),
-          "SELECT ((CONVERT(NVARCHAR, [t0].[ID]) + CONVERT(NVARCHAR, [t0].[ID])) + [t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT ((CONVERT(NVARCHAR(MAX), [t0].[ID]) + CONVERT(NVARCHAR(MAX), [t0].[ID])) + [t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID, c.FirstName, c.Name),
-          "SELECT (((CONVERT(NVARCHAR, [t0].[ID]) + CONVERT(NVARCHAR, [t0].[ID])) + [t0].[FirstName]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (((CONVERT(NVARCHAR(MAX), [t0].[ID]) + CONVERT(NVARCHAR(MAX), [t0].[ID])) + [t0].[FirstName]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       // string overloads
@@ -120,7 +120,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       // object[] overload
       CheckQuery (
           from c in Cooks select string.Concat (new object[] { c.ID, c.Name }),
-          "SELECT (CONVERT(NVARCHAR, [t0].[ID]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT (CONVERT(NVARCHAR(MAX), [t0].[ID]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
     }
 
@@ -187,7 +187,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks select c.ID.ToString(),
-          "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(NVARCHAR(MAX), [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
 
       CheckQuery (
@@ -197,7 +197,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 
       CheckQuery (
           from c in Cooks select System.Convert.ToString (c.ID),
-          "SELECT CONVERT(NVARCHAR, [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
+          "SELECT CONVERT(NVARCHAR(MAX), [t0].[ID]) AS [value] FROM [CookTable] AS [t0]"
           );
     }
 

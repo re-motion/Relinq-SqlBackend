@@ -569,7 +569,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlConvertExpression, _commandBuilder, _stageMock);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(NVARCHAR, @1)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(NVARCHAR(MAX), @1)"));
     }
 
     [Test]

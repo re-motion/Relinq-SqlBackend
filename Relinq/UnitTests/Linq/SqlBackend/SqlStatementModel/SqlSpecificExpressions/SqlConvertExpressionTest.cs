@@ -53,6 +53,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     }
 
     [Test]
+    public void GetSqlTypeName_AllMappedTypes ()
+    {
+      CheckSqlTypeName (typeof (string), "NVARCHAR(MAX)");
+      CheckSqlTypeName (typeof (int), "INT");
+      CheckSqlTypeName (typeof (bool), "BIT");
+      CheckSqlTypeName (typeof (long), "BIGINT");
+      CheckSqlTypeName (typeof (char), "CHAR");
+      CheckSqlTypeName (typeof (DateTime), "DATETIME");
+      CheckSqlTypeName (typeof (decimal), "DECIMAL");
+      CheckSqlTypeName (typeof (double), "FLOAT");
+      CheckSqlTypeName (typeof (short), "SMALLINT");
+      CheckSqlTypeName (typeof (Guid), "UNIQUEIDENTIFIER");
+    }
+
+    [Test]
     public void VisitChildren_NewSource ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
@@ -108,6 +123,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
 
       Assert.That (result, Is.EqualTo ("CONVERT(INT, \"1\")"));
     }
-    
+ 
+    private void CheckSqlTypeName (Type type, string expectedSqlTypeName)
+    {
+      var result = new SqlConvertExpression (type, new CustomExpression (type));
+      Assert.That (result.GetSqlTypeName(), Is.EqualTo (expectedSqlTypeName));
+    }
   }
 }

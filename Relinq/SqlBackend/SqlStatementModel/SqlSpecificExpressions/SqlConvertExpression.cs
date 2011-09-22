@@ -30,7 +30,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   public class SqlConvertExpression : ExtensionExpression
   {
     private readonly Expression _source;
-    private readonly Dictionary<Type, string> _sqlTypeMapping;
+
+    private static readonly Dictionary<Type, string> s_sqlTypeMapping = new Dictionary<Type, string> 
+                                                          {
+                                                              { typeof (string), "NVARCHAR(MAX)" },
+                                                              { typeof (int), "INT" },
+                                                              { typeof (bool), "BIT" },
+                                                              { typeof (long), "BIGINT" },
+                                                              { typeof (char), "CHAR" },
+                                                              { typeof (DateTime), "DATETIME" },
+                                                              { typeof (decimal), "DECIMAL" },
+                                                              { typeof (double), "FLOAT" },
+                                                              { typeof (short), "SMALLINT" },
+                                                              { typeof (Guid), "UNIQUEIDENTIFIER" }
+                                                          };
 
     public SqlConvertExpression (Type targetType, Expression source)
         : base (targetType)
@@ -38,19 +51,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       ArgumentUtility.CheckNotNull ("source", source);
 
       _source = source;
-      _sqlTypeMapping = new Dictionary<Type, string> 
-                       {
-                           { typeof (string), "NVARCHAR" },
-                           { typeof (int), "INT" },
-                           { typeof (bool), "BIT" },
-                           { typeof (long), "BIGINT" },
-                           { typeof (char), "CHAR" },
-                           { typeof (DateTime), "DATETIME" },
-                           { typeof (decimal), "DECIMAL" },
-                           { typeof (double), "FLOAT" },
-                           { typeof (short), "SMALLINT" },
-                           { typeof (Guid), "UNIQUEIDENTIFIER" }
-                       };
     }
 
     public Expression Source
@@ -60,8 +60,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public string GetSqlTypeName ()
     {
-      if (_sqlTypeMapping.ContainsKey (Type))
-        return _sqlTypeMapping[Type];
+      if (s_sqlTypeMapping.ContainsKey (Type))
+        return s_sqlTypeMapping[Type];
       else
       {
         var message = string.Format (
