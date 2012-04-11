@@ -55,5 +55,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", 100)
           );
     }
+
+    [Test]
+    [Ignore ("TODO 4769")]
+    public void CompileInvokeCombination ()
+    {
+      Expression<Func<Cook, bool>> predicate1 = c => c.ID > 100;
+      Expression<Func<Cook, bool>> predicate2 = c => c.Name != null;
+
+      CheckQuery (
+          Cooks.Where (c => predicate1.Compile () (c) && predicate2.Compile () (c)).Select (c => c.FirstName),
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[ID] > @1) AND ([t0].[Name] IS NOT NULL))",
+          new CommandParameter ("@1", 100)
+          );
+    }
   }
 }
