@@ -412,11 +412,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 4877")]
     public void CompoundValuesComparison_NotEqual_OnTopLevel ()
     {
       CheckQuery (
           from c in Cooks where new { X = c.Name, Y = c.IsFullTimeCook } != new { X = c.FirstName, Y = c.IsStarredCook } select c.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] <> [t0].[FirstName]) AND ([t0].[IsFullTimeCook] <> "
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[Name] <> [t0].[FirstName]) OR ([t0].[IsFullTimeCook] <> "
           + "[t0].[IsStarredCook]))");
     }
 
@@ -434,5 +435,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           );
      }
 
+    [Test]
+    [Ignore ("TODO 4877")]
+    public void CompoundValuesComparison_ValuesComingFromSubquery_NotEqual ()
+    {
+      CheckQuery (
+          from x in Cooks.Select (c => new { FirstName = c.FirstName, LastName = c.Name }).Distinct ()
+          where x != new { FirstName = "Hugo", LastName = "Boss" }
+          select x.FirstName,
+          "SELECT [q0].[FirstName] AS [value] FROM (SELECT DISTINCT [t1].[FirstName] AS [FirstName],[t1].[Name] AS [LastName] " +
+          "FROM [CookTable] AS [t1]) AS [q0] WHERE (([q0].[FirstName] <> @1) OR ([q0].[LastName] <> @2))",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss")
+          );
+    }
   }
 }
