@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -29,6 +31,30 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     public override AggregationModifier AggregationModifier
     {
       get { return AggregationModifier.Average; }
+    }
+
+    public override void HandleResultOperator (
+        AverageResultOperator resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
+    {
+      base.HandleResultOperator (resultOperator, sqlStatementBuilder, generator, stage, context);
+
+      // With the Average query operator, the result type determines the desired precision of the algorithm. For example, new[] { 1, 2 }.Average() 
+      // returns a double and thus calculates an average with double precision (1.5).
+      // With SQL, however, the argument type determines the precision of the algorithm. I.e., AVG (intColumn) will return an integer with truncated
+      // average (1).
+      // To simulate Average behavior, we'll add a conversion of the argument expression if the types don't match.
+      var aggregationExpression = (AggregationExpression) sqlStatementBuilder.SelectProjection;
+      if (aggregationExpression.Expression.Type != aggregationExpression.Type)
+      {
+        sqlStatementBuilder.SelectProjection = new AggregationExpression (
+            aggregationExpression.Type,
+            new SqlConvertExpression (aggregationExpression.Type, aggregationExpression.Expression),
+            aggregationExpression.AggregationModifier);
+      }
     }
   }
 }

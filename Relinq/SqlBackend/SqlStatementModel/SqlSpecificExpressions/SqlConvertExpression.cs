@@ -62,14 +62,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       if (s_sqlTypeMapping.ContainsKey (Type))
         return s_sqlTypeMapping[Type];
-      else
-      {
-        var message = string.Format (
-            "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'", 
-            Type.Name, 
-            FormattingExpressionTreeVisitor.Format (_source));
-        throw new NotSupportedException (message);
-      }
+      
+      var underlyingType = Nullable.GetUnderlyingType (Type);
+      if (underlyingType != null && s_sqlTypeMapping.ContainsKey (underlyingType))
+        return s_sqlTypeMapping[underlyingType];
+      
+      var message = string.Format (
+          "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'",
+          Type.Name,
+          FormattingExpressionTreeVisitor.Format (_source));
+      throw new NotSupportedException (message);
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)

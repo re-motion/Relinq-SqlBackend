@@ -15,18 +15,15 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core;
-using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -36,7 +33,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
     private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
     private AverageResultOperatorHandler _handler;
-    private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
 
     [SetUp]
@@ -46,25 +42,61 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       _stage = new DefaultSqlPreparationStage (
           CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new AverageResultOperatorHandler ();
-      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
-      {
-        DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5))
-      };
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
 
     [Test]
-    public void HandleResultOperator ()
+    public void HandleResultOperator_WithMatchingTypes ()
     {
-      _sqlStatementBuilder.SelectProjection = new NamedExpression (null, _sqlStatementBuilder.SelectProjection);
+      var sqlStatementBuilder = CreateSqlStatementBuilder (typeof (decimal));
+
       var averageResultOperator = new AverageResultOperator ();
+      Assert.That (averageResultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo).DataType, Is.SameAs (typeof (decimal)));
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      var previousSelectExpression = sqlStatementBuilder.SelectProjection;
 
-      Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Average));
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
-      Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (double )));
+      _handler.HandleResultOperator (averageResultOperator, sqlStatementBuilder, _generator, _stage, _context);
+
+      Assert.That (sqlStatementBuilder.SelectProjection, Is.TypeOf<AggregationExpression> ());
+      Assert.That (((AggregationExpression) sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Average));
+      Assert.That (((AggregationExpression) sqlStatementBuilder.SelectProjection).Expression, Is.SameAs (previousSelectExpression));
+
+      Assert.That (sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
+      Assert.That (((StreamedScalarValueInfo) sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (decimal)));
     }
-    
+
+    [Test]
+    public void HandleResultOperator_WithNonMatchingTypes ()
+    {
+      var sqlStatementBuilder = CreateSqlStatementBuilder (typeof (int));
+
+      var averageResultOperator = new AverageResultOperator ();
+      Assert.That (averageResultOperator.GetOutputDataInfo (sqlStatementBuilder.DataInfo).DataType, Is.SameAs (typeof (double)));
+
+      var previousSelectExpression = sqlStatementBuilder.SelectProjection;
+
+      _handler.HandleResultOperator (averageResultOperator, sqlStatementBuilder, _generator, _stage, _context);
+
+      Assert.That (sqlStatementBuilder.SelectProjection, Is.TypeOf<AggregationExpression> ());
+      Assert.That (((AggregationExpression) sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Average));
+      Assert.That (((AggregationExpression) sqlStatementBuilder.SelectProjection).Expression, Is.TypeOf<SqlConvertExpression> ());
+
+      var sqlConvertExpression = (SqlConvertExpression) ((AggregationExpression) sqlStatementBuilder.SelectProjection).Expression;
+      Assert.That (sqlConvertExpression.Type, Is.SameAs (typeof (double)));
+      Assert.That (sqlConvertExpression.Source, Is.SameAs (previousSelectExpression));
+
+      Assert.That (sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
+      Assert.That (((StreamedScalarValueInfo) sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (double)));
+    }
+
+    private SqlStatementBuilder CreateSqlStatementBuilder (Type sequenceItemType)
+    {
+      var selectProjection = ExpressionHelper.CreateExpression (sequenceItemType);
+      return new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
+      {
+        DataInfo = new StreamedSequenceInfo (sequenceItemType.MakeArrayType (), selectProjection),
+        SelectProjection = selectProjection
+      };
+    }
   }
 }

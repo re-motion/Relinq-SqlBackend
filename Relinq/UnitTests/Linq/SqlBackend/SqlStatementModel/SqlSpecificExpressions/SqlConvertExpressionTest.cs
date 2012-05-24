@@ -44,6 +44,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     }
 
     [Test]
+    public void GetSqlTypeName_NullableValueType ()
+    {
+      var convertExpresion = new SqlConvertExpression (typeof (int?), Expression.Constant ("1"));
+      var result = convertExpresion.GetSqlTypeName ();
+      Assert.That (result, Is.EqualTo ("INT"));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "Cannot obtain a SQL type for type 'Cook'. Expression being converted: '\"1\"'")]
     public void GetSqlTypeName_KeyNotFound_ThrowsException ()

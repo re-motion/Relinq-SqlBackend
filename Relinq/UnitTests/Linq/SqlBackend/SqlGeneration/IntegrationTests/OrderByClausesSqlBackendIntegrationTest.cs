@@ -98,10 +98,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
          from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook == c select k).Single(),
-         "SELECT [q3].[ID],[q3].[CookID],[q3].[Name],[q3].[RestaurantID],[q3].[SubKitchenID],[q3].[LastCleaningDay],[q3].[PassedLastInspection] "
+         "SELECT [q3].[ID],[q3].[CookID],[q3].[Name],[q3].[RestaurantID],[q3].[SubKitchenID],[q3].[LastCleaningDay],[q3].[PassedLastInspection],[q3].[LastInspectionScore] "
           + "FROM [CookTable] AS [t0] "
           + "CROSS APPLY "
-          + "(SELECT TOP (1) [t1].[ID],[t1].[CookID],[t1].[Name],[t1].[RestaurantID],[t1].[SubKitchenID],[t1].[LastCleaningDay],[t1].[PassedLastInspection] "
+          + "(SELECT TOP (1) [t1].[ID],[t1].[CookID],[t1].[Name],[t1].[RestaurantID],[t1].[SubKitchenID],[t1].[LastCleaningDay],[t1].[PassedLastInspection],[t1].[LastInspectionScore] "
           + "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN "
           +"[CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [q3]");
     }

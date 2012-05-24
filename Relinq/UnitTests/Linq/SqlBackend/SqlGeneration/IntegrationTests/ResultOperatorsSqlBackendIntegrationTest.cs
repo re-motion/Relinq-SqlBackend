@@ -462,8 +462,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void Average_OnTopLevel ()
     {
       CheckQuery (
-          () => Kitchens.Average(k=>k.RoomNumber),
-          "SELECT AVG([t0].[RoomNumber]) AS [value] FROM [KitchenTable] AS [t0]",
+          () => Cooks.Average (c => c.Weight),
+          "SELECT AVG([t0].[Weight]) AS [value] FROM [CookTable] AS [t0]",
           row => (object) row.GetValue<double> (new ColumnID ("value", 0)));
     }
 
@@ -471,9 +471,27 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void Average_InSubquery ()
     {
       CheckQuery (
-           from s in Cooks where (from s2 in Cooks select s2).Average(c=>c.ID) > 5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVG([t1].[ID]) AS [value] FROM [CookTable] AS [t1]) > @1)",
+           from s in Cooks where (from s2 in Cooks select s2).Average (c => c.Weight) > 5 select s.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT AVG([t1].[Weight]) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter("@1", 5.0));
+    }
+
+    [Test]
+    public void Average_WithIntValue ()
+    {
+      CheckQuery (
+          () => Kitchens.Average (k => k.RoomNumber),
+          "SELECT AVG(CONVERT(FLOAT, [t0].[RoomNumber])) AS [value] FROM [KitchenTable] AS [t0]",
+          row => (object) row.GetValue<double> (new ColumnID ("value", 0)));
+    }
+
+    [Test]
+    public void Average_WithNullableIntValue ()
+    {
+      CheckQuery (
+          () => Kitchens.Average (k => k.LastInspectionScore),
+          "SELECT AVG(CONVERT(FLOAT, [t0].[LastInspectionScore])) AS [value] FROM [KitchenTable] AS [t0]",
+          row => (object) row.GetValue<double?> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -501,7 +519,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           () => Kitchens.OrderBy (k => k.Name).Take (5).Sum (k => k.RoomNumber),
           "SELECT SUM([q0].[Key_RoomNumber]) AS [value] FROM (SELECT TOP (5) [t1].[ID] AS [Key_ID],[t1].[CookID] AS [Key_CookID]," 
           + "[t1].[Name] AS [Key_Name],[t1].[RestaurantID] AS [Key_RestaurantID],[t1].[SubKitchenID] AS [Key_SubKitchenID],"
-          + "[t1].[LastCleaningDay] AS [Key_LastCleaningDay],[t1].[PassedLastInspection] AS [Key_PassedLastInspection],[t1].[Name] AS [Value] "
+          + "[t1].[LastCleaningDay] AS [Key_LastCleaningDay],[t1].[PassedLastInspection] AS [Key_PassedLastInspection],"
+          + "[t1].[LastInspectionScore] AS [Key_LastInspectionScore],[t1].[Name] AS [Value] "
           + "FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]");
     }
 

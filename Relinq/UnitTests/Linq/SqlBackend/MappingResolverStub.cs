@@ -152,6 +152,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubKitchenID", false),
                 CreateColumn (typeof (DateTime?), tableInfo.TableAlias, "LastCleaningDay", false),
                 CreateColumn (typeof (bool?), tableInfo.TableAlias, "PassedLastInspection", false),
+                CreateColumn (typeof (int?), tableInfo.TableAlias, "LastInspectionScore", false),
             });
       }
       else if (type == typeof (Restaurant))
@@ -249,6 +250,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "RoomNumber":
           case "LastCleaningDay":
           case "PassedLastInspection":
+          case "LastInspectionScore":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Cook":
           case "Restaurant":
