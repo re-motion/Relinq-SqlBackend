@@ -52,6 +52,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     }
 
     [Test]
+    public void Initialization_ItemTypeWithCovariantSubstatement ()
+    {
+      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+      {
+        SelectProjection = new NamedExpression ("test", Expression.Constant (5)),
+        DataInfo = new StreamedSequenceInfo (typeof (object[]), Expression.Constant (0))
+      }.GetSqlStatement ();
+      var tableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
+
+      Assert.That (tableInfo.ItemType, Is.EqualTo (typeof (object)));
+    }
+
+    [Test]
     [ExpectedException(typeof(ArgumentException))]
     public void Initialization_NoSequenceData_ThrowsExeption ()
     {
