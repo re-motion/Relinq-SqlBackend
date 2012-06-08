@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       var streamedSequenceInfo = sqlStatement.DataInfo as StreamedSequenceInfo;
       if (streamedSequenceInfo == null)
         throw new ArgumentException ("For a statement to be used as a table, it must return a sequence of items.", "sqlStatement");
-      _itemType = streamedSequenceInfo.ItemExpression.Type;
+      _itemType = streamedSequenceInfo.ResultItemType;
     }
 
     public virtual Type ItemType

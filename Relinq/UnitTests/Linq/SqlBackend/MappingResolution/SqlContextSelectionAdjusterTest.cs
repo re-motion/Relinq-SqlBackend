@@ -80,7 +80,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.Not.SameAs (sqlStatement));
       Assert.That (result.SelectProjection, Is.SameAs (fakeResult));
       Assert.That (result.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) result.DataInfo).ItemExpression.Type, Is.EqualTo (typeof (string)));
+      Assert.That (((StreamedSequenceInfo) result.DataInfo).ResultItemType, Is.EqualTo (typeof (string)));
       Assert.That (result.DataInfo.DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (fakeResult.Type)));
     }
 

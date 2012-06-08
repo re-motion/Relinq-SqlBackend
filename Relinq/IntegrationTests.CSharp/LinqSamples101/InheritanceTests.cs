@@ -168,5 +168,18 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
       //db.SubmitChanges();
 
     }
+
+    /// <summary>
+    /// RM-4870
+    /// </summary>
+    [Test(Description="RM-4870")]
+    [Ignore("Requires .net 4.0")]
+    public void LinqToSqlInheritance08()
+    {
+      //IQueryable<CustomerContact> cons = from c in DB.Contacts.OfType<CustomerContact>() select c;
+      //IQueryable<object> abstractQueryable = cons;
+      
+      //TestExecutor.Execute(abstractQueryable.Take(1), MethodBase.GetCurrentMethod());
+    }
   }
 }
