@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using System.Security.Permissions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Sandboxing;
 
@@ -28,8 +27,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void MediumTrust ()
     {
-      var mediumTrust = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
-      var permissions = mediumTrust.Concat (new[] { new ReflectionPermission (ReflectionPermissionFlag.MemberAccess) }).ToArray();
+      var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
 
       var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
                    where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
@@ -37,10 +35,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
                        && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
                    select t).ToArray();
 
-      var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (
-          types, 
-          permissions, 
-          null); 
+      var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (types, permissions, null); 
       var testResults = testFixtureResults.SelectMany (r => r.TestResults);
 
       foreach (var testResult in testResults)
