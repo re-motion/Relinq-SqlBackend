@@ -32,6 +32,7 @@
 // the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Remotion.Linq.IntegrationTests.Common;
@@ -43,7 +44,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp
     protected override Func<MethodBase, string> SavedResultFileNameGenerator
     {
       // C# will automatically add the folder structure to the resource file name when embedding a resource
-      // The desired resource name is: Remotion.Data.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
+      // The desired resource name is: Remotion.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
       // This is achieved by putting a file called "TestClass.TestMethod.result" into the LinqSamples101\Resources folder
       get { return method => method.DeclaringType.Name + "." + method.Name + ".result"; }
     }
@@ -56,7 +57,9 @@ namespace Remotion.Linq.IntegrationTests.CSharp
         return method =>
         {
           var commonNamespacePrefix = typeof (TestBase).Namespace + ".";
-          var partialResourceNamespace = method.DeclaringType.Namespace.Remove (0, commonNamespacePrefix.Length) + ".Resources";
+          var namespaceName = method.DeclaringType.Namespace;
+          Debug.Assert (namespaceName != null);
+          var partialResourceNamespace = namespaceName.Remove (0, commonNamespacePrefix.Length) + ".Resources";
           var resourceFolderPath = partialResourceNamespace.Replace (".", "/");
 
           var testFileName = method.DeclaringType.Name + "." + method.Name + ".result";
