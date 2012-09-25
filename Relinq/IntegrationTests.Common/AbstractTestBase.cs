@@ -23,6 +23,7 @@ using Remotion.Linq.IntegrationTests.Common.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common
 {
+  [SetCulture("de-AT")]
   public abstract class AbstractTestBase 
   {
     private INorthwindDataProvider _db;
