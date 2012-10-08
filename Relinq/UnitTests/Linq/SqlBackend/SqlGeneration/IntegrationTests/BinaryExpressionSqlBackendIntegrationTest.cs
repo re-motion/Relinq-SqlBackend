@@ -412,7 +412,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4877")]
     public void CompoundValuesComparison_NotEqual_OnTopLevel ()
     {
       CheckQuery (
@@ -436,7 +435,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
      }
 
     [Test]
-    [Ignore ("TODO 4877")]
     public void CompoundValuesComparison_ValuesComingFromSubquery_NotEqual ()
     {
       CheckQuery (
