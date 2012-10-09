@@ -26,7 +26,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
   {
     [Test]
     [Ignore ("TODO 4771")]
-    public void NullValue_InEvaluatableSubExpression ()
+    public void NullValue_InEvaluableSubExpression ()
     {
       string nullValue = null;
       CheckQuery (
