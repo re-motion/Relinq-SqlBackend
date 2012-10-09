@@ -987,6 +987,29 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.SameAs (convertedBooleanExpression));
     }
 
+    [Test]
+    public void InvocationExpression ()
+    {
+      var lambdaExpression = Expression.Lambda (Expression.Constant (0));
+      var invocationExpression = Expression.Invoke (lambdaExpression);
+
+      Assert.That (
+          () => _predicateRequiredVisitor.VisitExpression (invocationExpression), 
+          Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
+              "InvocationExpressions are not supported in the SQL backend. Expression: 'Invoke(() => 0)'."));
+    }
+
+    [Test]
+    public void LambdaExpression ()
+    {
+      var lambdaExpression = Expression.Lambda (Expression.Constant (0));
+
+      Assert.That (
+          () => _predicateRequiredVisitor.VisitExpression (lambdaExpression),
+          Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
+              "LambdaExpressions are not supported in the SQL backend. Expression: '() => 0'."));
+    }
+
     public static bool FakeAndOperator (bool operand1, bool operand2)
     {
       throw new NotImplementedException();

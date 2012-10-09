@@ -330,6 +330,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return VisitChildrenWithSingleValueSemantics (expression);
     }
 
+    protected override Expression VisitInvocationExpression (InvocationExpression expression)
+    {
+      var message = string.Format (
+          "InvocationExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+      throw new NotSupportedException (message);
+    }
+
+    protected override Expression VisitLambdaExpression (LambdaExpression expression)
+    {
+      var message = string.Format (
+          "LambdaExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+      throw new NotSupportedException (message);
+    }
+
     private Expression VisitChildrenWithSingleValueSemantics (ExtensionExpression expression)
     {
       var visitor = new SqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stage, _context);
