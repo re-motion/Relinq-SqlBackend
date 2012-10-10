@@ -25,19 +25,22 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
   public class PartialEvaluationSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore ("TODO 4771")]
     public void NullValue_InEvaluableSubExpression ()
     {
       string nullValue = null;
       CheckQuery (
           from c in Cooks where nullValue.Length > c.ID select c.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE LEN(@0) > [t0].[ID]",
-          new CommandParameter ("@0", null));
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((LEN((NULL + '#')) - 1) > [t0].[ID])");
 
       CheckQuery (
-          from c in Cooks where nullValue != null && nullValue.Length > c.ID select c,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE @0 IS NOT NULL AND LEN(@0) > [t0].[ID]",
-          new CommandParameter ("@0", null));
+          from c in Cooks where nullValue != null && nullValue.Length > c.ID select c.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((@1 = 1) AND ((LEN((NULL + '#')) - 1) > [t0].[ID]))",
+          new CommandParameter ("@1", 0));
+
+      CheckQuery (
+          from c in Cooks where nullValue == null || nullValue.Length > c.ID select c.Name,
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((@1 = 1) OR ((LEN((NULL + '#')) - 1) > [t0].[ID]))",
+          new CommandParameter ("@1", 1));
     }
   }
 }
