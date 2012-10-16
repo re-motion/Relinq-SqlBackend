@@ -418,7 +418,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3316")]
     public void Equals_WithNonMatchingTypes ()
     {
       CheckQuery (from c in Cooks where c.ID.Equals ((int?) 10) select c.Name,
@@ -429,6 +428,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
         new CommandParameter ("@1", "10"));
 
+      CheckQuery (from c in Cooks where c.Substitution.Equals ("10") select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] WHERE ([t1].[ID] = @1)",
+        new CommandParameter ("@1", "10"));
+
       CheckQuery (from c in Cooks where Equals (c.ID, "10") select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
         new CommandParameter ("@1", "10"));
@@ -436,6 +439,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (from c in Cooks where Equals (c.ID, (int?)10) select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = @1)",
         new CommandParameter ("@1", (int?) 10));
+
+      CheckQuery (from c in Cooks where Equals (c.Substitution, "10") select c.Name,
+        "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] WHERE ([t1].[ID] = @1)",
+        new CommandParameter ("@1", "10"));
     }
 
     [Test]

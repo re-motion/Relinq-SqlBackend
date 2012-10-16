@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend
 {
   [TestFixture]
   public class ConversionUtilityTest
@@ -46,6 +48,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, left, right, false, null);
 
       var expectedExpression = BinaryExpression.Equal (left, Expression.Convert (right, typeof (int?)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void MakeBinaryWithOperandConversion_BothOperands_LiftedToObject ()
+    {
+      var left = Expression.Constant (null, typeof (string));
+      var right = Expression.Constant (null, typeof (Cook));
+
+      var result = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, left, right, false, null);
+
+      var expectedExpression = BinaryExpression.Equal (Expression.Convert (left, typeof (object)), Expression.Convert (right, typeof (object)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 

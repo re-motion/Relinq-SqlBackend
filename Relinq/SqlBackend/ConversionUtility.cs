@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.SqlBackend
 {
   /// <summary>
   /// Provides utility services involving type comparisons.
@@ -42,6 +44,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           right = Expression.Convert (right, left.Type);
         else if (right.Type.IsAssignableFrom (left.Type))
           left = Expression.Convert (left, right.Type);
+        else
+        {
+          left = Expression.Convert (left, typeof (object));
+          right = Expression.Convert (right, typeof (object));
+        }
       }
 
       return Expression.MakeBinary (expressionType, left, right, isLiftedToNull, methodInfo);

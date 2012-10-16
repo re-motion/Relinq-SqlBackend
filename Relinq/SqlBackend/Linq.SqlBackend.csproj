@@ -71,7 +71,7 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="MappingResolution\ConversionUtility.cs" />
+    <Compile Include="ConversionUtility.cs" />
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\GroupAggregateSimplifier.cs" />
     <Compile Include="MappingResolution\IMappingResolutionContext.cs" />

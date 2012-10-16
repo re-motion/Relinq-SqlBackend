@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -38,14 +39,14 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       if (methodCallExpression.Arguments.Count == 1)
       {
         MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
-
-        return Expression.Equal (methodCallExpression.Object, methodCallExpression.Arguments[0]);
+        return ConversionUtility.MakeBinaryWithOperandConversion (
+            ExpressionType.Equal, methodCallExpression.Object, methodCallExpression.Arguments[0], false, null);
       }
       else if (methodCallExpression.Arguments.Count == 2)
       {
         MethodCallTransformerUtility.CheckStaticMethod (methodCallExpression);
-
-        return Expression.Equal (methodCallExpression.Arguments[0], methodCallExpression.Arguments[1]);
+        return ConversionUtility.MakeBinaryWithOperandConversion (
+            ExpressionType.Equal, methodCallExpression.Arguments[0], methodCallExpression.Arguments[1], false, null);
       }
 
       var message = string.Format (

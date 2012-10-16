@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
@@ -29,22 +30,36 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (EqualsMethodCallTransformer.SupportedMethodNames.Contains ("Equals"));
+      Assert.That (EqualsMethodCallTransformer.SupportedMethodNames, Has.Member ("Equals"));
     }
 
     [Test]
     public void Transform_InstanceMethod ()
     {
       var method = typeof (object).GetMethod ("Equals", new[] { typeof(object) });
-      var argument = Expression.Constant (new object());
-      var parameter = Expression.Constant(new object());
-      var expression = Expression.Call (argument, method, parameter);
+      var instance = Expression.Constant (new object());
+      var argument = Expression.Constant(new object());
+      var expression = Expression.Call (instance, method, argument);
 
       var transformer = new EqualsMethodCallTransformer ();
       var result = transformer.Transform (expression);
 
-      var expectedResult = Expression.Equal (argument, parameter);
+      var expectedResult = Expression.Equal (instance, argument);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
 
+    [Test]
+    public void Transform_InstanceMethod_IncompatibleTypes ()
+    {
+      var method = typeof (object).GetMethod ("Equals", new[] { typeof (object) });
+      var instance = Expression.Constant (0);
+      var argument = Expression.Constant ("string");
+      var expression = Expression.Call (instance, method, argument);
+
+      var transformer = new EqualsMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var expectedResult = Expression.Equal (Expression.Convert (instance, typeof (object)), Expression.Convert (argument, typeof (object)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -60,7 +75,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
       var result = transformer.Transform (expression);
 
       var expectedResult = Expression.Equal (parameter1, parameter2);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
 
+    [Test]
+    public void Transform_StaticMethod_NonMatchingTypes ()
+    {
+      var method = typeof (object).GetMethod ("Equals", new[] { typeof (object), typeof (object) });
+      var parameter1 = Expression.Constant ("s");
+      var parameter2 = Expression.Constant (null, typeof (Cook));
+      var expression = Expression.Call (method, parameter1, parameter2);
+
+      var transformer = new EqualsMethodCallTransformer ();
+      var result = transformer.Transform (expression);
+
+      var expectedResult = Expression.Equal (Expression.Convert (parameter1, typeof (object)), Expression.Convert (parameter2, typeof (object)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
