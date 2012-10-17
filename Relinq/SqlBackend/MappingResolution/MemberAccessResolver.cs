@@ -76,6 +76,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
     {
+      ArgumentUtility.CheckNotNull ("unhandledItem", unhandledItem);
+      ArgumentUtility.CheckNotNull ("visitMethod", visitMethod);
+
       throw new NotSupportedException (
           string.Format (
               "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
@@ -86,6 +89,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       if (expression.NodeType == ExpressionType.Convert)
         return VisitExpression (expression.Operand);
       else
@@ -94,6 +99,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
       var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
       return VisitExpression (entityExpression);
@@ -101,12 +108,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitNamedExpression (NamedExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
       return VisitExpression (expression.Expression);
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // This ReSharper warning is wrong, expression.Members can be null.
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (expression.Members != null && expression.Members.Count > 0)
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
       {
         var binding = MemberBinding.Bind (_memberInfo, expression);
         var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
@@ -132,6 +145,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var type = ReflectionUtility.GetMemberReturnType (_memberInfo);
       if (typeof (IEnumerable).IsAssignableFrom (type) && type != typeof (string))
       {
+        Debug.Assert (_memberInfo.DeclaringType != null, "Global members not supported.");
         var message = string.Format (
             "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed. Expression: '{2}'",
             _memberInfo.DeclaringType.Name,
