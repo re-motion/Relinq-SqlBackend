@@ -42,8 +42,18 @@ namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
   public class DynamicLinqTest : TestBase
   {
     [Test]
-    [Ignore ("TODO 5107")]
-    public void GroupByAndSelect ()
+    public void GroupByAndSelect_WithSimpleProjection ()
+    {
+      var query = DB.Products
+          .GroupBy ("it.CategoryID", "it")
+          .Select ("Key");
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod ());
+    }
+
+    [Test]
+    [Ignore ("TODO 3306")]
+    public void GroupByAndSelect_WithDynamicProjection ()
     {
       var query = DB.Products
           .GroupBy("new (it.CategoryID)", "it")

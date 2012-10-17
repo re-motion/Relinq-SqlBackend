@@ -112,7 +112,10 @@
     <Content Include="MiscTests\Resources\ConvertTests.Convert_ToString_MoreThan30Characters.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="MiscTests\Resources\DynamicLinqTest.GroupByAndSelect.result">
+    <Content Include="MiscTests\Resources\DynamicLinqTest.GroupByAndSelect_WithDynamicProjection.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DynamicLinqTest.GroupByAndSelect_WithSimpleProjection.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
