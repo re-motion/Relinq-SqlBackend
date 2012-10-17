@@ -119,9 +119,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // Scenario: (Named (expr, "Value")).Member
+      // Scenario: (expr AS "Value")).Member
       // Just strip the name; we're resolving the Member and don't care about the name of the expression to which the member is applied.
-      // TODO 4544: throw new NotImplementedException();
       return VisitExpression (expression.Expression);
     }
 

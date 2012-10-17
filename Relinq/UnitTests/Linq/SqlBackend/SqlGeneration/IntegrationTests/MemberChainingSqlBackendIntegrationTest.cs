@@ -16,9 +16,13 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.UnitTests.Linq.Core.TestUtilities;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -215,6 +219,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    public void MemberAccess_OnNamedItem ()
+    {
+      // Didn't find a way to get a NamedExpression to stand within a MemberExpression, so we'll use a transformer that injects a NamedExpression.
+      CheckQuery (
+          from s in Cooks select GetNamedItem (s).FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
+    }
+
+
+    [Test]
     public void EntityAccess_WithNullableForeignKey ()
     {
       var myCompany = new Company { ID = 10 };
@@ -251,5 +266,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", 10));
     }
 
+    [MethodCallTransformer (typeof (GetNamedItemTransformer))]
+    private T GetNamedItem<T> (T o)
+    {
+      Dev.Null = o;
+      throw new NotImplementedException ();
+    }
+
+    private class GetNamedItemTransformer : IMethodCallTransformer
+    {
+      public Expression Transform (MethodCallExpression methodCallExpression)
+      {
+        return new NamedExpression ("dummy", methodCallExpression.Arguments[0]);
+      }
+    }
   }
 }
