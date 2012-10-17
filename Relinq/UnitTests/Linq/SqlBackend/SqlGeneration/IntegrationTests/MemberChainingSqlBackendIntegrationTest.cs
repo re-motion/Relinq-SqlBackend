@@ -127,13 +127,23 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void MemberAccess_OnSubQuery_WithColumns ()
     {
+      var query = Cooks.Select (c => (from a in c.Assistants select a.MetaID).First ().ClassID);
+      CheckQuery (query,
+        "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
+        "[t1].[ClassID] AS [value] FROM [CookTable] AS [t1] " +
+        "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
+    }
+
+    [Test]
+    public void MemberAccess_OnSubQuery_WithTransformedMembers ()
+    {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Name).First ().Length);
       CheckQuery (query,
         "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "(LEN(([t1].[Name] + '#')) - 1) AS [value] FROM [CookTable] AS [t1] " +
         "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
     }
-
+    
     [Test]
     public void MemberAccess_OnCoalesce_WithEntities_InSubQuery ()
     {
