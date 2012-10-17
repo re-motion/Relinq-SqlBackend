@@ -1,0 +1,34 @@
+Enumerable {
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 1
+    MaxPrice: 455,7500
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 2
+    MaxPrice: 276,7500
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 3
+    MaxPrice: 327,0800
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 4
+    MaxPrice: 287,3000
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 5
+    MaxPrice: 141,7500
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 6
+    MaxPrice: 324,0400
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 7
+    MaxPrice: 161,8500
+  DynamicClass2
+    KeyGroup: DynamicClass1
+      CategoryID: 8
+    MaxPrice: 248,1900
+}

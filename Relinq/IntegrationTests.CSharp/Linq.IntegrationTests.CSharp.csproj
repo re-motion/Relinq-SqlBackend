@@ -88,6 +88,8 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.cs" />
     <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
+    <Compile Include="MiscTests\DynamicLinqTest.cs" />
+    <Compile Include="MiscTests\DynamicLinq\Dynamic.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="LinqSamples101\TopBottomTests.cs" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />
@@ -108,6 +110,9 @@
     </None>
     <Compile Include="SetupFixture.cs" />
     <Content Include="MiscTests\Resources\ConvertTests.Convert_ToString_MoreThan30Characters.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DynamicLinqTest.GroupByAndSelect.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
