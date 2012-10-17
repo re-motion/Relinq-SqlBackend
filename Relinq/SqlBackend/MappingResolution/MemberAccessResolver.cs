@@ -92,15 +92,24 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (expression.NodeType == ExpressionType.Convert)
+      {
+        // Scenario: ((SomeType) expr).Member
+        // Strip away that cast, we don't care about it, we just care about the member in the context of the inner expression.
         return VisitExpression (expression.Operand);
+      }
       else
+      {
+        // Can't handle any other unary expression.
         return base.VisitUnaryExpression (expression);
+      }
     }
 
     public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // Scenario: entityRef.Member
+      // First, resolve the entity-reference (adding joins and such), then retry.
       var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
       var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
       return VisitExpression (entityExpression);
@@ -109,6 +118,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // Scenario: (Named (expr, "Value")).Member
+      // Just strip the name; we're resolving the Member and don't care about the name of the expression to which the member is applied.
       // TODO 4544: throw new NotImplementedException();
       return VisitExpression (expression.Expression);
     }
@@ -122,10 +134,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (expression.Members != null && expression.Members.Count > 0)
       // ReSharper restore ConditionIsAlwaysTrueOrFalse
       {
-        // Scenario: (new X (A = arg1, B = arg2, ...)).Member
-
-        // Use the MemberBinding classes to determine which one of (A, B, ...) matches Member. (This takes care of A, B, ... and Member being 
-        // of different member kinds, e.g., accessor MethodInfo and PropertyInfo.)
+        // Scenario: (new X (A = arg1, B = arg2, ...)).Member - we can resolve this if one of (A, B, ...) matches Member.
+        // Use the MemberBinding classes to determine this. (This takes care of A, B, ... and Member being  of different member types, 
+        // e.g., accessor MethodInfo and PropertyInfo.)
         var membersAndAssignedExpressions = expression.Members.Select ((m, i) => MemberBinding.Bind (m, expression.Arguments[i]));
         var result = membersAndAssignedExpressions.SingleOrDefault (c => c.MatchesReadAccess (_memberInfo));
 
@@ -135,6 +146,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           return NamedExpression.StripSurroundingNames (result.AssociatedExpression);
         }
       }
+
+      // Scenario: (new X (A = arg1, B = arg2, ...)).Member - with a non-matching Member; or
+      // Scenario: (new X (arg1, arg2, ...)).Member - we can't resolve this ATM
+
 
       throw new NotSupportedException (
             string.Format (
@@ -146,6 +161,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // Scenario: entity.Member
+      // Member must not be a collection, since we don't support in-line usage of collection members for now (e.g., select c.Assistants)
+      // Otherwise, we just ask the _mappingResolver to resolve this member for us.
+
       var type = ReflectionUtility.GetMemberReturnType (_memberInfo);
       if (typeof (IEnumerable).IsAssignableFrom (type) && type != typeof (string))
       {
@@ -163,6 +184,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // Scenario: column.Member (probably originally entity.ColumnMember.Member)
+      // Handled by the _mappingResolver
+
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
 
@@ -170,18 +196,25 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // Scenario: grouping.Key
       Debug.Assert (_memberInfo.Equals (expression.Type.GetProperty ("Key")));
+
+      // No problem, just use the KeyExpression (without a name, we don't care about the original name of the expression when we resolve members).
 
       return NamedExpression.StripSurroundingNames (expression.KeyExpression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      // Not supported, required by IUnresolvedSqlExpressionVisitor.
       return VisitExtensionExpression (expression);
     }
 
     Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      // Not supported, required by IUnresolvedSqlExpressionVisitor.
       return VisitExtensionExpression (expression);
     }
 
