@@ -109,6 +109,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+      // TODO 4544: throw new NotImplementedException();
       return VisitExpression (expression.Expression);
     }
 
@@ -121,14 +122,17 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (expression.Members != null && expression.Members.Count > 0)
       // ReSharper restore ConditionIsAlwaysTrueOrFalse
       {
-        var binding = MemberBinding.Bind (_memberInfo, expression);
-        var membersAndAssignedExpressions = expression.Members.Select ((m, i) => new { Member = m, Argument = expression.Arguments[i] });
-        var result = membersAndAssignedExpressions.SingleOrDefault (c => binding.MatchesReadAccess (c.Member));
+        // Scenario: (new X (A = arg1, B = arg2, ...)).Member
+
+        // Use the MemberBinding classes to determine which one of (A, B, ...) matches Member. (This takes care of A, B, ... and Member being 
+        // of different member kinds, e.g., accessor MethodInfo and PropertyInfo.)
+        var membersAndAssignedExpressions = expression.Members.Select ((m, i) => MemberBinding.Bind (m, expression.Arguments[i]));
+        var result = membersAndAssignedExpressions.SingleOrDefault (c => c.MatchesReadAccess (_memberInfo));
 
         if (result != null)
         {
           // remove name if any - the name is only required at the definition, not at the reference
-          return NamedExpression.StripSurroundingNames (result.Argument);
+          return NamedExpression.StripSurroundingNames (result.AssociatedExpression);
         }
       }
 
