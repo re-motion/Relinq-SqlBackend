@@ -44,6 +44,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 5120")]
+    public void ExplicitJoin_IncludingOptimizableImplicitJoins ()
+    {
+      CheckQuery (
+          from c in Cooks join k in Kitchens on c.Kitchen equals k select k.Name,
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] WHERE ([t0].[KitchenID] = [t1].[ID])"
+          );
+
+      CheckQuery (
+          from k in Kitchens join c in Cooks on k.Cook equals c select c.Name,
+          "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] CROSS JOIN [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[KitchenID])"
+          );
+    }
+
+    [Test]
     public void ExplicitJoinWithInto_Once ()
     {
       CheckQuery (

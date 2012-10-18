@@ -255,6 +255,27 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 5120")]
+    public void EntityComparison_WithOptimizableImplicitJoin ()
+    {
+      CheckQuery (
+          from c in Cooks 
+          from k in Kitchens
+          where c.Kitchen == k
+          select k.Name,
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] WHERE ([t0].[KitchenID] = [t1].[ID])"
+          );
+
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens 
+          where k.Cook == c 
+          select k.Name,
+          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] WHERE ([t1].[ID] = [t0].[KitchenID])"
+          );
+    }
+
+    [Test]
     [Ignore ("TODO 3315")]
     public void EntityAccess_NoLeftJoin_OnIDAccess ()
     {

@@ -52,12 +52,32 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
                 "ID",
-                typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "SubstitutedID", typeof (int), false);
+                typeof (int),
+                true,
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "SubstitutedID",
+                typeof (int),
+                false);
           case "Assistants":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
                 "ID",
-                typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "AssistedID", typeof (int), false);
+                typeof (int),
+                true,
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "AssistedID",
+                typeof (int),
+                false);
+          case "Kitchen":
+            return CreateResolvedJoinInfo (
+                joinInfo.OriginatingEntity,
+                "KitchenID",
+                typeof (int),
+                false,
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "ID",
+                typeof (int),
+                true);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -221,6 +241,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "SpecificInformation":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Substitution":
+            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+          case "Kitchen":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
         }
       }
