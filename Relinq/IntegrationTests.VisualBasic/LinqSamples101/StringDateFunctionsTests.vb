@@ -80,7 +80,6 @@ Namespace LinqSamples101
     'This sample uses the IndexOf method to find the first instance of
     'a space in each Customer's contact name.
     <Test()> _
-    <Ignore("RM-3308: The SQL generated for some string manipulation functions doesn't deal with spaces correctly")> _
     Public Sub LinqToSqlString04()
       Dim custQuery = From cust In DB.Customers _
             Select cust.ContactName, SpacePos = cust.ContactName.IndexOf(" ")
