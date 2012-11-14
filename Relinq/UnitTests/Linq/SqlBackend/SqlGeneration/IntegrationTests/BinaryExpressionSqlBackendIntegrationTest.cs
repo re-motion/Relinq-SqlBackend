@@ -394,6 +394,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 5194")]
+    public void Equals_EntityComparison_WithCast ()
+    {
+      CheckQuery (
+          from k in Kitchens where ((Chef) k.Cook) == k.Restaurant.SubKitchen.Cook select k.Name,
+          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] " +
+          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] " +
+          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] " +
+          "LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] " +
+          "LEFT OUTER JOIN [CookTable] AS [t3] ON [t0].[ID] = [t3].[KitchenID] " +
+          "WHERE ([t3].[ID] = [t4].[ID])");
+    }
+
+    [Test]
     public void Equals_EntityComparison_WithSubQuery ()
     {
       CheckQuery (
