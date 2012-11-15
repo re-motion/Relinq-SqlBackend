@@ -329,6 +329,28 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 5195")]
+    public void BitwiseOperators_OnBooleanOperands ()
+    {
+      CheckQuery (
+          from c in Cooks where c.IsFullTimeCook & c.IsStarredCook select c.ID,
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[IsFullTimeCook] = 1) AND ([t0].[IsStarredCook] = 1))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0))
+          );
+      CheckQuery (
+          from c in Cooks where c.IsFullTimeCook | c.IsStarredCook select c.ID,
+          "SELECT ([t0].[ID] | @1) AS [value] FROM [CookTable] AS [t0] WHERE (([t0].[IsFullTimeCook] = 1) OR ([t0].[IsStarredCook] = 1))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0))
+          );
+      CheckQuery (
+          from c in Cooks where c.IsFullTimeCook ^ c.IsStarredCook select c.ID,
+          "SELECT ([t0].[ID] ^ @1) AS [value] FROM [CookTable] AS [t0] "
+          + "WHERE ((([t0].[IsFullTimeCook] = 1) AND ([t0].[IsStarredCook] = 0)) OR (([t0].[IsFullTimeCook] = 0) AND ([t0].[IsStarredCook] = 1)))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0))
+          );
+    }
+
+    [Test]
     public void Equals_EntityComparisonWithNull ()
     {
       CheckQuery (
