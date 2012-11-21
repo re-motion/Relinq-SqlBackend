@@ -1,0 +1,158 @@
+Enumerable {
+  EmployeeContact
+    Address: '507 - 20th Ave. E.
+Apt. 2A'
+    City: 'Seattle'
+    CompanyName: 'Northwind'
+    ContactID: 121
+    ContactName: 'Ms. Nancy Davolio'
+    ContactTitle: 'Sales Representative'
+    ContactType: 'Employee'
+    Country: 'USA'
+    Extension: '5467'
+    Fax: null
+    Phone: '(206) 555-9857'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/davolio.bmp'
+    PostalCode: '98122'
+    Region: 'WA'
+  EmployeeContact
+    Address: '908 W. Capital Way'
+    City: 'Tacoma'
+    CompanyName: 'Northwind'
+    ContactID: 122
+    ContactName: 'Dr. Andrew Fuller'
+    ContactTitle: 'Vice President, Sales'
+    ContactType: 'Employee'
+    Country: 'USA'
+    Extension: '3457'
+    Fax: null
+    Phone: '(206) 555-9482'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/fuller.bmp'
+    PostalCode: '98401'
+    Region: 'WA'
+  EmployeeContact
+    Address: '722 Moss Bay Blvd.'
+    City: 'Kirkland'
+    CompanyName: 'Northwind'
+    ContactID: 123
+    ContactName: 'Ms. Janet Leverling'
+    ContactTitle: 'Sales Representative'
+    ContactType: 'Employee'
+    Country: 'USA'
+    Extension: '3355'
+    Fax: null
+    Phone: '(206) 555-3412'
+    Photo: Binary
+      Length: 21722
+    PhotoPath: 'http://accweb/emmployees/leverling.bmp'
+    PostalCode: '98033'
+    Region: 'WA'
+  EmployeeContact
+    Address: '4110 Old Redmond Rd.'
+    City: 'Redmond'
+    CompanyName: 'Northwind'
+    ContactID: 124
+    ContactName: 'Mrs. Margaret Peacock'
+    ContactTitle: 'Sales Representative'
+    ContactType: 'Employee'
+    Country: 'USA'
+    Extension: '5176'
+    Fax: null
+    Phone: '(206) 555-8122'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/peacock.bmp'
+    PostalCode: '98052'
+    Region: 'WA'
+  EmployeeContact
+    Address: '14 Garrett Hill'
+    City: 'London'
+    CompanyName: 'Northwind'
+    ContactID: 125
+    ContactName: 'Mr. Steven Buchanan'
+    ContactTitle: 'Sales Manager'
+    ContactType: 'Employee'
+    Country: 'UK'
+    Extension: '3453'
+    Fax: null
+    Phone: '(71) 555-4848'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/buchanan.bmp'
+    PostalCode: 'SW1 8JR'
+    Region: null
+  EmployeeContact
+    Address: 'Coventry House
+Miner Rd.'
+    City: 'London'
+    CompanyName: 'Northwind'
+    ContactID: 126
+    ContactName: 'Mr. Michael Suyama'
+    ContactTitle: 'Sales Representative'
+    ContactType: 'Employee'
+    Country: 'UK'
+    Extension: '428'
+    Fax: null
+    Phone: '(71) 555-7773'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/davolio.bmp'
+    PostalCode: 'EC2 7JR'
+    Region: null
+  EmployeeContact
+    Address: 'Edgeham Hollow
+Winchester Way'
+    City: 'London'
+    CompanyName: 'Northwind'
+    ContactID: 127
+    ContactName: 'Mr. Robert King'
+    ContactTitle: 'Sales Representative'
+    ContactType: 'Employee'
+    Country: 'UK'
+    Extension: '465'
+    Fax: null
+    Phone: '(71) 555-5598'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/davolio.bmp'
+    PostalCode: 'RG1 9SP'
+    Region: null
+  EmployeeContact
+    Address: '4726 - 11th Ave. N.E.'
+    City: 'Seattle'
+    CompanyName: 'Northwind'
+    ContactID: 128
+    ContactName: 'Ms. Laura Callahan'
+    ContactTitle: 'Inside Sales Coordinator'
+    ContactType: 'Employee'
+    Country: 'USA'
+    Extension: '2344'
+    Fax: null
+    Phone: '(206) 555-1189'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/davolio.bmp'
+    PostalCode: '98105'
+    Region: 'WA'
+  EmployeeContact
+    Address: '7 Houndstooth Rd.'
+    City: 'London'
+    CompanyName: 'Northwind'
+    ContactID: 129
+    ContactName: 'Ms. Anne Dodsworth'
+    ContactTitle: 'Sales Representative'
+    ContactType: 'Employee'
+    Country: 'UK'
+    Extension: '452'
+    Fax: null
+    Phone: '(71) 555-4444'
+    Photo: Binary
+      Length: 21626
+    PhotoPath: 'http://accweb/emmployees/davolio.bmp'
+    PostalCode: 'WG2 7LT'
+    Region: null
+}
