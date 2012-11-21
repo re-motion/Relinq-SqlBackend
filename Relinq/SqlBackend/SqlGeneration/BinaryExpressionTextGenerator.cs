@@ -58,8 +58,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
                                     { ExpressionType.OrElse, "OR" },             
                                     { ExpressionType.Subtract, "-" },            
                                     { ExpressionType.SubtractChecked, "-" },     
-                                    { ExpressionType.Coalesce, "COALESCE" },            
-                                    { ExpressionType.Power, "POWER" },
                                     { ExpressionType.Equal, "=" },
                                     { ExpressionType.NotEqual, "<>" }            
                                 };
@@ -69,26 +67,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       switch (expression.NodeType)
       {
-        case ExpressionType.Equal:
-          GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType);
-          break;
-        case ExpressionType.NotEqual:
-          GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType);
-          break;
         case ExpressionType.Coalesce:
+          GenerateSqlForPrefixOperator ("COALESCE", expression.Left, expression.Right);
+          break;
         case ExpressionType.Power:
-          GenerateSqlForPrefixOperator (expression.Left, expression.Right, expression.NodeType);
+          GenerateSqlForPrefixOperator ("POWER", expression.Left, expression.Right);
           break;
         default:
-          GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType);
+          GenerateSqlForInfixOperator (expression.Left, expression.Right, expression.NodeType, expression.Type);
           break;
       }
     }
 
-    private void GenerateSqlForPrefixOperator (Expression left, Expression right, ExpressionType nodeType)
+    private void GenerateSqlForPrefixOperator (string sqlOperatorString, Expression left, Expression right)
     {
-      string operatorString = GetRegisteredOperatorString (nodeType);
-      _commandBuilder.Append (operatorString);
+      _commandBuilder.Append (sqlOperatorString);
       _commandBuilder.Append (" (");
       _expressionVisitor.VisitExpression (left);
       _commandBuilder.Append (", ");
@@ -96,24 +89,39 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append (")");
     }
 
-    private void GenerateSqlForInfixOperator (Expression left, Expression right, ExpressionType nodeType)
+    private void GenerateSqlForInfixOperator (Expression left, Expression right, ExpressionType nodeType, Type expressionType)
     {
-      string operatorString = GetRegisteredOperatorString(nodeType);
+      if (nodeType == ExpressionType.And && expressionType == typeof (bool))
+        GenerateSqlForInfixOperator (left, right, ExpressionType.AndAlso, expressionType);
+      else if (nodeType == ExpressionType.Or && expressionType == typeof (bool))
+        GenerateSqlForInfixOperator (left, right, ExpressionType.OrElse, expressionType);
+      else if (nodeType == ExpressionType.ExclusiveOr && expressionType == typeof (bool))
+      {
+        // SQL has no logical XOR operator, so we simulate: a XOR b <=> (a AND NOT b) OR (NOT a AND b)
+        var exclusiveOrSimulationExpression = Expression.OrElse (
+            Expression.AndAlso (left, Expression.Not (right)), 
+            Expression.AndAlso (Expression.Not (left), right));
+        _expressionVisitor.VisitExpression (exclusiveOrSimulationExpression);
+      }
+      else
+      {
+        string operatorString = GetRegisteredOperatorString (nodeType);
 
-      _expressionVisitor.VisitExpression (left);
-      _commandBuilder.Append (" ");
-      _commandBuilder.Append (operatorString);
-      _commandBuilder.Append (" ");
-      _expressionVisitor.VisitExpression (right);
+        _expressionVisitor.VisitExpression (left);
+        _commandBuilder.Append (" ");
+        _commandBuilder.Append (operatorString);
+        _commandBuilder.Append (" ");
+        _expressionVisitor.VisitExpression (right);
+      }
     }
 
     private string GetRegisteredOperatorString (ExpressionType nodeType)
     {
-      string operatorString;
-      if (!_simpleOperatorRegistry.TryGetValue (nodeType, out operatorString))
-        throw new NotSupportedException ("The binary operator '" + nodeType + "' is not supported.");
-      return operatorString;
+        string operatorString;
+        if (!_simpleOperatorRegistry.TryGetValue (nodeType, out operatorString))
+          throw new NotSupportedException ("The binary operator '" + nodeType + "' is not supported.");
+        return operatorString;
     }
-    
+   
   }
 }

@@ -17,8 +17,8 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -47,76 +47,76 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     private Expression _sqlEntityExpression;
 
     private BinaryExpressionTextGenerator _generator;
-    private ExpressionTreeVisitor _expressionVisitorStub;
+    private ExpressionTreeVisitor _expressionVisitorMock;
 
     [SetUp]
     public void SetUp ()
     {
       _commandBuilder = new SqlCommandBuilder();
 
-      _expressionVisitorStub = MockRepository.GenerateStub<ExpressionTreeVisitor>();
+      _expressionVisitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
 
       _leftIntegerExpression = Expression.Constant (1);
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_leftIntegerExpression))
           .WhenCalled (mi => _commandBuilder.Append ("left"))
           .Return (_leftIntegerExpression);
 
       _rightIntegerExpression = Expression.Constant (2);
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_rightIntegerExpression))
           .WhenCalled (mi => _commandBuilder.Append ("right"))
           .Return (_rightIntegerExpression);
 
       _leftDoubleExpression = Expression.Constant (1D);
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_leftDoubleExpression))
           .WhenCalled (mi => _commandBuilder.Append ("leftDouble"))
           .Return (_leftDoubleExpression);
 
       _rightDoubleExpression = Expression.Constant (2D);
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_rightDoubleExpression))
           .WhenCalled (mi => _commandBuilder.Append ("rightDouble"))
           .Return (_rightDoubleExpression);
 
       _leftStringExpression = Expression.Constant ("Left");
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_leftStringExpression))
           .WhenCalled (mi => _commandBuilder.Append ("leftString"))
           .Return (_leftStringExpression);
 
       _rightStringExpression = Expression.Constant ("Right");
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_rightStringExpression))
           .WhenCalled (mi => _commandBuilder.Append ("rightString"))
           .Return (_rightStringExpression);
 
       _nullExpression = Expression.Constant (null, typeof (string));
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_nullExpression))
           .WhenCalled (mi => _commandBuilder.Append ("NULL"))
           .Return (_rightStringExpression);
 
       _trueExpression = Expression.Constant (true);
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_trueExpression))
           .WhenCalled (mi => _commandBuilder.Append ("true"))
           .Return (_trueExpression);
 
       _falseExpression = Expression.Constant (false);
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_falseExpression))
           .WhenCalled (mi => _commandBuilder.Append ("false"))
           .Return (_falseExpression);
 
       _sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
-      _expressionVisitorStub
+      _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_sqlEntityExpression))
           .WhenCalled (mi => _commandBuilder.Append ("[c].[ID]"))
           .Return (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn);
 
-      _generator = new BinaryExpressionTextGenerator (_commandBuilder, _expressionVisitorStub);
+      _generator = new BinaryExpressionTextGenerator (_commandBuilder, _expressionVisitorMock);
     }
 
     [Test]
@@ -241,6 +241,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitBinaryExpression_And_OnBooleans ()
+    {
+      var binaryExpression = Expression.And (_trueExpression, _falseExpression);
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("true AND false"));
+    }
+
+    [Test]
     public void VisitBinaryExpression_Or ()
     {
       var binaryExpression = Expression.Or (_leftIntegerExpression, _rightIntegerExpression);
@@ -252,6 +263,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitBinaryExpression_Or_OnBooleans ()
+    {
+      var binaryExpression = Expression.Or (_trueExpression, _falseExpression);
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("true OR false"));
+    }
+
+    [Test]
     public void VisitBinaryExpression_ExclusiveOr ()
     {
       var binaryExpression = Expression.ExclusiveOr (_leftIntegerExpression, _rightIntegerExpression);
@@ -260,6 +282,32 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var result = _commandBuilder.GetCommandText();
 
       Assert.That (result, Is.EqualTo ("left ^ right"));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_ExclusiveOr_OnBooleans ()
+    {
+      var binaryExpression = Expression.ExclusiveOr (_trueExpression, _falseExpression);
+      var expectedXorSimulation = Expression.OrElse (
+          Expression.AndAlso (_trueExpression, Expression.Not (_falseExpression)),
+          Expression.AndAlso (Expression.Not (_trueExpression), _falseExpression));
+      _expressionVisitorMock
+          .Expect (mock => mock.VisitExpression (Arg<Expression>.Matches (expr => expr is BinaryExpression)))
+          .WhenCalled (mi =>
+          {
+            var expr = (BinaryExpression) mi.Arguments[0];
+            ExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
+            _commandBuilder.Append ("XOR SIMULATION");
+          })
+          .Return (null);
+      
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      _expressionVisitorMock.VerifyAllExpectations();
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("XOR SIMULATION"));
     }
 
     [Test]

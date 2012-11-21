@@ -57,7 +57,6 @@ Namespace MiscTests
     End Sub
 
     <Test()> _
-    <Ignore("TODO 5195")> _
     Public Sub NonShortcutOperators()
       Dim employeesWhoAreAlsoCustomers =
           From customer In DB.Customers()
