@@ -416,7 +416,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5194")]
     public void Equals_EntityComparison_WithCast ()
     {
       CheckQuery (
@@ -427,8 +426,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] " +
           "LEFT OUTER JOIN [CookTable] AS [t3] ON [t0].[ID] = [t3].[KitchenID] " +
           "WHERE ([t3].[ID] = [t4].[ID])");
-    }
 
+      // Note: ConvertChecked doesn't work with entities, so we can't test it here:
+      var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");
+      var convertCheckedExpression = Expression.ConvertChecked (Expression.Property (kitchenParameter, "Cook"), typeof (Chef));
+      Assert.That (convertCheckedExpression.NodeType, Is.EqualTo (ExpressionType.Convert));
+    }
+    
     [Test]
     public void Equals_EntityComparison_WithSubQuery ()
     {

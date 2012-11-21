@@ -24,11 +24,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   public enum SqlExpressionContext
   {
     /// <summary>
-    /// A single value or an entity is required; boolean expressions need to be converted using CASE WHEN.
+    /// A value or an entity is required; boolean expressions need to be converted using CASE WHEN.
     /// </summary>
     ValueRequired,
     /// <summary>
-    /// A single value is required; boolean expressions need to be converted using CASE WHEN, of <see cref="SqlEntityExpression"/> instances, only 
+    /// A single SQL value is required; boolean expressions need to be converted using CASE WHEN. Of <see cref="SqlEntityExpression"/> instances, only 
     /// the primary key is used.
     /// </summary>
     SingleValueRequired,

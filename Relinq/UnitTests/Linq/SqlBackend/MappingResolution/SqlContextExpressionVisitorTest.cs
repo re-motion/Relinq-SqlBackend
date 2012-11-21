@@ -517,17 +517,27 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitUnaryExpression_ConvertExpression_OperandChanged ()
+    public void VisitUnaryExpression_ConvertExpression_OperandChanged_WithDifferentType ()
     {
-      var unaryExpression =
-          Expression.Convert (
-              new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)),
-              typeof (object));
+      var entity = new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var unaryExpression = Expression.Convert (entity, typeof (object));
 
       var result = _singleValueRequiredVisitor.VisitUnaryExpression (unaryExpression);
 
       Assert.That (result, Is.Not.SameAs (unaryExpression));
-      Assert.That (((UnaryExpression) result).Operand, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (result, Is.SameAs (entity.PrimaryKeyColumn));
+    }
+
+    [Test]
+    public void VisitUnaryExpression_ConvertExpression_OperandChanged_WithSameType ()
+    {
+      var unaryExpression = Expression.Convert (Expression.Constant (true), typeof (object));
+
+      var result = _singleValueRequiredVisitor.VisitUnaryExpression (unaryExpression);
+
+      Assert.That (result, Is.Not.SameAs (unaryExpression));
+      Assert.That (result.NodeType, Is.EqualTo (ExpressionType.Convert));
+      Assert.That (((UnaryExpression) result).Operand, Is.TypeOf<ConvertedBooleanExpression>());
     }
 
     [Test]

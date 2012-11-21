@@ -21,7 +21,8 @@ using Remotion.Linq.Utilities;
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="SqlContextSelectionAdjuster"/> applies <see cref="SqlExpressionContext"/> to a <see cref="SqlStatement"/>.
+  /// <see cref="SqlContextSelectionAdjuster"/> applies a <see cref="SqlExpressionContext"/> to a <see cref="SqlStatement"/> by modifying
+  /// the <see cref="SqlStatement"/>'s <see cref="SqlStatement.SelectProjection"/> and recalculating all dependent data accordingly.
   /// </summary>
   public class SqlContextSelectionAdjuster
   {

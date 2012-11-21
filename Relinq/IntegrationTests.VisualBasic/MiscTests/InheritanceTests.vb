@@ -47,7 +47,6 @@ Namespace MiscTests
     Inherits TestBase
 
     <Test()> _
-    <Ignore("TODO 5194")> _
     Public Sub Join_WithEqualsCheck_BetweenBaseClassAndDerivedClass()
       Dim employeesWhoAreAlsoCustomers = From employeeContact In DB.Contacts.OfType(Of EmployeeContact)()
       Join standardContact In DB.Contacts On employeeContact Equals standardContact

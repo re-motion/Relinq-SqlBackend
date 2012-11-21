@@ -171,10 +171,19 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newOperand = ApplySqlExpressionContext (expression.Operand, GetChildSemanticsForUnaryExpression (expression), _stage, _context);
+      var childContext = GetChildSemanticsForUnaryExpression (expression);
+      var newOperand = ApplySqlExpressionContext (expression.Operand, childContext, _stage, _context);
 
       if (newOperand != expression.Operand)
-        expression = Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
+      {
+        // If the operand changes its type due to context application, we must also strip any Convert nodes since they are most likely no longer 
+        // applicable after the context switch.
+        if (expression.NodeType == ExpressionType.Convert && expression.Operand.Type != newOperand.Type)
+          return newOperand;
+        else
+          return Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
+      }
+
       return expression;
     }
 
