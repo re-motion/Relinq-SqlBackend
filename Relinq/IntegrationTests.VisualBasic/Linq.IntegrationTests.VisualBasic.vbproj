@@ -120,6 +120,7 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.vb" />
     <Compile Include="LinqSamples101\StoredProceduresTests.vb" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.vb" />
+    <Compile Include="MiscTests\BinaryExpressionTests.vb" />
     <Compile Include="MiscTests\InheritanceTests.vb" />
     <Compile Include="TestBase.vb" />
     <Compile Include="LinqSamples101\TopBottomTests.vb" />
@@ -540,6 +541,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MiscTests\Resources\MiscTests.Resources.InheritanceTests.Join_WithEqualsCheck_BetweenBaseClassAndDerivedClass.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\MiscTests.Resources.BinaryExpressionTests.NonShortcutOperators.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\MiscTests.Resources.BinaryExpressionTests.ShortcutOperators.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="My Project\Application.myapp">
