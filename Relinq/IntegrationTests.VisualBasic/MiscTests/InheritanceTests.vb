@@ -48,11 +48,12 @@ Namespace MiscTests
 
     <Test()> _
     Public Sub Join_WithEqualsCheck_BetweenBaseClassAndDerivedClass()
-      Dim employeesWhoAreAlsoCustomers = From employeeContact In DB.Contacts.OfType(Of EmployeeContact)()
-      Join standardContact In DB.Contacts On employeeContact Equals standardContact
-      Select employeeContact
+      Dim employees =
+          From employeeContact In DB.Contacts.OfType(Of EmployeeContact)()
+          Join standardContact In DB.Contacts On employeeContact Equals standardContact
+          Select employeeContact
 
-      TestExecutor.Execute(employeesWhoAreAlsoCustomers, MethodBase.GetCurrentMethod())
+      TestExecutor.Execute(employees, MethodBase.GetCurrentMethod())
     End Sub
   End Class
 End Namespace
