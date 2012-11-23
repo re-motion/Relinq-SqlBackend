@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
@@ -41,63 +40,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens select k.LastCleaningDay.Value,
           "SELECT [t0].[LastCleaningDay] AS [value] FROM [KitchenTable] AS [t0]");
-    }
-
-    [Test]
-    [Ignore ("TODO 4632: Fix handling of bool? in SqlContextExpressionVisitor")]
-    public void NullableBool_CastToBool ()
-    {
-      CheckQuery (
-          from k in Kitchens where (bool) k.PassedLastInspection select k.ID,
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE ([t0].[PassedLastInspection] = @1)",
-          new CommandParameter ("@1", 1));
-
-      CheckQuery (
-// ReSharper disable RedundantBoolCompare
-          from k in Kitchens where k.PassedLastInspection != null && ((bool) k.PassedLastInspection) == true select k.ID,
-// ReSharper restore RedundantBoolCompare
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] IS NOT NULL) AND ([t0].[PassedLastInspection] = @1))",
-          new CommandParameter ("@1", 1));
-    }
-
-    [Test]
-    [Ignore ("TODO 4632: Fix handling of bool? in SqlContextExpressionVisitor")]
-    public void NullableBool_HasValue_Value ()
-    {
-      CheckQuery (
-          from k in Kitchens where k.PassedLastInspection.Value select k.ID,
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE ([t0].[PassedLastInspection] = @1)",
-          new CommandParameter ("@1", 1));
-
-      CheckQuery (
-          from k in Kitchens where k.PassedLastInspection.HasValue && k.PassedLastInspection.Value select k.ID,
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] IS NOT NULL) AND ([t0].[PassedLastInspection] = @1))",
-          new CommandParameter ("@1", 1));
-      CheckQuery (
-// ReSharper disable RedundantBoolCompare
-          from k in Kitchens where k.PassedLastInspection.HasValue && k.PassedLastInspection.Value == true select k.ID,
-// ReSharper restore RedundantBoolCompare
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] IS NOT NULL) AND ([t0].[PassedLastInspection] = @1))",
-          new CommandParameter ("@1", 1));
-    }
-
-    [Test]
-    [Ignore ("TODO 4632: Fix handling of bool? in SqlContextExpressionVisitor")]
-    public void NullableBool_Compare ()
-    {
-      CheckQuery (
-          from k in Kitchens where k.PassedLastInspection == true select k.ID,
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE ([t0].[PassedLastInspection] = @1)",
-          new CommandParameter ("@1", 1));
-
-      CheckQuery (
-          from k in Kitchens where k.PassedLastInspection == false select k.ID,
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE ([t0].[PassedLastInspection] = @1)",
-          new CommandParameter ("@1", 0));
-
-      CheckQuery (
-          from k in Kitchens where k.PassedLastInspection == null select k.ID,
-          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE ([t0].[PassedLastInspection] IS NULL)");
     }
   }
 }
