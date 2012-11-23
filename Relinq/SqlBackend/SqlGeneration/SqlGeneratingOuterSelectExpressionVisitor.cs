@@ -171,5 +171,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       return argumentInMemoryProjectionBody;
     }
+
+    public static bool? ConvertNullableIntToNullableBool (int? value)
+    {
+      throw new NotImplementedException ("TODO 3335");
+    }
   }
 }
