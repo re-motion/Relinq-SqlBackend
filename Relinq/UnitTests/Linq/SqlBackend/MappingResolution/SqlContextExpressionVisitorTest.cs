@@ -199,7 +199,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var expected = Expression.Equal (expression.Expression, new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
-      var expectedNullable = Expression.Equal (nullableExpression.Expression, Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null);
+      var expectedNullable = Expression.Equal (nullableExpression.Expression, new SqlLiteralExpression (1, true), true, null);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullable, resultNullable);
     }
 
@@ -499,8 +499,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
       var expectedNullableExpression = Expression.AndAlso (
-          Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null),
-          Expression.Equal (Expression.Constant (0, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null));
+          Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null),
+          Expression.Equal (Expression.Constant (0, typeof (int?)), new SqlLiteralExpression (1, true), true, null));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableExpression, nullableResult);
     }
 
@@ -518,8 +518,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
       var expectedNullableExpression = Expression.OrElse (
-          Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null),
-          Expression.Equal (Expression.Constant (0, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null));
+          Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null),
+          Expression.Equal (Expression.Constant (0, typeof (int?)), new SqlLiteralExpression (1, true), true, null));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableExpression, nullableResult);
     }
 
@@ -537,8 +537,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
       var expectedNullableExpression = Expression.And (
-          Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null),
-          Expression.Equal (Expression.Constant (0, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null));
+          Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null),
+          Expression.Equal (Expression.Constant (0, typeof (int?)), new SqlLiteralExpression (1, true), true, null));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableExpression, nullableResult);
     }
 
@@ -556,8 +556,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
       var expectedNullableExpression = Expression.Or (
-          Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null),
-          Expression.Equal (Expression.Constant (0, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null));
+          Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null),
+          Expression.Equal (Expression.Constant (0, typeof (int?)), new SqlLiteralExpression (1, true), true, null));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableExpression, nullableResult);
     }
 
@@ -575,8 +575,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
       var expectedNullableExpression = Expression.ExclusiveOr (
-          Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null),
-          Expression.Equal (Expression.Constant (0, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null));
+          Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null),
+          Expression.Equal (Expression.Constant (0, typeof (int?)), new SqlLiteralExpression (1, true), true, null));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableExpression, nullableResult);
     }
 
@@ -639,7 +639,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionForValueSemantics, resultForValueSemantics);
       var expectedResultForPredicateSemantics =
           Expression.Convert (
-              Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null),
+              Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null),
               typeof (bool));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResultForPredicateSemantics, resultForPredicateSemantics);
     }
@@ -696,8 +696,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedExpression = Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
       var expectedNullableExpression =
-          Expression.Not (
-              Expression.Equal (Expression.Constant (1, typeof (int?)), Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null));
+          Expression.Not (Expression.Equal (Expression.Constant (1, typeof (int?)), new SqlLiteralExpression (1, true), true, null));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableExpression, resultNullable);
     }
 

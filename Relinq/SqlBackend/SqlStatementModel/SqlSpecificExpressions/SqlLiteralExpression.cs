@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
@@ -25,17 +27,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     private readonly object _value;
 
-    // TODO 3335: Refactor to use strongly typed ctors, allow optional specification of type.
-    public SqlLiteralExpression (object value)
-        : base (ArgumentUtility.CheckNotNull ("value", value).GetType())
+    public SqlLiteralExpression (int value, bool nullable = false)
+        : this (value, nullable ? typeof (int?) : typeof (int))
     {
-      if ((Type != typeof (int)) && (Type != typeof (string)) && Type != typeof (double))
-      {
-        var message = string.Format ("SqlLiteralExpression does not support values of type '{0}'.", Type);
-        throw new ArgumentTypeException (message, "value", typeof (int), Type);
-      }
-      else
-        _value = value;
+    }
+
+    public SqlLiteralExpression (string value)
+      : this (ArgumentUtility.CheckNotNull ("value", value), typeof (string))
+    {
+    }
+
+    public SqlLiteralExpression (double value, bool nullable = false)
+      : this (value, nullable ? typeof (double?) : typeof (double))
+    {
+    }
+
+    private SqlLiteralExpression (object value, Type type)
+        : base (type)
+    {
+      _value = value;
     }
 
     public object Value

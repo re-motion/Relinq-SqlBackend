@@ -477,10 +477,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var convertedBooleanExpression = newExpression as SqlConvertedBooleanExpression;
       if (convertedBooleanExpression != null)
       {
-        if (convertedBooleanExpression.Expression.Type == typeof (int))
-          return Expression.Equal (convertedBooleanExpression.Expression, new SqlLiteralExpression (1));
-        else
-          return Expression.Equal (convertedBooleanExpression.Expression, Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null);
+        var isNullableExpression = convertedBooleanExpression.Expression.Type == typeof (int?);
+        return Expression.Equal (convertedBooleanExpression.Expression, new SqlLiteralExpression (1, isNullableExpression), isNullableExpression, null);
       }
 
       if (!BooleanUtility.IsBooleanType (newExpression.Type))

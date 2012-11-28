@@ -63,7 +63,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (((SqlLiteralExpression) _sqlStatementBuilder.TopExpression).Value, Is.SameAs (takeExpression.Value));
+      Assert.That (((SqlLiteralExpression) _sqlStatementBuilder.TopExpression).Value, Is.EqualTo (2));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
     }

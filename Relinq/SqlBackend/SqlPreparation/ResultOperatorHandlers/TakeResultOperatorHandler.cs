@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       {
         var topExpressionAsConstantExpression = preparedTopExpression as ConstantExpression;
         if (topExpressionAsConstantExpression != null)
-          sqlStatementBuilder.TopExpression = new SqlLiteralExpression (topExpressionAsConstantExpression.Value);
+          sqlStatementBuilder.TopExpression = new SqlLiteralExpression ((int) topExpressionAsConstantExpression.Value);
         else
           sqlStatementBuilder.TopExpression = preparedTopExpression;
       }

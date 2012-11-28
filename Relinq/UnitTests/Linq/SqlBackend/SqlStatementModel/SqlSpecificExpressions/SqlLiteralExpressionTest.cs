@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -36,10 +35,29 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
-    public void Initialization_ChecksType ()
+    public void Initialization_Typed ()
     {
-      new SqlLiteralExpression (true);
+      var intExpression = new SqlLiteralExpression (10);
+      Assert.That (intExpression.Value, Is.EqualTo (10));
+      Assert.That (intExpression.Type, Is.EqualTo (typeof (int)));
+
+      var nullableIntExpression = new SqlLiteralExpression (10, true);
+      Assert.That (nullableIntExpression.Value, Is.EqualTo (10));
+      Assert.That (nullableIntExpression.Type, Is.EqualTo (typeof (int?)));
+
+      var stringExpression = new SqlLiteralExpression ("a");
+      Assert.That (stringExpression.Value, Is.EqualTo ("a"));
+      Assert.That (stringExpression.Type, Is.EqualTo (typeof (string)));
+
+      Assert.That (() => new SqlLiteralExpression (null), Throws.TypeOf<ArgumentNullException>());
+
+      var doubleExpression = new SqlLiteralExpression (10.12);
+      Assert.That (doubleExpression.Value, Is.EqualTo (10.12));
+      Assert.That (doubleExpression.Type, Is.EqualTo (typeof (double)));
+
+      var nullableDoubleExpression = new SqlLiteralExpression (10.12, true);
+      Assert.That (nullableDoubleExpression.Value, Is.EqualTo (10.12));
+      Assert.That (nullableDoubleExpression.Type, Is.EqualTo (typeof (double?)));
     }
 
     [Test]
