@@ -22,7 +22,6 @@ using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -154,38 +153,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
 
-      //TODO RM-3709: remove
-      //if (result.Parameters.Count () > 0)
-      //{
-      //  Console.WriteLine (
-      //    "command = connection.CreateCommand(); command.CommandText = \"{0}\"; foreach (var parameterItem in new[] {{ {1} }}) command.Parameters.Add (new NpgsqlParameter (parameterItem.Key, parameterItem.Value)); using (command.ExecuteReader()){{}}",
-      //    result.CommandText.Replace ("[", "\\\"").Replace ("]", "\\\""),
-      //    SeparatedStringBuilder.Build (", ", result.Parameters.Select (p => "new KeyValuePair<string, object> (\"" + p.Name + "\", " + GetValueConstant (p.Value) + ")")));
-      //}
-      //else
-      //{
-      //  Console.WriteLine (
-      //    "command = connection.CreateCommand(); command.CommandText = \"{0}\"; using (command.ExecuteReader()){{}}",
-      //    result.CommandText.Replace ("[", "\\\"").Replace ("]", "\\\""));
-      //}
-      
       if (expectedInMemoryProjection != null)
       {
         var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
         ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.GetInMemoryProjection<object>());
       }
-    }
-
-    private string GetValueConstant (object value)
-    {
-      if (value is string)
-        return "\"" + value + "\"";
-      else if (value is char)
-        return "'" + value + "'";
-      else if (value is double)
-        return "(double)" + value;
-      else
-        return value.ToString ();
     }
   }
 }
