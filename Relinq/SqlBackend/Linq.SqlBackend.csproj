@@ -149,6 +149,8 @@
     <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ISqlCaseExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\ISqlPredicateAsValueExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlConvertedBooleanExpression.cs" />
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
