@@ -99,7 +99,6 @@ Namespace LinqSamples101
     'This sample uses Select and a conditional statment to return a sequence of product
     'name and product availability.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlSelect05()
       Dim inStock = From prod In DB.Products _
             Select prod.ProductName, _

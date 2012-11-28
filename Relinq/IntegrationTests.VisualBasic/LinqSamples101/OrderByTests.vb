@@ -88,7 +88,6 @@ Namespace LinqSamples101
     'This sample uses Order By to sort Orders from EmployeeID 1
     'by ship-to country, and then by freight from highest to lowest.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlOrderBy05()
       Dim ordQuery = From ord In DB.Orders _
             Where ord.EmployeeID = 1 _

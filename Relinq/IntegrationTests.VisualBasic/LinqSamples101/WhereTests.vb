@@ -64,7 +64,6 @@ Namespace LinqSamples101
     'This sample uses a Where clause to filter for Employees hired
     'during or after 1994.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere02()
       Dim hiredAfter1994 = From emp In DB.Employees _
             Where emp.HireDate >= #1/1/1994# _
@@ -76,7 +75,6 @@ Namespace LinqSamples101
     'This sample uses a Where clause to filter for Products that have stock below their
     'reorder level and are not discontinued.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere03()
       Dim needToOrder = From prod In DB.Products _
             Where prod.UnitsInStock <= prod.ReorderLevel _
@@ -89,7 +87,6 @@ Namespace LinqSamples101
     'This sample uses a Where clause to filter out Products that are either
     'discontinued or that have a UnitPrice greater than 10.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere04()
       Dim prodQuery = From prod In DB.Products _
             Where prod.UnitPrice > 10.0# OrElse prod.Discontinued
@@ -100,7 +97,6 @@ Namespace LinqSamples101
     'This sample uses two Where clauses to filter out Products that are discontinued 
     'and with UnitPrice greater than 10
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere05()
 
       Dim prodQuery = From prod In DB.Products _
@@ -132,7 +128,6 @@ Namespace LinqSamples101
 
     'This sample uses First to select an Order with freight greater than 10.00.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlWhere08()
       Dim firstOrd = (From ord In DB.Orders _
             Where ord.Freight > 10D _

@@ -59,7 +59,6 @@ Namespace LinqSamples101
     'Where clause to filter for Products whose Supplier is in the USA
     'that are out of stock.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlJoin02()
       Dim outOfStock = From prod In DB.Products _
             Where prod.Supplier.Country = "USA" AndAlso prod.UnitsInStock = 0

@@ -57,7 +57,6 @@ Namespace LinqSamples101
 
     'This sample demonstrates using a scalar user-defined function in a Where clause.
     <Test()> _
-    <Ignore("RM-3335: Support nullable booleans")> _
     Public Sub LinqToSqlUserDefined02()
 
       Dim prodQuery = From prod In DB.Products _
