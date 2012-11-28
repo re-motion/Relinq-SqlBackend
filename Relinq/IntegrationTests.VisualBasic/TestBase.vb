@@ -38,7 +38,7 @@ Public Class TestBase
   Inherits AbstractTestBase
 
   ' VB will not add the folder structure to the resource file name when embedding a resource
-  ' The desired resource name is: Remotion.Data.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TestClass.TestMethod.result
+  ' The desired resource name is: Remotion.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TestClass.TestMethod.result
   ' This is achieved by putting a file called "LinqSamples101.Resources.TestClass.TestMethod.result" into the LinqSamples101\Resources folder
   Protected Overrides ReadOnly Property SavedResultFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
     Get
